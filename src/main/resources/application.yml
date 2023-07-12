@@ -1,0 +1,47 @@
+server:
+  port: 8002
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    context-path: /eam
+  compression:
+    enabled: true
+    mime-types:
+      - application/json
+      - application/xml
+      - text/html
+      - text/xml
+      - text/plain
+    min-response-size: 4096
+
+spring:
+  profiles:
+    active: dev
+  jmx:
+    enabled: false
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-request-size: 50MB
+      max-file-size: 50MB
+      enabled: true
+  messages:
+    basename: i18n/messages
+
+
+mybatis:
+  mapper-locations: classpath:/dao/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+#    log-impl : org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    db-config:
+      logic-delete-field: 1
+      logic-not-delete-value: 0

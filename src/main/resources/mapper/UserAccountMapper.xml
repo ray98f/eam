@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.UserAccountMapper">
+
+    <select id="listUserAccount" resultType="com.wzmtr.eam.dto.res.UserAccountListResDTO">
+        select ID, LOGIN_NAME, NO, NAME, EMAIL, PHONE, MOBILE, HIRE_DATE, ROOM, DISABLED from SYS_USER
+        where DEL_FLAG=0 and EXPIRED=0
+        <if test="searchKey!=null and searchKey!=''">
+            and ((NAME like '%' || #{searchKey} || '%') or (MOBILE like '%' || #{searchKey} || '%'))
+        </if>
+        order by ORDER_NUM asc
+    </select>
+
+    <select id="selectUserAccountById" resultType="com.wzmtr.eam.dto.res.UserAccountListResDTO">
+        select distinct ID, LOGIN_NAME, NO, NAME, EMAIL, PHONE, MOBILE, HIRE_DATE, ROOM, DISABLED from SYS_USER
+        where DEL_FLAG=0 and EXPIRED=0 and DISABLED=0 and
+        ID in (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <update id="ableUserRole">
+        update SYS_USER_ACCOUNT set
+        IS_LOCK=#{disabled}, LOCK_TIME=sysdate
+        where USER_ID=#{id}
+    </update>
+
+    <select id="listOutUserAccount" resultType="com.wzmtr.eam.entity.SysUserAccount">
+        select * from SYS_USER_ACCOUNT
+    </select>
+
+    <delete id="cleanTable">
+        delete from SYS_USER where LOGIN_NAME not like '%admin%' and (COMPANY_ID != 'W' OR COMPANY_ID IS NULL)
+    </delete>
+
+    <delete id="cleanSuppCon">
+        delete from SYS_USER where LOGIN_NAME not like '%admin%' and  COMPANY_ID = 'W'
+    </delete>
+
+    <insert id="createPerson" parameterType="com.wzmtr.eam.entity.SysUser">
+        INSERT INTO SYS_USER
+        (ID,
+        <if test="loginName!=null and loginName!=''">LOGIN_NAME,</if>
+        <if test="password!=null and password!=''">PASSWORD,</if>
+        <if test="expired!=null">EXPIRED,</if>
+        <if test="disabled !=null">DISABLED,</if>
+        <if test="no !=null and no!=''">NO,</if>
+        <if test="companyId !=null and companyId!=''">COMPANY_ID,</if>
+        <if test="officeId !=null and officeId!=''">OFFICE_ID,</if>
+        <if test="name !=null and name!=''">NAME,</if>
+        <if test="email !=null and email!=''">EMAIL,</if>
+        <if test="phone !=null and phone!=''">PHONE,</if>
+        <if test="mobile !=null and mobile!=''">MOBILE,</if>
+        <if test="userType !=null and userType!=''">USER_TYPE,</if>
+        <if test="loginFlag !=null and loginFlag!=''">LOGIN_FLAG,</if>
+        <if test="newWorker !=null and newWorker!=''">NEW_WORKER,</if>
+        <if test="photo !=null and photo!=''">PHOTO,</if>
+        <if test="birthDate !=null">BIRTH_DATE,</if>
+        <if test="hireDate !=null ">HIRE_DATE,</if>
+        <if test="remarks !=null and remarks!=''">REMARKS,</if>
+        <if test="orderNum !=null ">ORDER_NUM,</if>
+        <if test="room !=null and room!=''">ROOM,</if>
+        <if test="flagposition !=null and flagposition!=''">FLAGPOSITION,</if>
+        <if test="personId !=null and personId!=''">PERSON_ID,</if>
+        <if test="createBy!=null and createBy!=''">CREATE_BY,</if>
+        CREATE_DATE,
+        <if test="updateBy!=null and updateBy!=''">UPDATE_BY,</if>
+        UPDATE_DATE,
+        DEL_FLAG)
+        values
+        (#{id},
+        <if test="loginName!=null and loginName!=''">#{loginName},</if>
+        <if test="password!=null and password!=''">#{password},</if>
+        <if test="expired!=null">#{expired},</if>
+        <if test="disabled !=null">#{disabled},</if>
+        <if test="no !=null and no!=''">#{no},</if>
+        <if test="companyId !=null and companyId!=''">#{companyId},</if>
+        <if test="officeId !=null and officeId!=''">#{officeId},</if>
+        <if test="name !=null and name!=''">#{name},</if>
+        <if test="email !=null and email!=''">#{email},</if>
+        <if test="phone !=null and phone!=''">#{phone},</if>
+        <if test="mobile !=null and mobile!=''">#{mobile},</if>
+        <if test="userType !=null and userType!=''">#{userType},</if>
+        <if test="loginFlag !=null and loginFlag!=''">#{loginFlag},</if>
+        <if test="newWorker !=null and newWorker!=''">#{newWorker},</if>
+        <if test="photo !=null and photo!=''">#{photo},</if>
+        <if test="birthDate !=null ">#{birthDate},</if>
+        <if test="hireDate !=null ">#{hireDate},</if>
+        <if test="remarks !=null and remarks!=''">#{remarks},</if>
+        <if test="orderNum !=null ">#{orderNum},</if>
+        <if test="room !=null and room!=''">#{room},</if>
+        <if test="flagposition !=null and flagposition!=''">#{flagposition},</if>
+        <if test="personId !=null and personId!=''">#{personId},</if>
+        <if test="createBy!=null and createBy!=''">#{createBy},</if>
+        SYSDATE,
+        <if test="updateBy!=null and updateBy!=''">#{updateBy},</if>
+        SYSDATE,
+        0)
+    </insert>
+
+    <delete id="cleanEmpJob">
+        delete from SYS_ORG_USER
+    </delete>
+
+    <insert id="createEmpJob" parameterType="com.wzmtr.eam.entity.SysOrgUser">
+        INSERT INTO SYS_ORG_USER
+        (
+        <if test="companyId!=null and companyId!=''">COMPANY_ID,</if>
+        <if test="officeId!=null and officeId!=''">OFFICE_ID,</if>
+        <if test="userId!=null and userId!=''">USER_ID,</if>
+        <if test="officeName!=null and officeName!=''">OFFICE_NAME,</if>
+        <if test="postcode!=null and postcode!=''">POSTCODE,</if>
+        <if test="postname!=null and postname!=''">POSTNAME,</if>
+        <if test="latestarridate!=null">LATESTARRIDATE,</if>
+        <if test="companyname!=null and companyname!=''">COMPANYNAME,</if>
+        <if test="leavedate!=null">LEAVEDATE,</if>
+        <if test="leavestatus!=null and leavestatus!=''">LEAVESTATUS,</if>
+        <if test="departfullpath!=null and departfullpath!=''">DEPARTFULLPATH,</if>
+        <if test="jobcategory!=null and jobcategory!=''">JOBCATEGORY,</if>
+        <if test="jobgrade!=null and jobgrade!=''">JOBGRADE,</if>
+        <if test="activestatus!=null and activestatus!=''">ACTIVESTATUS,</if>
+        <if test="joblevel!=null and joblevel!=''">JOBLEVEL,</if>
+        <if test="jobname!=null and jobname!=''">JOBNAME,</if>
+        <if test="jobcategoryname!=null and jobcategoryname!=''">JOBCATEGORYNAME,</if>
+        <if test="joblevelname!=null and joblevelname!=''">JOBLEVELNAME,</if>
+        <if test="jobgradename!=null and jobgradename!=''">JOBGRADENAME,</if>
+        <if test="positionlevel!=null and positionlevel!=''">POSITIONLEVEL,</if>
+        <if test="jobleveldate!=null">JOBLEVELDATE,</if>
+        <if test="mdmUserId!=null and mdmUserId!=''">MDM_USER_ID,</if>
+        <if test="oldinfoid!=null and oldinfoid!=''">OLDINFOID,</if>
+        <if test="procresult!=null and procresult!=''">PROCRESULT,</if>
+        ID
+        )
+        values
+        (
+        <if test="companyId!=null and companyId!=''">#{companyId},</if>
+        <if test="officeId!=null and officeId!=''">#{officeId},</if>
+        <if test="userId!=null and userId!=''">#{userId},</if>
+        <if test="officeName!=null and officeName!=''">#{officeName},</if>
+        <if test="postcode!=null and postcode!=''">#{postcode},</if>
+        <if test="postname!=null and postname!=''">#{postname},</if>
+        <if test="latestarridate!=null">#{latestarridate},</if>
+        <if test="companyname!=null and companyname!=''">#{companyname},</if>
+        <if test="leavedate!=null">#{leavedate},</if>
+        <if test="leavestatus!=null and leavestatus!=''">#{leavestatus},</if>
+        <if test="departfullpath!=null and departfullpath!=''">#{departfullpath},</if>
+        <if test="jobcategory!=null and jobcategory!=''">#{jobcategory},</if>
+        <if test="jobgrade!=null and jobgrade!=''">#{jobgrade},</if>
+        <if test="activestatus!=null and activestatus!=''">#{activestatus},</if>
+        <if test="joblevel!=null and joblevel!=''">#{joblevel},</if>
+        <if test="jobname!=null and jobname!=''">#{jobname},</if>
+        <if test="jobcategoryname!=null and jobcategoryname!=''">#{jobcategoryname},</if>
+        <if test="joblevelname!=null and joblevelname!=''">#{joblevelname},</if>
+        <if test="jobgradename!=null and jobgradename!=''">#{jobgradename},</if>
+        <if test="positionlevel!=null and positionlevel!=''">#{positionlevel},</if>
+        <if test="jobleveldate!=null">#{jobleveldate},</if>
+        <if test="mdmUserId!=null and mdmUserId!=''">#{mdmUserId},</if>
+        <if test="oldinfoid!=null and oldinfoid!=''">#{oldinfoid},</if>
+        <if test="procresult!=null and procresult!=''">#{procresult},</if>
+        #{id}
+        )
+    </insert>
+
+    <!-- 根据id，更新部门和分公司信息 -->
+    <update id="updateUserCompany" parameterType="com.wzmtr.eam.entity.SysUser">
+        UPDATE SYS_USER SET
+        <if test="companyId !=null">COMPANY_ID=#{companyId},</if>
+        <if test="officeId !=null">OFFICE_ID=#{officeId},</if>
+        UPDATE_DATE=SYSDATE
+        where ID=#{id}
+    </update>
+
+    <update id="updatePersonPlus"   parameterType ="java.util.Map">
+        update SYS_USER set flagPosition = #{flagPosition},room = #{room}
+        where id =#{id}
+    </update>
+
+    <select id="userCenterInfo" resultType="com.wzmtr.eam.dto.res.UserCenterInfoResDTO">
+        SELECT * FROM (
+        SELECT
+        t1.ID,
+        t1.NO,
+        t1.NAME,
+        t1.PHONE,
+        t1.MOBILE,
+        t1.EMAIL,
+        t1.ROOM,
+        t1.HIRE_DATE,
+        t2.POSTNAME AS POST_NAME,
+        t1.COMPANY_ID,
+        t1.OFFICE_ID,
+        t5.NAME AS COMPANY_NAME,
+        t4.NAME AS OFFICE_NAME,
+        concat(REPLACE(t6.BASEURL, 'http://10.11.70.38:8080', 'http://mbtt.wzmtr.com:4443'), t6.ORGINPHOTO) as PHOTO,
+        concat(REPLACE(t6.BASEURL, 'http://10.11.70.38:8080', 'http://mbtt.wzmtr.com:4443'), t6.BIGPHOTO) as BIG_PHOTO,
+        concat(REPLACE(t6.BASEURL, 'http://10.11.70.38:8080', 'http://mbtt.wzmtr.com:4443'), t6.SMALLPHOTO) as SMALL_PHOTO
+        FROM SYS_USER t1
+        LEFT JOIN SYS_ORG_USER t2 ON t2.USER_ID=t1.ID and t2.OFFICE_ID=t1.OFFICE_ID and t2.ACTIVESTATUS=1 AND t2.LEAVEDATE>=SYSDATE
+        left join SYS_OFFICE t4 on t4.ID=t1.OFFICE_ID and t4.DEL_FLAG=0 and t4.USEABLE=1
+        left join SYS_OFFICE t5 on t5.ID=t1.COMPANY_ID and t5.DEL_FLAG=0 and t5.USEABLE=1
+        left join (select CEMPID,max(BASEURL) AS BASEURL,max(ORGINPHOTO) AS ORGINPHOTO,max(BIGPHOTO) AS BIGPHOTO,max(SMALLPHOTO) AS SMALLPHOTO from SYS_PHOTO group by CEMPID) t6 on t6.CEMPID=t1.PERSON_ID
+        WHERE t1.ID=#{userId} and t1.DEL_FLAG=0
+        ) WHERE rownum=1
+    </select>
+
+    <select id="getUserRoles" resultType="java.lang.String">
+        select t2.ROLE_NAME from SYS_USER_ROLE t1
+        left join SYS_ROLE t2 on t1.ROLE_ID=t2.ID and t2.STATUS=0
+        where t1.USER_ID=#{userId}
+    </select>
+
+</mapper>

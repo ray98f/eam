@@ -1,0 +1,92 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@192.168.30.104:1521/ORCLCDB
+    username: C##EAM_ZTE
+    password: 123456
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      read-only: false
+      connection-timeout: 60000
+      idle-timeout: 50000
+      validation-timeout: 3000
+      max-lifetime: 60000
+      login-timeout: 5
+      maximum-pool-size: 30
+      minimum-idle: 10
+
+  redis:
+    cluster:
+      nodes: 192.168.30.108:7001, 192.168.30.109:7003, 192.168.30.110:7005, 192.168.30.108:7002, 192.168.30.109:7004, 192.168.30.110:7006
+    jedis:
+      pool:
+        max-active: 50
+        min-idle: 0
+        max-idle: 50
+        max-wait: -1
+    key-prefix: dev-
+
+excluded:
+  pages: /eam/iam/user/getToken
+
+sso:
+  url: http://mbtt.wzmtr.com:4443/cas
+  eipHome: http://10.11.82.91:8002/rights/
+
+cas:
+  serverUrlPrefix: "${sso.url}"
+  serviceUrlPrefix: "http://10.11.82.91:8002/rights"
+  casFilterUrlPattern: "/cas"
+  loginUrlPattern: "/login"
+  logoutUrlPattern: "/logout"
+  successUrlPattern: "/index"
+  serviceFront: "http://10.11.82.91:8899/index.html"
+  h5Front: "http://mbtt.wzmtr.com:4443/testpps/"
+
+diboot:
+  core:
+    init-sql: false
+  iam:
+    init-sql: false
+#    anon-urls:
+#      - /swagger**/**
+#      - /webjars/**
+#      - /v3/**
+#      - /doc.html
+#    enable-permission-check: true
+#    token-expires-minutes: 60
+  component:
+    file:
+      init-sql: false
+    scheduler:
+      init-sql: false
+    message:
+      init-sql: false
+#  devtools:
+#    codes-version: 1.0
+#    codes-copyright: wzmtr
+#    codes-author: eam
+#    output-path: eam-server/src/main/java/com/wzmtr/eam/
+#    output-path-base: eam-server/src/main/java/com/wzmtr/eam/common/
+#    output-path-entity: eam-server/src/main/java/com/wzmtr/eam/entity/
+#    output-path-vo: eam-server/src/main/java/com/wzmtr/eam/vo/
+#    output-path-dto: eam-server/src/main/java/com/wzmtr/eam/dto/
+#    output-path-service: eam-server/src/main/java/com/wzmtr/eam/service/
+#    output-path-mapper: eam-server/src/main/java/com/wzmtr/eam/mapper/
+#    output-path-sql: eam-server/src/main/resources/
+
+mdm:
+  person:
+    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllPersonList?wsdl"
+  org:
+    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllOrgList?wsdl"
+  emp-job:
+    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllEmpJobInfoList?wsdl"
+  supp:
+    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllSuppList?wsdl"
+  supp-contact:
+    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllSuppContactsList?wsdl"
+  person-plus:
+    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
+
+local:
+  base-url: http://192.168.30.58:8002/rights

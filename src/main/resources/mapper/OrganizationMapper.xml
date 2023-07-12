@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.OrganizationMapper">
+
+    <select id="getRoot" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
+        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE where ID='root' and USEABLE=1 and DEL_FLAG=0
+    </select>
+
+    <select id="listExtraRootList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
+        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE where PARENT_ID=#{root} and USEABLE=1 and ID NOT IN ('K','N') and DEL_FLAG=0 order by ID asc
+    </select>
+
+    <select id="listExtraBodyList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
+        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE where PARENT_ID!=#{root} and PARENT_ID!='W' and USEABLE=1 and DEL_FLAG=0 and ID!=#{root} order by SORT asc
+    </select>
+
+    <select id="listCompanyList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
+        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
+        where PARENT_ID='root' and DEL_FLAG=0 and USEABLE=1 and NAME!='外部单位' and GRADE in (1,2)
+        order by SORT
+    </select>
+
+    <select id="listMember" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+        select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
+        listagg(sou.POSTNAME, ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
+        su.EMAIL, su.ROOM from SYS_USER su
+        left join SYS_OFFICE so on su.OFFICE_ID=so.ID and so.DEL_FLAG=0 and so.USEABLE=1
+        left join SYS_ORG_USER sou on sou.USER_ID=su.ID and sou.ACTIVESTATUS=1 AND sou.LEAVEDATE>=SYSDATE
+        where su.EXPIRED=0 and su.DEL_FLAG=0
+        and sou.LEAVEDATE>sysdate
+        and (so.PARENT_IDS || ',' || so.ID) like '%' || #{id} || '%'
+        <if test="name!=null and name!=''">
+            and su.NAME like '%' || #{name} || '%'
+        </if>
+        group by su.ID, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
+        <if test="id=='root'">
+            , su.COMPANY_ID
+        </if>
+        ORDER BY
+        <if test="id=='root'">
+            su.COMPANY_ID ASC,
+        </if>
+        su.ORDER_NUM ASC
+    </select>
+
+    <select id="listMembers" parameterType="string" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+        select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
+        listagg(sou.POSTNAME, ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
+        su.EMAIL, su.ROOM from SYS_USER su
+        left join SYS_OFFICE so on su.OFFICE_ID=so.ID and so.DEL_FLAG=0 and so.USEABLE=1
+        left join SYS_ORG_USER sou on sou.USER_ID=su.ID and sou.ACTIVESTATUS=1 AND sou.LEAVEDATE>=SYSDATE
+        where su.EXPIRED=0 and su.DEL_FLAG=0
+        and sou.LEAVEDATE>sysdate
+        and (so.PARENT_IDS || ',' || so.ID) like '%' || #{id} || '%'
+        group by su.ID, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
+        <if test="id=='root'">
+            , su.COMPANY_ID
+        </if>
+        ORDER BY
+        <if test="id=='root'">
+            su.COMPANY_ID ASC,
+        </if>
+        su.ORDER_NUM ASC
+    </select>
+
+    <select id="selectOfficeNameById" resultType="java.lang.String">
+        select name from SYS_OFFICE where ID=#{id} and USEABLE=1 and DEL_FLAG=0
+    </select>
+
+    <delete id="cleanOrg">
+        delete from SYS_OFFICE where ID not in('W') and PARENT_ID != 'W'
+    </delete>
+
+    <delete id="cleanSupplier">
+        delete from SYS_OFFICE where ID ='W' or PARENT_IDS like '%,W%' or PARENT_ID = 'W'
+    </delete>
+
+    <insert id="createOrg" parameterType="com.wzmtr.eam.entity.SysOffice">
+        INSERT INTO SYS_OFFICE
+        (ID,
+        <if test="parentId!=null and parentId!=''">PARENT_ID,</if>
+        <if test="parentIds!=null and parentIds!=''">PARENT_IDS,</if>
+        <if test="name !=null and name!=''">NAME,</if>
+        <if test="type !=null and type!=''">TYPE,</if>
+        <if test="grade !=null and grade!=''">GRADE,</if>
+        <if test="sort !=null ">SORT,</if>
+        <if test="remarks !=null and remarks!=''">REMARKS,</if>
+        <if test="useable !=null and useable!=''">USEABLE,</if>
+        <if test="areaId !=null and areaId!=''">AREA_ID,</if>
+        <if test="createBy !=null and createBy!=''">CREATE_BY,</if>
+        CREATE_DATE,
+        <if test="updateBy !=null and updateBy!=''">UPDATE_BY,</if>
+        UPDATE_DATE,
+        DEL_FLAG)
+        values
+        (#{id},
+        <if test="parentId!=null and parentId!=''">#{parentId},</if>
+        <if test="parentIds!=null and parentIds!=''">#{parentIds},</if>
+        <if test="name !=null and name!=''">#{name},</if>
+        <if test="type !=null and type!=''">#{type},</if>
+        <if test="grade !=null and grade!=''">#{grade},</if>
+        <if test="sort !=null ">#{sort},</if>
+        <if test="remarks !=null and remarks!=''">#{remarks},</if>
+        <if test="useable !=null and useable!=''">#{useable},</if>
+        <if test="areaId !=null and areaId!=''">#{areaId},</if>
+        <if test="createBy !=null and createBy!=''">#{createBy},</if>
+        SYSDATE,
+        <if test="updateBy !=null and updateBy!=''">#{updateBy},</if>
+        SYSDATE,
+        0)
+    </insert>
+
+    <select id="searchParentIds" resultType="com.wzmtr.eam.dto.res.OrgParentIdsResDTO">
+        SELECT DISTINCT id,parent_ids from
+        (
+        SELECT id,parent_ids from
+        (
+        SELECT DISTINCT tt.id,  TRIM(LEADING ',' FROM  SYS_CONNECT_BY_PATH(tt.parent_id, ','))  as parent_ids  from SYS_OFFICE  tt
+        START WITH tt.parent_id='root' AND tt.id NOT IN ( 'W')
+        CONNECT BY PRIOR tt.id  =  tt.parent_id
+        )
+        ) t
+    </select>
+
+    <update id="updateParentIds">
+        update SYS_OFFICE set
+        parent_ids=#{parentIds}
+        where ID=#{id}
+    </update>
+
+</mapper>
