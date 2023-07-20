@@ -36,7 +36,9 @@
         FROM T_WO_RULE_DETAIL wd
         LEFT JOIN SYS_USER u ON wr.REC_CREATOR=u.ID
         where wd.DELETE_FLAG='0'
-        and wd.RULE_CODE=#{ruleCode}
+        <if test="ruleCode!=null and ruleCode!=''">
+            and wd.RULE_CODE=#{ruleCode}
+        </if>
         ORDER BY wd.RULE_SORT ASC
     </select>
 
@@ -177,22 +179,34 @@
     </update>
 
     <select id="listWoRule" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO">
-        SELECT wr.REC_ID, wr.ORG_CODE, wr.ORG_NAME, wr.LINE_CODE,
-        wr.REC_STATUS, wr.REMARK, u.NAME AS REC_CREATOR, wr.REC_CREATE_TIME
-        FROM SYS_ORG_LINE ol
-        LEFT JOIN SYS_USER u ON wr.REC_REVISOR=u.ID
+        SELECT wr.REC_ID, wr.RULE_CODE, wr.RULE_NAME, wr.RULE_USEAGE,
+        wr.REC_STATUS, wr.REMARK, u1.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, u2.NAME AS REC_REVISOR, wr.REC_REVISE_TIME
+        FROM T_WO_RULE wr
+        LEFT JOIN SYS_USER u1 ON wr.REC_CREATOR=u1.ID
+        LEFT JOIN SYS_USER u2 ON wr.REC_REVISOR=u2.ID
         where wr.DELETE_FLAG='0'
-        <if test="orgCodes!=null and orgCodes.size()>0">
-            and wr.ORG_CODE in (
-            <foreach collection="orgCodes" index="index" item="orgCode" separator=",">
-                #{orgCode}
-            </foreach>
-            )
+        <if test="ruleCode!=null and ruleCode!=''">
+            and wr.ORG_CODE like '%' || #{ruleCode} || '%'
         </if>
-        <if test="lineCode!=null and lineCode!=''">
-            and wr.LINE_CODE=#{lineCode}
+        <if test="ruleName!=null and ruleName!=''">
+            and wr.ORG_CODE like '%' || #{ruleName} || '%'
         </if>
-        ORDER BY wr.REC_CREATE_TIME ASC
+        <if test="ruleUseage!=null and ruleUseage!=''">
+            and wr.RULE_USEAGE=#{ruleUseage}
+        </if>
+        ORDER BY wr.RULE_CODE ASC
+    </select>
+
+    <select id="listWoRuleDetail" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
+        SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
+        wd.REMARK, u.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
+        FROM T_WO_RULE_DETAIL wd
+        LEFT JOIN SYS_USER u ON wr.REC_CREATOR=u.ID
+        where wd.DELETE_FLAG='0'
+        <if test="ruleCode!=null and ruleCode!=''">
+            and wd.RULE_CODE=#{ruleCode}
+        </if>
+        ORDER BY wd.RULE_SORT ASC
     </select>
 
 </mapper>

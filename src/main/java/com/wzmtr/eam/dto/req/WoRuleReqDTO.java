@@ -43,9 +43,6 @@ public class WoRuleReqDTO {
     @ApiModelProperty(value = "修改时间")
     private String recReviseTime;
 
-    @ApiModelProperty(value = "工单规则详情")
-    private List<WoRuleDetail> woRuleDetail;
-
     @Data
     public static class WoRuleDetail {
         @ApiModelProperty(value = "id")

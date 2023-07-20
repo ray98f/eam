@@ -129,4 +129,52 @@ public class WoRuleServiceImpl implements WoRuleService {
         }
     }
 
+    @Override
+    public void exportWoRule(String ruleCode, String ruleName, String ruleUseage, HttpServletResponse response) {
+        List<String> listName = Arrays.asList("记录编号", "规则编号", "规则名称", "用途", "记录状态", "备注", "创建者", "创建时间");
+        List<WoRuleResDTO> woRules = woRuleMapper.listWoRule(ruleCode, ruleName, ruleUseage);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (woRules != null && !woRules.isEmpty()) {
+            for (WoRuleResDTO woRule : woRules) {
+                Map<String, String> map = new HashMap<>();
+                map.put("记录编号", woRule.getRecId());
+                map.put("规则编号", woRule.getRuleCode());
+                map.put("规则名称", woRule.getRuleName());
+                map.put("用途", RULE_USE_MAP.get(woRule.getRuleUseage()));
+                map.put("记录状态", "10".equals(woRule.getRecStatus()) ? "无效" : "有效");
+                map.put("备注", woRule.getRemark());
+                map.put("创建者", woRule.getRecCreator());
+                map.put("创建时间", woRule.getRecCreateTime());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("工单触发规则信息", listName, list, null, response);
+    }
+
+    @Override
+    public void exportWoRuleDetail(String ruleCode, HttpServletResponse response) {
+        List<String> listName = Arrays.asList("记录编号", "规则编号", "规则名称", "用途", "记录状态", "备注", "创建者", "创建时间");
+        List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.listWoRuleDetail(ruleCode);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (woRuleDetails != null && !woRuleDetails.isEmpty()) {
+            for (WoRuleResDTO.WoRuleDetail woRuleDetail : woRuleDetails) {
+                Map<String, String> map = new HashMap<>();
+                map.put("记录编号", woRuleDetail.getRecId());
+                map.put("规则编号", woRuleDetail.getRuleCode());
+                map.put("规则明细名称", woRuleDetail.getRuleDetalName());
+                map.put("起始日期", woRuleDetail.getStartDate());
+                map.put("结束日期", woRuleDetail.getEndDate());
+                map.put("周期(小时)", String.valueOf(woRuleDetail.getPeriod()));
+                map.put("里程周期", woRuleDetail.getExt1() == null ? "" : String.valueOf(woRuleDetail.getExt1()));
+                map.put("提前天数", String.valueOf(woRuleDetail.getBeforeTime()));
+                map.put("规则排序", String.valueOf(woRuleDetail.getRuleSort()));
+                map.put("备注", woRuleDetail.getRemark());
+                map.put("创建者", woRuleDetail.getRecCreator());
+                map.put("创建时间", woRuleDetail.getRecCreateTime());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("工单触发规则明细信息", listName, list, null, response);
+    }
+
 }

@@ -32,4 +32,7 @@ public interface WoRuleService {
 
     void deleteWoRuleDetail(BaseIdsEntity baseIdsEntity);
 
+    void exportWoRule(String ruleCode, String ruleName, String ruleUseage, HttpServletResponse response);
+
+    void exportWoRuleDetail(String ruleCode, HttpServletResponse response);
 }

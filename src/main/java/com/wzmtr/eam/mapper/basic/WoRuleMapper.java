@@ -132,5 +132,13 @@ public interface WoRuleMapper {
      */
     List<WoRuleResDTO> listWoRule(String ruleCode, String ruleName, String ruleUseage);
 
+    /**
+     * 获取工单触发规则明细列表
+     *
+     * @param ruleCode
+     * @return
+     */
+    List<WoRuleResDTO.WoRuleDetail> listWoRuleDetail(String ruleCode);
+
 
 }

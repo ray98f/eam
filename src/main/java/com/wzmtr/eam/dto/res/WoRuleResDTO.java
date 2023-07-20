@@ -43,9 +43,6 @@ public class WoRuleResDTO {
     @ApiModelProperty(value = "修改时间")
     private String recReviseTime;
 
-    @ApiModelProperty(value = "工单规则详情")
-    private List<WoRuleDetail> woRuleDetail;
-
     @Data
     public static class WoRuleDetail {
         @ApiModelProperty(value = "id")
@@ -64,13 +61,13 @@ public class WoRuleResDTO {
         private String endDate;
 
         @ApiModelProperty(value = "周期(小时)")
-        private Integer period;
+        private Long period;
 
         @ApiModelProperty(value = "里程周期")
-        private Integer ext1;
+        private Long ext1;
 
         @ApiModelProperty(value = "提前天数")
-        private Integer beforeTime;
+        private Long beforeTime;
 
         @ApiModelProperty(value = "规则排序")
         private Integer ruleSort;
