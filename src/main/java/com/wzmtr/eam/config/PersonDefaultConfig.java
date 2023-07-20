@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "user.default")
 public class PersonDefaultConfig {
 
-    private  String password;
-    private  String userType;
-    private  String loginFlag;
-    private  String createBy;
-    private  String updateBy;
+    private String password;
+    private String userType;
+    private String loginFlag;
+    private String createBy;
+    private String updateBy;
 }

@@ -1,11 +1,11 @@
 package com.wzmtr.eam.controller;
 
 import com.wzmtr.eam.dto.res.UserCenterInfoResDTO;
-import com.wzmtr.eam.entity.response.DataResponse;
-import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.entity.*;
 import com.wzmtr.eam.dto.req.UserStatusReqDTO;
 import com.wzmtr.eam.dto.res.UserAccountListResDTO;
+import com.wzmtr.eam.entity.response.DataResponse;
+import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.UserAccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,8 +41,8 @@ public class UserAccountController {
 
     @PostMapping("/ids")
     @ApiOperation(value = "根据id获取信息")
-    public DataResponse<List<UserAccountListResDTO>> selectUserAccountById(@RequestBody BaseListEntity baseListEntity) {
-        return DataResponse.of(userAccountService.selectUserAccountById(baseListEntity.getIds()));
+    public DataResponse<List<UserAccountListResDTO>> selectUserAccountById(@RequestBody BaseIdsEntity baseIdsEntity) {
+        return DataResponse.of(userAccountService.selectUserAccountById(baseIdsEntity.getIds()));
     }
 
     @GetMapping("/detail")

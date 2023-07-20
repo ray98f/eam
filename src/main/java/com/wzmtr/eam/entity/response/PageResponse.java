@@ -19,7 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel
-public class PageResponse<T> extends BaseResponse {
+public class PageResponse<T> extends com.wzmtr.eam.entity.response.BaseResponse {
 
 
     private PagedData<T> data;

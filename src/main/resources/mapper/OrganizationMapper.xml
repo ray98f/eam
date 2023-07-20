@@ -3,15 +3,20 @@
 <mapper namespace="com.wzmtr.eam.mapper.OrganizationMapper">
 
     <select id="getRoot" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
-        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE where ID='root' and USEABLE=1 and DEL_FLAG=0
+        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
+        where ID='root' and USEABLE=1 and DEL_FLAG=0
     </select>
 
     <select id="listExtraRootList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
-        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE where PARENT_ID=#{root} and USEABLE=1 and ID NOT IN ('K','N') and DEL_FLAG=0 order by ID asc
+        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
+        where PARENT_ID=#{root} and USEABLE=1 and DEL_FLAG=0 and ID!='100000002'
+        order by ID asc
     </select>
 
     <select id="listExtraBodyList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
-        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE where PARENT_ID!=#{root} and PARENT_ID!='W' and USEABLE=1 and DEL_FLAG=0 and ID!=#{root} order by SORT asc
+        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
+        where PARENT_ID not in (#{root}, '100000002') and USEABLE=1 and DEL_FLAG=0 and ID!=#{root}
+        order by SORT asc
     </select>
 
     <select id="listCompanyList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
@@ -68,11 +73,15 @@
     </select>
 
     <delete id="cleanOrg">
-        delete from SYS_OFFICE where ID not in('W') and PARENT_ID != 'W'
+        delete from SYS_OFFICE where ID not in('W') and PARENT_ID!='W'
     </delete>
 
     <delete id="cleanSupplier">
-        delete from SYS_OFFICE where ID ='W' or PARENT_IDS like '%,W%' or PARENT_ID = 'W'
+        delete from SYS_OFFICE where PARENT_IDS like '%,W%' or PARENT_ID = 'W'
+    </delete>
+
+    <delete id="cleanExtra">
+        delete from SYS_OFFICE where "TYPE"='4'
     </delete>
 
     <insert id="createOrg" parameterType="com.wzmtr.eam.entity.SysOffice">
@@ -127,5 +136,11 @@
         parent_ids=#{parentIds}
         where ID=#{id}
     </update>
+
+    <select id="downRecursion" resultType="java.lang.String">
+        SELECT ID FROM SYS_OFFICE
+        START WITH ID = #{id}
+        CONNECT BY PRIOR ID = PARENT_ID
+    </select>
 
 </mapper>

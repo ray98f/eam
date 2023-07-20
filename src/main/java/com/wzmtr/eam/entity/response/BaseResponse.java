@@ -22,7 +22,7 @@ public class BaseResponse {
 
     private String message;
 
-    private String url;
+    private Object referInfo;
 
     public BaseResponse(AppStatus status) {
         this.code = status.getCode();
@@ -42,8 +42,8 @@ public class BaseResponse {
         return this;
     }
 
-    public BaseResponse url(String url) {
-        this.url = url;
+    public BaseResponse referInfo(Object referInfo) {
+        this.referInfo = referInfo;
         return this;
     }
 
@@ -56,7 +56,7 @@ public class BaseResponse {
         /**
          *
          */
-        SUCCESS(200, "success"),
+        SUCCESS(0, "success"),
         AUTH_FAILED(401, "auth failed");
 
         private String message;

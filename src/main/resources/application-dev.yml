@@ -26,21 +26,21 @@ spring:
     key-prefix: dev-
 
 excluded:
+  swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
   pages: /eam/iam/user/getToken
 
 sso:
   url: http://mbtt.wzmtr.com:4443/cas
-  eipHome: http://10.11.82.91:8002/rights/
+  home: http://192.168.30.58:8002/rights/
 
 cas:
   serverUrlPrefix: "${sso.url}"
-  serviceUrlPrefix: "http://10.11.82.91:8002/rights"
+  serviceUrlPrefix: "http://192.168.30.58:8002/rights"
   casFilterUrlPattern: "/cas"
   loginUrlPattern: "/login"
   logoutUrlPattern: "/logout"
   successUrlPattern: "/index"
-  serviceFront: "http://10.11.82.91:8899/index.html"
-  h5Front: "http://mbtt.wzmtr.com:4443/testpps/"
+  serviceFront: "http://192.168.30.58:8899/index.html"
 
 diboot:
   core:
@@ -76,17 +76,28 @@ diboot:
 
 mdm:
   person:
-    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllPersonList?wsdl"
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonList?wsdl"
   org:
-    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllOrgList?wsdl"
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllOrgList?wsdl"
+  extra-org:
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllExtraOrgList?wsdl"
   emp-job:
-    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllEmpJobInfoList?wsdl"
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllEmpJobInfoList?wsdl"
   supp:
-    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllSuppList?wsdl"
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllSuppList?wsdl"
   supp-contact:
-    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllSuppContactsList?wsdl"
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllSuppContactsList?wsdl"
   person-plus:
-    address: "http://10.11.70.38:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
 
 local:
   base-url: http://192.168.30.58:8002/rights
+
+minio:
+  url: http://zxgd.softether.net:9000
+  imgPath: http://zxgd.softether.net:9000
+  accessKey: minio
+  secretKey: minio123
+
+pro:
+  name: eam

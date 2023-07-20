@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.basic.OrgLineMapper">
+
+    <select id="pageOrgLine" resultType="com.wzmtr.eam.dto.res.OrgLineResDTO">
+        SELECT ol.REC_ID, ol.ORG_CODE, ol.ORG_NAME, ol.LINE_CODE,
+        ol.REC_STATUS, ol.REMARK, u.NAME AS REC_CREATOR, ol.REC_CREATE_TIME
+        FROM SYS_ORG_LINE ol
+        LEFT JOIN SYS_USER u ON ol.REC_REVISOR=u.ID
+        where ol.DELETE_FLAG='0'
+        <if test="orgCodes!=null and orgCodes.size()>0">
+            and ol.ORG_CODE in (
+            <foreach collection="orgCodes" index="index" item="orgCode" separator=",">
+                #{orgCode}
+            </foreach>
+            )
+        </if>
+        <if test="lineCode!=null and lineCode!=''">
+            and ol.LINE_CODE=#{lineCode}
+        </if>
+        ORDER BY ol.REC_CREATE_TIME ASC
+    </select>
+
+    <select id="getOrgLineDetail" resultType="com.wzmtr.eam.dto.res.OrgLineResDTO">
+        SELECT ol.REC_ID, ol.ORG_CODE, ol.ORG_NAME, ol.LINE_CODE,
+        ol.REC_STATUS, ol.REMARK, u.NAME AS REC_CREATOR, ol.REC_CREATE_TIME
+        FROM SYS_ORG_LINE ol
+        LEFT JOIN SYS_USER u ON ol.REC_REVISOR=u.ID
+        where ol.REC_ID=#{id}
+    </select>
+
+    <select id="selectOrgLineIsExist" resultType="java.lang.Integer">
+        SELECT COUNT(REC_ID)
+        FROM SYS_ORG_LINE
+        WHERE ORG_CODE=#{orgCode} AND LINE_CODE=#{lineCode} AND DELETE_FLAG='0'
+        <if test="recId!=null and recId!=''">
+            AND REC_ID!=#{recId}
+        </if>
+    </select>
+
+    <insert id="addOrgLine">
+        INSERT INTO SYS_ORG_LINE (REC_ID, ORG_CODE, ORG_NAME, LINE_CODE, REC_STATUS,
+        <if test="remark!=null and remark!=''">
+            REMARK,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME)
+        VALUES (#{recId}, #{orgCode}, #{orgName}, #{lineCode}, #{recStatus},
+        <if test="remark!=null and remark!=''">
+            #{remark},
+        </if>
+        #{recCreator}, #{recCreateTime})
+    </insert>
+
+    <update id="modifyOrgLine">
+        UPDATE SYS_ORG_LINE SET
+        <if test="orgCode!=null">
+            ORG_CODE=#{orgCode},
+        </if>
+        <if test="orgName!=null">
+            ORG_NAME=#{orgName},
+        </if>
+        <if test="lineCode!=null">
+            LINE_CODE=#{lineCode},
+        </if>
+        <if test="recStatus!=null">
+            REC_STATUS=#{recStatus},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <update id="deleteOrgLine">
+        UPDATE SYS_ORG_LINE SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <select id="listOrgLine" resultType="com.wzmtr.eam.dto.res.OrgLineResDTO">
+        SELECT ol.REC_ID, ol.ORG_CODE, ol.ORG_NAME, ol.LINE_CODE,
+        ol.REC_STATUS, ol.REMARK, u.NAME AS REC_CREATOR, ol.REC_CREATE_TIME
+        FROM SYS_ORG_LINE ol
+        LEFT JOIN SYS_USER u ON ol.REC_REVISOR=u.ID
+        where ol.DELETE_FLAG='0'
+        <if test="orgCodes!=null and orgCodes.size()>0">
+            and ol.ORG_CODE in (
+            <foreach collection="orgCodes" index="index" item="orgCode" separator=",">
+                #{orgCode}
+            </foreach>
+            )
+        </if>
+        <if test="lineCode!=null and lineCode!=''">
+            and ol.LINE_CODE=#{lineCode}
+        </if>
+        ORDER BY ol.REC_CREATE_TIME ASC
+    </select>
+
+</mapper>

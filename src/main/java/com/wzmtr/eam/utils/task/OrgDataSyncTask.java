@@ -24,6 +24,8 @@ public class OrgDataSyncTask {
     private String SYNC_PERSON_URL = "/mdmSync/syncAllPerson";
     private String SYNC_PERSON_PLUS_URL = "/mdmSync/syncPersonPlus";
     private String SYNC_ORG_URL = "/mdmSync/syncAllOrg";
+    private String SYNC_SUPP_ORG_URL = "/mdmSync/syncAllSuppOrg";
+    private String SYNC_EXTRA_ORG_URL = "/mdmSync/syncAllExtraOrg";
     private String SYNC_EMP_JOB_URL = "/mdmSync/syncAllEmpJob";
 
     @Autowired
@@ -48,6 +50,20 @@ public class OrgDataSyncTask {
     public void syncOrg() {
         System.out.println("部门信息同步：" + localUrl + SYNC_ORG_URL);
         mdmSyncService.syncAllOrg();
+    }
+
+    @Scheduled(cron = "0 10 2 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void syncSuppOrg() {
+        System.out.println("供应商信息同步：" + localUrl + SYNC_SUPP_ORG_URL);
+        mdmSyncService.syncSuppOrg();
+    }
+
+    @Scheduled(cron = "0 20 2 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void syncExtraOrg() {
+        System.out.println("外部部门信息同步：" + localUrl + SYNC_EXTRA_ORG_URL);
+        mdmSyncService.syncAllExtraOrg();
     }
 
     @Scheduled(cron = "0 30 2 * * ?")

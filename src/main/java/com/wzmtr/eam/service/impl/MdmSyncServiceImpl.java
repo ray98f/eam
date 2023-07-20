@@ -1,5 +1,6 @@
 package com.wzmtr.eam.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.wzmtr.eam.config.PersonDefaultConfig;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.mapper.OrganizationMapper;
@@ -59,6 +60,18 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     private String mdmOrgAddress;
 
     /**
+     * 主数据供应商接口地址
+     */
+    @Value("${mdm.supp.address}")
+    private String mdmSuppOrgAddress;
+
+    /**
+     * 主数据外部单位组织接口地址
+     */
+    @Value("${mdm.extra-org.address}")
+    private String mdmExtraOrgAddress;
+
+    /**
      * 主数据员工职位信息接口地址
      */
     @Value("${mdm.emp-job.address}")
@@ -74,7 +87,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         requestMessage.setNoun("allPersonList");
         message.setOperType(1);
         message.setIfPhoto(0);
-        message.setSyscode("PSV");
+        message.setSyscode("EAM");
         requestMessage.setMessage(message);
         List<SysUser> personList = new ArrayList<>();
         try {
@@ -101,11 +114,11 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     public void syncPersonPlus() {
         com.wzmtr.eam.soft.mdm.personplusquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.personplusquery.vo.RequestMessage();
         com.wzmtr.eam.soft.mdm.personplusquery.vo.Message message = new com.wzmtr.eam.soft.mdm.personplusquery.vo.Message();
-        com.wzmtr.eam.soft.mdm.personplusquery.vo.ResponseMessage responseMessage = new com.wzmtr.eam.soft.mdm.personplusquery.vo.ResponseMessage();
+        com.wzmtr.eam.soft.mdm.personplusquery.vo.ResponseMessage responseMessage;
         requestMessage.setVerb("Get");
         requestMessage.setNoun("allPersonPlusList");
         message.setOperType(1);
-        message.setSyscode("IPL");
+        message.setSyscode("EAM");
         requestMessage.setMessage(message);
         List<Map<String, Object>> plusList = new ArrayList<>();
         try {
@@ -139,14 +152,13 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     public void syncAllOrg() {
         com.wzmtr.eam.soft.mdm.orgquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.orgquery.vo.RequestMessage();
         com.wzmtr.eam.soft.mdm.orgquery.vo.Message message = new com.wzmtr.eam.soft.mdm.orgquery.vo.Message();
-        com.wzmtr.eam.soft.mdm.orgquery.vo.ResponseMessage responseMessage = new com.wzmtr.eam.soft.mdm.orgquery.vo.ResponseMessage();
+        com.wzmtr.eam.soft.mdm.orgquery.vo.ResponseMessage responseMessage;
         requestMessage.setVerb("Get");
         requestMessage.setNoun("allOrgList");
         message.setOperType(1);
-        message.setSyscode("PSV");
+        message.setSyscode("EAM");
         requestMessage.setMessage(message);
         List<SysOffice> orgList = new ArrayList<>();
-
         try {
             JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
             factory.setAddress(mdmOrgAddress);
@@ -169,6 +181,71 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     }
 
     @Override
+    public void syncSuppOrg() {
+        com.wzmtr.eam.soft.mdm.supplierquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.supplierquery.vo.RequestMessage();
+        com.wzmtr.eam.soft.mdm.supplierquery.vo.Message message = new com.wzmtr.eam.soft.mdm.supplierquery.vo.Message();
+        com.wzmtr.eam.soft.mdm.supplierquery.vo.ResponseMessage responseMessage;
+        requestMessage.setVerb("Get");
+        requestMessage.setNoun("allSuppList");
+        message.setOperType(1);
+        message.setSyscode("EAM");
+        requestMessage.setMessage(message);
+        List<SysOffice> orgList = new ArrayList<>();
+        try {
+            JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+            factory.setAddress(mdmSuppOrgAddress);
+            factory.setServiceClass(com.wzmtr.eam.soft.mdm.supplierquery.service.impl.IGetData.class);
+            com.wzmtr.eam.soft.mdm.supplierquery.service.impl.IGetData orgInterface = (com.wzmtr.eam.soft.mdm.supplierquery.service.impl.IGetData)
+                    factory.create();
+            responseMessage = orgInterface.getData(requestMessage);
+            if (CommonConstants.WSDL_SUCCESS.equals(responseMessage.getState())) {
+                List<com.wzmtr.eam.soft.mdm.supplierquery.vo.Result> result = responseMessage.getResult();
+                orgList = result.stream().map(this::orgCopy).collect(Collectors.toList());
+            } else {
+                log.info("请求失败");
+            }
+        } catch (Exception e) {
+            log.info("错误信息:" + e.getMessage());
+        }
+        if (orgList.size() > 0) {
+            doOrgInsertBatch(orgList, "supp");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void syncAllExtraOrg() {
+        com.wzmtr.eam.soft.mdm.extraorgquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.extraorgquery.vo.RequestMessage();
+        com.wzmtr.eam.soft.mdm.extraorgquery.vo.Message message = new com.wzmtr.eam.soft.mdm.extraorgquery.vo.Message();
+        com.wzmtr.eam.soft.mdm.extraorgquery.vo.ResponseMessage responseMessage;
+        requestMessage.setVerb("Get");
+        requestMessage.setNoun("allExtraOrgList");
+        message.setOperType(1);
+        message.setSyscode("EAM");
+        requestMessage.setMessage(message);
+        List<SysOffice> orgList = new ArrayList<>();
+        try {
+            JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+            factory.setAddress(mdmExtraOrgAddress);
+            factory.setServiceClass(com.wzmtr.eam.soft.mdm.extraorgquery.service.impl.IGetData.class);
+            com.wzmtr.eam.soft.mdm.extraorgquery.service.impl.IGetData orgInterface = (com.wzmtr.eam.soft.mdm.extraorgquery.service.impl.IGetData)
+                    factory.create();
+            responseMessage = orgInterface.getData(requestMessage);
+            if (CommonConstants.WSDL_SUCCESS.equals(responseMessage.getState())) {
+                List<com.wzmtr.eam.soft.mdm.extraorgquery.vo.Result> result = responseMessage.getResult();
+                orgList = result.stream().map(this::orgCopy).collect(Collectors.toList());
+            } else {
+                log.info("请求失败");
+            }
+        } catch (Exception e) {
+            log.info("错误信息:" + e.getMessage());
+        }
+        if (orgList.size() > 0) {
+            doOrgInsertBatch(orgList, "extra");
+        }
+    }
+
+    @Override
     @Transactional
     public void syncAllEmpJob() {
         com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.RequestMessage();
@@ -177,7 +254,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         requestMessage.setVerb("Get");
         requestMessage.setNoun("allEmpJobInfoList");
         message.setOperType(1);
-        message.setSyscode("PSV");
+        message.setSyscode("EAM");
         requestMessage.setMessage(message);
         List<SysOrgUser> empJobList = new ArrayList<>();
         try {
@@ -258,36 +335,48 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         if (result instanceof com.wzmtr.eam.soft.mdm.orgquery.vo.Result) {
             //内部组织
             com.wzmtr.eam.soft.mdm.orgquery.vo.Result result1 = (com.wzmtr.eam.soft.mdm.orgquery.vo.Result) result;
-            Date now = new Date();
-            if (result1.getOrgCode() != null && !StringUtils.isEmpty(result1.getOrgCode()) && "1".equals(result1.getStatus())
-                    && (now.after(result1.getValidDate()) && now.before(result1.getInvalidDate()))) {
+            if (result1.getOrgCode() != null && !StringUtils.isEmpty(result1.getOrgCode())
+                    && result1.getOrgName() != null && !StringUtils.isEmpty(result1.getOrgName())
+                    && "1".equals(result1.getStatus())) {
                 org.setId(result1.getOrgCode());
                 org.setParentId(result1.getParentOrgCode() == null ? "-1" : result1.getParentOrgCode());
                 org.setParentIds(result1.getParentOrgCode() == null ? "-1" : "");
-                org.setName(result1.getOrgName());
-                org.setType(result1.getOrgType());
-                org.setGrade(result1.getOrgLevel());
-                org.setSort(result1.getOrgSequence());
+                org.setName(result1.getOrgName() == null ? "" : result1.getOrgName());
+                org.setType(result1.getOrgType() == null ? "" : result1.getOrgType());
+                org.setGrade(result1.getOrgLevel() == null ? "" : result1.getOrgLevel());
+                org.setSort(result1.getOrgSequence() == null ? 0 : result1.getOrgSequence());
                 org.setUseable("1");
                 org.setCreateBy(personDefaultConfig.getCreateBy());
                 org.setUpdateBy(personDefaultConfig.getUpdateBy());
             }
-        } else {
+        } else if (result instanceof com.wzmtr.eam.soft.mdm.supplierquery.vo.Result) {
             //外单位
             com.wzmtr.eam.soft.mdm.supplierquery.vo.Result result2 = (com.wzmtr.eam.soft.mdm.supplierquery.vo.Result) result;
-            if (StringUtils.isNotBlank(result2.getSuppName()) && !"-1".equals(result2.getSuppId())) {
+            if (StringUtils.isNotBlank(result2.getSuppName()) && !"-1".equals(result2.getSuppId()) && result2.getNodeStatus() == 1
+                    && !"温州中车四方轨道车辆有限公司".equals(result2.getSuppName()) && !"中铁通轨道运营有限公司".equals(result2.getSuppName())) {
                 org.setId(result2.getSuppId());
-                org.setParentId(result2.getParentId().equals("0") ? "W" : result2.getParentId());
-                if ("0".equals(result2.getParentId())) {
-                    org.setParentIds("root,W");
-                } else {
-                    org.setParentIds("root,W" + "," + result2.getParentId());
-                }
+                org.setParentId("W");
+                org.setParentIds("root,W");
                 org.setName(result2.getSuppName());
                 org.setType("3");
                 org.setGrade("7");
                 org.setSort(0);
                 org.setUseable("1");
+                org.setCreateBy(personDefaultConfig.getCreateBy());
+                org.setUpdateBy(personDefaultConfig.getUpdateBy());
+            }
+        } else if (result instanceof com.wzmtr.eam.soft.mdm.extraorgquery.vo.Result) {
+            //外单位及部室
+            com.wzmtr.eam.soft.mdm.extraorgquery.vo.Result result3 = (com.wzmtr.eam.soft.mdm.extraorgquery.vo.Result) result;
+            if (StringUtils.isNotBlank(result3.getName()) && result3.getId() != -1 && result3.getStatus() == 1) {
+                org.setId(String.valueOf(result3.getId()));
+                org.setParentId(result3.getParentId() == 0 ? "root" : String.valueOf(result3.getParentId()));
+                org.setParentIds(result3.getParentId() == 0 ? "root" : "");
+                org.setName(result3.getName());
+                org.setType("4");
+                org.setGrade("7");
+                org.setSort(0);
+                org.setUseable(String.valueOf(result3.getStatus()));
                 org.setCreateBy(personDefaultConfig.getCreateBy());
                 org.setUpdateBy(personDefaultConfig.getUpdateBy());
             }
@@ -358,8 +447,10 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     private void doOrgInsertBatch(List<SysOffice> list, String type) {
         if ("org".equals(type)) {
             organizationMapper.cleanOrg();
-        } else {
+        } else if ("supp".equals(type)) {
             organizationMapper.cleanSupplier();
+        } else if ("extra".equals(type)) {
+            organizationMapper.cleanExtra();
         }
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
         try {

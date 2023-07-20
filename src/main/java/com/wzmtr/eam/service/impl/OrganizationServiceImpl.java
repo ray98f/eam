@@ -7,12 +7,9 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.mapper.OrganizationMapper;
 import com.wzmtr.eam.entity.CompanyStructureTreeDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
-import com.wzmtr.eam.utils.TreeToolUtils;
-import com.wzmtr.eam.dto.req.BindReqDTO;
+import com.wzmtr.eam.utils.tree.CompanyTreeUtils;
 import com.wzmtr.eam.dto.res.MemberResDTO;
-import com.wzmtr.eam.dto.res.PersonListResDTO;
 import com.wzmtr.eam.service.OrganizationService;
-import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +34,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
         List<CompanyStructureTreeDTO> extraRootList = organizationMapper.listExtraRootList(companyStructureTreeDTO.getId());
         List<CompanyStructureTreeDTO> extraBodyList = organizationMapper.listExtraBodyList(companyStructureTreeDTO.getId());
-        TreeToolUtils extraTree = new TreeToolUtils(extraRootList, extraBodyList);
+        CompanyTreeUtils extraTree = new CompanyTreeUtils(extraRootList, extraBodyList);
         companyStructureTreeDTO.setChildren(extraTree.getTree());
         List<CompanyStructureTreeDTO> list = new ArrayList<>();
         list.add(companyStructureTreeDTO);

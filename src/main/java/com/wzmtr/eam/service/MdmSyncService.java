@@ -8,6 +8,10 @@ public interface MdmSyncService {
 
     void syncAllOrg();
 
+    void syncSuppOrg();
+
+    void syncAllExtraOrg();
+
     void syncAllEmpJob();
 
 }

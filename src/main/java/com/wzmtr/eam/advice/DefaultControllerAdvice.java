@@ -1,8 +1,8 @@
 package com.wzmtr.eam.advice;
 
+import com.wzmtr.eam.entity.response.BaseResponse;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.entity.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.basic.FaultMapper">
+
+    <select id="pageFault" resultType="com.wzmtr.eam.dto.res.FaultResDTO">
+        SELECT f.REC_ID, f.EQUIPMENT_TYPE_CODE, f.LINE_CODE, f.FAULT_CODE_TYPE, f.FAULT_CODE, f.FAULT_DESCR,
+        f.REC_STATUS, f.REMARK, u.NAME AS REC_CREATOR, f.REC_CREATE_TIME, f.RELATED_CODES, ec.NODE_NAME AS EQUIPMENT_TYPE_NAME
+        FROM T_FAULT f
+        LEFT JOIN SYS_USER u ON f.REC_REVISOR=u.ID
+        LEFT JOIN T_EQUIPMENT_CATEGORY ec ON f.EQUIPMENT_TYPE_CODE=ec.NODE_CODE and ec.DELETE_FLAG=0
+        where f.DELETE_FLAG='0'
+        <if test="code!=null and code!=''">
+            and f.FAULT_CODE like '%' || #{code} || '%'
+        </if>
+        <if test="type!=null">
+            and f.FAULT_CODE_TYPE=#{type}
+        </if>
+        <if test="lineCode!=null and lineCode!=''">
+            and f.LINE_CODE=#{lineCode}
+        </if>
+        <if test="equipmentCategoryCode!=null and equipmentCategoryCode!=''">
+            and f.EQUIPMENT_TYPE_CODE=#{equipmentCategoryCode}
+        </if>
+        ORDER BY f.FAULT_CODE ASC
+    </select>
+
+    <select id="getFaultDetail" resultType="com.wzmtr.eam.dto.res.FaultResDTO">
+        SELECT f.REC_ID, f.EQUIPMENT_TYPE_CODE, f.LINE_CODE, f.FAULT_CODE_TYPE, f.FAULT_CODE, f.FAULT_DESCR,
+        f.REC_STATUS, f.REMARK, u.NAME AS REC_CREATOR, f.REC_CREATE_TIME, f.RELATED_CODES, ec.NODE_NAME AS EQUIPMENT_TYPE_NAME
+        FROM T_FAULT f
+        LEFT JOIN SYS_USER u ON f.REC_REVISOR=u.ID
+        LEFT JOIN T_EQUIPMENT_CATEGORY ec ON f.EQUIPMENT_TYPE_CODE=ec.NODE_CODE and ec.DELETE_FLAG=0
+        where f.REC_ID=#{id}
+    </select>
+
+    <select id="selectFaultIsExist" resultType="java.lang.Integer">
+        SELECT COUNT(REC_ID)
+        FROM T_FAULT
+        WHERE EQUIPMENT_TYPE_CODE=#{equipmentTypeCode} AND LINE_CODE=#{lineCode} AND FAULT_CODE=#{faultCode} AND DELETE_FLAG='0'
+        <if test="recId!=null and recId!=''">
+            AND REC_ID!=#{recId}
+        </if>
+    </select>
+
+    <insert id="addFault">
+        INSERT INTO T_FAULT (REC_ID, EQUIPMENT_TYPE_CODE, LINE_CODE, FAULT_CODE_TYPE, FAULT_CODE, FAULT_DESCR, REC_STATUS,
+        <if test="relatedCodes!=null and relatedCodes!=''">
+            RELATED_CODES,
+        </if>
+        <if test="remark!=null and remark!=''">
+            REMARK,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME)
+        VALUES (#{recId}, #{equipmentTypeCode}, #{lineCode}, #{faultCodeType}, #{faultCode}, #{faultDescr}, #{recStatus},
+        <if test="relatedCodes!=null and relatedCodes!=''">
+            #{relatedCodes},
+        </if>
+        <if test="remark!=null and remark!=''">
+            #{remark},
+        </if>
+        #{recCreator}, #{recCreateTime})
+    </insert>
+
+    <update id="modifyFault">
+        UPDATE T_FAULT SET
+        <if test="equipmentTypeCode!=null">
+            EQUIPMENT_TYPE_CODE=#{equipmentTypeCode},
+        </if>
+        <if test="lineCode!=null">
+            LINE_CODE=#{lineCode},
+        </if>
+        <if test="faultCodeType!=null">
+            FAULT_CODE_TYPE=#{faultCodeType},
+        </if>
+        <if test="faultCode!=null">
+            FAULT_CODE=#{faultCode},
+        </if>
+        <if test="faultDescr!=null">
+            FAULT_DESCR=#{faultDescr},
+        </if>
+        <if test="relatedCodes!=null">
+            RELATED_CODES=#{relatedCodes},
+        </if>
+        <if test="recStatus!=null">
+            REC_STATUS=#{recStatus},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <update id="deleteFault">
+        UPDATE T_FAULT SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <select id="listFault" resultType="com.wzmtr.eam.dto.res.FaultResDTO">
+        SELECT f.REC_ID, f.EQUIPMENT_TYPE_CODE, f.LINE_CODE, f.FAULT_CODE_TYPE, f.FAULT_CODE, f.FAULT_DESCR,
+        f.REC_STATUS, f.REMARK, u.NAME AS REC_CREATOR, f.REC_CREATE_TIME, f.RELATED_CODES, ec.NODE_NAME AS EQUIPMENT_TYPE_NAME
+        FROM T_FAULT f
+        LEFT JOIN SYS_USER u ON f.REC_REVISOR=u.ID
+        LEFT JOIN T_EQUIPMENT_CATEGORY ec ON f.EQUIPMENT_TYPE_CODE=ec.NODE_CODE and ec.DELETE_FLAG=0
+        where f.DELETE_FLAG='0'
+        <if test="code!=null and code!=''">
+            and f.FAULT_CODE like '%' || #{code} || '%'
+        </if>
+        <if test="type!=null">
+            and f.FAULT_CODE_TYPE=#{type}
+        </if>
+        <if test="lineCode!=null and lineCode!=''">
+            and f.LINE_CODE=#{lineCode}
+        </if>
+        <if test="equipmentCategoryCode!=null and equipmentCategoryCode!=''">
+            and f.EQUIPMENT_TYPE_CODE=#{equipmentCategoryCode}
+        </if>
+        ORDER BY f.FAULT_CODE ASC
+    </select>
+
+</mapper>

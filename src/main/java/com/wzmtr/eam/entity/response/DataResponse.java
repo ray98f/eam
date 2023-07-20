@@ -16,12 +16,12 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @ApiModel
 @Data
-public class DataResponse<T> extends BaseResponse implements Serializable {
+public class DataResponse<T> extends com.wzmtr.eam.entity.response.BaseResponse implements Serializable {
 
     private T data;
 
     private DataResponse(T data) {
-        super(BaseResponse.AppStatus.SUCCESS);
+        super(AppStatus.SUCCESS);
         this.data = data;
     }
 

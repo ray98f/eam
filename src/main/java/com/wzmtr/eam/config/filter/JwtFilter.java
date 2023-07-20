@@ -23,6 +23,9 @@ import java.util.Objects;
 @Component
 public class JwtFilter implements Filter {
 
+    @Value("${excluded.swagger-pages}")
+    private String[] swaggerPages;
+
     @Value("${excluded.pages}")
     private String[] pages;
 
@@ -31,7 +34,8 @@ public class JwtFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String uri = httpRequest.getRequestURI();
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        if (Arrays.asList(pages).contains(uri)) {
+        if (Arrays.asList(pages).contains(uri) || Arrays.asList(swaggerPages).contains(uri)
+                || uri.contains("mdmSync") || uri.contains("swagger")) {
             chain.doFilter(httpRequest, httpResponse);
         } else {
             String token = httpRequest.getHeader("Authorization");

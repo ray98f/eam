@@ -101,52 +101,7 @@ public enum ErrorCode {
      */
     FILE_UPLOAD_ERROR(32100029, "file.upload.error"),
     FILE_BIG(32100030, "file.big"),
-    FILE_DELETE_ERROR(32100031, "file.delete.error"),
-    USER_NOT_LOGIN_IN(32100032, "user.not.login.in"),
-    SECRET_NOT_EXIST(32100033, "secret.not.exist"),
-    SYNC_ERROR(32100034, "sync.error"),
-    RESOURCE_USE(3210035, "resource.use"),
-    TIME_WRONG(3210036, "time.wrong"),
-    CACHE_ERROR(3222237, "cache.error"),
-    ORDER_EXIST(3222238, "order.exist"),
-
-    GROUP_APPLY(3200239, "group.apply"),
-    GROUP_UNCREATE(3200240, "group.uncreate"),
-    ORDER_HAD_REFUSE(3200241, "order.had.refuse"),
-
-    /**
-     * 开放接口调用返回错误
-     */
-    OPENAPI_ERROR(4000042, "openapi.error"),
-    GAODE_API_ERROR(5000043, "gaode.api.error"),
-    KDNIAO_API_ERROR(6000044, "kdniao.api.error"),
-    PERMISSION_FAILED(32100045, "permission.failed"),
-
-
-    //micro.app.type.use.error
-    MICRO_APP_TYPE_USE_ERROR(32300046,"micro.app.type.use.error"),
-    //micro.app.name.exist
-    MICRO_APP_NAME_EXIST(32300047,"micro.app.name.exist"),
-    //micro.app.cate.config.exist
-    MICRO_APP_CATE_CONFIG_EXIST(32300048,"micro.app.name.exist"),
-    CATEGORY_ID_EXIST(32300049,"category.id.exist"),
-    //app.name.exist
-    APP_NAME_EXIST(32300050,"app.name.exist"),
-    //banner.title.exist
-    BANNER_TITLE_EXIST(32300051,"banner.title.exist"),
-    ROOT_ERROR(32300052,"root.error"),
-
-    IAM_ROLE_EXIST(32000053, "iam.role.exist"),
-    IAM_PERM_PARENT_ERROR(32000054, "iam.perm.parent.error"),
-    SPECIAL_EXIST(32000055, "special.exist"),
-    WARN_HAS_REMOVE(32000056, "warn.has.remove"),
-    RULE_FILE_IS_EXIST(32000057, "rule.file.is.exist"),
-    ACTIVE_HAS_USE(32000058, "active.has.use"),
-    SSO_TOKEN_ERROR(32000059, "sso.token.error"),
-    SSO_SALT_ERROR(32000060, "sso.salt.error"),
-    SSO_TOKEN_INVALIDATED(32000061, "sso.token.invalidated"),
-    OA_PUSH_ERROR(32000062, "oa.push.error"),
-    OA_PULL_ERROR(32000063, "oa.pull.error"),;
+    FILE_DELETE_ERROR(32100031, "file.delete.error");
 
     private Integer code;
 

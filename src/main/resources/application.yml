@@ -28,14 +28,10 @@ spring:
       enabled: true
   messages:
     basename: i18n/messages
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
-
-mybatis:
-  mapper-locations: classpath:/dao/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-#    log-impl : org.apache.ibatis.logging.stdout.StdOutImpl
-    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml
   configuration:

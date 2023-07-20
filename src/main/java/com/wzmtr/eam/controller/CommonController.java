@@ -50,8 +50,8 @@ public class CommonController {
     @Value("${cas.serviceFront}")
     private String homeUrl;
 
-    @Value("${sso.eipHome}")
-    private String eipUrl;
+    @Value("${sso.home}")
+    private String home;
 
     @ApiOperation(value = "登出")
     @GetMapping(value = "/logout")
@@ -59,7 +59,7 @@ public class CommonController {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return DataResponse.of(String.join("", casServerUrlPrefix, logoutUrlPattern,
-                "?service=", eipUrl));
+                "?service=", home));
     }
 
     @ApiOperation(value = "登录")
@@ -83,12 +83,7 @@ public class CommonController {
     @ApiOperation(value = "eip首页")
     @GetMapping(value = "/home")
     public DataResponse<String> home() {
-        return DataResponse.of(eipUrl);
-    }
-
-    @GetMapping(value = "/test")
-    public DataResponse<String> test() {
-        return DataResponse.of("test");
+        return DataResponse.of(home);
     }
 
     @RequestMapping("/error/exthrow")
