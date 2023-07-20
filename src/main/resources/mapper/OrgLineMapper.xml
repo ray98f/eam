@@ -6,7 +6,7 @@
         SELECT ol.REC_ID, ol.ORG_CODE, ol.ORG_NAME, ol.LINE_CODE,
         ol.REC_STATUS, ol.REMARK, u.NAME AS REC_CREATOR, ol.REC_CREATE_TIME
         FROM SYS_ORG_LINE ol
-        LEFT JOIN SYS_USER u ON ol.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON ol.REC_CREATOR=u.ID
         where ol.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
             and ol.ORG_CODE in (
@@ -25,7 +25,7 @@
         SELECT ol.REC_ID, ol.ORG_CODE, ol.ORG_NAME, ol.LINE_CODE,
         ol.REC_STATUS, ol.REMARK, u.NAME AS REC_CREATOR, ol.REC_CREATE_TIME
         FROM SYS_ORG_LINE ol
-        LEFT JOIN SYS_USER u ON ol.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON ol.REC_CREATOR=u.ID
         where ol.REC_ID=#{id}
     </select>
 
@@ -86,7 +86,7 @@
         SELECT ol.REC_ID, ol.ORG_CODE, ol.ORG_NAME, ol.LINE_CODE,
         ol.REC_STATUS, ol.REMARK, u.NAME AS REC_CREATOR, ol.REC_CREATE_TIME
         FROM SYS_ORG_LINE ol
-        LEFT JOIN SYS_USER u ON ol.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON ol.REC_CREATOR=u.ID
         where ol.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
             and ol.ORG_CODE in (

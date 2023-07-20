@@ -5,7 +5,7 @@
     <select id="pageRegion" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
         SELECT r.REC_ID, r.PARENT_NODE_REC_ID, r.NODE_NAME, r.NODE_CODE, r.REC_STATUS, r.LINE_CODE, r.REMARK, u.NAME AS REC_CREATOR, r.REC_CREATE_TIME
         FROM SYS_REGION r
-        LEFT JOIN SYS_USER u ON r.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON r.REC_CREATOR=u.ID
         where r.DELETE_FLAG='0'
         <if test="name!=null and name!=''">
             and r.NODE_NAME like '%' || #{name} || '%'
@@ -22,21 +22,21 @@
     <select id="listRegionRootList" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
         SELECT REC_ID, PARENT_NODE_REC_ID, NODE_NAME, NODE_CODE, REC_STATUS, LINE_CODE, REMARK, REC_CREATOR, REC_CREATE_TIME
         FROM SYS_REGION
-        where DELETE_FLAG='0' AND PARENT_NODE_REC_ID='0'
+        where DELETE_FLAG='0' AND REC_ID='0'
         ORDER BY NODE_CODE ASC
     </select>
 
     <select id="listRegionBodyList" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
         SELECT REC_ID, PARENT_NODE_REC_ID, NODE_NAME, NODE_CODE, REC_STATUS, LINE_CODE, REMARK, REC_CREATOR, REC_CREATE_TIME
         FROM SYS_REGION
-        where DELETE_FLAG='0' AND PARENT_NODE_REC_ID!='0'
+        where DELETE_FLAG='0' AND REC_ID!='0'
         ORDER BY NODE_CODE ASC
     </select>
 
     <select id="getRegionDetail" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
         SELECT r.REC_ID, r.PARENT_NODE_REC_ID, r.NODE_NAME, r.NODE_CODE, r.REC_STATUS, r.LINE_CODE, r.REMARK, u.NAME AS REC_CREATOR, r.REC_CREATE_TIME
         FROM SYS_REGION r
-        LEFT JOIN SYS_USER u ON r.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON r.REC_CREATOR=u.ID
         where r.REC_ID=#{id}
     </select>
 
@@ -108,7 +108,7 @@
     <select id="listRegion" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
         SELECT r.REC_ID, r.PARENT_NODE_REC_ID, r.NODE_NAME, r.NODE_CODE, r.REC_STATUS, r.LINE_CODE, r.REMARK, u.NAME AS REC_CREATOR, r.REC_CREATE_TIME
         FROM SYS_REGION r
-        LEFT JOIN SYS_USER u ON r.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON r.REC_CREATOR=u.ID
         where r.DELETE_FLAG='0'
         <if test="name!=null and name!=''">
             and r.NODE_NAME like '%' || #{name} || '%'

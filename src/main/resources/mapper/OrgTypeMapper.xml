@@ -6,7 +6,7 @@
         SELECT ot.REC_ID, ot.ORG_CODE, ot.ORG_NAME, ot.ORG_TYPE,
         ot.REC_STATUS, ot.REMARK, u.NAME AS REC_CREATOR, ot.REC_CREATE_TIME
         FROM SYS_ORG_TYPE ot
-        LEFT JOIN SYS_USER u ON ot.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON ot.REC_CREATOR=u.ID
         where ot.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
             and ot.ORG_CODE in (
@@ -25,7 +25,7 @@
         SELECT ot.REC_ID, ot.ORG_CODE, ot.ORG_NAME, ot.ORG_TYPE,
         ot.REC_STATUS, ot.REMARK, u.NAME AS REC_CREATOR, ot.REC_CREATE_TIME
         FROM SYS_ORG_TYPE ot
-        LEFT JOIN SYS_USER u ON ot.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON ot.REC_CREATOR=u.ID
         where ot.REC_ID=#{id}
     </select>
 
@@ -86,7 +86,7 @@
         SELECT ot.REC_ID, ot.ORG_CODE, ot.ORG_NAME, ot.ORG_TYPE,
         ot.REC_STATUS, ot.REMARK, u.NAME AS REC_CREATOR, ot.REC_CREATE_TIME
         FROM SYS_ORG_TYPE ot
-        LEFT JOIN SYS_USER u ON ot.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON ot.REC_CREATOR=u.ID
         where ot.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
             and ot.ORG_CODE in (

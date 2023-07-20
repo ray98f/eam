@@ -5,7 +5,7 @@
     <select id="pageEquipmentCategory" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
         SELECT dc.REC_ID, dc.PARENT_NODE_REC_ID, dc.NODE_NAME, dc.NODE_CODE, dc.REC_STATUS, dc.REMARK, u.NAME AS REC_CREATOR, dc.REC_CREATE_TIME
         FROM T_EQUIPMENT_CATEGORY dc
-        LEFT JOIN SYS_USER u ON dc.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON dc.REC_CREATOR=u.ID
         WHERE dc.DELETE_FLAG='0'
         <if test="name!=null and name!=''">
             and dc.NODE_NAME like '%' || #{name} || '%'
@@ -36,7 +36,7 @@
     <select id="getEquipmentCategoryDetail" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
         SELECT dc.REC_ID, dc.PARENT_NODE_REC_ID, dc.NODE_NAME, dc.NODE_CODE, dc.REC_STATUS, dc.REMARK, u.NAME AS REC_CREATOR, dc.REC_CREATE_TIME
         FROM T_EQUIPMENT_CATEGORY dc
-        LEFT JOIN SYS_USER u ON dc.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON dc.REC_CREATOR=u.ID
         WHERE dc.REC_ID=#{id}
     </select>
 
@@ -99,7 +99,7 @@
     <select id="listEquipmentCategory" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
         SELECT dc.REC_ID, dc.PARENT_NODE_REC_ID, dc.NODE_NAME, dc.NODE_CODE, dc.REC_STATUS, dc.REMARK, u.NAME AS REC_CREATOR, dc.REC_CREATE_TIME
         FROM T_EQUIPMENT_CATEGORY dc
-        LEFT JOIN SYS_USER u ON dc.REC_REVISOR=u.ID
+        LEFT JOIN SYS_USER u ON dc.REC_CREATOR=u.ID
         where dc.DELETE_FLAG='0'
         <if test="name!=null and name!=''">
             and dc.NODE_NAME like '%' || #{name} || '%'
