@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 字符串工具类
@@ -22,6 +24,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /** 下划线 */
     private static final char SEPARATOR = '_';
+
+    private static final Integer MAX_SEND = 999;
 
 
     /**
@@ -448,5 +452,19 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
             sb.append(base.charAt(number));
         }
         return sb.toString();
+    }
+
+    /**
+     * 数据库in （）切割
+     * @param data
+     * @return
+     */
+    public static List<List<String>> getSumArrayList(List<String> data) {
+        int size = data.size();
+        int limit = (size + MAX_SEND - 1) / MAX_SEND;
+        return Stream
+                .iterate(0, n -> n + 1).limit(limit).parallel()
+                .map(a -> data.stream().skip((long) a * MAX_SEND).limit(MAX_SEND).parallel().collect(Collectors.toList()))
+                .collect(Collectors.toList());
     }
 }

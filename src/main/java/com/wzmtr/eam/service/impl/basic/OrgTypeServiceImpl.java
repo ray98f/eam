@@ -12,6 +12,7 @@ import com.wzmtr.eam.mapper.OrganizationMapper;
 import com.wzmtr.eam.mapper.basic.OrgTypeMapper;
 import com.wzmtr.eam.service.basic.OrgTypeService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class OrgTypeServiceImpl implements OrgTypeService {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return orgTypeMapper.pageOrgType(pageReqDTO.of(), orgCodes, orgType);
+        return orgTypeMapper.pageOrgType(pageReqDTO.of(), StringUtils.getSumArrayList(orgCodes), orgType);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class OrgTypeServiceImpl implements OrgTypeService {
         if (orgCode != null && !"".equals(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
-        List<OrgTypeResDTO> orgTypeList = orgTypeMapper.listOrgType(orgCodes, orgType);
+        List<OrgTypeResDTO> orgTypeList = orgTypeMapper.listOrgType(StringUtils.getSumArrayList(orgCodes), orgType);
         List<Map<String, String>> list = new ArrayList<>();
         if (orgTypeList != null && !orgTypeList.isEmpty()) {
             for (OrgTypeResDTO orgTypeRes : orgTypeList) {

@@ -23,7 +23,7 @@ public interface OrgLineMapper {
      * @param lineCode
      * @return
      */
-    Page<OrgLineResDTO> pageOrgLine(Page<OrgLineResDTO> page, List<String> orgCodes, String lineCode);
+    Page<OrgLineResDTO> pageOrgLine(Page<OrgLineResDTO> page, List<List<String>> orgCodes, String lineCode);
 
     /**
      * 获取组织机构线别详情
@@ -70,7 +70,7 @@ public interface OrgLineMapper {
      * @param lineCode
      * @return
      */
-    List<OrgLineResDTO> listOrgLine(List<String> orgCodes, String lineCode);
+    List<OrgLineResDTO> listOrgLine(List<List<String>> orgCodes, String lineCode);
 
 
 }

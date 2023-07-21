@@ -9,11 +9,13 @@
         LEFT JOIN SYS_USER u ON ol.REC_CREATOR=u.ID
         where ol.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
-            and ol.ORG_CODE in (
-            <foreach collection="orgCodes" index="index" item="orgCode" separator=",">
-                #{orgCode}
+            and
+            <foreach collection="orgCodes" item="orgCode" separator="or">
+                ol.ORG_CODE in
+                <foreach collection="orgCode" item="x" separator="," open="(" close=")">
+                    #{x}
+                </foreach>
             </foreach>
-            )
         </if>
         <if test="lineCode!=null and lineCode!=''">
             and ol.LINE_CODE=#{lineCode}
@@ -89,11 +91,13 @@
         LEFT JOIN SYS_USER u ON ol.REC_CREATOR=u.ID
         where ol.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
-            and ol.ORG_CODE in (
-            <foreach collection="orgCodes" index="index" item="orgCode" separator=",">
-                #{orgCode}
+            and
+            <foreach collection="orgCodes" item="orgCode" separator="or">
+                ol.ORG_CODE in
+                <foreach collection="orgCode" item="x" separator="," open="(" close=")">
+                    #{x}
+                </foreach>
             </foreach>
-            )
         </if>
         <if test="lineCode!=null and lineCode!=''">
             and ol.LINE_CODE=#{lineCode}

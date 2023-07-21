@@ -23,7 +23,7 @@ public interface OrgMajorMapper {
      * @param majorCode
      * @return
      */
-    Page<OrgMajorResDTO> pageOrgMajor(Page<OrgMajorResDTO> page, List<String> orgCodes, String majorCode);
+    Page<OrgMajorResDTO> pageOrgMajor(Page<OrgMajorResDTO> page, List<List<String>> orgCodes, String majorCode);
 
     /**
      * 获取组织机构专业详情
@@ -70,7 +70,7 @@ public interface OrgMajorMapper {
      * @param majorCode
      * @return
      */
-    List<OrgMajorResDTO> listOrgMajor(List<String> orgCodes, String majorCode);
+    List<OrgMajorResDTO> listOrgMajor(List<List<String>> orgCodes, String majorCode);
 
 
 }

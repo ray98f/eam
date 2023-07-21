@@ -9,11 +9,13 @@
         LEFT JOIN SYS_USER u ON om.REC_CREATOR=u.ID
         where om.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
-            and om.ORG_CODE in (
-            <foreach collection="orgCodes" index="index" item="orgCode" separator=",">
-                #{orgCode}
+            and
+            <foreach collection="orgCodes" item="orgCode" separator="or">
+                om.ORG_CODE in
+                <foreach collection="orgCode" item="x" separator="," open="(" close=")">
+                    #{x}
+                </foreach>
             </foreach>
-            )
         </if>
         <if test="majorCode!=null and majorCode!=''">
             and om.MAJOR_CODE=#{majorCode}
@@ -89,11 +91,13 @@
         LEFT JOIN SYS_USER u ON om.REC_CREATOR=u.ID
         where om.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
-            and om.ORG_CODE in (
-            <foreach collection="orgCodes" index="index" item="orgCode" separator=",">
-                #{orgCode}
+            and
+            <foreach collection="orgCodes" item="orgCode" separator="or">
+                om.ORG_CODE in
+                <foreach collection="orgCode" item="x" separator="," open="(" close=")">
+                    #{x}
+                </foreach>
             </foreach>
-            )
         </if>
         <if test="majorCode!=null and majorCode!=''">
             and om.MAJOR_CODE=#{majorCode}

@@ -12,6 +12,7 @@ import com.wzmtr.eam.mapper.OrganizationMapper;
 import com.wzmtr.eam.mapper.basic.OrgLineMapper;
 import com.wzmtr.eam.service.basic.OrgLineService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class OrgLineServiceImpl implements OrgLineService {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return orgLineMapper.pageOrgLine(pageReqDTO.of(), orgCodes, lineCode);
+        return orgLineMapper.pageOrgLine(pageReqDTO.of(), StringUtils.getSumArrayList(orgCodes), lineCode);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class OrgLineServiceImpl implements OrgLineService {
         if (orgCode != null && !"".equals(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
-        List<OrgLineResDTO> orgLines = orgLineMapper.listOrgLine(orgCodes, lineCode);
+        List<OrgLineResDTO> orgLines = orgLineMapper.listOrgLine(StringUtils.getSumArrayList(orgCodes), lineCode);
         List<Map<String, String>> list = new ArrayList<>();
         if (orgLines != null && !orgLines.isEmpty()) {
             for (OrgLineResDTO orgLine : orgLines) {

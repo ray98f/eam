@@ -12,6 +12,7 @@ import com.wzmtr.eam.mapper.OrganizationMapper;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.service.basic.OrgMajorService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ public class OrgMajorServiceImpl implements OrgMajorService {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return orgMajorMapper.pageOrgMajor(pageReqDTO.of(), orgCodes, majorCode);
+        return orgMajorMapper.pageOrgMajor(pageReqDTO.of(), StringUtils.getSumArrayList(orgCodes), majorCode);
     }
 
     @Override
@@ -108,7 +109,7 @@ public class OrgMajorServiceImpl implements OrgMajorService {
         if (orgCode != null && !"".equals(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
-        List<OrgMajorResDTO> orgMajors = orgMajorMapper.listOrgMajor(orgCodes, majorCode);
+        List<OrgMajorResDTO> orgMajors = orgMajorMapper.listOrgMajor(StringUtils.getSumArrayList(orgCodes), majorCode);
         List<Map<String, String>> list = new ArrayList<>();
         if (orgMajors != null && !orgMajors.isEmpty()) {
             for (OrgMajorResDTO orgMajor : orgMajors) {

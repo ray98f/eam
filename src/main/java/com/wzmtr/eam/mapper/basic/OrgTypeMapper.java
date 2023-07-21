@@ -23,7 +23,7 @@ public interface OrgTypeMapper {
      * @param orgType
      * @return
      */
-    Page<OrgTypeResDTO> pageOrgType(Page<OrgTypeResDTO> page, List<String> orgCodes, String orgType);
+    Page<OrgTypeResDTO> pageOrgType(Page<OrgTypeResDTO> page, List<List<String>> orgCodes, String orgType);
 
     /**
      * 获取组织机构类别详情
@@ -70,7 +70,7 @@ public interface OrgTypeMapper {
      * @param orgType
      * @return
      */
-    List<OrgTypeResDTO> listOrgType(List<String> orgCodes, String orgType);
+    List<OrgTypeResDTO> listOrgType(List<List<String>> orgCodes, String orgType);
 
 
 }
