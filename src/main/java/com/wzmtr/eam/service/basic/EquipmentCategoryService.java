@@ -24,4 +24,6 @@ public interface EquipmentCategoryService {
     void deleteEquipmentCategory(BaseIdsEntity baseIdsEntity);
 
     void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response);
+
+    List<EquipmentCategoryResDTO> getFirstEquipmentCategory();
 }

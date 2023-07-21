@@ -88,5 +88,11 @@ public interface EquipmentCategoryMapper {
      */
     List<EquipmentCategoryResDTO> listEquipmentCategory(String name, String code, String parentId);
 
+    /**
+     * 获取设备分类一级分类
+     * @return
+     */
+    List<EquipmentCategoryResDTO> getFirstEquipmentCategory();
+
 
 }

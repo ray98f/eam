@@ -113,4 +113,12 @@
         ORDER BY dc.NODE_CODE ASC
     </select>
 
+    <select id="getFirstEquipmentCategory" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
+        SELECT dc.REC_ID, dc.PARENT_NODE_REC_ID, dc.NODE_NAME, dc.NODE_CODE, dc.REC_STATUS, dc.REMARK, u.NAME AS REC_CREATOR, dc.REC_CREATE_TIME
+        FROM T_EQUIPMENT_CATEGORY dc
+        LEFT JOIN SYS_USER u ON dc.REC_CREATOR=u.ID
+        where dc.DELETE_FLAG='0' and dc.PARENT_NODE_REC_ID='0'
+        ORDER BY dc.NODE_CODE ASC
+    </select>
+
 </mapper>

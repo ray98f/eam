@@ -80,4 +80,10 @@ public class EquipmentCategoryController {
                                         HttpServletResponse response) {
         equipmentCategoryService.exportEquipmentCategory(name, code, parentId, response);
     }
+
+    @GetMapping("/getFirst")
+    @ApiOperation(value = "获取设备分类一级分类")
+    public DataResponse<List<EquipmentCategoryResDTO>> getFirstEquipmentCategory() {
+        return DataResponse.of(equipmentCategoryService.getFirstEquipmentCategory());
+    }
 }

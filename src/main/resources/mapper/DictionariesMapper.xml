@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.dict.DictionariesMapper">
+
+    <select id="page" resultType="com.wzmtr.eam.entity.Dictionaries">
+        SELECT f.CODESET_CODE, f.ITEM_CODE, f.ITEM_CNAME, f.ITEM_ENAME, f.REMARK, f.SORT_ID,
+        f.PROJECT_NAME, u.NAME AS REC_CREATOR, f.REC_CREATE_TIME, f.PROJECT_NAME
+        FROM SYS_DICT f
+        LEFT JOIN SYS_USER u ON f.REC_CREATOR=u.ID
+        WHERE f.STATUS='1'
+        <if test="itemName!=null and itemName!=''">
+            and f.ITEM_CNAME like '%' || #{itemName} || '%'
+        </if>
+        <if test="itemCode!=null and itemCode!=''">
+            and f.ITEM_CODE like '%' || #{itemCode} || '%'
+        </if>
+        ORDER BY f.SORT_ID ASC
+    </select>
+
+    <select id="list" resultType="com.wzmtr.eam.entity.Dictionaries">
+        SELECT ITEM_CODE, ITEM_CNAME, ITEM_ENAME
+        FROM SYS_DICT
+        WHERE STATUS='1' and CODESET_CODE=#{codesetCode}
+        ORDER BY SORT_ID ASC
+    </select>
+
+    <select id="detail" resultType="com.wzmtr.eam.entity.Dictionaries">
+        SELECT f.CODESET_CODE, f.ITEM_CODE, f.ITEM_CNAME, f.ITEM_ENAME, f.REMARK, f.SORT_ID,
+        f.PROJECT_NAME, u.NAME AS REC_CREATOR, f.REC_CREATE_TIME, f.PROJECT_NAME
+        FROM SYS_DICT f
+        LEFT JOIN SYS_USER u ON f.REC_CREATOR=u.ID
+        WHERE STATUS='1' and f.ITEM_CODE=#{itemCode}
+    </select>
+
+    <insert id="add">
+        INSERT INTO SYS_DICT (CODESET_CODE, ITEM_CODE, ITEM_CNAME, STATUS,
+        <if test="itemEname!=null and itemEname!=''">
+            ITEM_ENAME,
+        </if>
+        <if test="remark!=null and remark!=''">
+            REMARK,
+        </if>
+        <if test="sortId!=null and sortId!=''">
+            SORT_ID,
+        </if>
+        <if test="projectName!=null and projectName!=''">
+            PROJECT_NAME,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME)
+        VALUES (#{codesetCode}, #{itemCode}, #{itemCname}, #{status},
+        <if test="itemEname!=null and itemEname!=''">
+            #{itemEname},
+        </if>
+        <if test="remark!=null and remark!=''">
+            #{remark},
+        </if>
+        <if test="sortId!=null and sortId!=''">
+            #{sortId},
+        </if>
+        <if test="projectName!=null and projectName!=''">
+            #{projectName},
+        </if>
+        #{recCreator}, #{recCreateTime})
+    </insert>
+
+    <update id="modify">
+        UPDATE SYS_DICT SET
+        <if test="codesetCode!=null">
+            CODESET_CODE=#{codesetCode},
+        </if>
+        <if test="itemCname!=null">
+            ITEM_CNAME=#{itemCname},
+        </if>
+        <if test="itemEname!=null">
+            ITEM_ENAME=#{itemEname},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        <if test="status!=null">
+            STATUS=#{status},
+        </if>
+        <if test="sortId!=null">
+            SORT_ID=#{sortId},
+        </if>
+        <if test="projectName!=null">
+            PROJECT_NAME=#{projectName},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE ITEM_CODE=#{itemCode}
+    </update>
+
+    <delete id="delete">
+        delete from SYS_DICT
+        WHERE ITEM_CODE IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
+
+</mapper>

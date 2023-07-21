@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.dict.DictionariesTypeMapper">
+
+    <select id="page" resultType="com.wzmtr.eam.entity.DictionariesType">
+        SELECT f.CODESET_CODE, f.CODESET_NAME, f.CODESET_TYPE, f.CODESET_HIERARCHY, f.PROJECT_NAME,
+        u.NAME AS REC_CREATOR, f.REC_CREATE_TIME
+        FROM SYS_DICT_TYPE f
+        LEFT JOIN SYS_USER u ON f.REC_CREATOR=u.ID
+        <if test="name!=null and name!=''">
+            where f.CODESET_NAME like '%' || #{name} || '%'
+        </if>
+        ORDER BY f.REC_CREATE_TIME ASC
+    </select>
+
+    <select id="detail" resultType="com.wzmtr.eam.entity.DictionariesType">
+        SELECT f.CODESET_CODE, f.CODESET_NAME, f.CODESET_TYPE, f.CODESET_HIERARCHY, f.PROJECT_NAME,
+        u.NAME AS REC_CREATOR, f.REC_CREATE_TIME
+        FROM SYS_DICT_TYPE f
+        LEFT JOIN SYS_USER u ON f.REC_CREATOR=u.ID
+        where f.CODESET_CODE=#{id}
+    </select>
+
+    <insert id="add">
+        INSERT INTO SYS_DICT_TYPE (CODESET_CODE, CODESET_NAME, PROJECT_NAME,
+        <if test="codesetType!=null and codesetType!=''">
+            CODESET_TYPE,
+        </if>
+        <if test="codesetHierarchy!=null and codesetHierarchy!=''">
+            CODESET_HIERARCHY,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME)
+        VALUES (#{codesetCode}, #{codesetName}, #{projectName},
+        <if test="codesetType!=null and codesetType!=''">
+            #{codesetType},
+        </if>
+        <if test="codesetHierarchy!=null and codesetHierarchy!=''">
+            #{codesetHierarchy},
+        </if>
+        #{recCreator}, #{recCreateTime})
+    </insert>
+
+    <update id="modify">
+        UPDATE SYS_DICT_TYPE SET
+        <if test="codesetName!=null">
+            CODESET_NAME=#{codesetName},
+        </if>
+        <if test="projectName!=null">
+            PROJECT_NAME=#{projectName},
+        </if>
+        <if test="codesetType!=null">
+            CODESET_TYPE=#{codesetType},
+        </if>
+        <if test="codesetHierarchy!=null">
+            CODESET_HIERARCHY=#{codesetHierarchy},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE CODESET_CODE=#{codesetCode}
+    </update>
+
+    <delete id="delete">
+        delete from SYS_DICT_TYPE
+        WHERE CODESET_CODE IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
+
+</mapper>

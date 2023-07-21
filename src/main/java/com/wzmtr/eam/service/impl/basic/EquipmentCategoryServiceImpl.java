@@ -103,4 +103,9 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
         ExcelPortUtil.excelPort("设备分类信息", listName, list, null, response);
     }
 
+    @Override
+    public List<EquipmentCategoryResDTO> getFirstEquipmentCategory() {
+        return equipmentCategoryMapper.getFirstEquipmentCategory();
+    }
+
 }
