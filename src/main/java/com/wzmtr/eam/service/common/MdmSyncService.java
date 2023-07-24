@@ -1,8 +1,10 @@
-package com.wzmtr.eam.service;
+package com.wzmtr.eam.service.common;
 
 public interface MdmSyncService {
 
     void syncAllPerson();
+
+    void syncAllSuppContact();
 
     void syncPersonPlus();
 

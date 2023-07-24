@@ -61,13 +61,13 @@ public class WoRuleReqDTO {
         private String endDate;
 
         @ApiModelProperty(value = "周期(小时)")
-        private Integer period;
+        private Long period;
 
         @ApiModelProperty(value = "里程周期")
-        private Integer ext1;
+        private String ext1;
 
         @ApiModelProperty(value = "提前天数")
-        private Integer beforeTime;
+        private Long beforeTime;
 
         @ApiModelProperty(value = "规则排序")
         private Integer ruleSort;

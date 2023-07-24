@@ -101,7 +101,9 @@ public enum ErrorCode {
      */
     FILE_UPLOAD_ERROR(32100029, "file.upload.error"),
     FILE_BIG(32100030, "file.big"),
-    FILE_DELETE_ERROR(32100031, "file.delete.error");
+    FILE_DELETE_ERROR(32100031, "file.delete.error"),
+
+    IMPORT_ERROR(32100032, "import.error"),;
 
     private Integer code;
 

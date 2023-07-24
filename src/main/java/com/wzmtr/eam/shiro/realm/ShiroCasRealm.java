@@ -1,5 +1,7 @@
 package com.wzmtr.eam.shiro.realm;
 
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.shiro.model.TPerson;
@@ -49,14 +51,23 @@ public class ShiroCasRealm extends CasRealm {
             person.setPersonId("admin");
             person.setPersonNo("admin");
             person.setPersonName("系统管理员");
+            person.setCompanyId("A");
+            person.setCompanyName("集团本级");
             person.setOfficeId("A02");
+            person.setOfficeName("办公室");
         } else {
             TPerson p = personService.searchPersonByNo(name);
             if (p != null) {
                 person.setPersonId(p.getId());
                 person.setPersonNo(p.getNo());
                 person.setPersonName(p.getName());
+                person.setCompanyId(p.getCompanyId());
+                person.setCompanyName(p.getCompanyName());
                 person.setOfficeId(p.getOfficeId());
+                person.setOfficeName(p.getOfficeName());
+                person.setAreaId(p.getAreaId());
+            } else {
+                throw new CommonException(ErrorCode.USER_NOT_EXIST);
             }
         }
         String jwtToken = TokenUtil.createSimpleToken(person);

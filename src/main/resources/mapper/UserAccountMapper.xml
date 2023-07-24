@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wzmtr.eam.mapper.UserAccountMapper">
+<mapper namespace="com.wzmtr.eam.mapper.common.UserAccountMapper">
 
     <select id="listUserAccount" resultType="com.wzmtr.eam.dto.res.UserAccountListResDTO">
         select ID, LOGIN_NAME, NO, NAME, EMAIL, PHONE, MOBILE, HIRE_DATE, ROOM, DISABLED from SYS_USER
@@ -32,11 +32,11 @@
     </select>
 
     <delete id="cleanTable">
-        delete from SYS_USER where LOGIN_NAME not like '%admin%' and (COMPANY_ID != 'W' OR COMPANY_ID IS NULL)
+        delete from SYS_USER where LOGIN_NAME not like '%admin%' and USER_TYPE!='9'
     </delete>
 
     <delete id="cleanSuppCon">
-        delete from SYS_USER where LOGIN_NAME not like '%admin%' and  COMPANY_ID = 'W'
+        delete from SYS_USER where LOGIN_NAME not like '%admin%' and USER_TYPE='9'
     </delete>
 
     <insert id="createPerson" parameterType="com.wzmtr.eam.entity.SysUser">

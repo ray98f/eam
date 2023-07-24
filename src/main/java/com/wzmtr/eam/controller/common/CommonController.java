@@ -1,4 +1,4 @@
-package com.wzmtr.eam.controller;
+package com.wzmtr.eam.controller.common;
 
 import com.wzmtr.eam.entity.response.DataResponse;
 import io.swagger.annotations.Api;

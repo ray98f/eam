@@ -1,4 +1,4 @@
-package com.wzmtr.eam.mapper;
+package com.wzmtr.eam.mapper.common;
 
 import com.wzmtr.eam.shiro.model.TPerson;
 import org.apache.ibatis.annotations.Mapper;

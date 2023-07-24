@@ -1,15 +1,16 @@
-package com.wzmtr.eam.service.impl;
+package com.wzmtr.eam.service.impl.common;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.wzmtr.eam.config.PersonDefaultConfig;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.mapper.OrganizationMapper;
-import com.wzmtr.eam.mapper.UserAccountMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.entity.SysOrgUser;
 import com.wzmtr.eam.entity.SysUser;
 import com.wzmtr.eam.dto.res.OrgParentIdsResDTO;
-import com.wzmtr.eam.service.MdmSyncService;
+import com.wzmtr.eam.service.common.MdmSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -46,6 +47,12 @@ public class MdmSyncServiceImpl implements MdmSyncService {
      */
     @Value("${mdm.person.address}")
     private String mdmPersonAddress;
+
+    /**
+     * 主数据人员信息接口地址
+     */
+    @Value("${mdm.supp-contact.address}")
+    private String mdmSuppContactAddress;
 
     /**
      * 主数据人员扩展信息接口地址
@@ -106,7 +113,39 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             log.info("错误信息:" + e.getMessage());
         }
         if (personList.size() > 0) {
-            doPersonInsertBatch(personList);
+            doPersonInsertBatch(personList, "org");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void syncAllSuppContact() {
+        com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.RequestMessage();
+        com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Message message = new com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Message();
+        com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.ResponseMessage responseMessage;
+        requestMessage.setVerb("Get");
+        requestMessage.setNoun("allSuppContactsList");
+        message.setOperType(1);
+        message.setSyscode("EAM");
+        requestMessage.setMessage(message);
+        List<SysUser> personList = new ArrayList<>();
+        try {
+            JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+            factory.setAddress(mdmSuppContactAddress);
+            factory.setServiceClass(com.wzmtr.eam.soft.mdm.suppcontactsquery.service.impl.IGetData.class);
+            com.wzmtr.eam.soft.mdm.suppcontactsquery.service.impl.IGetData personInterface = (com.wzmtr.eam.soft.mdm.suppcontactsquery.service.impl.IGetData) factory.create();
+            responseMessage = personInterface.getData(requestMessage);
+            if (CommonConstants.WSDL_SUCCESS.equals(responseMessage.getState())) {
+                List<com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Result> result = responseMessage.getResult();
+                personList = result.stream().map(this::personCopy).collect(Collectors.toList());
+            } else {
+                log.info("请求失败");
+            }
+        } catch (Exception e) {
+            log.info("错误信息:" + e.getMessage());
+        }
+        if (personList.size() > 0) {
+            doPersonInsertBatch(personList, "supp");
         }
     }
 
@@ -250,7 +289,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     public void syncAllEmpJob() {
         com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.RequestMessage();
         com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.Message message = new com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.Message();
-        com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.ResponseMessage responseMessage = new com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.ResponseMessage();
+        com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.ResponseMessage responseMessage;
         requestMessage.setVerb("Get");
         requestMessage.setNoun("allEmpJobInfoList");
         message.setOperType(1);
@@ -265,7 +304,6 @@ public class MdmSyncServiceImpl implements MdmSyncService {
                     factory.create();
             responseMessage = empJobInterface.getData(requestMessage);
             if (CommonConstants.WSDL_SUCCESS.equals(responseMessage.getState())) {
-                log.info("请求成功");
                 List<com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.Result> result = responseMessage.getResult();
                 empJobList = result.stream().map(this::empJobCopy).collect(Collectors.toList());
             } else {
@@ -292,7 +330,6 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             user.setUserType(personDefaultConfig.getUserType());
             user.setLoginFlag(personDefaultConfig.getLoginFlag());
             user.setNo(result1.getPersonNo());
-            user.setPhone(result1.getPhoneNo());
             user.setName(result1.getPersonName());
             user.setMobile(result1.getPhoneNo());
             user.setPhone(result1.getOfficePhoneNo());
@@ -303,24 +340,27 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             user.setPersonId(result1.getPersonId());
             user.setCreateBy(personDefaultConfig.getCreateBy());
             user.setUpdateBy(personDefaultConfig.getUpdateBy());
-        } else {
+        } else if (result instanceof com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Result) {
             com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Result result2 = (com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Result) result;
-            if (!StringUtils.isEmpty(result2.getPerId()) && !StringUtils.isEmpty(result2.getPhone())) {
-                user.setId(result2.getPerId());
-                user.setLoginName(result2.getPhone());
-                user.setPassword(personDefaultConfig.getPassword());
-                user.setUserType("2");
-                user.setLoginFlag(personDefaultConfig.getLoginFlag());
-                user.setNo(result2.getPerId());
-                user.setCompanyId("W");
-                user.setOfficeId(result2.getSuppId());
-                user.setPhone(result2.getPhone());
-                user.setName(result2.getPerName());
-                user.setMobile(result2.getPhone());
-                user.setPhone(result2.getPhone());
-                user.setEmail(result2.getMail());
-                user.setCreateBy(personDefaultConfig.getCreateBy());
-                user.setUpdateBy(personDefaultConfig.getUpdateBy());
+            if (!StringUtils.isEmpty(result2.getPerId()) && !"-1".equals(result2.getExtraOrg())
+                    && !StringUtils.isEmpty(result2.getExtraOrg()) && "1".equals(result2.getIsUse())) {
+                String parentIds = organizationMapper.selectCompanyIdByOfficeId(result2.getExtraOrg());
+                if (parentIds != null) {
+                    user.setId(result2.getPerId());
+                    user.setLoginName(result2.getPhone());
+                    user.setPassword(personDefaultConfig.getPassword());
+                    user.setUserType("9");
+                    user.setLoginFlag(personDefaultConfig.getLoginFlag());
+                    user.setNo(result2.getPerId());
+                    user.setName(result2.getPerName());
+                    user.setMobile(result2.getPhone());
+                    user.setPhone(result2.getPhone());
+                    user.setEmail(result2.getMail());
+                    user.setCompanyId(parentIds.split(",").length >= 2 ? parentIds.split(",")[1] : result2.getExtraOrg());
+                    user.setOfficeId(result2.getExtraOrg());
+                    user.setCreateBy(personDefaultConfig.getCreateBy());
+                    user.setUpdateBy(personDefaultConfig.getUpdateBy());
+                }
             }
         }
 
@@ -370,6 +410,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             com.wzmtr.eam.soft.mdm.extraorgquery.vo.Result result3 = (com.wzmtr.eam.soft.mdm.extraorgquery.vo.Result) result;
             if (StringUtils.isNotBlank(result3.getName()) && result3.getId() != -1 && result3.getStatus() == 1) {
                 org.setId(String.valueOf(result3.getId()));
+                org.setAreaId(result3.getCode());
                 org.setParentId(result3.getParentId() == 0 ? "root" : String.valueOf(result3.getParentId()));
                 org.setParentIds(result3.getParentId() == 0 ? "root" : "");
                 org.setName(result3.getName());
@@ -385,9 +426,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     }
 
     private SysOrgUser empJobCopy(com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.Result result) {
-
         SysOrgUser empJob = new SysOrgUser();
-
         empJob.setId(result.getEmpJobInfoId());
         empJob.setCompanyId(result.getCompanyCode());
         empJob.setOfficeId(result.getDepartCode());
@@ -412,15 +451,18 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         empJob.setMdmUserId(result.getPersonId());
         empJob.setOldinfoid(result.getOldInfoId());
         empJob.setProcresult(result.getProcResult());
-
         return empJob;
     }
 
     /**
      * 批量添加人员信息
      */
-    private void doPersonInsertBatch(List<SysUser> list) {
-        userAccountMapper.cleanTable();
+    private void doPersonInsertBatch(List<SysUser> list, String type) {
+        if ("org".equals(type)) {
+            userAccountMapper.cleanTable();
+        } else if ("supp".equals(type)) {
+            userAccountMapper.cleanSuppCon();
+        }
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
         try {
             UserAccountMapper mapper = sqlSession.getMapper(UserAccountMapper.class);
@@ -434,7 +476,6 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             sqlSession.clearCache();
             sqlSession.close();
             batchResults.clear();
-            System.out.println("————————————————————————————————————同步完成");
         } catch (Exception e) {
             e.printStackTrace();
             log.info(e.getMessage());

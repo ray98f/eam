@@ -1,4 +1,4 @@
-package com.wzmtr.eam.service.impl;
+package com.wzmtr.eam.service.impl.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
@@ -7,15 +7,15 @@ import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.shiro.model.TPerson;
 import com.wzmtr.eam.shiro.service.IPersonService;
-import com.wzmtr.eam.mapper.OrganizationMapper;
-import com.wzmtr.eam.mapper.UserAccountMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysUserAccount;
 import com.wzmtr.eam.dto.req.UserStatusReqDTO;
 import com.wzmtr.eam.dto.res.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.UserRoleResDTO;
-import com.wzmtr.eam.service.UserAccountService;
+import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,14 +119,21 @@ public class UserAccountServiceImpl implements UserAccountService {
             person.setPersonId("admin");
             person.setPersonNo("admin");
             person.setPersonName("系统管理员");
+            person.setCompanyId("A");
+            person.setCompanyName("集团本级");
             person.setOfficeId("A02");
+            person.setOfficeName("办公室");
         } else {
             TPerson p = personService.searchPersonByNo(userId);
             if (p != null) {
                 person.setPersonId(p.getId());
                 person.setPersonNo(p.getNo());
                 person.setPersonName(p.getName());
+                person.setCompanyId(p.getCompanyId());
+                person.setCompanyName(p.getCompanyName());
                 person.setOfficeId(p.getOfficeId());
+                person.setOfficeName(p.getOfficeName());
+                person.setAreaId(p.getAreaId());
             } else {
                 throw new CommonException(ErrorCode.USER_NOT_EXIST);
             }

@@ -1,10 +1,10 @@
-package com.wzmtr.eam.controller;
+package com.wzmtr.eam.controller.common;
 
 import com.wzmtr.eam.entity.*;
 import com.wzmtr.eam.dto.res.MemberResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
-import com.wzmtr.eam.service.OrganizationService;
+import com.wzmtr.eam.service.common.OrganizationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

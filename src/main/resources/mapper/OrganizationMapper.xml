@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wzmtr.eam.mapper.OrganizationMapper">
+<mapper namespace="com.wzmtr.eam.mapper.common.OrganizationMapper">
 
     <select id="getRoot" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
         select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
@@ -9,7 +9,7 @@
 
     <select id="listExtraRootList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
         select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
-        where PARENT_ID=#{root} and USEABLE=1 and DEL_FLAG=0 and ID!='100000002'
+        where PARENT_ID=#{root} and USEABLE=1 and DEL_FLAG=0 and ID not in ('100000048', '100000002')
         order by ID asc
     </select>
 
@@ -141,6 +141,10 @@
         SELECT ID FROM SYS_OFFICE
         START WITH ID = #{id}
         CONNECT BY PRIOR ID = PARENT_ID
+    </select>
+
+    <select id="selectCompanyIdByOfficeId" resultType="java.lang.String">
+        select PARENT_IDS from SYS_OFFICE where ID=#{officeId}
     </select>
 
 </mapper>

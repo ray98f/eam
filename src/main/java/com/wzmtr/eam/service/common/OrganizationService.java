@@ -1,4 +1,4 @@
-package com.wzmtr.eam.service;
+package com.wzmtr.eam.service.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.entity.CompanyStructureTreeDTO;

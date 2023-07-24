@@ -1,15 +1,15 @@
-package com.wzmtr.eam.service.impl;
+package com.wzmtr.eam.service.impl.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.mapper.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.entity.CompanyStructureTreeDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.utils.tree.CompanyTreeUtils;
 import com.wzmtr.eam.dto.res.MemberResDTO;
-import com.wzmtr.eam.service.OrganizationService;
+import com.wzmtr.eam.service.common.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

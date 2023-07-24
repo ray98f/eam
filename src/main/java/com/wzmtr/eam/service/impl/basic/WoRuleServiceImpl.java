@@ -6,9 +6,6 @@ import com.wzmtr.eam.dto.req.WoRuleReqDTO;
 import com.wzmtr.eam.dto.res.WoRuleResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.OrganizationMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.service.basic.WoRuleService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
@@ -153,7 +150,7 @@ public class WoRuleServiceImpl implements WoRuleService {
 
     @Override
     public void exportWoRuleDetail(String ruleCode, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "规则编号", "规则名称", "用途", "记录状态", "备注", "创建者", "创建时间");
+        List<String> listName = Arrays.asList("记录编号", "规则编号", "规则明细名称", "起始日期", "结束日期", "周期(小时)", "里程周期", "提前天数", "规则排序", "备注", "创建者", "创建时间");
         List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.listWoRuleDetail(ruleCode);
         List<Map<String, String>> list = new ArrayList<>();
         if (woRuleDetails != null && !woRuleDetails.isEmpty()) {

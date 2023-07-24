@@ -8,7 +8,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.basic.OrgTypeMapper;
 import com.wzmtr.eam.service.basic.OrgTypeService;
 import com.wzmtr.eam.utils.ExcelPortUtil;

@@ -1,7 +1,7 @@
 package com.wzmtr.eam.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wzmtr.eam.service.RedisService;
+import com.wzmtr.eam.service.common.RedisService;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;

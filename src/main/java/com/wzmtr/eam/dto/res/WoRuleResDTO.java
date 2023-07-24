@@ -64,7 +64,7 @@ public class WoRuleResDTO {
         private Long period;
 
         @ApiModelProperty(value = "里程周期")
-        private Long ext1;
+        private String ext1;
 
         @ApiModelProperty(value = "提前天数")
         private Long beforeTime;

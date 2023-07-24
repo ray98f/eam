@@ -20,6 +20,14 @@ public class TPerson implements Serializable {
 
     private String name;
 
+    private String companyId;
+
+    private String companyName;
+
     private String officeId;
+
+    private String officeName;
+
+    private String areaId;
 
 }

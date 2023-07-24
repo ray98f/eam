@@ -1,4 +1,4 @@
-package com.wzmtr.eam.mapper;
+package com.wzmtr.eam.mapper.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.res.MemberResDTO;
@@ -42,5 +42,7 @@ public interface OrganizationMapper {
     Integer updateParentIds(OrgParentIdsResDTO orgParentIdsResDTO);
 
     List<String> downRecursion(@Param("id") String id);
+
+    String selectCompanyIdByOfficeId(@Param("officeId") String officeId);
 
 }

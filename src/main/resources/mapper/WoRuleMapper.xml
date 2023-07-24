@@ -10,10 +10,10 @@
         LEFT JOIN SYS_USER u2 ON wr.REC_REVISOR=u2.ID
         where wr.DELETE_FLAG='0'
         <if test="ruleCode!=null and ruleCode!=''">
-            and wr.ORG_CODE like '%' || #{ruleCode} || '%'
+            and wr.RULE_CODE like '%' || #{ruleCode} || '%'
         </if>
         <if test="ruleName!=null and ruleName!=''">
-            and wr.ORG_CODE like '%' || #{ruleName} || '%'
+            and wr.RULE_NAME like '%' || #{ruleName} || '%'
         </if>
         <if test="ruleUseage!=null and ruleUseage!=''">
             and wr.RULE_USEAGE=#{ruleUseage}
@@ -32,9 +32,9 @@
 
     <select id="pageWoRuleDetail" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
         SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
-        wd.REMARK, u.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
+        wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
         FROM T_WO_RULE_DETAIL wd
-        LEFT JOIN SYS_USER u ON wr.REC_CREATOR=u.ID
+        LEFT JOIN SYS_USER u ON wd.REC_CREATOR=u.ID
         where wd.DELETE_FLAG='0'
         <if test="ruleCode!=null and ruleCode!=''">
             and wd.RULE_CODE=#{ruleCode}
@@ -44,9 +44,9 @@
 
     <select id="getWoRuleDetail" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
         SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
-        wd.REMARK, u.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
+        wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
         FROM T_WO_RULE_DETAIL wd
-        LEFT JOIN SYS_USER u ON wr.REC_CREATOR=u.ID
+        LEFT JOIN SYS_USER u ON wd.REC_CREATOR=u.ID
         where wd.REC_ID=#{id}
     </select>
 
@@ -186,10 +186,10 @@
         LEFT JOIN SYS_USER u2 ON wr.REC_REVISOR=u2.ID
         where wr.DELETE_FLAG='0'
         <if test="ruleCode!=null and ruleCode!=''">
-            and wr.ORG_CODE like '%' || #{ruleCode} || '%'
+            and wr.RULE_CODE like '%' || #{ruleCode} || '%'
         </if>
         <if test="ruleName!=null and ruleName!=''">
-            and wr.ORG_CODE like '%' || #{ruleName} || '%'
+            and wr.RULE_NAME like '%' || #{ruleName} || '%'
         </if>
         <if test="ruleUseage!=null and ruleUseage!=''">
             and wr.RULE_USEAGE=#{ruleUseage}
@@ -199,9 +199,9 @@
 
     <select id="listWoRuleDetail" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
         SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
-        wd.REMARK, u.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
+        wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
         FROM T_WO_RULE_DETAIL wd
-        LEFT JOIN SYS_USER u ON wr.REC_CREATOR=u.ID
+        LEFT JOIN SYS_USER u ON wd.REC_CREATOR=u.ID
         where wd.DELETE_FLAG='0'
         <if test="ruleCode!=null and ruleCode!=''">
             and wd.RULE_CODE=#{ruleCode}

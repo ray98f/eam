@@ -1,4 +1,4 @@
-package com.wzmtr.eam.controller;
+package com.wzmtr.eam.controller.common;
 
 import com.wzmtr.eam.dto.res.UserCenterInfoResDTO;
 import com.wzmtr.eam.entity.*;
@@ -6,7 +6,7 @@ import com.wzmtr.eam.dto.req.UserStatusReqDTO;
 import com.wzmtr.eam.dto.res.UserAccountListResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
-import com.wzmtr.eam.service.UserAccountService;
+import com.wzmtr.eam.service.common.UserAccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

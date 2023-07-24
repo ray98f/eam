@@ -42,4 +42,6 @@ public class EquipmentCategoryResDTO {
 
     @ApiModelProperty(value = "子节点")
     private List<EquipmentCategoryResDTO> children;
+
+    private String lineCode;
 }

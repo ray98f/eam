@@ -1,4 +1,4 @@
-package com.wzmtr.eam.mapper;
+package com.wzmtr.eam.mapper.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.UserStatusReqDTO;

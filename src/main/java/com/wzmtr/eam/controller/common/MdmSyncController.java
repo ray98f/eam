@@ -1,7 +1,7 @@
-package com.wzmtr.eam.controller;
+package com.wzmtr.eam.controller.common;
 
 import com.wzmtr.eam.entity.HttpResult;
-import com.wzmtr.eam.service.MdmSyncService;
+import com.wzmtr.eam.service.common.MdmSyncService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +24,13 @@ public class MdmSyncController {
     @GetMapping("/syncAllPerson")
     public HttpResult syncAllPerson() {
         mdmSyncService.syncAllPerson();
+        return HttpResult.success();
+    }
+
+    @ApiOperation(value = "全量获取外部单位人员数据")
+    @GetMapping("/syncAllSuppContact")
+    public HttpResult syncAllSuppContact() {
+        mdmSyncService.syncAllSuppContact();
         return HttpResult.success();
     }
 

@@ -1,6 +1,6 @@
 package com.wzmtr.eam.shiro.service;
 
-import com.wzmtr.eam.mapper.PersonMapper;
+import com.wzmtr.eam.mapper.common.PersonMapper;
 import com.wzmtr.eam.shiro.model.TPerson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
