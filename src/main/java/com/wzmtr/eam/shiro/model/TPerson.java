@@ -4,13 +4,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-/**
- * description:
- *
- * @author zhangxin
- * @version 1.0
- * @date 2021/8/02 14:41
- */
 @Data
 public class TPerson implements Serializable {
 
@@ -24,10 +17,12 @@ public class TPerson implements Serializable {
 
     private String companyName;
 
+    private String companyAreaId;
+
     private String officeId;
 
     private String officeName;
 
-    private String areaId;
+    private String officeAreaId;
 
 }

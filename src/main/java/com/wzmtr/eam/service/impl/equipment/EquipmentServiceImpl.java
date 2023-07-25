@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.res.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.EquipmentTreeResDTO;
 import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -151,8 +153,11 @@ public class EquipmentServiceImpl implements EquipmentService {
                 reqDTO.setQuantity(new BigDecimal("1"));
                 reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
                 reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                reqDTO.setCompanyCode(TokenUtil.getCurrentPersonId());
-                reqDTO.setDeptCode(TokenUtil.getCurrentPersonId());
+                CurrentLoginUser user = TokenUtil.getCurrentPerson();
+                reqDTO.setCompanyCode(user.getCompanyAreaId() == null ? user.getCompanyId() : user.getCompanyAreaId());
+                reqDTO.setCompanyName(user.getCompanyName());
+                reqDTO.setDeptCode(user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId());
+                reqDTO.setDeptName(user.getOfficeName());
                 temp.add(reqDTO);
             }
             fileInputStream.close();
@@ -166,26 +171,82 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public void exportEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
-                                String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture) {
-        List<String> listName = Arrays.asList("记录编号", "节点编号", "节点名称", "父节点记录编号", "记录状态", "备注", "创建者", "创建时间");
+                                String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, HttpServletResponse response) {
+        List<String> listName = Arrays.asList("记录编号", "公司代码", "公司名称", "部门代码", "部门名称", "设备编码", "设备名称", "专业代码", "专业名称",
+                "系统代码", "系统名称", "设备分类代码", "设备分类名称", "特种设备标识", "BOM类型", "生产厂家", "合同号", "合同名称", "型号规格", "品牌",
+                "出厂日期", "出厂编号", "开始使用日期", "数量", "进设备台帐时间", "设备状态", "来源单号", "来源明细号", "来源记录编号", "安装单位", "附件编号",
+                "来源线别代码", "来源线别名称", "来源线段代码", "来源线段名称", "应用线别代码", "应用线别", "应用线段代码", "应用线段", "位置一", "位置一名称",
+                "位置二", "位置二名称", "位置三", "位置补充说明", "走行里程", "备注", "审批状态", "特种设备检测日期", "特种设备检测有效期", "创建者", "创建时间",
+                "修改者", "修改时间", "删除者", "删除时间", "删除标志", "归档标记", "记录状态");
         List<EquipmentResDTO> equipmentResDTOList = equipmentMapper.listEquipment(equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
                 systemCode, equipTypeCode, brand, startTime, endTime, manufacture);
         List<Map<String, String>> list = new ArrayList<>();
-//        if (equipmentResDTOList != null && !equipmentResDTOList.isEmpty()) {
-//            for (EquipmentResDTO equipmentResDTO : equipmentResDTOList) {
-//                Map<String, String> map = new HashMap<>();
-//                map.put("记录编号", equipmentResDTO.getRecId());
-//                map.put("节点编号", equipmentResDTO.getNodeCode());
-//                map.put("节点名称", equipmentResDTO.getNodeName());
-//                map.put("父节点记录编号", equipmentResDTO.getParentNodeRecId());
-//                map.put("记录状态", "10".equals(equipmentResDTO.getRecStatus()) ? "启用" : "禁用");
-//                map.put("备注", equipmentResDTO.getRemark());
-//                map.put("创建者", equipmentResDTO.getRecCreator());
-//                map.put("创建时间", equipmentResDTO.getRecCreateTime());
-//                list.add(map);
-//            }
-//        }
-//        ExcelPortUtil.excelPort("设备分类信息", listName, list, null, response);
+        if (equipmentResDTOList != null && !equipmentResDTOList.isEmpty()) {
+            for (EquipmentResDTO equipmentResDTO : equipmentResDTOList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("记录编号", equipmentResDTO.getRecId());
+                map.put("公司代码", equipmentResDTO.getCompanyCode());
+                map.put("公司名称", equipmentResDTO.getCompanyName());
+                map.put("部门代码", equipmentResDTO.getDeptCode());
+                map.put("部门名称", equipmentResDTO.getDeptName());
+                map.put("设备编码", equipmentResDTO.getEquipCode());
+                map.put("设备名称", equipmentResDTO.getEquipName());
+                map.put("专业代码", equipmentResDTO.getMajorCode());
+                map.put("专业名称", equipmentResDTO.getMajorName());
+                map.put("系统代码", equipmentResDTO.getSystemCode());
+                map.put("系统名称", equipmentResDTO.getSystemName());
+                map.put("设备分类代码", equipmentResDTO.getEquipTypeCode());
+                map.put("设备分类名称", equipmentResDTO.getEquipTypeName());
+                map.put("特种设备标识", equipmentResDTO.getSpecialEquipFlag());
+                map.put("BOM类型", equipmentResDTO.getBomType());
+                map.put("生产厂家", equipmentResDTO.getManufacture());
+                map.put("合同号", equipmentResDTO.getOrderNo());
+                map.put("合同名称", equipmentResDTO.getOrderName());
+                map.put("型号规格", equipmentResDTO.getMatSpecifi());
+                map.put("品牌", equipmentResDTO.getBrand());
+                map.put("出厂日期", equipmentResDTO.getManufactureDate());
+                map.put("出厂编号", equipmentResDTO.getManufactureNo());
+                map.put("开始使用日期", equipmentResDTO.getStartUseDate());
+                map.put("数量", String.valueOf(equipmentResDTO.getQuantity()));
+                map.put("进设备台帐时间", equipmentResDTO.getManufactureNo());
+                map.put("设备状态", equipmentResDTO.getEquipStatus());
+                map.put("来源单号", equipmentResDTO.getSourceAppNo());
+                map.put("来源明细号", equipmentResDTO.getSourceSubNo());
+                map.put("来源记录编号", equipmentResDTO.getSourceRecId());
+                map.put("安装单位", equipmentResDTO.getInstallDealer());
+                map.put("附件编号", equipmentResDTO.getDocId());
+                map.put("来源线别代码", equipmentResDTO.getOriginLineNo());
+                map.put("来源线别名称", equipmentResDTO.getOriginLineName());
+                map.put("来源线段代码", equipmentResDTO.getOriginSegNo());
+                map.put("来源线段名称", equipmentResDTO.getOriginSegName());
+                map.put("应用线别代码", equipmentResDTO.getUseLineNo());
+                map.put("应用线别", equipmentResDTO.getUseLineName());
+                map.put("应用线段代码", equipmentResDTO.getUseSegNo());
+                map.put("应用线段", equipmentResDTO.getUseSegName());
+                map.put("位置一", equipmentResDTO.getPosition1Code());
+                map.put("位置一名称", equipmentResDTO.getPosition1Name());
+                map.put("位置二", equipmentResDTO.getPosition2Code());
+                map.put("位置二名称", equipmentResDTO.getPosition2Name());
+                map.put("位置三", equipmentResDTO.getPosition3());
+                map.put("位置补充说明", equipmentResDTO.getPositionRemark());
+                map.put("走行里程", String.valueOf(equipmentResDTO.getTotalMiles()));
+                map.put("备注", equipmentResDTO.getRemark());
+                map.put("审批状态", equipmentResDTO.getApprovalStatus());
+                map.put("特种设备检测日期", equipmentResDTO.getVerifyDate());
+                map.put("特种设备检测有效期", equipmentResDTO.getVerifyValidityDate());
+                map.put("创建者", equipmentResDTO.getRecCreator());
+                map.put("创建时间", equipmentResDTO.getRecCreateTime());
+                map.put("修改者", equipmentResDTO.getRecRevisor());
+                map.put("修改时间", equipmentResDTO.getRecReviseTime());
+                map.put("删除者", equipmentResDTO.getRecDeletor());
+                map.put("删除时间", equipmentResDTO.getRecDeleteTime());
+                map.put("删除标志", equipmentResDTO.getDeleteFlag());
+                map.put("归档标记", equipmentResDTO.getArchiveFlag());
+                map.put("记录状态", equipmentResDTO.getRecStatus());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("设备台账信息", listName, list, null, response);
     }
 
     @Override

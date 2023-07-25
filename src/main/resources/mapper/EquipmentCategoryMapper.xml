@@ -22,14 +22,14 @@
     <select id="listEquipmentCategoryRootList" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
         SELECT REC_ID, PARENT_NODE_REC_ID, NODE_NAME, NODE_CODE, REC_STATUS, REMARK, REC_CREATOR, REC_CREATE_TIME
         FROM T_EQUIPMENT_CATEGORY
-        WHERE DELETE_FLAG=0 AND PARENT_NODE_REC_ID='0'
+        WHERE DELETE_FLAG=0 AND REC_ID='0'
         ORDER BY NODE_CODE ASC
     </select>
 
     <select id="listEquipmentCategoryBodyList" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
         SELECT REC_ID, PARENT_NODE_REC_ID, NODE_NAME, NODE_CODE, REC_STATUS, REMARK, REC_CREATOR, REC_CREATE_TIME
         FROM T_EQUIPMENT_CATEGORY
-        WHERE DELETE_FLAG=0 AND PARENT_NODE_REC_ID!='0'
+        WHERE DELETE_FLAG=0 AND REC_ID!='0'
         ORDER BY NODE_CODE ASC
     </select>
 

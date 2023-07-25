@@ -175,34 +175,14 @@ public class TokenUtil {
         return personId;
     }
 
-    public static String getCurrentPersonNo() {
-        String personNo;
+    public static CurrentLoginUser getCurrentPerson() {
+        CurrentLoginUser person;
         try {
-            personNo = RequestHeaderContext.getInstance().getUser().getPersonNo();
+            person = RequestHeaderContext.getInstance().getUser();
         } catch (Exception e) {
-            personNo = "";
+            person = new CurrentLoginUser();
         }
-        return personNo;
-    }
-
-    public static String getCurrentUserName() {
-        String userName;
-        try {
-            userName = RequestHeaderContext.getInstance().getUser().getPersonName();
-        } catch (Exception e) {
-            userName = "";
-        }
-        return userName;
-    }
-
-    public static String getCurrentOfficeId() {
-        String officeId;
-        try {
-            officeId = RequestHeaderContext.getInstance().getUser().getOfficeId();
-        } catch (Exception e) {
-            officeId = "";
-        }
-        return officeId;
+        return person;
     }
 
     /**

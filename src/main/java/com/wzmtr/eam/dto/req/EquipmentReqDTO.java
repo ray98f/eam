@@ -167,7 +167,7 @@ public class EquipmentReqDTO {
     private String positionRemark;
 
     @ApiModelProperty(value = "行走里程")
-    private String totalMiles;
+    private Long totalMiles;
 
     @ApiModelProperty(value = "备注")
     private String remark;

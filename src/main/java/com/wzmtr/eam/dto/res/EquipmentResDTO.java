@@ -95,7 +95,7 @@ public class EquipmentResDTO {
     private String measureUnit;
 
     @ApiModelProperty(value = "数量")
-    private String quantity;
+    private Integer quantity;
 
     @ApiModelProperty(value = "进设备台账时间")
     private String inAccountTime;
@@ -167,7 +167,7 @@ public class EquipmentResDTO {
     private String positionRemark;
 
     @ApiModelProperty(value = "行走里程")
-    private String totalMiles;
+    private Long totalMiles;
 
     @ApiModelProperty(value = "备注")
     private String remark;

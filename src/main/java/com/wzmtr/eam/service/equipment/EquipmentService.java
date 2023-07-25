@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface EquipmentService {
     void importEquipment(MultipartFile file);
 
     void exportEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
-                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture);
+                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, HttpServletResponse response);
 
     String generateQr(String id) throws ParseException;
 }

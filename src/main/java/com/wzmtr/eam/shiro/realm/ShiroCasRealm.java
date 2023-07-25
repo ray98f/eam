@@ -63,9 +63,10 @@ public class ShiroCasRealm extends CasRealm {
                 person.setPersonName(p.getName());
                 person.setCompanyId(p.getCompanyId());
                 person.setCompanyName(p.getCompanyName());
+                person.setCompanyAreaId(p.getCompanyAreaId());
                 person.setOfficeId(p.getOfficeId());
                 person.setOfficeName(p.getOfficeName());
-                person.setAreaId(p.getAreaId());
+                person.setOfficeAreaId(p.getOfficeAreaId());
             } else {
                 throw new CommonException(ErrorCode.USER_NOT_EXIST);
             }

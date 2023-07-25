@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.List;
@@ -85,9 +86,10 @@ public class EquipmentController {
                                 @RequestParam(required = false) @ApiParam("品牌") String brand,
                                 @RequestParam(required = false) @ApiParam("出产开始时间") String startTime,
                                 @RequestParam(required = false) @ApiParam("出产结束时间") String endTime,
-                                @RequestParam(required = false) @ApiParam("生产厂家") String manufacture) {
+                                @RequestParam(required = false) @ApiParam("生产厂家") String manufacture,
+                                HttpServletResponse response) {
         equipmentService.exportEquipment(equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
-                systemCode, equipTypeCode, brand, startTime, endTime, majorCode);
+                systemCode, equipTypeCode, brand, startTime, endTime, majorCode, response);
     }
 
     @GetMapping("/qr")
