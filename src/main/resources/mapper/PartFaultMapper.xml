@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.equipment.PartFaultMapper">
+
+    <insert id="insertPartFault">
+        INSERT INTO T_PART_FAULT (REC_ID,  <!-- 记录编号 -->
+        COMPANY_CODE,  <!-- 公司代码 -->
+        COMPANY_NAME,  <!-- 公司名称 -->
+        CURRENT_MILES,
+        PART_CODE,  <!-- 部件编号 -->
+        PART_NAME,  <!-- 部件名称 -->
+        FAULT_NO,  <!-- 故障编号 -->
+        FAULT_WORK_NO,  <!-- 故障工单号 -->
+        LOG_TYPE,  <!-- 履历类别（10-安装，20-拆卸） -->
+        OPERATE_TIME,  <!-- 处理时间 -->
+        EQUIP_CODE,  <!-- 设备编码 -->
+        EQUIP_NAME,  <!-- 设备名称 -->
+        REMARK,  <!-- 备注 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{companyCode,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{currentMiles},
+        #{partCode,jdbcType=VARCHAR},
+        #{partName,jdbcType=VARCHAR},
+        #{faultNo,jdbcType=VARCHAR},
+        #{faultWorkNo,jdbcType=VARCHAR},
+        #{logType,jdbcType=VARCHAR},
+        #{operateTime,jdbcType=VARCHAR},
+        #{equipCode,jdbcType=VARCHAR},
+        #{equipName,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        #{deleteFlag,jdbcType=VARCHAR},
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>

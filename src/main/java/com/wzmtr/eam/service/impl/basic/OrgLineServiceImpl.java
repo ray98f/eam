@@ -84,6 +84,8 @@ public class OrgLineServiceImpl implements OrgLineService {
     public void deleteOrgLine(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             orgLineMapper.deleteOrgLine(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
     }
 

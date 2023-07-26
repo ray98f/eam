@@ -85,6 +85,8 @@ public class OrgTypeServiceImpl implements OrgTypeService {
     public void deleteOrgType(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             orgTypeMapper.deleteOrgType(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
     }
 

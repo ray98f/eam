@@ -103,7 +103,13 @@ public enum ErrorCode {
     FILE_BIG(32100030, "file.big"),
     FILE_DELETE_ERROR(32100031, "file.delete.error"),
 
-    IMPORT_ERROR(32100032, "import.error"),;
+    IMPORT_ERROR(32100032, "import.error"),
+
+    TRANSFER_QUANTITY_ERROR(32100033, "transfer.quantity.error"),
+    TRANSFER_HAS_HANDLE(32100034, "transfer.has.handle"),
+    TRANSFER_SPLIT_ERROR(32100035, "transfer.split.error"),
+    SELECT_NOTHING(32000036, "select.nothing"),
+    REQUIRED_NULL(32000037, "required.null"),;
 
     private Integer code;
 

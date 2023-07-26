@@ -78,6 +78,8 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     public void deleteEquipmentCategory(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             equipmentCategoryMapper.deleteEquipmentCategory(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
     }
 

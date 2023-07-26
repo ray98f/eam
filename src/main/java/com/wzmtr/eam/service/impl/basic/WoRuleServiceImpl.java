@@ -6,6 +6,8 @@ import com.wzmtr.eam.dto.req.WoRuleReqDTO;
 import com.wzmtr.eam.dto.res.WoRuleResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.service.basic.WoRuleService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
@@ -116,6 +118,8 @@ public class WoRuleServiceImpl implements WoRuleService {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             woRuleMapper.deleteWoRule(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             woRuleMapper.deleteWoRuleDetailByCode(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
     }
 
@@ -123,6 +127,8 @@ public class WoRuleServiceImpl implements WoRuleService {
     public void deleteWoRuleDetail(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             woRuleMapper.deleteWoRuleDetail(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
     }
 

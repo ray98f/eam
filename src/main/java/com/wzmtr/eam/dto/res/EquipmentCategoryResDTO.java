@@ -1,12 +1,9 @@
 package com.wzmtr.eam.dto.res;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +16,12 @@ public class EquipmentCategoryResDTO {
     @ApiModelProperty(value = "设备分类id")
     private String recId;
 
+    @ApiModelProperty(value = "公司编号")
+    private String companyCode;
+
+    @ApiModelProperty(value = "公司名称")
+    private String companyName;
+
     @ApiModelProperty(value = "父节点id")
     private String parentNodeRecId;
 
@@ -27,6 +30,9 @@ public class EquipmentCategoryResDTO {
 
     @ApiModelProperty(value = "设备分类节点名称")
     private String nodeName;
+
+    @ApiModelProperty(value = "等级")
+    private Integer nodeLevel;
 
     @ApiModelProperty(value = "记录状态 10 启用 20 禁用")
     private String recStatus;
@@ -44,4 +50,10 @@ public class EquipmentCategoryResDTO {
     private List<EquipmentCategoryResDTO> children;
 
     private String lineCode;
+
+    private String ext1;
+    private String ext2;
+    private String ext3;
+    private String ext4;
+    private String ext5;
 }

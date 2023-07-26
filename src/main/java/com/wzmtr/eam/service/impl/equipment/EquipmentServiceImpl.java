@@ -4,6 +4,7 @@ import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.EquipmentReqDTO;
+import com.wzmtr.eam.dto.req.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.EquipmentTreeResDTO;
@@ -55,7 +56,7 @@ public class EquipmentServiceImpl implements EquipmentService {
             res.setLine(equipmentMapper.listLine());
         } else {
             List<RegionResDTO> region = equipmentMapper.listRegion(lineCode, regionCode, recId);
-            if (region != null && !region.isEmpty()) {
+            if ((equipmentCategoryCode == null || "".equals(equipmentCategoryCode)) && region != null && !region.isEmpty()) {
                 if (regionCode == null || "".equals(regionCode)) {
                     RegionResDTO regionResDTO = new RegionResDTO();
                     regionResDTO.setRecId("E" + ("01".equals(lineCode) ? "S1" : "S2"));
@@ -68,7 +69,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                     region = equipmentMapper.listCarRegion(regionCode, recId);
                 }
                 res.setRegion(region);
-            } else if (!"ES1".equals(parentNodeRecId) && !"ES2".equals(parentNodeRecId)) {
+            } else if ((regionCode == null || "".equals(regionCode)) && !"ES1".equals(parentNodeRecId) && !"ES2".equals(parentNodeRecId)) {
                 res.setEquipment(equipmentMapper.listEquipmentCategory(equipmentCategoryCode, lineCode, recId));
             }
         }
@@ -158,6 +159,26 @@ public class EquipmentServiceImpl implements EquipmentService {
                 reqDTO.setCompanyName(user.getCompanyName());
                 reqDTO.setDeptCode(user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId());
                 reqDTO.setDeptName(user.getOfficeName());
+                String unitNo = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(1)) + 1);
+                String equipCode = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(4)) + 1);
+                UnitCodeReqDTO unitCodeReqDTO = new UnitCodeReqDTO();
+                unitCodeReqDTO.setRecId(TokenUtil.getUuId());
+                unitCodeReqDTO.setUnitNo(unitNo);
+                unitCodeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                unitCodeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                unitCodeReqDTO.setDevNo(equipCode);
+                unitCodeReqDTO.setBatchNo("");
+                unitCodeReqDTO.setAssetNo("");
+                unitCodeReqDTO.setProCode("");
+                unitCodeReqDTO.setProName("");
+                unitCodeReqDTO.setOrderNo(reqDTO.getOrderNo());
+                unitCodeReqDTO.setOrderName(reqDTO.getOrderName());
+                unitCodeReqDTO.setSupplierId(user.getOfficeId());
+                unitCodeReqDTO.setSupplierName(user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId());
+                unitCodeReqDTO.setMatSpecifi(reqDTO.getMatSpecifi());
+                unitCodeReqDTO.setBrand(reqDTO.getBrand());
+                equipmentMapper.insertUnitCode(unitCodeReqDTO);
+                reqDTO.setEquipCode(unitNo);
                 temp.add(reqDTO);
             }
             fileInputStream.close();

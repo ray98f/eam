@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.equipment.EquipmentPartMapper">
+
+    <select id="getMaxPartCode" resultType="java.lang.String">
+        SELECT max(PART_CODE)
+        FROM T_EQUIPMENT_PART
+    </select>
+
+    <insert id="insertEquipmentPart">
+        INSERT INTO T_EQUIPMENT_PART (REC_ID,  <!-- 记录编号 -->
+        COMPANY_CODE,  <!-- 公司代码 -->
+        COMPANY_NAME,  <!-- 公司名称 -->
+        PART_CODE,  <!-- 部件编号 -->
+        PART_NAME,  <!-- 部件名称 -->
+        BOM_ENAME,  <!-- BOM代码 -->
+        EQUIP_CODE,  <!-- 设备编码 -->
+        EQUIP_NAME,  <!-- 设备名称 -->
+        SOURCE_KIND,  <!-- 部件来源 -->
+        MANUFACTURE,  <!-- 生产厂家 -->
+        ORDER_NO,  <!-- 合同号 -->
+        ORDER_NAME,  <!-- 合同名称 -->
+        MAT_SPECIFI,  <!-- 型号规格 -->
+        BRAND,  <!-- 品牌 -->
+        MANUFACTURE_DATE,  <!-- 出厂日期 -->
+        MANUFACTURE_NO,  <!-- 出厂编号 -->
+        START_USE_DATE,  <!-- 开始使用日期 -->
+        END_USE_TIME,  <!-- 停止使用日期 -->
+        OTHER_FEATURE,  <!-- 其它特征参数 -->
+        MEASURE_UNIT,  <!-- 计量单位 -->
+        QUANTITY,  <!-- 数量 -->
+        IN_ACCOUNT_TIME,  <!-- 进部件台帐时间 -->
+        PICK_NO,  <!-- 领用人工号 -->
+        PICK_NAME,  <!-- 领用人姓名 -->
+        EQUIP_STATUS,  <!-- 部件状态 -->
+        SOURCE_APP_NO,  <!-- 来源单号 -->
+        SOURCE_SUB_NO,  <!-- 来源明细号 -->
+        INSTALL_DEALER,  <!-- 安装单位 -->
+        DOC_ID,  <!-- 附件编号 -->
+        ORIGIN_LINE_NO,  <!-- 来源线别代码 -->
+        ORIGIN_LINE_NAME,  <!-- 来源线别名称 -->
+        ORIGIN_SEG_NO,  <!-- 来源线段代码 -->
+        ORIGIN_SEG_NAME,  <!-- 来源线段名称 -->
+        USE_LINE_NO,  <!-- 应用线别代码 -->
+        USE_LINE_NAME,  <!-- 应用线别 -->
+        USE_SEG_NO,  <!-- 应用线段代码 -->
+        USE_SEG_NAME,  <!-- 应用线段 -->
+        POSITION1_CODE,  <!-- 位置一 -->
+        POSITION1_NAME,  <!-- 位置一名称 -->
+        POSITION2_CODE,  <!-- 位置二 -->
+        POSITION2_NAME,  <!-- 位置二名称 -->
+        POSITION3,  <!-- 位置三 -->
+        POSITION_REMARK,  <!-- 位置补充说明 -->
+        REMARK,  <!-- 备注 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REC_STATUS,  <!-- 记录状态 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (#{recId,jdbcType=VARCHAR},
+        #{companyCode,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{partCode,jdbcType=VARCHAR},
+        #{partName,jdbcType=VARCHAR},
+        #{bomEname,jdbcType=VARCHAR},
+        #{equipCode,jdbcType=VARCHAR},
+        #{equipName,jdbcType=VARCHAR},
+        #{sourceKind,jdbcType=VARCHAR},
+        #{manufacture,jdbcType=VARCHAR},
+        #{orderNo,jdbcType=VARCHAR},
+        #{orderName,jdbcType=VARCHAR},
+        #{matSpecifi,jdbcType=VARCHAR},
+        #{brand,jdbcType=VARCHAR},
+        #{manufactureDate,jdbcType=VARCHAR},
+        #{manufactureNo,jdbcType=VARCHAR},
+        #{startUseDate,jdbcType=VARCHAR},
+        #{endUseTime,jdbcType=VARCHAR},
+        #{otherFeature,jdbcType=VARCHAR},
+        #{measureUnit,jdbcType=VARCHAR},
+        #{quantity,jdbcType=NUMERIC},
+        #{inAccountTime,jdbcType=VARCHAR},
+        #{pickNo,jdbcType=VARCHAR},
+        #{pickName,jdbcType=VARCHAR},
+        #{equipStatus,jdbcType=VARCHAR},
+        #{sourceAppNo,jdbcType=VARCHAR},
+        #{sourceSubNo,jdbcType=VARCHAR},
+        #{installDealer,jdbcType=VARCHAR},
+        #{docId,jdbcType=VARCHAR},
+        #{originLineNo,jdbcType=VARCHAR},
+        #{originLineName,jdbcType=VARCHAR},
+        #{originSegNo,jdbcType=VARCHAR},
+        #{originSegName,jdbcType=VARCHAR},
+        #{useLineNo,jdbcType=VARCHAR},
+        #{useLineName,jdbcType=VARCHAR},
+        #{useSegNo,jdbcType=VARCHAR},
+        #{useSegName,jdbcType=VARCHAR},
+        #{position1Code,jdbcType=VARCHAR},
+        #{position1Name,jdbcType=VARCHAR},
+        #{position2Code,jdbcType=VARCHAR},
+        #{position2Name,jdbcType=VARCHAR},
+        #{position3,jdbcType=VARCHAR},
+        #{positionRemark,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        #{deleteFlag,jdbcType=VARCHAR},
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{recStatus,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>

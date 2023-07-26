@@ -42,6 +42,7 @@ public interface EquipmentCategoryMapper {
 
     /**
      * 获取设备分类详情
+     *
      * @param id
      * @return
      */
@@ -90,9 +91,26 @@ public interface EquipmentCategoryMapper {
 
     /**
      * 获取设备分类一级分类
+     *
      * @return
      */
     List<EquipmentCategoryResDTO> getFirstEquipmentCategory();
 
+    /**
+     * 获取设备分类子级分类
+     *
+     * @return
+     */
+    List<EquipmentCategoryResDTO> getChildEquipmentCategory(String code);
+
+    /**
+     * 根据元素获取元素
+     *
+     * @param nodeCode
+     * @param nodeName
+     * @param nodeLevel
+     * @return
+     */
+    EquipmentCategoryResDTO getIndexByIndex(String nodeCode, String nodeName, Integer nodeLevel);
 
 }

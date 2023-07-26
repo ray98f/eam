@@ -3,7 +3,23 @@
 <mapper namespace="com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper">
 
     <select id="pageEquipmentCategory" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
-        SELECT dc.REC_ID, dc.PARENT_NODE_REC_ID, dc.NODE_NAME, dc.NODE_CODE, dc.REC_STATUS, dc.REMARK, u.NAME AS REC_CREATOR, dc.REC_CREATE_TIME
+        SELECT
+        dc.REC_ID as "recId",
+        dc.COMPANY_CODE as "companyCode",
+        dc.COMPANY_NAME as "companyName",
+        dc.NODE_CODE as "nodeCode",
+        dc.NODE_NAME as "nodeName",
+        dc.PARENT_NODE_REC_ID as "parentNodeRecId",
+        dc.NODE_LEVEL as "nodeLevel",
+        dc.REMARK as "remark",
+        u.USER_NAME as "recCreator",
+        dc.REC_CREATE_TIME as "recCreateTime",
+        dc.REC_STATUS as "recStatus",
+        dc.EXT1 as "ext1",
+        dc.EXT2 as "ext2",
+        dc.EXT3 as "ext3",
+        dc.EXT4 as "ext4",
+        dc.EXT5 as "ext5"
         FROM T_EQUIPMENT_CATEGORY dc
         LEFT JOIN SYS_USER u ON dc.REC_CREATOR=u.ID
         WHERE dc.DELETE_FLAG='0'
@@ -97,7 +113,23 @@
     </update>
 
     <select id="listEquipmentCategory" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
-        SELECT dc.REC_ID, dc.PARENT_NODE_REC_ID, dc.NODE_NAME, dc.NODE_CODE, dc.REC_STATUS, dc.REMARK, u.NAME AS REC_CREATOR, dc.REC_CREATE_TIME
+        SELECT
+        dc.REC_ID as "recId",
+        dc.COMPANY_CODE as "companyCode",
+        dc.COMPANY_NAME as "companyName",
+        dc.NODE_CODE as "nodeCode",
+        dc.NODE_NAME as "nodeName",
+        dc.PARENT_NODE_REC_ID as "parentNodeRecId",
+        dc.NODE_LEVEL as "nodeLevel",
+        dc.REMARK as "remark",
+        u.USER_NAME as "recCreator",
+        dc.REC_CREATE_TIME as "recCreateTime",
+        dc.REC_STATUS as "recStatus",
+        dc.EXT1 as "ext1",
+        dc.EXT2 as "ext2",
+        dc.EXT3 as "ext3",
+        dc.EXT4 as "ext4",
+        dc.EXT5 as "ext5"
         FROM T_EQUIPMENT_CATEGORY dc
         LEFT JOIN SYS_USER u ON dc.REC_CREATOR=u.ID
         where dc.DELETE_FLAG='0'
@@ -119,6 +151,29 @@
         LEFT JOIN SYS_USER u ON dc.REC_CREATOR=u.ID
         where dc.DELETE_FLAG='0' and dc.PARENT_NODE_REC_ID='0'
         ORDER BY dc.NODE_CODE ASC
+    </select>
+
+    <select id="getChildEquipmentCategory" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
+        SELECT dc.REC_ID, dc.PARENT_NODE_REC_ID, dc.NODE_NAME, dc.NODE_CODE, dc.REC_STATUS, dc.REMARK
+        FROM T_EQUIPMENT_CATEGORY dc
+        where dc.DELETE_FLAG='0' and dc.PARENT_NODE_REC_ID in (SELECT dc2.REC_ID from T_EQUIPMENT_CATEGORY dc2 where dc2.NODE_CODE=#{code})
+        ORDER BY dc.NODE_CODE ASC
+    </select>
+
+    <select id="getIndexByIndex" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
+        SELECT
+        NODE_CODE as "nodeCode",
+        NODE_NAME as "nodeName"
+        FROM T_EQUIPMENT_CATEGORY where 1=1
+        <if test="nodeCode!=null and nodeCode!=''">
+            and NODE_CODE = #{nodeCode}
+        </if>
+        <if test="nodeName!=null and nodeName!=''">
+            and NODE_NAME = #{nodeName}
+        </if>
+        <if test="nodeLevel!=null">
+            and NODE_LEVEL = #{nodeLevel}
+        </if>
     </select>
 
 </mapper>

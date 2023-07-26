@@ -68,6 +68,8 @@ public class FaultServiceImpl implements FaultService {
     public void deleteFault(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             faultMapper.deleteFault(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
     }
 
