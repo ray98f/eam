@@ -69,7 +69,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                     region = equipmentMapper.listCarRegion(regionCode, recId);
                 }
                 res.setRegion(region);
-            } else if ((regionCode == null || "".equals(regionCode)) && !"ES1".equals(parentNodeRecId) && !"ES2".equals(parentNodeRecId)) {
+            } else if (!"ES1".equals(parentNodeRecId) && !"ES2".equals(parentNodeRecId)) {
                 res.setEquipment(equipmentMapper.listEquipmentCategory(equipmentCategoryCode, lineCode, recId));
             }
         }

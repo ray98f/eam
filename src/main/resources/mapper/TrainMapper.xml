@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.equipment.TrainMapper">
+
+    <select id="pageTrainMile" resultType="com.wzmtr.eam.dto.res.TrainMileResDTO">
+        select
+        a.REC_ID as "recId",
+        a.EQUIP_CODE as "equipCode",
+        a.EQUIP_NAME as "equipName",
+        a.TOTAL_MILES as "totalMiles",
+        a.TOTAL_TRACTION_ENERGY as "totalTractionEnergy",
+        a.TOTAL_AUXILIARY_ENERGY as "totalAuxiliaryEnergy",
+        a.TOTAL_REGENERATED_ELECTRICITY as "totalRegenratedElectricity",
+        (SELECT MAX(FILLIN_TIME) from T_TRAIN_MILEAGE b where a.EQUIP_CODE=b.EQUIP_CODE) as "fillinTime"
+        from T_EQUIPMENT a
+        where a.MAJOR_CODE='07'
+        <if test="equipCode!=null and equipCode!=''">
+            and a.EQUIP_CODE like '%' || #{equipCode} || '%'
+        </if>
+        <if test="equipName!=null and equipName!=''">
+            and a.EQUIP_NAME like '%' || #{equipName} || '%'
+        </if>
+        <if test="originLineNo!=null and originLineNo!=''">
+            and a.ORIGIN_LINE_NO=#{originLineNo}
+        </if>
+        order by a.ORIGIN_LINE_NO,a.EQUIP_NAME asc
+    </select>
+
+    <select id="getTrainMileDetail" resultType="com.wzmtr.eam.dto.res.TrainMileResDTO">
+        select
+        a.REC_ID as "recId",
+        a.EQUIP_CODE as "equipCode",
+        a.EQUIP_NAME as "equipName",
+        a.TOTAL_MILES as "totalMiles",
+        a.TOTAL_TRACTION_ENERGY as "totalTractionEnergy",
+        a.TOTAL_AUXILIARY_ENERGY as "totalAuxiliaryEnergy",
+        a.TOTAL_REGENERATED_ELECTRICITY as "totalRegenratedElectricity",
+        (SELECT MAX(FILLIN_TIME) from T_TRAIN_MILEAGE b where a.EQUIP_CODE=b.EQUIP_CODE) as "fillinTime"
+        from T_EQUIPMENT a
+        where a.MAJOR_CODE='07' and a.REC_ID=#{id}
+    </select>
+
+    <select id="listTrainMile" resultType="com.wzmtr.eam.dto.res.TrainMileResDTO">
+        select
+        a.REC_ID as "recId",
+        a.EQUIP_CODE as "equipCode",
+        a.EQUIP_NAME as "equipName",
+        a.TOTAL_MILES as "totalMiles",
+        a.TOTAL_TRACTION_ENERGY as "totalTractionEnergy",
+        a.TOTAL_AUXILIARY_ENERGY as "totalAuxiliaryEnergy",
+        a.TOTAL_REGENERATED_ELECTRICITY as "totalRegenratedElectricity",
+        (SELECT MAX(FILLIN_TIME) from T_TRAIN_MILEAGE b where a.EQUIP_CODE=b.EQUIP_CODE) as "fillinTime"
+        from T_EQUIPMENT a
+        where a.MAJOR_CODE='07'
+        <if test="equipCode!=null and equipCode!=''">
+            and a.EQUIP_CODE like '%' || #{equipCode} || '%'
+        </if>
+        <if test="equipName!=null and equipName!=''">
+            and a.EQUIP_NAME like '%' || #{equipName} || '%'
+        </if>
+        <if test="originLineNo!=null and originLineNo!=''">
+            and a.ORIGIN_LINE_NO=#{originLineNo}
+        </if>
+        order by a.ORIGIN_LINE_NO,a.EQUIP_NAME asc
+    </select>
+
+    <update id="updateTrainMile">
+        update T_EQUIPMENT set
+        TOTAL_MILES=#{totalMiles},
+        TOTAL_TRACTION_ENERGY = #{totalTractionEnergy},
+        TOTAL_AUXILIARY_ENERGY = #{totalAuxiliaryEnergy},
+        TOTAL_REGENERATED_ELECTRICITY = #{totalRegenratedElectricity}
+        where REC_ID=#{recId}
+    </update>
+
+    <insert id="insertTrainMileage">
+        INSERT INTO T_TRAIN_MILEAGE
+        (REC_ID,
+        EQUIP_CODE,
+        EQUIP_NAME,
+        TOTAL_MILES,
+        MILES_INCREMENT,
+        FILLIN_TIME,
+        FILLIN_USER_ID,
+        REMARK,
+        REC_CREATOR,
+        REC_CREATE_TIME,
+        REC_REVISOR,
+        REC_REVISE_TIME,
+        REC_DELETOR,
+        REC_DELETE_TIME,
+        DELETE_FLAG,
+        ARCHIVE_FLAG,
+        REC_STATUS,
+        EXT1,
+        EXT2,
+        EXT3,
+        EXT4,
+        EXT5,
+        TOTAL_TRACTION_ENERGY ,
+        TOTAL_AUXILIARY_ENERGY ,
+        TOTAL_REGENERATED_ELECTRICITY,
+        TRACTION_INCREMENT,
+        AUXILIARY_INCREMENT,
+        REGENERATED_INCREMENT)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{equipCode,jdbcType=VARCHAR},
+        #{equipName,jdbcType=VARCHAR},
+        #{totalMiles,jdbcType=NUMERIC},
+        #{milesIncrement,jdbcType=NUMERIC},
+        #{fillinTime,jdbcType=VARCHAR},
+        #{fillinUserId,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        #{deleteFlag,jdbcType=VARCHAR},
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{recStatus,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR},
+        #{totalTractionEnergy,jdbcType=NUMERIC},
+        #{totalAuxiliaryEnergy,jdbcType=NUMERIC},
+        #{totalRegenratedElectricity,jdbcType=NUMERIC},
+        #{tractionIncrement,jdbcType=NUMERIC},
+        #{auxiliaryIncrement,jdbcType=NUMERIC},
+        #{regenratedIncrement,jdbcType=NUMERIC})
+    </insert>
+
+    <select id="pageTrainMileage" resultType="com.wzmtr.eam.dto.res.TrainMileageResDTO">
+        SELECT
+        tm.REC_ID	as "recId",
+        tm.EQUIP_CODE	as "equipCode",
+        tm.EQUIP_NAME	as "equipName",
+        tm.TOTAL_MILES	as "totalMiles",
+        tm.MILES_INCREMENT	as "milesIncrement",
+        tm.FILLIN_TIME	as "fillinTime",
+        tm.FILLIN_USER_ID	as "fillinUserId",
+        u.NAME	as "fillinUserName",
+        tm.REMARK	as "remark",
+        tm.REC_CREATOR	as "recCreator",
+        tm.REC_CREATE_TIME	as "recCreateTime",
+        tm.REC_REVISOR	as "recRevisor",
+        tm.REC_REVISE_TIME	as "recReviseTime",
+        tm.REC_DELETOR	as "recDeletor",
+        tm.REC_DELETE_TIME	as "recDeleteTime",
+        tm.TOTAL_TRACTION_ENERGY as "totalTractionEnergy",
+        tm.TOTAL_AUXILIARY_ENERGY as "totalAuxiliaryEnergy",
+        tm.TOTAL_REGENERATED_ELECTRICITY as "totalRegenratedElectricity",
+        tm.TRACTION_INCREMENT as "tractionIncrement",
+        tm.AUXILIARY_INCREMENT as "auxiliaryIncrement",
+        tm.REGENERATED_INCREMENT as "regenratedIncrement",
+        tm.DELETE_FLAG	as "deleteFlag",
+        tm.ARCHIVE_FLAG	as "archiveFlag",
+        tm.REC_STATUS	as "recStatus",
+        tm.EXT1	as "ext1",
+        tm.EXT2	as "ext2",
+        tm.EXT3	as "ext3",
+        tm.EXT4	as "ext4",
+        tm.EXT5	as "ext5"
+        FROM T_TRAIN_MILEAGE tm
+        left join SYS_USER u on u.ID=FILLIN_USER_ID
+        WHERE 1=1
+        <if test="equipCode!=null and equipCode!=''">
+            and tm.EQUIP_CODE=#{equipCode}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and SUBSTR(tm.FILLIN_TIME,1,10)>=#{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and #{endTime}>=SUBSTR(tm.FILLIN_TIME,1,10)
+        </if>
+        order by tm.FILLIN_TIME desc
+    </select>
+
+    <select id="getTrainMileageDetail" resultType="com.wzmtr.eam.dto.res.TrainMileageResDTO">
+        SELECT
+        tm.REC_ID	as "recId",
+        tm.EQUIP_CODE	as "equipCode",
+        tm.EQUIP_NAME	as "equipName",
+        tm.TOTAL_MILES	as "totalMiles",
+        tm.MILES_INCREMENT	as "milesIncrement",
+        tm.FILLIN_TIME	as "fillinTime",
+        tm.FILLIN_USER_ID	as "fillinUserId",
+        u.NAME	as "fillinUserName",
+        tm.REMARK	as "remark",
+        tm.REC_CREATOR	as "recCreator",
+        tm.REC_CREATE_TIME	as "recCreateTime",
+        tm.REC_REVISOR	as "recRevisor",
+        tm.REC_REVISE_TIME	as "recReviseTime",
+        tm.REC_DELETOR	as "recDeletor",
+        tm.REC_DELETE_TIME	as "recDeleteTime",
+        tm.TOTAL_TRACTION_ENERGY as "totalTractionEnergy",
+        tm.TOTAL_AUXILIARY_ENERGY as "totalAuxiliaryEnergy",
+        tm.TOTAL_REGENERATED_ELECTRICITY as "totalRegenratedElectricity",
+        tm.TRACTION_INCREMENT as "tractionIncrement",
+        tm.AUXILIARY_INCREMENT as "auxiliaryIncrement",
+        tm.REGENERATED_INCREMENT as "regenratedIncrement",
+        tm.DELETE_FLAG	as "deleteFlag",
+        tm.ARCHIVE_FLAG	as "archiveFlag",
+        tm.REC_STATUS	as "recStatus",
+        tm.EXT1	as "ext1",
+        tm.EXT2	as "ext2",
+        tm.EXT3	as "ext3",
+        tm.EXT4	as "ext4",
+        tm.EXT5	as "ext5"
+        FROM T_TRAIN_MILEAGE tm
+        left join SYS_USER u on u.ID=FILLIN_USER_ID
+        WHERE tm.REC_ID = #{id}
+    </select>
+
+    <select id="listTrainMileage" resultType="com.wzmtr.eam.dto.res.TrainMileageResDTO">
+        SELECT
+        tm.REC_ID	as "recId",
+        tm.EQUIP_CODE	as "equipCode",
+        tm.EQUIP_NAME	as "equipName",
+        tm.TOTAL_MILES	as "totalMiles",
+        tm.MILES_INCREMENT	as "milesIncrement",
+        tm.FILLIN_TIME	as "fillinTime",
+        tm.FILLIN_USER_ID	as "fillinUserId",
+        u.NAME	as "fillinUserName",
+        tm.REMARK	as "remark",
+        tm.REC_CREATOR	as "recCreator",
+        tm.REC_CREATE_TIME	as "recCreateTime",
+        tm.REC_REVISOR	as "recRevisor",
+        tm.REC_REVISE_TIME	as "recReviseTime",
+        tm.REC_DELETOR	as "recDeletor",
+        tm.REC_DELETE_TIME	as "recDeleteTime",
+        tm.TOTAL_TRACTION_ENERGY as "totalTractionEnergy",
+        tm.TOTAL_AUXILIARY_ENERGY as "totalAuxiliaryEnergy",
+        tm.TOTAL_REGENERATED_ELECTRICITY as "totalRegenratedElectricity",
+        tm.TRACTION_INCREMENT as "tractionIncrement",
+        tm.AUXILIARY_INCREMENT as "auxiliaryIncrement",
+        tm.REGENERATED_INCREMENT as "regenratedIncrement",
+        tm.DELETE_FLAG	as "deleteFlag",
+        tm.ARCHIVE_FLAG	as "archiveFlag",
+        tm.REC_STATUS	as "recStatus",
+        tm.EXT1	as "ext1",
+        tm.EXT2	as "ext2",
+        tm.EXT3	as "ext3",
+        tm.EXT4	as "ext4",
+        tm.EXT5	as "ext5"
+        FROM T_TRAIN_MILEAGE tm
+        left join SYS_USER u on u.ID=FILLIN_USER_ID
+        WHERE 1=1
+        <if test="equipCode!=null and equipCode!=''">
+            and tm.EQUIP_CODE=#{equipCode}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and SUBSTR(tm.FILLIN_TIME,1,10)>=#{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and #{endTime}>=SUBSTR(tm.FILLIN_TIME,1,10)
+        </if>
+        order by tm.FILLIN_TIME desc
+    </select>
+</mapper>
