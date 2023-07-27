@@ -10,6 +10,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.service.basic.WoRuleService;
+import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -67,13 +68,7 @@ public class WoRuleServiceImpl implements WoRuleService {
 
     @Override
     public void addWoRule(WoRuleReqDTO woRuleReqDTO) {
-        int no = 1;
-        String code = woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage());
-        if (!StringUtils.isNull(code)) {
-            no = Integer.parseInt(code.substring(code.length() - 3));
-            no++;
-        }
-        woRuleReqDTO.setRuleCode(RULE_USE_CODE_MAP.get(woRuleReqDTO.getRuleUseage()) + String.format("%03d", no));
+        woRuleReqDTO.setRuleCode(CodeUtils.getNextCode(woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage())));
         woRuleReqDTO.setRecId(TokenUtil.getUuId());
         woRuleReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         woRuleReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -91,13 +86,7 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void modifyWoRule(WoRuleReqDTO woRuleReqDTO) {
         if (!woRuleReqDTO.getRuleCode().substring(0, 1).equals(RULE_USE_CODE_MAP.get(woRuleReqDTO.getRuleUseage()))) {
-            int no = 1;
-            String code = woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage());
-            if (!StringUtils.isNull(code)) {
-                no = Integer.parseInt(code.substring(code.length() - 3));
-                no++;
-            }
-            String newCode = RULE_USE_CODE_MAP.get(woRuleReqDTO.getRuleUseage()) + String.format("%03d", no);
+            String newCode = CodeUtils.getNextCode(woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage()));
             woRuleMapper.modifyWoRuleDetailCode(woRuleReqDTO.getRuleCode(), newCode);
             woRuleReqDTO.setRuleCode(newCode);
         }

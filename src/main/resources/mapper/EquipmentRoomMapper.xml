@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper">
+
+    <select id="pageEquipmentRoom" resultType="com.wzmtr.eam.dto.res.EquipmentRoomResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 统一编号 -->
+        EQUIP_ROOM_CODE	as "equipRoomCode",  <!-- 设备房编码 -->
+        EQUIP_ROOM_NAME	as "equipRoomName",  <!-- 设备房名称 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 专业名称 -->
+        LINE_CODE	as "lineCode",  <!-- 线别编码 -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置一编码 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        POSITION2_CODE	as "position2Code",  <!-- 位置二编码 -->
+        POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_EQUIPMENT_ROOM
+        WHERE 1=1 AND DELETE_FLAG='0'
+        <if test="equipRoomCode!=null and equipRoomCode!=''">
+            and EQUIP_ROOM_CODE like '%' || #{equipRoomCode} || '%'
+        </if>
+        <if test="equipRoomName!=null and equipRoomName!=''">
+            and EQUIP_ROOM_NAME like '%' || #{equipRoomName} || '%'
+        </if>
+        <if test="subjectCode!=null and subjectCode!=''">
+            and SUBJECT_CODE=#{subjectCode}
+        </if>
+        <if test="lineCode!=null and lineCode!=''">
+            and LINE_CODE=#{lineCode}
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            and POSITION1_CODE=#{position1Code}
+        </if>
+        <if test="position1Name!=null and position1Name!=''">
+            and POSITION1_NAME=#{position1Name}
+        </if>
+        ORDER BY EQUIP_ROOM_CODE desc
+    </select>
+
+    <select id="getEquipmentRoomDetail" resultType="com.wzmtr.eam.dto.res.EquipmentRoomResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 统一编号 -->
+        EQUIP_ROOM_CODE	as "equipRoomCode",  <!-- 设备房编码 -->
+        EQUIP_ROOM_NAME	as "equipRoomName",  <!-- 设备房名称 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 专业名称 -->
+        LINE_CODE	as "lineCode",  <!-- 线别编码 -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置一编码 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        POSITION2_CODE	as "position2Code",  <!-- 位置二编码 -->
+        POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_EQUIPMENT_ROOM
+        where REC_ID=#{id}
+    </select>
+
+    <select id="selectEquipmentRoomIsExist" resultType="java.lang.Integer">
+        SELECT COUNT(REC_ID)
+        FROM T_EQUIPMENT_ROOM
+        WHERE EQUIP_ROOM_CODE=#{equipRoomCode} AND LINE_CODE=#{lineCode} AND DELETE_FLAG='0'
+        <if test="recId!=null and recId!=''">
+            AND REC_ID!=#{recId}
+        </if>
+    </select>
+
+    <select id="selectMaxEquipmentRoomCode" resultType="java.lang.String">
+        SELECT max(EQUIP_ROOM_CODE)
+        FROM T_EQUIPMENT_ROOM where EQUIP_ROOM_CODE like 'F%'
+    </select>
+
+    <insert id="addEquipmentRoom">
+        INSERT INTO T_EQUIPMENT_ROOM
+        (REC_ID,  <!-- 统一编号 -->
+        EQUIP_ROOM_CODE,  <!-- 设备房编码 -->
+        EQUIP_ROOM_NAME,  <!-- 设备房名称 -->
+        SUBJECT_CODE,  <!-- 专业编码 -->
+        SUBJECT_NAME,  <!-- 专业名称 -->
+        LINE_CODE,  <!-- 线别编码 -->
+        POSITION1_CODE,  <!-- 位置一编码 -->
+        POSITION1_NAME,  <!-- 位置一名称 -->
+        POSITION2_CODE,  <!-- 位置二编码 -->
+        POSITION2_NAME,  <!-- 位置二名称 -->
+        REMARK,  <!-- 备注 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REC_STATUS,  <!-- 记录状态 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES
+        (#{recId,jdbcType=VARCHAR},
+        #{equipRoomCode,jdbcType=VARCHAR},
+        #{equipRoomName,jdbcType=VARCHAR},
+        #{subjectCode,jdbcType=VARCHAR},
+        #{subjectName,jdbcType=VARCHAR},
+        #{lineCode,jdbcType=VARCHAR},
+        #{position1Code,jdbcType=VARCHAR},
+        #{position1Name,jdbcType=VARCHAR},
+        #{position2Code,jdbcType=VARCHAR},
+        #{position2Name,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        #{deleteFlag,jdbcType=VARCHAR},
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{recStatus,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="modifyEquipmentRoom">
+        UPDATE T_EQUIPMENT_ROOM SET
+        EQUIP_ROOM_CODE	= #{equipRoomCode},   <!-- 设备房编码 -->
+        EQUIP_ROOM_NAME	= #{equipRoomName},   <!-- 设备房名称 -->
+        SUBJECT_CODE	= #{subjectCode},   <!-- 专业编码 -->
+        SUBJECT_NAME	= #{subjectName},   <!-- 专业名称 -->
+        LINE_CODE	= #{lineCode},   <!-- 线别编码 -->
+        POSITION1_CODE	= #{position1Code},   <!-- 位置一编码 -->
+        POSITION1_NAME	= #{position1Name},   <!-- 位置一名称 -->
+        POSITION2_CODE	= #{position2Code},   <!-- 位置二编码 -->
+        POSITION2_NAME	= #{position2Name},   <!-- 位置二名称 -->
+        REMARK	= #{remark},   <!-- 备注 -->
+        REC_CREATOR	= #{recCreator},   <!-- 创建者 -->
+        REC_CREATE_TIME	= #{recCreateTime},   <!-- 创建时间 -->
+        REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME	= #{recReviseTime},   <!-- 修改时间 -->
+        REC_DELETOR	= #{recDeletor},   <!-- 删除者 -->
+        REC_DELETE_TIME	= #{recDeleteTime},   <!-- 删除时间 -->
+        DELETE_FLAG	= #{deleteFlag},   <!-- 删除标志 -->
+        ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+        REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
+        EXT1	= #{ext1},   <!-- 扩展字段1 -->
+        EXT2	= #{ext2},   <!-- 扩展字段2 -->
+        EXT3	= #{ext3},   <!-- 扩展字段3 -->
+        EXT4	= #{ext4},   <!-- 扩展字段4 -->
+        EXT5	= #{ext5}  <!-- 扩展字段5 -->
+        WHERE REC_ID = #{recId}
+    </update>
+
+    <update id="deleteEquipmentRoom">
+        UPDATE T_EQUIPMENT_ROOM SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <select id="listEquipmentRoom" resultType="com.wzmtr.eam.dto.res.EquipmentRoomResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 统一编号 -->
+        EQUIP_ROOM_CODE	as "equipRoomCode",  <!-- 设备房编码 -->
+        EQUIP_ROOM_NAME	as "equipRoomName",  <!-- 设备房名称 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 专业名称 -->
+        LINE_CODE	as "lineCode",  <!-- 线别编码 -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置一编码 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        POSITION2_CODE	as "position2Code",  <!-- 位置二编码 -->
+        POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_EQUIPMENT_ROOM
+        WHERE 1=1 AND DELETE_FLAG='0'
+        <if test="equipRoomCode!=null and equipRoomCode!=''">
+            and EQUIP_ROOM_CODE like '%' || #{equipRoomCode} || '%'
+        </if>
+        <if test="equipRoomName!=null and equipRoomName!=''">
+            and EQUIP_ROOM_NAME like '%' || #{equipRoomName} || '%'
+        </if>
+        <if test="subjectCode!=null and subjectCode!=''">
+            and SUBJECT_CODE=#{subjectCode}
+        </if>
+        <if test="lineCode!=null and lineCode!=''">
+            and LINE_CODE=#{lineCode}
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            and POSITION1_CODE=#{position1Code}
+        </if>
+        <if test="position1Name!=null and position1Name!=''">
+            and POSITION1_NAME=#{position1Name}
+        </if>
+        ORDER BY EQUIP_ROOM_CODE desc
+    </select>
+
+</mapper>

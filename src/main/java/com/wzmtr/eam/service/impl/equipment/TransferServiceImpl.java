@@ -17,10 +17,7 @@ import com.wzmtr.eam.mapper.equipment.EquipmentPartMapper;
 import com.wzmtr.eam.mapper.equipment.PartFaultMapper;
 import com.wzmtr.eam.mapper.equipment.TransferMapper;
 import com.wzmtr.eam.service.equipment.TransferService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.QrUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -298,7 +295,6 @@ public class TransferServiceImpl implements TransferService {
                         overTodo(sourceRecId, "");
                     }
                     resDTO.setApprovalStatus("30");
-                    int partCode = Integer.parseInt(equipmentPartMapper.getMaxPartCode().replace("P", ""));
                     List<Bom> boms = transferMapper.queryBomTree(resDTO.getBomType());
                     if (boms != null && boms.size() > 0) {
                         for (Bom bom : boms) {
@@ -308,7 +304,7 @@ public class TransferServiceImpl implements TransferService {
                                     equipmentPartReqDTO.setRecId(TokenUtil.getUuId());
                                     equipmentPartReqDTO.setEquipCode(resDTO.getEquipCode());
                                     equipmentPartReqDTO.setEquipName(resDTO.getEquipName());
-                                    equipmentPartReqDTO.setPartCode("P" + String.format("%010d", ++partCode));
+                                    equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode()));
                                     equipmentPartReqDTO.setPartName(bom.getCname());
                                     equipmentPartReqDTO.setBomEname(bom.getEname());
                                     equipmentPartReqDTO.setInAccountTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

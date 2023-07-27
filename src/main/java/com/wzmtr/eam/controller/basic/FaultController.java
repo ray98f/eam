@@ -27,7 +27,7 @@ import javax.validation.Valid;
 public class FaultController {
 
     @Resource
-    private FaultService equipmentCategoryService;
+    private FaultService faultService;
 
     @GetMapping("/list")
     @ApiOperation(value = "获取故障库列表")
@@ -36,33 +36,33 @@ public class FaultController {
                                                @RequestParam(required = false) @ApiParam("线路") String lineCode,
                                                @RequestParam(required = false) @ApiParam("设备分类编号") String equipmentCategoryCode,
                                                @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(equipmentCategoryService.listFault(code, type, lineCode, equipmentCategoryCode, pageReqDTO));
+        return PageResponse.of(faultService.listFault(code, type, lineCode, equipmentCategoryCode, pageReqDTO));
     }
 
     @GetMapping("/detail")
     @ApiOperation(value = "获取故障库详情")
     public DataResponse<FaultResDTO> getFaultDetail(@RequestParam @ApiParam("id") String id) {
-        return DataResponse.of(equipmentCategoryService.getFaultDetail(id));
+        return DataResponse.of(faultService.getFaultDetail(id));
     }
 
     @PostMapping("/add")
     @ApiOperation(value = "新增故障库")
     public DataResponse<T> addFault(@RequestBody FaultReqDTO faultReqDTO) {
-        equipmentCategoryService.addFault(faultReqDTO);
+        faultService.addFault(faultReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/modify")
     @ApiOperation(value = "修改故障库")
     public DataResponse<T> modifyFault(@RequestBody FaultReqDTO faultReqDTO) {
-        equipmentCategoryService.modifyFault(faultReqDTO);
+        faultService.modifyFault(faultReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/delete")
     @ApiOperation(value = "删除故障库")
     public DataResponse<T> deleteFault(@RequestBody BaseIdsEntity baseIdsEntity) {
-        equipmentCategoryService.deleteFault(baseIdsEntity);
+        faultService.deleteFault(baseIdsEntity);
         return DataResponse.success();
     }
 
@@ -73,6 +73,6 @@ public class FaultController {
                             @RequestParam(required = false) @ApiParam("线路") String lineCode,
                             @RequestParam(required = false) @ApiParam("设备分类编号") String equipmentCategoryCode,
                             HttpServletResponse response) {
-        equipmentCategoryService.exportFault(code, type, lineCode, equipmentCategoryCode, response);
+        faultService.exportFault(code, type, lineCode, equipmentCategoryCode, response);
     }
 }
