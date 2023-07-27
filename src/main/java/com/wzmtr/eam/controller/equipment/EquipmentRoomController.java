@@ -31,12 +31,12 @@ public class EquipmentRoomController {
 
     @GetMapping("/list")
     @ApiOperation(value = "获取设备房列表")
-    public PageResponse<EquipmentRoomResDTO> listEquipmentRoom(@RequestParam(required = false) @ApiParam("码值编号") String equipRoomCode,
-                                                               @RequestParam(required = false) @ApiParam("码值类型") String equipRoomName,
+    public PageResponse<EquipmentRoomResDTO> listEquipmentRoom(@RequestParam(required = false) @ApiParam("设备房编码") String equipRoomCode,
+                                                               @RequestParam(required = false) @ApiParam("设备房名称") String equipRoomName,
                                                                @RequestParam(required = false) @ApiParam("线路") String lineCode,
-                                                               @RequestParam(required = false) @ApiParam("设备分类编号") String position1Code,
-                                                               @RequestParam(required = false) @ApiParam("设备分类编号") String position1Name,
-                                                               @RequestParam(required = false) @ApiParam("设备分类编号") String subjectCode,
+                                                               @RequestParam(required = false) @ApiParam("位置一编码") String position1Code,
+                                                               @RequestParam(required = false) @ApiParam("位置一名称") String position1Name,
+                                                               @RequestParam(required = false) @ApiParam("专业") String subjectCode,
                                                                @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(equipmentRoomService.listEquipmentRoom(equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode, pageReqDTO));
     }
@@ -70,12 +70,12 @@ public class EquipmentRoomController {
 
     @GetMapping("/export")
     @ApiOperation(value = "导出设备房")
-    public void exportEquipmentRoom(@RequestParam(required = false) @ApiParam("码值编号") String equipRoomCode,
-                                    @RequestParam(required = false) @ApiParam("码值类型") String equipRoomName,
+    public void exportEquipmentRoom(@RequestParam(required = false) @ApiParam("设备房编码") String equipRoomCode,
+                                    @RequestParam(required = false) @ApiParam("设备房名称") String equipRoomName,
                                     @RequestParam(required = false) @ApiParam("线路") String lineCode,
-                                    @RequestParam(required = false) @ApiParam("设备分类编号") String position1Code,
-                                    @RequestParam(required = false) @ApiParam("设备分类编号") String position1Name,
-                                    @RequestParam(required = false) @ApiParam("设备分类编号") String subjectCode,
+                                    @RequestParam(required = false) @ApiParam("位置一编码") String position1Code,
+                                    @RequestParam(required = false) @ApiParam("位置一名称") String position1Name,
+                                    @RequestParam(required = false) @ApiParam("专业") String subjectCode,
                                     HttpServletResponse response) {
         equipmentRoomService.exportEquipmentRoom(equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode, response);
     }

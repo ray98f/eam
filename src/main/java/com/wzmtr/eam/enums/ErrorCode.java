@@ -109,7 +109,8 @@ public enum ErrorCode {
     TRANSFER_HAS_HANDLE(32100034, "transfer.has.handle"),
     TRANSFER_SPLIT_ERROR(32100035, "transfer.split.error"),
     SELECT_NOTHING(32000036, "select.nothing"),
-    REQUIRED_NULL(32000037, "required.null"),;
+    REQUIRED_NULL(32000037, "required.null"),
+    EQUIP_CODE_ERROR(32000038, "equip.code.error"),;
 
     private Integer code;
 
