@@ -31,7 +31,7 @@
     </select>
 
     <select id="listEquipmentCategory" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
-        select REC_ID, PARENT_NODE_REC_ID, NODE_CODE, NODE_NAME, #{lineCode} as LINE_CODE
+        select REC_ID, PARENT_NODE_REC_ID, NODE_CODE, NODE_NAME, #{lineCode} as LINE_CODE,  #{regionCode} as REGION_CODE
         from T_EQUIPMENT_CATEGORY
         where DELETE_FLAG='0' and REC_STATUS='10'
         <if test="equipmentCategoryCode!=null and equipmentCategoryCode!=''">

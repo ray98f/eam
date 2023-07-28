@@ -50,6 +50,7 @@ public class EquipmentCategoryResDTO {
     private List<EquipmentCategoryResDTO> children;
 
     private String lineCode;
+    private String regionCode;
 
     private String ext1;
     private String ext2;
