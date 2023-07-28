@@ -9,8 +9,8 @@ import com.wzmtr.eam.dto.res.TrainMileageResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.equipment.TrainMapper;
-import com.wzmtr.eam.service.equipment.TrainService;
+import com.wzmtr.eam.mapper.equipment.TrainMileMapper;
+import com.wzmtr.eam.service.equipment.TrainMileService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,27 +28,27 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class TrainServiceImpl implements TrainService {
+public class TrainMileServiceImpl implements TrainMileService {
 
     @Autowired
-    private TrainMapper trainMapper;
+    private TrainMileMapper trainMileMapper;
 
     @Override
     public Page<TrainMileResDTO> pageTrainMile(String equipCode, String equipName, String originLineNo, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return trainMapper.pageTrainMile(pageReqDTO.of(), equipCode, equipName, originLineNo);
+        return trainMileMapper.pageTrainMile(pageReqDTO.of(), equipCode, equipName, originLineNo);
     }
 
     @Override
     public TrainMileResDTO getTrainMileDetail(String id) {
-        return trainMapper.getTrainMileDetail(id);
+        return trainMileMapper.getTrainMileDetail(id);
     }
 
     @Override
     public void exportTrainMile(String equipCode, String equipName, String originLineNo, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "设备编码", "车号", "里程(公里)", "牵引总能耗(kW·h)",
                 "辅助总能耗(kW·h)", "再生总电量(kW·h)", "备注", "维护时间");
-        List<TrainMileResDTO> trainMileResDTOList = trainMapper.listTrainMile(equipCode, equipName, originLineNo);
+        List<TrainMileResDTO> trainMileResDTOList = trainMileMapper.listTrainMile(equipCode, equipName, originLineNo);
         List<Map<String, String>> list = new ArrayList<>();
         if (trainMileResDTOList != null && !trainMileResDTOList.isEmpty()) {
             for (TrainMileResDTO trainMileResDTO : trainMileResDTOList) {
@@ -72,7 +72,7 @@ public class TrainServiceImpl implements TrainService {
     public void modifyTrainMile(List<TrainMileReqDTO> list) {
         if (list != null && !list.isEmpty()) {
             for (TrainMileReqDTO resDTO : list) {
-                TrainMileResDTO oldRes = trainMapper.getTrainMileDetail(resDTO.getRecId());
+                TrainMileResDTO oldRes = trainMileMapper.getTrainMileDetail(resDTO.getRecId());
                 if (Objects.isNull(oldRes)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
@@ -84,7 +84,7 @@ public class TrainServiceImpl implements TrainService {
                 BigDecimal newAuxiliary = new BigDecimal(resDTO.getTotalAuxiliaryEnergy().trim());
                 BigDecimal oldRegenrat = oldRes.getTotalRegenratedElectricity();
                 BigDecimal newRegenrat = new BigDecimal(resDTO.getTotalRegenratedElectricity().trim());
-                trainMapper.updateTrainMile(resDTO);
+                trainMileMapper.updateTrainMile(resDTO);
                 BigDecimal milesIncrement;
                 BigDecimal tractionIncrement;
                 BigDecimal auxiliaryIncrement;
@@ -114,7 +114,7 @@ public class TrainServiceImpl implements TrainService {
                 trainMileageReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
                 trainMileageReqDTO.setRecStatus("0");
                 trainMileageReqDTO.setRemark(resDTO.getRemark());
-                trainMapper.insertTrainMileage(trainMileageReqDTO);
+                trainMileMapper.insertTrainMileage(trainMileageReqDTO);
             }
 
         }
@@ -123,19 +123,19 @@ public class TrainServiceImpl implements TrainService {
     @Override
     public Page<TrainMileageResDTO> pageTrainMileage(String startTime, String endTime, String equipCode, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return trainMapper.pageTrainMileage(pageReqDTO.of(), startTime, endTime, equipCode);
+        return trainMileMapper.pageTrainMileage(pageReqDTO.of(), startTime, endTime, equipCode);
     }
 
     @Override
     public TrainMileageResDTO getTrainMileageDetail(String id) {
-        return trainMapper.getTrainMileageDetail(id);
+        return trainMileMapper.getTrainMileageDetail(id);
     }
 
     @Override
     public void exportTrainMileage(String startTime, String endTime, String equipCode, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "设备编码", "车号", "里程(公里)", "增加里程(公里)", "填报时间", "填报人",
                 "牵引总能耗(kW·h)", "牵引能耗增量", "辅助总能耗(kW·h)", "辅助能耗增量", "再生总电量(kW·h)", "再生电量增量", "备注");
-        List<TrainMileageResDTO> trainMileageResDTOList = trainMapper.listTrainMileage(startTime, endTime, equipCode);
+        List<TrainMileageResDTO> trainMileageResDTOList = trainMileMapper.listTrainMileage(startTime, endTime, equipCode);
         List<Map<String, String>> list = new ArrayList<>();
         if (trainMileageResDTOList != null && !trainMileageResDTOList.isEmpty()) {
             for (TrainMileageResDTO trainMileageResDTO : trainMileageResDTOList) {

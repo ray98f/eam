@@ -9,7 +9,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public interface TrainService {
+public interface TrainMileService {
 
     Page<TrainMileResDTO> pageTrainMile(String equipCode, String equipName, String originLineNo, PageReqDTO pageReqDTO);
 

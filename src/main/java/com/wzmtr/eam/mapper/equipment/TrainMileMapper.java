@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface TrainMapper {
+public interface TrainMileMapper {
 
     Page<TrainMileResDTO> pageTrainMile(Page<TrainMileResDTO> page, String equipCode, String equipName, String originLineNo);
 
