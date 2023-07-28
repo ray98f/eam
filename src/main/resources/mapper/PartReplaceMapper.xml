@@ -80,6 +80,25 @@
         WHERE 1=1 and DELETE_FLAG='0' and REC_ID=#{id}
     </select>
 
+    <select id="selectBomCode" resultType="java.lang.String">
+        select u.REC_ID
+        from T_EQUIPMENT d, T_BOM u
+        where  1=1
+        and  u.ENAME =d.BOM_TYPE
+        and  EQUIP_CODE=#{equipCode}
+    </select>
+
+    <select id="getBom" resultType="com.wzmtr.eam.dto.res.PartReplaceBomResDTO">
+        SELECT
+        REC_ID,
+        ENAME	as "ename",  <!-- 代码编号 -->
+        CNAME	as "text",
+        PARENT_ID    as "parentId"
+        FROM T_BOM
+        where PARENT_ID=#{node}
+        order by ENAME asc
+    </select>
+
     <insert id="addPartReplace">
         INSERT INTO WBPLAT.TDMDM20 (REC_ID,  <!-- 记录编号 -->
         FAULT_WORK_NO,  <!-- 故障工单编号 -->

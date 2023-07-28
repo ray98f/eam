@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.equipment;
 
 import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
 import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
+import com.wzmtr.eam.dto.res.PartReplaceBomResDTO;
 import com.wzmtr.eam.dto.res.PartReplaceResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -43,6 +44,13 @@ public class PartReplaceController {
     @ApiOperation(value = "获取部件更换台账详情")
     public DataResponse<PartReplaceResDTO> getPartReplaceDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(partReplaceService.getPartReplaceDetail(id));
+    }
+
+    @GetMapping("/bom")
+    @ApiOperation(value = "查询部件台账列表")
+    public DataResponse<List<PartReplaceBomResDTO>> getBom(@RequestParam(required = false) @ApiParam("equipCode") String equipCode,
+                                                           @RequestParam(required = false) @ApiParam("node") String node) {
+        return DataResponse.of(partReplaceService.getBom(equipCode, node));
     }
 
     @PostMapping("/add")

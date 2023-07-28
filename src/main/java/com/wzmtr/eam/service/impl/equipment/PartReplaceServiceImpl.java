@@ -3,6 +3,7 @@ package com.wzmtr.eam.service.impl.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
+import com.wzmtr.eam.dto.res.PartReplaceBomResDTO;
 import com.wzmtr.eam.dto.res.PartReplaceResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -40,6 +41,17 @@ public class PartReplaceServiceImpl implements PartReplaceService {
     @Override
     public PartReplaceResDTO getPartReplaceDetail(String id) {
         return partReplaceMapper.getPartReplaceDetail(id);
+    }
+
+    @Override
+    public List<PartReplaceBomResDTO> getBom(String equipCode, String node) {
+        if (equipCode != null && !"".equals(equipCode)) {
+            node = partReplaceMapper.selectBomCode(equipCode);
+            if (Objects.isNull(node) || "".equals(node)) {
+                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+            }
+        }
+        return partReplaceMapper.getBom(node);
     }
 
     @Override

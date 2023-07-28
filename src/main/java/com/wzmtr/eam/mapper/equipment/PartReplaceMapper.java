@@ -2,6 +2,7 @@ package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
+import com.wzmtr.eam.dto.res.PartReplaceBomResDTO;
 import com.wzmtr.eam.dto.res.PartReplaceResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,10 @@ public interface PartReplaceMapper {
     Page<PartReplaceResDTO> pagePartReplace(Page<PartReplaceResDTO> page, String equipName);
 
     PartReplaceResDTO getPartReplaceDetail(String id);
+
+    String selectBomCode(String equipCode);
+
+    List<PartReplaceBomResDTO> getBom(String node);
 
     void addPartReplace(PartReplaceReqDTO equipmentChargeReqDTO);
 

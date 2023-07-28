@@ -57,7 +57,7 @@ public class EquipmentController {
                                                        @RequestParam(required = false) @ApiParam("生产厂家") String manufacture,
                                                        @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(equipmentService.pageEquipment(equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
-                systemCode, equipTypeCode, brand, startTime, endTime, majorCode, pageReqDTO));
+                systemCode, equipTypeCode, brand, startTime, endTime, manufacture, pageReqDTO));
     }
 
     @GetMapping("/detail")
