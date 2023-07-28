@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.equipment.PillarMapper">
+
+    <select id="pagePillar" resultType="com.wzmtr.eam.dto.res.PillarResDTO">
+        SELECT
+        REC_ID	as "recId",
+        POWER_SUPPLY_SECTION	as "powerSupplySection",
+        ANCHOR_NUMBER as "anchorNumber",
+        INTERVAL_STATION as "intervalStation",
+        PILLAR_NUMBER	as "pillarNumber",
+        NEXT_PILLAR_NUMBER	as "nextPillarNumber",
+        WRISTARM_INSTALLATION_NUMBER	as "wristarmInstallationNumber",
+        BACKFLOW_INSTALLATION_NUMBER	as "backflowInstallationNumber",
+        MILEAGE_DK	as "mileageDk",
+        CONTACT_WIRE	as "contactWire",
+        PULLOUT_VALUE	as "pulloutValue",
+        SIDE_CLEARANCE	as "sideClearance",
+        OUTERRAIL_SUPERELEVATION	as "outerrailSuperelevation",
+        STRUCTURAL_HEIGHT	as "structuralHeight",
+        REMARK	as "remark",
+        REC_CREATOR	as "recCreator",
+        REC_CREATE_TIME	as "recCreateTime",
+        REC_REVISOR	as "recRevisor",
+        REC_REVISE_TIME	as "recReviseTime",
+        REC_DELETOR	as "recDeletor",
+        REC_DELETE_TIME	as "recDeleteTime",
+        DELETE_FLAG	as "deleteFlag",
+        ARCHIVE_FLAG	as "archiveFlag",
+        REC_STATUS	as "recStatus",
+        EXT1	as "ext1",
+        EXT2	as "ext2",
+        EXT3	as "ext3",
+        EXT4	as "ext4",
+        EXT5	as "ext5"
+        FROM T_PILLAR
+        WHERE 1=1
+        <if test="pillarNumber!=null and pillarNumber!=''">
+            and PILLAR_NUMBER like '%' || #{pillarNumber} || '%'
+        </if>
+        <if test="powerSupplySection!=null and powerSupplySection!=''">
+            and POWER_SUPPLY_SECTION like '%' || #{powerSupplySection} || '%'
+        </if>
+        ORDER BY REC_ID asc
+    </select>
+
+</mapper>
