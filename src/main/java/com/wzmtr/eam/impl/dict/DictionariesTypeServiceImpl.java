@@ -1,10 +1,7 @@
-package com.wzmtr.eam.service.impl.dict;
+package com.wzmtr.eam.impl.dict;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesTypeMapper;
 import com.wzmtr.eam.entity.DictionariesType;
 import com.wzmtr.eam.entity.PageReqDTO;

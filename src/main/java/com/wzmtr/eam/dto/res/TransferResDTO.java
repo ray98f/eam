@@ -75,7 +75,7 @@ public class TransferResDTO {
     private String stockUnit;
 
     @ApiModelProperty(value = "数量（默认值0）")
-    private Double quantity;
+    private Integer quantity;
 
     @ApiModelProperty(value = "是组合件")
     private String isBom;

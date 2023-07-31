@@ -1,7 +1,5 @@
-package com.wzmtr.eam.service.impl.common;
+package com.wzmtr.eam.impl.common;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.wzmtr.eam.config.PersonDefaultConfig;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;

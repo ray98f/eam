@@ -1,11 +1,10 @@
-package com.wzmtr.eam.service.impl.equipment;
+package com.wzmtr.eam.impl.equipment;
 
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.UnitCodeReqDTO;
-import com.wzmtr.eam.dto.res.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.EquipmentTreeResDTO;
 import com.wzmtr.eam.dto.res.RegionResDTO;

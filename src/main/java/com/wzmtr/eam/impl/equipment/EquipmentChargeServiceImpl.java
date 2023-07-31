@@ -1,4 +1,4 @@
-package com.wzmtr.eam.service.impl.equipment;
+package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
@@ -10,7 +10,6 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentChargeMapper;
 import com.wzmtr.eam.service.equipment.EquipmentChargeService;
-import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;

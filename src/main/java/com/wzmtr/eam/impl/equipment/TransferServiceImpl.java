@@ -1,6 +1,5 @@
-package com.wzmtr.eam.service.impl.equipment;
+package com.wzmtr.eam.impl.equipment;
 
-import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.diboot.core.util.BeanUtils;
 import com.github.pagehelper.PageHelper;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
