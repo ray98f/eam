@@ -50,6 +50,11 @@ public class EquipmentServiceImpl implements EquipmentService {
     private EquipmentMapper equipmentMapper;
 
     @Override
+    public List<RegionResDTO> listTrainRegion() {
+        return equipmentMapper.listTrainRegion();
+    }
+
+    @Override
     public EquipmentTreeResDTO listEquipmentTree(String lineCode, String regionCode, String recId, String parentNodeRecId, String equipmentCategoryCode) {
         EquipmentTreeResDTO res = new EquipmentTreeResDTO();
         if (lineCode == null || "".equals(lineCode)) {

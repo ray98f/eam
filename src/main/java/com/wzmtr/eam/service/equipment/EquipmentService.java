@@ -15,6 +15,8 @@ import java.util.List;
 
 public interface EquipmentService {
 
+    List<RegionResDTO> listTrainRegion();
+
     EquipmentTreeResDTO listEquipmentTree(String lineCode, String regionCode, String recId, String parentNodeRecId, String equipmentCategoryCode);
 
     Page<EquipmentResDTO> pageEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,

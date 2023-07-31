@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.equipment.EquipmentMapper">
 
+    <select id="listTrainRegion" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
+        SELECT REC_ID, EQUIP_CODE as NODE_CODE, EQUIP_NAME as NODE_NAME
+        FROM T_EQUIPMENT
+        WHERE MAJOR_CODE='07' and APPROVAL_STATUS ='30'
+        order by EQUIP_CODE asc
+    </select>
+
     <select id="listLine" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
         SELECT ITEM_CODE as REC_ID, 'root' as PARENT_NODE_REC_ID, ITEM_CODE as NODE_CODE, ITEM_CNAME as NODE_NAME, ITEM_CODE as LINE_CODE
         FROM SYS_DICT

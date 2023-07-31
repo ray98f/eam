@@ -19,6 +19,8 @@ import java.util.List;
 @Repository
 public interface EquipmentMapper {
 
+    List<RegionResDTO> listTrainRegion();
+
     List<RegionResDTO> listLine();
 
     List<RegionResDTO> listRegion(String lineCode, String regionCode, String recId);

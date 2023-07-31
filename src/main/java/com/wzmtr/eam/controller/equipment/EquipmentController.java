@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.equipment;
 
 import com.wzmtr.eam.dto.res.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.EquipmentTreeResDTO;
+import com.wzmtr.eam.dto.res.RegionResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -30,6 +31,12 @@ public class EquipmentController {
 
     @Resource
     private EquipmentService equipmentService;
+
+    @GetMapping("/train")
+    @ApiOperation(value = "获取列车号")
+    public DataResponse<List<RegionResDTO>> listTrainRegion() {
+        return DataResponse.of(equipmentService.listTrainRegion());
+    }
 
     @GetMapping("/listTree")
     @ApiOperation(value = "获取设备树")

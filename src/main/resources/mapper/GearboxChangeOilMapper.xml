@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper">
+
+    <select id="pageGearboxChangeOil" resultType="com.wzmtr.eam.dto.res.GearboxChangeOilResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        TRAIN_NO	as "trainNo",  <!-- 列车号 -->
+        COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
+        ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        OPERATOR	as "operator",  <!-- 作业人员 -->
+        CONFIRMOR	as "confirmor",  <!-- 确认人员 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7" <!-- 扩展字段7 -->
+        FROM T_GEARBOX_CHANGE_OIL
+        WHERE 1=1 and DELETE_FLAG='0'
+        <if test="trainNo!=null and trainNo!=''">
+            and TRAIN_NO like '%' || #{trainNo} || '%'
+        </if>
+        ORDER BY REC_CREATE_TIME desc
+    </select>
+
+    <select id="getGearboxChangeOilDetail" resultType="com.wzmtr.eam.dto.res.GearboxChangeOilResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        TRAIN_NO	as "trainNo",  <!-- 列车号 -->
+        COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
+        ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        OPERATOR	as "operator",  <!-- 作业人员 -->
+        CONFIRMOR	as "confirmor",  <!-- 确认人员 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7" <!-- 扩展字段7 -->
+        FROM T_GEARBOX_CHANGE_OIL
+        WHERE 1=1 and DELETE_FLAG='0' and REC_ID=#{id}
+    </select>
+
+    <insert id="addGearboxChangeOil">
+        INSERT INTO T_GEARBOX_CHANGE_OIL (
+        REC_ID,  <!-- 记录编号 -->
+        TRAIN_NO,  <!-- 列车号 -->
+        COMPLETE_DATE,  <!-- 完成日期 -->
+        ORG_TYPE,  <!-- 作业单位 -->
+        OPERATOR,  <!-- 作业人员 -->
+        CONFIRMOR,  <!-- 确认人员 -->
+        REMARK,  <!-- 备注 -->
+        DOC_ID,  <!-- 附件编号 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REC_STATUS,  <!-- 记录状态 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5,  <!-- 扩展字段5 -->
+        EXT6,  <!-- 扩展字段6 -->
+        EXT7  <!-- 扩展字段7 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{trainNo,jdbcType=VARCHAR},
+        #{completeDate,jdbcType=VARCHAR},
+        #{orgType,jdbcType=VARCHAR},
+        #{operator,jdbcType=VARCHAR},
+        #{confirmor,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{docId,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        #{deleteFlag,jdbcType=VARCHAR},
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{recStatus,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR},
+        #{ext6,jdbcType=VARCHAR},
+        #{ext7,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="deleteGearboxChangeOil">
+        UPDATE T_GEARBOX_CHANGE_OIL SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <select id="listGearboxChangeOil" resultType="com.wzmtr.eam.dto.res.GearboxChangeOilResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        TRAIN_NO	as "trainNo",  <!-- 列车号 -->
+        COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
+        ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        OPERATOR	as "operator",  <!-- 作业人员 -->
+        CONFIRMOR	as "confirmor",  <!-- 确认人员 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7" <!-- 扩展字段7 -->
+        FROM T_GEARBOX_CHANGE_OIL
+        WHERE 1=1 and DELETE_FLAG='0'
+        <if test="trainNo!=null and trainNo!=''">
+            and TRAIN_NO like '%' || #{trainNo} || '%'
+        </if>
+        ORDER BY REC_CREATE_TIME desc
+    </select>
+
+</mapper>
