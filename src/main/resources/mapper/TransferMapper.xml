@@ -89,10 +89,10 @@
         <if test="eamProcessStatus!=null and eamProcessStatus!=''">
             AND EAM_PROCESS_STATUS=#{eamProcessStatus}
         </if>
-        <if test="eamProcessStatus!=null and eamProcessStatus=='20'">
+        <if test="eamProcessStatus1!=null">
             AND EXISTS(SELECT 1 FROM T_EQUIPMENT e1 WHERE e1.SOURCE_REC_ID=td.REC_ID AND e1.APPROVAL_STATUS = '10')
         </if>
-        <if test="eamProcessStatus!=null and eamProcessStatus=='30'">
+        <if test="eamProcessStatus2!=null">
             AND NOT EXISTS(SELECT 1 FROM T_EQUIPMENT e2 WHERE e2.SOURCE_REC_ID=td.REC_ID AND e2.APPROVAL_STATUS = '10')
         </if>
         <if test="majorCode!=null and majorCode!=''">

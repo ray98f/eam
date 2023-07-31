@@ -55,8 +55,18 @@ public class TransferServiceImpl implements TransferService {
     public Page<TransferResDTO> pageTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
                                              String majorCode, String orderNo, String orderName, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        String eamProcessStatus1 = "";
+        String eamProcessStatus2 = "";
+        if (eamProcessStatus != null && !"".equals(eamProcessStatus)) {
+            if ("20".equals(eamProcessStatus)) {
+                eamProcessStatus1 = "20";
+            } else if ("30".equals(eamProcessStatus)) {
+                eamProcessStatus = "20";
+                eamProcessStatus2 = "30";
+            }
+        }
         return transferMapper.pageTransfer(pageReqDTO.of(), transferNo, itemCode, itemName, position1Code, eamProcessStatus,
-                majorCode, orderNo, orderName);
+                eamProcessStatus1, eamProcessStatus2, majorCode, orderNo, orderName);
     }
 
     @Override
@@ -242,7 +252,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Page<EquipmentResDTO> pageSplitTransfer(String sourceRecId, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
+        EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
         equipmentReqDTO.setApprovalStatus("20");
         if (sourceRecId == null) {
             sourceRecId = "flag";
@@ -287,7 +297,7 @@ public class TransferServiceImpl implements TransferService {
                 EquipmentResDTO resDTO = transferSplitReqDTO.getEquipmentList().get(j);
                 String sourceRecId = resDTO.getSourceRecId();
                 if (sourceRecId != null && "".equals(sourceRecId.trim())) {
-                    EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
+                    EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
                     equipmentReqDTO.setSourceRecId(sourceRecId);
                     equipmentReqDTO.setApprovalStatus("10");
                     List<EquipmentResDTO> queryState = equipmentMapper.siftEquipment(equipmentReqDTO);
@@ -377,7 +387,7 @@ public class TransferServiceImpl implements TransferService {
                 "来源线别代码", "来源线别名称", "来源线段代码", "来源线段名称", "应用线别代码", "应用线别", "应用线段代码", "应用线段", "位置一", "位置一名称",
                 "位置二", "位置二名称", "位置三", "位置补充说明", "走行里程", "备注", "审批状态", "特种设备检测日期", "特种设备检测有效期", "创建者", "创建时间",
                 "修改者", "修改时间", "删除者", "删除时间", "删除标志", "归档标记", "记录状态");
-        EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
+        EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
         equipmentReqDTO.setApprovalStatus("20");
         if (sourceRecId == null) {
             sourceRecId = "flag";

@@ -2,6 +2,7 @@ package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.EquipmentReqDTO;
+import com.wzmtr.eam.dto.req.EquipmentSiftReqDTO;
 import com.wzmtr.eam.dto.req.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.EquipmentResDTO;
@@ -45,7 +46,7 @@ public interface EquipmentMapper {
     List<EquipmentResDTO> listEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture);
 
-    List<EquipmentResDTO> siftEquipment(EquipmentReqDTO equipmentReqDTO);
+    List<EquipmentResDTO> siftEquipment(EquipmentSiftReqDTO equipmentSiftReqDTO);
 
     void updateEquipment(EquipmentReqDTO equipmentReqDTO);
 }

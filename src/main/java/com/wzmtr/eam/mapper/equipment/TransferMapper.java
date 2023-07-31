@@ -18,7 +18,7 @@ import java.util.List;
 public interface TransferMapper {
 
     Page<TransferResDTO> pageTransfer(Page<TransferResDTO> page, String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
-                                      String majorCode, String orderNo, String orderName);
+                                      String eamProcessStatus1, String eamProcessStatus2, String majorCode, String orderNo, String orderName);
 
     TransferResDTO getTransferDetail(String id);
 
