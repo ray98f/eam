@@ -797,7 +797,7 @@
         EXT3	as "ext3",  <!-- 扩展字段3 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
-        FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30'
+        FROM T_EQUIPMENT WHERE 1=1
         <if test="bomType!=null and bomType!=''">
             and TRIM(BOM_TYPE) IS NOT NULL AND MAJOR_CODE ='07'
         </if>
