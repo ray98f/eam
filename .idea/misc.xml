@@ -22,7 +22,6 @@
       <writeAnnotation name="javax.annotation.Resource" />
     </writeAnnotations>
   </component>
-  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>

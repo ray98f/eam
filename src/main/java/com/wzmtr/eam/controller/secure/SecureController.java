@@ -17,37 +17,37 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/secure/check")
-@Api(tags = "安全管理-检查问题记录")
-public class SecureCheckController {
+@RequestMapping("/secure")
+@Api(tags = "安全管理")
+public class SecureController {
 
     @Autowired
     private SecureService secureService;
 
     @ApiOperation(value = "安全/质量/消防/-检查问题记录列表")
-    @PostMapping("/record/list")
+    @PostMapping("/check/record/list")
     public PageResponse<SecureCheckRecordListResDTO> list(@RequestBody SecureCheckRecordListReqDTO reqDTO) {
         return PageResponse.of(secureService.list(reqDTO));
     }
     @ApiOperation(value = "安全/质量/消防/-检查问题单详情")
-    @PostMapping("/detail")
+    @PostMapping("/check/detail")
     public DataResponse<SecureCheckRecordListResDTO> detail(@RequestBody SecureCheckDetailReqDTO reqDTO) {
         return DataResponse.of(secureService.detail(reqDTO));
     }
     @ApiOperation(value = "安全/质量/消防/-检查问题单新增")
-    @PostMapping("/record/add")
+    @PostMapping("/check/record/add")
     public DataResponse<SecureCheckRecordListResDTO> add(@RequestBody SecureCheckAddReqDTO reqDTO) {
         secureService.add(reqDTO);
         return DataResponse.success();
     }
     @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
-    @PostMapping("/record/delete")
+    @PostMapping("/check/record/delete")
     public DataResponse<SecureCheckRecordListResDTO> delete(@RequestBody SecureCheckRecordDeleteReqDTO reqDTO) {
         secureService.delete(reqDTO);
         return DataResponse.success();
     }
     @ApiOperation(value = "安全/质量/消防/-检查问题单导出")
-    @GetMapping("/record/export")
+    @GetMapping("/check/record/export")
     public void export(@RequestParam(required = false) @ApiParam("安全隐患单号") String secRiskId,
                        @RequestParam(required = false) @ApiParam("发现日期") String inspectDate,
                        @RequestParam(required = false) @ApiParam(value = "整改情况") String restoreDesc,
