@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.secure;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
 import com.wzmtr.eam.dto.res.PillarResDTO;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -24,4 +25,6 @@ public interface SecureMapper {
     List<SecureCheckRecordListResDTO> list(String secRiskId, String restoreDesc, String riskRank, String inspectDate, String workFlowInstStatus);
 
     void deleteByIds(@Param("ids") Set<String> ids);
+
+    void add(SecureCheckAddReqDTO reqDTO);
 }

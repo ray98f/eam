@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.secure;
 
+import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordDeleteReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
@@ -8,7 +9,6 @@ import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.secure.SecureService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +34,20 @@ public class SecureController {
     public DataResponse<SecureCheckRecordListResDTO> detail(@RequestBody SecureCheckDetailReqDTO reqDTO) {
         return DataResponse.of(secureService.detail(reqDTO));
     }
-    // todo
-    // @ApiOperation(value = "安全/质量/消防/-检查问题单新增")
-    // @PostMapping("/check/record/add")
-    // public DataResponse<SecureCheckRecordListResDTO> add(@RequestBody SecureCheckDetailReqDTO reqDTO) {
-    //     return DataResponse.of(secureService.add(reqDTO));
-    // }
-    @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
+    @ApiOperation(value = "安全/质量/消防/-检查问题单新增")
     @PostMapping("/check/record/add")
+    public DataResponse<SecureCheckRecordListResDTO> add(@RequestBody SecureCheckAddReqDTO reqDTO) {
+        secureService.add(reqDTO);
+        return DataResponse.success();
+    }
+    @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
+    @PostMapping("/check/record/delete")
     public DataResponse<SecureCheckRecordListResDTO> delete(@RequestBody SecureCheckRecordDeleteReqDTO reqDTO) {
         secureService.delete(reqDTO);
         return DataResponse.success();
     }
     @ApiOperation(value = "安全/质量/消防/-检查问题单导出")
-    @GetMapping("/check/record/add")
+    @GetMapping("/check/record/export")
     public void export(@RequestParam(required = false) @ApiParam("安全隐患单号") String secRiskId,
                        @RequestParam(required = false) @ApiParam("发现日期") String inspectDate,
                        @RequestParam(required = false) @ApiParam(value = "整改情况") String restoreDesc,

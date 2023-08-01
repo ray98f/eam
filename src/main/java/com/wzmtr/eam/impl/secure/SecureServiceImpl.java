@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.secure;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordDeleteReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
@@ -11,11 +12,13 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.secure.SecureMapper;
 import com.wzmtr.eam.service.secure.SecureService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -81,5 +84,13 @@ public class SecureServiceImpl implements SecureService {
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
+    }
+
+    @Override
+    public void add(SecureCheckAddReqDTO reqDTO) {
+        reqDTO.setRecId(TokenUtil.getUuId());
+        reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        secureMapper.add(reqDTO);
     }
 }

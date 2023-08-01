@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.secure;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordDeleteReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
@@ -21,4 +22,6 @@ public interface SecureService {
     void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, String riskRank, HttpServletResponse response);
 
     void delete(SecureCheckRecordDeleteReqDTO reqDTO);
+
+    void add(SecureCheckAddReqDTO reqDTO);
 }
