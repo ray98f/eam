@@ -49,7 +49,7 @@
         #{recReviseTime,jdbcType=VARCHAR},
         #{recDeletor,jdbcType=VARCHAR},
         #{recDeleteTime,jdbcType=VARCHAR},
-        #{deleteFlag,jdbcType=VARCHAR},
+        '0',
         #{archiveFlag,jdbcType=VARCHAR},
         #{ext1,jdbcType=VARCHAR},
         #{ext2,jdbcType=VARCHAR},

@@ -346,7 +346,6 @@
         REC_REVISE_TIME	= #{recReviseTime},   <!-- 修改时间 -->
         REC_DELETOR	= #{recDeletor},   <!-- 删除者 -->
         REC_DELETE_TIME	= #{recDeleteTime},   <!-- 删除时间 -->
-        DELETE_FLAG	= #{deleteFlag},   <!-- 删除标志 -->
         ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
         EXT1	= #{ext1},   <!-- 扩展字段1 -->
         EXT2	= #{ext2},   <!-- 扩展字段2 -->

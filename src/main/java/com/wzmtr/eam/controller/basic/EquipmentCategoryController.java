@@ -86,4 +86,10 @@ public class EquipmentCategoryController {
     public DataResponse<List<EquipmentCategoryResDTO>> getFirstEquipmentCategory() {
         return DataResponse.of(equipmentCategoryService.getFirstEquipmentCategory());
     }
+
+    @GetMapping("/getChild")
+    @ApiOperation(value = "获取设备分类子集")
+    public DataResponse<List<EquipmentCategoryResDTO>> getChildEquipmentCategory(@RequestParam String code) {
+        return DataResponse.of(equipmentCategoryService.getChildEquipmentCategory(code));
+    }
 }
