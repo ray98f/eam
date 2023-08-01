@@ -1,6 +1,7 @@
 package com.wzmtr.eam.controller.secure;
 
 import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
+import com.wzmtr.eam.dto.req.secure.SecureCheckRecordDeleteReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -37,15 +38,16 @@ public class SecureController {
     // @ApiOperation(value = "安全/质量/消防/-检查问题单新增")
     // @PostMapping("/check/record/add")
     // public DataResponse<SecureCheckRecordListResDTO> add(@RequestBody SecureCheckDetailReqDTO reqDTO) {
-    //     return DataResponse.of(secureService.detail(reqDTO));
+    //     return DataResponse.of(secureService.add(reqDTO));
     // }
-    // @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
-    // @PostMapping("/check/record/add")
-    // public DataResponse<SecureCheckRecordListResDTO> add(@RequestBody SecureCheckDetailReqDTO reqDTO) {
-    //     return DataResponse.of(secureService.detail(reqDTO));
-    // }
-    @ApiOperation(value = "安全/质量/消防/-检查问题单导出")
+    @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
     @PostMapping("/check/record/add")
+    public DataResponse<SecureCheckRecordListResDTO> delete(@RequestBody SecureCheckRecordDeleteReqDTO reqDTO) {
+        secureService.delete(reqDTO);
+        return DataResponse.success();
+    }
+    @ApiOperation(value = "安全/质量/消防/-检查问题单导出")
+    @GetMapping("/check/record/add")
     public void export(@RequestParam(required = false) @ApiParam("安全隐患单号") String secRiskId,
                        @RequestParam(required = false) @ApiParam("发现日期") String inspectDate,
                        @RequestParam(required = false) @ApiParam(value = "整改情况") String restoreDesc,

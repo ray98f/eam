@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.res.PillarResDTO;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Author: Li.Wang
@@ -20,4 +22,6 @@ public interface SecureMapper {
     SecureCheckRecordListResDTO detail(String secRiskId);
 
     List<SecureCheckRecordListResDTO> list(String secRiskId, String restoreDesc, String riskRank, String inspectDate, String workFlowInstStatus);
+
+    void deleteByIds(@Param("ids") Set<String> ids);
 }

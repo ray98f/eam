@@ -1,10 +1,13 @@
 package com.wzmtr.eam.impl.secure;
 
-import com.github.pagehelper.PageHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
+import com.wzmtr.eam.dto.req.secure.SecureCheckRecordDeleteReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.secure.SecureMapper;
 import com.wzmtr.eam.service.secure.SecureService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
@@ -26,9 +29,10 @@ public class SecureServiceImpl implements SecureService {
 
     @Autowired
     private SecureMapper secureMapper;
+
     @Override
     public Page<SecureCheckRecordListResDTO> list(SecureCheckRecordListReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(),reqDTO.getPageSize());
+        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of());
         if (null != list) {
             return list;
@@ -45,10 +49,10 @@ public class SecureServiceImpl implements SecureService {
     }
 
     @Override
-    public void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, String riskRank, HttpServletResponse response){
+    public void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, String riskRank, HttpServletResponse response) {
         List<String> listName = Arrays.asList("检查问题单号", "发现日期", "检查问题", "检查部门", "检查人", "地点", "整改措施",
                 "计划完成日期", "整改部门", "整改情况", "记录状态");
-        List<SecureCheckRecordListResDTO> list = secureMapper.list(secRiskId,restoreDesc,riskRank,inspectDate,workFlowInstStatus);
+        List<SecureCheckRecordListResDTO> list = secureMapper.list(secRiskId, restoreDesc, riskRank, inspectDate, workFlowInstStatus);
         List<Map<String, String>> exportList = new ArrayList<>();
         if (list != null && !list.isEmpty()) {
             for (SecureCheckRecordListResDTO res : list) {
@@ -70,4 +74,12 @@ public class SecureServiceImpl implements SecureService {
         ExcelPortUtil.excelPort("设备分类信息", listName, exportList, null, response);
     }
 
+    @Override
+    public void delete(SecureCheckRecordDeleteReqDTO reqDTO) {
+        if (reqDTO.getIds() != null && !reqDTO.getIds().isEmpty()) {
+            secureMapper.deleteByIds(reqDTO.getIds());
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
+        }
+    }
 }

@@ -45,6 +45,14 @@
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
     </sql>
+    <delete id="deleteByIds">
+        DELETE
+        FROM T_SEC_RISK
+        WHERE REC_ID in
+        <foreach collection="ids" item="id" index="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 
     <select id="query" resultType="com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO">
         SELECT
