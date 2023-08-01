@@ -34,9 +34,6 @@ public class TrainMileResDTO {
     @ApiModelProperty(value = "再生总电量(kW·h)")
     private BigDecimal totalRegenratedElectricity;
 
-    @ApiModelProperty(value = "备注")
-    private String remark;
-
     @ApiModelProperty(value = "维护时间")
     private String fillinTime;
 }

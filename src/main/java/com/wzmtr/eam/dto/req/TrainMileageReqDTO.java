@@ -12,49 +12,49 @@ import java.math.BigDecimal;
 @ApiModel
 public class TrainMileageReqDTO {
 
-    private String recId = " ";
+    private String recId;
 
-    private String equipCode = " ";
+    private String equipCode;
 
-    private String equipName = " ";
+    private String equipName;
 
-    private BigDecimal totalMiles = new BigDecimal("0");
+    private BigDecimal totalMiles;
 
-    private BigDecimal milesIncrement = new BigDecimal("0");
+    private BigDecimal milesIncrement;
 
-    private String fillinTime = " ";
+    private String fillinTime;
 
-    private String fillinUserId = " ";
+    private String fillinUserId;
 
-    private String remark = " ";
+    private String remark;
 
-    private String recCreator = " ";
+    private String recCreator;
 
-    private String recCreateTime = " ";
+    private String recCreateTime;
 
-    private String recRevisor = " ";
+    private String recRevisor;
 
-    private String recReviseTime = " ";
+    private String recReviseTime;
 
-    private String recDeletor = " ";
+    private String recDeletor;
 
-    private String recDeleteTime = " ";
+    private String recDeleteTime;
 
-    private String deleteFlag = " ";
+    private String deleteFlag;
 
-    private String archiveFlag = " ";
+    private String archiveFlag;
 
-    private String recStatus = " ";
+    private String recStatus;
 
-    private String ext1 = " ";
+    private String ext1;
 
-    private String ext2 = " ";
+    private String ext2;
 
-    private String ext3 = " ";
+    private String ext3;
 
-    private String ext4 = " ";
+    private String ext4;
 
-    private String ext5 = " ";
+    private String ext5;
 
     private BigDecimal totalTractionEnergy = new BigDecimal("0");
 

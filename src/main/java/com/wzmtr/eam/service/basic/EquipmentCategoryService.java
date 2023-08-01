@@ -26,4 +26,6 @@ public interface EquipmentCategoryService {
     void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response);
 
     List<EquipmentCategoryResDTO> getFirstEquipmentCategory();
+
+    List<EquipmentCategoryResDTO> getChildEquipmentCategory(String code);
 }

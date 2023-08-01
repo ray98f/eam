@@ -320,7 +320,7 @@
         #{recReviseTime,jdbcType=VARCHAR},
         #{recDeletor,jdbcType=VARCHAR},
         #{recDeleteTime,jdbcType=VARCHAR},
-        #{deleteFlag,jdbcType=VARCHAR},
+        '0',
         #{archiveFlag,jdbcType=VARCHAR},
         #{comStatus,jdbcType=NUMERIC},
         #{proCode,jdbcType=VARCHAR},
@@ -596,7 +596,7 @@
         #{recReviseTime,jdbcType=VARCHAR},
         #{recDeletor,jdbcType=VARCHAR},
         #{recDeleteTime,jdbcType=VARCHAR},
-        #{deleteFlag,jdbcType=VARCHAR},
+        '0',
         #{archiveFlag,jdbcType=VARCHAR},
         #{recStatus,jdbcType=VARCHAR},
         #{ext1,jdbcType=VARCHAR},
@@ -923,7 +923,6 @@
         REC_REVISE_TIME	= #{recReviseTime},   <!-- 修改时间 -->
         REC_DELETOR	= #{recDeletor},   <!-- 删除者 -->
         REC_DELETE_TIME	= #{recDeleteTime},   <!-- 删除时间 -->
-        DELETE_FLAG	= #{deleteFlag},   <!-- 删除标志 -->
         ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
         REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
         EXT1	= #{ext1},   <!-- 扩展字段1 -->

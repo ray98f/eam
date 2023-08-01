@@ -109,4 +109,9 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
         return equipmentCategoryMapper.getFirstEquipmentCategory();
     }
 
+    @Override
+    public List<EquipmentCategoryResDTO> getChildEquipmentCategory(String code) {
+        return equipmentCategoryMapper.getChildEquipmentCategory(code);
+    }
+
 }

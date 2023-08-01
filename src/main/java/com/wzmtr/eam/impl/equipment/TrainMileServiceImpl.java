@@ -47,7 +47,7 @@ public class TrainMileServiceImpl implements TrainMileService {
     @Override
     public void exportTrainMile(String equipCode, String equipName, String originLineNo, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "设备编码", "车号", "里程(公里)", "牵引总能耗(kW·h)",
-                "辅助总能耗(kW·h)", "再生总电量(kW·h)", "备注", "维护时间");
+                "辅助总能耗(kW·h)", "再生总电量(kW·h)", "维护时间");
         List<TrainMileResDTO> trainMileResDTOList = trainMileMapper.listTrainMile(equipCode, equipName, originLineNo);
         List<Map<String, String>> list = new ArrayList<>();
         if (trainMileResDTOList != null && !trainMileResDTOList.isEmpty()) {
@@ -60,7 +60,6 @@ public class TrainMileServiceImpl implements TrainMileService {
                 map.put("牵引总能耗(kW·h)", String.valueOf(trainMileResDTO.getTotalTractionEnergy()));
                 map.put("辅助总能耗(kW·h)", String.valueOf(trainMileResDTO.getTotalAuxiliaryEnergy()));
                 map.put("再生总电量(kW·h)", String.valueOf(trainMileResDTO.getTotalRegenratedElectricity()));
-                map.put("备注", trainMileResDTO.getRemark());
                 map.put("维护时间", trainMileResDTO.getFillinTime());
                 list.add(map);
             }

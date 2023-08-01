@@ -14,176 +14,176 @@ import java.math.BigDecimal;
 public class EquipmentPartReqDTO {
 
     @ApiModelProperty(value = "记录编号")
-    private String recId = " ";
+    private String recId;
 
     @ApiModelProperty(value = "公司代码")
-    private String companyCode = " ";
+    private String companyCode;
 
     @ApiModelProperty(value = "公司名称")
-    private String companyName = " ";
+    private String companyName;
 
     @ApiModelProperty(value = "部件编号")
-    private String partCode = " ";
+    private String partCode;
 
     @ApiModelProperty(value = "部件名称")
-    private String partName = " ";
+    private String partName;
 
     @ApiModelProperty(value = "BOM代码")
-    private String bomEname = " ";
+    private String bomEname;
 
     @ApiModelProperty(value = "设备编码")
-    private String equipCode = " ";
+    private String equipCode;
 
     @ApiModelProperty(value = "设备名称")
-    private String equipName = " ";
+    private String equipName;
 
     @ApiModelProperty(value = "部件来源")
-    private String sourceKind = " ";
+    private String sourceKind;
 
     @ApiModelProperty(value = "生产厂家")
-    private String manufacture = " ";
+    private String manufacture;
 
     @ApiModelProperty(value = "合同号")
-    private String orderNo = " ";
+    private String orderNo;
 
     @ApiModelProperty(value = "合同名称")
-    private String orderName = " ";
+    private String orderName;
 
     @ApiModelProperty(value = "型号规格")
-    private String matSpecifi = " ";
+    private String matSpecifi;
 
     @ApiModelProperty(value = "品牌")
-    private String brand = " ";
+    private String brand;
 
     @ApiModelProperty(value = "出厂日期")
-    private String manufactureDate = " ";
+    private String manufactureDate;
 
     @ApiModelProperty(value = "出厂编号")
-    private String manufactureNo = " ";
+    private String manufactureNo;
 
     @ApiModelProperty(value = "开始使用日期")
-    private String startUseDate = " ";
+    private String startUseDate;
 
     @ApiModelProperty(value = "停止使用日期")
-    private String endUseTime = " ";
+    private String endUseTime;
 
     @ApiModelProperty(value = "其它特征参数")
-    private String otherFeature = " ";
+    private String otherFeature;
 
     @ApiModelProperty(value = "计量单位")
-    private String measureUnit = " ";
+    private String measureUnit;
 
     @ApiModelProperty(value = "数量")
     private BigDecimal quantity = new BigDecimal("0");
 
     @ApiModelProperty(value = "进部件台帐时间")
-    private String inAccountTime = " ";
+    private String inAccountTime;
 
     @ApiModelProperty(value = "领用人工号")
-    private String pickNo = " ";
+    private String pickNo;
 
     @ApiModelProperty(value = "领用人姓名")
-    private String pickName = " ";
+    private String pickName;
 
     @ApiModelProperty(value = "部件状态")
-    private String equipStatus = " ";
+    private String equipStatus;
 
     @ApiModelProperty(value = "来源单号")
-    private String sourceAppNo = " ";
+    private String sourceAppNo;
 
     @ApiModelProperty(value = "来源明细号")
-    private String sourceSubNo = " ";
+    private String sourceSubNo;
 
     @ApiModelProperty(value = "安装单位")
-    private String installDealer = " ";
+    private String installDealer;
 
     @ApiModelProperty(value = "附件编号")
-    private String docId = " ";
+    private String docId;
 
     @ApiModelProperty(value = "来源线别代码")
-    private String originLineNo = " ";
+    private String originLineNo;
 
     @ApiModelProperty(value = "来源线别名称")
-    private String originLineName = " ";
+    private String originLineName;
 
     @ApiModelProperty(value = "来源线段代码")
-    private String originSegNo = " ";
+    private String originSegNo;
 
     @ApiModelProperty(value = "来源线段名称")
-    private String originSegName = " ";
+    private String originSegName;
 
     @ApiModelProperty(value = "应用线别代码")
-    private String useLineNo = " ";
+    private String useLineNo;
 
     @ApiModelProperty(value = "应用线别")
-    private String useLineName = " ";
+    private String useLineName;
 
     @ApiModelProperty(value = "应用线段代码")
-    private String useSegNo = " ";
+    private String useSegNo;
 
     @ApiModelProperty(value = "应用线段")
-    private String useSegName = " ";
+    private String useSegName;
 
     @ApiModelProperty(value = "位置一")
-    private String position1Code = " ";
+    private String position1Code;
 
     @ApiModelProperty(value = "位置一名称")
-    private String position1Name = " ";
+    private String position1Name;
 
     @ApiModelProperty(value = "位置二")
-    private String position2Code = " ";
+    private String position2Code;
 
     @ApiModelProperty(value = "位置二名称")
-    private String position2Name = " ";
+    private String position2Name;
 
     @ApiModelProperty(value = "位置三")
-    private String position3 = " ";
+    private String position3;
 
     @ApiModelProperty(value = "位置补充说明")
-    private String positionRemark = " ";
+    private String positionRemark;
 
     @ApiModelProperty(value = "备注")
-    private String remark = " ";
+    private String remark;
 
     @ApiModelProperty(value = "创建者")
-    private String recCreator = " ";
+    private String recCreator;
 
     @ApiModelProperty(value = "创建时间")
-    private String recCreateTime = " ";
+    private String recCreateTime;
 
     @ApiModelProperty(value = "修改者")
-    private String recRevisor = " ";
+    private String recRevisor;
 
     @ApiModelProperty(value = "修改时间")
-    private String recReviseTime = " ";
+    private String recReviseTime;
 
     @ApiModelProperty(value = "删除者")
-    private String recDeletor = " ";
+    private String recDeletor;
 
     @ApiModelProperty(value = "删除时间")
-    private String recDeleteTime = " ";
+    private String recDeleteTime;
 
     @ApiModelProperty(value = "删除标志")
-    private String deleteFlag = " ";
+    private String deleteFlag;
 
     @ApiModelProperty(value = "归档标记")
-    private String archiveFlag = " ";
+    private String archiveFlag;
 
     @ApiModelProperty(value = "记录状态")
-    private String recStatus = " ";
+    private String recStatus;
 
     @ApiModelProperty(value = "扩展字段1")
-    private String ext1 = " ";
+    private String ext1;
 
     @ApiModelProperty(value = "扩展字段2")
-    private String ext2 = " ";
+    private String ext2;
 
     @ApiModelProperty(value = "扩展字段3")
-    private String ext3 = " ";
+    private String ext3;
 
     @ApiModelProperty(value = "扩展字段4")
-    private String ext4 = " ";
+    private String ext4;
 
     @ApiModelProperty(value = "扩展字段5")
-    private String ext5 = " ";
+    private String ext5;
 }
