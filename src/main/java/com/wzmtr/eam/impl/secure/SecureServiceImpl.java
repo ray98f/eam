@@ -74,7 +74,7 @@ public class SecureServiceImpl implements SecureService {
                 exportList.add(map);
             }
         }
-        ExcelPortUtil.excelPort("设备分类信息", listName, exportList, null, response);
+        ExcelPortUtil.excelPort("安全/质量/消防整改信息", listName, exportList, null, response);
     }
 
     @Override
