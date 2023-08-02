@@ -2,6 +2,7 @@ package com.wzmtr.eam.mapper.secure;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
+import com.wzmtr.eam.dto.res.EquipmentChargeResDTO;
 import com.wzmtr.eam.dto.res.PillarResDTO;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,8 +18,8 @@ import java.util.Set;
  */
 @Mapper
 @Repository
-public interface SecureMapper {
-    Page<SecureCheckRecordListResDTO> query (Page<PillarResDTO> page);
+public interface SecureCheckMapper {
+    Page<SecureCheckRecordListResDTO> query (Page<SecureCheckRecordListResDTO> page);
 
     SecureCheckRecordListResDTO detail(String secRiskId);
 

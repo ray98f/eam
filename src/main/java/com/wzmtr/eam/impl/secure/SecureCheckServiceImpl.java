@@ -1,16 +1,14 @@
 package com.wzmtr.eam.impl.secure;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
-import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
-import com.wzmtr.eam.dto.req.secure.SecureCheckRecordDeleteReqDTO;
-import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
+import com.wzmtr.eam.dto.req.secure.*;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.secure.SecureMapper;
-import com.wzmtr.eam.service.secure.SecureService;
+import com.wzmtr.eam.mapper.secure.SecureCheckMapper;
+import com.wzmtr.eam.service.secure.SecureCheckService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +26,10 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class SecureServiceImpl implements SecureService {
+public class SecureCheckServiceImpl implements SecureCheckService {
 
     @Autowired
-    private SecureMapper secureMapper;
+    private SecureCheckMapper secureMapper;
 
     @Override
     public Page<SecureCheckRecordListResDTO> list(SecureCheckRecordListReqDTO reqDTO) {
@@ -79,7 +77,7 @@ public class SecureServiceImpl implements SecureService {
 
     @Override
     public void delete(SecureCheckRecordDeleteReqDTO reqDTO) {
-        if (reqDTO.getIds() != null && !reqDTO.getIds().isEmpty()) {
+        if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
             secureMapper.deleteByIds(reqDTO.getIds());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

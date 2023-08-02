@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.secure.SecureDangerSourceMapper">
+    <insert id="add">
+        INSERT INTO T_DANGER_RISK (REC_ID,  <!-- 记录编号 -->
+        DANGER_RISK_ID,  <!-- 危险源记录单号 -->
+        REC_DEPT,  <!-- 记录部门 -->
+        DANGER_RISK,  <!-- 危险源 -->
+        DANGER_RISK_RANK,  <!-- 危险源等级 -->
+        DANGER_RISK_DETAIL,  <!-- 危险源描述 -->
+        CONSEQUENSE,  <!-- 后果/伤害 -->
+        RESP_DEPT_CODE,  <!-- 责任部门 -->
+        RESP_CODE,  <!-- 责任人 -->
+        POSITION_DESC,  <!-- 地点 -->
+        POSITION1_CODE,  <!-- 位置一 -->
+        POSITION2_CODE,  <!-- 位置二 -->
+        POSITION3,  <!-- 位置三 -->
+        POSITION_REMARK,  <!-- 位置补充说明 -->
+        DANGER_RISK_PIC,  <!-- 危险源照片 -->
+        CONTROL_DETAIL,  <!-- 控制措施 -->
+        DISC_DATE,  <!-- 发现时间 -->
+        REMARK,  <!-- 备注 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->
+        )
+        VALUES (#{recId,jdbcType=VARCHAR}, #{dangerRiskId,jdbcType=VARCHAR}, #{recDept,jdbcType=VARCHAR},
+        #{dangerRisk,jdbcType=VARCHAR}, #{dangerRiskRank,jdbcType=VARCHAR}, #{dangerRiskDetail,jdbcType=VARCHAR},
+        #{consequense,jdbcType=VARCHAR}, #{respDeptCode,jdbcType=VARCHAR}, #{respCode,jdbcType=VARCHAR},
+        #{positionDesc,jdbcType=VARCHAR}, #{position1Code,jdbcType=VARCHAR}, #{position2Code,jdbcType=VARCHAR},
+        #{position3,jdbcType=VARCHAR}, #{positionRemark,jdbcType=VARCHAR}, #{dangerRiskPic,jdbcType=VARCHAR},
+        #{controlDetail,jdbcType=VARCHAR}, #{discDate,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR}, #{recCreateTime,jdbcType=VARCHAR}, #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR}, #{recDeletor,jdbcType=VARCHAR}, #{recDeleteTime,jdbcType=VARCHAR},
+        #{deleteFlag,jdbcType=VARCHAR}, #{archiveFlag,jdbcType=VARCHAR}, #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR}, #{ext3,jdbcType=VARCHAR}, #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR})
+    </insert>
+    <update id="update">
+        UPDATE T_DANGER_RISK
+        SET
+            REC_DEPT           = #{recDept},
+            DANGER_RISK        = #{dangerRisk},
+            DANGER_RISK_RANK   = #{dangerRiskRank},
+            DANGER_RISK_DETAIL = #{dangerRiskDetail},
+            CONSEQUENSE        = #{consequense},
+            RESP_DEPT_CODE     = #{respDeptCode},
+            RESP_CODE          = #{respCode},
+            POSITION_DESC      = #{positionDesc},
+            POSITION1_CODE     = #{position1Code},
+            POSITION2_CODE     = #{position2Code},
+            POSITION3          = #{position3},
+            POSITION_REMARK    = #{positionRemark},
+            DANGER_RISK_PIC    = #{dangerRiskPic},
+            CONTROL_DETAIL     = #{controlDetail},
+            DISC_DATE          = #{discDate},
+            REMARK             = #{remark},
+            REC_CREATOR        = #{recCreator},
+            REC_CREATE_TIME    = #{recCreateTime},
+            REC_REVISOR        = #{recRevisor},
+            REC_REVISE_TIME    = #{recReviseTime},
+            REC_DELETOR        = #{recDeletor},
+            REC_DELETE_TIME    = #{recDeleteTime},
+            DELETE_FLAG        = #{deleteFlag},
+            ARCHIVE_FLAG       = #{archiveFlag},
+            EXT1               = #{ext1},
+            EXT2               = #{ext2},
+            EXT3               = #{ext3},
+            EXT4               = #{ext4},
+            EXT5               = #{ext5}
+        WHERE DANGER_RISK_ID = #{dangerRiskId}
+    </update>
+
+    <delete id="deleteByIds">
+        DELETE
+        FROM T_DANGER_RISK
+        WHERE REC_ID in
+        <foreach collection="ids" item="id" index="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="query" resultType="com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO">
+        SELECT
+        REC_ID as "recId",  <!-- 记录编号 -->
+        DANGER_RISK_ID as "dangerRiskId",  <!-- 危险源记录单号 -->
+        REC_DEPT as "recDept",  <!-- 记录部门 -->
+        DANGER_RISK as "dangerRisk",  <!-- 危险源 -->
+        DANGER_RISK_RANK as "dangerRiskRank",  <!-- 危险源等级 -->
+        DANGER_RISK_DETAIL as "dangerRiskDetail",  <!-- 危险源描述 -->
+        CONSEQUENSE as "consequense",  <!-- 后果/伤害 -->
+        RESP_DEPT_CODE as "respDeptCode",  <!-- 责任部门 -->
+        RESP_CODE as "respCode",  <!-- 责任人 -->
+        POSITION_DESC as "positionDesc",  <!-- 地点 -->
+        POSITION1_CODE as "position1Code",  <!-- 位置一 -->
+        POSITION2_CODE as "position2Code",  <!-- 位置二 -->
+        POSITION3 as "position3",  <!-- 位置三 -->
+        POSITION_REMARK as "positionRemark",  <!-- 位置补充说明 -->
+        DANGER_RISK_PIC as "dangerRiskPic",  <!-- 危险源照片 -->
+        CONTROL_DETAIL as "controlDetail",  <!-- 控制措施 -->
+        DISC_DATE as "discDate",  <!-- 发现时间 -->
+        REMARK as "remark",  <!-- 备注 -->
+        REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        EXT1 as "ext1",  <!-- 扩展字段1 -->
+        EXT2 as "ext2",  <!-- 扩展字段2 -->
+        EXT3 as "ext3",  <!-- 扩展字段3 -->
+        EXT4 as "ext4",  <!-- 扩展字段4 -->
+        EXT5 as "ext5" <!-- 扩展字段5 -->
+        FROM T_DANGER_RISK WHERE 1=1
+        <if test="dangerRiskId!=null and dangerRiskId!=''">
+            and DANGER_RISK_ID = #{dangerRiskId}
+        </if>
+        <if test="discDate!=null and discDate!=''">
+            and discDate = #{discDate}
+        </if>
+        order by DANGER_RISK_ID desc
+    </select>
+    <select id="list" resultType="com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO">
+        SELECT
+        REC_ID as "recId",  <!-- 记录编号 -->
+        DANGER_RISK_ID as "dangerRiskId",  <!-- 危险源记录单号 -->
+        REC_DEPT as "recDept",  <!-- 记录部门 -->
+        DANGER_RISK as "dangerRisk",  <!-- 危险源 -->
+        DANGER_RISK_RANK as "dangerRiskRank",  <!-- 危险源等级 -->
+        DANGER_RISK_DETAIL as "dangerRiskDetail",  <!-- 危险源描述 -->
+        CONSEQUENSE as "consequense",  <!-- 后果/伤害 -->
+        RESP_DEPT_CODE as "respDeptCode",  <!-- 责任部门 -->
+        RESP_CODE as "respCode",  <!-- 责任人 -->
+        POSITION_DESC as "positionDesc",  <!-- 地点 -->
+        POSITION1_CODE as "position1Code",  <!-- 位置一 -->
+        POSITION2_CODE as "position2Code",  <!-- 位置二 -->
+        POSITION3 as "position3",  <!-- 位置三 -->
+        POSITION_REMARK as "positionRemark",  <!-- 位置补充说明 -->
+        DANGER_RISK_PIC as "dangerRiskPic",  <!-- 危险源照片 -->
+        CONTROL_DETAIL as "controlDetail",  <!-- 控制措施 -->
+        DISC_DATE as "discDate",  <!-- 发现时间 -->
+        REMARK as "remark",  <!-- 备注 -->
+        REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        EXT1 as "ext1",  <!-- 扩展字段1 -->
+        EXT2 as "ext2",  <!-- 扩展字段2 -->
+        EXT3 as "ext3",  <!-- 扩展字段3 -->
+        EXT4 as "ext4",  <!-- 扩展字段4 -->
+        EXT5 as "ext5" <!-- 扩展字段5 -->
+        FROM T_DANGER_RISK WHERE 1=1
+        <if test="dangerRiskId!=null and dangerRiskId!=''">
+            and DANGER_RISK_ID = #{dangerRiskId}
+        </if>
+        <if test="discDate!=null and discDate!=''">
+            and discDate = #{discDate}
+        </if>
+        order by DANGER_RISK_ID desc
+    </select>
+    <select id="detail" resultType="com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO">
+        SELECT
+        REC_ID as "recId",  <!-- 记录编号 -->
+        DANGER_RISK_ID as "dangerRiskId",  <!-- 危险源记录单号 -->
+        REC_DEPT as "recDept",  <!-- 记录部门 -->
+        DANGER_RISK as "dangerRisk",  <!-- 危险源 -->
+        DANGER_RISK_RANK as "dangerRiskRank",  <!-- 危险源等级 -->
+        DANGER_RISK_DETAIL as "dangerRiskDetail",  <!-- 危险源描述 -->
+        CONSEQUENSE as "consequense",  <!-- 后果/伤害 -->
+        RESP_DEPT_CODE as "respDeptCode",  <!-- 责任部门 -->
+        RESP_CODE as "respCode",  <!-- 责任人 -->
+        POSITION_DESC as "positionDesc",  <!-- 地点 -->
+        POSITION1_CODE as "position1Code",  <!-- 位置一 -->
+        POSITION2_CODE as "position2Code",  <!-- 位置二 -->
+        POSITION3 as "position3",  <!-- 位置三 -->
+        POSITION_REMARK as "positionRemark",  <!-- 位置补充说明 -->
+        DANGER_RISK_PIC as "dangerRiskPic",  <!-- 危险源照片 -->
+        CONTROL_DETAIL as "controlDetail",  <!-- 控制措施 -->
+        DISC_DATE as "discDate",  <!-- 发现时间 -->
+        REMARK as "remark",  <!-- 备注 -->
+        REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        EXT1 as "ext1",  <!-- 扩展字段1 -->
+        EXT2 as "ext2",  <!-- 扩展字段2 -->
+        EXT3 as "ext3",  <!-- 扩展字段3 -->
+        EXT4 as "ext4",  <!-- 扩展字段4 -->
+        EXT5 as "ext5" <!-- 扩展字段5 -->
+        FROM T_DANGER_RISK WHERE DANGER_RISK_ID = #{dangerRiskId}
+    </select>
+
+</mapper>

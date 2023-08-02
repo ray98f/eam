@@ -1,10 +1,7 @@
 package com.wzmtr.eam.service.secure;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
-import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
-import com.wzmtr.eam.dto.req.secure.SecureCheckRecordDeleteReqDTO;
-import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
+import com.wzmtr.eam.dto.req.secure.*;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
 
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
  * Author: Li.Wang
  * Date: 2023/8/1 10:25
  */
-public interface SecureService {
+public interface SecureCheckService {
 
     Page<SecureCheckRecordListResDTO> list(SecureCheckRecordListReqDTO reqDTO);
 
@@ -24,4 +21,5 @@ public interface SecureService {
     void delete(SecureCheckRecordDeleteReqDTO reqDTO);
 
     void add(SecureCheckAddReqDTO reqDTO);
+
 }
