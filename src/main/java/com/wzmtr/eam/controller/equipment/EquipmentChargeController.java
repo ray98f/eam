@@ -34,12 +34,12 @@ public class EquipmentChargeController {
     public PageResponse<EquipmentChargeResDTO> listEquipmentCharge(@RequestParam(required = false) @ApiParam("设备编码") String equipCode,
                                                                    @RequestParam(required = false) @ApiParam("设备名称") String equipName,
                                                                    @RequestParam(required = false) @ApiParam("充电日期") String chargeDate,
-                                                                   @RequestParam(required = false) @ApiParam("位置一") String position1Name,
+                                                                   @RequestParam(required = false) @ApiParam("位置一") String position1Code,
                                                                    @RequestParam(required = false) @ApiParam("专业") String subjectCode,
                                                                    @RequestParam(required = false) @ApiParam("系统") String systemCode,
                                                                    @RequestParam(required = false) @ApiParam("设备类别") String equipTypeCode,
                                                                    @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(equipmentChargeService.listEquipmentCharge(equipCode, equipName, chargeDate, position1Name, subjectCode, systemCode, equipTypeCode, pageReqDTO));
+        return PageResponse.of(equipmentChargeService.listEquipmentCharge(equipCode, equipName, chargeDate, position1Code, subjectCode, systemCode, equipTypeCode, pageReqDTO));
     }
 
     @GetMapping("/detail")

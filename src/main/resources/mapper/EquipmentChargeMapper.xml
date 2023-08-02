@@ -40,8 +40,8 @@
         <if test="chargeDate!=null and chargeDate!=''">
             and a.CHARGE_DATE=#{chargeDate}
         </if>
-        <if test="position1Name!=null and position1Name!=''">
-            and b.POSITION1_NAME=#{position1Name}
+        <if test="position1Code!=null and position1Code!=''">
+            and b.POSITION1_CODE=#{position1Code}
         </if>
         <if test="subjectCode!=null and subjectCode!=''">
             and b.MAJOR_CODE=#{subjectCode}

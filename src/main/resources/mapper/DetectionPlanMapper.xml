@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.specialEquip.DetectionPlanMapper">
+
+    <select id="pageDetectionPlan" resultType="com.wzmtr.eam.dto.res.DetectionPlanResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.INSTRM_PLAN_NO	as "instrmPlanNo",  <!-- 特种设备定检计划号 -->
+        a.INSTRM_PLAN_TYPE	as "instrmPlanType",  <!-- 定抽检标识 -->
+        a.ASSET_KIND_CODE	as "assetKindCode",  <!-- 特种设备分类代码 -->
+        a.PLAN_PERIOD_MARK	as "planPeriodMark",  <!-- 定检计划时期 -->
+        a.PLAN_BEGIN_DATE	as "planBeginDate",  <!-- 定检开始日期 -->
+        a.PLAN_END_DATE	as "planEndDate",  <!-- 定检结束日期 -->
+        a.USE_DEPT_CODE	as "useDeptCode",  <!-- 使用单位代码 -->
+        a.USE_DEPT_CNAME	as "useDeptCname",  <!-- 使用单位 -->
+        a.EDIT_DEPT_CODE  as "editDeptCode",
+        a.SEND_CONSIGNER_NAME	as "sendConsignerName",  <!-- 检测委托人 -->
+        a.SEND_CONSIGNER_TELE	as "sendConsignerTele",  <!-- 检测委托人电话 -->
+        a.SEC_ORG as "secOrg",
+        a.MANAGE_ORG as "manageOrg",
+        a.VERIFY_DEPT as "verifyDept",
+        a.PLAN_CREATER_NO	as "planCreaterNo",  <!-- 计划人工号 -->
+        a.PLAN_CREATER_NAME	as "planCreaterName",  <!-- 计划人 -->
+        a.PLAN_CREATE_TIME	as "planCreateTime",  <!-- 计划提醒时间 -->
+        a.PLAN_STATUS	as "planStatus",  <!-- 计划状态10:提交;20:检测中;30:完成检测 -->
+        a.PLAN_NOTE	as "planNote",  <!-- 备注 -->
+        a.WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        a.WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5" <!-- 扩展字段5 -->
+        <!--a.VERIFY_TYPE as "verifyType"-->
+        FROM T_DETECTION_PLAN a
+        <!--LEFT JOIN T_DETECTION_PLAN_DETAIL b on a.INSTRM_PLAN_NO=b.INSTRM_PLAN_NO-->
+        WHERE 1=1
+        <if test="instrmPlanNo!=null and instrmPlanNo!=''">
+            and a.INSTRM_PLAN_NO like '%' || #{instrmPlanNo} || '%'
+        </if>
+        <if test="planStatus!=null and planStatus!=''">
+            and a.PLAN_STATUS=#{planStatus}
+        </if>
+        <if test="editDeptCode!=null and editDeptCode!=''">
+            and a.EDIT_DEPT_CODE=#{editDeptCode}
+        </if>
+        <if test="planPeriodMark!=null and planPeriodMark!=''">
+            and a.PLAN_PERIOD_MARK=#{planPeriodMark}
+        </if>
+        <if test="assetKindCode!=null and assetKindCode!=''">
+            and a.ASSET_KIND_CODE=#{assetKindCode}
+        </if>
+        ORDER BY a.INSTRM_PLAN_NO desc
+    </select>
+
+    <select id="getDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.DetectionPlanResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.INSTRM_PLAN_NO	as "instrmPlanNo",  <!-- 特种设备定检计划号 -->
+        a.INSTRM_PLAN_TYPE	as "instrmPlanType",  <!-- 定抽检标识 -->
+        a.ASSET_KIND_CODE	as "assetKindCode",  <!-- 特种设备分类代码 -->
+        a.PLAN_PERIOD_MARK	as "planPeriodMark",  <!-- 定检计划时期 -->
+        a.PLAN_BEGIN_DATE	as "planBeginDate",  <!-- 定检开始日期 -->
+        a.PLAN_END_DATE	as "planEndDate",  <!-- 定检结束日期 -->
+        a.USE_DEPT_CODE	as "useDeptCode",  <!-- 使用单位代码 -->
+        a.USE_DEPT_CNAME	as "useDeptCname",  <!-- 使用单位 -->
+        a.EDIT_DEPT_CODE  as "editDeptCode",
+        a.SEND_CONSIGNER_NAME	as "sendConsignerName",  <!-- 检测委托人 -->
+        a.SEND_CONSIGNER_TELE	as "sendConsignerTele",  <!-- 检测委托人电话 -->
+        a.SEC_ORG as "secOrg",
+        a.MANAGE_ORG as "manageOrg",
+        a.VERIFY_DEPT as "verifyDept",
+        a.PLAN_CREATER_NO	as "planCreaterNo",  <!-- 计划人工号 -->
+        a.PLAN_CREATER_NAME	as "planCreaterName",  <!-- 计划人 -->
+        a.PLAN_CREATE_TIME	as "planCreateTime",  <!-- 计划提醒时间 -->
+        a.PLAN_STATUS	as "planStatus",  <!-- 计划状态10:提交;20:检测中;30:完成检测 -->
+        a.PLAN_NOTE	as "planNote",  <!-- 备注 -->
+        a.WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        a.WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5" <!-- 扩展字段5 -->
+        <!--a.VERIFY_TYPE as "verifyType"-->
+        FROM T_DETECTION_PLAN a
+        <!--LEFT JOIN T_DETECTION_PLAN_DETAIL b on a.INSTRM_PLAN_NO=b.INSTRM_PLAN_NO-->
+        WHERE 1=1 and REC_ID=#{id}
+    </select>
+
+    <select id="getMaxCode" resultType="java.lang.String">
+        SELECT max(INSTRM_PLAN_NO)
+        FROM T_DETECTION_PLAN
+    </select>
+
+    <insert id="addDetectionPlan">
+        INSERT INTO T_DETECTION_PLAN (
+        REC_ID,  <!-- 记录编号 -->
+        INSTRM_PLAN_NO,  <!-- 特种设备定检计划号 -->
+        INSTRM_PLAN_TYPE,  <!-- 定抽检标识 -->
+        ASSET_KIND_CODE,  <!-- 特种设备分类代码 -->
+        PLAN_PERIOD_MARK,  <!-- 定检计划时期 -->
+        PLAN_BEGIN_DATE,  <!-- 定检开始日期 -->
+        PLAN_END_DATE,  <!-- 定检结束日期 -->
+        USE_DEPT_CODE,  <!-- 使用单位代码 -->
+        USE_DEPT_CNAME,  <!-- 使用单位 -->
+        EDIT_DEPT_CODE,
+        VERIFY_DEPT,
+        <!--VERIFY_TYPE,-->
+        PLAN_CREATER_NO,  <!-- 计划人工号 -->
+        PLAN_CREATER_NAME,  <!-- 计划人 -->
+        PLAN_CREATE_TIME,  <!-- 计划提醒时间 -->
+        PLAN_STATUS,  <!-- 计划状态10:提交;20:检测中;30:完成检测 -->
+        PLAN_NOTE,  <!-- 备注 -->
+        WORK_FLOW_INST_ID,  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS,  <!-- 工作流实例状态 -->
+        COMPANY_CODE,  <!-- 公司代码 -->
+        COMPANY_NAME,  <!-- 公司名称 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REC_STATUS,  <!-- 记录状态 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5, <!-- 扩展字段5 -->
+        MANAGE_ORG,
+        SEC_ORG,
+        SEND_CONSIGNER_NAME,  <!-- 检测委托人 -->
+        SEND_CONSIGNER_TELE  <!-- 检测委托人电话 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{instrmPlanNo,jdbcType=VARCHAR},
+        #{instrmPlanType,jdbcType=VARCHAR},
+        #{assetKindCode,jdbcType=VARCHAR},
+        #{planPeriodMark,jdbcType=VARCHAR},
+        #{planBeginDate,jdbcType=VARCHAR},
+        #{planEndDate,jdbcType=VARCHAR},
+        #{useDeptCode,jdbcType=VARCHAR},
+        #{useDeptCname,jdbcType=VARCHAR},
+        #{editDeptCode,jdbcType=VARCHAR},
+        #{verifyDept,jdbcType=VARCHAR},
+        #{planCreaterNo,jdbcType=VARCHAR},
+        #{planCreaterName,jdbcType=VARCHAR},
+        #{planCreateTime,jdbcType=VARCHAR},
+        #{planStatus,jdbcType=VARCHAR},
+        #{planNote,jdbcType=VARCHAR},
+        #{workFlowInstId,jdbcType=VARCHAR},
+        #{workFlowInstStatus,jdbcType=VARCHAR},
+        #{companyCode,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{recStatus,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR},
+        #{manageOrg,jdbcType=VARCHAR},
+        #{secOrg,jdbcType=VARCHAR},
+        #{sendConsignerName,jdbcType=VARCHAR},
+        #{sendConsignerTele,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="hasDetail" resultType="java.lang.String">
+        SELECT 1 FROM T_DETECTION_PLAN_DETAIL WHERE INSTRM_PLAN_NO=#{instrmPlanNo}
+    </select>
+    
+    <update id="modifyDetectionPlan">
+        UPDATE T_DETECTION_PLAN SET
+        INSTRM_PLAN_NO	= #{instrmPlanNo},   <!-- 特种设备定检计划号 -->
+        INSTRM_PLAN_TYPE	= #{instrmPlanType},   <!-- 定抽检标识 -->
+        ASSET_KIND_CODE	= #{assetKindCode},   <!-- 特种设备分类代码 -->
+        PLAN_PERIOD_MARK	= #{planPeriodMark},   <!-- 定检计划时期 -->
+        PLAN_BEGIN_DATE	= #{planBeginDate},   <!-- 定检开始日期 -->
+        PLAN_END_DATE	= #{planEndDate},   <!-- 定检结束日期 -->
+        USE_DEPT_CODE	= #{useDeptCode},   <!-- 使用单位代码 -->
+        USE_DEPT_CNAME	= #{useDeptCname},   <!-- 使用单位 -->
+        PLAN_CREATER_NO	= #{planCreaterNo},   <!-- 计划人工号 -->
+        PLAN_CREATER_NAME	= #{planCreaterName},   <!-- 计划人 -->
+        PLAN_CREATE_TIME	= #{planCreateTime},   <!-- 计划提醒时间 -->
+        PLAN_STATUS	= #{planStatus},   <!-- 计划状态10:提交;20:检测中;30:完成检测 -->
+        PLAN_NOTE	= #{planNote},   <!-- 备注 -->
+        WORK_FLOW_INST_ID	= #{workFlowInstId},   <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	= #{workFlowInstStatus},   <!-- 工作流实例状态 -->
+        COMPANY_CODE	= #{companyCode},   <!-- 公司代码 -->
+        COMPANY_NAME	= #{companyName},   <!-- 公司名称 -->
+        REC_CREATOR	= #{recCreator},   <!-- 创建者 -->
+        REC_CREATE_TIME	= #{recCreateTime},   <!-- 创建时间 -->
+        REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME	= #{recReviseTime},   <!-- 修改时间 -->
+        REC_DELETOR	= #{recDeletor},   <!-- 删除者 -->
+        REC_DELETE_TIME	= #{recDeleteTime},   <!-- 删除时间 -->
+        SEND_CONSIGNER_NAME	= #{sendConsignerName},   <!-- 检测委托人 -->
+        SEND_CONSIGNER_TELE	= #{sendConsignerTele},   <!-- 检测委托人电话 -->
+        MANAGE_ORG	= #{manageOrg},   <!-- 管理部门 -->
+        SEC_ORG	= #{secOrg},   <!-- 维管部门 -->
+        ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+        REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
+        EXT1	= #{ext1},   <!-- 扩展字段1 -->
+        EXT2	= #{ext2},   <!-- 扩展字段2 -->
+        EXT3	= #{ext3},   <!-- 扩展字段3 -->
+        EXT4	= #{ext4},   <!-- 扩展字段4 -->
+        EXT5	= #{ext5} <!-- 扩展字段5 -->
+        <!--VERIFY_TYPE = #{verifyType}-->
+        WHERE REC_ID = #{recId}
+    </update>
+
+    <delete id="deleteDetectionPlanDetail">
+        UPDATE T_DETECTION_PLAN_DETAIL SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE INSTRM_PLAN_NO=#{instrmPlanNo}
+    </delete>
+
+    <update id="deleteDetectionPlan">
+        UPDATE T_DETECTION_PLAN SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID=#{id}
+    </update>
+
+    <select id="listDetectionPlan" resultType="com.wzmtr.eam.dto.res.DetectionPlanResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.INSTRM_PLAN_NO	as "instrmPlanNo",  <!-- 特种设备定检计划号 -->
+        a.INSTRM_PLAN_TYPE	as "instrmPlanType",  <!-- 定抽检标识 -->
+        a.ASSET_KIND_CODE	as "assetKindCode",  <!-- 特种设备分类代码 -->
+        a.PLAN_PERIOD_MARK	as "planPeriodMark",  <!-- 定检计划时期 -->
+        a.PLAN_BEGIN_DATE	as "planBeginDate",  <!-- 定检开始日期 -->
+        a.PLAN_END_DATE	as "planEndDate",  <!-- 定检结束日期 -->
+        a.USE_DEPT_CODE	as "useDeptCode",  <!-- 使用单位代码 -->
+        a.USE_DEPT_CNAME	as "useDeptCname",  <!-- 使用单位 -->
+        a.EDIT_DEPT_CODE  as "editDeptCode",
+        a.SEND_CONSIGNER_NAME	as "sendConsignerName",  <!-- 检测委托人 -->
+        a.SEND_CONSIGNER_TELE	as "sendConsignerTele",  <!-- 检测委托人电话 -->
+        a.SEC_ORG as "secOrg",
+        a.MANAGE_ORG as "manageOrg",
+        a.VERIFY_DEPT as "verifyDept",
+        a.PLAN_CREATER_NO	as "planCreaterNo",  <!-- 计划人工号 -->
+        a.PLAN_CREATER_NAME	as "planCreaterName",  <!-- 计划人 -->
+        a.PLAN_CREATE_TIME	as "planCreateTime",  <!-- 计划提醒时间 -->
+        a.PLAN_STATUS	as "planStatus",  <!-- 计划状态10:提交;20:检测中;30:完成检测 -->
+        a.PLAN_NOTE	as "planNote",  <!-- 备注 -->
+        a.WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        a.WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5" <!-- 扩展字段5 -->
+        <!--a.VERIFY_TYPE as "verifyType"-->
+        FROM T_DETECTION_PLAN a
+        <!--LEFT JOIN T_DETECTION_PLAN_DETAIL b on a.INSTRM_PLAN_NO=b.INSTRM_PLAN_NO-->
+        WHERE 1=1
+        <if test="instrmPlanNo!=null and instrmPlanNo!=''">
+            and a.INSTRM_PLAN_NO like '%' || #{instrmPlanNo} || '%'
+        </if>
+        <if test="planStatus!=null and planStatus!=''">
+            and a.PLAN_STATUS=#{planStatus}
+        </if>
+        <if test="editDeptCode!=null and editDeptCode!=''">
+            and a.EDIT_DEPT_CODE=#{editDeptCode}
+        </if>
+        <if test="planPeriodMark!=null and planPeriodMark!=''">
+            and a.PLAN_PERIOD_MARK=#{planPeriodMark}
+        </if>
+        <if test="assetKindCode!=null and assetKindCode!=''">
+            and a.ASSET_KIND_CODE=#{assetKindCode}
+        </if>
+        ORDER BY a.INSTRM_PLAN_NO desc
+    </select>
+
+    <select id="pageDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.DetectionPlanDetailResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.INSTRM_PLAN_NO	as "instrmPlanNo",  <!-- 特种设备检测计划号 -->
+        a.EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        a.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
+        a.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
+        a.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
+        a.INSTALLATION_UNIT	as "installationUnit",  <!-- 安装单位 -->
+        a.VERIFY_DEPT	as "verifyDept",  <!-- 检测校准单位 -->
+        a.VERIFY_PERIOD	as "verifyPeriod",  <!-- 检测周期(天) -->
+        a.PLAN_BEGIN_DATE	as "planBeginDate",  <!-- 计划开始时间 -->
+        a.PLAN_END_DATE	as "planEndDate",  <!-- 计划完成时间 -->
+        a.EQUIPMENT_STATE	as "equipmentState",  <!-- 设备状态（封存、停用、报废和注销） -->
+        a.USE_DEPT_PLACE	as "useDeptPlace",  <!-- 设备使用地点 -->
+        a.EQUIPMENT_REG_CODE	as "equipmentRegCode",  <!-- 设备注册登记代码 -->
+        a.SECURITY_MANAGER	as "securityManager",  <!-- 安全管理人员 -->
+        a.SECURITY_CONTACT	as "securityContact",  <!-- 安全管理人员联系方式 -->
+        a.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
+        a.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
+        a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        a.POSITION3	as "position3",  <!-- 位置三 -->
+        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        se31.EQUIP_INNER_NO as "equipInnerNo",
+        <!--b.SEND_VERIFY_NO as "sendVerifyNo",-->
+        e.CHECK_NO as "checkNo",
+        d.VERIFY_DATE as "verifyDate",
+        d.VERIFY_VALIDITY_DATE as "verifyValidityDate"
+        FROM T_DETECTION_PLAN_DETAIL a
+        LEFT JOIN T_DETECTION_DETAIL b ON a.REC_ID=b.TESTLIST_DETAIL_REC_ID
+        LEFT JOIN T_DETECTION e ON b.TEST_REC_ID = e.REC_ID
+        LEFT JOIN T_EQUIPMENT d ON a.EQUIP_CODE=d.EQUIP_CODE
+        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
+        WHERE 1=1 and a.INSTRM_PLAN_NO=#{instrmPlanNo}
+        order by a.EQUIP_CODE asc
+    </select>
+
+    <select id="getDetectionPlanDetailDetail" resultType="com.wzmtr.eam.dto.res.DetectionPlanDetailResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.INSTRM_PLAN_NO	as "instrmPlanNo",  <!-- 特种设备检测计划号 -->
+        a.EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        a.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
+        a.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
+        a.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
+        a.INSTALLATION_UNIT	as "installationUnit",  <!-- 安装单位 -->
+        a.VERIFY_DEPT	as "verifyDept",  <!-- 检测校准单位 -->
+        a.VERIFY_PERIOD	as "verifyPeriod",  <!-- 检测周期(天) -->
+        a.PLAN_BEGIN_DATE	as "planBeginDate",  <!-- 计划开始时间 -->
+        a.PLAN_END_DATE	as "planEndDate",  <!-- 计划完成时间 -->
+        a.EQUIPMENT_STATE	as "equipmentState",  <!-- 设备状态（封存、停用、报废和注销） -->
+        a.USE_DEPT_PLACE	as "useDeptPlace",  <!-- 设备使用地点 -->
+        a.EQUIPMENT_REG_CODE	as "equipmentRegCode",  <!-- 设备注册登记代码 -->
+        a.SECURITY_MANAGER	as "securityManager",  <!-- 安全管理人员 -->
+        a.SECURITY_CONTACT	as "securityContact",  <!-- 安全管理人员联系方式 -->
+        a.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
+        a.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
+        a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        a.POSITION3	as "position3",  <!-- 位置三 -->
+        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        se31.EQUIP_INNER_NO as "equipInnerNo",
+        <!--b.SEND_VERIFY_NO as "sendVerifyNo",-->
+        e.CHECK_NO as "checkNo",
+        d.VERIFY_DATE as "verifyDate",
+        d.VERIFY_VALIDITY_DATE as "verifyValidityDate"
+        FROM T_DETECTION_PLAN_DETAIL a
+        LEFT JOIN T_DETECTION_DETAIL b ON a.REC_ID=b.TESTLIST_DETAIL_REC_ID
+        LEFT JOIN T_DETECTION e ON b.TEST_REC_ID = e.REC_ID
+        LEFT JOIN T_EQUIPMENT d ON a.EQUIP_CODE=d.EQUIP_CODE
+        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
+        WHERE 1=1 and a.REC_ID=#{id}
+        order by a.EQUIP_CODE asc
+    </select>
+
+    <insert id="addDetectionPlanDetail">
+        INSERT INTO T_DETECTION_PLAN_DETAIL (
+        REC_ID,  <!-- 记录编号 -->
+        INSTRM_PLAN_NO,  <!-- 特种设备检测计划号 -->
+        EQUIP_CODE,  <!-- 设备代码 -->
+        EQUIP_NAME,  <!-- 设备名称 -->
+        MAT_SPECIFI,  <!-- 型号规格 -->
+        MANUFACTURE_NO,  <!-- 出厂编号 -->
+        MANUFACTURE,  <!-- 生产厂家 -->
+        INSTALLATION_UNIT,  <!-- 安装单位 -->
+        VERIFY_DEPT,  <!-- 检测校准单位 -->
+        VERIFY_PERIOD,  <!-- 检测周期(天) -->
+        PLAN_BEGIN_DATE,  <!-- 计划开始时间 -->
+        PLAN_END_DATE,  <!-- 计划完成时间 -->
+        EQUIPMENT_STATE,  <!-- 设备状态（封存、停用、报废和注销） -->
+        USE_DEPT_PLACE,  <!-- 设备使用地点 -->
+        EQUIPMENT_REG_CODE,  <!-- 设备注册登记代码 -->
+        SECURITY_MANAGER,  <!-- 安全管理人员 -->
+        SECURITY_CONTACT,  <!-- 安全管理人员联系方式 -->
+        POSITION1_CODE,  <!-- 位置一 -->
+        POSITION1_NAME,  <!-- 位置一名称 -->
+        POSITION2_CODE,  <!-- 位置二 -->
+        POSITION2_NAME,  <!-- 位置二名称 -->
+        POSITION3,  <!-- 位置三 -->
+        POSITION_REMARK,  <!-- 位置补充说明 -->
+        VERIFY_NOTE,  <!-- 备注 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REC_STATUS,  <!-- 记录状态 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{instrmPlanNo,jdbcType=VARCHAR},
+        #{equipCode,jdbcType=VARCHAR},
+        #{equipName,jdbcType=VARCHAR},
+        #{matSpecifi,jdbcType=VARCHAR},
+        #{manufactureNo,jdbcType=VARCHAR},
+        #{manufacture,jdbcType=VARCHAR},
+        #{installationUnit,jdbcType=VARCHAR},
+        #{verifyDept,jdbcType=VARCHAR},
+        #{verifyPeriod,jdbcType=NUMERIC},
+        #{planBeginDate,jdbcType=VARCHAR},
+        #{planEndDate,jdbcType=VARCHAR},
+        #{equipmentState,jdbcType=VARCHAR},
+        #{useDeptPlace,jdbcType=VARCHAR},
+        #{equipmentRegCode,jdbcType=VARCHAR},
+        #{securityManager,jdbcType=VARCHAR},
+        #{securityContact,jdbcType=VARCHAR},
+        #{position1Code,jdbcType=VARCHAR},
+        #{position1Name,jdbcType=VARCHAR},
+        #{position2Code,jdbcType=VARCHAR},
+        #{position2Name,jdbcType=VARCHAR},
+        #{position3,jdbcType=VARCHAR},
+        #{positionRemark,jdbcType=VARCHAR},
+        #{verifyNote,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{recStatus,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+    
+    <update id="modifyDetectionPlanDetail">
+        UPDATE T_DETECTION_PLAN_DETAIL SET
+        INSTRM_PLAN_NO	= #{instrmPlanNo},   <!-- 特种设备检测计划号 -->
+        EQUIP_CODE	= #{equipCode},   <!-- 设备代码 -->
+        EQUIP_NAME	= #{equipName},   <!-- 设备名称 -->
+        MAT_SPECIFI	= #{matSpecifi},   <!-- 型号规格 -->
+        MANUFACTURE_NO	= #{manufactureNo},   <!-- 出厂编号 -->
+        MANUFACTURE	= #{manufacture},   <!-- 生产厂家 -->
+        INSTALLATION_UNIT	= #{installationUnit},   <!-- 安装单位 -->
+        VERIFY_DEPT	= #{verifyDept},   <!-- 检测校准单位 -->
+        VERIFY_PERIOD	= #{verifyPeriod:NUMERIC},   <!-- 检测周期(天) -->
+        PLAN_BEGIN_DATE	= #{planBeginDate},   <!-- 计划开始时间 -->
+        PLAN_END_DATE	= #{planEndDate},   <!-- 计划完成时间 -->
+        EQUIPMENT_STATE	= #{equipmentState},   <!-- 设备状态（封存、停用、报废和注销） -->
+        USE_DEPT_PLACE	= #{useDeptPlace},   <!-- 设备使用地点 -->
+        EQUIPMENT_REG_CODE	= #{equipmentRegCode},   <!-- 设备注册登记代码 -->
+        SECURITY_MANAGER	= #{securityManager},   <!-- 安全管理人员 -->
+        SECURITY_CONTACT	= #{securityContact},   <!-- 安全管理人员联系方式 -->
+        POSITION1_CODE	= #{position1Code},   <!-- 位置一 -->
+        POSITION1_NAME	= #{position1Name},   <!-- 位置一名称 -->
+        POSITION2_CODE	= #{position2Code},   <!-- 位置二 -->
+        POSITION2_NAME	= #{position2Name},   <!-- 位置二名称 -->
+        POSITION3	= #{position3},   <!-- 位置三 -->
+        POSITION_REMARK	= #{positionRemark},   <!-- 位置补充说明 -->
+        VERIFY_NOTE	= #{verifyNote},   <!-- 备注 -->
+        REC_CREATOR	= #{recCreator},   <!-- 创建者 -->
+        REC_CREATE_TIME	= #{recCreateTime},   <!-- 创建时间 -->
+        REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME	= #{recReviseTime},   <!-- 修改时间 -->
+        REC_DELETOR	= #{recDeletor},   <!-- 删除者 -->
+        REC_DELETE_TIME	= #{recDeleteTime},   <!-- 删除时间 -->
+        ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+        REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
+        EXT1	= #{ext1},   <!-- 扩展字段1 -->
+        EXT2	= #{ext2},   <!-- 扩展字段2 -->
+        EXT3	= #{ext3},   <!-- 扩展字段3 -->
+        EXT4	= #{ext4},   <!-- 扩展字段4 -->
+        EXT5	= #{ext5}  <!-- 扩展字段5 -->
+        WHERE REC_ID = #{recId}
+    </update>
+
+    <select id="listDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.DetectionPlanDetailResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.INSTRM_PLAN_NO	as "instrmPlanNo",  <!-- 特种设备检测计划号 -->
+        a.EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        a.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
+        a.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
+        a.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
+        a.INSTALLATION_UNIT	as "installationUnit",  <!-- 安装单位 -->
+        a.VERIFY_DEPT	as "verifyDept",  <!-- 检测校准单位 -->
+        a.VERIFY_PERIOD	as "verifyPeriod",  <!-- 检测周期(天) -->
+        a.PLAN_BEGIN_DATE	as "planBeginDate",  <!-- 计划开始时间 -->
+        a.PLAN_END_DATE	as "planEndDate",  <!-- 计划完成时间 -->
+        a.EQUIPMENT_STATE	as "equipmentState",  <!-- 设备状态（封存、停用、报废和注销） -->
+        a.USE_DEPT_PLACE	as "useDeptPlace",  <!-- 设备使用地点 -->
+        a.EQUIPMENT_REG_CODE	as "equipmentRegCode",  <!-- 设备注册登记代码 -->
+        a.SECURITY_MANAGER	as "securityManager",  <!-- 安全管理人员 -->
+        a.SECURITY_CONTACT	as "securityContact",  <!-- 安全管理人员联系方式 -->
+        a.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
+        a.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
+        a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        a.POSITION3	as "position3",  <!-- 位置三 -->
+        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        se31.EQUIP_INNER_NO as "equipInnerNo",
+        <!--b.SEND_VERIFY_NO as "sendVerifyNo",-->
+        e.CHECK_NO as "checkNo",
+        d.VERIFY_DATE as "verifyDate",
+        d.VERIFY_VALIDITY_DATE as "verifyValidityDate"
+        FROM T_DETECTION_PLAN_DETAIL a
+        LEFT JOIN T_DETECTION_DETAIL b ON a.REC_ID=b.TESTLIST_DETAIL_REC_ID
+        LEFT JOIN T_DETECTION e ON b.TEST_REC_ID = e.REC_ID
+        LEFT JOIN T_EQUIPMENT d ON a.EQUIP_CODE=d.EQUIP_CODE
+        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
+        WHERE 1=1 and a.INSTRM_PLAN_NO=#{instrmPlanNo}
+        order by a.EQUIP_CODE asc
+    </select>
+
+</mapper>

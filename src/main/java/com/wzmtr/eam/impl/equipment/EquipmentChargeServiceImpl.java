@@ -31,10 +31,10 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
     private EquipmentChargeMapper equipmentChargeMapper;
 
     @Override
-    public Page<EquipmentChargeResDTO> listEquipmentCharge(String equipCode, String equipName, String chargeDate, String position1Name,
+    public Page<EquipmentChargeResDTO> listEquipmentCharge(String equipCode, String equipName, String chargeDate, String position1Code,
                                                            String subjectCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return equipmentChargeMapper.pageEquipmentCharge(pageReqDTO.of(), equipCode, equipName, chargeDate, position1Name, subjectCode, systemCode, equipTypeCode);
+        return equipmentChargeMapper.pageEquipmentCharge(pageReqDTO.of(), equipCode, equipName, chargeDate, position1Code, subjectCode, systemCode, equipTypeCode);
     }
 
     @Override

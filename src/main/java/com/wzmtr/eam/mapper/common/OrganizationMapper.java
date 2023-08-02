@@ -45,4 +45,6 @@ public interface OrganizationMapper {
 
     String selectCompanyIdByOfficeId(@Param("officeId") String officeId);
 
+    String getExtraOrgByAreaId(@Param("areaId") String areaId);
+
 }

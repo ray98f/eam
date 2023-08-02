@@ -45,12 +45,8 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void addEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
-        Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
-        if (result > 0) {
-            throw new CommonException(ErrorCode.DATA_EXIST);
-        }
         equipmentRoomReqDTO.setRecId(TokenUtil.getUuId());
-        equipmentRoomReqDTO.setEquipRoomCode(CodeUtils.getNextCode(equipmentRoomMapper.selectMaxEquipmentRoomCode()));
+        equipmentRoomReqDTO.setEquipRoomCode(CodeUtils.getNextCode(equipmentRoomMapper.selectMaxEquipmentRoomCode(), 1));
         equipmentRoomReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         equipmentRoomReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         equipmentRoomMapper.addEquipmentRoom(equipmentRoomReqDTO);
@@ -58,10 +54,6 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void modifyEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
-        Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
-        if (result > 0) {
-            throw new CommonException(ErrorCode.DATA_EXIST);
-        }
         equipmentRoomReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         equipmentRoomReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         equipmentRoomMapper.modifyEquipmentRoom(equipmentRoomReqDTO);

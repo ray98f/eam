@@ -311,7 +311,7 @@ public class TransferServiceImpl implements TransferService {
                                     equipmentPartReqDTO.setRecId(TokenUtil.getUuId());
                                     equipmentPartReqDTO.setEquipCode(resDTO.getEquipCode());
                                     equipmentPartReqDTO.setEquipName(resDTO.getEquipName());
-                                    equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode()));
+                                    equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode(), 1));
                                     equipmentPartReqDTO.setPartName(bom.getCname());
                                     equipmentPartReqDTO.setBomEname(bom.getEname());
                                     equipmentPartReqDTO.setInAccountTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

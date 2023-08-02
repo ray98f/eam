@@ -88,7 +88,7 @@ public class EquipmentCategoryController {
     }
 
     @GetMapping("/getChild")
-    @ApiOperation(value = "获取设备分类子集")
+        @ApiOperation(value = "获取设备分类子集")
     public DataResponse<List<EquipmentCategoryResDTO>> getChildEquipmentCategory(@RequestParam String code) {
         return DataResponse.of(equipmentCategoryService.getChildEquipmentCategory(code));
     }

@@ -111,7 +111,9 @@ public enum ErrorCode {
     SELECT_NOTHING(32000036, "select.nothing"),
     REQUIRED_NULL(32000037, "required.null"),
     EQUIP_CODE_ERROR(32000038, "equip.code.error"),
-    CREATOR_USER_ERROR(32000039, "creator.user.error"),;
+    CREATOR_USER_ERROR(32000039, "creator.user.error"),
+    CAN_NOT_MODIFY(32000040, "can.not.modify"),
+    PLAN_HAS_DETAIL(32000041, "plan.has.detail"),;
 
     private Integer code;
 
