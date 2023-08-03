@@ -97,8 +97,4 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         secureMapper.add(reqDTO);
     }
 
-    @Override
-    public void update(SecureCheckAddReqDTO reqDTO) {
-
-    }
 }

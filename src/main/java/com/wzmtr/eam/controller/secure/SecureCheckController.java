@@ -55,10 +55,5 @@ public class SecureCheckController {
                        HttpServletResponse response) {
         secureService.export(secRiskId,inspectDate,restoreDesc,workFlowInstStatus,response);
     }
-    @ApiOperation(value = "安全/质量/消防/-检查问题单导出")
-    @PostMapping ("/record/update")
-    public void update(@RequestBody SecureCheckAddReqDTO reqDTO) {
-        secureService.update(reqDTO);
-    }
 
 }

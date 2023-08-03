@@ -137,6 +137,15 @@
             <if test="riskId!=null and riskId!=''">
                 and RISK_ID = #{riskId}
             </if>
+            <if test="riskRank!=null and riskRank!=''">
+                and RISK_RANK = #{riskRank}
+            </if>
+            <if test="restoreDesc!=null and restoreDesc!=''">
+                and RESTORE_DESC = #{restoreDesc}
+            </if>
+            <if test="restoreDesc!=null and restoreDesc!=''">
+                and RESTORE_DESC = #{restoreDesc}
+            </if>
         </trim>
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.secure.SecureHazardResDTO">

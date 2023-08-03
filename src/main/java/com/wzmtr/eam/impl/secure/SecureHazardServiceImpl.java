@@ -108,4 +108,9 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         hazardMapper.update(reqDTO);
     }
+
+    @Override
+    public void finalExam(SecureHazardReqDTO reqDTO) {
+    //todo
+    }
 }

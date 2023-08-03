@@ -70,4 +70,11 @@ public class SecureHazardController {
         secureHazardService.delete(reqDTO);
         return DataResponse.success();
     }
+    @ApiOperation(value ="确认")
+    @PostMapping("/final/exam")
+    public DataResponse<SecureHazardResDTO> finalExam (@RequestBody SecureHazardReqDTO reqDTO) {
+        secureHazardService.finalExam(reqDTO);
+        return DataResponse.success();
+    }
+
 }
