@@ -2,48 +2,48 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.secure.SecureCheckMapper">
     <sql id="baseColumn">
-        REC_ID	as "recId",  <!-- 记录编号 -->
-        SEC_RISK_ID	as "secRiskId",  <!-- 安全隐患单号 -->
-        INSPECT_DATE	as "inspectDate",  <!-- 发现日期 -->
-        SEC_RISK_DETAIL	as "secRiskDetail",  <!-- 隐患内容 -->
-        INSPECT_DEPT_CODE	as "inspectDeptCode",  <!-- 检查部门 -->
-        INSPECTOR_CODE	as "inspectorCode",  <!-- 检查人 -->
-        POSITION_DESC	as "positionDesc",  <!-- 地点 -->
-        POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
-        POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
-        POSITION3	as "position3",  <!-- 位置三 -->
-        POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
-        SEC_RISK_PIC	as "secRiskPic",  <!-- 隐患照片 -->
-        RESTORE_DETAIL	as "restoreDetail",  <!-- 整改措施 -->
-        PLAN_DATE	as "planDate",  <!-- 计划完成日期 -->
-        RESTORE_DEPT_CODE	as "restoreDeptCode",  <!-- 整改部门 -->
-        RESTORE_PIC	as "restorePic",  <!-- 整改照片 -->
-        RESTORE_DESC	as "restoreDesc",  <!-- 整改情况 -->
-        EXAMINER_CODE	as "examinerCode",  <!-- 复查人 -->
-        EXAM_DATE	as "examDate",  <!-- 复查日期 -->
-        COMPLETION_DETAIL	as "completionDetail",  <!-- 完成情况 -->
-        UNDONE_DESC	as "undoneDesc",  <!-- 未整改原因及建议 -->
-        LAST_PLAN_DATE	as "lastPlanDate",  <!-- 最终计划完成日期 -->
-        LAST_CHECKER_ID	as "lastCheckerId",  <!-- 追查人 -->
-        LAST_CHECK_DATE	as "lastCheckDate",  <!-- 追查日期 -->
-        IS_RESTORED	as "isRestored",  <!-- 是否整改 -->
-        PLAN_NOTE	as "planNote",  <!-- 备注 -->
-        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
-        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
-        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
-        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
-        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
-        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
-        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
-        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
-        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        EXT1	as "ext1",  <!-- 扩展字段1 -->
-        EXT2	as "ext2",  <!-- 扩展字段2 -->
-        EXT3	as "ext3",  <!-- 扩展字段3 -->
-        EXT4	as "ext4",  <!-- 扩展字段4 -->
-        EXT5	as "ext5" <!-- 扩展字段5 -->
+        REC_ID as "recId",  <!-- 记录编号 -->
+        SEC_RISK_ID as "secRiskId",  <!-- 安全隐患单号 -->
+        INSPECT_DATE as "inspectDate",  <!-- 发现日期 -->
+        SEC_RISK_DETAIL as "secRiskDetail",  <!-- 隐患内容 -->
+        INSPECT_DEPT_CODE as "inspectDeptCode",  <!-- 检查部门 -->
+        INSPECTOR_CODE as "inspectorCode",  <!-- 检查人 -->
+        POSITION_DESC as "positionDesc",  <!-- 地点 -->
+        POSITION1_CODE as "position1Code",  <!-- 位置一 -->
+        POSITION2_CODE as "position2Code",  <!-- 位置二 -->
+        POSITION3 as "position3",  <!-- 位置三 -->
+        POSITION_REMARK as "positionRemark",  <!-- 位置补充说明 -->
+        SEC_RISK_PIC as "secRiskPic",  <!-- 隐患照片 -->
+        RESTORE_DETAIL as "restoreDetail",  <!-- 整改措施 -->
+        PLAN_DATE as "planDate",  <!-- 计划完成日期 -->
+        RESTORE_DEPT_CODE as "restoreDeptCode",  <!-- 整改部门 -->
+        RESTORE_PIC as "restorePic",  <!-- 整改照片 -->
+        RESTORE_DESC as "restoreDesc",  <!-- 整改情况 -->
+        EXAMINER_CODE as "examinerCode",  <!-- 复查人 -->
+        EXAM_DATE as "examDate",  <!-- 复查日期 -->
+        COMPLETION_DETAIL as "completionDetail",  <!-- 完成情况 -->
+        UNDONE_DESC as "undoneDesc",  <!-- 未整改原因及建议 -->
+        LAST_PLAN_DATE as "lastPlanDate",  <!-- 最终计划完成日期 -->
+        LAST_CHECKER_ID as "lastCheckerId",  <!-- 追查人 -->
+        LAST_CHECK_DATE as "lastCheckDate",  <!-- 追查日期 -->
+        IS_RESTORED as "isRestored",  <!-- 是否整改 -->
+        PLAN_NOTE as "planNote",  <!-- 备注 -->
+        WORK_FLOW_INST_ID as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        EXT1 as "ext1",  <!-- 扩展字段1 -->
+        EXT2 as "ext2",  <!-- 扩展字段2 -->
+        EXT3 as "ext3",  <!-- 扩展字段3 -->
+        EXT4 as "ext4",  <!-- 扩展字段4 -->
+        EXT5 as "ext5" <!-- 扩展字段5 -->
     </sql>
     <insert id="add">
         INSERT INTO T_SEC_RISK (REC_ID,  <!-- 记录编号 -->
@@ -90,9 +90,9 @@
         EXT5  <!-- 扩展字段5 -->
         )
         VALUES(
-       #{recId,jdbcType=VARCHAR},
-       #{secRiskId,jdbcType=VARCHAR},
-       #{inspectDate,jdbcType=VARCHAR},#{secRiskDetail,jdbcType=VARCHAR},#{inspectDeptCode,jdbcType=VARCHAR},#{inspectorCode,jdbcType=VARCHAR},#{positionDesc,jdbcType=VARCHAR},#{position1Code,jdbcType=VARCHAR},#{position2Code,jdbcType=VARCHAR},#{position3,jdbcType=VARCHAR},#{positionRemark,jdbcType=VARCHAR},#{secRiskPic,jdbcType=VARCHAR},#{restoreDetail,jdbcType=VARCHAR},#{planDate,jdbcType=VARCHAR},#{restoreDeptCode,jdbcType=VARCHAR},#{restorePic,jdbcType=VARCHAR},#{restoreDesc,jdbcType=VARCHAR},#{examinerCode,jdbcType=VARCHAR},#{examDate,jdbcType=VARCHAR},#{completionDetail,jdbcType=VARCHAR},#{undoneDesc,jdbcType=VARCHAR},#{lastPlanDate,jdbcType=VARCHAR},#{lastCheckerId,jdbcType=VARCHAR},#{lastCheckDate,jdbcType=VARCHAR},#{isRestored,jdbcType=VARCHAR},#{planNote,jdbcType=VARCHAR},#{workFlowInstId,jdbcType=VARCHAR},#{workFlowInstStatus,jdbcType=VARCHAR},#{recStatus,jdbcType=VARCHAR},#{recCreator,jdbcType=VARCHAR},#{recCreateTime,jdbcType=VARCHAR},#{recRevisor,jdbcType=VARCHAR},#{recReviseTime,jdbcType=VARCHAR},#{recDeletor,jdbcType=VARCHAR},#{recDeleteTime,jdbcType=VARCHAR},#{deleteFlag,jdbcType=VARCHAR},#{archiveFlag,jdbcType=VARCHAR},#{ext1,jdbcType=VARCHAR},#{ext2,jdbcType=VARCHAR},#{ext3,jdbcType=VARCHAR},#{ext4,jdbcType=VARCHAR},#{ext5,jdbcType=VARCHAR})
+        #{recId,jdbcType=VARCHAR},
+        #{secRiskId,jdbcType=VARCHAR},
+        #{inspectDate,jdbcType=VARCHAR},#{secRiskDetail,jdbcType=VARCHAR},#{inspectDeptCode,jdbcType=VARCHAR},#{inspectorCode,jdbcType=VARCHAR},#{positionDesc,jdbcType=VARCHAR},#{position1Code,jdbcType=VARCHAR},#{position2Code,jdbcType=VARCHAR},#{position3,jdbcType=VARCHAR},#{positionRemark,jdbcType=VARCHAR},#{secRiskPic,jdbcType=VARCHAR},#{restoreDetail,jdbcType=VARCHAR},#{planDate,jdbcType=VARCHAR},#{restoreDeptCode,jdbcType=VARCHAR},#{restorePic,jdbcType=VARCHAR},#{restoreDesc,jdbcType=VARCHAR},#{examinerCode,jdbcType=VARCHAR},#{examDate,jdbcType=VARCHAR},#{completionDetail,jdbcType=VARCHAR},#{undoneDesc,jdbcType=VARCHAR},#{lastPlanDate,jdbcType=VARCHAR},#{lastCheckerId,jdbcType=VARCHAR},#{lastCheckDate,jdbcType=VARCHAR},#{isRestored,jdbcType=VARCHAR},#{planNote,jdbcType=VARCHAR},#{workFlowInstId,jdbcType=VARCHAR},#{workFlowInstStatus,jdbcType=VARCHAR},#{recStatus,jdbcType=VARCHAR},#{recCreator,jdbcType=VARCHAR},#{recCreateTime,jdbcType=VARCHAR},#{recRevisor,jdbcType=VARCHAR},#{recReviseTime,jdbcType=VARCHAR},#{recDeletor,jdbcType=VARCHAR},#{recDeleteTime,jdbcType=VARCHAR},#{deleteFlag,jdbcType=VARCHAR},#{archiveFlag,jdbcType=VARCHAR},#{ext1,jdbcType=VARCHAR},#{ext2,jdbcType=VARCHAR},#{ext3,jdbcType=VARCHAR},#{ext4,jdbcType=VARCHAR},#{ext5,jdbcType=VARCHAR})
 
     </insert>
     <delete id="deleteByIds">
@@ -107,15 +107,25 @@
     <select id="query" resultType="com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO">
         SELECT
         <include refid="baseColumn"/>
-        FROM T_SEC_RISK WHERE 1=1
-        -- Todo
+        FROM T_SEC_RISK
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="secRiskId!=null and secRiskId!=''">
+                and secRiskId = #{secRiskId}
+            </if>
+            <if test="inspectDate!=null and inspectDate!=''">
+                and INSPECT_DATE = #{inspectDate}
+            </if>
+            <if test="restoreDesc!=null and restoreDesc!=''">
+                and RESTORE_DESC = #{restoreDesc}
+            </if>
+            <if test="workFlowInstStatus!=null and workFlowInstStatus!=''">
+                and WORK_FLOW_INST_STATUS = #{workFlowInstStatus}
+            </if>
+            <if test="restoreDesc!=null and restoreDesc!=''">
+                and RESTORE_DESC = #{restoreDesc}
+            </if>
+        </trim>
         orderBy SEC_RISK_ID desc
-<!--        <if test="startTime!=null and startTime!=''">-->
-<!--            and MANUFACTURE_DATE=#{startTime}-->
-<!--        </if>-->
-<!--        <isNotEmpty prepend=" AND " property="startTime">-->
-<!--            startTime >= to_date(#startTime#, 'YYYY-MM-DD')-->
-<!--        </isNotEmpty>-->
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO">
         SELECT
@@ -126,6 +136,24 @@
     <select id="list" resultType="com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO">
         SELECT
         <include refid="baseColumn"/>
-        FROM T_SEC_RISK WHERE 1=1
+        FROM T_SEC_RISK
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="secRiskId!=null and secRiskId!=''">
+                and secRiskId = #{secRiskId}
+            </if>
+            <if test="inspectDate!=null and inspectDate!=''">
+                and INSPECT_DATE = #{inspectDate}
+            </if>
+            <if test="restoreDesc!=null and restoreDesc!=''">
+                and RESTORE_DESC = #{restoreDesc}
+            </if>
+            <if test="workFlowInstStatus!=null and workFlowInstStatus!=''">
+                and WORK_FLOW_INST_STATUS = #{workFlowInstStatus}
+            </if>
+            <if test="restoreDesc!=null and restoreDesc!=''">
+                and RESTORE_DESC = #{restoreDesc}
+            </if>
+        </trim>
+        orderBy SEC_RISK_ID desc
     </select>
 </mapper>

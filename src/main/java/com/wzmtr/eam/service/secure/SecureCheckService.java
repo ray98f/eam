@@ -16,10 +16,11 @@ public interface SecureCheckService {
 
     SecureCheckRecordListResDTO detail(SecureCheckDetailReqDTO reqDTO);
 
-    void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, String riskRank, HttpServletResponse response);
+    void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, HttpServletResponse response);
 
     void delete(SecureCheckRecordDeleteReqDTO reqDTO);
 
     void add(SecureCheckAddReqDTO reqDTO);
 
+    void update(SecureCheckAddReqDTO reqDTO);
 }

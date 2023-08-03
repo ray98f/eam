@@ -15,9 +15,6 @@ public interface SecureDangerSourceService {
     Page<SecureDangerSourceResDTO> dangerSourceList(SecureDangerSourceListReqDTO reqDTO);
     void export(String dangerRiskId,String discDate,HttpServletResponse response);
     SecureDangerSourceResDTO detail(SecureDangerSourceDetailReqDTO reqDTO);
-    //
-    // void delete(SecureCheckRecordDeleteReqDTO reqDTO);
-    //
     void add(SecureDangerSourceAddReqDTO reqDTO);
 
     void delete(BaseIdsEntity reqDTO);

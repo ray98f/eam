@@ -22,11 +22,4 @@ public class SecureCheckRecordListReqDTO extends PageReqDTO {
     private String restoreDesc;
     @ApiModelProperty(value = "流程状态")
     private String workFlowInstStatus;
-    @ApiModelProperty(value = "安全隐患等级")
-    private String riskRank;
-    // String riskRank = outinfo.getBlock("detail").getRow(j).get("riskRank").toString();
-    // /* 146 */       switch (riskRank) { case "10":
-    //     /* 147 */           riskRank = "一般"; break;
-    //     /* 148 */         case "20": riskRank = "较大"; break;
-    //     /* 149 */         case "30": riskRank = "重大"; break; }
 }

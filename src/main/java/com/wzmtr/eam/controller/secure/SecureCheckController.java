@@ -52,9 +52,13 @@ public class SecureCheckController {
                        @RequestParam(required = false) @ApiParam("发现日期") String inspectDate,
                        @RequestParam(required = false) @ApiParam(value = "整改情况") String restoreDesc,
                        @RequestParam(required = false) @ApiParam(value = "流程状态") String workFlowInstStatus,
-                       @RequestParam(required = false) @ApiParam(value = "安全隐患等级") String riskRank,
                        HttpServletResponse response) {
-        secureService.export(secRiskId,inspectDate,restoreDesc,workFlowInstStatus,riskRank,response);
+        secureService.export(secRiskId,inspectDate,restoreDesc,workFlowInstStatus,response);
+    }
+    @ApiOperation(value = "安全/质量/消防/-检查问题单导出")
+    @PostMapping ("/record/update")
+    public void update(@RequestBody SecureCheckAddReqDTO reqDTO) {
+        secureService.update(reqDTO);
     }
 
 }

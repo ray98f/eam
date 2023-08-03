@@ -2,6 +2,7 @@ package com.wzmtr.eam.mapper.secure;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
+import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
 import com.wzmtr.eam.dto.res.EquipmentChargeResDTO;
 import com.wzmtr.eam.dto.res.PillarResDTO;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
@@ -19,11 +20,11 @@ import java.util.Set;
 @Mapper
 @Repository
 public interface SecureCheckMapper {
-    Page<SecureCheckRecordListResDTO> query (Page<SecureCheckRecordListResDTO> page);
+    Page<SecureCheckRecordListResDTO> query (Page<SecureCheckRecordListReqDTO> page);
 
     SecureCheckRecordListResDTO detail(String secRiskId);
 
-    List<SecureCheckRecordListResDTO> list(String secRiskId, String restoreDesc, String riskRank, String inspectDate, String workFlowInstStatus);
+    List<SecureCheckRecordListResDTO> list(String secRiskId, String restoreDesc,String inspectDate, String workFlowInstStatus);
 
     void deleteByIds(@Param("ids") Set<String> ids);
 

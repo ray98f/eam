@@ -10,10 +10,12 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.secure.SecureCheckMapper;
 import com.wzmtr.eam.service.secure.SecureCheckService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
@@ -43,19 +45,22 @@ public class SecureCheckServiceImpl implements SecureCheckService {
 
     @Override
     public SecureCheckRecordListResDTO detail(SecureCheckDetailReqDTO reqDTO) {
-        if (null == reqDTO.getSecRiskId()) {
+        if (StringUtils.isEmpty(reqDTO.getSecRiskId())) {
             return null;
         }
         return secureMapper.detail(reqDTO.getSecRiskId());
     }
 
     @Override
-    public void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, String riskRank, HttpServletResponse response) {
+    public void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus,HttpServletResponse response) {
         List<String> listName = Arrays.asList("检查问题单号", "发现日期", "检查问题", "检查部门", "检查人", "地点", "整改措施",
                 "计划完成日期", "整改部门", "整改情况", "记录状态");
-        List<SecureCheckRecordListResDTO> list = secureMapper.list(secRiskId, restoreDesc, riskRank, inspectDate, workFlowInstStatus);
+        List<SecureCheckRecordListResDTO> list = secureMapper.list(secRiskId, restoreDesc, inspectDate, workFlowInstStatus);
+        if (CollectionUtil.isEmpty(list)){
+            log.warn("未查询到数据，丢弃导出操作!");
+            return;
+        }
         List<Map<String, String>> exportList = new ArrayList<>();
-        if (list != null && !list.isEmpty()) {
             for (SecureCheckRecordListResDTO res : list) {
                 Map<String, String> map = new HashMap<>();
                 map.put("检查问题单号", res.getSecRiskId());
@@ -71,7 +76,6 @@ public class SecureCheckServiceImpl implements SecureCheckService {
                 map.put("记录状态", res.getRecStatus());
                 exportList.add(map);
             }
-        }
         ExcelPortUtil.excelPort("安全/质量/消防整改信息", listName, exportList, null, response);
     }
 
@@ -85,10 +89,16 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void add(SecureCheckAddReqDTO reqDTO) {
         reqDTO.setRecId(TokenUtil.getUuId());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         secureMapper.add(reqDTO);
+    }
+
+    @Override
+    public void update(SecureCheckAddReqDTO reqDTO) {
+
     }
 }
