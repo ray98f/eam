@@ -156,6 +156,6 @@
                 and RESTORE_DESC = #{restoreDesc}
             </if>
         </trim>
-        orderBy SEC_RISK_ID desc
+        order By SEC_RISK_ID desc
     </select>
 </mapper>
