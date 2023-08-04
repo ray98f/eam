@@ -20,7 +20,6 @@ import java.util.Set;
 @Mapper
 @Repository
 public interface SecureCheckMapper {
-    Page<SecureCheckRecordListResDTO> query (Page<SecureCheckRecordListReqDTO> page);
 
     SecureCheckRecordListResDTO detail(String secRiskId);
 
@@ -29,4 +28,6 @@ public interface SecureCheckMapper {
     void deleteByIds(@Param("ids") List<String> ids, @Param("userId") String userId, @Param("time") String time);
 
     void add(SecureCheckAddReqDTO reqDTO);
+
+    Page<SecureCheckRecordListResDTO> query(Page<Object> of, String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus);
 }

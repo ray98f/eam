@@ -37,7 +37,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     public Page<SecureCheckRecordListResDTO> list(SecureCheckRecordListReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of());
+        Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(),reqDTO.getSecRiskId(),reqDTO.getInspectDate(),reqDTO.getRestoreDesc(),reqDTO.getWorkFlowInstStatus());
         if (null != list) {
             return list;
         }

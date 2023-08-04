@@ -127,7 +127,7 @@
                 and RESTORE_DESC = #{restoreDesc}
             </if>
         </trim>
-        orderBy SEC_RISK_ID desc
+        order By SEC_RISK_ID desc
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO">
         SELECT
