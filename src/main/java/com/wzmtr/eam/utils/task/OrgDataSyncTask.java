@@ -25,7 +25,7 @@ public class OrgDataSyncTask {
     private String SYNC_SUPP_CONTACT_URL = "/mdmSync/syncAllSuppContact";
     private String SYNC_PERSON_PLUS_URL = "/mdmSync/syncPersonPlus";
     private String SYNC_ORG_URL = "/mdmSync/syncAllOrg";
-    private String SYNC_SUPP_ORG_URL = "/mdmSync/syncAllSuppOrg";
+    private String SYNC_SUPP_ORG_URL = "/mdmSync/syncSuppOrg";
     private String SYNC_EXTRA_ORG_URL = "/mdmSync/syncAllExtraOrg";
     private String SYNC_EMP_JOB_URL = "/mdmSync/syncAllEmpJob";
 

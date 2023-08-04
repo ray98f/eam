@@ -28,6 +28,8 @@ public interface PartReplaceMapper {
 
     void deletePartReplace(List<String> ids, String userId, String time);
 
+    void importPartReplace(List<PartReplaceReqDTO> list);
+
     List<PartReplaceResDTO> listPartReplace(String equipName);
 
 }

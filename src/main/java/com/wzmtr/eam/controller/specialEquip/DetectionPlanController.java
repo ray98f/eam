@@ -30,7 +30,7 @@ import javax.validation.Valid;
 public class DetectionPlanController {
 
     @Resource
-    private DetectionPlanService specialEquipService;
+    private DetectionPlanService detectionPlanService;
 
     @GetMapping("/page")
     @ApiOperation(value = "获取检测计划列表")
@@ -40,40 +40,40 @@ public class DetectionPlanController {
                                                                @RequestParam(required = false) @ApiParam("特种设备分类代码") String assetKindCode,
                                                                @RequestParam(required = false) @ApiParam("定检计划时期") String planPeriodMark,
                                                                @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(specialEquipService.pageDetectionPlan(instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark, pageReqDTO));
+        return PageResponse.of(detectionPlanService.pageDetectionPlan(instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark, pageReqDTO));
     }
 
     @GetMapping("/detail")
     @ApiOperation(value = "获取检测计划详情")
     public DataResponse<DetectionPlanResDTO> getDetectionPlanDetail(@RequestParam @ApiParam("id") String id) {
-        return DataResponse.of(specialEquipService.getDetectionPlanDetail(id));
+        return DataResponse.of(detectionPlanService.getDetectionPlanDetail(id));
     }
 
     @PostMapping("/add")
     @ApiOperation(value = "新增检测计划")
     public DataResponse<T> addDetectionPlan(@RequestBody DetectionPlanReqDTO detectionPlanReqDTO) {
-        specialEquipService.addDetectionPlan(detectionPlanReqDTO);
+        detectionPlanService.addDetectionPlan(detectionPlanReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/modify")
     @ApiOperation(value = "编辑检测计划")
     public DataResponse<T> modifyDetectionPlan(@RequestBody DetectionPlanReqDTO detectionPlanReqDTO) {
-        specialEquipService.modifyDetectionPlan(detectionPlanReqDTO);
+        detectionPlanService.modifyDetectionPlan(detectionPlanReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/delete")
     @ApiOperation(value = "删除检测计划")
     public DataResponse<T> deleteDetectionPlan(@RequestBody BaseIdsEntity baseIdsEntity) {
-        specialEquipService.deleteDetectionPlan(baseIdsEntity);
+        detectionPlanService.deleteDetectionPlan(baseIdsEntity);
         return DataResponse.success();
     }
 
     @GetMapping("/submit")
     @ApiOperation(value = "提交检测计划")
     public DataResponse<T> submitDetectionPlan(@RequestParam @ApiParam("id") String id) {
-        specialEquipService.submitDetectionPlan(id);
+        detectionPlanService.submitDetectionPlan(id);
         return DataResponse.success();
     }
 
@@ -85,40 +85,40 @@ public class DetectionPlanController {
                                     @RequestParam(required = false) @ApiParam("特种设备分类代码") String assetKindCode,
                                     @RequestParam(required = false) @ApiParam("定检计划时期") String planPeriodMark,
                                     HttpServletResponse response) {
-        specialEquipService.exportDetectionPlan(instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark, response);
+        detectionPlanService.exportDetectionPlan(instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark, response);
     }
 
     @GetMapping("/detail/page")
     @ApiOperation(value = "获取检测计划明细列表")
     public PageResponse<DetectionPlanDetailResDTO> pageDetectionPlanDetail(@RequestParam(required = false) @ApiParam("特种设备定检计划号") String instrmPlanNo,
                                                                            @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(specialEquipService.pageDetectionPlanDetail(instrmPlanNo, pageReqDTO));
+        return PageResponse.of(detectionPlanService.pageDetectionPlanDetail(instrmPlanNo, pageReqDTO));
     }
 
     @GetMapping("/detail/detail")
     @ApiOperation(value = "获取检测计划明细详情")
     public DataResponse<DetectionPlanDetailResDTO> getDetectionPlanDetailDetail(@RequestParam @ApiParam("id") String id) {
-        return DataResponse.of(specialEquipService.getDetectionPlanDetailDetail(id));
+        return DataResponse.of(detectionPlanService.getDetectionPlanDetailDetail(id));
     }
 
     @PostMapping("/detail/add")
     @ApiOperation(value = "新增检测计划明细")
     public DataResponse<T> addDetectionPlanDetail(@RequestBody DetectionPlanDetailReqDTO detectionPlanDetailReqDTO) {
-        specialEquipService.addDetectionPlanDetail(detectionPlanDetailReqDTO);
+        detectionPlanService.addDetectionPlanDetail(detectionPlanDetailReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/detail/modify")
     @ApiOperation(value = "编辑检测计划明细")
     public DataResponse<T> modifyDetectionPlanDetail(@RequestBody DetectionPlanDetailReqDTO detectionPlanDetailReqDTO) {
-        specialEquipService.modifyDetectionPlanDetail(detectionPlanDetailReqDTO);
+        detectionPlanService.modifyDetectionPlanDetail(detectionPlanDetailReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/detail/delete")
     @ApiOperation(value = "删除检测计划明细")
     public DataResponse<T> deleteDetectionPlanDetail(@RequestBody BaseIdsEntity baseIdsEntity) {
-        specialEquipService.deleteDetectionPlanDetail(baseIdsEntity);
+        detectionPlanService.deleteDetectionPlanDetail(baseIdsEntity);
         return DataResponse.success();
     }
 
@@ -126,6 +126,6 @@ public class DetectionPlanController {
     @ApiOperation(value = "导出检测计划明细")
     public void exportDetectionPlanDetail(@RequestParam(required = false) @ApiParam("特种设备定检计划号") String instrmPlanNo,
                                           HttpServletResponse response) {
-        specialEquipService.exportDetectionPlanDetail(instrmPlanNo, response);
+        detectionPlanService.exportDetectionPlanDetail(instrmPlanNo, response);
     }
 }

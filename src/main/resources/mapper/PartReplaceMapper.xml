@@ -100,7 +100,8 @@
     </select>
 
     <insert id="addPartReplace">
-        INSERT INTO WBPLAT.TDMDM20 (REC_ID,  <!-- 记录编号 -->
+        INSERT INTO T_PART_REPLACEMENT (
+        REC_ID,  <!-- 记录编号 -->
         FAULT_WORK_NO,  <!-- 故障工单编号 -->
         EQUIP_CODE,  <!-- 设备代码 -->
         EQUIP_NAME,  <!-- 设备名称 -->
@@ -166,7 +167,7 @@
     </insert>
 
     <update id="deletePartReplace">
-        UPDATE T_EQUIPMENT_CHARGE SET
+        UPDATE T_PART_REPLACEMENT SET
         DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
         WHERE REC_ID IN (
         <foreach collection="ids" index="index" item="id" separator=",">
@@ -174,6 +175,77 @@
         </foreach>
         )
     </update>
+
+    <insert id="importPartReplace">
+        insert ALL
+        <foreach collection="list" index="index" item="part" separator=" ">
+            INTO T_PART_REPLACEMENT (
+            REC_ID,  <!-- 记录编号 -->
+            FAULT_WORK_NO,  <!-- 故障工单编号 -->
+            EQUIP_CODE,  <!-- 设备代码 -->
+            EQUIP_NAME,  <!-- 设备名称 -->
+            ORG_TYPE,  <!-- 作业单位 -->
+            OPERATOR,  <!-- 作业人员 -->
+            REPLACEMENT_NO,  <!-- 更换配件代码 -->
+            REPLACEMENT_NAME,  <!-- 更换配件名称 -->
+            REPLACE_REASON,  <!-- 更换原因 -->
+            OLD_REP_NO,  <!-- 旧配件编号 -->
+            NEW_REP_NO,  <!-- 新配件编号 -->
+            OPERATE_COST_TIME,  <!-- 更换所用时间 -->
+            REPLACE_DATE,  <!-- 处理日期 -->
+            REMARK,  <!-- 备注 -->
+            DOC_ID,  <!-- 附件编号 -->
+            REC_CREATOR,  <!-- 创建者 -->
+            REC_CREATE_TIME,  <!-- 创建时间 -->
+            REC_REVISOR,  <!-- 修改者 -->
+            REC_REVISE_TIME,  <!-- 修改时间 -->
+            REC_DELETOR,  <!-- 删除者 -->
+            REC_DELETE_TIME,  <!-- 删除时间 -->
+            DELETE_FLAG,  <!-- 删除标志 -->
+            ARCHIVE_FLAG,  <!-- 归档标记 -->
+            REC_STATUS,  <!-- 记录状态 -->
+            EXT1,  <!-- 扩展字段1 -->
+            EXT2,  <!-- 扩展字段2 -->
+            EXT3,  <!-- 扩展字段3 -->
+            EXT4,  <!-- 扩展字段4 -->
+            EXT5,  <!-- 扩展字段5 -->
+            EXT6,  <!-- 扩展字段6 -->
+            EXT7  <!-- 扩展字段7 -->)
+            VALUES (
+            #{part.recId,jdbcType=VARCHAR},
+            #{part.faultWorkNo,jdbcType=VARCHAR},
+            #{part.equipCode,jdbcType=VARCHAR},
+            #{part.equipName,jdbcType=VARCHAR},
+            #{part.orgType,jdbcType=VARCHAR},
+            #{part.operator,jdbcType=VARCHAR},
+            #{part.replacementNo,jdbcType=VARCHAR},
+            #{part.replacementName,jdbcType=VARCHAR},
+            #{part.replaceReason,jdbcType=VARCHAR},
+            #{part.oldRepNo,jdbcType=VARCHAR},
+            #{part.newRepNo,jdbcType=VARCHAR},
+            #{part.operateCostTime,jdbcType=VARCHAR},
+            #{part.replaceDate,jdbcType=VARCHAR},
+            #{part.remark,jdbcType=VARCHAR},
+            #{part.docId,jdbcType=VARCHAR},
+            #{part.recCreator,jdbcType=VARCHAR},
+            #{part.recCreateTime,jdbcType=VARCHAR},
+            #{part.recRevisor,jdbcType=VARCHAR},
+            #{part.recReviseTime,jdbcType=VARCHAR},
+            #{part.recDeletor,jdbcType=VARCHAR},
+            #{part.recDeleteTime,jdbcType=VARCHAR},
+            '0',
+            #{part.archiveFlag,jdbcType=VARCHAR},
+            #{part.recStatus,jdbcType=VARCHAR},
+            #{part.ext1,jdbcType=VARCHAR},
+            #{part.ext2,jdbcType=VARCHAR},
+            #{part.ext3,jdbcType=VARCHAR},
+            #{part.ext4,jdbcType=VARCHAR},
+            #{part.ext5,jdbcType=VARCHAR},
+            #{part.ext6,jdbcType=VARCHAR},
+            #{part.ext7,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 
     <select id="listPartReplace" resultType="com.wzmtr.eam.dto.res.PartReplaceResDTO">
         SELECT

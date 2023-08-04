@@ -140,11 +140,11 @@
         on a.EQUIP_CODE = b.EQUIP_CODE
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
-        where 1=1 and REC_ID=#{id}
+        where 1=1 and a.REC_ID=#{id}
         and b.SPECIAL_EQUIP_FLAG = to_char(20) and b.APPROVAL_STATUS = to_char(30)
     </select>
 
-    <insert id="importSpecialEquip" parameterType="com.wzmtr.eam.dto.req.SpecialEquipReqDTO">
+    <insert id="importSpecialEquip">
         insert ALL
         <foreach collection="list" index="index" item="equipment" separator=" ">
             INTO T_SPECIAL_EQUIP_EXT (

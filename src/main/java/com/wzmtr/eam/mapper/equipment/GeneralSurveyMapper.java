@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface GeneralSurveyMapper {
 
-    Page<GeneralSurveyResDTO> pageGeneralSurvey(Page<GeneralSurveyResDTO> page, String equipName);
+    Page<GeneralSurveyResDTO> pageGeneralSurvey(Page<GeneralSurveyResDTO> page, String trainNo);
 
     GeneralSurveyResDTO getGeneralSurveyDetail(String id);
 
@@ -23,6 +23,8 @@ public interface GeneralSurveyMapper {
 
     void deleteGeneralSurvey(List<String> ids, String userId, String time);
 
-    List<GeneralSurveyResDTO> listGeneralSurvey(String equipName);
+    void importGeneralSurvey(List<GeneralSurveyReqDTO> list);
+
+    List<GeneralSurveyResDTO> listGeneralSurvey(String trainNo);
 
 }

@@ -2,13 +2,18 @@ package com.wzmtr.eam.impl.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.SpecialEquipReqDTO;
+import com.wzmtr.eam.dto.req.UnitCodeReqDTO;
+import com.wzmtr.eam.dto.res.DetectionPlanResDTO;
 import com.wzmtr.eam.dto.res.SpecialEquipHistoryResDTO;
 import com.wzmtr.eam.dto.res.SpecialEquipResDTO;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.specialEquip.SpecialEquipMapper;
 import com.wzmtr.eam.service.specialEquip.SpecialEquipService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
@@ -43,22 +48,115 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
     @Autowired
     private SpecialEquipMapper specialEquipMapper;
 
+    @Autowired
+    private OrganizationMapper organizationMapper;
+
     @Override
     public Page<SpecialEquipResDTO> pageSpecialEquip(String equipCode, String equipName, String specialEquipCode, String factNo,
                                                      String useLineNo, String position1Code, String specialEquipType, String equipStatus, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return specialEquipMapper.pageSpecialEquip(pageReqDTO.of(), equipCode, equipName, specialEquipCode, factNo, useLineNo,
+        Page<SpecialEquipResDTO> page =  specialEquipMapper.pageSpecialEquip(pageReqDTO.of(), equipCode, equipName, specialEquipCode, factNo, useLineNo,
                 position1Code, specialEquipType, equipStatus);
+        List<SpecialEquipResDTO> list = page.getRecords();
+        if (list != null && !list.isEmpty()) {
+            for (SpecialEquipResDTO resDTO : list) {
+                resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
+                resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public SpecialEquipResDTO getSpecialEquipDetail(String id) {
-        return specialEquipMapper.getSpecialEquipDetail(id);
+        SpecialEquipResDTO resDTO = specialEquipMapper.getSpecialEquipDetail(id);
+        if (Objects.isNull(resDTO)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
+        resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+        return resDTO;
     }
 
     @Override
     public void importSpecialEquip(MultipartFile file) {
-        // todo
+        try {
+            Workbook workbook;
+            String fileName = file.getOriginalFilename();
+            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
+            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
+                workbook = new HSSFWorkbook(fileInputStream);
+            } else if (fileName.endsWith(XLSX)) {
+                workbook = new XSSFWorkbook(fileInputStream);
+            } else {
+                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
+            }
+            Sheet sheet = workbook.getSheetAt(0);
+            List<SpecialEquipReqDTO> temp = new ArrayList<>();
+            for (Row cells : sheet) {
+                if (cells.getRowNum() < 1) {
+                    continue;
+                }
+                SpecialEquipReqDTO reqDTO = new SpecialEquipReqDTO();
+                cells.getCell(0).setCellType(1);
+                reqDTO.setEquipCode(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
+                cells.getCell(1).setCellType(1);
+                reqDTO.setSpecialEquipCode(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
+                cells.getCell(2).setCellType(1);
+                reqDTO.setEquipName(cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue());
+                cells.getCell(3).setCellType(1);
+                reqDTO.setSpecialEquipType(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
+                cells.getCell(4).setCellType(1);
+                reqDTO.setVerifyDate(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
+                cells.getCell(5).setCellType(1);
+                reqDTO.setVerifyValidityDate(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
+                cells.getCell(6).setCellType(1);
+                reqDTO.setRegOrg(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
+                cells.getCell(7).setCellType(1);
+                reqDTO.setRegNo(cells.getCell(7) == null ? "" : cells.getCell(7).getStringCellValue());
+                cells.getCell(8).setCellType(1);
+                reqDTO.setFactNo(cells.getCell(8) == null ? "" : cells.getCell(8).getStringCellValue());
+                cells.getCell(9).setCellType(1);
+                reqDTO.setEquipInnerNo(cells.getCell(9) == null ? "" : cells.getCell(9).getStringCellValue());
+                cells.getCell(10).setCellType(1);
+                reqDTO.setEquipPosition(cells.getCell(10) == null ? "" : cells.getCell(10).getStringCellValue());
+                cells.getCell(11).setCellType(1);
+                reqDTO.setEquipDetailedPosition(cells.getCell(11) == null ? "" : cells.getCell(11).getStringCellValue());
+                cells.getCell(12).setCellType(1);
+                reqDTO.setEquipParameter(cells.getCell(12) == null ? "" : cells.getCell(12).getStringCellValue());
+                cells.getCell(13).setCellType(1);
+                reqDTO.setManageOrg(cells.getCell(13) == null ? "" : cells.getCell(13).getStringCellValue());
+                cells.getCell(14).setCellType(1);
+                reqDTO.setSecStaffName(cells.getCell(14) == null ? "" : cells.getCell(14).getStringCellValue());
+                cells.getCell(15).setCellType(1);
+                reqDTO.setSecStaffPhone(cells.getCell(15) == null ? "" : cells.getCell(15).getStringCellValue());
+                cells.getCell(16).setCellType(1);
+                reqDTO.setSecStaffMobile(cells.getCell(16) == null ? "" : cells.getCell(16).getStringCellValue());
+                cells.getCell(17).setCellType(1);
+                reqDTO.setSecOrg(cells.getCell(17) == null ? "" : cells.getCell(17).getStringCellValue());
+                reqDTO.setRecId(TokenUtil.getUuId());
+                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                if (!"".equals(reqDTO.getSpecialEquipType())) {
+                    reqDTO.setSpecialEquipType("电梯".equals(reqDTO.getSpecialEquipType()) ? "10" : "起重机".equals(reqDTO.getSpecialEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getSpecialEquipType()) ? "30" : "40");
+                }
+                SysOffice manageOrg = organizationMapper.getByNames(reqDTO.getManageOrg());
+                SysOffice secOrg = organizationMapper.getByNames(reqDTO.getSecOrg());
+                if (Objects.isNull(manageOrg) || Objects.isNull(secOrg)) {
+                    continue;
+                }
+                reqDTO.setManageOrg(manageOrg.getId());
+                reqDTO.setManageOrg(secOrg.getId());
+                temp.add(reqDTO);
+            }
+            fileInputStream.close();
+            if (temp.size() > 0) {
+                specialEquipMapper.importSpecialEquip(temp);
+            }
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        }
     }
 
     @Override

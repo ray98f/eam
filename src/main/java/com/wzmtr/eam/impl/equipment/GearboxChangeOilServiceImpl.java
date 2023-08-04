@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.GearboxChangeOilReqDTO;
+import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
 import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -11,15 +12,25 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.service.equipment.GearboxChangeOilService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.FileUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.wzmtr.eam.constant.CommonConstants.XLS;
+import static com.wzmtr.eam.constant.CommonConstants.XLSX;
 
 /**
  * @author frp
@@ -66,7 +77,49 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
 
     @Override
     public void importGearboxChangeOil(MultipartFile file) {
-        // todo
+        try {
+            Workbook workbook;
+            String fileName = file.getOriginalFilename();
+            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
+            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
+                workbook = new HSSFWorkbook(fileInputStream);
+            } else if (fileName.endsWith(XLSX)) {
+                workbook = new XSSFWorkbook(fileInputStream);
+            } else {
+                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
+            }
+            Sheet sheet = workbook.getSheetAt(0);
+            List<GearboxChangeOilReqDTO> temp = new ArrayList<>();
+            for (Row cells : sheet) {
+                if (cells.getRowNum() < 1) {
+                    continue;
+                }
+                GearboxChangeOilReqDTO reqDTO = new GearboxChangeOilReqDTO();
+                cells.getCell(0).setCellType(1);
+                reqDTO.setTrainNo(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
+                cells.getCell(1).setCellType(1);
+                reqDTO.setCompleteDate(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
+                cells.getCell(2).setCellType(1);
+                reqDTO.setOrgType(cells.getCell(2) == null ? "" : "维保".equals(cells.getCell(2).getStringCellValue()) ? "10" : "20");
+                cells.getCell(3).setCellType(1);
+                reqDTO.setOperator(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
+                cells.getCell(4).setCellType(1);
+                reqDTO.setConfirmor(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
+                cells.getCell(5).setCellType(1);
+                reqDTO.setRemark(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
+                reqDTO.setRecId(TokenUtil.getUuId());
+                reqDTO.setDeleteFlag("0");
+                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(reqDTO);
+            }
+            fileInputStream.close();
+            if (temp.size() > 0) {
+                gearboxChangeOilMapper.importGearboxChangeOil(temp);
+            }
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        }
     }
 
     @Override

@@ -12,40 +12,40 @@ import lombok.Data;
 public class WheelsetLathingReqDTO {
     
     @ApiModelProperty(value = "记录编号")
-    private String recId = "";
+    private String recId;
 
     @ApiModelProperty(value = "列车号")
-    private String trainNo = "";
+    private String trainNo;
 
     @ApiModelProperty(value = "车厢号")
-    private String carriageNo = "";
+    private String carriageNo;
 
     @ApiModelProperty(value = "镟修轮对车轴")
-    private String axleNo = "";
+    private String axleNo;
 
     @ApiModelProperty(value = "镟修详情")
-    private String repairDetail = "";
+    private String repairDetail;
 
     @ApiModelProperty(value = "开始日期")
-    private String startDate = "";
+    private String startDate;
 
     @ApiModelProperty(value = "完成日期")
-    private String completeDate = "";
+    private String completeDate;
 
     @ApiModelProperty(value = "负责人")
-    private String respPeople = "";
+    private String respPeople;
     
     @ApiModelProperty(value = "备注")
-    private String remark = "";
+    private String remark;
     
     @ApiModelProperty(value = "附件编号")
-    private String docId = "";
+    private String docId;
 
     @ApiModelProperty(value = "创建者")
-    private String recCreator = "";
+    private String recCreator;
 
     @ApiModelProperty(value = "创建时间")
-    private String recCreateTime = "";
+    private String recCreateTime;
 
     @ApiModelProperty(value = "修改者")
     private String recRevisor;

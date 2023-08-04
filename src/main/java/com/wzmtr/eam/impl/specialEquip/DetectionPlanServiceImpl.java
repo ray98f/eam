@@ -46,7 +46,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         List<DetectionPlanResDTO> list = page.getRecords();
         if (list != null && !list.isEmpty()) {
             for (DetectionPlanResDTO resDTO : list) {
-                resDTO.setManageOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getManageOrg()));
+                resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
                 resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
                 resDTO.setEditDeptCode(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
             }
@@ -61,7 +61,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        resDTO.setManageOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getManageOrg()));
+        resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
         resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
         resDTO.setEditDeptCode(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
         return resDTO;

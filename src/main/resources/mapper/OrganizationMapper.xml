@@ -119,21 +119,21 @@
         0)
     </insert>
 
-    <select id="searchParentIds" resultType="com.wzmtr.eam.dto.res.OrgParentIdsResDTO">
-        SELECT DISTINCT id,parent_ids from
-        (
-        SELECT id,parent_ids from
-        (
-        SELECT DISTINCT tt.id,  TRIM(LEADING ',' FROM  SYS_CONNECT_BY_PATH(tt.parent_id, ','))  as parent_ids  from SYS_OFFICE  tt
-        START WITH tt.parent_id='root' AND tt.id NOT IN ( 'W')
-        CONNECT BY PRIOR tt.id  =  tt.parent_id
-        )
-        ) t
+    <select id="searchParent" resultType="com.wzmtr.eam.dto.res.OrgParentResDTO">
+        SELECT DISTINCT ID, PARENT_IDS, replace(NAMES, ',', '-') NAMES
+        from (SELECT ID, PARENT_IDS, NAMES from
+        (SELECT DISTINCT tt.id,
+        TRIM(LEADING ',' FROM SYS_CONNECT_BY_PATH(tt.PARENT_ID, ',')) as PARENT_IDS,
+        TRIM(LEADING ',' FROM SYS_CONNECT_BY_PATH(tt.NAME, ',')) as NAMES
+        from SYS_OFFICE tt
+        START WITH tt.parent_id='root' AND tt.id NOT IN ('W')
+        CONNECT BY PRIOR tt.id=tt.parent_id)) t
     </select>
 
-    <update id="updateParentIds">
+    <update id="updateParent">
         update SYS_OFFICE set
-        parent_ids=#{parentIds}
+        PARENT_IDS=#{parentIds},
+        NAMES=#{names}
         where ID=#{id}
     </update>
 
@@ -152,6 +152,17 @@
         from SYS_OFFICE WHERE ID!='root'
         start with AREA_ID = #{areaId}
         connect by prior PARENT_ID = ID
+    </select>
+
+    <select id="getOrgById" resultType="java.lang.String">
+        select listagg(NAME, '-') WITHIN GROUP (ORDER BY ID) NAME
+        from SYS_OFFICE WHERE ID!='root'
+        start with ID = #{id}
+        connect by prior PARENT_ID = ID
+    </select>
+
+    <select id="getByNames" resultType="com.wzmtr.eam.entity.SysOffice">
+        select ID, AREA_ID from SYS_OFFICE where NAMES=#{names}
     </select>
 
 </mapper>

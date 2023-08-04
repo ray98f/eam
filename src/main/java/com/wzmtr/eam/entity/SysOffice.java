@@ -16,8 +16,11 @@ public class SysOffice extends BaseEntity {
     @ApiModelProperty(value = "上级ID路径")
     private String parentIds;
 
-    @ApiModelProperty(value = "账号过期标记")
+    @ApiModelProperty(value = "名称")
     private String name;
+
+    @ApiModelProperty(value = "名称路径")
+    private String names;
 
     @ApiModelProperty(value = "类型(0公司1部门2虚拟组织 3外部单位)")
     private String type;

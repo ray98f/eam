@@ -129,6 +129,63 @@
         )
     </update>
 
+    <insert id="importGearboxChangeOil">
+        insert ALL
+        <foreach collection="list" index="index" item="oil" separator=" ">
+            INTO T_GEARBOX_CHANGE_OIL (
+            REC_ID,  <!-- 记录编号 -->
+            TRAIN_NO,  <!-- 列车号 -->
+            COMPLETE_DATE,  <!-- 完成日期 -->
+            ORG_TYPE,  <!-- 作业单位 -->
+            OPERATOR,  <!-- 作业人员 -->
+            CONFIRMOR,  <!-- 确认人员 -->
+            REMARK,  <!-- 备注 -->
+            DOC_ID,  <!-- 附件编号 -->
+            REC_CREATOR,  <!-- 创建者 -->
+            REC_CREATE_TIME,  <!-- 创建时间 -->
+            REC_REVISOR,  <!-- 修改者 -->
+            REC_REVISE_TIME,  <!-- 修改时间 -->
+            REC_DELETOR,  <!-- 删除者 -->
+            REC_DELETE_TIME,  <!-- 删除时间 -->
+            DELETE_FLAG,  <!-- 删除标志 -->
+            ARCHIVE_FLAG,  <!-- 归档标记 -->
+            REC_STATUS,  <!-- 记录状态 -->
+            EXT1,  <!-- 扩展字段1 -->
+            EXT2,  <!-- 扩展字段2 -->
+            EXT3,  <!-- 扩展字段3 -->
+            EXT4,  <!-- 扩展字段4 -->
+            EXT5,  <!-- 扩展字段5 -->
+            EXT6,  <!-- 扩展字段6 -->
+            EXT7  <!-- 扩展字段7 -->)
+            VALUES (
+            #{oil.recId,jdbcType=VARCHAR},
+            #{oil.trainNo,jdbcType=VARCHAR},
+            #{oil.completeDate,jdbcType=VARCHAR},
+            #{oil.orgType,jdbcType=VARCHAR},
+            #{oil.operator,jdbcType=VARCHAR},
+            #{oil.confirmor,jdbcType=VARCHAR},
+            #{oil.remark,jdbcType=VARCHAR},
+            #{oil.docId,jdbcType=VARCHAR},
+            #{oil.recCreator,jdbcType=VARCHAR},
+            #{oil.recCreateTime,jdbcType=VARCHAR},
+            #{oil.recRevisor,jdbcType=VARCHAR},
+            #{oil.recReviseTime,jdbcType=VARCHAR},
+            #{oil.recDeletor,jdbcType=VARCHAR},
+            #{oil.recDeleteTime,jdbcType=VARCHAR},
+            '0',
+            #{oil.archiveFlag,jdbcType=VARCHAR},
+            #{oil.recStatus,jdbcType=VARCHAR},
+            #{oil.ext1,jdbcType=VARCHAR},
+            #{oil.ext2,jdbcType=VARCHAR},
+            #{oil.ext3,jdbcType=VARCHAR},
+            #{oil.ext4,jdbcType=VARCHAR},
+            #{oil.ext5,jdbcType=VARCHAR},
+            #{oil.ext6,jdbcType=VARCHAR},
+            #{oil.ext7,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
     <select id="listGearboxChangeOil" resultType="com.wzmtr.eam.dto.res.GearboxChangeOilResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->

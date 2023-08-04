@@ -8,4 +8,6 @@ public class CodeUtils {
         suffix += 1;
         return prefix + String.format("%0" + (code.length() - 1) +"d", suffix);
     }
+
+
 }

@@ -7,7 +7,7 @@ import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.entity.SysOrgUser;
 import com.wzmtr.eam.entity.SysUser;
-import com.wzmtr.eam.dto.res.OrgParentIdsResDTO;
+import com.wzmtr.eam.dto.res.OrgParentResDTO;
 import com.wzmtr.eam.service.common.MdmSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -380,6 +380,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
                 org.setParentId(result1.getParentOrgCode() == null ? "-1" : result1.getParentOrgCode());
                 org.setParentIds(result1.getParentOrgCode() == null ? "-1" : "");
                 org.setName(result1.getOrgName() == null ? "" : result1.getOrgName());
+                org.setNames("");
                 org.setType(result1.getOrgType() == null ? "" : result1.getOrgType());
                 org.setGrade(result1.getOrgLevel() == null ? "" : result1.getOrgLevel());
                 org.setSort(result1.getOrgSequence() == null ? 0 : result1.getOrgSequence());
@@ -412,6 +413,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
                 org.setParentId(result3.getParentId() == 0 ? "root" : String.valueOf(result3.getParentId()));
                 org.setParentIds(result3.getParentId() == 0 ? "root" : "");
                 org.setName(result3.getName());
+                org.setNames(result3.getParentId() == 0 ? ("温州市铁投集团-" + result3.getName()) : "");
                 org.setType("4");
                 org.setGrade("7");
                 org.setSort(0);
@@ -502,9 +504,9 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             sqlSession.commit();
             sqlSession.flushStatements();
             sqlSession.clearCache();
-            List<OrgParentIdsResDTO> pList = organizationMapper.searchParentIds();
-            for (OrgParentIdsResDTO orgParentIds : pList) {
-                mapper.updateParentIds(orgParentIds);
+            List<OrgParentResDTO> pList = organizationMapper.searchParent();
+            for (OrgParentResDTO orgParent : pList) {
+                mapper.updateParent(orgParent);
             }
             sqlSession.commit();
             sqlSession.flushStatements();

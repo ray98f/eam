@@ -2,6 +2,7 @@ package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.GearboxChangeOilReqDTO;
+import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
 import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.RegionResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,7 +17,7 @@ import java.util.List;
 @Repository
 public interface GearboxChangeOilMapper {
 
-    Page<GearboxChangeOilResDTO> pageGearboxChangeOil(Page<GearboxChangeOilResDTO> page, String equipName);
+    Page<GearboxChangeOilResDTO> pageGearboxChangeOil(Page<GearboxChangeOilResDTO> page, String trainNo);
 
     GearboxChangeOilResDTO getGearboxChangeOilDetail(String id);
 
@@ -24,6 +25,8 @@ public interface GearboxChangeOilMapper {
 
     void deleteGearboxChangeOil(List<String> ids, String userId, String time);
 
-    List<GearboxChangeOilResDTO> listGearboxChangeOil(String equipName);
+    void importGearboxChangeOil(List<GearboxChangeOilReqDTO> list);
+
+    List<GearboxChangeOilResDTO> listGearboxChangeOil(String trainNo);
 
 }

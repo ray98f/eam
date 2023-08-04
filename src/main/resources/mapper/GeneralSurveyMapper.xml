@@ -133,6 +133,65 @@
         )
     </update>
 
+    <insert id="importGeneralSurvey">
+        insert ALL
+        <foreach collection="list" index="index" item="generalSurvey" separator=" ">
+            INTO T_GENERAL_SURVEY (
+            REC_ID,  <!-- 记录编号 -->
+            TRAIN_NO,  <!-- 列车号 -->
+            REC_TYPE,  <!-- 类别 -->
+            REC_NOTIFY_NO,  <!-- 技术通知单编号 -->
+            REC_DETAIL,  <!-- 项目内容 -->
+            COMPLETE_DATE,  <!-- 完成时间 -->
+            ORG_TYPE,  <!-- 作业单位 -->
+            REMARK,  <!-- 备注 -->
+            DOC_ID,  <!-- 附件编号 -->
+            REC_CREATOR,  <!-- 创建者 -->
+            REC_CREATE_TIME,  <!-- 创建时间 -->
+            REC_REVISOR,  <!-- 修改者 -->
+            REC_REVISE_TIME,  <!-- 修改时间 -->
+            REC_DELETOR,  <!-- 删除者 -->
+            REC_DELETE_TIME,  <!-- 删除时间 -->
+            DELETE_FLAG,  <!-- 删除标志 -->
+            ARCHIVE_FLAG,  <!-- 归档标记 -->
+            REC_STATUS,  <!-- 记录状态 -->
+            EXT1,  <!-- 扩展字段1 -->
+            EXT2,  <!-- 扩展字段2 -->
+            EXT3,  <!-- 扩展字段3 -->
+            EXT4,  <!-- 扩展字段4 -->
+            EXT5,  <!-- 扩展字段5 -->
+            EXT6,  <!-- 扩展字段6 -->
+            EXT7  <!-- 扩展字段7 -->)
+            VALUES (
+            #{generalSurvey.recId,jdbcType=VARCHAR},
+            #{generalSurvey.trainNo,jdbcType=VARCHAR},
+            #{generalSurvey.recType,jdbcType=VARCHAR},
+            #{generalSurvey.recNotifyNo,jdbcType=VARCHAR},
+            #{generalSurvey.recDetail,jdbcType=VARCHAR},
+            #{generalSurvey.completeDate,jdbcType=VARCHAR},
+            #{generalSurvey.orgType,jdbcType=VARCHAR},
+            #{generalSurvey.remark,jdbcType=VARCHAR},
+            #{generalSurvey.docId,jdbcType=VARCHAR},
+            #{generalSurvey.recCreator,jdbcType=VARCHAR},
+            #{generalSurvey.recCreateTime,jdbcType=VARCHAR},
+            #{generalSurvey.recRevisor,jdbcType=VARCHAR},
+            #{generalSurvey.recReviseTime,jdbcType=VARCHAR},
+            #{generalSurvey.recDeletor,jdbcType=VARCHAR},
+            #{generalSurvey.recDeleteTime,jdbcType=VARCHAR},
+            '0',
+            #{generalSurvey.archiveFlag,jdbcType=VARCHAR},
+            #{generalSurvey.recStatus,jdbcType=VARCHAR},
+            #{generalSurvey.ext1,jdbcType=VARCHAR},
+            #{generalSurvey.ext2,jdbcType=VARCHAR},
+            #{generalSurvey.ext3,jdbcType=VARCHAR},
+            #{generalSurvey.ext4,jdbcType=VARCHAR},
+            #{generalSurvey.ext5,jdbcType=VARCHAR},
+            #{generalSurvey.ext6,jdbcType=VARCHAR},
+            #{generalSurvey.ext7,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
     <select id="listGeneralSurvey" resultType="com.wzmtr.eam.dto.res.GeneralSurveyResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->

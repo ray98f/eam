@@ -113,7 +113,8 @@ public enum ErrorCode {
     EQUIP_CODE_ERROR(32000038, "equip.code.error"),
     CREATOR_USER_ERROR(32000039, "creator.user.error"),
     CAN_NOT_MODIFY(32000040, "can.not.modify"),
-    PLAN_HAS_DETAIL(32000041, "plan.has.detail"),;
+    PLAN_HAS_DETAIL(32000041, "plan.has.detail"),
+    VERIFY_DATE_ERROR(32000042, "verify.date.error"),;
 
     private Integer code;
 
