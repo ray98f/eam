@@ -9,7 +9,6 @@ import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.secure.SecureHazardService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,45 +33,50 @@ public class SecureHazardController {
     public PageResponse<SecureHazardResDTO> list(@RequestBody SecureHazardReqDTO reqDTO) {
         return PageResponse.of(secureHazardService.list(reqDTO));
     }
+
     @ApiOperation(value = "详情")
     @PostMapping("/detail")
     public DataResponse<SecureHazardResDTO> detail(@RequestBody @Valid SecureHazardDetailReqDTO reqDTO) {
         return DataResponse.of(secureHazardService.detail(reqDTO));
     }
-    @ApiOperation(value ="安全隐患单新增")
+
+    @ApiOperation(value = "安全隐患单新增")
     @PostMapping("/add")
     public DataResponse<SecureHazardResDTO> add(@RequestBody SecureHazardAddReqDTO reqDTO) {
         secureHazardService.add(reqDTO);
         return DataResponse.success();
     }
-    @ApiOperation(value ="安全隐患单update")
+
+    @ApiOperation(value = "安全隐患单update")
     @PostMapping("/update")
     public DataResponse<SecureHazardResDTO> update(@RequestBody SecureHazardAddReqDTO reqDTO) {
         secureHazardService.update(reqDTO);
         return DataResponse.success();
     }
 
-    @ApiOperation(value ="安全隐患单export")
+    @ApiOperation(value = "安全隐患单export")
     @GetMapping("/export")
     public DataResponse<SecureHazardResDTO> export(@RequestParam(required = false) @ApiParam("安全隐患排查单号") String riskId,
                                                    @RequestParam(required = false) @ApiParam("发现日期开始") String begin,
                                                    @RequestParam(required = false) @ApiParam("发现日期结束") String end,
                                                    @RequestParam(required = false) @ApiParam("安全隐患等级") String riskRank,
-                                                   @RequestParam(required = false) @ApiParam("整改情况")   String restoreDesc,
-                                                   @RequestParam(required = false) @ApiParam("流程状态")   String workFlowInstStatus,
+                                                   @RequestParam(required = false) @ApiParam("整改情况") String restoreDesc,
+                                                   @RequestParam(required = false) @ApiParam("流程状态") String workFlowInstStatus,
                                                    HttpServletResponse response) {
-        secureHazardService.export(riskId,begin,end,riskRank,restoreDesc,workFlowInstStatus,response);
+        secureHazardService.export(riskId, begin, end, riskRank, restoreDesc, workFlowInstStatus, response);
         return DataResponse.success();
     }
-    @ApiOperation(value ="delete")
+
+    @ApiOperation(value = "delete")
     @PostMapping("/delete")
     public DataResponse<SecureHazardResDTO> delete(@RequestBody BaseIdsEntity reqDTO) {
         secureHazardService.delete(reqDTO);
         return DataResponse.success();
     }
-    @ApiOperation(value ="确认")
+
+    @ApiOperation(value = "确认")
     @PostMapping("/final/exam")
-    public DataResponse<SecureHazardResDTO> finalExam (@RequestBody SecureHazardReqDTO reqDTO) {
+    public DataResponse<SecureHazardResDTO> finalExam(@RequestBody SecureHazardReqDTO reqDTO) {
         secureHazardService.finalExam(reqDTO);
         return DataResponse.success();
     }

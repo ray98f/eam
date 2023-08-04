@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.config.MinioConfig;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceListReqDTO;
@@ -15,6 +16,7 @@ import com.wzmtr.eam.mapper.secure.SecureDangerSourceMapper;
 import com.wzmtr.eam.service.secure.SecureDangerSourceService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
+import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,8 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
 
     @Autowired
     SecureDangerSourceMapper secureDangerSourceMapper;
+    @Autowired
+    private MinioClient minioClient;
 
     @Override
     public Page<SecureDangerSourceResDTO> dangerSourceList(SecureDangerSourceListReqDTO reqDTO) {
@@ -91,8 +95,9 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
         if (CollectionUtil.isEmpty(reqDTO.getIds())) {
             return;
         }
-        secureDangerSourceMapper.deleteByIds(reqDTO.getIds());
+        secureDangerSourceMapper.deleteByIds(reqDTO.getIds(),TokenUtil.getCurrentPersonId(),new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
     }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -105,4 +110,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         secureDangerSourceMapper.update(reqDTO);
     }
+    // public void upload(){
+    //     minioClient.putObject()
+    // }
 }

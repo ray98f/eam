@@ -1,0 +1,117 @@
+package com.wzmtr.eam.utils;
+
+import com.alibaba.fastjson.JSON;
+import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.groupingBy;
+
+/**
+ * Author: Li.Wang
+ * Date: 2023/8/4 10:12
+ */
+public class __StreamUtil {
+    /**
+     * 将集合按特定的键转换成map，满足一对一关系，若key重复则后者覆盖前者
+     *
+     * @param <K>       Map的key类型
+     * @param <V>       Map的value类型
+     * @param source    对象集合
+     * @param keyMapper 值->key映射
+     * @return map
+     */
+    public static <K, V> Map<K, V> toMap(Collection<V> source,
+                                         Function<V, K> keyMapper) {
+        return source.stream().collect(Collectors.toMap(keyMapper, Function.identity(), (key1, key2) -> key2));
+    }
+
+    /**
+     * 从流中抽取<V>，生成集合List<V>.
+     *
+     * @return List<V>.
+     */
+    public static <E, V> List<V> mapToList(Collection<E> col, Function<E, V> func) {
+        return col.stream()
+                .map(func)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 从集合流中抽取<R>，生成去重集合Set<R>.
+     *
+     * @param func 传入的函数.
+     * @return Set<R>.
+     */
+    public static <E, V> Set<V> mapToSet(Collection<E> col, Function<E, V> func) {
+        return col.stream()
+                .map(func)
+                .collect(Collectors.toSet());
+    }
+
+
+    /**
+     * 从流中抽取<R>，根据R的不同值生成Map<R,List<T>>.
+     */
+    public static <E, R> Map<R, List<E>> groupBy(Collection<E> col, Function<E, R> func) {
+        return col.stream().collect(groupingBy(func));
+    }
+
+
+    /**
+     * 从流中抽取满足条件函数predicate的元素，并返回元素数量.
+     *
+     * @param predicate 条件函数.
+     * @param <T>       函数的入参.
+     * @return List<T>.
+     */
+    public static <T> long count(Collection<T> collection, Predicate<T> predicate) {
+        return collection.stream()
+                .filter(predicate)
+                .count();
+    }
+
+    /**
+     * 统计流中<R>的不同类型的数量.
+     *
+     * @param stream 流.
+     * @param func   函数.
+     * @param <T>    函数的入参.
+     * @param <R>    函数的出参.
+     * @return List<T>.
+     */
+    public static <T, R> Map<R, Long> mapCount(Stream<T> stream, Function<T, R> func) {
+        return stream.collect(Collectors.groupingBy(func, Collectors.counting()));
+    }
+
+    /**
+     * 流中的元素按比较函数排序，选出最大的元素。无，则手动返回.
+     *
+     * @param stream     流.
+     * @param comparator 比较函数.
+     * @param obj        当没有找到最大元素的返回值.
+     * @param <T>        函数的入参.
+     * @return List<T>.
+     */
+    public static <T> T max(Stream<T> stream, Comparator<T> comparator, T obj) {
+        return stream
+                .max(comparator)
+                .orElse(obj);
+    }
+
+
+    public static void main(String[] args) {
+        List<SecureCheckAddReqDTO> list = new ArrayList<>();
+        list.add(SecureCheckAddReqDTO.builder().recId("1").build());
+        list.add(SecureCheckAddReqDTO.builder().recId("2").build());
+        list.add(SecureCheckAddReqDTO.builder().recId("1").build());
+        Set<String> strings = __StreamUtil.mapToSet(list, SecureCheckAddReqDTO::getRecId);
+        System.out.println(JSON.toJSONString(strings));
+        Map<String, SecureCheckAddReqDTO> map = __StreamUtil.toMap(list, SecureCheckAddReqDTO::getRecId);
+        System.out.println(JSON.toJSONString(map));
+    }
+}

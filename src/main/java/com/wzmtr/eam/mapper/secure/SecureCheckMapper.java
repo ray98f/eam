@@ -26,7 +26,7 @@ public interface SecureCheckMapper {
 
     List<SecureCheckRecordListResDTO> list(String secRiskId, String restoreDesc,String inspectDate, String workFlowInstStatus);
 
-    void deleteByIds(@Param("ids") Set<String> ids);
+    void deleteByIds(@Param("ids") List<String> ids, @Param("userId") String userId, @Param("time") String time);
 
     void add(SecureCheckAddReqDTO reqDTO);
 }

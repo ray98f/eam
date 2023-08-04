@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.secure.*;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.secure.SecureCheckMapper;
@@ -80,9 +81,9 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     }
 
     @Override
-    public void delete(SecureCheckRecordDeleteReqDTO reqDTO) {
+    public void delete(BaseIdsEntity reqDTO) {
         if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
-            secureMapper.deleteByIds(reqDTO.getIds());
+            secureMapper.deleteByIds(reqDTO.getIds(),TokenUtil.getCurrentPersonId(),new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

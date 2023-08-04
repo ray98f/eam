@@ -23,7 +23,7 @@ public interface SecureDangerSourceMapper {
     SecureDangerSourceResDTO detail(String dangerRiskId);
 
     void add(SecureDangerSourceAddReqDTO reqDTO);
-    void deleteByIds(@Param("ids") List<String> ids);
+    void deleteByIds(@Param("ids") List<String> ids, @Param("userId") String userId, @Param("time") String time);
 
     void update(SecureDangerSourceAddReqDTO reqDTO);
 }

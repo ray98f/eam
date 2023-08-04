@@ -3,6 +3,7 @@ package com.wzmtr.eam.service.secure;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.secure.*;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +19,7 @@ public interface SecureCheckService {
 
     void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, HttpServletResponse response);
 
-    void delete(SecureCheckRecordDeleteReqDTO reqDTO);
+    void delete(BaseIdsEntity reqDTO);
 
     void add(SecureCheckAddReqDTO reqDTO);
 

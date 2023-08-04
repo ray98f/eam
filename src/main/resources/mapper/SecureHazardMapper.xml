@@ -78,14 +78,16 @@
             RISK_DETAIL       = #{riskDetail}
         where RISK_ID = #{riskId}
     </update>
-    <delete id="deleteByIds">
-        DELETE
-        FROM T_RISK_RECORD
+    <update id="deleteByIds">
+        update
+        T_RISK_RECORD
+        set
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
         WHERE REC_ID in
         <foreach collection="ids" item="id" index="id" open="(" separator="," close=")">
             #{id}
         </foreach>
-    </delete>
+    </update>
     <select id="query" resultType="com.wzmtr.eam.dto.res.secure.SecureHazardResDTO">
         SELECT
         REC_ID as "recId",  <!-- 记录编号 -->

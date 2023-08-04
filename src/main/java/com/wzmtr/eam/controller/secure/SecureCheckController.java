@@ -5,6 +5,7 @@ import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordDeleteReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.secure.SecureCheckService;
@@ -42,8 +43,8 @@ public class SecureCheckController {
     }
     @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
     @PostMapping("/record/delete")
-    public DataResponse<SecureCheckRecordListResDTO> delete(@RequestBody SecureCheckRecordDeleteReqDTO reqDTO) {
-        secureService.delete(reqDTO);
+    public DataResponse<SecureCheckRecordListResDTO> delete(@RequestBody BaseIdsEntity ids) {
+        secureService.delete(ids);
         return DataResponse.success();
     }
     @ApiOperation(value = "安全/质量/消防/-检查问题单导出")

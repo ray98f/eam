@@ -4,11 +4,9 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.secure.SecureCheckRecordDeleteReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardReqDTO;
-import com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO;
 import com.wzmtr.eam.dto.res.secure.SecureHazardResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.mapper.secure.SecureHazardMapper;
@@ -51,7 +49,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
     @Override
     public void export(String riskId, String begin, String end, String riskRank, String restoreDesc, String workFlowInstStatus, HttpServletResponse response) {
         List<String> listName = Arrays.asList("安全隐患排查单号", "发现日期", "安全隐患等级", "安全隐患内容", "检查部门", "检查人", "地点", "计划完成日期", "整改部门", "整改情况", "记录状态", "备注");
-        List<SecureHazardResDTO> resList = hazardMapper.list(riskId,begin,end,riskRank,restoreDesc,workFlowInstStatus);
+        List<SecureHazardResDTO> resList = hazardMapper.list(riskId, begin, end, riskRank, restoreDesc, workFlowInstStatus);
         if (CollectionUtil.isEmpty(resList)) {
             return;
         }
@@ -61,15 +59,15 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             map.put("安全隐患排查单号", resDTO.getRiskId());
             map.put("发现日期", resDTO.getInspectDate());
             map.put("安全隐患等级", resDTO.getRiskRank());
-            map.put("安全隐患内容",resDTO.getRiskDetail());
-            map.put("检查部门",resDTO.getInspectDeptCode());
-            map.put("检查人",resDTO.getInspectorCode());
-            map.put("地点",resDTO.getPositionDesc());
-            map.put("计划完成日期",resDTO.getPlanDate());
-            map.put("整改部门",resDTO.getRestoreDeptCode());
-            map.put("整改情况",resDTO.getRestoreDesc());
-            map.put("记录状态",resDTO.getRestoreDesc());
-            map.put("备注",resDTO.getPlanDate());
+            map.put("安全隐患内容", resDTO.getRiskDetail());
+            map.put("检查部门", resDTO.getInspectDeptCode());
+            map.put("检查人", resDTO.getInspectorCode());
+            map.put("地点", resDTO.getPositionDesc());
+            map.put("计划完成日期", resDTO.getPlanDate());
+            map.put("整改部门", resDTO.getRestoreDeptCode());
+            map.put("整改情况", resDTO.getRestoreDesc());
+            map.put("记录状态", resDTO.getRestoreDesc());
+            map.put("备注", resDTO.getPlanDate());
             list.add(map);
         }
         ExcelPortUtil.excelPort("安全隐患整改信息", listName, list, null, response);
@@ -81,7 +79,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         if (CollectionUtil.isEmpty(reqDTO.getIds())) {
             return;
         }
-        hazardMapper.deleteByIds(reqDTO.getIds());
+        hazardMapper.deleteByIds(reqDTO.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
     }
 
     @Override
@@ -111,6 +109,6 @@ public class SecureHazardServiceImpl implements SecureHazardService {
 
     @Override
     public void finalExam(SecureHazardReqDTO reqDTO) {
-    //todo
+        // todo
     }
 }

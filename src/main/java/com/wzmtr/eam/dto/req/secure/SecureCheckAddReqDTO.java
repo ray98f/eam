@@ -2,6 +2,7 @@ package com.wzmtr.eam.dto.req.secure;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel
+@Builder
 public class SecureCheckAddReqDTO {
     @ApiModelProperty(value = "记录编号")
     private String recId;
