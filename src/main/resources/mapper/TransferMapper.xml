@@ -288,73 +288,191 @@
     
     <update id="updateTransfer">
         UPDATE T_TRANSFER_DETAIL SET
-        TRANSFER_NO	= #{transferNo},   <!-- 移交单号 -->
-        ITEM_CODE	= #{itemCode},   <!-- 合同清单明细号 -->
-        ITEM_NAME	= #{itemName},   <!-- 合同清单明细名称 -->
-        LINE_NO	= #{lineNo},   <!-- 线别代码 -->
-        LINE_NAME	= #{lineName},   <!-- 线别名称 -->
-        LINE_SUB_NO	= #{lineSubNo},   <!-- 线段代码 -->
-        LINE_SUB_NAME	= #{lineSubName},   <!-- 线段名称 -->
-        MAJOR_CODE	= #{majorCode},   <!-- 专业代码 -->
-        MAJOR_NAME	= #{majorName},   <!-- 专业名称 -->
-        PRO_CODE	= #{proCode},   <!-- 项目编号 -->
-        PRO_NAME	= #{proName},   <!-- 项目名称 -->
-        ORDER_NO	= #{orderNo},   <!-- 合同编号 -->
-        ORDER_NAME	= #{orderName},   <!-- 合同名称 -->
-        SUPPLIER_ID	= #{supplierId},   <!-- 供应商编号 -->
-        SUPPLIER_NAME	= #{supplierName},   <!-- 供应商名称 -->
-        MAT_SPECIFI	= #{matSpecifi},   <!-- 型号规格 -->
-        BRAND	= #{brand},   <!-- 品牌/生产厂家 -->
-        OTHER_FEATURE	= #{otherFeature},   <!-- 其他特征参数 -->
-        APPENDIX_NO	= #{appendixNo},   <!-- 图号/国标号/厂家零件号 -->
-        STOCK_UNIT	= #{stockUnit},   <!-- 单位 -->
-        QUANTITY	= #{quantity,jdbcType=NUMERIC},   <!-- 数量（默认值0） -->
-        IS_BOM	= #{isBom},   <!-- 是组合件 -->
-        IS_INVISIBLE	= #{isInvisible},   <!-- 是隐蔽工程 -->
-        TAX_PRICE	= #{taxPrice,jdbcType=NUMERIC},   <!-- 税后单价（默认值0） -->
-        PRE_TAX_PRICE	= #{preTaxPrice,jdbcType=NUMERIC},   <!-- 税前单价（默认值0） -->
-        TAX_RATE	= #{taxRate,jdbcType=NUMERIC},   <!-- 税率（默认值0） -->
-        IS_DOC	= #{isDoc},   <!-- 有技术资料 -->
-        ASSURANCE_PERIOD	= #{assurancePeriod,jdbcType=NUMERIC},   <!-- 工程质保期（天）（默认值0） -->
-        REMARK	= #{remark},   <!-- 备注 -->
-        LIFE_YEARS	= #{lifeYears,jdbcType=NUMERIC},   <!-- 使用年限N3  （默认值0） -->
-        USE_COUNTER	= #{useCounter,jdbcType=NUMERIC},   <!-- 使用次数N8 （默认值0） -->
-        MANUFACTURE	= #{manufacture},   <!-- 生产厂家 -->
-        VENDOR_CODE	= #{vendorCode},   <!-- 供货商 -->
-        POSITION1_CODE	= #{position1Code},   <!-- 位置类型 -->
-        POSITION1_NAME	= #{position1Name},   <!-- 位置1 -->
-        POSITION2_CODE	= #{position2Code},   <!-- 位置2代码 -->
-        POSITION2_NAME	= #{position2Name},   <!-- 位置2 -->
-        POSITION3	= #{position3},   <!-- 位置3 -->
-        POSITION_REMARK	= #{positionRemark},   <!-- 位置补充说明 -->
-        ORDER_AMT	= #{orderAmt,jdbcType=NUMERIC},   <!-- 合同单价（默认值0） -->
-        CONSTRUCTURE_FORM	= #{constructureForm},   <!-- 结构形式 -->
-        NET_HEIGHT	= #{netHeight},   <!-- 结构净高（默认值0） -->
-        IS_OWNER_SUPPLY	= #{isOwnerSupply},   <!-- 是否使用甲供料 -->
-        OWNER_SUPPLY_QUANTITY	= #{ownerSupplyQuantity,jdbcType=NUMERIC},   <!-- 甲供料数量（默认值0） -->
-        OWNER_SUPPLY_UNIT	= #{ownerSupplyUnit},   <!-- 甲供料单位 -->
-        OWNER_SUPPLY_PRICE	= #{ownerSupplyPrice,jdbcType=NUMERIC},   <!-- 甲供料价格（默认值0） -->
-        OWNER_SUPPLY_TAX_PRICE	= #{ownerSupplyTaxPrice,jdbcType=NUMERIC},   <!-- 甲供料含税价格（默认值0） -->
-        OWNER_SUPPLY_ORDER	= #{ownerSupplyOrder},   <!-- 甲供料合同 -->
-        INSTALL_AMT	= #{installAmt,jdbcType=NUMERIC},   <!-- 安装费（默认值0） -->
-        AUDIT_MSG	= #{auditMsg},   <!-- 审核意见 -->
-        STATUS	= #{status},   <!-- 状态（新增、监理审核、业主审核、专工审核、监理驳回、业主驳回、专工驳回、完成） -->
-        REC_ID2	= #{recId2},   <!-- 合同清单主键 -->
-        REC_CREATOR	= #{recCreator},   <!-- 创建者 -->
-        REC_CREATE_TIME	= #{recCreateTime},   <!-- 创建时间 -->
+        <if test="transferNo!=null">
+            TRANSFER_NO	= #{transferNo},   <!-- 移交单号 -->
+        </if>
+        <if test="itemCode!=null">
+            ITEM_CODE	= #{itemCode},   <!-- 合同清单明细号 -->
+        </if>
+        <if test="itemName!=null">
+            ITEM_NAME	= #{itemName},   <!-- 合同清单明细名称 -->
+        </if>
+        <if test="lineNo!=null">
+            LINE_NO	= #{lineNo},   <!-- 线别代码 -->
+        </if>
+        <if test="lineName!=null">
+            LINE_NAME	= #{lineName},   <!-- 线别名称 -->
+        </if>
+        <if test="lineSubNo!=null">
+            LINE_SUB_NO	= #{lineSubNo},   <!-- 线段代码 -->
+        </if>
+        <if test="lineSubName!=null">
+            LINE_SUB_NAME	= #{lineSubName},   <!-- 线段名称 -->
+        </if>
+        <if test="majorCode!=null">
+            MAJOR_CODE	= #{majorCode},   <!-- 专业代码 -->
+        </if>
+        <if test="majorName!=null">
+            MAJOR_NAME	= #{majorName},   <!-- 专业名称 -->
+        </if>
+        <if test="proCode!=null">
+            PRO_CODE	= #{proCode},   <!-- 项目编号 -->
+        </if>
+        <if test="proName!=null">
+            PRO_NAME	= #{proName},   <!-- 项目名称 -->
+        </if>
+        <if test="orderNo!=null">
+            ORDER_NO	= #{orderNo},   <!-- 合同编号 -->
+        </if>
+        <if test="orderName!=null">
+            ORDER_NAME	= #{orderName},   <!-- 合同名称 -->
+        </if>
+        <if test="supplierId!=null">
+            SUPPLIER_ID	= #{supplierId},   <!-- 供应商编号 -->
+        </if>
+        <if test="supplierName!=null">
+            SUPPLIER_NAME	= #{supplierName},   <!-- 供应商名称 -->
+        </if>
+        <if test="matSpecifi!=null">
+            MAT_SPECIFI	= #{matSpecifi},   <!-- 型号规格 -->
+        </if>
+        <if test="brand!=null">
+            BRAND	= #{brand},   <!-- 品牌/生产厂家 -->
+        </if>
+        <if test="otherFeature!=null">
+            OTHER_FEATURE	= #{otherFeature},   <!-- 其他特征参数 -->
+        </if>
+        <if test="appendixNo!=null">
+            APPENDIX_NO	= #{appendixNo},   <!-- 图号/国标号/厂家零件号 -->
+        </if>
+        <if test="stockUnit!=null">
+            STOCK_UNIT	= #{stockUnit},   <!-- 单位 -->
+        </if>
+        <if test="quantity!=null">
+            QUANTITY	= #{quantity,jdbcType=NUMERIC},   <!-- 数量（默认值0） -->
+        </if>
+        <if test="isBom!=null">
+            IS_BOM	= #{isBom},   <!-- 是组合件 -->
+        </if>
+        <if test="isInvisible!=null">
+            IS_INVISIBLE	= #{isInvisible},   <!-- 是隐蔽工程 -->
+        </if>
+        <if test="taxPrice!=null">
+            TAX_PRICE	= #{taxPrice,jdbcType=NUMERIC},   <!-- 税后单价（默认值0） -->
+        </if>
+        <if test="preTaxPrice!=null">
+            PRE_TAX_PRICE	= #{preTaxPrice,jdbcType=NUMERIC},   <!-- 税前单价（默认值0） -->
+        </if>
+        <if test="taxRate!=null">
+            TAX_RATE	= #{taxRate,jdbcType=NUMERIC},   <!-- 税率（默认值0） -->
+        </if>
+        <if test="isDoc!=null">
+            IS_DOC	= #{isDoc},   <!-- 有技术资料 -->
+        </if>
+        <if test="assurancePeriod!=null">
+            ASSURANCE_PERIOD	= #{assurancePeriod,jdbcType=NUMERIC},   <!-- 工程质保期（天）（默认值0） -->
+        </if>
+        <if test="remark!=null">
+            REMARK	= #{remark},   <!-- 备注 -->
+        </if>
+        <if test="lifeYears!=null">
+            LIFE_YEARS	= #{lifeYears,jdbcType=NUMERIC},   <!-- 使用年限N3  （默认值0） -->
+        </if>
+        <if test="useCounter!=null">
+            USE_COUNTER	= #{useCounter,jdbcType=NUMERIC},   <!-- 使用次数N8 （默认值0） -->
+        </if>
+        <if test="manufacture!=null">
+            MANUFACTURE	= #{manufacture},   <!-- 生产厂家 -->
+        </if>
+        <if test="vendorCode!=null">
+            VENDOR_CODE	= #{vendorCode},   <!-- 供货商 -->
+        </if>
+        <if test="position1Code!=null">
+            POSITION1_CODE	= #{position1Code},   <!-- 位置类型 -->
+        </if>
+        <if test="position1Name!=null">
+            POSITION1_NAME	= #{position1Name},   <!-- 位置1 -->
+        </if>
+        <if test="position2Code!=null">
+            POSITION2_CODE	= #{position2Code},   <!-- 位置2代码 -->
+        </if>
+        <if test="position2Name!=null">
+            POSITION2_NAME	= #{position2Name},   <!-- 位置2 -->
+        </if>
+        <if test="position3!=null">
+            POSITION3	= #{position3},   <!-- 位置3 -->
+        </if>
+        <if test="positionRemark!=null">
+            POSITION_REMARK	= #{positionRemark},   <!-- 位置补充说明 -->
+        </if>
+        <if test="orderAmt!=null">
+            ORDER_AMT	= #{orderAmt,jdbcType=NUMERIC},   <!-- 合同单价（默认值0） -->
+        </if>
+        <if test="constructureForm!=null">
+            CONSTRUCTURE_FORM	= #{constructureForm},   <!-- 结构形式 -->
+        </if>
+        <if test="netHeight!=null">
+            NET_HEIGHT	= #{netHeight},   <!-- 结构净高（默认值0） -->
+        </if>
+        <if test="isOwnerSupply!=null">
+            IS_OWNER_SUPPLY	= #{isOwnerSupply},   <!-- 是否使用甲供料 -->
+        </if>
+        <if test="ownerSupplyQuantity!=null">
+            OWNER_SUPPLY_QUANTITY	= #{ownerSupplyQuantity,jdbcType=NUMERIC},   <!-- 甲供料数量（默认值0） -->
+        </if>
+        <if test="ownerSupplyUnit!=null">
+            OWNER_SUPPLY_UNIT	= #{ownerSupplyUnit},   <!-- 甲供料单位 -->
+        </if>
+        <if test="ownerSupplyPrice!=null">
+            OWNER_SUPPLY_PRICE	= #{ownerSupplyPrice,jdbcType=NUMERIC},   <!-- 甲供料价格（默认值0） -->
+        </if>
+        <if test="ownerSupplyTaxPrice!=null">
+            OWNER_SUPPLY_TAX_PRICE	= #{ownerSupplyTaxPrice,jdbcType=NUMERIC},   <!-- 甲供料含税价格（默认值0） -->
+        </if>
+        <if test="ownerSupplyOrder!=null">
+            OWNER_SUPPLY_ORDER	= #{ownerSupplyOrder},   <!-- 甲供料合同 -->
+        </if>
+        <if test="installAmt!=null">
+            INSTALL_AMT	= #{installAmt,jdbcType=NUMERIC},   <!-- 安装费（默认值0） -->
+        </if>
+        <if test="auditMsg!=null">
+            AUDIT_MSG	= #{auditMsg},   <!-- 审核意见 -->
+        </if>
+        <if test="status!=null">
+            STATUS	= #{status},   <!-- 状态（新增、监理审核、业主审核、专工审核、监理驳回、业主驳回、专工驳回、完成） -->
+        </if>
+        <if test="recId2!=null">
+            REC_ID2	= #{recId2},   <!-- 合同清单主键 -->
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+        </if>
+        <if test="ext1!=null">
+            EXT1	= #{ext1},   <!-- 扩展字段1 -->
+        </if>
+        <if test="ext2!=null">
+            EXT2	= #{ext2},   <!-- 扩展字段2 -->
+        </if>
+        <if test="ext3!=null">
+            EXT3	= #{ext3},   <!-- 扩展字段3 -->
+        </if>
+        <if test="ext4!=null">
+            EXT4	= #{ext4},   <!-- 扩展字段4 -->
+        </if>
+        <if test="ext5!=null">
+            EXT5	= #{ext5},   <!-- 扩展字段5 -->
+        </if>
+        <if test="ext6!=null">
+            EXT6	= #{ext6},   <!-- 扩展字段6 -->
+        </if>
+        <if test="isEquipment!=null">
+            IS_EQUIPMENT	= #{isEquipment},   <!-- 是否进设备台账（0：是；1：否） -->
+        </if>
+        <if test="eamProcessStatus!=null">
+            EAM_PROCESS_STATUS	= #{eamProcessStatus},  <!-- EAM处理状态 -->
+        </if>
         REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
-        REC_REVISE_TIME	= #{recReviseTime},   <!-- 修改时间 -->
-        REC_DELETOR	= #{recDeletor},   <!-- 删除者 -->
-        REC_DELETE_TIME	= #{recDeleteTime},   <!-- 删除时间 -->
-        ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
-        EXT1	= #{ext1},   <!-- 扩展字段1 -->
-        EXT2	= #{ext2},   <!-- 扩展字段2 -->
-        EXT3	= #{ext3},   <!-- 扩展字段3 -->
-        EXT4	= #{ext4},   <!-- 扩展字段4 -->
-        EXT5	= #{ext5},   <!-- 扩展字段5 -->
-        EXT6	= #{ext6},   <!-- 扩展字段6 -->
-        IS_EQUIPMENT	= #{isEquipment},   <!-- 是否进设备台账（0：是；1：否） -->
-        EAM_PROCESS_STATUS	= #{eamProcessStatus},  <!-- EAM处理状态 -->
+        REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
         WHERE REC_ID = #{recId}
     </update>
 

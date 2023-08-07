@@ -46,9 +46,9 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         List<DetectionPlanResDTO> list = page.getRecords();
         if (list != null && !list.isEmpty()) {
             for (DetectionPlanResDTO resDTO : list) {
-                resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
-                resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
-                resDTO.setEditDeptCode(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
+                resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
+                resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+                resDTO.setEditDeptName(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
             }
         }
         page.setRecords(list);
@@ -61,9 +61,9 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
-        resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
-        resDTO.setEditDeptCode(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
+        resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
+        resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+        resDTO.setEditDeptName(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
         return resDTO;
     }
 
@@ -74,7 +74,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         specialEquipReqDTO.setRecId(TokenUtil.getUuId());
         specialEquipReqDTO.setArchiveFlag("0");
         specialEquipReqDTO.setPlanStatus("10");
-        specialEquipReqDTO.setEditDeptCode(TokenUtil.getCurrentPerson().getOfficeAreaId());
+        specialEquipReqDTO.setEditDeptCode(TokenUtil.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtil.getCurrentPerson().getOfficeAreaId());
         specialEquipReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         specialEquipReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String instrmPlanNo = detectionPlanMapper.getMaxCode();

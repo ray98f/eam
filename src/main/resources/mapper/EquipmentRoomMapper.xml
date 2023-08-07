@@ -154,29 +154,59 @@
 
     <update id="modifyEquipmentRoom">
         UPDATE T_EQUIPMENT_ROOM SET
-        EQUIP_ROOM_CODE	= #{equipRoomCode},   <!-- 设备房编码 -->
-        EQUIP_ROOM_NAME	= #{equipRoomName},   <!-- 设备房名称 -->
-        SUBJECT_CODE	= #{subjectCode},   <!-- 专业编码 -->
-        SUBJECT_NAME	= #{subjectName},   <!-- 专业名称 -->
-        LINE_CODE	= #{lineCode},   <!-- 线别编码 -->
-        POSITION1_CODE	= #{position1Code},   <!-- 位置一编码 -->
-        POSITION1_NAME	= #{position1Name},   <!-- 位置一名称 -->
-        POSITION2_CODE	= #{position2Code},   <!-- 位置二编码 -->
-        POSITION2_NAME	= #{position2Name},   <!-- 位置二名称 -->
-        REMARK	= #{remark},   <!-- 备注 -->
-        REC_CREATOR	= #{recCreator},   <!-- 创建者 -->
-        REC_CREATE_TIME	= #{recCreateTime},   <!-- 创建时间 -->
+        <if test="equipRoomCode!=null">
+            EQUIP_ROOM_CODE	= #{equipRoomCode},   <!-- 设备房编码 -->
+        </if>
+        <if test="equipRoomName!=null">
+            EQUIP_ROOM_NAME	= #{equipRoomName},   <!-- 设备房名称 -->
+        </if>
+        <if test="subjectCode!=null">
+            SUBJECT_CODE	= #{subjectCode},   <!-- 专业编码 -->
+        </if>
+        <if test="subjectName!=null">
+            SUBJECT_NAME	= #{subjectName},   <!-- 专业名称 -->
+        </if>
+        <if test="lineCode!=null">
+            LINE_CODE	= #{lineCode},   <!-- 线别编码 -->
+        </if>
+        <if test="position1Code!=null">
+            POSITION1_CODE	= #{position1Code},   <!-- 位置一编码 -->
+        </if>
+        <if test="position1Name!=null">
+            POSITION1_NAME	= #{position1Name},   <!-- 位置一名称 -->
+        </if>
+        <if test="position2Code!=null">
+            POSITION2_CODE	= #{position2Code},   <!-- 位置二编码 -->
+        </if>
+        <if test="position2Name!=null">
+            POSITION2_NAME	= #{position2Name},   <!-- 位置二名称 -->
+        </if>
+        <if test="remark!=null">
+            REMARK	= #{remark},   <!-- 备注 -->
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+        </if>
+        <if test="recStatus!=null">
+            REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
+        </if>
+        <if test="ext1!=null">
+            EXT1	= #{ext1},   <!-- 扩展字段1 -->
+        </if>
+        <if test="ext2!=null">
+            EXT2	= #{ext2},   <!-- 扩展字段2 -->
+        </if>
+        <if test="ext3!=null">
+            EXT3	= #{ext3},   <!-- 扩展字段3 -->
+        </if>
+        <if test="ext4!=null">
+            EXT4	= #{ext4},   <!-- 扩展字段4 -->
+        </if>
+        <if test="ext5!=null">
+            EXT5	= #{ext5},  <!-- 扩展字段5 -->
+        </if>
         REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
-        REC_REVISE_TIME	= #{recReviseTime},   <!-- 修改时间 -->
-        REC_DELETOR	= #{recDeletor},   <!-- 删除者 -->
-        REC_DELETE_TIME	= #{recDeleteTime},   <!-- 删除时间 -->
-        ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
-        REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
-        EXT1	= #{ext1},   <!-- 扩展字段1 -->
-        EXT2	= #{ext2},   <!-- 扩展字段2 -->
-        EXT3	= #{ext3},   <!-- 扩展字段3 -->
-        EXT4	= #{ext4},   <!-- 扩展字段4 -->
-        EXT5	= #{ext5}  <!-- 扩展字段5 -->
+        REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
         WHERE REC_ID = #{recId}
     </update>
 

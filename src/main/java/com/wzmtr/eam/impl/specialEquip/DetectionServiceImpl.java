@@ -46,9 +46,9 @@ public class DetectionServiceImpl implements DetectionService {
         List<DetectionResDTO> list = page.getRecords();
         if (list != null && !list.isEmpty()) {
             for (DetectionResDTO resDTO : list) {
-                resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
-                resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
-                resDTO.setEditDeptCode(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
+                resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
+                resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+                resDTO.setEditDeptName(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
             }
         }
         page.setRecords(list);
@@ -61,9 +61,9 @@ public class DetectionServiceImpl implements DetectionService {
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
-        resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
-        resDTO.setEditDeptCode(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
+        resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
+        resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+        resDTO.setEditDeptName(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
         return resDTO;
     }
 

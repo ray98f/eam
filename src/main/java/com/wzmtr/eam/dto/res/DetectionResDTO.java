@@ -26,6 +26,9 @@ public class DetectionResDTO {
     @ApiModelProperty(value = "编制部门")
     private String editDeptCode;
 
+    @ApiModelProperty(value = "编制部门名称")
+    private String editDeptName;
+
     @ApiModelProperty(value = "检测校准单位")
     private String verifyDept;
 
@@ -116,8 +119,14 @@ public class DetectionResDTO {
     @ApiModelProperty(value = "管理部门")
     private String manageOrg;
 
+    @ApiModelProperty(value = "管理部门名称")
+    private String manageOrgName;
+
     @ApiModelProperty(value = "维管部门")
     private String secOrg;
+
+    @ApiModelProperty(value = "维管部门名称")
+    private String secOrgName;
 
     private String yearMonth;
 

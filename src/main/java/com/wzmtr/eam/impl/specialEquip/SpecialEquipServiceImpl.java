@@ -60,8 +60,8 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
         List<SpecialEquipResDTO> list = page.getRecords();
         if (list != null && !list.isEmpty()) {
             for (SpecialEquipResDTO resDTO : list) {
-                resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
-                resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+                resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
+                resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
             }
         }
         page.setRecords(list);
@@ -74,8 +74,8 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        resDTO.setManageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()));
-        resDTO.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+        resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
+        resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
         return resDTO;
     }
 

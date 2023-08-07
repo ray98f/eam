@@ -3,24 +3,24 @@
 <mapper namespace="com.wzmtr.eam.mapper.common.OrganizationMapper">
 
     <select id="getRoot" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
-        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, AREA_ID from SYS_OFFICE
         where ID='root' and USEABLE=1 and DEL_FLAG=0
     </select>
 
     <select id="listExtraRootList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
-        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, AREA_ID from SYS_OFFICE
         where PARENT_ID=#{root} and USEABLE=1 and DEL_FLAG=0 and ID not in ('100000048', '100000002')
         order by ID asc
     </select>
 
     <select id="listExtraBodyList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
-        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, AREA_ID from SYS_OFFICE
         where PARENT_ID not in (#{root}, '100000002') and USEABLE=1 and DEL_FLAG=0 and ID!=#{root}
         order by SORT asc
     </select>
 
     <select id="listCompanyList" resultType="com.wzmtr.eam.entity.CompanyStructureTreeDTO">
-        select ID, PARENT_ID, PARENT_IDS, NAME from SYS_OFFICE
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, AREA_ID from SYS_OFFICE
         where PARENT_ID='root' and DEL_FLAG=0 and USEABLE=1 and NAME!='外部单位' and GRADE in (1,2)
         order by SORT
     </select>

@@ -115,10 +115,18 @@
 
     <update id="modifyEquipmentCharge">
         UPDATE T_EQUIPMENT_CHARGE SET
-        EQUIP_CODE	= #{equipCode},
-        CHARGE_DATE	= #{chargeDate},
-        CHARGE_DURATION	= #{chargeDuration,jdbcType=NUMERIC},
-        REMARK	= #{remark},
+        <if test="equipCode!=null">
+            EQUIP_CODE	= #{equipCode},
+        </if>
+        <if test="chargeDate!=null">
+            CHARGE_DATE	= #{chargeDate},
+        </if>
+        <if test="chargeDuration!=null">
+            CHARGE_DURATION	= #{chargeDuration,jdbcType=NUMERIC},
+        </if>
+        <if test="remark!=null">
+            REMARK	= #{remark},
+        </if>
         REC_REVISOR	= #{recRevisor},
         REC_REVISE_TIME	= #{recReviseTime}
         WHERE REC_ID = #{recId}
