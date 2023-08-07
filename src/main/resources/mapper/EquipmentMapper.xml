@@ -858,6 +858,18 @@
         ORDER BY EQUIP_CODE ASC
     </select>
 
+    <select id="selectByEquipName" resultType="com.wzmtr.eam.dto.res.EquipmentResDTO">
+        SELECT
+        EQUIP_CODE as equipCode,
+        EQUIP_NAME as equipName
+        from T_EQUIPMENT where
+        MAJOR_CODE='07'
+        <if test="equipName!=null and equipName!=''">
+            and EQUIP_NAME = #{equipName}
+        </if>
+        order by EQUIP_NAME
+    </select>
+
     <update id="updateEquipment">
         UPDATE T_EQUIPMENT SET
         <if test="companyCode!=null">

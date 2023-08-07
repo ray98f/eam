@@ -75,18 +75,7 @@ public class __StreamUtil {
                 .count();
     }
 
-    /**
-     * 统计流中<R>的不同类型的数量.
-     *
-     * @param stream 流.
-     * @param func   函数.
-     * @param <T>    函数的入参.
-     * @param <R>    函数的出参.
-     * @return List<T>.
-     */
-    public static <T, R> Map<R, Long> mapCount(Stream<T> stream, Function<T, R> func) {
-        return stream.collect(Collectors.groupingBy(func, Collectors.counting()));
-    }
+
 
     /**
      * 流中的元素按比较函数排序，选出最大的元素。无，则手动返回.
@@ -106,9 +95,9 @@ public class __StreamUtil {
 
     public static void main(String[] args) {
         List<SecureCheckAddReqDTO> list = new ArrayList<>();
-        list.add(SecureCheckAddReqDTO.builder().recId("1").build());
-        list.add(SecureCheckAddReqDTO.builder().recId("2").build());
-        list.add(SecureCheckAddReqDTO.builder().recId("1").build());
+        // list.add(SecureCheckAddReqDTO.builder().recId("1").build());
+        // list.add(SecureCheckAddReqDTO.builder().recId("2").build());
+        // list.add(SecureCheckAddReqDTO.builder().recId("1").build());
         Set<String> strings = __StreamUtil.mapToSet(list, SecureCheckAddReqDTO::getRecId);
         System.out.println(JSON.toJSONString(strings));
         Map<String, SecureCheckAddReqDTO> map = __StreamUtil.toMap(list, SecureCheckAddReqDTO::getRecId);

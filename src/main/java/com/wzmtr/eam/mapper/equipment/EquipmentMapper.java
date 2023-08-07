@@ -7,7 +7,6 @@ import com.wzmtr.eam.dto.req.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.RegionResDTO;
-import com.wzmtr.eam.entity.PageReqDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -49,4 +48,6 @@ public interface EquipmentMapper {
     List<EquipmentResDTO> siftEquipment(EquipmentSiftReqDTO equipmentSiftReqDTO);
 
     void updateEquipment(EquipmentReqDTO equipmentReqDTO);
+
+    List<EquipmentResDTO> selectByEquipName(String equipName);
 }
