@@ -1,7 +1,6 @@
 package com.wzmtr.eam.impl.SpareAndCarVideo;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
@@ -24,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
@@ -57,7 +57,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     public CarVideoResDTO detail(SidEntity reqDTO) {
         if (StringUtils.isEmpty(reqDTO.getId())) {
-            return null;
+            throw new CommonException(ErrorCode.PARAM_ERROR);
         }
         CarVideoResDTO detail = carVideoMapper.detail(reqDTO.getId());
         if (detail == null) {
@@ -98,12 +98,15 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(CarVideoAddReqDTO reqDTO) {
-        if (StrUtil.isEmpty(reqDTO.getRecId())) {
-            log.warn("单号为空!");
-            return;
+        if (StringUtils.isEmpty(reqDTO.getRecId())) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
         }
         CarVideoResDTO res = carVideoMapper.detail(reqDTO.getRecId());
+        if (Objects.isNull(res)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
         assert !Objects.equals(res.getRecStatus(), "10") : "非编辑状态不可修改";
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -111,7 +114,13 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void operate(CarVideoOperateReqDTO reqDTO) {
         // todo
+    }
+
+    @Override
+    public void export(String recId, HttpServletResponse response) {
+        //TODO
     }
 }

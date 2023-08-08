@@ -12,5 +12,5 @@ import lombok.Data;
 @ApiModel
 public class SecureDangerSourceDetailReqDTO {
     @ApiModelProperty(value = "危险源记录单号")
-    private String dangerRiskId = " ";
+    private String dangerRiskId;
 }

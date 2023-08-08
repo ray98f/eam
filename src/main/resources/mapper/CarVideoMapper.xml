@@ -147,115 +147,50 @@
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO">
         SELECT
-        REC_ID	as "recId",
-        COMPANY_CODE	as "companyCode",
-        COMPANY_NAME	as "companyName",
-        APPLY_NO	as "applyNo",
-        TRAIN_NO	as "trainNo",
-        APPLY_REASON	as "applyReason",
-        APPLY_TYPE	as "applyType",
-        APPLIER_ID	as "applierId",
-        APPLIER_MOB_PHONE	as "applierMobPhone",
-        APPLY_DEPT_CODE	as "applyDeptCode",
-        APPLY_DEPT_LEADER	as "applyDeptLeader",
-        APPLY_TIME	as "applyTime",
-        VIDEO_START_TIME	as "videoStartTime",
-        VIDEO_END_TIME	as "videoEndTime",
-        ENGINEER_ID	as "engineerId",
-        REPAIR_MANAGER_ID	as "repairManagerId",
-        DISPATCH_USER_ID	as "dispatchUserId",
-        DISPATCH_TIME	as "dispatchTime",
-        WORKER_ID	as "workerId",
-        WORK_TIME	as "workTime",
-        CLOSER_ID	as "closerId",
-        CLOSE_TIME	as "closeTime",
-        WORK_FLOW_INST_ID	as "workFlowInstId",
-        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",
-        REMARK	as "remark",
-        REC_CREATOR	as "recCreator",
-        REC_CREATE_TIME	as "recCreateTime",
-        REC_REVISOR	as "recRevisor",
-        REC_REVISE_TIME	as "recReviseTime",
-        REC_DELETOR	as "recDeletor",
-        REC_DELETE_TIME	as "recDeleteTime",
-        DELETE_FLAG	as "deleteFlag",
-        ARCHIVE_FLAG	as "archiveFlag",
-        REC_STATUS	as "recStatus",
-        EXT1	as "ext1",
-        EXT2	as "ext2",
-        EXT3	as "ext3",
-        EXT4	as "ext4",
-        EXT5	as "ext5",
+        REC_ID as "recId",
+        COMPANY_CODE as "companyCode",
+        COMPANY_NAME as "companyName",
+        APPLY_NO as "applyNo",
+        TRAIN_NO as "trainNo",
+        APPLY_REASON as "applyReason",
+        APPLY_TYPE as "applyType",
+        APPLIER_ID as "applierId",
+        APPLIER_MOB_PHONE as "applierMobPhone",
+        APPLY_DEPT_CODE as "applyDeptCode",
+        APPLY_DEPT_LEADER as "applyDeptLeader",
+        APPLY_TIME as "applyTime",
+        VIDEO_START_TIME as "videoStartTime",
+        VIDEO_END_TIME as "videoEndTime",
+        ENGINEER_ID as "engineerId",
+        REPAIR_MANAGER_ID as "repairManagerId",
+        DISPATCH_USER_ID as "dispatchUserId",
+        DISPATCH_TIME as "dispatchTime",
+        WORKER_ID as "workerId",
+        WORK_TIME as "workTime",
+        CLOSER_ID as "closerId",
+        CLOSE_TIME as "closeTime",
+        WORK_FLOW_INST_ID as "workFlowInstId",
+        WORK_FLOW_INST_STATUS as "workFlowInstStatus",
+        REMARK as "remark",
+        REC_CREATOR as "recCreator",
+        REC_CREATE_TIME as "recCreateTime",
+        REC_REVISOR as "recRevisor",
+        REC_REVISE_TIME as "recReviseTime",
+        REC_DELETOR as "recDeletor",
+        REC_DELETE_TIME as "recDeleteTime",
+        DELETE_FLAG as "deleteFlag",
+        ARCHIVE_FLAG as "archiveFlag",
+        REC_STATUS as "recStatus",
+        EXT1 as "ext1",
+        EXT2 as "ext2",
+        EXT3 as "ext3",
+        EXT4 as "ext4",
+        EXT5 as "ext5",
         WORK_CLASS as "workClass"
         FROM T_VIDEO_ACCESS
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="recId!=null and recId!=''">
                 and REC_ID = #{recId}
-            </if>
-        </trim>
-    </select>
-    <select id="list" resultType="com.wzmtr.eam.dto.res.secure.SecureHazardResDTO">
-        SELECT
-        REC_ID as "recId",  <!-- 记录编号 -->
-        RISK_ID as "riskId",  <!-- 隐患排查单号 -->
-        INSPECT_DATE as "inspectDate",  <!-- 发现日期 -->
-        RISK_RANK as "riskRank",  <!-- 隐患等级 -->
-        RISK_DETAIL as "riskDetail",  <!-- 隐患内容 -->
-        INSPECT_DEPT_CODE as "inspectDeptCode",  <!-- 报告部门 -->
-        INSPECTOR_CODE as "inspectorCode",  <!-- 报告人 -->
-        POSITION_DESC as "positionDesc",  <!-- 地点 -->
-        POSITION1_CODE as "position1Code",  <!-- 位置一 -->
-        POSITION2_CODE as "position2Code",  <!-- 位置二 -->
-        POSITION3 as "position3",  <!-- 位置三 -->
-        POSITION_REMARK as "positionRemark",  <!-- 位置补充说明 -->
-        RISK_PIC as "riskPic",  <!-- 隐患照片 -->
-        NOTIFY_DEPT_CODE as "notifyDeptCode",  <!-- 整改通知下达部门 -->
-        RESTORE_DETAIL as "restoreDetail",  <!-- 整改措施 -->
-        PLAN_DATE as "planDate",  <!-- 计划完成日期 -->
-        RESTORE_DEPT_CODE as "restoreDeptCode",  <!-- 整改部门 -->
-        RESTORE_PIC as "restorePic",  <!-- 整改照片 -->
-        RESTORE_DESC as "restoreDesc",  <!-- 整改情况 -->
-        EXAMINER_CODE as "examinerCode",  <!-- 复查人 -->
-        EXAM_DATE as "examDate",  <!-- 复查日期 -->
-        COMPLETION_DETAIL as "completionDetail",  <!-- 完成情况 -->
-        UNDONE_DESC as "undoneDesc",  <!-- 未整改原因及建议 -->
-        LAST_PLAN_DATE as "lastPlanDate",  <!-- 最终计划完成日期 -->
-        LAST_CHECKER_ID as "lastCheckerId",  <!-- 追查人 -->
-        LAST_CHECK_DATE as "lastCheckDate",  <!-- 追查日期 -->
-        IS_RESTORED as "isRestored",  <!-- 是否整改 -->
-        PLAN_NOTE as "planNote",  <!-- 备注 -->
-        WORK_FLOW_INST_ID as "workFlowInstId",  <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS as "workFlowInstStatus",  <!-- 工作流实例状态 -->
-        REC_STATUS as "recStatus",  <!-- 记录状态 -->
-        REC_CREATOR as "recCreator",  <!-- 创建者 -->
-        REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
-        REC_REVISOR as "recRevisor",  <!-- 修改者 -->
-        REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
-        REC_DELETOR as "recDeletor",  <!-- 删除者 -->
-        REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
-        DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
-        ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
-        EXT1 as "ext1",  <!-- 扩展字段1 -->
-        EXT2 as "ext2",  <!-- 扩展字段2 -->
-        EXT3 as "ext3",  <!-- 扩展字段3 -->
-        EXT4 as "ext4",  <!-- 扩展字段4 -->
-        EXT5 as "ext5" <!-- 扩展字段5 -->
-        FROM T_VIDEO_ACCESS
-        <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="riskId!=null and riskId!=''">
-                and RISK_ID = #{riskId}
-            </if>
-            <if test="begin!=null and begin!=''">
-                and TO_DATE(INSPECT_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{begin},'YYYY-MM-DD')
-            </if>
-            <if test="end!=null and end!=''">
-                and TO_DATE(INSPECT_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{end},'YYYY-MM-DD')
-            </if>
-            <if test="restoreDesc!=null and restoreDesc!=''">
-                and RESTORE_DESC = #{restoreDesc}
-            </if>
-            <if test="workFlowInstStatus!=null and workFlowInstStatus!=''">
-                and WORK_FLOW_INST_STATUS = #{workFlowInstStatus}
             </if>
         </trim>
     </select>

@@ -21,6 +21,8 @@ public class SecureCheckRecordListResDTO {
     private String secRiskDetail;
     @ApiModelProperty(value = "检查部门")
     private String inspectDeptCode;
+    @ApiModelProperty(value = "检查部门名称")
+    private String inspectDeptName;
     @ApiModelProperty(value = "检查人")
     private String inspectorCode;
     @ApiModelProperty(value = "地点")
@@ -41,6 +43,8 @@ public class SecureCheckRecordListResDTO {
     private String planDate;
     @ApiModelProperty(value = "整改部门")
     private String restoreDeptCode;
+    @ApiModelProperty(value = "整改部门名称")
+    private String restoreDeptName;
     @ApiModelProperty(value = "整改照片")
     private String restorePic;
     @ApiModelProperty(value = "整改情况")

@@ -4,14 +4,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.config.MinioConfig;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceListReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.secure.SecureDangerSourceMapper;
 import com.wzmtr.eam.service.secure.SecureDangerSourceService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
@@ -39,11 +37,21 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     SecureDangerSourceMapper secureDangerSourceMapper;
     @Autowired
     private MinioClient minioClient;
+    @Autowired
+    private OrganizationMapper organizationMapper;
 
     @Override
     public Page<SecureDangerSourceResDTO> dangerSourceList(SecureDangerSourceListReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDate());
+        Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDate());
+        List<SecureDangerSourceResDTO> records = query.getRecords();
+        if (CollectionUtil.isNotEmpty(records)){
+            records.forEach(a->{
+                a.setRecDeptName(organizationMapper.getExtraOrgByAreaId(a.getRecDept()));
+                a.setRespDeptName(organizationMapper.getExtraOrgByAreaId(a.getRespDeptCode()));
+            });
+        }
+        return query;
     }
 
     @Override
@@ -57,11 +65,11 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
                 map.put("危险源单号", resDTO.getDangerRiskId());
                 map.put("危险源", resDTO.getDangerRisk());
                 map.put("危险源级别", resDTO.getDangerRiskRank());
-                map.put("发现部门", resDTO.getRecDept());
+                map.put("发现部门", organizationMapper.getExtraOrgByAreaId(resDTO.getRecDept()));
                 map.put("后果", resDTO.getConsequense());
                 map.put("地点", resDTO.getPositionDesc());
                 map.put("防范措施", resDTO.getControlDetail());
-                map.put("责任部门", resDTO.getRespDeptCode());
+                map.put("责任部门", organizationMapper.getExtraOrgByAreaId(resDTO.getRespDeptCode()));
                 map.put("责任人", resDTO.getRespCode());
                 list.add(map);
             }
@@ -75,7 +83,10 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
             log.warn("dangerRiskId is null!");
             return null;
         }
-        return secureDangerSourceMapper.detail(reqDTO.getDangerRiskId());
+        SecureDangerSourceResDTO detail = secureDangerSourceMapper.detail(reqDTO.getDangerRiskId());
+        detail.setRecDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRecDept()));
+        detail.setRespDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRespDeptCode()));
+        return detail;
     }
 
     @Override
@@ -95,7 +106,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
         if (CollectionUtil.isEmpty(reqDTO.getIds())) {
             return;
         }
-        secureDangerSourceMapper.deleteByIds(reqDTO.getIds(),TokenUtil.getCurrentPersonId(),new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        secureDangerSourceMapper.deleteByIds(reqDTO.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
     }
 
 

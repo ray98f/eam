@@ -48,8 +48,8 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
             records.forEach(a -> {
-                a.setInspectDeptCode(organizationMapper.getOrgById(a.getInspectDeptCode()));
-                a.setRestoreDeptCode(organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode()));
+                a.setInspectDeptName(organizationMapper.getOrgById(a.getInspectDeptCode()));
+                a.setRestoreDeptName(organizationMapper.getOrgById(a.getRestoreDeptCode()));
             });
             return list;
         }
@@ -65,8 +65,8 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         if (detail == null) {
             return null;
         }
-        detail.setInspectDeptCode(organizationMapper.getOrgById(detail.getInspectDeptCode()));
-        detail.setRestoreDeptCode(organizationMapper.getExtraOrgByAreaId(detail.getRestoreDeptCode()));
+        detail.setInspectDeptName(organizationMapper.getOrgById(detail.getInspectDeptCode()));
+        detail.setRestoreDeptName(organizationMapper.getOrgById(detail.getRestoreDeptCode()));
         return detail;
     }
 

@@ -8,6 +8,8 @@ import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/7 10:55
@@ -25,4 +27,6 @@ public interface CarVideoService {
     void update(CarVideoAddReqDTO reqDTO);
 
     void operate(CarVideoOperateReqDTO reqDTO);
+
+    void export(String recId, HttpServletResponse response);
 }

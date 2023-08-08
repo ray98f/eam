@@ -12,66 +12,70 @@ import lombok.Data;
 @ApiModel
 public class SecureDangerSourceResDTO {
     @ApiModelProperty(value = "记录编号")
-    private String recId = " ";
+    private String recId;
     @ApiModelProperty(value = "危险源记录单号")
-    private String dangerRiskId = " ";
+    private String dangerRiskId;
     @ApiModelProperty(value = "记录部门")
-    private String recDept = " ";
+    private String recDept;
+    @ApiModelProperty(value = "记录部门名称")
+    private String recDeptName;
     @ApiModelProperty(value = "危险源")
-    private String dangerRisk = " ";
+    private String dangerRisk;
     @ApiModelProperty(value = "危险源等级")
-    private String dangerRiskRank = " ";
+    private String dangerRiskRank;
     @ApiModelProperty(value = "危险源描述")
-    private String dangerRiskDetail = " ";
+    private String dangerRiskDetail;
     @ApiModelProperty(value = "后果/伤害")
-    private String consequense = " ";
+    private String consequense;
     @ApiModelProperty(value = "责任部门")
-    private String respDeptCode = " ";
+    private String respDeptCode;
+    @ApiModelProperty(value = "责任部门名称")
+    private String respDeptName;
     @ApiModelProperty(value = "责任人")
-    private String respCode = " ";
+    private String respCode;
     @ApiModelProperty(value = "地点")
-    private String positionDesc = " ";
+    private String positionDesc;
     @ApiModelProperty(value = "位置一")
-    private String position1Code = " ";
+    private String position1Code;
     @ApiModelProperty(value = "位置二")
-    private String position2Code = " ";
+    private String position2Code;
     @ApiModelProperty(value = "位置三")
-    private String position3 = " ";
+    private String position3;
     @ApiModelProperty(value = "位置补充说明")
-    private String positionRemark = " ";
+    private String positionRemark;
     @ApiModelProperty(value = "危险源照片")
-    private String dangerRiskPic = " ";
+    private String dangerRiskPic;
     @ApiModelProperty(value = "控制措施")
-    private String controlDetail = " ";
+    private String controlDetail;
     @ApiModelProperty(value = "发现时间")
-    private String discDate = " ";
+    private String discDate;
     @ApiModelProperty(value = "备注")
-    private String remark = " ";
+    private String remark;
     @ApiModelProperty(value = "创建者")
-    private String recCreator = " ";
+    private String recCreator;
     @ApiModelProperty(value = "创建时间")
-    private String recCreateTime = " ";
+    private String recCreateTime;
     @ApiModelProperty(value = "修改者")
-    private String recRevisor = " ";
+    private String recRevisor;
     @ApiModelProperty(value = "修改时间")
-    private String recReviseTime = " ";
+    private String recReviseTime;
     @ApiModelProperty(value = "删除者")
-    private String recDeletor = " ";
+    private String recDeletor;
     @ApiModelProperty(value = "删除时间")
-    private String recDeleteTime = " ";
+    private String recDeleteTime;
     @ApiModelProperty(value = "删除标志")
-    private String deleteFlag = " ";
+    private String deleteFlag;
     @ApiModelProperty(value = "归档标记")
-    private String archiveFlag = " ";
+    private String archiveFlag;
     @ApiModelProperty(value = "扩展字段1")
-    private String ext1 = " ";
+    private String ext1;
     @ApiModelProperty(value = "扩展字段2")
-    private String ext2 = " ";
+    private String ext2;
     @ApiModelProperty(value = "扩展字段3")
-    private String ext3 = " ";
+    private String ext3;
     @ApiModelProperty(value = "扩展字段4")
-    private String ext4 = " ";
-    @ApiModelProperty(value ="扩展字段5")
-    private String ext5 = " ";
+    private String ext4;
+    @ApiModelProperty(value = "扩展字段5")
+    private String ext5;
 
 }

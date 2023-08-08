@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface SecureDangerSourceMapper {
-    Page<SecureDangerSourceResDTO> query(Page<SecureDangerSourceResDTO> page, String dangerRiskId, String discDate);
+    Page<SecureDangerSourceResDTO> query(Page<Object> page, String dangerRiskId, String discDate);
 
     List<SecureDangerSourceResDTO> list(String dangerRiskId, String discDate);
 

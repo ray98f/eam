@@ -9,6 +9,7 @@ import com.wzmtr.eam.dto.req.secure.SecureHazardDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureHazardResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.secure.SecureHazardMapper;
 import com.wzmtr.eam.service.secure.SecureHazardService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
@@ -34,16 +35,32 @@ public class SecureHazardServiceImpl implements SecureHazardService {
 
     @Autowired
     private SecureHazardMapper hazardMapper;
+    @Autowired
+    private OrganizationMapper organizationMapper;
 
     @Override
     public Page<SecureHazardResDTO> list(SecureHazardReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return hazardMapper.query(reqDTO.of(), reqDTO.getRiskId(), reqDTO.getRiskRank(), reqDTO.getInspectDateBegin(), reqDTO.getInspectDateEnd(), reqDTO.getRestoreDesc(), reqDTO.getRecStatus());
+        Page<SecureHazardResDTO> query = hazardMapper.query(reqDTO.of(), reqDTO.getRiskId(), reqDTO.getRiskRank(), reqDTO.getInspectDateBegin(), reqDTO.getInspectDateEnd(), reqDTO.getRestoreDesc(), reqDTO.getRecStatus());
+        List<SecureHazardResDTO> records = query.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
+            return null;
+        }
+        records.forEach(a -> {
+            a.setRestoreDeptName(organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode()));
+            a.setInspectDeptName(organizationMapper.getExtraOrgByAreaId(a.getInspectDeptCode()));
+            a.setNotifyDeptName(organizationMapper.getExtraOrgByAreaId(a.getNotifyDeptCode()));
+        });
+        return query;
     }
 
     @Override
     public SecureHazardResDTO detail(SecureHazardDetailReqDTO reqDTO) {
-        return hazardMapper.detail(reqDTO.getRiskId());
+        SecureHazardResDTO detail = hazardMapper.detail(reqDTO.getRiskId());
+        detail.setNotifyDeptName(organizationMapper.getExtraOrgByAreaId(detail.getNotifyDeptCode()));
+        detail.setInspectDeptName(organizationMapper.getExtraOrgByAreaId(detail.getInspectDeptCode()));
+        detail.setRestoreDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRestoreDeptCode()));
+        return detail;
     }
 
     @Override
@@ -60,11 +77,11 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             map.put("发现日期", resDTO.getInspectDate());
             map.put("安全隐患等级", resDTO.getRiskRank());
             map.put("安全隐患内容", resDTO.getRiskDetail());
-            map.put("检查部门", resDTO.getInspectDeptCode());
+            map.put("检查部门", organizationMapper.getExtraOrgByAreaId(resDTO.getInspectDeptCode()));
             map.put("检查人", resDTO.getInspectorCode());
             map.put("地点", resDTO.getPositionDesc());
             map.put("计划完成日期", resDTO.getPlanDate());
-            map.put("整改部门", resDTO.getRestoreDeptCode());
+            map.put("整改部门", organizationMapper.getExtraOrgByAreaId(resDTO.getRestoreDeptCode()));
             map.put("整改情况", resDTO.getRestoreDesc());
             map.put("记录状态", resDTO.getRestoreDesc());
             map.put("备注", resDTO.getPlanDate());

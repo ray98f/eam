@@ -129,7 +129,7 @@
             and DANGER_RISK_ID = #{dangerRiskId}
         </if>
         <if test="discDate!=null and discDate!=''">
-            and discDate = #{discDate}
+            and DISC_DATE = #{discDate}
         </if>
         order by DANGER_RISK_ID desc
     </select>
@@ -171,7 +171,7 @@
             and DANGER_RISK_ID = #{dangerRiskId}
         </if>
         <if test="discDate!=null and discDate!=''">
-            and discDate = #{discDate}
+            and DISC_DATE = #{discDate}
         </if>
         order by DANGER_RISK_ID desc
     </select>
