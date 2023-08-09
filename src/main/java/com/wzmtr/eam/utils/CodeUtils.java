@@ -8,7 +8,7 @@ public class CodeUtils {
         String prefix = code.substring(0, num);
         long suffix = Long.parseLong(code.substring(num));
         suffix += 1;
-        return prefix + String.format("%0" + (code.length() - 1) +"d", suffix);
+        return prefix + String.format("%0" + (code.length() - num) +"d", suffix);
     }
 
     public static String getNextID(String code, Integer num) {

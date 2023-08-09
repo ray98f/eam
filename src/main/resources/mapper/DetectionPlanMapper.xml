@@ -266,6 +266,9 @@
         <if test="secOrg!=null">
             SEC_ORG	= #{secOrg},   <!-- 维管部门 -->
         </if>
+        <if test="verifyDept!=null">
+            VERIFY_DEPT	= #{verifyDept},   <!-- 检测校准单位 -->
+        </if>
         <if test="archiveFlag!=null">
             ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
         </if>

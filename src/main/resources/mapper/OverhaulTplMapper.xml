@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.overhaul.OverhaulTplMapper">
+
+    <select id="pageOverhaulTpl" resultType="com.wzmtr.eam.dto.res.OverhaulTplResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_TPL WHERE 1=1 and DELETE_FLAG='0'
+        <if test="templateId!=null and templateId!=''">
+            and TEMPLATE_ID like '%' || #{templateId} || '%'
+        </if>
+        <if test="templateName!=null and templateName!=''">
+            and TEMPLATE_NAME like '%' || #{templateName} || '%'
+        </if>
+        <if test="lineNo!=null and lineNo!=''">
+            and LINE_NO=#{lineNo}
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            and POSITION1_CODE=#{position1Code}
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            and SUBJECT_CODE=#{majorCode}
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            and SYSTEM_CODE=#{systemCode}
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            and EQUIP_TYPE_CODE=#{equipTypeCode}
+        </if>
+        <if test="trialStatus!=null and trialStatus!=''">
+            and TRIAL_STATUS IN (#{trialStatus})
+        </if>
+        ORDER BY TEMPLATE_ID desc
+    </select>
+
+    <select id="getOverhaulTplDetail" resultType="com.wzmtr.eam.dto.res.OverhaulTplResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_TPL WHERE REC_ID=#{id}
+    </select>
+
+    <select id="getSubjectByUserId" resultType="java.lang.String">
+        SELECT NODE_CODE as "nodeCode"
+        FROM T_EQUIPMENT_CATEGORY where 1=1 AND NODE_CODE IN (
+        SELECT MAJOR_CODE as "majorCode"
+        FROM SYS_ORG_MAJOR where 1=1 AND REC_STATUS = '10' AND
+        ORG_CODE = (SELECT CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END
+        FROM SYS_OFFICE WHERE ID=(SELECT OFFICE_ID from SYS_USER where ID=#{userId} AND ROWNUM=1)
+        AND ROWNUM=1))
+    </select>
+
+    <select id="getMaxCode" resultType="java.lang.String">
+        select max(TEMPLATE_ID) from T_OVERHAUL_TPL
+    </select>
+
+    <insert id="addOverhaulTpl">
+        INSERT INTO T_OVERHAUL_TPL (
+        REC_ID,  <!-- 记录ID -->
+        TEMPLATE_ID,  <!-- 模板编号 -->
+        TEMPLATE_NAME,  <!-- 模板名称 -->
+        LINE_NO,  <!-- 线路编码 -->
+        LINE_NAME,  <!-- 线路名称 -->
+        POSITION1_NAME,  <!-- 位置1  -->
+        POSITION1_CODE,  <!-- 位置1代码 -->
+        SUBJECT_CODE,  <!-- 设备专业编码 -->
+        SUBJECT_NAME,  <!-- 设备专业名称 -->
+        SYSTEM_CODE,  <!-- 系统编码 -->
+        SYSTEM_NAME,  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE,  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME,  <!-- 设备类别名称 -->
+        TRIAL_STATUS,  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID,  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS,  <!-- 工作流实例状态 -->
+        REMARK,  <!-- 说明 -->
+        COMPANY_CODE,  <!-- 公司代码 -->
+        COMPANY_NAME,  <!-- 公司名称 -->
+        REC_CREATOR,  <!-- 记录创建者 -->
+        REC_CREATE_TIME,  <!-- 记录创建时间 -->
+        REC_REVISOR,  <!-- 记录修改者 -->
+        REC_REVISE_TIME,  <!-- 记录修改时间 -->
+        REC_DELETOR,  <!-- 记录删除者 -->
+        REC_DELETE_TIME,  <!-- 记录删除时间 -->
+        DELETE_FLAG,  <!-- 删除标记 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{templateId,jdbcType=VARCHAR},
+        #{templateName,jdbcType=VARCHAR},
+        #{lineNo,jdbcType=VARCHAR},
+        #{lineName,jdbcType=VARCHAR},
+        #{position1Name,jdbcType=VARCHAR},
+        #{position1Code,jdbcType=VARCHAR},
+        #{subjectCode,jdbcType=VARCHAR},
+        #{subjectName,jdbcType=VARCHAR},
+        #{systemCode,jdbcType=VARCHAR},
+        #{systemName,jdbcType=VARCHAR},
+        #{equipTypeCode,jdbcType=VARCHAR},
+        #{equipTypeName,jdbcType=VARCHAR},
+        #{trialStatus,jdbcType=VARCHAR},
+        #{workFlowInstId,jdbcType=VARCHAR},
+        #{workFlowInstStatus,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{companyCode,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="modifyOverhaulTpl">
+        UPDATE T_OVERHAUL_TPL SET
+        <if test="templateId!=null">
+            TEMPLATE_ID	=#{templateId},   <!-- 模板编号 -->
+        </if>
+        <if test="templateName!=null">
+            TEMPLATE_NAME	=#{templateName},   <!-- 模板名称 -->
+        </if>
+        <if test="lineNo!=null">
+            LINE_NO	=#{lineNo},   <!-- 线路编码 -->
+        </if>
+        <if test="lineName!=null">
+            LINE_NAME	=#{lineName},   <!-- 线路名称 -->
+        </if>
+        <if test="position1Name!=null">
+            POSITION1_NAME	=#{position1Name},   <!-- 位置1  -->
+        </if>
+        <if test="position1Code!=null">
+            POSITION1_CODE	=#{position1Code},   <!-- 位置1代码 -->
+        </if>
+        <if test="subjectCode!=null">
+            SUBJECT_CODE	=#{subjectCode},   <!-- 设备专业编码 -->
+        </if>
+        <if test="subjectName!=null">
+            SUBJECT_NAME	=#{subjectName},   <!-- 设备专业名称 -->
+        </if>
+        <if test="systemCode!=null">
+            SYSTEM_CODE	=#{systemCode},   <!-- 系统编码 -->
+        </if>
+        <if test="systemName!=null">
+            SYSTEM_NAME	=#{systemName},   <!-- 系统名称 -->
+        </if>
+        <if test="equipTypeCode!=null">
+            EQUIP_TYPE_CODE	=#{equipTypeCode},   <!-- 设备类别编码 -->
+        </if>
+        <if test="equipTypeName!=null">
+            EQUIP_TYPE_NAME	=#{equipTypeName},   <!-- 设备类别名称 -->
+        </if>
+        <if test="trialStatus!=null">
+            TRIAL_STATUS	=#{trialStatus},   <!-- 审批状态 -->
+        </if>
+        <if test="workFlowInstId!=null">
+            WORK_FLOW_INST_ID	=#{workFlowInstId},   <!-- 工作流实例ID -->
+        </if>
+        <if test="workFlowInstStatus!=null">
+            WORK_FLOW_INST_STATUS	=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
+        </if>
+        <if test="remark!=null">
+            REMARK	=#{remark},   <!-- 说明 -->
+        </if>
+        <if test="companyCode!=null">
+            COMPANY_CODE	=#{companyCode},   <!-- 公司代码 -->
+        </if>
+        <if test="companyName!=null">
+            COMPANY_NAME	=#{companyName},   <!-- 公司名称 -->
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG	=#{archiveFlag},   <!-- 归档标记 -->
+        </if>
+        <if test="ext1!=null">
+            EXT1	=#{ext1},   <!-- 扩展字段1 -->
+        </if>
+        <if test="ext2!=null">
+            EXT2	=#{ext2},   <!-- 扩展字段2 -->
+        </if>
+        <if test="ext3!=null">
+            EXT3	=#{ext3},   <!-- 扩展字段3 -->
+        </if>
+        <if test="ext4!=null">
+            EXT4	=#{ext4},   <!-- 扩展字段4 -->
+        </if>
+        <if test="ext5!=null">
+            EXT5	=#{ext5},  <!-- 扩展字段5 -->
+        </if>
+        REC_REVISOR	=#{recRevisor},   <!-- 记录修改者 -->
+        REC_REVISE_TIME	=#{recReviseTime}   <!-- 记录修改时间 -->
+        WHERE REC_ID =#{recId}
+    </update>
+
+    <update id="deleteOverhaulTplDetail">
+        UPDATE T_OVERHAUL_TPL_DETAIL SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        <if test="templateId!=null and templateId!=''">
+            WHERE TEMPLATE_ID=#{templateId}
+        </if>
+        <if test="id!=null and id!=''">
+            WHERE REC_ID=#{id}
+        </if>
+    </update>
+
+    <update id="deleteOverhaulTpl">
+        UPDATE T_OVERHAUL_TPL SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID=#{id}
+    </update>
+
+    <update id="changeOverhaulTpl">
+        UPDATE T_OVERHAUL_TPL SET
+        TRIAL_STATUS	=#{trialStatus},   <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	=#{workFlowInstId},   <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
+        REC_REVISOR	=#{recRevisor},   <!-- 记录修改者 -->
+        REC_REVISE_TIME	=#{recReviseTime}   <!-- 记录修改时间 -->
+        WHERE REC_ID =#{recId}
+    </update>
+
+    <select id="listOverhaulTplDetail" resultType="com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        MODEL_SEQUENCE	as "modelSequence",  <!-- 模块顺序 -->
+        MODEL_NAME	as "modelName",  <!-- 模块名称 -->
+        TRAIN_NUMBER	as "trainNumber",  <!-- 车组号 -->
+        ITEM_NAME	as "itemName",  <!-- 检修项 -->
+        ITEM_TYPE	as "itemType",  <!-- 项目类型 -->
+        INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 项目值 -->
+        MAX_VALUE	as "maxValue",  <!-- 最大参考值 -->
+        MIN_VALUE	as "minValue",  <!-- 最小参考值 -->
+        ITEM_UNIT	as "itemUnit",  <!-- 参考值单位 -->
+        DEFAULT_VALUE	as "defaultValue",  <!-- 默认值 -->
+        ITEM_STATE	as "itemState",  <!-- 启用状态 -->
+        DEFAULT_FLAG	as "defaultFlag",  <!-- 默认标识 -->
+        SEQUENCE_ID	as "sequenceId",  <!-- 顺序号 -->
+        REPAIR_TYPE	as "repairType",  <!-- 修程 -->
+        TIME_PERIOD	as "timePeriod",  <!-- 时间周期 -->
+        MILEAGE_PERIOD	as "mileagePeriod",  <!-- 里程周期 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_TPL_DETAIL
+        WHERE 1=1 AND TEMPLATE_ID=#{templateId} and DELETE_FLAG='0'
+        order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
+    </select>
+
+    <select id="listOverhaulTpl" resultType="com.wzmtr.eam.dto.res.OverhaulTplResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_TPL WHERE 1=1 and DELETE_FLAG='0'
+        <if test="templateId!=null and templateId!=''">
+            and TEMPLATE_ID like '%' || #{templateId} || '%'
+        </if>
+        <if test="templateName!=null and templateName!=''">
+            and TEMPLATE_NAME like '%' || #{templateName} || '%'
+        </if>
+        <if test="lineNo!=null and lineNo!=''">
+            and LINE_NO=#{lineNo}
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            and POSITION1_CODE=#{position1Code}
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            and SUBJECT_CODE=#{majorCode}
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            and SYSTEM_CODE=#{systemCode}
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            and EQUIP_TYPE_CODE=#{equipTypeCode}
+        </if>
+        <if test="trialStatus!=null and trialStatus!=''">
+            and TRIAL_STATUS IN (#{trialStatus})
+        </if>
+        ORDER BY TEMPLATE_ID desc
+    </select>
+
+    <select id="pageOverhaulDetailTpl" resultType="com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        MODEL_SEQUENCE	as "modelSequence",  <!-- 模块顺序 -->
+        MODEL_NAME	as "modelName",  <!-- 模块名称 -->
+        TRAIN_NUMBER	as "trainNumber",  <!-- 车组号 -->
+        ITEM_NAME	as "itemName",  <!-- 检修项 -->
+        ITEM_TYPE	as "itemType",  <!-- 项目类型 -->
+        INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 项目值 -->
+        MAX_VALUE	as "maxValue",  <!-- 最大参考值 -->
+        MIN_VALUE	as "minValue",  <!-- 最小参考值 -->
+        ITEM_UNIT	as "itemUnit",  <!-- 参考值单位 -->
+        DEFAULT_VALUE	as "defaultValue",  <!-- 默认值 -->
+        ITEM_STATE	as "itemState",  <!-- 启用状态 -->
+        DEFAULT_FLAG	as "defaultFlag",  <!-- 默认标识 -->
+        SEQUENCE_ID	as "sequenceId",  <!-- 顺序号 -->
+        REPAIR_TYPE	as "repairType",  <!-- 修程 -->
+        TIME_PERIOD	as "timePeriod",  <!-- 时间周期 -->
+        MILEAGE_PERIOD	as "mileagePeriod",  <!-- 里程周期 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_TPL_DETAIL
+        WHERE 1=1 AND TEMPLATE_ID=#{templateId} and DELETE_FLAG='0'
+        order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
+    </select>
+
+    <select id="getOverhaulTplDetailDetail" resultType="com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        MODEL_SEQUENCE	as "modelSequence",  <!-- 模块顺序 -->
+        MODEL_NAME	as "modelName",  <!-- 模块名称 -->
+        TRAIN_NUMBER	as "trainNumber",  <!-- 车组号 -->
+        ITEM_NAME	as "itemName",  <!-- 检修项 -->
+        ITEM_TYPE	as "itemType",  <!-- 项目类型 -->
+        INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 项目值 -->
+        MAX_VALUE	as "maxValue",  <!-- 最大参考值 -->
+        MIN_VALUE	as "minValue",  <!-- 最小参考值 -->
+        ITEM_UNIT	as "itemUnit",  <!-- 参考值单位 -->
+        DEFAULT_VALUE	as "defaultValue",  <!-- 默认值 -->
+        ITEM_STATE	as "itemState",  <!-- 启用状态 -->
+        DEFAULT_FLAG	as "defaultFlag",  <!-- 默认标识 -->
+        SEQUENCE_ID	as "sequenceId",  <!-- 顺序号 -->
+        REPAIR_TYPE	as "repairType",  <!-- 修程 -->
+        TIME_PERIOD	as "timePeriod",  <!-- 时间周期 -->
+        MILEAGE_PERIOD	as "mileagePeriod",  <!-- 里程周期 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_TPL_DETAIL
+        WHERE REC_ID=#{id}
+    </select>
+    
+    <insert id="addOverhaulTplDetail">
+        INSERT INTO T_OVERHAUL_TPL_DETAIL (
+        REC_ID,  <!-- 记录ID -->
+        TEMPLATE_ID,  <!-- 模板编号 -->
+        TEMPLATE_NAME,  <!-- 模板名称 -->
+        MODEL_SEQUENCE,  <!-- 模块顺序 -->
+        MODEL_NAME,  <!-- 模块名称 -->
+        TRAIN_NUMBER,  <!-- 车组号 -->
+        ITEM_NAME,  <!-- 检修项 -->
+        ITEM_TYPE,  <!-- 项目类型 -->
+        INSPECT_ITEM_VALUE,  <!-- 项目值 -->
+        MAX_VALUE,  <!-- 最大参考值 -->
+        MIN_VALUE,  <!-- 最小参考值 -->
+        ITEM_UNIT,  <!-- 参考值单位 -->
+        DEFAULT_VALUE,  <!-- 默认值 -->
+        ITEM_STATE,  <!-- 启用状态 -->
+        DEFAULT_FLAG,  <!-- 默认标识 -->
+        SEQUENCE_ID,  <!-- 顺序号 -->
+        REPAIR_TYPE,  <!-- 修程 -->
+        TIME_PERIOD,  <!-- 时间周期 -->
+        MILEAGE_PERIOD,  <!-- 里程周期 -->
+        REC_CREATOR,  <!-- 记录创建者 -->
+        REC_CREATE_TIME,  <!-- 记录创建时间 -->
+        REC_REVISOR,  <!-- 记录修改者 -->
+        REC_REVISE_TIME,  <!-- 记录修改时间 -->
+        REC_DELETOR,  <!-- 记录删除者 -->
+        REC_DELETE_TIME,  <!-- 记录删除时间 -->
+        DELETE_FLAG,  <!-- 删除标记 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REMARK,  <!-- 说明 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{templateId,jdbcType=VARCHAR},
+        #{templateName,jdbcType=VARCHAR},
+        #{modelSequence,jdbcType=VARCHAR},
+        #{modelName,jdbcType=VARCHAR},
+        #{trainNumber,jdbcType=VARCHAR},
+        #{itemName,jdbcType=VARCHAR},
+        #{itemType,jdbcType=VARCHAR},
+        #{inspectItemValue,jdbcType=VARCHAR},
+        #{maxValue,jdbcType=VARCHAR},
+        #{minValue,jdbcType=VARCHAR},
+        #{itemUnit,jdbcType=VARCHAR},
+        #{defaultValue,jdbcType=VARCHAR},
+        #{itemState,jdbcType=VARCHAR},
+        #{defaultFlag,jdbcType=VARCHAR},
+        #{sequenceId,jdbcType=VARCHAR},
+        #{repairType,jdbcType=VARCHAR},
+        #{timePeriod,jdbcType=VARCHAR},
+        #{mileagePeriod,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+    
+    <update id="modifyOverhaulTplDetail">
+        UPDATE T_OVERHAUL_TPL_DETAIL SET
+        <if test="templateId!=null">
+            TEMPLATE_ID	=#{templateId},   <!-- 模板编号 -->
+        </if>
+        <if test="templateName!=null">
+            TEMPLATE_NAME	=#{templateName},   <!-- 模板名称 -->
+        </if>
+        <if test="modelSequence!=null">
+            MODEL_SEQUENCE	=#{modelSequence},   <!-- 模块顺序 -->
+        </if>
+        <if test="modelName!=null">
+            MODEL_NAME	=#{modelName},   <!-- 模块名称 -->
+        </if>
+        <if test="trainNumber!=null">
+            TRAIN_NUMBER	=#{trainNumber},   <!-- 车组号 -->
+        </if>
+        <if test="itemName!=null">
+            ITEM_NAME	=#{itemName},   <!-- 检修项 -->
+        </if>
+        <if test="itemType!=null">
+            ITEM_TYPE	=#{itemType},   <!-- 项目类型 -->
+        </if>
+        <if test="inspectItemValue!=null">
+            INSPECT_ITEM_VALUE	=#{inspectItemValue},   <!-- 项目值 -->
+        </if>
+        <if test="maxValue!=null">
+            MAX_VALUE	=#{maxValue},   <!-- 最大参考值 -->
+        </if>
+        <if test="minValue!=null">
+            MIN_VALUE	=#{minValue},   <!-- 最小参考值 -->
+        </if>
+        <if test="itemUnit!=null">
+            ITEM_UNIT	=#{itemUnit},   <!-- 参考值单位 -->
+        </if>
+        <if test="defaultValue!=null">
+            DEFAULT_VALUE	=#{defaultValue},   <!-- 默认值 -->
+        </if>
+        <if test="itemState!=null">
+            ITEM_STATE	=#{itemState},   <!-- 启用状态 -->
+        </if>
+        <if test="defaultFlag!=null">
+            DEFAULT_FLAG	=#{defaultFlag},   <!-- 默认标识 -->
+        </if>
+        <if test="sequenceId!=null">
+            SEQUENCE_ID	=#{sequenceId},   <!-- 顺序号 -->
+        </if>
+        <if test="repairType!=null">
+            REPAIR_TYPE	=#{repairType},   <!-- 修程 -->
+        </if>
+        <if test="timePeriod!=null">
+            TIME_PERIOD	=#{timePeriod},   <!-- 时间周期 -->
+        </if>
+        <if test="mileagePeriod!=null">
+            MILEAGE_PERIOD	=#{mileagePeriod},   <!-- 里程周期 -->
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG	=#{archiveFlag},   <!-- 归档标记 -->
+        </if>
+        <if test="remark!=null">
+            REMARK	=#{remark},   <!-- 说明 -->
+        </if>
+        <if test="ext1!=null">
+            EXT1	=#{ext1},   <!-- 扩展字段1 -->
+        </if>
+        <if test="ext2!=null">
+            EXT2	=#{ext2},   <!-- 扩展字段2 -->
+        </if>
+        <if test="ext3!=null">
+            EXT3	=#{ext3},   <!-- 扩展字段3 -->
+        </if>
+        <if test="ext4!=null">
+            EXT4	=#{ext4},   <!-- 扩展字段4 -->
+        </if>
+        <if test="ext5!=null">
+            EXT5	=#{ext5},  <!-- 扩展字段5 -->
+        </if>
+        REC_REVISOR	=#{recRevisor},   <!-- 记录修改者 -->
+        REC_REVISE_TIME	=#{recReviseTime}   <!-- 记录修改时间 -->
+        WHERE REC_ID =#{recId}
+    </update>
+
+</mapper>

@@ -2,6 +2,8 @@ package com.wzmtr.eam.enums;
 
 public enum ErrorCode {
 
+    NORMAL_ERROR(99999999, "normal.error"),
+
     /**
      * 鉴权
      */
@@ -114,7 +116,9 @@ public enum ErrorCode {
     CREATOR_USER_ERROR(32000039, "creator.user.error"),
     CAN_NOT_MODIFY(32000040, "can.not.modify"),
     PLAN_HAS_DETAIL(32000041, "plan.has.detail"),
-    VERIFY_DATE_ERROR(32000042, "verify.date.error"),;
+    VERIFY_DATE_ERROR(32000042, "verify.date.error"),
+    ONLY_OWN_SUBJECT(32000043, "only.own.subject"),
+    NO_DETAIL(32000044, "no.detail"),;
 
     private Integer code;
 

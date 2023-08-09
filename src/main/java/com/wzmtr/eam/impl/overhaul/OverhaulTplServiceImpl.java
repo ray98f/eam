@@ -1,0 +1,306 @@
+package com.wzmtr.eam.impl.overhaul;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.OverhaulTplDetailReqDTO;
+import com.wzmtr.eam.dto.req.OverhaulTplReqDTO;
+import com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO;
+import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
+import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
+import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
+import com.wzmtr.eam.entity.CurrentLoginUser;
+import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.overhaul.OverhaulTplMapper;
+import com.wzmtr.eam.service.overhaul.OverhaulTplService;
+import com.wzmtr.eam.utils.*;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static com.wzmtr.eam.constant.CommonConstants.XLS;
+import static com.wzmtr.eam.constant.CommonConstants.XLSX;
+
+/**
+ * @author frp
+ */
+@Service
+@Slf4j
+public class OverhaulTplServiceImpl implements OverhaulTplService {
+
+    @Autowired
+    private OverhaulTplMapper overhaulTplMapper;
+
+    @Override
+    public Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
+                                                   String majorCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return overhaulTplMapper.pageOverhaulTpl(pageReqDTO.of(), templateId, templateName, lineNo, position1Code, majorCode, systemCode, equipTypeCode, null);
+    }
+
+    @Override
+    public OverhaulTplResDTO getOverhaulTplDetail(String id) {
+        return overhaulTplMapper.getOverhaulTplDetail(id);
+    }
+
+    @Override
+    public void addOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
+        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+            if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
+                throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+            }
+            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
+                throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+            }
+        }
+        overhaulTplReqDTO.setRecId(TokenUtil.getUuId());
+        overhaulTplReqDTO.setTrialStatus("10");
+        overhaulTplReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        overhaulTplReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        String templateId = CodeUtils.getNextCode(overhaulTplMapper.getMaxCode(), 2);
+        overhaulTplReqDTO.setTemplateId(templateId);
+        overhaulTplMapper.addOverhaulTpl(overhaulTplReqDTO);
+    }
+
+    @Override
+    public void modifyOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
+        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+            if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
+                throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+            }
+            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
+                throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+            }
+        }
+        OverhaulTplResDTO resDTO = overhaulTplMapper.getOverhaulTplDetail(overhaulTplReqDTO.getRecId());
+        if (Objects.isNull(resDTO)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        if (!"10".equals(resDTO.getTrialStatus())) {
+            throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
+        }
+        overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
+    }
+
+    @Override
+    public void deleteOverhaulTpl(BaseIdsEntity baseIdsEntity) {
+        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+            for (String id : baseIdsEntity.getIds()) {
+                OverhaulTplResDTO resDTO = overhaulTplMapper.getOverhaulTplDetail(id);
+                OverhaulTplReqDTO overhaulTplReqDTO = new OverhaulTplReqDTO();
+                BeanUtils.copyProperties(overhaulTplReqDTO, resDTO);
+                if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+                    if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
+                        throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+                    }
+                    List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+                    if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
+                        throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+                    }
+                }
+                overhaulTplMapper.deleteOverhaulTplDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                overhaulTplMapper.deleteOverhaulTpl(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            }
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
+        }
+    }
+
+    @Override
+    public void changeOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
+        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+            if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
+                throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+            }
+            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
+                throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+            }
+        }
+        overhaulTplReqDTO.setTrialStatus("10");
+        overhaulTplReqDTO.setWorkFlowInstId("");
+        overhaulTplReqDTO.setWorkFlowInstStatus("");
+        overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplMapper.changeOverhaulTpl(overhaulTplReqDTO);
+    }
+
+    @Override
+    public void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
+        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+            if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
+                throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+            }
+            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
+                throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
+            }
+        }
+        if (!"10".equals(overhaulTplReqDTO.getTrialStatus())) {
+            throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "送审");
+        }
+        List<OverhaulTplDetailResDTO> list = overhaulTplMapper.listOverhaulTplDetail(overhaulTplReqDTO.getRecId());
+        if (list == null || list.size() <= 0) {
+            throw new CommonException(ErrorCode.NO_DETAIL, "勾选模板中没有检修项！");
+        }
+
+        // todo ServiceDMER0003 submit 工作流
+
+        overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
+    }
+
+    @Override
+    public void importOverhaulTpl(MultipartFile file) {
+        // todo
+    }
+
+    @Override
+    public void exportOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
+                                  String majorCode, String systemCode, String equipTypeCode, HttpServletResponse response) {
+        List<String> listName = Arrays.asList("记录编号", "模板编号", "模板名称", "线路", "专业", "系统", "设备类别", "审批状态");
+        List<OverhaulTplResDTO> overhaulTplResDTOList = overhaulTplMapper.listOverhaulTpl(templateId, templateName, lineNo, position1Code, majorCode, systemCode, equipTypeCode, null);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (overhaulTplResDTOList != null && !overhaulTplResDTOList.isEmpty()) {
+            for (OverhaulTplResDTO resDTO : overhaulTplResDTOList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("记录编号", resDTO.getRecId());
+                map.put("模板编号", resDTO.getTemplateId());
+                map.put("模板名称", resDTO.getTemplateName());
+                map.put("线路", resDTO.getLineName());
+                map.put("专业", resDTO.getSubjectName());
+                map.put("系统", resDTO.getSystemName());
+                map.put("设备类别", resDTO.getEquipTypeName());
+                map.put("审批状态", resDTO.getTrialStatus());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("检修模板信息", listName, list, null, response);
+    }
+
+    @Override
+    public Page<OverhaulTplDetailResDTO> pageOverhaulDetailTpl(String templateId, PageReqDTO pageReqDTO){
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return overhaulTplMapper.pageOverhaulDetailTpl(pageReqDTO.of(), templateId);
+    }
+
+    @Override
+    public OverhaulTplDetailResDTO getOverhaulTplDetailDetail(String id){
+        return overhaulTplMapper.getOverhaulTplDetailDetail(id);
+    }
+
+    @Override
+    public void addOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO){
+        Pattern pattern = Pattern.compile("[0-9]*");
+        if ("10".equals(overhaulTplDetailReqDTO.getItemType())) {
+            if (Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
+            }
+        } else if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && !pattern.matcher(overhaulTplDetailReqDTO.getDefaultValue()).matches()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
+        }
+        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
+        if (Objects.isNull(list) || list.isEmpty()) {
+            throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
+        }
+        if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
+        }
+        list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, null);
+        if (!Objects.isNull(list) && !list.isEmpty()) {
+            overhaulTplDetailReqDTO.setTemplateName(list.get(0).getTemplateName());
+        }
+        overhaulTplDetailReqDTO.setRecId(TokenUtil.getUuId());
+        overhaulTplDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        overhaulTplDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplMapper.addOverhaulTplDetail(overhaulTplDetailReqDTO);
+    }
+
+    @Override
+    public void modifyOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO){
+        Pattern pattern = Pattern.compile("[0-9]*");
+        if ("10".equals(overhaulTplDetailReqDTO.getItemType())) {
+            if (Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
+            }
+        } else if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && !pattern.matcher(overhaulTplDetailReqDTO.getDefaultValue()).matches()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
+        }
+        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
+        if (Objects.isNull(list) || list.isEmpty()) {
+            throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
+        }
+        if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
+        }
+        overhaulTplDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        overhaulTplDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplMapper.modifyOverhaulTplDetail(overhaulTplDetailReqDTO);
+    }
+
+    @Override
+    public void deleteOverhaulTplDetail(BaseIdsEntity baseIdsEntity){
+        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+            for (String id : baseIdsEntity.getIds()) {
+                OverhaulTplDetailResDTO resDTO = overhaulTplMapper.getOverhaulTplDetailDetail(id);
+                if (Objects.isNull(resDTO)) {
+                    throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+                }
+                List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(resDTO.getTemplateId(), null, null, null, null, null, null, "10");
+                if (Objects.isNull(list) || list.isEmpty()) {
+                    throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
+                }
+                overhaulTplMapper.deleteOverhaulTplDetail(id, null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            }
+        }
+    }
+
+    @Override
+    public void exportOverhaulTplDetail(String templateId, HttpServletResponse response){
+        List<String> listName = Arrays.asList("记录编号", "模块顺序", "检修模块", "检修项顺序", "车组号", "检修项", "技术要求", "检修项类型", "可选值", "默认值", "上限", "下限", "单位", "备注");
+        List<OverhaulTplDetailResDTO> overhaulTplDetailResDTOList = overhaulTplMapper.listOverhaulTplDetail(templateId);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (overhaulTplDetailResDTOList != null && !overhaulTplDetailResDTOList.isEmpty()) {
+            for (OverhaulTplDetailResDTO resDTO : overhaulTplDetailResDTOList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("记录编号", resDTO.getRecId());
+                map.put("模块顺序", resDTO.getModelSequence());
+                map.put("检修模块", resDTO.getModelName());
+                map.put("检修项顺序", resDTO.getSequenceId());
+                map.put("车组号", resDTO.getTrainNumber());
+                map.put("检修项", resDTO.getItemName());
+                map.put("技术要求", resDTO.getExt1());
+                map.put("检修项类型", resDTO.getItemType());
+                map.put("可选值", resDTO.getInspectItemValue());
+                map.put("默认值", resDTO.getDefaultValue());
+                map.put("上限", resDTO.getMaxValue());
+                map.put("下限", resDTO.getMinValue());
+                map.put("单位", resDTO.getItemUnit());
+                map.put("备注", resDTO.getRemark());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("检修项信息", listName, list, null, response);
+    }
+
+}

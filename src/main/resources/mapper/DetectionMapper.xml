@@ -44,7 +44,7 @@
         <!--LEFT JOIN WBPLAT.TDMSE22 c on a.REC_ID=c.TEST_REC_ID-->
         WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="checkNo!=null and checkNo!=''">
-            and a.CHECK_NO like '%' || #{instrmPlanNo} || '%'
+            and a.CHECK_NO like '%' || #{checkNo} || '%'
         </if>
         <if test="sendVerifyNo!=null and sendVerifyNo!=''">
             and a.SEND_VERIFY_NO like '%' || #{sendVerifyNo} || '%'
@@ -155,7 +155,7 @@
         #{recReviseTime,jdbcType=VARCHAR},
         #{recDeletor,jdbcType=VARCHAR},
         #{recDeleteTime,jdbcType=VARCHAR},
-        #{deleteFlag,jdbcType=VARCHAR},
+        '0',
         #{archiveFlag,jdbcType=VARCHAR},
         #{recStatus,jdbcType=VARCHAR},
         #{ext1,jdbcType=VARCHAR},
@@ -297,7 +297,7 @@
             and a.REC_ID=#{recId}
         </if>
         <if test="checkNo!=null and checkNo!=''">
-            and a.CHECK_NO like '%' || #{instrmPlanNo} || '%'
+            and a.CHECK_NO like '%' || #{checkNo} || '%'
         </if>
         <if test="sendVerifyNo!=null and sendVerifyNo!=''">
             and a.SEND_VERIFY_NO like '%' || #{sendVerifyNo} || '%'
@@ -531,7 +531,7 @@
         #{recReviseTime,jdbcType=VARCHAR},
         #{recDeletor,jdbcType=VARCHAR},
         #{recDeleteTime,jdbcType=VARCHAR},
-        #{deleteFlag,jdbcType=VARCHAR},
+        '0',
         #{archiveFlag,jdbcType=VARCHAR},
         #{recStatus,jdbcType=VARCHAR},
         #{ext1,jdbcType=VARCHAR},

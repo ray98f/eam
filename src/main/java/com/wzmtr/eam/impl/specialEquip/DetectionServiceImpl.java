@@ -74,12 +74,12 @@ public class DetectionServiceImpl implements DetectionService {
         detectionReqDTO.setRecId(TokenUtil.getUuId());
         detectionReqDTO.setArchiveFlag("0");
         detectionReqDTO.setRecStatus("10");
-        detectionReqDTO.setEditDeptCode(TokenUtil.getCurrentPerson().getOfficeAreaId());
+        detectionReqDTO.setEditDeptCode(TokenUtil.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtil.getCurrentPerson().getOfficeAreaId());
         detectionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         detectionReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String checkNo = detectionMapper.getMaxCode();
         if (checkNo == null || "".equals(checkNo) || !("20" + checkNo).substring(0, 8).equals(day.format(System.currentTimeMillis()))) {
-            checkNo = "TJ" + day.format(System.currentTimeMillis()).substring(2) + "00001";
+            checkNo = "TJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
         }
