@@ -78,7 +78,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         specialEquipReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         specialEquipReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String instrmPlanNo = detectionPlanMapper.getMaxCode();
-        if (instrmPlanNo == null || "".equals(instrmPlanNo) || !("20" + instrmPlanNo).substring(0, 8).equals(day.format(System.currentTimeMillis()))) {
+        if (instrmPlanNo == null || "".equals(instrmPlanNo) || !("20" + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             instrmPlanNo = "TP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);

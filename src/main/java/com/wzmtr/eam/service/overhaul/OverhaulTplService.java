@@ -1,8 +1,10 @@
 package com.wzmtr.eam.service.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.OverhaulMaterialReqDTO;
 import com.wzmtr.eam.dto.req.OverhaulTplDetailReqDTO;
 import com.wzmtr.eam.dto.req.OverhaulTplReqDTO;
+import com.wzmtr.eam.dto.res.OverhaulMaterialResDTO;
 import com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO;
 import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
 import com.wzmtr.eam.dto.res.RegionResDTO;
@@ -49,5 +51,17 @@ public interface OverhaulTplService {
     void deleteOverhaulTplDetail(BaseIdsEntity baseIdsEntity);
 
     void exportOverhaulTplDetail(String templateId, HttpServletResponse response);
+
+    Page<OverhaulMaterialResDTO> pageOverhaulMaterial(String templateId, PageReqDTO pageReqDTO);
+
+    OverhaulMaterialResDTO getOverhaulMaterialDetail(String id);
+
+    void addOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO);
+
+    void modifyOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO);
+
+    void deleteOverhaulMaterial(BaseIdsEntity baseIdsEntity);
+
+    void exportOverhaulMaterial(String templateId, HttpServletResponse response);
 
 }

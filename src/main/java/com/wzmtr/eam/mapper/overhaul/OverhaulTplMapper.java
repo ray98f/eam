@@ -1,8 +1,10 @@
 package com.wzmtr.eam.mapper.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.OverhaulMaterialReqDTO;
 import com.wzmtr.eam.dto.req.OverhaulTplDetailReqDTO;
 import com.wzmtr.eam.dto.req.OverhaulTplReqDTO;
+import com.wzmtr.eam.dto.res.OverhaulMaterialResDTO;
 import com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO;
 import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
 import com.wzmtr.eam.dto.res.RegionResDTO;
@@ -42,12 +44,26 @@ public interface OverhaulTplMapper {
     List<OverhaulTplResDTO> listOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
                                             String majorCode, String systemCode, String equipTypeCode, String trialStatus);
 
-    Page<OverhaulTplDetailResDTO> pageOverhaulDetailTpl(Page<OverhaulTplDetailResDTO> page, String equipTypeCode);
+    Page<OverhaulTplDetailResDTO> pageOverhaulDetailTpl(Page<OverhaulTplDetailResDTO> page, String templateId);
 
     OverhaulTplDetailResDTO getOverhaulTplDetailDetail(String id);
 
     void addOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO);
 
     void modifyOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO);
+
+    Page<OverhaulMaterialResDTO> pageOverhaulMaterial(Page<OverhaulMaterialResDTO> page, String templateId);
+
+    OverhaulMaterialResDTO getOverhaulMaterialDetail(String id);
+
+    List<OverhaulTplResDTO> listOverhaulTplStatus(String templateId, String templateName);
+
+    void addOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO);
+
+    void modifyOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO);
+
+    void deleteOverhaulMaterial(List<String> ids, String userId, String time);
+
+    List<OverhaulMaterialResDTO> listOverhaulMaterial(String templateId);
 
 }

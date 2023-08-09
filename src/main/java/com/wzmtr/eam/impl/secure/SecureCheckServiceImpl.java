@@ -134,7 +134,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         reqDTO.setRecId(TokenUtil.getUuId());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         String secRiskId = secureMapper.getMaxCode();
-        if (StringUtils.isEmpty(secRiskId) || !("20" + secRiskId).substring(0, 8).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(secRiskId) || !("20" + secRiskId.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             secRiskId = "AQ" + day.format(System.currentTimeMillis()).substring(2) + "00001";
         } else {
             secRiskId = CodeUtils.getNextCode(secRiskId, 8);

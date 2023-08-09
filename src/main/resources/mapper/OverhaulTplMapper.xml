@@ -624,4 +624,225 @@
         WHERE REC_ID =#{recId}
     </update>
 
+    <select id="pageOverhaulMaterial" resultType="com.wzmtr.eam.dto.res.OverhaulMaterialResDTO">
+        SELECT
+        REC_ID	as "recId",
+        TEMPLATE_ID	as "templateId",
+        TEMPLATE_NAME	as "templateName",
+        MATERIAL_CODE	as "materialCode",
+        MATERIAL_NAME	as "materialName",
+        MATERIAL_SPEC	as "materialSpec",
+        UNIT_NAME	as "unitName",
+        QUANTITY	as "quantity",
+        REMARK	as "remark",
+        REC_CREATOR	as "recCreator",
+        REC_CREATE_TIME	as "recCreateTime",
+        REC_REVISOR	as "recRevisor",
+        REC_REVISE_TIME	as "recReviseTime",
+        REC_DELETOR	as "recDeletor",
+        REC_DELETE_TIME	as "recDeleteTime",
+        DELETE_FLAG	as "deleteFlag",
+        ARCHIVE_FLAG	as "archiveFlag",
+        EXT1	as "ext1",
+        EXT2	as "ext2",
+        EXT3	as "ext3",
+        EXT4	as "ext4",
+        EXT5	as "ext5"
+        FROM T_OVERHAUL_MATERIAL
+        WHERE 1=1 and TEMPLATE_ID=#{templateId} and DELETE_FLAG='0'
+        order by REC_ID asc
+    </select>
+
+    <select id="getOverhaulMaterialDetail" resultType="com.wzmtr.eam.dto.res.OverhaulMaterialResDTO">
+        SELECT
+        REC_ID	as "recId",
+        TEMPLATE_ID	as "templateId",
+        TEMPLATE_NAME	as "templateName",
+        MATERIAL_CODE	as "materialCode",
+        MATERIAL_NAME	as "materialName",
+        MATERIAL_SPEC	as "materialSpec",
+        UNIT_NAME	as "unitName",
+        QUANTITY	as "quantity",
+        REMARK	as "remark",
+        REC_CREATOR	as "recCreator",
+        REC_CREATE_TIME	as "recCreateTime",
+        REC_REVISOR	as "recRevisor",
+        REC_REVISE_TIME	as "recReviseTime",
+        REC_DELETOR	as "recDeletor",
+        REC_DELETE_TIME	as "recDeleteTime",
+        DELETE_FLAG	as "deleteFlag",
+        ARCHIVE_FLAG	as "archiveFlag",
+        EXT1	as "ext1",
+        EXT2	as "ext2",
+        EXT3	as "ext3",
+        EXT4	as "ext4",
+        EXT5	as "ext5"
+        FROM T_OVERHAUL_MATERIAL
+        WHERE REC_ID=#{id}
+    </select>
+
+    <select id="listOverhaulTplStatus" resultType="com.wzmtr.eam.dto.res.OverhaulTplResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus"
+        FROM T_OVERHAUL_TPL WHERE 1=1
+        <if test="templateId!=null and templateId!=''">
+            and TEMPLATE_ID like '%' || #{templateId} || '%'
+        </if>
+        <if test="templateName!=null and templateName!=''">
+            and TEMPLATE_NAME like '%' || #{templateName} || '%'
+        </if>
+    </select>
+    
+    <insert id="addOverhaulMaterial">
+        INSERT INTO T_OVERHAUL_MATERIAL (
+        REC_ID,
+        TEMPLATE_ID,
+        TEMPLATE_NAME,
+        MATERIAL_CODE,
+        MATERIAL_NAME,
+        MATERIAL_SPEC,
+        UNIT_NAME,
+        QUANTITY,
+        REMARK,
+        REC_CREATOR,
+        REC_CREATE_TIME,
+        REC_REVISOR,
+        REC_REVISE_TIME,
+        REC_DELETOR,
+        REC_DELETE_TIME,
+        DELETE_FLAG,
+        ARCHIVE_FLAG,
+        EXT1,
+        EXT2,
+        EXT3,
+        EXT4,
+        EXT5)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{templateId,jdbcType=VARCHAR},
+        #{templateName,jdbcType=VARCHAR},
+        #{materialCode,jdbcType=VARCHAR},
+        #{materialName,jdbcType=VARCHAR},
+        #{materialSpec,jdbcType=VARCHAR},
+        #{unitName,jdbcType=VARCHAR},
+        #{quantity,jdbcType=NUMERIC},
+        #{remark,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+    
+    <update id="modifyOverhaulMaterial">
+        UPDATE T_OVERHAUL_MATERIAL SET
+        <if test="templateId!=null">
+            TEMPLATE_ID	=#{templateId},
+        </if>
+        <if test="templateName!=null">
+            TEMPLATE_NAME	=#{templateName},
+        </if>
+        <if test="materialCode!=null">
+            MATERIAL_CODE	=#{materialCode},
+        </if>
+        <if test="materialName!=null">
+            MATERIAL_NAME	=#{materialName},
+        </if>
+        <if test="materialSpec!=null">
+            MATERIAL_SPEC	=#{materialSpec},
+        </if>
+        <if test="unitName!=null">
+            UNIT_NAME	=#{unitName},
+        </if>
+        <if test="quantity!=null">
+            QUANTITY	=#{quantity},
+        </if>
+        <if test="remark!=null">
+            REMARK	=#{remark},
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG	=#{archiveFlag},
+        </if>
+        <if test="ext1!=null">
+            EXT1	=#{ext1},
+        </if>
+        <if test="ext2!=null">
+            EXT2	=#{ext2},
+        </if>
+        <if test="ext3!=null">
+            EXT3	=#{ext3},
+        </if>
+        <if test="ext4!=null">
+            EXT4	=#{ext4},
+        </if>
+        <if test="ext5!=null">
+            EXT5	=#{ext5},
+        </if>
+        REC_REVISOR	=#{recRevisor},
+        REC_REVISE_TIME	=#{recReviseTime}
+        WHERE REC_ID =#{recId}
+    </update>
+
+    <update id="deleteOverhaulMaterial">
+        UPDATE T_OVERHAUL_MATERIAL SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <select id="listOverhaulMaterial" resultType="com.wzmtr.eam.dto.res.OverhaulMaterialResDTO">
+        SELECT
+        REC_ID	as "recId",
+        TEMPLATE_ID	as "templateId",
+        TEMPLATE_NAME	as "templateName",
+        MATERIAL_CODE	as "materialCode",
+        MATERIAL_NAME	as "materialName",
+        MATERIAL_SPEC	as "materialSpec",
+        UNIT_NAME	as "unitName",
+        QUANTITY	as "quantity",
+        REMARK	as "remark",
+        REC_CREATOR	as "recCreator",
+        REC_CREATE_TIME	as "recCreateTime",
+        REC_REVISOR	as "recRevisor",
+        REC_REVISE_TIME	as "recReviseTime",
+        REC_DELETOR	as "recDeletor",
+        REC_DELETE_TIME	as "recDeleteTime",
+        DELETE_FLAG	as "deleteFlag",
+        ARCHIVE_FLAG	as "archiveFlag",
+        EXT1	as "ext1",
+        EXT2	as "ext2",
+        EXT3	as "ext3",
+        EXT4	as "ext4",
+        EXT5	as "ext5"
+        FROM T_OVERHAUL_MATERIAL
+        WHERE 1=1 and TEMPLATE_ID=#{templateId} and DELETE_FLAG='0'
+        order by REC_ID asc
+    </select>
+
 </mapper>

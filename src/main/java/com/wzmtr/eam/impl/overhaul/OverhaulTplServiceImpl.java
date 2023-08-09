@@ -2,12 +2,11 @@ package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.OverhaulMaterialReqDTO;
 import com.wzmtr.eam.dto.req.OverhaulTplDetailReqDTO;
 import com.wzmtr.eam.dto.req.OverhaulTplReqDTO;
-import com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO;
+import com.wzmtr.eam.dto.res.*;
 import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
-import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -301,6 +300,70 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
         }
         ExcelPortUtil.excelPort("检修项信息", listName, list, null, response);
+    }
+
+    @Override
+    public Page<OverhaulMaterialResDTO> pageOverhaulMaterial(String templateId, PageReqDTO pageReqDTO){
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return overhaulTplMapper.pageOverhaulMaterial(pageReqDTO.of(), templateId);
+    }
+
+    @Override
+    public OverhaulMaterialResDTO getOverhaulMaterialDetail(String id){
+        return overhaulTplMapper.getOverhaulMaterialDetail(id);
+    }
+
+    @Override
+    public void addOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO){
+        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulMaterialReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
+        if (Objects.isNull(list) || list.isEmpty()) {
+            throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
+        }
+        List<OverhaulTplResDTO> listStatus = overhaulTplMapper.listOverhaulTplStatus(overhaulMaterialReqDTO.getTemplateId(), null);
+        if (!Objects.isNull(listStatus) && !listStatus.isEmpty()) {
+            overhaulMaterialReqDTO.setTemplateName(listStatus.get(0).getTemplateName());
+        }
+        overhaulMaterialReqDTO.setRecId(TokenUtil.getUuId());
+        overhaulMaterialReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        overhaulMaterialReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplMapper.addOverhaulMaterial(overhaulMaterialReqDTO);
+    }
+
+    @Override
+    public void modifyOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO){
+        overhaulMaterialReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        overhaulMaterialReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplMapper.modifyOverhaulMaterial(overhaulMaterialReqDTO);
+    }
+
+    @Override
+    public void deleteOverhaulMaterial(BaseIdsEntity baseIdsEntity){
+        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+            overhaulTplMapper.deleteOverhaulMaterial(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        }
+    }
+
+    @Override
+    public void exportOverhaulMaterial(String templateId, HttpServletResponse response){
+        List<String> listName = Arrays.asList("记录编号", "模板编号", "模板名称", "物资编码", "物资名称", "物资名称", "规格型号", "计量单位", "数量", "备注");
+        List<OverhaulMaterialResDTO> overhaulMaterialResDTOList = overhaulTplMapper.listOverhaulMaterial(templateId);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (overhaulMaterialResDTOList != null && !overhaulMaterialResDTOList.isEmpty()) {
+            for (OverhaulMaterialResDTO resDTO : overhaulMaterialResDTOList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("记录编号", resDTO.getRecId());
+                map.put("模板编号", resDTO.getTemplateId());
+                map.put("模板名称", resDTO.getTemplateName());
+                map.put("物资编码", resDTO.getMaterialCode());
+                map.put("物资名称", resDTO.getMaterialName());
+                map.put("规格型号", resDTO.getMaterialSpec());
+                map.put("计量单位", resDTO.getUnitName());
+                map.put("数量", String.valueOf(resDTO.getQuantity()));
+                map.put("备注", resDTO.getRemark());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("物料信息", listName, list, null, response);
     }
 
 }

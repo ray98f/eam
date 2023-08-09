@@ -1,7 +1,9 @@
 package com.wzmtr.eam.controller.overhaul;
 
+import com.wzmtr.eam.dto.req.OverhaulMaterialReqDTO;
 import com.wzmtr.eam.dto.req.OverhaulTplDetailReqDTO;
 import com.wzmtr.eam.dto.req.OverhaulTplReqDTO;
+import com.wzmtr.eam.dto.res.OverhaulMaterialResDTO;
 import com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO;
 import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
 import com.wzmtr.eam.dto.res.RegionResDTO;
@@ -148,5 +150,46 @@ public class OverhaulTplController {
     public void exportOverhaulTplDetail(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
                                         HttpServletResponse response) {
         overhaulTplService.exportOverhaulTplDetail(templateId, response);
+    }
+
+    @GetMapping("/material/page")
+    @ApiOperation(value = "获取物料列表")
+    public PageResponse<OverhaulMaterialResDTO> pageOverhaulMaterial(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
+                                                                     @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(overhaulTplService.pageOverhaulMaterial(templateId, pageReqDTO));
+    }
+
+    @GetMapping("/material/detail")
+    @ApiOperation(value = "获取物料详情")
+    public DataResponse<OverhaulMaterialResDTO> getOverhaulMaterialDetail(@RequestParam @ApiParam("id") String id) {
+        return DataResponse.of(overhaulTplService.getOverhaulMaterialDetail(id));
+    }
+
+    @PostMapping("/material/add")
+    @ApiOperation(value = "新增物料")
+    public DataResponse<T> addOverhaulMaterial(@RequestBody OverhaulMaterialReqDTO overhaulMaterialReqDTO) {
+        overhaulTplService.addOverhaulMaterial(overhaulMaterialReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/material/modify")
+    @ApiOperation(value = "编辑物料")
+    public DataResponse<T> modifyOverhaulMaterial(@RequestBody OverhaulMaterialReqDTO overhaulMaterialReqDTO) {
+        overhaulTplService.modifyOverhaulMaterial(overhaulMaterialReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/material/delete")
+    @ApiOperation(value = "删除物料")
+    public DataResponse<T> deleteOverhaulMaterial(@RequestBody BaseIdsEntity baseIdsEntity) {
+        overhaulTplService.deleteOverhaulMaterial(baseIdsEntity);
+        return DataResponse.success();
+    }
+
+    @GetMapping("/material/export")
+    @ApiOperation(value = "导出物料")
+    public void exportOverhaulMaterial(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
+                                       HttpServletResponse response) {
+        overhaulTplService.exportOverhaulMaterial(templateId, response);
     }
 }

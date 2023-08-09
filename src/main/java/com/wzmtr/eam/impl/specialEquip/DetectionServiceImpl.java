@@ -78,7 +78,7 @@ public class DetectionServiceImpl implements DetectionService {
         detectionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         detectionReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String checkNo = detectionMapper.getMaxCode();
-        if (checkNo == null || "".equals(checkNo) || !("20" + checkNo).substring(0, 8).equals(day.format(System.currentTimeMillis()))) {
+        if (checkNo == null || "".equals(checkNo) || !("20" + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             checkNo = "TJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
