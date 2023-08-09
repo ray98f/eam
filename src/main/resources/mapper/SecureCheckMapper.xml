@@ -105,6 +105,50 @@
             #{id}
         </foreach>
     </update>
+    <update id="update">
+        UPDATE T_SEC_RISK
+        SET INSPECT_DATE          = #{inspectDate},
+            SEC_RISK_DETAIL       = #{secRiskDetail},
+            INSPECT_DEPT_CODE     = #{inspectDeptCode},
+            INSPECTOR_CODE        = #{inspectorCode},
+            POSITION_DESC         = #{positionDesc},
+            POSITION1_CODE        = #{position1Code},
+            POSITION2_CODE        = #{position2Code},
+            POSITION3             = #{position3},
+            POSITION_REMARK       = #{positionRemark},
+            SEC_RISK_PIC          = #{secRiskPic},
+            RESTORE_DETAIL        = #{restoreDetail},
+            PLAN_DATE             = #{planDate},
+            RESTORE_DEPT_CODE     = #{restoreDeptCode},
+            RESTORE_PIC           = #{restorePic},
+            RESTORE_DESC          = #{restoreDesc},
+            EXAMINER_CODE         = #{examinerCode},
+            EXAM_DATE             = #{examDate},
+            COMPLETION_DETAIL     = #{completionDetail},
+            UNDONE_DESC           = #{undoneDesc},
+            LAST_PLAN_DATE        = #{lastPlanDate},
+            LAST_CHECKER_ID       = #{lastCheckerId},
+            LAST_CHECK_DATE       = #{lastCheckDate},
+            IS_RESTORED           = #{isRestored},
+            PLAN_NOTE             = #{planNote},
+            WORK_FLOW_INST_ID     = #{workFlowInstId},
+            WORK_FLOW_INST_STATUS = #{workFlowInstStatus},
+            REC_STATUS            = #{recStatus},
+            REC_CREATOR           = #{recCreator},
+            REC_CREATE_TIME       = #{recCreateTime},
+            REC_REVISOR           = #{recRevisor},
+            REC_REVISE_TIME       = #{recReviseTime},
+            REC_DELETOR           = #{recDeletor},
+            REC_DELETE_TIME       = #{recDeleteTime},
+            DELETE_FLAG           = #{deleteFlag},
+            ARCHIVE_FLAG          = #{archiveFlag},
+            EXT1                  = #{ext1},
+            EXT2                  = #{ext2},
+            EXT3                  = #{ext3},
+            EXT4                  = #{ext4},
+            EXT5                  = #{ext5}
+        WHERE SEC_RISK_ID = #{secRiskId}
+    </update>
 
     <select id="query" resultType="com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO">
         SELECT
@@ -126,6 +170,7 @@
             <if test="workFlowInstStatus!=null and workFlowInstStatus!=''">
                 and REC_STATUS = #{workFlowInstStatus}
             </if>
+            and DELETE_FLAG='0'
         </trim>
         order By SEC_RISK_ID desc
     </select>
@@ -158,4 +203,8 @@
         </trim>
         order By SEC_RISK_ID desc
     </select>
+        <select id="getMaxCode" resultType="java.lang.String">
+            SELECT max(SEC_RISK_ID)
+            FROM T_SEC_RISK
+        </select>
 </mapper>

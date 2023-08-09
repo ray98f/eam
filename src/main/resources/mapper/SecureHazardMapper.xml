@@ -145,10 +145,9 @@
             <if test="restoreDesc!=null and restoreDesc!=''">
                 and RESTORE_DESC = #{restoreDesc}
             </if>
-            <if test="restoreDesc!=null and restoreDesc!=''">
-                and RESTORE_DESC = #{restoreDesc}
-            </if>
+            and DELETE_FLAG='0'
         </trim>
+        order by RISK_ID desc
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.secure.SecureHazardResDTO">
         SELECT
@@ -267,6 +266,10 @@
                 and WORK_FLOW_INST_STATUS = #{workFlowInstStatus}
             </if>
         </trim>
+    </select>
+    <select id="getMaxCode" resultType="java.lang.String">
+            SELECT max(RISK_ID)
+            FROM T_RISK_RECORD
     </select>
 
 </mapper>

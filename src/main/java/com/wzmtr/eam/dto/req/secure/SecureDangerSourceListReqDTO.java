@@ -17,6 +17,8 @@ public class SecureDangerSourceListReqDTO extends PageReqDTO {
 
     @ApiModelProperty(value = "危险源记录单号")
     private String dangerRiskId;
-    @ApiModelProperty(value = "发现时间")
-    private String discDate;
+    @ApiModelProperty(value = "发现时间开始")
+    private String discDateStart;
+    @ApiModelProperty(value = "发现时间结束")
+    private String discDateEnd;
 }

@@ -23,4 +23,5 @@ public interface SecureCheckService {
 
     void add(SecureCheckAddReqDTO reqDTO);
 
+    void update(SecureCheckAddReqDTO reqDTO);
 }

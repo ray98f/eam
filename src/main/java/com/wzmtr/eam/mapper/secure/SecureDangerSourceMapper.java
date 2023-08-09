@@ -16,7 +16,6 @@ import java.util.List;
 @Mapper
 @Repository
 public interface SecureDangerSourceMapper {
-    Page<SecureDangerSourceResDTO> query(Page<Object> page, String dangerRiskId, String discDate);
 
     List<SecureDangerSourceResDTO> list(String dangerRiskId, String discDate);
 
@@ -26,4 +25,8 @@ public interface SecureDangerSourceMapper {
     void deleteByIds(@Param("ids") List<String> ids, @Param("userId") String userId, @Param("time") String time);
 
     void update(SecureDangerSourceAddReqDTO reqDTO);
+
+    Page<SecureDangerSourceResDTO> query(Page<Object> of, @Param("dangerRiskId") String dangerRiskId,@Param("discDateStart") String discDateStart,@Param("discDateEnd") String discDateEnd);
+
+    String getMaxCode();
 }

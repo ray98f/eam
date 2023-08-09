@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/secure/danger/source")
@@ -29,7 +30,7 @@ public class SecureDangerSourceController {
     }
     @ApiOperation(value = "危险源排查详情")
     @PostMapping("/detail")
-    public DataResponse<SecureDangerSourceResDTO> detail(@RequestBody SecureDangerSourceDetailReqDTO reqDTO) {
+    public DataResponse<SecureDangerSourceResDTO> detail(@RequestBody @Valid SecureDangerSourceDetailReqDTO reqDTO) {
         return DataResponse.of(secureDangerSourceService.detail(reqDTO));
     }
     @ApiOperation(value = "危险源排查单新增")

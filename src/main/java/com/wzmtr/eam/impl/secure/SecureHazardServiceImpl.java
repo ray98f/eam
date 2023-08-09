@@ -12,7 +12,9 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.secure.SecureHazardMapper;
 import com.wzmtr.eam.service.secure.SecureHazardService;
+import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +46,18 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         Page<SecureHazardResDTO> query = hazardMapper.query(reqDTO.of(), reqDTO.getRiskId(), reqDTO.getRiskRank(), reqDTO.getInspectDateBegin(), reqDTO.getInspectDateEnd(), reqDTO.getRestoreDesc(), reqDTO.getRecStatus());
         List<SecureHazardResDTO> records = query.getRecords();
         if (CollectionUtil.isEmpty(records)) {
-            return null;
+            return new Page<>();
         }
         records.forEach(a -> {
-            a.setRestoreDeptName(organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode()));
-            a.setInspectDeptName(organizationMapper.getExtraOrgByAreaId(a.getInspectDeptCode()));
-            a.setNotifyDeptName(organizationMapper.getExtraOrgByAreaId(a.getNotifyDeptCode()));
+            if (StringUtils.isNotEmpty(a.getRestoreDeptCode())) {
+                a.setRestoreDeptName(organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode()));
+            }
+            if (StringUtils.isNotEmpty(a.getInspectDeptCode())) {
+                a.setInspectDeptName(organizationMapper.getExtraOrgByAreaId(a.getInspectDeptCode()));
+            }
+            if (StringUtils.isNotEmpty(a.getNotifyDeptCode())) {
+                a.setNotifyDeptName(organizationMapper.getExtraOrgByAreaId(a.getNotifyDeptCode()));
+            }
         });
         return query;
     }
@@ -57,9 +65,15 @@ public class SecureHazardServiceImpl implements SecureHazardService {
     @Override
     public SecureHazardResDTO detail(SecureHazardDetailReqDTO reqDTO) {
         SecureHazardResDTO detail = hazardMapper.detail(reqDTO.getRiskId());
-        detail.setNotifyDeptName(organizationMapper.getExtraOrgByAreaId(detail.getNotifyDeptCode()));
-        detail.setInspectDeptName(organizationMapper.getExtraOrgByAreaId(detail.getInspectDeptCode()));
-        detail.setRestoreDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRestoreDeptCode()));
+        if (StringUtils.isNotEmpty(detail.getRestoreDeptCode())) {
+            detail.setRestoreDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRestoreDeptCode()));
+        }
+        if (StringUtils.isNotEmpty(detail.getInspectDeptCode())) {
+            detail.setInspectDeptName(organizationMapper.getExtraOrgByAreaId(detail.getInspectDeptCode()));
+        }
+        if (StringUtils.isNotEmpty(detail.getNotifyDeptCode())) {
+            detail.setNotifyDeptName(organizationMapper.getExtraOrgByAreaId(detail.getNotifyDeptCode()));
+        }
         return detail;
     }
 
@@ -102,6 +116,8 @@ public class SecureHazardServiceImpl implements SecureHazardService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SecureHazardAddReqDTO reqDTO) {
+        String maxCode = hazardMapper.getMaxCode();
+        reqDTO.setRiskId(CodeUtils.getNextCode(maxCode, "YH"));
         reqDTO.setRecId(TokenUtil.getUuId());
         reqDTO.setRecCreator(TokenUtil.getCurrentPerson().getPersonName());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());

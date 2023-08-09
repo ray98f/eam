@@ -14,6 +14,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.secure.SecureCheckMapper;
 import com.wzmtr.eam.service.secure.SecureCheckService;
+import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -129,10 +130,24 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SecureCheckAddReqDTO reqDTO) {
+        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         reqDTO.setRecId(TokenUtil.getUuId());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        String secRiskId = secureMapper.getMaxCode();
+        if (StringUtils.isEmpty(secRiskId) || !("20" + secRiskId).substring(0, 8).equals(day.format(System.currentTimeMillis()))) {
+            secRiskId = "AQ" + day.format(System.currentTimeMillis()).substring(2) + "00001";
+        } else {
+            secRiskId = CodeUtils.getNextCode(secRiskId, 8);
+        }
+        reqDTO.setSecRiskId(secRiskId);
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         secureMapper.add(reqDTO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(SecureCheckAddReqDTO reqDTO) {
+
     }
 
 }

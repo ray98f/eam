@@ -12,6 +12,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.secure.SecureDangerSourceMapper;
 import com.wzmtr.eam.service.secure.SecureDangerSourceService;
+import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
 import io.minio.MinioClient;
@@ -43,12 +44,16 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Override
     public Page<SecureDangerSourceResDTO> dangerSourceList(SecureDangerSourceListReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDate());
+        Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDateStart(),reqDTO.getDiscDateEnd());
         List<SecureDangerSourceResDTO> records = query.getRecords();
         if (CollectionUtil.isNotEmpty(records)){
             records.forEach(a->{
-                a.setRecDeptName(organizationMapper.getExtraOrgByAreaId(a.getRecDept()));
-                a.setRespDeptName(organizationMapper.getExtraOrgByAreaId(a.getRespDeptCode()));
+                if (StrUtil.isNotEmpty(a.getRecDept())){
+                    a.setRecDeptName(organizationMapper.getExtraOrgByAreaId(a.getRecDept()));
+                }
+                if (StrUtil.isNotEmpty(a.getRespDeptCode())){
+                    a.setRespDeptName(organizationMapper.getExtraOrgByAreaId(a.getRespDeptCode()));
+                }
             });
         }
         return query;
@@ -79,10 +84,6 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
 
     @Override
     public SecureDangerSourceResDTO detail(SecureDangerSourceDetailReqDTO reqDTO) {
-        if (StrUtil.isEmpty(reqDTO.getDangerRiskId())) {
-            log.warn("dangerRiskId is null!");
-            return null;
-        }
         SecureDangerSourceResDTO detail = secureDangerSourceMapper.detail(reqDTO.getDangerRiskId());
         detail.setRecDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRecDept()));
         detail.setRespDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRespDeptCode()));
@@ -94,8 +95,8 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     public void add(SecureDangerSourceAddReqDTO reqDTO) {
         reqDTO.setRecId(TokenUtil.getUuId());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        // TODO
-        // String dangerRiskId = IMakeSeq.getSeqFromTable("WX", DateUtils.curDateStr("yyyy"), "WBPLAT.SEQ_TDMSM23");
+        String maxCode = secureDangerSourceMapper.getMaxCode();
+        reqDTO.setDangerRiskId(CodeUtils.getNextCode(maxCode, "WX"));
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         secureDangerSourceMapper.add(reqDTO);
     }

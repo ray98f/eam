@@ -28,4 +28,6 @@ public interface SecureHazardMapper {
     List<SecureHazardResDTO> list(String riskId, String begin, String end, String riskRank, String restoreDesc, String workFlowInstStatus);
 
     void deleteByIds(@Param("ids") List<String> ids, @Param("userId") String userId, @Param("time") String time);
+
+    String getMaxCode();
 }

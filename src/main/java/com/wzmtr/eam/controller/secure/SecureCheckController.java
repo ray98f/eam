@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/secure/check")
@@ -37,7 +38,7 @@ public class SecureCheckController {
     }
     @ApiOperation(value = "安全/质量/消防/-检查问题单新增")
     @PostMapping("/record/add")
-    public DataResponse<SecureCheckRecordListResDTO> add(@RequestBody SecureCheckAddReqDTO reqDTO) {
+    public DataResponse<SecureCheckRecordListResDTO> add(@RequestBody @Valid SecureCheckAddReqDTO reqDTO) {
         secureService.add(reqDTO);
         return DataResponse.success();
     }
@@ -47,6 +48,14 @@ public class SecureCheckController {
         secureService.delete(ids);
         return DataResponse.success();
     }
+
+    @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
+    @PostMapping("/record/update")
+    public DataResponse<SecureCheckRecordListResDTO> update(@RequestBody SecureCheckAddReqDTO reqDTO) {
+        secureService.update(reqDTO);
+        return DataResponse.success();
+    }
+
     @ApiOperation(value = "安全/质量/消防/-检查问题单导出")
     @GetMapping("/record/export")
     public void export(@RequestParam(required = false) @ApiParam("检查问题单号") String secRiskId,

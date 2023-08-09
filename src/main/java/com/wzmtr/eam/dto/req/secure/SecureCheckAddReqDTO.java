@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * Author: Li.Wang
  * Date: 2023/7/31 18:31
@@ -15,6 +17,7 @@ public class SecureCheckAddReqDTO {
     private String recId;
     @ApiModelProperty(value = "安全隐患单号")
     private String secRiskId;
+    @NotEmpty(message = "发现日期不能为空！")
     @ApiModelProperty(value = "发现日期")
     private String inspectDate;
     @ApiModelProperty(value = "检查问题")
@@ -37,6 +40,7 @@ public class SecureCheckAddReqDTO {
     private String secRiskPic;
     @ApiModelProperty(value = "整改措施")
     private String restoreDetail;
+    @NotEmpty(message = "发现日期不能为空！")
     @ApiModelProperty(value = "计划完成日期")
     private String planDate;
     @ApiModelProperty(value = "整改部门")

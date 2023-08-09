@@ -124,13 +124,19 @@
         EXT3 as "ext3",  <!-- 扩展字段3 -->
         EXT4 as "ext4",  <!-- 扩展字段4 -->
         EXT5 as "ext5" <!-- 扩展字段5 -->
-        FROM T_DANGER_RISK WHERE 1=1
+        FROM T_DANGER_RISK
+        <trim prefix="WHERE" prefixOverrides="AND">
         <if test="dangerRiskId!=null and dangerRiskId!=''">
             and DANGER_RISK_ID = #{dangerRiskId}
         </if>
-        <if test="discDate!=null and discDate!=''">
-            and DISC_DATE = #{discDate}
+        <if test="discDateStart!=null and discDateStart!=''">
+            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{discDateStart},'YYYY-MM-DD')
         </if>
+        <if test="discDateEnd!=null and discDateEnd!=''">
+            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{discDateEnd},'YYYY-MM-DD')
+        </if>
+        and DELETE_FLAG='0'
+        </trim>
         order by DANGER_RISK_ID desc
     </select>
     <select id="list" resultType="com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO">
@@ -209,6 +215,10 @@
         EXT4 as "ext4",  <!-- 扩展字段4 -->
         EXT5 as "ext5" <!-- 扩展字段5 -->
         FROM T_DANGER_RISK WHERE DANGER_RISK_ID = #{dangerRiskId}
+    </select>
+    <select id="getMaxCode" resultType="java.lang.String">
+            SELECT max(DANGER_RISK_ID)
+            FROM T_DANGER_RISK
     </select>
 
 </mapper>
