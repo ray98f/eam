@@ -29,5 +29,5 @@ public interface SecureCheckMapper {
 
     void add(SecureCheckAddReqDTO reqDTO);
 
-    Page<SecureCheckRecordListResDTO> query(Page<Object> of, String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus);
+    Page<SecureCheckRecordListResDTO> query(Page<Object> of, String secRiskId, String inspectDateStart, String inspectDateEnd, String restoreDesc, String workFlowInstStatus);
 }

@@ -112,19 +112,19 @@
         FROM T_SEC_RISK
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="secRiskId!=null and secRiskId!=''">
-                and secRiskId = #{secRiskId}
+                and SEC_RISK_ID = #{secRiskId}
             </if>
-            <if test="inspectDate!=null and inspectDate!=''">
-                and INSPECT_DATE = #{inspectDate}
+            <if test="inspectDateStart!=null and inspectDateStart!=''">
+                and TO_DATE(INSPECT_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{inspectDateStart},'YYYY-MM-DD')
+            </if>
+            <if test="inspectDateEnd!=null and inspectDateEnd!=''">
+                and TO_DATE(INSPECT_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{inspectDateEnd},'YYYY-MM-DD')
             </if>
             <if test="restoreDesc!=null and restoreDesc!=''">
-                and RESTORE_DESC = #{restoreDesc}
+                and IS_RESTORED = #{restoreDesc}
             </if>
             <if test="workFlowInstStatus!=null and workFlowInstStatus!=''">
-                and WORK_FLOW_INST_STATUS = #{workFlowInstStatus}
-            </if>
-            <if test="restoreDesc!=null and restoreDesc!=''">
-                and RESTORE_DESC = #{restoreDesc}
+                and REC_STATUS = #{workFlowInstStatus}
             </if>
         </trim>
         order By SEC_RISK_ID desc

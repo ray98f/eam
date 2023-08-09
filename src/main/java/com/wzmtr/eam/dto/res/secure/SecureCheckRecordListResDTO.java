@@ -53,4 +53,9 @@ public class SecureCheckRecordListResDTO {
     private String examinerCode;
     @ApiModelProperty(value = "记录状态")
     private String recStatus;
+    @ApiModelProperty(value = "整改状态")
+    private String isRestored;
+    @ApiModelProperty(value = "整改状态名称")
+    private String isRestoredName;
+
 }

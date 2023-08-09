@@ -9,6 +9,7 @@ import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.SecureRecStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.secure.SecureCheckMapper;
@@ -44,12 +45,21 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     public Page<SecureCheckRecordListResDTO> list(SecureCheckRecordListReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO.getSecRiskId(), reqDTO.getInspectDate(), reqDTO.getRestoreDesc(), reqDTO.getWorkFlowInstStatus());
+        Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO.getSecRiskId(), reqDTO.getInspectDateStart(), reqDTO.getInspectDateEnd(), reqDTO.getRestoreDesc(), reqDTO.getWorkFlowInstStatus());
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
             records.forEach(a -> {
-                a.setInspectDeptName(organizationMapper.getOrgById(a.getInspectDeptCode()));
-                a.setRestoreDeptName(organizationMapper.getOrgById(a.getRestoreDeptCode()));
+                String orgById = organizationMapper.getOrgById(a.getInspectDeptCode());
+                String extraOrgByAreaId = organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode());
+                a.setInspectDeptName(orgById == null ? a.getInspectorCode() : orgById);
+                a.setRestoreDeptName(extraOrgByAreaId == null ? a.getRestoreDeptCode() : extraOrgByAreaId);
+                a.setIsRestoredName("整改中");
+                if ("10".equals(a.getIsRestored())) {
+                    a.setIsRestoredName("已完成整改");
+                }
+                if ("1".equals(a.getIsRestored())) {
+                    a.setIsRestoredName("未完成整改");
+                }
             });
             return list;
         }
@@ -65,8 +75,10 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         if (detail == null) {
             return null;
         }
-        detail.setInspectDeptName(organizationMapper.getOrgById(detail.getInspectDeptCode()));
-        detail.setRestoreDeptName(organizationMapper.getOrgById(detail.getRestoreDeptCode()));
+        String inspectDept = organizationMapper.getOrgById(detail.getInspectDeptCode());
+        String restoreDept = organizationMapper.getExtraOrgByAreaId(detail.getRestoreDeptCode());
+        detail.setInspectDeptName(StringUtils.isEmpty(inspectDept) ? detail.getInspectDeptCode() : inspectDept);
+        detail.setRestoreDeptName(StringUtils.isEmpty(restoreDept) ? detail.getRestoreDeptCode() : restoreDept);
         return detail;
     }
 
@@ -81,21 +93,28 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         }
         List<Map<String, String>> exportList = new ArrayList<>();
         for (SecureCheckRecordListResDTO res : list) {
+            String inspectDept = organizationMapper.getOrgById(res.getInspectDeptCode());
+            String restoreDept = organizationMapper.getOrgById(res.getInspectDeptCode());
+            String desc = null;
+            SecureRecStatus secureRecStatus = SecureRecStatus.getByCode(res.getIsRestored());
+            if (null != secureRecStatus) {
+                desc = secureRecStatus.getDesc();
+            }
             Map<String, String> map = new HashMap<>();
             map.put("检查问题单号", res.getSecRiskId());
             map.put("发现日期", res.getInspectDate());
             map.put("检查问题", res.getSecRiskDetail());
-            map.put("检查部门", organizationMapper.getOrgById(res.getInspectDeptCode()));
+            map.put("检查部门", StringUtils.isEmpty(inspectDept) ? res.getInspectDeptCode() : inspectDate);
             map.put("检查人", res.getInspectorCode());
             map.put("地点", res.getPositionDesc());
             map.put("整改措施", res.getRestoreDetail());
             map.put("计划完成日期", res.getPlanDate());
-            map.put("整改部门", organizationMapper.getExtraOrgByAreaId(res.getRestoreDeptCode()));
-            map.put("整改情况", res.getRestoreDesc());
+            map.put("整改部门", StringUtils.isEmpty(restoreDept) ? res.getRestoreDeptCode() : restoreDept);
+            map.put("整改情况", StringUtils.isEmpty(desc) ? res.getIsRestored() : desc);
             map.put("记录状态", res.getRecStatus());
             exportList.add(map);
         }
-        ExcelPortUtil.excelPort("安全/质量/消防整改信息", listName, exportList, null, response);
+        ExcelPortUtil.excelPort("整改信息", listName, exportList, null, response);
     }
 
     @Override

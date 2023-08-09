@@ -16,8 +16,10 @@ import lombok.EqualsAndHashCode;
 public class SecureCheckRecordListReqDTO extends PageReqDTO {
     @ApiModelProperty(value = "检查问题单号")
     private String secRiskId;
-    @ApiModelProperty(value = "发现日期")
-    private String inspectDate;
+    @ApiModelProperty(value = "发现日期开始")
+    private String inspectDateStart;
+    @ApiModelProperty(value = "发现日期结束")
+    private String inspectDateEnd;
     @ApiModelProperty(value = "整改情况")
     private String restoreDesc;
     @ApiModelProperty(value = "流程状态")
