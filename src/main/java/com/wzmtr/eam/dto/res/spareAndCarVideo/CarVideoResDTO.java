@@ -25,6 +25,8 @@ public class CarVideoResDTO {
     private String applierMobPhone;
     @ApiModelProperty(value = "申请部门")
     private String applyDeptCode;
+    @ApiModelProperty(value = "申请部门名称")
+    private String applyDeptName;
     @ApiModelProperty(value = "申请部门负责人")
     private String applyDeptLeader;
     @ApiModelProperty(value = "申请时间")

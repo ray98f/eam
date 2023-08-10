@@ -133,12 +133,10 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         reqDTO.setRecId(TokenUtil.getUuId());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        String secRiskId = secureMapper.getMaxCode();
-        if (StringUtils.isEmpty(secRiskId) || !("20" + secRiskId.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
-            secRiskId = "AQ" + day.format(System.currentTimeMillis()).substring(2) + "00001";
-        } else {
-            secRiskId = CodeUtils.getNextCode(secRiskId, 8);
-        }
+        String secRiskId = CodeUtils.getNextCode(secureMapper.getMaxCode(),"AQ");
+        reqDTO.setSecRiskId(secRiskId);
+        //默认初始为0
+        reqDTO.setDeleteFlag("0");
         reqDTO.setSecRiskId(secRiskId);
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         secureMapper.add(reqDTO);

@@ -14,6 +14,7 @@ import com.wzmtr.eam.mapper.secure.SecureDangerSourceMapper;
 import com.wzmtr.eam.service.secure.SecureDangerSourceService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
@@ -44,14 +45,14 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Override
     public Page<SecureDangerSourceResDTO> dangerSourceList(SecureDangerSourceListReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDateStart(),reqDTO.getDiscDateEnd());
+        Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDateStart(), reqDTO.getDiscDateEnd());
         List<SecureDangerSourceResDTO> records = query.getRecords();
-        if (CollectionUtil.isNotEmpty(records)){
-            records.forEach(a->{
-                if (StrUtil.isNotEmpty(a.getRecDept())){
+        if (CollectionUtil.isNotEmpty(records)) {
+            records.forEach(a -> {
+                if (StrUtil.isNotEmpty(a.getRecDept())) {
                     a.setRecDeptName(organizationMapper.getExtraOrgByAreaId(a.getRecDept()));
                 }
-                if (StrUtil.isNotEmpty(a.getRespDeptCode())){
+                if (StrUtil.isNotEmpty(a.getRespDeptCode())) {
                     a.setRespDeptName(organizationMapper.getExtraOrgByAreaId(a.getRespDeptCode()));
                 }
             });
@@ -85,8 +86,13 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Override
     public SecureDangerSourceResDTO detail(SecureDangerSourceDetailReqDTO reqDTO) {
         SecureDangerSourceResDTO detail = secureDangerSourceMapper.detail(reqDTO.getDangerRiskId());
-        detail.setRecDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRecDept()));
-        detail.setRespDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRespDeptCode()));
+        if (StringUtils.isNotEmpty(detail.getRecDept())) {
+            detail.setRecDeptName(organizationMapper.getExtraOrgByAreaId(detail.getRecDept()));
+        }
+        if (StringUtils.isNotEmpty(detail.getRespDeptCode())) {
+            String extraOrg = organizationMapper.getExtraOrgByAreaId(detail.getRespDeptCode());
+            detail.setRespDeptName(StringUtils.isEmpty(extraOrg) ? organizationMapper.getOrgById(detail.getRespDeptCode()) : extraOrg);
+        }
         return detail;
     }
 
@@ -95,6 +101,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     public void add(SecureDangerSourceAddReqDTO reqDTO) {
         reqDTO.setRecId(TokenUtil.getUuId());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        reqDTO.setDeleteFlag("0");
         String maxCode = secureDangerSourceMapper.getMaxCode();
         reqDTO.setDangerRiskId(CodeUtils.getNextCode(maxCode, "WX"));
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

@@ -35,7 +35,7 @@ public class SecureDangerSourceController {
     }
     @ApiOperation(value = "危险源排查单新增")
     @PostMapping("/add")
-    public DataResponse<SecureDangerSourceResDTO> add(@RequestBody SecureDangerSourceAddReqDTO reqDTO) {
+    public DataResponse<SecureDangerSourceResDTO> add(@RequestBody @Valid SecureDangerSourceAddReqDTO reqDTO) {
         secureDangerSourceService.add(reqDTO);
         return DataResponse.success();
     }

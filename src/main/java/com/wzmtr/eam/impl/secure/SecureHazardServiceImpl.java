@@ -119,6 +119,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         String maxCode = hazardMapper.getMaxCode();
         reqDTO.setRiskId(CodeUtils.getNextCode(maxCode, "YH"));
         reqDTO.setRecId(TokenUtil.getUuId());
+        reqDTO.setDeleteFlag("0");
         reqDTO.setRecCreator(TokenUtil.getCurrentPerson().getPersonName());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

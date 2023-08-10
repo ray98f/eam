@@ -48,7 +48,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         Page<CarVideoResDTO> list = carVideoMapper.query(reqDTO.of(), reqDTO.getRecId(), reqDTO.getStartApplyTime(), reqDTO.getEndApplyTime(), reqDTO.getRecStatus());
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<CarVideoResDTO> records = list.getRecords();
-            records.forEach(a -> a.setApplyDeptCode(organizationMapper.getOrgById(a.getApplyDeptCode())));
+            records.forEach(a -> a.setApplyDeptName(organizationMapper.getOrgById(a.getApplyDeptCode())));
             return list;
         }
         return new Page<>();
@@ -63,7 +63,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         if (detail == null) {
             return null;
         }
-        detail.setApplyDeptCode(organizationMapper.getOrgById(detail.getApplyDeptCode()));
+        detail.setApplyDeptName(organizationMapper.getOrgById(detail.getApplyDeptCode()));
         return detail;
     }
 
@@ -88,6 +88,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         reqDTO.setArchiveFlag("0");
+        reqDTO.setDeleteFlag("0");
         reqDTO.setRecStatus("10");
         if (StringUtils.isNotEmpty(reqDTO.getTrainNo())) {
             reqDTO.setEquipCode(equipmentMapper.selectByEquipName(reqDTO.getTrainNo()).get(0).getEquipCode());

@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/2 16:16
@@ -15,12 +17,15 @@ public class SecureDangerSourceAddReqDTO {
     private String recId;
     @ApiModelProperty(value = "危险源记录单号")
     private String dangerRiskId;
+    @NotNull
     @ApiModelProperty(value = "发现时间")
     private String discDate;
     @ApiModelProperty(value = "记录部门")
     private String recDept;
+    @NotNull
     @ApiModelProperty(value = "危险源")
     private String dangerRisk;
+    @NotNull
     @ApiModelProperty(value = "危险源等级")
     private String dangerRiskRank;
     @ApiModelProperty(value = "危险源描述")

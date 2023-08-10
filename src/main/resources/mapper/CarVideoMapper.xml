@@ -137,12 +137,12 @@
             <if test="recStatus!=null and recStatus!=''">
                 and REC_STATUS = #{recStatus}
             </if>
-<!--            <if test="restoreDesc!=null and restoreDesc!=''">-->
-<!--                and RESTORE_DESC = #{restoreDesc}-->
-<!--            </if>-->
-<!--            <if test="restoreDesc!=null and restoreDesc!=''">-->
-<!--                and RESTORE_DESC = #{restoreDesc}-->
-<!--            </if>-->
+            <if test="startApplyTime!=null and startApplyTime!=''">
+                and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{startApplyTime},'YYYY-MM-DD')
+            </if>
+            <if test="endApplyTime!=null and endApplyTime!=''">
+                and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{endApplyTime},'YYYY-MM-DD')
+            </if>
         </trim>
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO">
