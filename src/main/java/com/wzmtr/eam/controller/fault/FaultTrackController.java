@@ -1,5 +1,8 @@
 package com.wzmtr.eam.controller.fault;
 
+import com.wzmtr.eam.dto.req.fault.TrackCloseReqDTO;
+import com.wzmtr.eam.dto.req.fault.TrackRepairReqDTO;
+import com.wzmtr.eam.dto.req.fault.TrackReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackReqDTO;
 import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import com.wzmtr.eam.entity.SidEntity;
@@ -8,11 +11,9 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.TrackService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/fault/track")
@@ -27,39 +28,35 @@ public class FaultTrackController {
     public PageResponse<TrackResDTO> list(@RequestBody TrackReqDTO reqDTO) {
         return PageResponse.of(trackService.list(reqDTO));
     }
-    @ApiOperation(value = "详情")
-    @PostMapping("/detail")
-    public DataResponse<TrackResDTO> detail(@RequestBody SidEntity reqDTO ) {
-        return DataResponse.of(trackService.detail(reqDTO));
+    // @ApiOperation(value = "详情")
+    // @PostMapping("/detail")
+    // public DataResponse<TrackResDTO> detail(@RequestBody SidEntity reqDTO ) {
+    //     return DataResponse.of(trackService.detail(reqDTO));
+    // }
+
+    @ApiOperation(value = "报告")
+    @GetMapping("/report")
+    public DataResponse<TrackResDTO> report(@RequestBody TrackReportReqDTO reqDTO) {
+        return DataResponse.of(trackService.report(reqDTO));
     }
-    // @ResponseBody
-    // @PostMapping("/mobile/status/list")
-    // public Result<List<AdminMobileStatusResDTO>> adminMobileStatusList(@ApiParam @RequestBody AdminMobileStatusReqDTO dto){
-    //     List<AdminManagerBO> resultList = adminManagerService.query(Query.builder().criteria(Criteria.in(ClueCols.ADMIN_ID, dto.getAdminIds())).build());
-    //     if(__CollectionUtil.isEmpty(resultList))
-    //         return Result.ok();
-    //     return Result.ok(__StreamUtil.map(resultList,bo -> AdminMobileStatusResDTO.create(bo)));
-    // }
-    // @ApiOperation(value = "安全/质量/消防/-检查问题单新增")
-    // @PostMapping("/record/add")
-    // public DataResponse<SecureCheckRecordListResDTO> add(@RequestBody SecureCheckAddReqDTO reqDTO) {
-    //     trackService.add(reqDTO);
-    //     return DataResponse.success();
-    // }
+    @ApiOperation(value = "关闭")
+    @GetMapping("/close")
+    public DataResponse<TrackResDTO> close(@RequestBody TrackCloseReqDTO reqDTO) {
+        return DataResponse.of(trackService.close(reqDTO));
+    }
+
+    @ApiOperation(value = "派工")
+    @PostMapping("/repair")
+    public DataResponse<TrackResDTO> repair(@RequestBody TrackRepairReqDTO reqDTO) {
+        trackService.repair(reqDTO);
+        return DataResponse.success();
+    }
     // @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
     // @PostMapping("/record/delete")
     // public DataResponse<SecureCheckRecordListResDTO> delete(@RequestBody BaseIdsEntity ids) {
     //     trackService.delete(ids);
     //     return DataResponse.success();
     // }
-    // @ApiOperation(value = "安全/质量/消防/-检查问题单导出")
-    // @GetMapping("/record/export")
-    // public void export(@RequestParam(required = false) @ApiParam("检查问题单号") String secRiskId,
-    //                    @RequestParam(required = false) @ApiParam("发现日期") String inspectDate,
-    //                    @RequestParam(required = false) @ApiParam(value = "整改情况") String restoreDesc,
-    //                    @RequestParam(required = false) @ApiParam(value = "流程状态") String workFlowInstStatus,
-    //                    HttpServletResponse response) {
-    //     trackService.export(secRiskId,inspectDate,restoreDesc,workFlowInstStatus,response);
-    // }
+
 
 }

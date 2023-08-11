@@ -41,13 +41,23 @@ public class __DateUtil {
         return System.currentTimeMillis() / 1000;
     }
 
+    /**
+     * @param format
+     * @return
+     */
+    public static final String current(String format) {
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat(format);
+        return dateTimeFormat.format(new Date());
+    }
+
     public static void main(String[] args) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d1 = sdf.parse("2023-08-07 19:29:27");
-        Date d2 = sdf.parse("2024-08-07 19:29:27");
-        System.out.println(d1.getTime());
-        System.out.println(d2.getTime());
-        int compare = Long.compare(d1.getTime(), d2.getTime());
-        System.out.println(compare);
+        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // Date d1 = sdf.parse("2023-08-07 19:29:27");
+        // Date d2 = sdf.parse("2024-08-07 19:29:27");
+        // System.out.println(d1.getTime());
+        // System.out.println(d2.getTime());
+        // int compare = Long.compare(d1.getTime(), d2.getTime());
+        // System.out.println(compare);
+        System.out.println(current("yyyy-MM-dd HH:mm:ss"));
     }
 }

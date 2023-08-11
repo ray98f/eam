@@ -61,9 +61,14 @@ public class TrackResDTO {
     private String archiveFlag;
     @ApiModelProperty(value = "记录状态")
     private String recStatus;
-    // private String ext1;
-    // private String ext2;
-    // private String ext3;
-    // private String ext4;
-    // private String ext5;
+    @ApiModelProperty(value = "扩展字段1")
+    private String ext1;
+    @ApiModelProperty(value = "扩展字段2")
+    private String ext2;
+    @ApiModelProperty(value = "扩展字段3")
+    private String ext3;
+    @ApiModelProperty(value = "扩展字段4")
+    private String ext4;
+    @ApiModelProperty(value = "扩展字段5")
+    private String ext5;
 }
