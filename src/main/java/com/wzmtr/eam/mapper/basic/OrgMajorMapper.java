@@ -3,7 +3,9 @@ package com.wzmtr.eam.mapper.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.OrgMajorReqDTO;
 import com.wzmtr.eam.dto.res.OrgMajorResDTO;
+import com.wzmtr.eam.entity.OrganMajorLineType;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,6 +29,7 @@ public interface OrgMajorMapper {
 
     /**
      * 获取组织机构专业详情
+     *
      * @param id
      * @return
      */
@@ -71,6 +74,8 @@ public interface OrgMajorMapper {
      * @return
      */
     List<OrgMajorResDTO> listOrgMajor(List<List<String>> orgCodes, String majorCode);
+
+    List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(@Param("subjectCode") String subjectCode, @Param("line") String line, @Param("orgType") String orgType);
 
 
 }

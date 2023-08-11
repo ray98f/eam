@@ -870,6 +870,15 @@
         order by EQUIP_NAME
     </select>
 
+
+    <select id="queryMajor" resultType="com.wzmtr.eam.dto.res.EquipmentResDTO" >
+        select
+            MAJOR_CODE as "majorCode",
+            USE_LINE_NO as "useLineNo"
+        from T_EQUIPMENT
+        where EQUIP_NAME = #{equipName}
+    </select>
+
     <update id="updateEquipment">
         UPDATE T_EQUIPMENT SET
         <if test="companyCode!=null">

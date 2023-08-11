@@ -2,11 +2,15 @@ package com.wzmtr.eam.impl.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.res.EquipmentResDTO;
+import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.entity.CompanyStructureTreeDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.utils.tree.CompanyTreeUtils;
 import com.wzmtr.eam.dto.res.MemberResDTO;
 import com.wzmtr.eam.service.common.OrganizationService;
@@ -25,6 +29,10 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+    @Autowired
+    private OrgMajorMapper orgMajorMapper;
+    @Autowired
+    private EquipmentMapper equipmentMapper;
 
     @Override
     public List<CompanyStructureTreeDTO> listCompanyStructure() {
@@ -96,6 +104,13 @@ public class OrganizationServiceImpl implements OrganizationService {
             }
         }
         return list;
+    }
+
+    @Override
+    public List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(String equipName) {
+        List<EquipmentResDTO> equipmentResDTOS = equipmentMapper.queryMajor(equipName);
+        EquipmentResDTO equipmentResDTO = equipmentResDTOS.get(0);
+        return orgMajorMapper.getWorkerGroupBySubjectAndLine(equipmentResDTO.getMajorCode(),equipmentResDTO.getUseLineNo(),"10");
     }
 
 }

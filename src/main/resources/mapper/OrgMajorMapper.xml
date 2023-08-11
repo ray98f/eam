@@ -104,5 +104,23 @@
         </if>
         ORDER BY om.REC_CREATE_TIME ASC
     </select>
-
+    <select id="getWorkerGroupBySubjectAndLine" resultType="com.wzmtr.eam.entity.OrganMajorLineType">
+        SELECT T05.ORG_CODE AS orgCode,
+        T05.ORG_NAME AS orgName,
+        T05.MAJOR_CODE AS majorCode,
+        T06.LINE_CODE AS lineCode
+        FROM SYS_ORG_MAJOR T05
+        LEFT JOIN SYS_ORG_LINE T06 ON T05.ORG_CODE = T06.ORG_CODE
+        LEFT JOIN SYS_ORG_TYPE T07 ON T05.ORG_CODE = T07.ORG_CODE
+        WHERE 1 = 1
+        <if test="subjectCode != null and subjectCode != ''">
+            AND T05.MAJOR_CODE = #{subjectCode}
+        </if>
+        <if test="line != null and line != ''">
+            AND T06.LINE_CODE = #{line}
+        </if>
+        <if test="orgType != null and orgType != ''">
+            AND T07.ORG_TYPE = #{orgType}
+        </if>
+    </select>
 </mapper>

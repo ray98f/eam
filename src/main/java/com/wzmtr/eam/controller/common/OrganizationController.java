@@ -51,4 +51,7 @@ public class OrganizationController {
     public DataResponse<List<MemberResDTO>> listMember(@RequestParam String id) {
         return DataResponse.of(organizationService.listMembers(id));
     }
+
+
+
 }

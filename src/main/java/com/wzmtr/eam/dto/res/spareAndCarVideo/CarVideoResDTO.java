@@ -41,11 +41,11 @@ public class CarVideoResDTO {
     private String repairManagerId;
     @ApiModelProperty(value = "调度人")
     private String dispatchUserId;
-    @ApiModelProperty(value = "检修调度时间")
-    private String dispatchTime;
-    @ApiModelProperty(value = "派工人")
-    private String workerId;
     @ApiModelProperty(value = "派工时间")
+    private String dispatchTime;
+    @ApiModelProperty(value = "下载视频人员")
+    private String workerId;
+    @ApiModelProperty(value = "完工时间")
     private String workTime;
     @ApiModelProperty(value = "关闭人")
     private String closerId;
@@ -55,5 +55,6 @@ public class CarVideoResDTO {
     private String remark;
     @ApiModelProperty(value = "状态")
     private String recStatus;
-
+    @ApiModelProperty(value = "工班")
+    private String workClass;
 }

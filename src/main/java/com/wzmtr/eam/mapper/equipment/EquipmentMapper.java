@@ -50,4 +50,6 @@ public interface EquipmentMapper {
     void updateEquipment(EquipmentReqDTO equipmentReqDTO);
 
     List<EquipmentResDTO> selectByEquipName(String equipName);
+
+    List<EquipmentResDTO> queryMajor(String equipName);
 }
