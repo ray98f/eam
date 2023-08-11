@@ -845,4 +845,27 @@
         order by REC_ID asc
     </select>
 
+    <select id="queryTemplate" resultType="com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO">
+        SELECT DISTINCT
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName"  <!-- 模板名称 -->
+        FROM T_OVERHAUL_TPL WHERE 1=1
+        <if test="lineNo!=null and lineNo!=''">
+            and (LINE_NO = #{lineNo} or trim(LINE_NO) is null)
+        </if>
+        <if test="subjectCode!=null and subjectCode!=''">
+            and SUBJECT_CODE=#{subjectCode}
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            and SYSTEM_CODE=#{systemCode}
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            and EQUIP_TYPE_CODE=#{equipTypeCode}
+        </if>
+        <if test="trialStatus!=null and trialStatus!=''">
+            and TRIAL_STATUS IN (${trialStatus}})
+        </if>
+       order by TEMPLATE_NAME DESC
+    </select>
+
 </mapper>

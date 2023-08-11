@@ -419,7 +419,10 @@
         LEFT JOIN T_DETECTION e ON b.TEST_REC_ID = e.REC_ID
         LEFT JOIN T_EQUIPMENT d ON a.EQUIP_CODE=d.EQUIP_CODE
         LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
-        WHERE 1=1 and a.INSTRM_PLAN_NO=#{instrmPlanNo} and a.DELETE_FLAG='0'
+        WHERE 1=1 and a.DELETE_FLAG='0'
+        <if test="instrmPlanNo!=null and instrmPlanNo!=''">
+            and a.INSTRM_PLAN_NO=#{instrmPlanNo}
+        </if>
         order by a.EQUIP_CODE asc
     </select>
 
@@ -708,5 +711,6 @@
         WHERE 1=1 and a.INSTRM_PLAN_NO=#{instrmPlanNo} and a.DELETE_FLAG='0'
         order by a.EQUIP_CODE asc
     </select>
+
 
 </mapper>
