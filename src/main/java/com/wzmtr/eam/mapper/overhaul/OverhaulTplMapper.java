@@ -66,4 +66,6 @@ public interface OverhaulTplMapper {
 
     List<OverhaulMaterialResDTO> listOverhaulMaterial(String templateId);
 
+    List<OverhaulTplDetailResDTO> queryTemplate(String lineNo, String subjectCode, String systemCode, String equipTypeCode, String trialStatus);
+
 }

@@ -209,4 +209,41 @@
         ORDER BY wd.RULE_SORT ASC
     </select>
 
+    <select id="queryRuleList" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
+        SELECT
+        d.REC_ID as "recId",
+        d.RULE_CODE as "ruleCode",
+        d.RULE_DETAL_NAME as "ruleDetalName",
+        d.START_DATE as "startDate",
+        d.END_DATE as "endDate",
+        d.PERIOD as "period",
+        d.RULE_SORT as "ruleSort",
+        d.BEFORE_TIME as "beforeTime",
+        d.REMARK as "remark",
+        d.REC_CREATOR as "recCreator",
+        d.REC_CREATE_TIME as "recCreateTime",
+        d.REC_REVISOR as "recRevisor",
+        d.REC_REVISE_TIME as "recReviseTime",
+        d.REC_DELETOR as "recDeletor",
+        d.REC_DELETE_TIME as "recDeleteTime",
+        d.DELETE_FLAG as "deleteFlag",
+        d.ARCHIVE_FLAG as "archiveFlag",
+        d.EXT1 as "ext1",
+        d.EXT2 as "ext2",
+        d.EXT3 as "ext3",
+        d.EXT4 as "ext4",
+        d.EXT5 as "ext5"
+        FROM T_WO_RULE_DETAIL d
+        WHERE
+        d.RULE_CODE =
+        (SELECT
+        T_OVERHAUL_PLAN.RULE_CODE
+        FROM
+        T_OVERHAUL_PLAN
+        WHERE
+        T_OVERHAUL_PLAN.PLAN_CODE = #{planCode})
+        AND d.START_DATE <![CDATA[<=]]> #{nowDate}
+        AND d.END_DATE >= #{nowDate}
+    </select>
+
 </mapper>

@@ -140,5 +140,7 @@ public interface WoRuleMapper {
      */
     List<WoRuleResDTO.WoRuleDetail> listWoRuleDetail(String ruleCode);
 
+    List<WoRuleResDTO.WoRuleDetail> queryRuleList(String planCode, String nowDate);
+
 
 }
