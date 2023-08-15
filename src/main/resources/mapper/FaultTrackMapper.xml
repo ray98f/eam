@@ -58,8 +58,6 @@
             </if>
         </trim>
     </update>
-
-
     <select id="query" resultType="com.wzmtr.eam.dto.res.fault.TrackResDTO">
         SELECT
         df11.REC_ID as "recId",  <!-- 记录编号 -->
@@ -103,9 +101,6 @@
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultTrackNo!=null and faultTrackNo!=''">
                 and df11.FAULT_TRACK_NO = #{faultTrackNo}
-            </if>
-            <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
-                and df11.FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
             </if>
             <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
                 and df11.FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}

@@ -20,6 +20,7 @@
         <cxf-version>3.1.5</cxf-version>
         <shiro.version>1.4.2</shiro.version>
         <minio.version>8.0.3</minio.version>
+        <cglib.version>3.3.0</cglib.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,11 @@
             <groupId>com.diboot</groupId>
             <artifactId>diboot-core-spring-boot-starter</artifactId>
             <version>${diboot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
         </dependency>
 <!--        &lt;!&ndash; diboot-iam 身份与访问控制组件 &ndash;&gt;-->
 <!--        <dependency>-->

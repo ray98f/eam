@@ -5,13 +5,11 @@ import com.wzmtr.eam.dto.req.fault.TrackRepairReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackReqDTO;
 import com.wzmtr.eam.dto.res.fault.TrackResDTO;
-import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.TrackService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +37,7 @@ public class FaultTrackController {
     public DataResponse<TrackResDTO> report(@RequestBody TrackReportReqDTO reqDTO) {
         return DataResponse.of(trackService.report(reqDTO));
     }
+
     @ApiOperation(value = "关闭")
     @GetMapping("/close")
     public DataResponse<TrackResDTO> close(@RequestBody TrackCloseReqDTO reqDTO) {
@@ -51,12 +50,6 @@ public class FaultTrackController {
         trackService.repair(reqDTO);
         return DataResponse.success();
     }
-    // @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
-    // @PostMapping("/record/delete")
-    // public DataResponse<SecureCheckRecordListResDTO> delete(@RequestBody BaseIdsEntity ids) {
-    //     trackService.delete(ids);
-    //     return DataResponse.success();
-    // }
 
 
 }

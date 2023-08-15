@@ -17,7 +17,7 @@ import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.carVideoCall.CarVideoService;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__DateUtil;
+import com.wzmtr.eam.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,7 +79,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(CarVideoAddReqDTO reqDTO) {
-        if (__DateUtil.dateCompare(reqDTO.getVideoEndTime(), reqDTO.getVideoStartTime(), "yyyy-MM-dd HH:mm:ss") != 1) {
+        if (DateUtil.dateCompare(reqDTO.getVideoEndTime(), reqDTO.getVideoStartTime(), "yyyy-MM-dd HH:mm:ss") != 1) {
             log.error("视频截止时间必须大于视频开始时间!");
             throw new CommonException(ErrorCode.VERIFY_DATE_ERROR);
         }

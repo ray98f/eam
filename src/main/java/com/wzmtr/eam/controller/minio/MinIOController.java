@@ -1,5 +1,6 @@
-package com.wzmtr.eam.controller.MinIO;
+package com.wzmtr.eam.controller.minio;
 
+import com.wzmtr.eam.entity.File;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.service.MinIO.MinIOService;
 import io.swagger.annotations.Api;
@@ -24,7 +25,7 @@ public class MinIOController {
 
     @ApiOperation(value = "上传")
     @PostMapping("/upload")
-    public DataResponse<String> upload(@RequestParam MultipartFile file) {
-        return DataResponse.of(minIOService.upload(file));
+    public DataResponse<File> upload(@RequestParam MultipartFile file, String bucketCode) {
+        return DataResponse.of(minIOService.upload(file,bucketCode));
     }
 }

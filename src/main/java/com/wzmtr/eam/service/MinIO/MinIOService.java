@@ -1,5 +1,6 @@
 package com.wzmtr.eam.service.MinIO;
 
+import com.wzmtr.eam.entity.File;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -7,5 +8,5 @@ import org.springframework.web.multipart.MultipartFile;
  * Date: 2023/8/11 15:36
  */
 public interface MinIOService {
-    String upload(MultipartFile file);
+    File upload(MultipartFile file, String bucketCode);
 }
