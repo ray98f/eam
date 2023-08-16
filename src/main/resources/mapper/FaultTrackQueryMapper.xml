@@ -1,7 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.fault.TrackQueryMapper">
-
+    <update id="cancellGenZ">
+        UPDATE WBPLAT.TDMFM21
+        SET
+        <if test="companyCode!=null">
+            COMPANY_CODE = #{companyCode},
+        </if>
+        <if test="companyName!=null">
+            COMPANY_NAME = #{companyName},
+        </if>
+        <if test="faultAnalysisNo!=null">
+            FAULT_ANALYSIS_NO = #{faultAnalysisNo},
+        </if>
+        <if test="trackReason!=null">
+            TRACK_REASON = #{trackReason},
+        </if>
+        <if test="trackUserId!=null">
+            TRACK_USER_ID = #{trackUserId},
+        </if>
+        <if test="trackTime!=null">
+            TRACK_TIME = #{trackTime},
+        </if>
+        <if test="trackStartDate!=null">
+            TRACK_START_DATE = #{trackStartDate},
+        </if>
+        <if test="trackPeriod!=null">
+            TRACK_PERIOD = #{trackPeriod},
+        </if>
+        <if test="faultNo!=null">
+            FAULT_NO = #{faultNo},
+        </if>
+        <if test="faultWorkNo!=null">
+            FAULT_WORK_NO = #{faultWorkNo},
+        </if>
+        <if test="trackEndDate!=null">
+            TRACK_END_DATE =#{trackEndDate},
+        </if>
+        <if test="trackCycle!=null">
+            TRACK_CYCLE = #{trackCycle},
+        </if>
+        <if test="trackReporterId!=null">
+            TRACK_REPORTER_ID =#{trackReporterId},
+        </if>
+        <if test="trackReportTime!=null">
+            TRACK_REPORT_TIME =#{trackReportTime},
+        </if>
+        <if test="trackResult!=null">
+            TRACK_RESULT = #{trackResult},
+        </if>
+        <if test="trackCloserId!=null">
+            TRACK_CLOSER_ID = #{trackCloserId},
+        </if>
+        <if test="trackCloseTime!=null">
+            TRACK_CLOSE_TIME = #{trackCloseTime},
+        </if>
+        <if test="workFlowInstId!=null">
+            WORK_FLOW_INST_ID = #{workFlowInstId},
+        </if>
+        <if test="workFlowInstStatus!=null">
+            WORK_FLOW_INST_STATUS = #{workFlowInstStatus},
+        </if>
+        <if test="docId!=null">
+            DOC_ID = #{docId},
+        </if>
+        <if test="remark!=null">
+            REMARK = #{remark},
+        </if>
+        <if test="recCreator!=null">
+            REC_CREATOR = #{recCreator},
+        </if>
+        <if test="recCreateTime!=null">
+            REC_CREATE_TIME = #{recCreateTime},
+        </if>
+        <if test="recRevisor!=null">
+            REC_REVISOR = #{recRevisor},
+        </if>
+        <if test="recReviseTime!=null">
+            REC_REVISE_TIME = #{recReviseTime},
+        </if>
+        <if test="recDeletor!=null">
+            REC_DELETOR =  #{recDeletor},
+        </if>
+        <if test="recDeleteTime!=null">
+            REC_DELETE_TIME =  #{recDeleteTime},
+        </if>
+        <if test="deleteFlag!=null">
+            DELETE_FLAG =  #{deleteFlag},
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG = #{archiveFlag},
+        </if>
+        <if test="recStatus!=null">
+            REC_STATUS = #{recStatus},
+        </if>
+        <if test="ext1!=null">
+            EXT1 =  #{ext1},
+        </if>
+        <if test="ext2!=null">
+            EXT2 = #{ext2},
+        </if>
+        <if test="ext3!=null">
+            EXT3 = #{ext3},
+        </if>
+        <if test="ext4!=null">
+            EXT4 = #{ext4},
+        </if>
+        <if test="ext5!=null">
+            EXT5 =#{ext5},
+        </if>
+        WHERE
+        FAULT_TRACK_NO = #{faultTrackNo}
+    </update>
 
     <select id="query" resultType="com.wzmtr.eam.dto.res.fault.TrackQueryResDTO">
         SELECT

@@ -15,11 +15,11 @@ public interface TrackQueryService {
 
     Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO);
 
-
-
     TrackQueryResDTO trackDetail(SidEntity reqDTO);
 
     FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO);
+
+    void cancellGenZ(SidEntity reqDTO);
 
     // TrackResDTO detail(SidEntity reqDTO);
     //

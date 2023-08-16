@@ -1,6 +1,7 @@
 package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -26,11 +27,12 @@ public class FaultAnalyzeController {
     public PageResponse<AnalyzeResDTO> list(@RequestBody AnalyzeReqDTO reqDTO) {
         return PageResponse.of(analyzeService.list(reqDTO));
     }
-    // @ApiOperation(value = "详情")
-    // @PostMapping("/detail")
-    // public DataResponse<TrackResDTO> detail(@RequestBody SidEntity reqDTO ) {
-    //     return DataResponse.of(trackService.detail(reqDTO));
-    // }
+
+    @ApiOperation(value = "详情")
+    @PostMapping("/detail")
+    public DataResponse<AnalyzeResDTO> detail(@RequestBody FaultAnalyzeDetailReqDTO reqDTO) {
+        return DataResponse.of(analyzeService.detail(reqDTO));
+    }
 
 
     @ApiOperation(value = "导出")

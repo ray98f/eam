@@ -21,7 +21,7 @@
         d3.AFFECT_CODES as "affectCodes",  <!-- 故障影响 -->
         d3.FREQUENCY as "frequency",  <!-- 频次（10-偶尔；20-一般；30-频发） -->
         <!--d3.MANUFACTURE	as "manufacture",  &lt;!&ndash; 生产厂家 &ndash;&gt;-->
-        (SELECT dd.MANUFACTURE from WBPLAT.TDMDM01 dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",
+        (SELECT dd.MANUFACTURE from T_EQUIPMENT dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",
         d3.FAULT_DETAIL as "faultDetail",  <!-- 故障详情 -->
         d3.FAULT_PROCESS_DETAIL as "faultProcessDetail",  <!-- 故障调查及处置 -->
         d3.FAULT_REASON_DETAIL as "faultReasonDetail",  <!-- 故障原因 -->
@@ -108,7 +108,7 @@
         d3.AFFECT_CODES as "affectCodes",  <!-- 故障影响 -->
         d3.FREQUENCY as "frequency",  <!-- 频次（10-偶尔；20-一般；30-频发） -->
         <!--d3.MANUFACTURE	as "manufacture",  &lt;!&ndash; 生产厂家 &ndash;&gt;-->
-        (SELECT dd.MANUFACTURE from WBPLAT.TDMDM01 dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",
+        (SELECT dd.MANUFACTURE from T_EQUIPMENT dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",
         d3.FAULT_DETAIL as "faultDetail",  <!-- 故障详情 -->
         d3.FAULT_PROCESS_DETAIL as "faultProcessDetail",  <!-- 故障调查及处置 -->
         d3.FAULT_REASON_DETAIL as "faultReasonDetail",  <!-- 故障原因 -->
@@ -155,7 +155,51 @@
             </if>
         </trim>
     </select>
-
+    <select id="detail" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">
+        SELECT
+        d1.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
+        d1.LINE_CODE	as "lineCode",  <!-- 线路编码 -->
+        d1.MAJOR_CODE	as "majorCode",  <!-- 专业代码 -->
+        d1.SYSTEM_CODE	as "systemCode",  <!-- 系统代码 -->
+        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d1.MAJOR_CODE) as "majorName",
+        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d1.SYSTEM_CODE) as "systemName",
+        d1.FAULT_DISPLAY_CODE	as "faultDisplayCode",
+        d1.FAULT_DISPLAY_DETAIL	as "faultDisplayDetail",<!-- 故障现象 -->
+        d3.FAULT_REASON_DETAIL	as "faultReasonDetail",  <!-- 故障原因 -->
+        d3.FAULT_PROCESS_DETAIL	as "faultProcessDetail",  <!-- 故障调查及处置 -->
+        d1.DISCOVERY_TIME	as "discoveryTime",  <!-- 发现时间 -->
+        d1.RESP_DEPT_CODE	as "respDeptCode",  <!-- 主责部门 -->
+        (select  rv.ORG_NAME from RPLAT60.V_CO_ORG rv where rv.ORG_CODE=d1.RESP_DEPT_CODE) as "respDeptName",
+        d1.FAULT_LEVEL	as "faultLevel",  <!-- 故障等级 -->
+        d3.AFFECT_CODES	as "affectCodes",  <!-- 故障影响 -->
+        d1.FAULT_STATUS	as "faultStatus",  <!-- 故障状态 -->
+        d3.PROBLEM_DESCR	as "problemDescr",  <!-- 暴露问题 -->
+        d3.IMPROVE_DETAIL	as "improveDetail",  <!-- 整改措施 -->
+        d3.REC_STATUS as "recStatus",
+        d3.FREQUENCY as "frequency",
+        d1.POSITION_CODE as "positionCode",
+        (SELECT db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d1.POSITION_CODE) as "positionName",
+        d1.OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        d1.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        (SELECT dd.MANUFACTURE from T_EQUIPMENT dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",  <!-- 生产厂家 -->
+        d3.RECOVERY_TIME	as "recoveryTime",  <!-- 恢复时间 -->
+        d3.FAULT_ANALYSIS_NO as "faultAnalysisNo",
+        d3.FAULT_WORK_NO as "faultWorkNo",
+        d3.DOC_ID as "docId",
+        d3.REC_CREATOR as "recCreator"
+        FROM T_FAULT_INFO d1 , T_FAULT_DETAIL d3
+        WHERE 1=1 and d1.FAULT_NO = d3.FAULT_NO
+        <if test="faultAnalysisNo!=null and faultAnalysisNo!=''">
+            and d3.FAULT_ANALYSIS_NO =#{faultAnalysisNo}
+        </if>
+        <if test="faultNo!=null and faultNo!=''">
+            and d3.FAULT_NO =#{faultNo}
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            and d3.FAULT_WORK_NO =#{faultWorkNo}
+        </if>
+        order by d1.FAULT_NO asc
+    </select>
 
 
 </mapper>

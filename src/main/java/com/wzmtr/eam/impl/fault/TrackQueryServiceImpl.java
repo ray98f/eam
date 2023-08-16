@@ -9,9 +9,15 @@ import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultInfo;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.SidEntity;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.fault.TrackQueryService;
+import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.__BeanUtil;
+import jdk.nashorn.internal.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +51,19 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             return repairDetail;
         }
         return __BeanUtil.copy(faultDetail, repairDetail);
+    }
+
+    @Override
+    public void cancellGenZ(SidEntity reqDTO) {
+        if (StringUtils.isEmpty(reqDTO.getId())){
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        TrackQueryResDTO bo = new TrackQueryResDTO();
+        bo.setFaultTrackNo(reqDTO.getId());
+        bo.setRecRevisor(TokenUtil.getCurrentPersonId());
+        bo.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        bo.setExt1("");
+        trackQueryMapper.cancellGenZ(bo);
     }
 
     @Override

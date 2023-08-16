@@ -3,8 +3,11 @@ package com.wzmtr.eam.impl.fault;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
-import com.wzmtr.eam.dto.res.secure.SecureHazardResDTO;
+import com.wzmtr.eam.entity.SidEntity;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.fault.AnalyzeMapper;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
@@ -25,15 +28,13 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
-        return mapper.query(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getMajorCode(), reqDTO.getRecStatus(),
-                reqDTO.getLineCode(), reqDTO.getFrequency(), reqDTO.getPositionCode(), reqDTO.getDiscoveryStartTime(),
-                reqDTO.getDiscoveryEndTime(), reqDTO.getRespDeptCode(), reqDTO.getAffectCodes());
+        return mapper.query(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getMajorCode(), reqDTO.getRecStatus(), reqDTO.getLineCode(), reqDTO.getFrequency(), reqDTO.getPositionCode(), reqDTO.getDiscoveryStartTime(), reqDTO.getDiscoveryEndTime(), reqDTO.getRespDeptCode(), reqDTO.getAffectCodes());
     }
 
     @Override
     public void export(String faultAnalysisNo, String faultNo, String faultWorkNo, HttpServletResponse response) {
         List<AnalyzeResDTO> resList = mapper.list(faultAnalysisNo, faultNo, faultWorkNo);
-        List<String> listName = Arrays.asList("故障分析编号", "故障编号", "故障工单编号", "专业", "故障发现时间", "线路", "频次", "位置", "牵头部门", "故障等级", "故障影响", "故障现象","故障原因","故障调查及处置情况","系统","本次故障暴露的问题","整改措施");
+        List<String> listName = Arrays.asList("故障分析编号", "故障编号", "故障工单编号", "专业", "故障发现时间", "线路", "频次", "位置", "牵头部门", "故障等级", "故障影响", "故障现象", "故障原因", "故障调查及处置情况", "系统", "本次故障暴露的问题", "整改措施");
         if (CollectionUtil.isEmpty(resList)) {
             return;
         }
@@ -61,4 +62,14 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         }
         ExcelPortUtil.excelPort("故障调查及处置情况", listName, list, null, response);
     }
+
+    @Override
+    public AnalyzeResDTO detail(FaultAnalyzeDetailReqDTO reqDTO) {
+        AnalyzeResDTO detail = mapper.detail(reqDTO);
+        if (detail == null) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        return detail;
+    }
+
 }

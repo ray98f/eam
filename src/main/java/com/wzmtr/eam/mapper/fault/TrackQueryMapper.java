@@ -30,4 +30,6 @@ public interface TrackQueryMapper {
     FaultInfo faultDetail(String faultNo, String faultworkNo);
 
     FaultDetailResDTO repairDetail(String faultNo, String faultworkNo);
+
+    void cancellGenZ(TrackQueryResDTO bo);
 }

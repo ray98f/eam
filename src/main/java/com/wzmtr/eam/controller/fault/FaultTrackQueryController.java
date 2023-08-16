@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
+import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.SidEntity;
@@ -11,10 +12,7 @@ import com.wzmtr.eam.service.fault.TrackQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Author: Li.Wang
@@ -42,5 +40,12 @@ public class FaultTrackQueryController {
     @PostMapping("/track/detail")
     public DataResponse<TrackQueryResDTO> detail(@RequestBody SidEntity reqDTO ) {
         return DataResponse.of(trackQueryService.trackDetail(reqDTO));
+    }
+    @ApiOperation(value = "作废")
+    @GetMapping("/cancellGenZ")
+    public DataResponse<AnalyzeResDTO> cancellGenZ(@RequestBody SidEntity reqDTO) {
+        // 		FAULT_TRACK_NO = #faultTrackNo#
+        trackQueryService.cancellGenZ(reqDTO);
+        return DataResponse.success();
     }
 }

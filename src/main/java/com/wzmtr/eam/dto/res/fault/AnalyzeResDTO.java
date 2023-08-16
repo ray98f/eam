@@ -75,23 +75,14 @@ public class AnalyzeResDTO {
     private String recCreator;
     @ApiModelProperty(value = "牵头部门")
     private String respDeptCode;
-
     @ApiModelProperty(value = "故障等级")
     private String faultLevel;
     @ApiModelProperty(value = "系统")
     private String systemCode;
-    private String recCreateTime;
-    private String recRevisor;
-    private String positionCode;
+    @ApiModelProperty(value = "对象编码")
+    private String objectCode;
+    @ApiModelProperty(value = "对象名称")
+    private String objectName;
     private String position;
-    private String recReviseTime;
-    private String recDeletor;
-    private String recDeleteTime;
-    private String deleteFlag;
-    private String archiveFlag;
-    private String ext1;
-    private String ext2;
-    private String ext3;
-    private String ext4;
-    private String ext5;
+
 }
