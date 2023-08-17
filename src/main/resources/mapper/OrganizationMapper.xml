@@ -171,4 +171,8 @@
         select ID, AREA_ID from SYS_OFFICE where NAMES=#{names}
     </select>
 
+    <select id="getNamesById" resultType="java.lang.String">
+        select NAMES from SYS_OFFICE where (ID=#{id} or AREA_ID=#{id})
+    </select>
+
 </mapper>

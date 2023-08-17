@@ -121,10 +121,10 @@ public class ZCOverhaulPlanController {
     @GetMapping("/object/page")
     @ApiOperation(value = "获取检修对象（中车）列表")
     public PageResponse<OverhaulObjectResDTO> pageOverhaulObject(@RequestParam(required = false) @ApiParam("计划编号") String planCode,
-                                                               @RequestParam(required = false) @ApiParam("计划名称") String planName,
-                                                               @RequestParam(required = false) @ApiParam("对象编号") String objectCode,
-                                                               @RequestParam(required = false) @ApiParam("对象名称") String objectName,
-                                                               @Valid PageReqDTO pageReqDTO) {
+                                                                 @RequestParam(required = false) @ApiParam("计划名称") String planName,
+                                                                 @RequestParam(required = false) @ApiParam("对象编号") String objectCode,
+                                                                 @RequestParam(required = false) @ApiParam("对象名称") String objectName,
+                                                                 @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(overhaulPlanService.pageOverhaulObject(planCode, planName, objectCode, objectName, pageReqDTO));
     }
 

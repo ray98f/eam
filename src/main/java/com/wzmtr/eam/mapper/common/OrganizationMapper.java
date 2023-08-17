@@ -53,4 +53,6 @@ public interface OrganizationMapper {
 
     SysOffice getByNames(@Param("names") String names);
 
+    String getNamesById(@Param("id") String id);
+
 }

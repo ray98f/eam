@@ -32,6 +32,9 @@ public class OverhaulWeekPlanListReqDTO {
     @ApiModelProperty(value = "开始时间")
     private String firstBeginTime;
 
+    @ApiModelProperty(value = "开始时间")
+    private String firstBeginTime1;
+
     @ApiModelProperty(value = "审批状态")
     private String trialStatus;
 

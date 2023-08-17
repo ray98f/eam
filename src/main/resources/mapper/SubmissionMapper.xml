@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.mea.SubmissionMapper">
+
+    <sql id="submission-instrument-cols">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.SEND_VERIFY_NO	as "sendVerifyNo",  <!-- 送检单号 -->
+        a.INSTRM_PLAN_NO	as "instrmPlanNo",  <!-- 计量器具检定计划号 -->
+        a.SEND_CONSIGNER_NAME	as "sendConsignerName",  <!-- 送检委托人 -->
+        a.SEND_CONSIGNER_TELE	as "sendConsignerTele",  <!-- 送检委托人电话 -->
+        a.SEND_RECEIVER_NAME	as "sendReceiverName",  <!-- 送检接收人 -->
+        a.SEND_RECEIVER_TELE	as "sendReceiverTele",  <!-- 送检接收人电话 -->
+        a.BACK_RETURN_NAME	as "backReturnName",  <!-- 返送人 -->
+        a.BACK_RETURN_TELE	as "backReturnTele",  <!-- 返送人电话 -->
+        a.BACK_CONSIGNER_TELE	as "backConsignerTele",  <!-- 返还接收人 -->
+        a.BACK_RECEIVER_NAME	as "backReceiverName",  <!-- 返还接收人电话 -->
+        a.SEND_VERIFY_DATE	as "sendVerifyDate",  <!-- 送检日期 -->
+        a.VERIFY_BACK_DATE	as "verifyBackDate",  <!-- 返还日期 -->
+        a.VERIFY_DEPT	as "verifyDept",  <!-- 检测校准单位 -->
+        a.SEND_VERIFY_STATUS	as "sendVerifyStatus",  <!-- 送检单状态10:送检中;20:完成检测; -->
+        a.WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        a.WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5" <!-- 扩展字段5 -->
+    </sql>
+
+    <select id="pageSubmission" resultType="com.wzmtr.eam.dto.res.SubmissionResDTO">
+        <include refid="submission-instrument-cols"/>
+        FROM T_MEA_SUBMISSION a WHERE 1=1 and a.DELETE_FLAG='0'
+        <if test="req.sendVerifyNo!=null and req.sendVerifyNo!=''">
+            and a.SEND_VERIFY_NO like '%' || #{req.sendVerifyNo} || '%'
+        </if>
+        <if test="req.instrmPlanNo!=null and req.instrmPlanNo!=''">
+            and a.INSTRM_PLAN_NO like '%' || #{req.instrmPlanNo} || '%'
+        </if>
+        <if test="req.sendVerifyStatus!=null and req.sendVerifyStatus!=''">
+            and a.SEND_VERIFY_STATUS=#{req.sendVerifyStatus}
+        </if>
+        <if test="req.workFlowInstId!=null and req.workFlowInstId!=''">
+            and a.WORK_FLOW_INST_ID=#{req.workFlowInstId}
+        </if>
+        order by a.SEND_VERIFY_NO desc
+    </select>
+
+    <select id="getSubmissionDetail" resultType="com.wzmtr.eam.dto.res.SubmissionResDTO">
+        <include refid="submission-instrument-cols"/>
+        FROM T_MEA_SUBMISSION WHERE REC_ID=#{id}
+    </select>
+
+    <select id="getMaxCode" resultType="java.lang.String">
+        select max(SEND_VERIFY_NO)
+        FROM T_MEA_SUBMISSION
+    </select>
+
+    <insert id="addSubmission">
+        INSERT INTO T_MEA_SUBMISSION (
+        REC_ID,  <!-- 记录编号 -->
+        SEND_VERIFY_NO,  <!-- 送检单号 -->
+        INSTRM_PLAN_NO,  <!-- 计量器具检定计划号 -->
+        SEND_CONSIGNER_NAME,  <!-- 送检委托人 -->
+        SEND_CONSIGNER_TELE,  <!-- 送检委托人电话 -->
+        SEND_RECEIVER_NAME,  <!-- 送检接收人 -->
+        SEND_RECEIVER_TELE,  <!-- 送检接收人电话 -->
+        BACK_RETURN_NAME,  <!-- 返送人 -->
+        BACK_RETURN_TELE,  <!-- 返送人电话 -->
+        BACK_CONSIGNER_TELE,  <!-- 返还接收人 -->
+        BACK_RECEIVER_NAME,  <!-- 返还接收人电话 -->
+        SEND_VERIFY_DATE,  <!-- 送检日期 -->
+        VERIFY_BACK_DATE,  <!-- 返还日期 -->
+        VERIFY_DEPT,  <!-- 检测校准单位 -->
+        SEND_VERIFY_STATUS,  <!-- 送检单状态10:送检中;20:完成检测; -->
+        WORK_FLOW_INST_ID,  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS,  <!-- 工作流实例状态 -->
+        COMPANY_CODE,  <!-- 公司代码 -->
+        COMPANY_NAME,  <!-- 公司名称 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REC_STATUS,  <!-- 记录状态 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{sendVerifyNo,jdbcType=VARCHAR}, 
+        #{instrmPlanNo,jdbcType=VARCHAR}, 
+        #{sendConsignerName,jdbcType=VARCHAR}, 
+        #{sendConsignerTele,jdbcType=VARCHAR}, 
+        #{sendReceiverName,jdbcType=VARCHAR}, 
+        #{sendReceiverTele,jdbcType=VARCHAR}, 
+        #{backReturnName,jdbcType=VARCHAR}, 
+        #{backReturnTele,jdbcType=VARCHAR}, 
+        #{backConsignerTele,jdbcType=VARCHAR}, 
+        #{backReceiverName,jdbcType=VARCHAR}, 
+        #{sendVerifyDate,jdbcType=VARCHAR}, 
+        #{verifyBackDate,jdbcType=VARCHAR}, 
+        #{verifyDept,jdbcType=VARCHAR}, 
+        #{sendVerifyStatus,jdbcType=VARCHAR}, 
+        #{workFlowInstId,jdbcType=VARCHAR}, 
+        #{workFlowInstStatus,jdbcType=VARCHAR}, 
+        #{companyCode,jdbcType=VARCHAR}, 
+        #{companyName,jdbcType=VARCHAR}, 
+        #{recCreator,jdbcType=VARCHAR}, 
+        #{recCreateTime,jdbcType=VARCHAR}, 
+        #{recRevisor,jdbcType=VARCHAR}, 
+        #{recReviseTime,jdbcType=VARCHAR}, 
+        #{recDeletor,jdbcType=VARCHAR}, 
+        #{recDeleteTime,jdbcType=VARCHAR}, 
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR}, 
+        #{recStatus,jdbcType=VARCHAR}, 
+        #{ext1,jdbcType=VARCHAR}, 
+        #{ext2,jdbcType=VARCHAR}, 
+        #{ext3,jdbcType=VARCHAR}, 
+        #{ext4,jdbcType=VARCHAR}, 
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+    
+    <update id="modifySubmission">
+        UPDATE T_MEA_SUBMISSION SET
+        <if test="sendVerifyNo!=null">
+            SEND_VERIFY_NO=#{sendVerifyNo},   <!-- 送检单号 -->
+        </if>
+        <if test="instrmPlanNo!=null">
+            INSTRM_PLAN_NO=#{instrmPlanNo},   <!-- 计量器具检定计划号 -->
+        </if>
+        <if test="sendConsignerName!=null">
+            SEND_CONSIGNER_NAME=#{sendConsignerName},   <!-- 送检委托人 -->
+        </if>
+        <if test="sendConsignerTele!=null">
+            SEND_CONSIGNER_TELE=#{sendConsignerTele},   <!-- 送检委托人电话 -->
+        </if>
+        <if test="sendReceiverName!=null">
+            SEND_RECEIVER_NAME=#{sendReceiverName},   <!-- 送检接收人 -->
+        </if>
+        <if test="sendReceiverTele!=null">
+            SEND_RECEIVER_TELE=#{sendReceiverTele},   <!-- 送检接收人电话 -->
+        </if>
+        <if test="backReturnName!=null">
+            BACK_RETURN_NAME=#{backReturnName},   <!-- 返送人 -->
+        </if>
+        <if test="backReturnTele!=null">
+            BACK_RETURN_TELE=#{backReturnTele},   <!-- 返送人电话 -->
+        </if>
+        <if test="backConsignerTele!=null">
+            BACK_CONSIGNER_TELE=#{backConsignerTele},   <!-- 返还接收人 -->
+        </if>
+        <if test="backReceiverName!=null">
+            BACK_RECEIVER_NAME=#{backReceiverName},   <!-- 返还接收人电话 -->
+        </if>
+        <if test="sendVerifyDate!=null">
+            SEND_VERIFY_DATE=#{sendVerifyDate},   <!-- 送检日期 -->
+        </if>
+        <if test="verifyBackDate!=null">
+            VERIFY_BACK_DATE=#{verifyBackDate},   <!-- 返还日期 -->
+        </if>
+        <if test="verifyDept!=null">
+            VERIFY_DEPT=#{verifyDept},   <!-- 检测校准单位 -->
+        </if>
+        <if test="sendVerifyStatus!=null">
+            SEND_VERIFY_STATUS=#{sendVerifyStatus},   <!-- 送检单状态10:送检中;20:完成检测; -->
+        </if>
+        <if test="workFlowInstId!=null">
+            WORK_FLOW_INST_ID=#{workFlowInstId},   <!-- 工作流实例ID -->
+        </if>
+        <if test="workFlowInstStatus!=null">
+            WORK_FLOW_INST_STATUS=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
+        </if>
+        <if test="companyCode!=null">
+            COMPANY_CODE=#{companyCode},   <!-- 公司代码 -->
+        </if>
+        <if test="companyName!=null">
+            COMPANY_NAME=#{companyName},   <!-- 公司名称 -->
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
+        </if>
+        <if test="recStatus!=null">
+            REC_STATUS=#{recStatus},   <!-- 记录状态 -->
+        </if>
+        <if test="ext1!=null">
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
+        </if>
+        <if test="ext2!=null">
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
+        </if>
+        <if test="ext3!=null">
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
+        </if>
+        <if test="ext4!=null">
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
+        </if>
+        <if test="ext5!=null">
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
+        </if>
+        REC_REVISOR=#{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 修改时间 -->
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <update id="deleteSubmissionDetail">
+        UPDATE T_MEA_SUBMISSION_DETAIL SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE SEND_VERIFY_NO=#{sendVerifyNo}
+    </update>
+
+    <update id="deleteSubmission">
+        UPDATE T_MEA_SUBMISSION SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID=#{id}
+    </update>
+
+    <select id="listSubmission" resultType="com.wzmtr.eam.dto.res.SubmissionResDTO">
+        <include refid="submission-instrument-cols"/>
+        FROM T_MEA_SUBMISSION a WHERE 1=1 and a.DELETE_FLAG='0'
+        <if test="sendVerifyNo!=null and sendVerifyNo!=''">
+            and a.SEND_VERIFY_NO like '%' || #{sendVerifyNo} || '%'
+        </if>
+        <if test="instrmPlanNo!=null and instrmPlanNo!=''">
+            and a.INSTRM_PLAN_NO like '%' || #{instrmPlanNo} || '%'
+        </if>
+        <if test="sendVerifyStatus!=null and sendVerifyStatus!=''">
+            and a.SEND_VERIFY_STATUS=#{sendVerifyStatus}
+        </if>
+        <if test="workFlowInstId!=null and workFlowInstId!=''">
+            and a.WORK_FLOW_INST_ID=#{workFlowInstId}
+        </if>
+        order by a.SEND_VERIFY_NO desc
+    </select>
+
+    <select id="listSubmissionDetail" resultType="com.wzmtr.eam.dto.res.SubmissionDetailResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.SEND_VERIFY_NO	as "sendVerifyNo",  <!-- 检测单号 -->
+        a.PLAN_DETAIL_REC_ID	as "planDetailRecId",  <!-- 检测计划明细表REC_ID -->
+        a.EQUIP_CODE	as "equipCode",  <!-- 计量器具代码 -->
+        a.EQUIP_NAME	as "equipName",  <!-- 计量器具名称 -->
+        a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
+        a.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
+        a.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
+        a.INSTALLATION_UNIT	as "installationUnit",  <!-- 安装单位 -->
+        a.VERIFY_PERIOD	as "verifyPeriod",  <!-- 检测周期(天) -->
+        a.PLAN_BEGIN_DATE	as "planBeginDate",  <!-- 计划开始时间 -->
+        a.PLAN_END_DATE	as "planEndDate",  <!-- 计划完成时间 -->
+        a.EQUIPMENT_STATE	as "equipmentState",  <!-- 计量器具状态（封存、停用、报废和注销） -->
+        a.USE_DEPT_PLACE	as "useDeptPlace",  <!-- 计量器具使用地点 -->
+        a.EQUIPMENT_REG_CODE	as "equipmentRegCode",  <!-- 计量器具注册登记代码 -->
+        a.SECURITY_MANAGER	as "securityManager",  <!-- 安全管理人员 -->
+        a.SECURITY_CONTACT	as "securityContact",  <!-- 安全管理人员联系方式 -->
+        a.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
+        a.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
+        a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        a.POSITION3	as "position3",  <!-- 位置三 -->
+        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
+        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        b.VERIFY_DEPT as "verifyDept",
+        c.LAST_VERIFY_DATE as "lastVerifyDate",
+        c.NEXT_VERIFY_DATE as "nextVerifyDate"
+        FROM T_MEA_SUBMISSION_DETAIL a
+        LEFT JOIN T_MEA_SUBMISSION b ON a.SEND_VERIFY_NO=b.SEND_VERIFY_NO
+        LEFT JOIN T_SUBMISSION_RECORD_DETAIL c ON a.REC_ID=c.TEST_LIST_DETAIL_REC_ID
+        WHERE 1=1 and a.SEND_VERIFY_NO=#{sendVerifyNo}
+        order by a.REC_CREATE_TIME asc
+    </select>
+
+</mapper>

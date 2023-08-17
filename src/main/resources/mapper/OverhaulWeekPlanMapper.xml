@@ -64,7 +64,7 @@
             and WORK_FLOW_INST_ID=#{req.workFlowInstId}
         </if>
         <if test="req.firstBeginTime!=null and req.firstBeginTime!=''">
-            and FIRST_BEGIN_TIME=#{req.firstBeginTime}
+            and (FIRST_BEGIN_TIME=#{req.firstBeginTime} or FIRST_BEGIN_TIME=#{req.firstBeginTime1})
         </if>
         <if test="req.workerGroupCode!=null and req.workerGroupCode!=''">
             and WORKER_GROUP_CODE=#{req.workerGroupCode}
@@ -295,7 +295,7 @@
             and WORK_FLOW_INST_ID=#{workFlowInstId}
         </if>
         <if test="firstBeginTime!=null and firstBeginTime!=''">
-            and FIRST_BEGIN_TIME=#{firstBeginTime}
+            and (FIRST_BEGIN_TIME=#{firstBeginTime} or FIRST_BEGIN_TIME=#{firstBeginTime1})
         </if>
         <if test="workerGroupCode!=null and workerGroupCode!=''">
             and WORKER_GROUP_CODE=#{workerGroupCode}
