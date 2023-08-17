@@ -91,6 +91,10 @@ public class FaultReportReqDTO {
     private String docId;
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
+    @ApiModelProperty(value = "故障造成影响")
+    private String faultAffect;
+    @ApiModelProperty(value = "检修车/运营车标识")
+    private String traintag;
 
 
     public FaultOrderBO toFaultOrderBO(FaultReportReqDTO req) {

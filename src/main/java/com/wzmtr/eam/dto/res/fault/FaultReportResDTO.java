@@ -67,10 +67,6 @@ public class FaultReportResDTO {
     private String faultDisplayDetail;
     @ApiModelProperty(value = "提报时间")
     private String fillinTime;
-    @ApiModelProperty(value = "提报时间")
-    private String fillinTimeStart;
-    @ApiModelProperty(value = "提报时间")
-    private String fillinTimeEnd;
     @ApiModelProperty(value = "提报人工号")
     private String fillinUserId;
     @ApiModelProperty(value = "提报人")

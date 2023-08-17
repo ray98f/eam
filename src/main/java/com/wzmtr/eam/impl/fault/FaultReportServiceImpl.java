@@ -5,6 +5,7 @@ import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.service.fault.FaultReportService;
@@ -66,29 +67,6 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void addToMajor(FaultReportReqDTO reqDTO) {
-        // String faultNo = IMakeSeq.getSeqFromTable("GZ", DateUtils.curDateStr("yyMMdd"), "WBPLAT.SEQ_TDMFM01");
-        // String faultWorkNo = IMakeSeq.getSeqFromTable("GD", DateUtils.curDateStr("yyMMdd"), "WBPLAT.SEQ_TDMFM02");
-        // SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // /* 126 */
-        // inInfo.getBlock("delivery").setCell(i, "recCreator", currentUser);
-        // /* 127 */
-        // inInfo.getBlock("delivery").setCell(i, "recCreateTime", dateTimeFormat.format(new Date()));
-        // /* 128 */
-        // inInfo.getBlock("delivery").setCell(i, "fillinTime", dateTimeFormat.format(new Date()));
-        // /* 129 */
-        // inInfo.getBlock("delivery").setCell(i, "recId", UUID.randomUUID().toString());
-        // /* 150 */
-        // String recId = UUID.randomUUID().toString();
-        // /* 151 */
-        // dmfm02.setRecId(recId);
-        // /* 152 */
-        // dmfm02.setFaultNo(faultNo);
-        // if (faultType.equals("30")) {
-        //     /* 215 */
-        //     dmfm02.setOrderStatus("30");
-        //     /*     */
-        // }
+    public void addToMajor(FaultReportToMajorReqDTO reqDTO) {
     }
 }

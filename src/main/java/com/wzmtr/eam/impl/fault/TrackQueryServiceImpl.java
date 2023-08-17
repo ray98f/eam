@@ -58,6 +58,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
         TrackQueryResDTO bo = new TrackQueryResDTO();
+        bo.setRecStatus("99");
         bo.setFaultTrackNo(reqDTO.getId());
         bo.setRecRevisor(TokenUtil.getCurrentPersonId());
         bo.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));

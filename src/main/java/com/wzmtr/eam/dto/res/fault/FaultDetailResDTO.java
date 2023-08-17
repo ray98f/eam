@@ -9,6 +9,8 @@ import lombok.Data;
  */
 @Data
 public class FaultDetailResDTO {
+    @ApiModelProperty(value = "故障编号")
+    private String faultNo;
     @ApiModelProperty(value = "故障工单号")
     private String faultWorkNo;
     @ApiModelProperty(value = "报告人工号")
@@ -107,8 +109,6 @@ public class FaultDetailResDTO {
     private String companyCode;
     @ApiModelProperty(value = "公司名称")
     private String companyName;
-    @ApiModelProperty(value = "故障编号")
-    private String faultNo;
     @ApiModelProperty(value = "故障标识（1-标准故障；2-快速故障）")
     private String faultFlag;
     @ApiModelProperty(value = "对象编码")
@@ -121,10 +121,12 @@ public class FaultDetailResDTO {
     private String lineCode;
     @ApiModelProperty(value = "位置编码")
     private String positionCode;
-    @ApiModelProperty(value = "位置")
+    @ApiModelProperty(value = "位置1")
     private String positionName;
     @ApiModelProperty(value = "位置2编码")
     private String position2Code;
+    @ApiModelProperty(value = "位置2")
+    private String position2Name;
     @ApiModelProperty(value = "部件编码")
     private String partCode;
     @ApiModelProperty(value = "部件名称")
