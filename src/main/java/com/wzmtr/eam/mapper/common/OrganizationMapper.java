@@ -29,6 +29,8 @@ public interface OrganizationMapper {
 
     String selectOfficeNameById(String id);
 
+    String getOrgNameByOrgCode(String id);
+
     Integer cleanOrg();
 
     Integer createOrg(SysOffice office);

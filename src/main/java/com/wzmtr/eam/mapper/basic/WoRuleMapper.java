@@ -136,9 +136,11 @@ public interface WoRuleMapper {
      * 获取工单触发规则明细列表
      *
      * @param ruleCode
+     * @param startDate
+     * @param endDate
      * @return
      */
-    List<WoRuleResDTO.WoRuleDetail> listWoRuleDetail(String ruleCode);
+    List<WoRuleResDTO.WoRuleDetail> listWoRuleDetail(String ruleCode, String startDate, String endDate);
 
     List<WoRuleResDTO.WoRuleDetail> queryRuleList(String planCode, String nowDate);
 

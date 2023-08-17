@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.overhaul.OverhaulStateMapper">
+
+
+    <select id="pageOverhaulState" resultType="com.wzmtr.eam.dto.res.OverhaulStateResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ITEM_NAME	as "itemName",  <!-- 条目 -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        TDMER23_REC_ID	as "tdmer23RecId",  <!-- 检修项外键 -->
+        MODEL_NAME	as "modelName",  <!-- 模块名称 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        WORK_USER_ID	as "workUserId",  <!-- 用户工号 -->
+        WORK_USER_NAME	as "workUserName",  <!-- 用户姓名 -->
+        ITEM_TYPE	as "itemType",  <!-- 类型 -->
+        WORK_RESULT	as "workResult",  <!-- 结果 -->
+        INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 条目值 -->
+        WORK_TIME	as "workTime",  <!-- 时间 -->
+        DOC_ID	as "docId",  <!-- 附件 -->
+        WORK_DETAIL	as "workDetail",  <!-- 工作说明 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        ERROR_FLAG	as "errorFlag",  <!-- 异常标识 -->
+        ITEM_UNIT	as "itemUnit",  <!-- 单位 -->
+        DEFAULT_VALUE	as "defaultValue",  <!-- 默认值 -->
+        MUTUAL_INSPECTION_PEOPLE	as "mutualInspectionPeople",  <!-- 互检人 -->
+        MUTUAL_INSPECTION_PEOPLE_ID	as "mutualInspectionPeopleId",  <!-- 互检人工号 -->
+        SPECIAL_INSPECTION_PEOPLE	as "specialInspectionPeople",  <!-- 专检人 -->
+        SPECIAL_INSPECTION_PEOPLE_ID	as "specialInspectionPeopleId",  <!-- 专检人工号 -->
+        FAULT_CODE	as "faultCode",  <!-- 故障单号 -->
+        FAULT_STATUS	as "faultStatus",  <!-- 故障单号状态 -->
+        FOLLOW_CODE	as "followCode",  <!-- 跟踪单号 -->
+        FOLLOW_STATUS	as "followStatus",  <!-- 跟踪单号状态 -->
+        PROBLEM_STATUS	as "problemStatus",  <!-- 状态 -->
+        PROBLEM_DESCRIPTION	as "problemDescription",  <!-- 问题描述 -->
+        HANDLING_SUGGESTION	as "handlingSuggestion",  <!-- 处理意见 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_STATE WHERE 1=1 AND OBJECT_CODE=#{objectCode}
+        <if test="itemName!=null and itemName!=''">
+            and ITEM_NAME=#{itemName}
+        </if>
+        <if test="orderCode!=null and orderCode!=''">
+            and ORDER_CODE=#{orderCode}
+        </if>
+        <if test="tdmer23RecId!=null and tdmer23RecId!=''">
+            and TDMER23_REC_ID=#{tdmer23RecId}
+        </if>
+        order by REC_ID asc
+    </select>
+
+    <select id="getOverhaulStateDetail" resultType="com.wzmtr.eam.dto.res.OverhaulStateResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ITEM_NAME	as "itemName",  <!-- 条目 -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        TDMER23_REC_ID	as "tdmer23RecId",  <!-- 检修项外键 -->
+        MODEL_NAME	as "modelName",  <!-- 模块名称 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        WORK_USER_ID	as "workUserId",  <!-- 用户工号 -->
+        WORK_USER_NAME	as "workUserName",  <!-- 用户姓名 -->
+        ITEM_TYPE	as "itemType",  <!-- 类型 -->
+        WORK_RESULT	as "workResult",  <!-- 结果 -->
+        INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 条目值 -->
+        WORK_TIME	as "workTime",  <!-- 时间 -->
+        DOC_ID	as "docId",  <!-- 附件 -->
+        WORK_DETAIL	as "workDetail",  <!-- 工作说明 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        ERROR_FLAG	as "errorFlag",  <!-- 异常标识 -->
+        ITEM_UNIT	as "itemUnit",  <!-- 单位 -->
+        DEFAULT_VALUE	as "defaultValue",  <!-- 默认值 -->
+        MUTUAL_INSPECTION_PEOPLE	as "mutualInspectionPeople",  <!-- 互检人 -->
+        MUTUAL_INSPECTION_PEOPLE_ID	as "mutualInspectionPeopleId",  <!-- 互检人工号 -->
+        SPECIAL_INSPECTION_PEOPLE	as "specialInspectionPeople",  <!-- 专检人 -->
+        SPECIAL_INSPECTION_PEOPLE_ID	as "specialInspectionPeopleId",  <!-- 专检人工号 -->
+        FAULT_CODE	as "faultCode",  <!-- 故障单号 -->
+        FAULT_STATUS	as "faultStatus",  <!-- 故障单号状态 -->
+        FOLLOW_CODE	as "followCode",  <!-- 跟踪单号 -->
+        FOLLOW_STATUS	as "followStatus",  <!-- 跟踪单号状态 -->
+        PROBLEM_STATUS	as "problemStatus",  <!-- 状态 -->
+        PROBLEM_DESCRIPTION	as "problemDescription",  <!-- 问题描述 -->
+        HANDLING_SUGGESTION	as "handlingSuggestion",  <!-- 处理意见 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_ITEM WHERE REC_ID=#{id}
+    </select>
+
+    <select id="listOverhaulState" resultType="com.wzmtr.eam.dto.res.OverhaulStateResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ITEM_NAME	as "itemName",  <!-- 条目 -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        TDMER23_REC_ID	as "tdmer23RecId",  <!-- 检修项外键 -->
+        MODEL_NAME	as "modelName",  <!-- 模块名称 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        WORK_USER_ID	as "workUserId",  <!-- 用户工号 -->
+        WORK_USER_NAME	as "workUserName",  <!-- 用户姓名 -->
+        ITEM_TYPE	as "itemType",  <!-- 类型 -->
+        WORK_RESULT	as "workResult",  <!-- 结果 -->
+        INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 条目值 -->
+        WORK_TIME	as "workTime",  <!-- 时间 -->
+        DOC_ID	as "docId",  <!-- 附件 -->
+        WORK_DETAIL	as "workDetail",  <!-- 工作说明 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        ERROR_FLAG	as "errorFlag",  <!-- 异常标识 -->
+        ITEM_UNIT	as "itemUnit",  <!-- 单位 -->
+        DEFAULT_VALUE	as "defaultValue",  <!-- 默认值 -->
+        MUTUAL_INSPECTION_PEOPLE	as "mutualInspectionPeople",  <!-- 互检人 -->
+        MUTUAL_INSPECTION_PEOPLE_ID	as "mutualInspectionPeopleId",  <!-- 互检人工号 -->
+        SPECIAL_INSPECTION_PEOPLE	as "specialInspectionPeople",  <!-- 专检人 -->
+        SPECIAL_INSPECTION_PEOPLE_ID	as "specialInspectionPeopleId",  <!-- 专检人工号 -->
+        FAULT_CODE	as "faultCode",  <!-- 故障单号 -->
+        FAULT_STATUS	as "faultStatus",  <!-- 故障单号状态 -->
+        FOLLOW_CODE	as "followCode",  <!-- 跟踪单号 -->
+        FOLLOW_STATUS	as "followStatus",  <!-- 跟踪单号状态 -->
+        PROBLEM_STATUS	as "problemStatus",  <!-- 状态 -->
+        PROBLEM_DESCRIPTION	as "problemDescription",  <!-- 问题描述 -->
+        HANDLING_SUGGESTION	as "handlingSuggestion",  <!-- 处理意见 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_STATE WHERE 1=1 AND OBJECT_CODE=#{objectCode}
+        <if test="itemName!=null and itemName!=''">
+            and ITEM_NAME=#{itemName}
+        </if>
+        <if test="orderCode!=null and orderCode!=''">
+            and ORDER_CODE=#{orderCode}
+        </if>
+        <if test="tdmer23RecId!=null and tdmer23RecId!=''">
+            and TDMER23_REC_ID=#{tdmer23RecId}
+        </if>
+        order by REC_ID asc
+    </select>
+
+</mapper>

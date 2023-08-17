@@ -13,6 +13,9 @@ public class OverhaulObjectReqDTO {
     
     @ApiModelProperty(value = "记录ID")
     private String recId;
+
+    @ApiModelProperty(value = "周计划编号")
+    private String weekPlanCode;
     
     @ApiModelProperty(value = "计划编号")
     private String planCode;

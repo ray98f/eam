@@ -3,10 +3,9 @@ package com.wzmtr.eam.mapper.overhaul;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.OverhaulItemListReqDTO;
 import com.wzmtr.eam.dto.req.OverhaulItemReqDTO;
-import com.wzmtr.eam.dto.req.OverhaulOrderReqDTO;
-import com.wzmtr.eam.dto.req.OverhaulWorkRecordReqDTO;
 import com.wzmtr.eam.dto.res.OverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.OverhaulOrderDetailResDTO;
+import com.wzmtr.eam.dto.res.OverhaulStateResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -17,14 +16,12 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface OverhaulItemMapper {
+public interface OverhaulStateMapper {
 
-    Page<OverhaulItemResDTO> pageOverhaulItem(Page<OverhaulOrderDetailResDTO> page, OverhaulItemListReqDTO req);
+    Page<OverhaulStateResDTO> pageOverhaulState(Page<OverhaulOrderDetailResDTO> page, String objectCode, String itemName, String orderCode, String tdmer23RecId);
 
-    OverhaulItemResDTO getOverhaulItemDetail(String id);
+    OverhaulStateResDTO getOverhaulStateDetail(String id);
 
-    List<OverhaulItemResDTO> listOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO);
-
-    void insert(OverhaulItemReqDTO overhaulItemReqDTO);
+    List<OverhaulStateResDTO> listOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId);
 
 }

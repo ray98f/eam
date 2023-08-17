@@ -206,6 +206,12 @@
         <if test="ruleCode!=null and ruleCode!=''">
             and wd.RULE_CODE=#{ruleCode}
         </if>
+        <if test="startDate!=null and startDate!=''">
+            and wd.START_DATE <![CDATA[<]]> #{startDate}
+        </if>
+        <if test="endDate!=null and endDate!=''">
+            and wd.END_DATE >= #{endDate}
+        </if>
         ORDER BY wd.RULE_SORT ASC
     </select>
 
