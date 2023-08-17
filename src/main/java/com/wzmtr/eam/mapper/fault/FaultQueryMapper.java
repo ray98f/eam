@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
  */
 @Mapper
 @Repository
-public interface FaultMapper {
+public interface FaultQueryMapper {
     Page<FaultDetailResDTO> list(Page<Object> of, FaultReportPageReqDTO reqDTO);
 }

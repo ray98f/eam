@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface FaultQueryMapper {
+public interface FaultMapper {
 
     /**
      * 获取故障库列表-分页

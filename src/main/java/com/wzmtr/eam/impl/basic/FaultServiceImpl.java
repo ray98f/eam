@@ -8,7 +8,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.basic.FaultQueryMapper;
+import com.wzmtr.eam.mapper.basic.FaultMapper;
 import com.wzmtr.eam.service.basic.FaultService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -28,46 +28,46 @@ import java.util.*;
 public class FaultServiceImpl implements FaultService {
 
     @Autowired
-    private FaultQueryMapper faultQueryMapper;
+    private FaultMapper faultMapper;
 
     @Override
     public Page<FaultResDTO> listFault(String code, Integer type, String lineCode, String equipmentCategoryCode, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return faultQueryMapper.pageFault(pageReqDTO.of(), code, type, lineCode, equipmentCategoryCode);
+        return faultMapper.pageFault(pageReqDTO.of(), code, type, lineCode, equipmentCategoryCode);
     }
 
     @Override
     public FaultResDTO getFaultDetail(String id) {
-        return faultQueryMapper.getFaultDetail(id);
+        return faultMapper.getFaultDetail(id);
     }
 
     @Override
     public void addFault(FaultReqDTO faultReqDTO) {
-        Integer result = faultQueryMapper.selectFaultIsExist(faultReqDTO);
+        Integer result = faultMapper.selectFaultIsExist(faultReqDTO);
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         faultReqDTO.setRecId(TokenUtil.getUuId());
         faultReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         faultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        faultQueryMapper.addFault(faultReqDTO);
+        faultMapper.addFault(faultReqDTO);
     }
 
     @Override
     public void modifyFault(FaultReqDTO faultReqDTO) {
-        Integer result = faultQueryMapper.selectFaultIsExist(faultReqDTO);
+        Integer result = faultMapper.selectFaultIsExist(faultReqDTO);
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         faultReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        faultQueryMapper.modifyFault(faultReqDTO);
+        faultMapper.modifyFault(faultReqDTO);
     }
 
     @Override
     public void deleteFault(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
-            faultQueryMapper.deleteFault(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            faultMapper.deleteFault(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -76,7 +76,7 @@ public class FaultServiceImpl implements FaultService {
     @Override
     public void exportFault(String code, Integer type, String lineCode, String equipmentCategoryCode, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "对象编码", "对象名称", "线路编号", "码值类型", "码值编号", "码值描述", "关联码值", "记录状态", "备注", "创建者", "创建时间");
-        List<FaultResDTO> faultResDTOList = faultQueryMapper.listFault(code, type, lineCode, equipmentCategoryCode);
+        List<FaultResDTO> faultResDTOList = faultMapper.listFault(code, type, lineCode, equipmentCategoryCode);
         List<Map<String, String>> list = new ArrayList<>();
         if (faultResDTOList != null && !faultResDTOList.isEmpty()) {
             for (FaultResDTO fault : faultResDTOList) {

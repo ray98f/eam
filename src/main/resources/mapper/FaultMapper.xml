@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wzmtr.eam.mapper.basic.FaultQueryMapper">
+<mapper namespace="com.wzmtr.eam.mapper.basic.FaultMapper">
 
     <select id="pageFault" resultType="com.wzmtr.eam.dto.res.FaultResDTO">
         SELECT f.REC_ID, f.EQUIPMENT_TYPE_CODE, f.LINE_CODE, f.FAULT_CODE_TYPE, f.FAULT_CODE, f.FAULT_DESCR,
