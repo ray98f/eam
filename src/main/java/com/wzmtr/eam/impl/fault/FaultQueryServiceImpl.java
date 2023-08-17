@@ -6,7 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.mapper.fault.FaultMapper;
-import com.wzmtr.eam.service.fault.FaultService;
+import com.wzmtr.eam.service.fault.FaultQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * Date: 2023/8/17 17:02
  */
 @Service
-public class FaultServiceImpl implements FaultService {
+public class FaultQueryServiceImpl implements FaultQueryService {
     @Autowired
     FaultMapper faultMapper;
 

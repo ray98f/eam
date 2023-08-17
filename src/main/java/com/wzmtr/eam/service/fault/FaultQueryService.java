@@ -8,6 +8,6 @@ import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
  * Author: Li.Wang
  * Date: 2023/8/17 16:21
  */
-public interface FaultService {
+public interface FaultQueryService {
     Page<FaultDetailResDTO> list(FaultReportPageReqDTO reqDTO);
 }

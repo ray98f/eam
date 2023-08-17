@@ -1,7 +1,6 @@
 package com.wzmtr.eam.mapper.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.EquipmentCategoryReqDTO;
 import com.wzmtr.eam.dto.req.FaultReqDTO;
 import com.wzmtr.eam.dto.res.FaultResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -14,7 +13,7 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface FaultMapper {
+public interface FaultQueryMapper {
 
     /**
      * 获取故障库列表-分页

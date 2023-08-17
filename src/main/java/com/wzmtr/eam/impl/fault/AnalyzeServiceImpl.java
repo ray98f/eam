@@ -5,12 +5,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
-import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.AnalyzeMapper;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ import java.util.*;
 public class AnalyzeServiceImpl implements AnalyzeService {
     @Autowired
     private AnalyzeMapper mapper;
+    @Autowired
+    private OrganizationMapper organizationMapper;
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
@@ -40,6 +43,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         }
         List<Map<String, String>> list = new ArrayList<>();
         for (AnalyzeResDTO resDTO : resList) {
+            String respDept = organizationMapper.getOrgById(resDTO.getRespDeptCode());
             Map<String, String> map = new HashMap<>();
             map.put("故障分析编号", resDTO.getFaultAnalysisNo());
             map.put("故障编号", resDTO.getFaultNo());
@@ -49,7 +53,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
             map.put("线路", resDTO.getLineCode());
             map.put("频次", resDTO.getFrequency());
             map.put("位置", resDTO.getPosition());
-            map.put("牵头部门", resDTO.getRespDeptCode());
+            map.put("牵头部门", StringUtils.isEmpty(respDept) ? resDTO.getRespDeptCode() : respDept);
             map.put("故障等级", resDTO.getFaultLevel());
             map.put("故障影响", resDTO.getAffectCodes());
             map.put("故障现象", resDTO.getFaultDisplayDetail());
