@@ -546,7 +546,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void addOverhaulObject(OverhaulObjectReqDTO overhaulObjectReqDTO) {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(overhaulObjectReqDTO.getPlanCode());
-        overhaulPlanListReqDTO.setTrialStatus("10");
+        overhaulPlanListReqDTO.setTrialStatus("'10'");
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
         if (list.size() <= 0) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
@@ -564,7 +564,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void modifyOverhaulObject(OverhaulObjectReqDTO overhaulObjectReqDTO) {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(overhaulObjectReqDTO.getPlanCode());
-        overhaulPlanListReqDTO.setTrialStatus("10");
+        overhaulPlanListReqDTO.setTrialStatus("'10'");
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
         if (list.size() <= 0) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
@@ -581,7 +581,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 OverhaulObjectResDTO resDTO = overhaulPlanMapper.getOverhaulObjectDetail(id);
                 OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
                 overhaulPlanListReqDTO.setPlanCode(resDTO.getPlanCode());
-                overhaulPlanListReqDTO.setTrialStatus("10");
+                overhaulPlanListReqDTO.setTrialStatus("'10'");
                 List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
                 if (list.size() <= 0) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
