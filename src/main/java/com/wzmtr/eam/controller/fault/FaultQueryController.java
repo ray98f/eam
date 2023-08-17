@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Date: 2023/8/16 20:36
  */
 @RestController
-@RequestMapping("/fault/car/xxxxx")
+@RequestMapping("/fault/query")
 @Api(tags = "故障管理-故障查询")
 public class FaultQueryController {
     @Autowired
