@@ -29,8 +29,8 @@ public class FaultCarReportController {
 
     @ApiOperation(value = "故障提报")
     @PostMapping("/add")
-    public DataResponse<FaultReportResDTO> add(@RequestBody @Valid FaultReportReqDTO reqDTO) {
-        reportService.add(reqDTO);
+    public DataResponse<FaultReportResDTO> addToEquip(@RequestBody @Valid FaultReportReqDTO reqDTO) {
+        reportService.addToEquip(reqDTO);
         return DataResponse.success();
     }
     @ApiOperation(value = "已提报故障")

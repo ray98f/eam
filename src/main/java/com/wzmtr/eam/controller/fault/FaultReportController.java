@@ -3,6 +3,7 @@ package com.wzmtr.eam.controller.fault;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
@@ -33,9 +34,15 @@ public class FaultReportController {
     private FaultReportService reportService;
 
     @ApiOperation(value = "故障提报（到设备）")
-    @PostMapping("/insert")
+    @PostMapping("/insert/epuip")
     public DataResponse<FaultReportResDTO> add(@RequestBody @Valid FaultReportReqDTO reqDTO) {
-        reportService.add(reqDTO);
+        reportService.addToEquip(reqDTO);
+        return DataResponse.success();
+    }
+    @ApiOperation(value = "故障提报（到专业）")
+    @PostMapping("/insert/major")
+    public DataResponse<FaultReportResDTO> addToMajor(@RequestBody @Valid FaultReportToMajorReqDTO reqDTO) {
+        reportService.addToMajor(reqDTO);
         return DataResponse.success();
     }
     @ApiOperation(value = "已提报故障")

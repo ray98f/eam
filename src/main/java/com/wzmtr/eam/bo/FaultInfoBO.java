@@ -1,4 +1,4 @@
-package com.wzmtr.eam.dto.res.fault;
+package com.wzmtr.eam.bo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 /**
@@ -6,11 +6,9 @@ import lombok.Data;
  * Date: 2023/8/15 10:53
  */
 @Data
-public class FaultInfo {
+public class FaultInfoBO {
     @ApiModelProperty(value = "记录编号")
     private String recId;
-    @ApiModelProperty(value = "检修车/运营车标识")
-    private String traintag;
     @ApiModelProperty(value = "公司代码")
     private String companyCode;
     @ApiModelProperty(value = "公司名称")
@@ -51,8 +49,6 @@ public class FaultInfo {
     private String equipTypeCode;
     @ApiModelProperty(value = "故障模块")
     private String faultModule;
-    @ApiModelProperty(value = "故障模块")
-    private String faultModuleId;
     @ApiModelProperty(value = "故障分类（10-运营故障；20-自检故障；30-新线调试；40-正线故障；50-出库故障）")
     private String faultType;
     @ApiModelProperty(value = "来源编号")
@@ -73,8 +69,6 @@ public class FaultInfo {
     private String discovererPhone;
     @ApiModelProperty(value = "提报人工号")
     private String fillinUserId;
-    @ApiModelProperty(value = "提报人工号")
-    private String fillinUserName;
     @ApiModelProperty(value = "提报部门")
     private String fillinDeptCode;
     @ApiModelProperty(value = "提报时间")
@@ -129,4 +123,10 @@ public class FaultInfo {
     private String ext4;
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
+    @ApiModelProperty(value = "提报人工号")
+    private String fillinUserName;
+    @ApiModelProperty(value = "检修车/运营车标识")
+    private String traintag;
+    @ApiModelProperty(value = "故障模块")
+    private String faultModuleId;
 }
