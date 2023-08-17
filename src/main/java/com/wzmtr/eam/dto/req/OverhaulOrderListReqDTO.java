@@ -13,8 +13,6 @@ import lombok.Data;
 @ApiModel
 public class OverhaulOrderListReqDTO {
 
-    Page<OverhaulOrderResDTO> page;
-
     @ApiModelProperty(value = "标记")
     private String objectFlag;
 

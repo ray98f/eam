@@ -68,6 +68,9 @@ public class OverhaulTplDetailReqDTO {
     @ApiModelProperty(value = "里程周期")
     private String mileagePeriod;
 
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
     @ApiModelProperty(value = "创建者")
     private String recCreator;
 

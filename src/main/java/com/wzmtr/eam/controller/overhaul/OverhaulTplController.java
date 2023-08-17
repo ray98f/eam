@@ -29,7 +29,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/overhaulTpl")
+@RequestMapping("/overhaul/tpl")
 @Api(tags = "预防性检修管理-检修模板")
 @Validated
 public class OverhaulTplController {
@@ -39,7 +39,7 @@ public class OverhaulTplController {
 
     @GetMapping("/page")
     @ApiOperation(value = "获取检修模板列表")
-    public PageResponse<OverhaulTplResDTO> listOverhaulTpl(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
+    public PageResponse<OverhaulTplResDTO> pageOverhaulTpl(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
                                                            @RequestParam(required = false) @ApiParam("模版名称") String templateName,
                                                            @RequestParam(required = false) @ApiParam("线路编号") String lineNo,
                                                            @RequestParam(required = false) @ApiParam("位置一") String position1Code,

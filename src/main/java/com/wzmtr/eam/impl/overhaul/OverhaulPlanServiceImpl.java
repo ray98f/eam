@@ -61,8 +61,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanListReqDTO.setTrialStatus("'20','10','30'");
         overhaulPlanListReqDTO.setObjectFlag("1");
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        overhaulPlanListReqDTO.setPage(pageReqDTO.of());
-        return overhaulPlanMapper.pageOverhaulPlan(overhaulPlanListReqDTO);
+        return overhaulPlanMapper.pageOverhaulPlan(pageReqDTO.of(), overhaulPlanListReqDTO);
     }
 
     @Override
@@ -138,25 +137,23 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulPlanResDTO resDTO = overhaulPlanMapper.getOverhaulPlanDetail(id, "1");
-                OverhaulPlanReqDTO overhaulTplReqDTO = new OverhaulPlanReqDTO();
-                BeanUtils.copyProperties(overhaulTplReqDTO, resDTO);
                 if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
-                    if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
+                    if (Objects.isNull(resDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
                     List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
-                    if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
+                    if (Objects.isNull(code) || code.isEmpty() || !code.contains(resDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
                 }
-                if (!"10".equals(overhaulTplReqDTO.getTrialStatus()) && !"90".equals(overhaulTplReqDTO.getTrialStatus())) {
+                if (!"10".equals(resDTO.getTrialStatus()) && !"90".equals(resDTO.getTrialStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
-                }
-                if (StringUtils.isNotBlank(overhaulTplReqDTO.getWorkFlowInstId())) {
-                    // todo 删除工作流
                 }
                 overhaulPlanMapper.deleteOverhaulPlanDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 overhaulPlanMapper.deleteOverhaulPlan(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                if (StringUtils.isNotBlank(resDTO.getWorkFlowInstId())) {
+                    // todo 删除工作流
+                }
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -549,7 +546,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void addOverhaulObject(OverhaulObjectReqDTO overhaulObjectReqDTO) {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(overhaulObjectReqDTO.getPlanCode());
-        overhaulPlanListReqDTO.setTrialStatus("10");
+        overhaulPlanListReqDTO.setTrialStatus("'10'");
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
         if (list.size() <= 0) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
@@ -567,7 +564,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void modifyOverhaulObject(OverhaulObjectReqDTO overhaulObjectReqDTO) {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(overhaulObjectReqDTO.getPlanCode());
-        overhaulPlanListReqDTO.setTrialStatus("10");
+        overhaulPlanListReqDTO.setTrialStatus("'10'");
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
         if (list.size() <= 0) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
@@ -584,7 +581,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 OverhaulObjectResDTO resDTO = overhaulPlanMapper.getOverhaulObjectDetail(id);
                 OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
                 overhaulPlanListReqDTO.setPlanCode(resDTO.getPlanCode());
-                overhaulPlanListReqDTO.setTrialStatus("10");
+                overhaulPlanListReqDTO.setTrialStatus("'10'");
                 List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
                 if (list.size() <= 0) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");

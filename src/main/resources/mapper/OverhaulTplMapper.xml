@@ -863,7 +863,7 @@
             and EQUIP_TYPE_CODE=#{equipTypeCode}
         </if>
         <if test="trialStatus!=null and trialStatus!=''">
-            and TRIAL_STATUS IN (${trialStatus}})
+            and TRIAL_STATUS IN (${trialStatus})
         </if>
        order by TEMPLATE_NAME DESC
     </select>

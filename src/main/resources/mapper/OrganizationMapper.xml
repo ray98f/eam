@@ -72,6 +72,12 @@
         select name from SYS_OFFICE where ID=#{id} and USEABLE=1 and DEL_FLAG=0
     </select>
 
+    <select id="getOrgNameByOrgCode" resultType="java.lang.String">
+        select name from SYS_OFFICE
+        where (ID=#{id} or AREA_ID=#{id})
+        and USEABLE=1 and DEL_FLAG=0
+    </select>
+
     <delete id="cleanOrg">
         delete from SYS_OFFICE where ID not in('W') and PARENT_ID!='W'
     </delete>

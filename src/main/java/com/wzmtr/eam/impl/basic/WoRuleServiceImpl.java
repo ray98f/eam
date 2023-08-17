@@ -145,7 +145,7 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void exportWoRuleDetail(String ruleCode, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "规则编号", "规则明细名称", "起始日期", "结束日期", "周期(小时)", "里程周期", "提前天数", "规则排序", "备注", "创建者", "创建时间");
-        List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.listWoRuleDetail(ruleCode);
+        List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.listWoRuleDetail(ruleCode, null, null);
         List<Map<String, String>> list = new ArrayList<>();
         if (woRuleDetails != null && !woRuleDetails.isEmpty()) {
             for (WoRuleResDTO.WoRuleDetail woRuleDetail : woRuleDetails) {

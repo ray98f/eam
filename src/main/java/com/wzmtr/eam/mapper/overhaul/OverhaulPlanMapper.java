@@ -20,7 +20,7 @@ import java.util.List;
 @Repository
 public interface OverhaulPlanMapper {
 
-    Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO);
+    Page<OverhaulPlanResDTO> pageOverhaulPlan(Page<OverhaulPlanResDTO> page, OverhaulPlanListReqDTO req);
 
     OverhaulPlanResDTO getOverhaulPlanDetail(String id, String objectFlag);
 
@@ -42,7 +42,11 @@ public interface OverhaulPlanMapper {
 
     List<OverhaulPlanResDTO> listOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO);
 
+    List<OverhaulPlanResDTO> queryWeekObj(String weekPlanCode);
+
     List<OverhaulObjectResDTO> listOverhaulObject(String planCode, String recId, String planName, String objectCode, String objectName, String templateId1);
+
+    List<OverhaulObjectResDTO> queryObject(String planCode);
 
     void updatePlanSta(OverhaulPlanReqDTO overhaulTplReqDTO);
 
