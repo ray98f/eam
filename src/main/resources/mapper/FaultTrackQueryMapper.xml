@@ -252,7 +252,7 @@
             and DELETE_FLAG='0'
         </trim>
     </select>
-    <select id="faultDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultInfo">
+    <select id="faultDetail" resultType="com.wzmtr.eam.bo.FaultInfoBO">
         SELECT
         d.REC_ID as "recId",
         df.REC_ID as "workId",

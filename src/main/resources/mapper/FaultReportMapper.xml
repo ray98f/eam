@@ -323,6 +323,13 @@
         </if>
         ORDER BY d.FAULT_NO desc
     </select>
-
+    <select id="getFaultOrderFaultWorkNoMaxCode" resultType="java.lang.String">
+        SELECT max(FAULT_WORK_NO)
+        FROM T_FAULT_ORDER
+    </select>
+    <select id="getFaultOrderFaultNoMaxCode" resultType="java.lang.String">
+        SELECT max(FAULT_NO)
+        FROM T_FAULT_INFO
+    </select>
 
 </mapper>

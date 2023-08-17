@@ -1,5 +1,12 @@
 package com.wzmtr.eam.dto.req.fault;
 
+import com.wzmtr.eam.bo.FaultInfoBO;
+import com.wzmtr.eam.bo.FaultOrderBO;
+import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.__BeanUtil;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -8,6 +15,7 @@ import lombok.Data;
  * Date: 2023/8/15 17:18
  */
 @Data
+@ApiModel
 public class FaultReportReqDTO {
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
@@ -87,4 +95,27 @@ public class FaultReportReqDTO {
     private String docId;
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
+
+
+    public FaultOrderBO toFaultOrderBO(FaultReportReqDTO req) {
+        FaultOrderBO convert = __BeanUtil.convert(req, FaultOrderBO.class);
+        if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
+            convert.setWorkClass(req.getRepairDeptCode());
+        }
+        convert.setRecId(TokenUtil.getUuId());
+        if (StringUtils.isNotEmpty(req.getFaultType()) && req.getFaultType().equals("30")) {
+            convert.setOrderStatus("30");
+        }
+        convert.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
+        convert.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        return convert;
+    }
+    public FaultInfoBO toFaultInfoBO(FaultReportReqDTO req) {
+        FaultInfoBO convert = __BeanUtil.convert(req, FaultInfoBO.class);
+        convert.setRecId(TokenUtil.getUuId());
+        convert.setFillinTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        convert.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
+        convert.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        return convert;
+    }
 }

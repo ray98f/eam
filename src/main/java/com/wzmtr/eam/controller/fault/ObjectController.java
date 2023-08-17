@@ -1,9 +1,7 @@
 package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.ObjectReqDTO;
-import com.wzmtr.eam.dto.req.fault.TrackReqDTO;
 import com.wzmtr.eam.dto.res.fault.ObjectResDTO;
-import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.ObjectService;
 import io.swagger.annotations.Api;
@@ -24,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ObjectController {
     @Autowired
     private ObjectService objectService;
+
     @ApiOperation(value = "列表")
     @PostMapping("/queryObject")
     public PageResponse<ObjectResDTO> queryObject(@RequestBody ObjectReqDTO reqDTO) {

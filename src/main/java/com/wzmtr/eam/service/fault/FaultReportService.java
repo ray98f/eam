@@ -16,10 +16,15 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface FaultReportService {
 
-
-    void add(FaultReportReqDTO reqDTO);
+    /**
+     * 提报到设备
+     * @param reqDTO
+     */
+    void addToEquip(FaultReportReqDTO reqDTO);
 
     Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO);
 
     Page<FaultReportResDTO> detail(FaultReportPageReqDTO reqDTO);
+
+    void addToMajor(FaultReportReqDTO reqDTO);
 }

@@ -33,9 +33,15 @@ public class FaultReportController {
     private FaultReportService reportService;
 
     @ApiOperation(value = "故障提报（到设备）")
-    @PostMapping("/insert")
+    @PostMapping("/insert/epuip")
     public DataResponse<FaultReportResDTO> add(@RequestBody @Valid FaultReportReqDTO reqDTO) {
-        reportService.add(reqDTO);
+        reportService.addToEquip(reqDTO);
+        return DataResponse.success();
+    }
+    @ApiOperation(value = "故障提报（到专业）")
+    @PostMapping("/insert/major")
+    public DataResponse<FaultReportResDTO> addToMajor(@RequestBody @Valid FaultReportReqDTO reqDTO) {
+        reportService.addToMajor(reqDTO);
         return DataResponse.success();
     }
     @ApiOperation(value = "已提报故障")
