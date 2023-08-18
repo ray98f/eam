@@ -23,4 +23,6 @@ public interface MeaMapper {
     void addMea(List<MeaReqDTO> list);
 
     List<MeaResDTO> listMea(MeaListReqDTO meaListReqDTO);
+
+    void updateone(MeaResDTO meaResDTO);
 }
