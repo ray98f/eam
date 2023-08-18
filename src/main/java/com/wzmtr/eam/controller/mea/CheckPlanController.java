@@ -2,7 +2,9 @@ package com.wzmtr.eam.controller.mea;
 
 import com.wzmtr.eam.dto.req.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.CheckPlanReqDTO;
+import com.wzmtr.eam.dto.req.MeaInfoReqDTO;
 import com.wzmtr.eam.dto.res.CheckPlanResDTO;
+import com.wzmtr.eam.dto.res.MeaInfoResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -76,5 +78,48 @@ public class CheckPlanController {
     @ApiOperation(value = "导出定检计划")
     public void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response) {
         checkPlanService.exportCheckPlan(checkPlanListReqDTO, response);
+    }
+
+    @GetMapping("/info/page")
+    @ApiOperation(value = "获取定检计划明细列表")
+    public PageResponse<MeaInfoResDTO> pageCheckPlanInfo(@RequestParam(required = false) @ApiParam("计量器具代码") String equipCode,
+                                                         @RequestParam(required = false) @ApiParam("计量器具检定计划号") String instrmPlanNo,
+                                                         @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(checkPlanService.pageCheckPlanInfo(equipCode, instrmPlanNo, pageReqDTO));
+    }
+
+    @GetMapping("/info/detail")
+    @ApiOperation(value = "获取定检计划明细详情")
+    public DataResponse<MeaInfoResDTO> getCheckPlanInfoDetail(@RequestParam @ApiParam("id") String id) {
+        return DataResponse.of(checkPlanService.getCheckPlanInfoDetail(id));
+    }
+
+    @PostMapping("/info/add")
+    @ApiOperation(value = "新增定检计划明细")
+    public DataResponse<T> addCheckPlanInfo(@RequestBody MeaInfoReqDTO meaInfoReqDTO) {
+        checkPlanService.addCheckPlanInfo(meaInfoReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/info/modify")
+    @ApiOperation(value = "编辑定检计划明细")
+    public DataResponse<T> modifyCheckPlanInfo(@RequestBody MeaInfoReqDTO meaInfoReqDTO) {
+        checkPlanService.modifyCheckPlanInfo(meaInfoReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/info/delete")
+    @ApiOperation(value = "删除定检计划明细")
+    public DataResponse<T> deleteCheckPlanInfo(@RequestBody BaseIdsEntity baseIdsEntity) {
+        checkPlanService.deleteCheckPlanInfo(baseIdsEntity);
+        return DataResponse.success();
+    }
+
+    @GetMapping("/info/export")
+    @ApiOperation(value = "导出定检计划明细")
+    public void exportCheckPlanInfo(@RequestParam(required = false) @ApiParam("计量器具代码") String equipCode,
+                                    @RequestParam(required = false) @ApiParam("计量器具检定计划号") String instrmPlanNo,
+                                    HttpServletResponse response) {
+        checkPlanService.exportCheckPlanInfo(equipCode, instrmPlanNo, response);
     }
 }

@@ -73,7 +73,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "当前操作人非记录创建者");
+            throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!"10".equals(res.getSendVerifyStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
@@ -92,7 +92,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
                 if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
-                    throw new CommonException(ErrorCode.NORMAL_ERROR, "当前操作人非记录创建者");
+                    throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!"10".equals(res.getSendVerifyStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
