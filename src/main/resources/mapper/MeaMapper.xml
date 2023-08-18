@@ -254,4 +254,17 @@
         order by REC_ID asc
     </select>
 
+    <update id="updateone">
+        UPDATE WBPLAT.TDMAM01 SET
+        EQUIP_CODE=#{equipCode},   <!-- 计量器具代码 -->
+        EQUIP_NAME=#{equipName},   <!-- 计量器具名称 -->
+        VERIFY_DEPT=#{verifyDept},   <!-- 检定校准单位 -->
+        MEASURE_BARCODE=#{measureBarcode},   <!-- 送检条码号 -->
+        CERTIFICATE_NO=#{certificateNo},   <!-- 证书编号 -->
+        VERIFY_PERIOD=#{verifyPeriod,jdbcType=NUMERIC},   <!-- 检定周期(天) -->
+        LAST_VERIFY_DATE=#{lastVerifyDate},   <!-- 上次检定日期 -->
+        NEXT_VERIFY_DATE=#{nextVerifyDate}  <!-- 下次检定日期 -->
+        WHERE EQUIP_CODE=#{equipCode}
+    </update>
+
 </mapper>
