@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.CheckPlanReqDTO;
+import com.wzmtr.eam.dto.req.MeaInfoReqDTO;
 import com.wzmtr.eam.dto.res.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.MeaInfoResDTO;
@@ -105,7 +106,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "当前操作人非记录创建者");
+            throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!"10".equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
@@ -132,12 +133,12 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
                 if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
-                    throw new CommonException(ErrorCode.NORMAL_ERROR, "当前操作人非记录创建者");
+                    throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!"10".equals(res.getPlanStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                checkPlanMapper.deleteCheckPlanDetail(res.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                checkPlanMapper.deleteCheckPlanDetail(null, res.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
                     // todo 删除工作流
                 }
@@ -155,7 +156,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "当前操作人非记录创建者");
+            throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         List<MeaInfoResDTO> result = checkPlanMapper.listInfo(null, res.getInstrmPlanNo());
         if (result.size() == 0) {
@@ -187,6 +188,103 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             }
         }
         ExcelPortUtil.excelPort("定检计划信息", listName, list, null, response);
+    }
+
+    @Override
+    public Page<MeaInfoResDTO> pageCheckPlanInfo(String equipCode, String instrmPlanNo, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return checkPlanMapper.pageInfo(pageReqDTO.of(), equipCode, instrmPlanNo);
+    }
+
+    @Override
+    public MeaInfoResDTO getCheckPlanInfoDetail(String id) {
+        return checkPlanMapper.getInfoDetail(id);
+    }
+
+    @Override
+    public void addCheckPlanInfo(MeaInfoReqDTO meaInfoReqDTO) {
+        CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
+        checkPlanListReqDTO.setInstrmPlanNo(meaInfoReqDTO.getInstrmPlanNo());
+        List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
+        if (list.size() != 0) {
+            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
+            }
+            if (!"10".equals(list.get(0).getPlanStatus())) {
+                throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "新增");
+            }
+        }
+        meaInfoReqDTO.setRecId(TokenUtil.getUuId());
+        meaInfoReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        meaInfoReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        meaInfoReqDTO.setArchiveFlag("0");
+        if (meaInfoReqDTO.getVerifyPeriod() == 0) {
+            meaInfoReqDTO.setVerifyPeriod(null);
+        }
+        checkPlanMapper.addInfo(meaInfoReqDTO);
+    }
+
+    @Override
+    public void modifyCheckPlanInfo(MeaInfoReqDTO meaInfoReqDTO) {
+        CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
+        checkPlanListReqDTO.setInstrmPlanNo(meaInfoReqDTO.getInstrmPlanNo());
+        List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
+        if (list.size() != 0) {
+            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
+            }
+            if (!"10".equals(list.get(0).getPlanStatus())) {
+                throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
+            }
+        }
+        meaInfoReqDTO.setRecRevisor(TokenUtil.getUuId());
+        meaInfoReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        checkPlanMapper.modifyInfo(meaInfoReqDTO);
+    }
+
+    @Override
+    public void deleteCheckPlanInfo(BaseIdsEntity baseIdsEntity) {
+        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+            for (String id : baseIdsEntity.getIds()) {
+                MeaInfoResDTO res = checkPlanMapper.getInfoDetail(id);
+                if (Objects.isNull(res)) {
+                    throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+                }
+                CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
+                checkPlanListReqDTO.setInstrmPlanNo(res.getInstrmPlanNo());
+                List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
+                if (list.size() != 0) {
+                    if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                        throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
+                    }
+                    if (!"10".equals(list.get(0).getPlanStatus())) {
+                        throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
+                    }
+                }
+                checkPlanMapper.deleteCheckPlanDetail(id, null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            }
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
+        }
+    }
+
+    @Override
+    public void exportCheckPlanInfo(String equipCode, String instrmPlanNo, HttpServletResponse response) {
+        List<String> listName = Arrays.asList("记录编号", "计划号", "计量器具编码", "名称", "出厂编号");
+        List<MeaInfoResDTO> meaInfoList = checkPlanMapper.listInfo(equipCode, instrmPlanNo);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (meaInfoList != null && !meaInfoList.isEmpty()) {
+            for (MeaInfoResDTO resDTO : meaInfoList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("记录编号", resDTO.getRecId());
+                map.put("计划号", resDTO.getInstrmPlanNo());
+                map.put("计量器具编码", resDTO.getEquipCode());
+                map.put("名称", resDTO.getEquipName());
+                map.put("出厂编号", resDTO.getManufactureNo());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("定检计划明细信息", listName, list, null, response);
     }
 
 }

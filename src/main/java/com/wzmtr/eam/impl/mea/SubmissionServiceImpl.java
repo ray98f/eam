@@ -2,8 +2,11 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.CheckPlanListReqDTO;
+import com.wzmtr.eam.dto.req.SubmissionDetailReqDTO;
 import com.wzmtr.eam.dto.req.SubmissionListReqDTO;
 import com.wzmtr.eam.dto.req.SubmissionReqDTO;
+import com.wzmtr.eam.dto.res.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.SubmissionDetailResDTO;
 import com.wzmtr.eam.dto.res.SubmissionResDTO;
 import com.wzmtr.eam.dto.res.MeaInfoResDTO;
@@ -73,7 +76,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "当前操作人非记录创建者");
+            throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!"10".equals(res.getSendVerifyStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
@@ -92,12 +95,12 @@ public class SubmissionServiceImpl implements SubmissionService {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
                 if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
-                    throw new CommonException(ErrorCode.NORMAL_ERROR, "当前操作人非记录创建者");
+                    throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!"10".equals(res.getSendVerifyStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                submissionMapper.deleteSubmissionDetail(res.getSendVerifyNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionMapper.deleteSubmissionDetail(null, res.getSendVerifyNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
                     // todo 删除工作流
                 }
@@ -151,6 +154,102 @@ public class SubmissionServiceImpl implements SubmissionService {
             }
         }
         ExcelPortUtil.excelPort("送检单信息", listName, list, null, response);
+    }
+
+    @Override
+    public Page<SubmissionDetailResDTO> pageSubmissionDetail(String sendVerifyNo, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return submissionMapper.pageSubmissionDetail(pageReqDTO.of(), sendVerifyNo);
+    }
+
+    @Override
+    public SubmissionDetailResDTO getSubmissionDetailDetail(String id) {
+        return submissionMapper.getSubmissionDetailDetail(id);
+    }
+
+    @Override
+    public void addSubmissionDetail(SubmissionDetailReqDTO submissionDetailReqDTO) {
+        SubmissionListReqDTO submissionListReqDTO = new SubmissionListReqDTO();
+        submissionListReqDTO.setSendVerifyNo(submissionDetailReqDTO.getSendVerifyNo());
+        List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
+        if (list.size() != 0) {
+            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
+            }
+            if (!"10".equals(list.get(0).getSendVerifyStatus())) {
+                throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "新增");
+            }
+        }
+        submissionDetailReqDTO.setRecId(TokenUtil.getUuId());
+        submissionDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        submissionDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionDetailReqDTO.setArchiveFlag("0");
+        submissionMapper.addSubmissionDetail(submissionDetailReqDTO);
+    }
+
+    @Override
+    public void modifySubmissionDetail(SubmissionDetailReqDTO submissionDetailReqDTO) {
+        SubmissionListReqDTO submissionListReqDTO = new SubmissionListReqDTO();
+        submissionListReqDTO.setSendVerifyNo(submissionDetailReqDTO.getSendVerifyNo());
+        List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
+        if (list.size() != 0) {
+            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
+            }
+            if (!"10".equals(list.get(0).getSendVerifyStatus())) {
+                throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
+            }
+        }
+        submissionDetailReqDTO.setRecRevisor(TokenUtil.getUuId());
+        submissionDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionMapper.modifySubmissionDetail(submissionDetailReqDTO);
+    }
+
+    @Override
+    public void deleteSubmissionDetail(BaseIdsEntity baseIdsEntity) {
+        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+            for (String id : baseIdsEntity.getIds()) {
+                SubmissionDetailResDTO res = submissionMapper.getSubmissionDetailDetail(id);
+                if (Objects.isNull(res)) {
+                    throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+                }
+                SubmissionListReqDTO submissionListReqDTO = new SubmissionListReqDTO();
+                submissionListReqDTO.setSendVerifyNo(id);
+                List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
+                if (list.size() != 0) {
+                    if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                        throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
+                    }
+                    if (!"10".equals(list.get(0).getSendVerifyStatus())) {
+                        throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
+                    }
+                }
+                submissionMapper.deleteSubmissionDetail(id, null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            }
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
+        }
+    }
+
+    @Override
+    public void exportSubmissionDetail(String sendVerifyNo, HttpServletResponse response) {
+        List<String> listName = Arrays.asList("记录编号", "送检单号", "计量器具编码", "计量器具名称", "型号规格", "出厂编号", "检定校准单位");
+        List<SubmissionDetailResDTO> submissionDetail = submissionMapper.listSubmissionDetail(sendVerifyNo);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (submissionDetail != null && !submissionDetail.isEmpty()) {
+            for (SubmissionDetailResDTO resDTO : submissionDetail) {
+                Map<String, String> map = new HashMap<>();
+                map.put("记录编号", resDTO.getRecId());
+                map.put("送检单号", resDTO.getSendVerifyNo());
+                map.put("计量器具编码", resDTO.getEquipCode());
+                map.put("计量器具名称", resDTO.getEquipName());
+                map.put("型号规格", resDTO.getMatSpecifi());
+                map.put("出厂编号", resDTO.getManufactureNo());
+                map.put("检定校准单位", resDTO.getInstallationUnit());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("送检单明细信息", listName, list, null, response);
     }
 
 }

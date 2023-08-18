@@ -223,7 +223,12 @@
     <update id="deleteSubmissionDetail">
         UPDATE T_MEA_SUBMISSION_DETAIL SET
         DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
-        WHERE SEND_VERIFY_NO=#{sendVerifyNo}
+        <if test="sendVerifyNo!=null and sendVerifyNo!=''">
+            WHERE SEND_VERIFY_NO=#{sendVerifyNo}
+        </if>
+        <if test="id!=null and id!=''">
+            WHERE REC_ID=#{id}
+        </if>
     </update>
 
     <update id="deleteSubmission">
@@ -250,7 +255,7 @@
         order by a.SEND_VERIFY_NO desc
     </select>
 
-    <select id="listSubmissionDetail" resultType="com.wzmtr.eam.dto.res.SubmissionDetailResDTO">
+    <sql id="submission-detail-cols">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.SEND_VERIFY_NO	as "sendVerifyNo",  <!-- 检测单号 -->
@@ -298,6 +303,209 @@
         FROM T_MEA_SUBMISSION_DETAIL a
         LEFT JOIN T_MEA_SUBMISSION b ON a.SEND_VERIFY_NO=b.SEND_VERIFY_NO
         LEFT JOIN T_SUBMISSION_RECORD_DETAIL c ON a.REC_ID=c.TEST_LIST_DETAIL_REC_ID
+    </sql>
+
+    <select id="pageSubmissionDetail" resultType="com.wzmtr.eam.dto.res.SubmissionDetailResDTO">
+        <include refid="submission-detail-cols"/>
+        WHERE 1=1 and a.SEND_VERIFY_NO=#{sendVerifyNo}
+        order by a.REC_CREATE_TIME asc
+    </select>
+
+    <select id="getSubmissionDetailDetail" resultType="com.wzmtr.eam.dto.res.SubmissionDetailResDTO">
+        <include refid="submission-detail-cols"/>
+        WHERE a.REC_ID=#{id}
+    </select>
+
+    <insert id="addSubmissionDetail">
+        INSERT INTO T_MEA_SUBMISSION_DETAIL (
+        REC_ID,  <!-- 记录编号 -->
+        SEND_VERIFY_NO,  <!-- 检测单号 -->
+        PLAN_DETAIL_REC_ID,  <!-- 检测计划明细表REC_ID -->
+        EQUIP_CODE,  <!-- 计量器具代码 -->
+        EQUIP_NAME,  <!-- 计量器具名称 -->
+        MAT_SPECIFI,  <!-- 型号规格 -->
+        MANUFACTURE_NO,  <!-- 出厂编号 -->
+        MANUFACTURE,  <!-- 生产厂家 -->
+        INSTALLATION_UNIT,  <!-- 安装单位 -->
+        VERIFY_PERIOD,  <!-- 检测周期(天) -->
+        PLAN_BEGIN_DATE,  <!-- 计划开始时间 -->
+        PLAN_END_DATE,  <!-- 计划完成时间 -->
+        EQUIPMENT_STATE,  <!-- 计量器具状态（封存、停用、报废和注销） -->
+        USE_DEPT_PLACE,  <!-- 计量器具使用地点 -->
+        EQUIPMENT_REG_CODE,  <!-- 计量器具注册登记代码 -->
+        SECURITY_MANAGER,  <!-- 安全管理人员 -->
+        SECURITY_CONTACT,  <!-- 安全管理人员联系方式 -->
+        POSITION1_CODE,  <!-- 位置一 -->
+        POSITION1_NAME,  <!-- 位置一名称 -->
+        POSITION2_CODE,  <!-- 位置二 -->
+        POSITION2_NAME,  <!-- 位置二名称 -->
+        POSITION3,  <!-- 位置三 -->
+        POSITION_REMARK,  <!-- 位置补充说明 -->
+        VERIFY_NOTE,  <!-- 备注 -->
+        COMPANY_CODE,  <!-- 公司代码 -->
+        COMPANY_NAME,  <!-- 公司名称 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REC_STATUS,  <!-- 记录状态 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{sendVerifyNo,jdbcType=VARCHAR},
+        #{planDetailRecId,jdbcType=VARCHAR},
+        #{equipCode,jdbcType=VARCHAR},
+        #{equipName,jdbcType=VARCHAR},
+        #{matSpecifi,jdbcType=VARCHAR},
+        #{manufactureNo,jdbcType=VARCHAR},
+        #{manufacture,jdbcType=VARCHAR},
+        #{installationUnit,jdbcType=VARCHAR},
+        #{verifyPeriod,jdbcType=NUMERIC},
+        #{planBeginDate,jdbcType=VARCHAR},
+        #{planEndDate,jdbcType=VARCHAR},
+        #{equipmentState,jdbcType=VARCHAR},
+        #{useDeptPlace,jdbcType=VARCHAR},
+        #{equipmentRegCode,jdbcType=VARCHAR},
+        #{securityManager,jdbcType=VARCHAR},
+        #{securityContact,jdbcType=VARCHAR},
+        #{position1Code,jdbcType=VARCHAR},
+        #{position1Name,jdbcType=VARCHAR},
+        #{position2Code,jdbcType=VARCHAR},
+        #{position2Name,jdbcType=VARCHAR},
+        #{position3,jdbcType=VARCHAR},
+        #{positionRemark,jdbcType=VARCHAR},
+        #{verifyNote,jdbcType=VARCHAR},
+        #{companyCode,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{recStatus,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="modifySubmissionDetail">
+        UPDATE T_MEA_SUBMISSION_DETAIL SET
+        <if test="sendVerifyNo!=null">
+            SEND_VERIFY_NO=#{sendVerifyNo},   <!-- 检测单号 -->
+        </if>
+        <if test="planDetailRecId!=null">
+            PLAN_DETAIL_REC_ID=#{planDetailRecId},   <!-- 检测计划明细表REC_ID -->
+        </if>
+        <if test="equipCode!=null">
+            EQUIP_CODE=#{equipCode},   <!-- 计量器具代码 -->
+        </if>
+        <if test="equipName!=null">
+            EQUIP_NAME=#{equipName},   <!-- 计量器具名称 -->
+        </if>
+        <if test="matSpecifi!=null">
+            MAT_SPECIFI=#{matSpecifi},   <!-- 型号规格 -->
+        </if>
+        <if test="manufactureNo!=null">
+            MANUFACTURE_NO=#{manufactureNo},   <!-- 出厂编号 -->
+        </if>
+        <if test="manufacture!=null">
+            MANUFACTURE=#{manufacture},   <!-- 生产厂家 -->
+        </if>
+        <if test="installationUnit!=null">
+            INSTALLATION_UNIT=#{installationUnit},   <!-- 安装单位 -->
+        </if>
+        <if test="verifyPeriod!=null">
+            VERIFY_PERIOD=#{verifyPeriod,jdbcType=NUMERIC},   <!-- 检测周期(天) -->
+        </if>
+        <if test="planBeginDate!=null">
+            PLAN_BEGIN_DATE=#{planBeginDate},   <!-- 计划开始时间 -->
+        </if>
+        <if test="planEndDate!=null">
+            PLAN_END_DATE=#{planEndDate},   <!-- 计划完成时间 -->
+        </if>
+        <if test="equipmentState!=null">
+            EQUIPMENT_STATE=#{equipmentState},   <!-- 计量器具状态（封存、停用、报废和注销） -->
+        </if>
+        <if test="useDeptPlace!=null">
+            USE_DEPT_PLACE=#{useDeptPlace},   <!-- 计量器具使用地点 -->
+        </if>
+        <if test="equipmentRegCode!=null">
+            EQUIPMENT_REG_CODE=#{equipmentRegCode},   <!-- 计量器具注册登记代码 -->
+        </if>
+        <if test="securityManager!=null">
+            SECURITY_MANAGER=#{securityManager},   <!-- 安全管理人员 -->
+        </if>
+        <if test="securityContact!=null">
+            SECURITY_CONTACT=#{securityContact},   <!-- 安全管理人员联系方式 -->
+        </if>
+        <if test="position1Code!=null">
+            POSITION1_CODE=#{position1Code},   <!-- 位置一 -->
+        </if>
+        <if test="position1Name!=null">
+            POSITION1_NAME=#{position1Name},   <!-- 位置一名称 -->
+        </if>
+        <if test="position2Code!=null">
+            POSITION2_CODE=#{position2Code},   <!-- 位置二 -->
+        </if>
+        <if test="position2Name!=null">
+            POSITION2_NAME=#{position2Name},   <!-- 位置二名称 -->
+        </if>
+        <if test="position3!=null">
+            POSITION3=#{position3},   <!-- 位置三 -->
+        </if>
+        <if test="positionRemark!=null">
+            POSITION_REMARK=#{positionRemark},   <!-- 位置补充说明 -->
+        </if>
+        <if test="verifyNote!=null">
+            VERIFY_NOTE=#{verifyNote},   <!-- 备注 -->
+        </if>
+        <if test="companyCode!=null">
+            COMPANY_CODE=#{companyCode},   <!-- 公司代码 -->
+        </if>
+        <if test="companyName!=null">
+            COMPANY_NAME=#{companyName},   <!-- 公司名称 -->
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
+        </if>
+        <if test="recStatus!=null">
+            REC_STATUS=#{recStatus},   <!-- 记录状态 -->
+        </if>
+        <if test="ext1!=null">
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
+        </if>
+        <if test="ext2!=null">
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
+        </if>
+        <if test="ext3!=null">
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
+        </if>
+        <if test="ext4!=null">
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
+        </if>
+        <if test="ext5!=null">
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
+        </if>
+        REC_REVISOR=#{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 修改时间 -->
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <select id="listSubmissionDetail" resultType="com.wzmtr.eam.dto.res.SubmissionDetailResDTO">
+        <include refid="submission-detail-cols"/>
         WHERE 1=1 and a.SEND_VERIFY_NO=#{sendVerifyNo}
         order by a.REC_CREATE_TIME asc
     </select>
