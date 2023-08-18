@@ -3,12 +3,18 @@ package com.wzmtr.eam.impl.fault;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bo.FaultInfoBO;
+import com.wzmtr.eam.bo.FaultOrderBO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
+import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.service.fault.FaultQueryService;
+import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +26,8 @@ import org.springframework.stereotype.Service;
 public class FaultQueryServiceImpl implements FaultQueryService {
     @Autowired
     FaultQueryMapper faultQueryMapper;
+    @Autowired
+    FaultReportMapper reportMapper;
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
@@ -37,25 +45,32 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String status = faultQueryMapper.queryOrderStatus(reqDTO);
         return StringUtils.isEmpty(status) ? null : status;
     }
-    public void issue(){
-        // if (orderStatus.equals("40")) {
-        //     /*      */
-        //     /*  404 */             map.put("reportStartUserId", currentUser);
-        //     /*  405 */             map.put("reportStartTime", dateTimeFormat.format(new Date()));
-        //     /*  406 */           } else if (orderStatus.equals("50")) {
-        //     /*      */
-        //     /*  408 */             map.put("reportFinishUserId", currentUser);
-        //     /*  409 */             map.put("reportFinishTime", dateTimeFormat.format(new Date()));
-        //     /*  410 */             map.putAll(reportMap);
-        //     /*  411 */           } else if (orderStatus.equals("60")) {
-        //     /*      */
-        //     /*  413 */             map.put("confirmUserId", currentUser);
-        //     /*  414 */             map.put("confirmTime", dateTimeFormat.format(new Date()));
-        //     /*  415 */           } else if (orderStatus.equals("55")) {
-        //     /*      */
-        //     /*  417 */             map.put("checkUserId", currentUser);
-        //     /*  418 */             map.put("checkTime", dateTimeFormat.format(new Date()));
-        //     /*      */           }
-        // /*      */
+
+    @Override
+    public void issue(FaultDetailReqDTO reqDTO) {
+        String status = faultQueryMapper.queryOrderStatus(SidEntity.builder().id(reqDTO.getFaultWorkNo()).build());
+        FaultOrderBO faultOrderBO = new FaultOrderBO();
+        switch (status) {
+            case "40":
+                faultOrderBO.setReportStartUserId(TokenUtil.getCurrentPersonId());
+                faultOrderBO.setReportStartTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                break;
+            case "50":
+                faultOrderBO.setReportFinishUserId(TokenUtil.getCurrentPersonId());
+                faultOrderBO.setReportFinishTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                break;
+            case "60":
+                faultOrderBO.setConfirmUserId(TokenUtil.getCurrentPersonId());
+                faultOrderBO.setConfirmTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                break;
+            case "55":
+                faultOrderBO.setCheckUserId(TokenUtil.getCurrentPersonId());
+                faultOrderBO.setCheckTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                break;
+        }
+        reportMapper.updateFaultOrder(faultOrderBO);
+        FaultInfoBO faultInfoBO = new FaultInfoBO();
+        reportMapper.updateFaultInfo(faultInfoBO);
     }
+
 }

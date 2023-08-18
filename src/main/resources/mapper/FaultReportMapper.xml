@@ -167,55 +167,353 @@
         #{ext2,jdbcType=VARCHAR}, #{ext3,jdbcType=VARCHAR},
         #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR},#{traintag,jdbcType=VARCHAR})
     </insert>
-    <select id="getFaultList" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
-            SELECT
-            t2.REC_ID AS recId,
-            t2.COMPANY_CODE AS companyCode,
-            t2.COMPANY_NAME AS companyName,
-            t2.EQUIPMENT_TYPE_CODE AS equipmentTypeCode,
-            t1.NODE_NAME AS equipmentTypeName,
-            t2.LINE_CODE AS lineCode,
-            t2.FAULT_CODE_TYPE AS faultCodeType,
-            t2.FAULT_CODE AS faultCode,
-            t2.FAULT_DESCR AS faultDescr,
-            t2.RELATED_CODES AS relatedCodes,
-            t2.REMARK AS remark,
-            xs.USER_NAME AS recCreator,
-            t2.REC_CREATE_TIME AS recCreateTime,
-            t2.REC_REVISOR AS recRevisor,
-            t2.REC_REVISE_TIME AS recReviseTime,
-            t2.REC_DELETOR AS recDeletor,
-            t2.REC_DELETE_TIME AS recDeleteTime,
-            t2.DELETE_FLAG AS deleteFlag,
-            t2.ARCHIVE_FLAG AS archiveFlag,
-            t2.REC_STATUS AS recStatus,
-            t2.EXT1 AS ext1,
-            t2.EXT2 AS ext2,
-            t2.EXT3 AS ext3,
-            t2.EXT4 AS ext4,
-            t2.EXT5 AS ext5
-            FROM WBPLAT.TDMBM02 t2, T_EQUIPMENT_CATEGORY t1, IPLAT60.XS_USER xs
-            WHERE 1=1
-            AND t2.EQUIPMENT_TYPE_CODE = t1.NODE_CODE
-            AND t2.REC_CREATOR = xs.LOGIN_NAME
-            <if test="equipmentTypeCode != null">
-                AND t2.EQUIPMENT_TYPE_CODE = #{equipmentTypeCode}
-            </if>
-            <if test="equipmentTypeName != null">
-                AND t1.NODE_NAME = #{equipmentTypeName}
-            </if>
-            <if test="lineCode != null">
-                AND t2.LINE_CODE = #{lineCode}
-            </if>
-            <if test="faultCode != null">
-                AND t2.FAULT_CODE LIKE '%' || #{faultCode} || '%'
-            </if>
-            <if test="faultCodeType != null">
-                AND t2.FAULT_CODE_TYPE = #{faultCodeType}
-            </if>
-            ORDER BY t2.EQUIPMENT_TYPE_CODE, t2.FAULT_CODE_TYPE, t2.FAULT_CODE ASC
-    </select>
-
+    <update id="updateFaultOrder">
+        UPDATE T_FAULT_ORDER
+        SET
+        <if test="planRecoveryTime != null">
+            PLAN_RECOVERY_TIME = #{planRecoveryTime},
+        </if>
+        <if test="isDetainingRepair != null">
+            IS_DETAINING_REPAIR = #{isDetainingRepair},
+        </if>
+        <if test="faultAffect != null">
+            FAULT_AFFECT = #{faultAffect},
+        </if>
+        <if test="isFault != null">
+            IS_FAULT = #{isFault},
+        </if>
+        <if test="companyCode != null">
+            COMPANY_CODE = #{companyCode},
+        </if>
+        <if test="companyName != null">
+            COMPANY_NAME = #{companyName},
+        </if>
+        <if test="faultWorkNo != null">
+            FAULT_WORK_NO = #{faultWorkNo},
+        </if>
+        <if test="workClass != null">
+            WORK_CLASS = #{workClass},
+        </if>
+        <if test="reportUserId != null">
+            REPORT_USER_ID = #{reportUserId},
+        </if>
+        <if test="reportTime != null">
+            REPORT_TIME = #{reportTime},
+        </if>
+        <if test="checkUserId != null">
+            CHECK_USER_ID = #{checkUserId},
+        </if>
+        <if test="checkTime != null">
+            CHECK_TIME = #{checkTime},
+        </if>
+        <if test="dispatchUserId != null">
+            DISPATCH_USER_ID = #{dispatchUserId},
+        </if>
+        <if test="dispatchTime != null">
+            DISPATCH_TIME = #{dispatchTime},
+        </if>
+        <if test="repairRespUserId != null">
+            REPAIR_RESP_USER_ID = #{repairRespUserId},
+        </if>
+        <if test="workArea != null">
+            WORK_AREA = #{workArea},
+        </if>
+        <if test="orderStatus != null">
+            ORDER_STATUS = #{orderStatus},
+        </if>
+        <if test="repairDispatchNo != null">
+            REPAIR_DISPATCH_NO = #{repairDispatchNo},
+        </if>
+        <if test="rushRepairNo != null and rushRepairNo != ''">
+            RUSH_REPAIR_NO = #{rushRepairNo},
+        </if>
+        <if test="arrivalTime != null and arrivalTime != ''">
+            ARRIVAL_TIME = #{arrivalTime},
+        </if>
+        <if test="repairStartTime != null and repairStartTime != ''">
+            REPAIR_START_TIME = #{repairStartTime},
+        </if>
+        <if test="repairEndTime != null and repairEndTime != ''">
+            REPAIR_END_TIME = #{repairEndTime},
+        </if>
+        <if test="repairTime != null and repairTime != ''">
+            REPAIR_TIME = #{repairTime},
+        </if>
+        <if test="leaveTime != null and leaveTime != ''">
+            LEAVE_TIME = #{leaveTime},
+        </if>
+        <if test="faultReasonCode != null and faultReasonCode != ''">
+            FAULT_REASON_CODE = #{faultReasonCode},
+        </if>
+        <if test="faultReasonDetail != null and faultReasonDetail != ''">
+            FAULT_REASON_DETAIL = #{faultReasonDetail},
+        </if>
+        <if test="faultActionCode != null and faultActionCode != ''">
+            FAULT_ACTION_CODE = #{faultActionCode},
+        </if>
+        <if test="faultActionDetail != null and faultActionDetail != ''">
+            FAULT_ACTION_DETAIL = #{faultActionDetail},
+        </if>
+        <if test="faultProcessResult != null and faultProcessResult != ''">
+            FAULT_PROCESS_RESULT = #{faultProcessResult},
+        </if>
+        <if test="reportStartUserId != null and reportStartUserId != ''">
+            REPORT_START_USER_ID = #{reportStartUserId},
+        </if>
+        <if test="reportStartTime != null and reportStartTime != ''">
+            REPORT_START_TIME = #{reportStartTime},
+        </if>
+        <if test="reportFinishUserId != null and reportFinishUserId != ''">
+            REPORT_FINISH_USER_ID = #{reportFinishUserId},
+        </if>
+        <if test="reportFinishTime != null and reportFinishTime != ''">
+            REPORT_FINISH_TIME = #{reportFinishTime},
+        </if>
+        <if test="confirmUserId != null and confirmUserId != ''">
+            CONFIRM_USER_ID = #{confirmUserId},
+        </if>
+        <if test="confirmTime != null and confirmTime != ''">
+            CONFIRM_TIME = #{confirmTime},
+        </if>
+        <if test="closeUserId != null and closeUserId != ''">
+            CLOSE_USER_ID = #{closeUserId},
+        </if>
+        <if test="closeTime != null and closeTime != ''">
+            CLOSE_TIME = #{closeTime},
+        </if>
+        <if test="workFlowInstId != null and workFlowInstId != ''">
+            WORK_FLOW_INST_ID = #{workFlowInstId},
+        </if>
+        <if test="workFlowInstStatus != null and workFlowInstStatus != ''">
+            WORK_FLOW_INST_STATUS = #{workFlowInstStatus},
+        </if>
+        <if test="docId != null and docId != ''">
+            DOC_ID = #{docId},
+        </if>
+        <if test="remark != null and remark != ''">
+            REMARK = #{remark},
+        </if>
+        <if test="recCreator != null and recCreator != ''">
+            REC_CREATOR = #{recCreator},
+        </if>
+        <if test="recCreateTime != null and recCreateTime != ''">
+            REC_CREATE_TIME = #{recCreateTime},
+        </if>
+        <if test="recRevisor != null and recRevisor != ''">
+            REC_REVISOR = #{recRevisor},
+        </if>
+        <if test="recReviseTime != null and recReviseTime != ''">
+            REC_REVISE_TIME = #{recReviseTime},
+        </if>
+        <if test="recDeletor != null and recDeletor != ''">
+            REC_DELETOR = #{recDeletor},
+        </if>
+        <if test="recDeleteTime != null and recDeleteTime != ''">
+            REC_DELETE_TIME = #{recDeleteTime},
+        </if>
+        <if test="deleteFlag != null and deleteFlag != ''">
+            DELETE_FLAG = #{deleteFlag},
+        </if>
+        <if test="archiveFlag != null and archiveFlag != ''">
+            ARCHIVE_FLAG = #{archiveFlag},
+        </if>
+        <if test="recStatus != null and recStatus != ''">
+            REC_STATUS = #{recStatus},
+        </if>
+        <if test="ext1 != null and ext1 != ''">
+            EXT1 = #{ext1},
+        </if>
+        <if test="ext2 != null and ext2 != ''">
+            EXT2 = #{ext2},
+        </if>
+        <if test="ext3 != null and ext3 != ''">
+            EXT3 = #{ext3},
+        </if>
+        <if test="ext4 != null and ext4 != ''">
+            EXT4 = #{ext4},
+        </if>
+        <if test="ext5 != null and ext5 != ''">
+            EXT5 = #{ext5},
+        </if>
+        <if test="dealerNum != null and dealerNum != ''">
+            DEALER_NUM = #{dealerNum},
+        </if>
+        <if test="dealerUnit != null and dealerUnit != ''">
+            DEALER_UNIT = #{dealerUnit},
+        </if>
+        WHERE
+        FAULT_NO = #{faultNo}
+        <if test="faultWorkNo != null and faultWorkNo != ''">
+            AND FAULT_WORK_NO = #{faultWorkNo}
+        </if>
+    </update>
+    <update id="updateFaultInfo">
+        UPDATE T_FAULT_INFO SET
+        <if test="companyCode != null and companyCode != ''">
+            COMPANY_CODE = #{companyCode},
+        </if>
+        <if test="companyName != null and companyName != ''">
+            COMPANY_NAME = #{companyName},
+        </if>
+        <if test="faultFlag != null and faultFlag != ''">
+            FAULT_FLAG = #{faultFlag},
+        </if>
+        <if test="objectCode != null and objectCode != ''">
+            OBJECT_CODE = #{objectCode},
+        </if>
+        <if test="objectName != null and objectName != ''">
+            OBJECT_NAME = #{objectName},
+        </if>
+        <if test="trainTrunk != null and trainTrunk != ''">
+            TRAIN_TRUNK = #{trainTrunk},
+        </if>
+        <if test="lineCode != null and lineCode != ''">
+            LINE_CODE = #{lineCode},
+        </if>
+        <if test="positionCode != null and positionCode != ''">
+            POSITION_CODE = #{positionCode},
+        </if>
+        <if test="position2Code != null and position2Code != ''">
+            POSITION2_CODE = #{position2Code},
+        </if>
+        <if test="partCode != null and partCode != ''">
+            PART_CODE = #{partCode},
+        </if>
+        <if test="partName != null and partName != ''">
+            PART_NAME = #{partName},
+        </if>
+        <if test="majorCode != null and majorCode != ''">
+            MAJOR_CODE = #{majorCode},
+        </if>
+        <if test="systemCode != null and systemCode != ''">
+            SYSTEM_CODE = #{systemCode},
+        </if>
+        <if test="equipTypeCode != null and equipTypeCode != ''">
+            EQUIP_TYPE_CODE = #{equipTypeCode},
+        </if>
+        <if test="faultModule != null and faultModule != ''">
+            FAULT_MODULE = #{faultModule},
+        </if>
+        <if test="faultModuleId != null and faultModuleId != ''">
+            FAULT_MODULE_ID = #{faultModuleId},
+        </if>
+        <if test="faultType != null and faultType != ''">
+            FAULT_TYPE = #{faultType},
+        </if>
+        <if test="sourceCode != null and sourceCode != ''">
+            SOURCE_CODE = #{sourceCode},
+        </if>
+        <if test="faultDisplayCode != null and faultDisplayCode != ''">
+            FAULT_DISPLAY_CODE = #{faultDisplayCode},
+        </if>
+        <if test="faultDisplayDetail != null and faultDisplayDetail != ''">
+            FAULT_DISPLAY_DETAIL = #{faultDisplayDetail},
+        </if>
+        <if test="faultDetail != null and faultDetail != ''">
+            FAULT_DETAIL = #{faultDetail},
+        </if>
+        <if test="discovererId != null and discovererId != ''">
+            DISCOVERER_ID = #{discovererId},
+        </if>
+        <if test="discovererName != null and discovererName != ''">
+            DISCOVERER_NAME = #{discovererName},
+        </if>
+        <if test="discoveryTime != null and discoveryTime != ''">
+            DISCOVERY_TIME = #{discoveryTime},
+        </if>
+        <if test="discovererPhone != null and discovererPhone != ''">
+            DISCOVERER_PHONE = #{discovererPhone},
+        </if>
+        <if test="fillinUserId != null and fillinUserId != ''">
+            FILLIN_USER_ID = #{fillinUserId},
+        </if>
+        <if test="fillinDeptCode != null and fillinDeptCode != ''">
+            FILLIN_DEPT_CODE = #{fillinDeptCode},
+        </if>
+        <if test="fillinTime != null and fillinTime != ''">
+            FILLIN_TIME = #{fillinTime},
+        </if>
+        <if test="respDeptCode != null and respDeptCode != ''">
+            RESP_DEPT_CODE = #{respDeptCode},
+        </if>
+        <if test="assistDeptCode != null and assistDeptCode != ''">
+            ASSIST_DEPT_CODE = #{assistDeptCode},
+        </if>
+        <if test="repairDeptCode != null and repairDeptCode != ''">
+            REPAIR_DEPT_CODE = #{repairDeptCode},
+        </if>
+        <if test="publishUserId != null and publishUserId != ''">
+            PUBLISH_USER_ID = #{publishUserId},
+        </if>
+        <if test="publishTime != null and publishTime != ''">
+            PUBLISH_TIME = #{publishTime},
+        </if>
+        <if test="faultLevel != null and faultLevel != ''">
+            FAULT_LEVEL = #{faultLevel},
+        </if>
+        <if test="faultStatus != null and faultStatus != ''">
+            FAULT_STATUS = #{faultStatus},
+        </if>
+        <if test="workFlowInstId != null and workFlowInstId != ''">
+            WORK_FLOW_INST_ID = #{workFlowInstId},
+        </if>
+        <if test="workFlowInstStatus != null and workFlowInstStatus != ''">
+            WORK_FLOW_INST_STATUS = #{workFlowInstStatus},
+        </if>
+        <if test="docId != null and docId != ''">
+            DOC_ID = #{docId},
+        </if>
+        <if test="remark != null and remark != ''">
+            REMARK = #{remark},
+        </if>
+        <if test="recCreator != null and recCreator != ''">
+            REC_CREATOR = #{recCreator},
+        </if>
+        <if test="recCreateTime != null and recCreateTime != ''">
+            REC_CREATE_TIME = #{recCreateTime},
+        </if>
+        <if test="recRevisor != null and recRevisor != ''">
+            REC_REVISOR = #{recRevisor},
+        </if>
+        <if test="recReviseTime != null and recReviseTime != ''">
+            REC_REVISE_TIME = #{recReviseTime},
+        </if>
+        <if test="recDeletor != null and recDeletor != ''">
+            REC_DELETOR = #{recDeletor},
+        </if>
+        <if test="recDeleteTime != null and recDeleteTime != ''">
+            REC_DELETE_TIME = #{recDeleteTime},
+        </if>
+        <if test="deleteFlag != null and deleteFlag != ''">
+            DELETE_FLAG = #{deleteFlag},
+        </if>
+        <if test="archiveFlag != null and archiveFlag != ''">
+            ARCHIVE_FLAG = #{archiveFlag},
+        </if>
+        <if test="recStatus != null and recStatus != ''">
+            REC_STATUS = #{recStatus},
+        </if>
+        <if test="ext1 != null and ext1 != ''">
+            EXT1 = #{ext1},
+        </if>
+        <if test="ext2 != null and ext2 != ''">
+            EXT2 = #{ext2},
+        </if>
+        <if test="ext3 != null and ext3 != ''">
+            EXT3 = #{ext3},
+        </if>
+        <if test="ext4 != null and ext4 != ''">
+            EXT4 = #{ext4},
+        </if>
+        <if test="ext5 != null and ext5 != ''">
+            EXT5 = #{ext5},
+        </if>
+        <if test="traintag != null and traintag != ''">
+            TRAIN_TAG = #{traintag},
+        </if>
+        WHERE
+        FAULT_NO = #{faultNo}
+    </update>
 
     <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         SELECT
@@ -331,5 +629,6 @@
         SELECT max(FAULT_NO)
         FROM T_FAULT_INFO
     </select>
+
 
 </mapper>

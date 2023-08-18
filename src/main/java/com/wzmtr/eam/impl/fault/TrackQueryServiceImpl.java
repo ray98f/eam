@@ -45,7 +45,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
         FaultInfoBO faultDetail = trackQueryMapper.faultDetail(reqDTO);
-        FaultDetailResDTO repairDetail = trackQueryMapper.repairDetail(reqDTO.getFaultNo(),reqDTO.getFaultworkNo());
+        FaultDetailResDTO repairDetail = trackQueryMapper.repairDetail(reqDTO.getFaultNo(),reqDTO.getFaultWorkNo());
         if (faultDetail == null ) {
             return repairDetail;
         }
@@ -54,6 +54,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public void cancellGenZ(SidEntity reqDTO) {
+        //faultTrackNo
         if (StringUtils.isEmpty(reqDTO.getId())){
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
@@ -68,18 +69,9 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public TrackQueryResDTO trackDetail(SidEntity reqDTO) {
+        //faultTrackNo
         return trackQueryMapper.detail(reqDTO.getId());
     }
-
-    // @Override
-    // public DataResponse<TrackQueryResDTO> detail(TrackQueryReqDTO reqDTO) {
-    //     PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-    //     Page<TrackQueryResDTO> list = trackQueryMapper.query(reqDTO.of(),reqDTO);
-    //     if (CollectionUtil.isEmpty(list.getRecords())) {
-    //         return new Page<>();
-    //     }
-    //     return list;
-    // }
 
 
 }

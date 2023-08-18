@@ -265,7 +265,8 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE = d.LINE_CODE AND ec.CODESET_CODE = 'line' ) AS "lineName",
+        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE = d.LINE_CODE AND ec.CODESET_CODE = 'line' )
+        AS "lineName",
         d.LINE_CODE AS "lineCode",
         d.POSITION_CODE AS "positionCode",
         d.POSITION2_CODE AS "position2Code",
@@ -330,15 +331,15 @@
         df.ORDER_STATUS AS "orderStatus",
         df.EXT1 AS "levelfault"
         FROM
-        WBPLAT.TDMFM01 d,
+        T_FAULT_INFO d,
         IPLAT60.XS_USER u,
-        WBPLAT.TDMFM02 df
+        T_FAULT_ORDER df
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultNo!=null and faultNo!=''">
                 and d.FAULT_NO = #{faultNo}
             </if>
-            <if test="faultworkNo!=null and faultworkNo!=''">
-                and df.FAULT_WORK_NO = #{faultworkNo}
+            <if test="faultWorkNo!=null and faultWorkNo!=''">
+                and df.FAULT_WORK_NO = #{faultWorkNo}
             </if>
             AND d.FILLIN_USER_ID = u.LOGIN_NAME
             AND d.FAULT_NO = df.FAULT_NO

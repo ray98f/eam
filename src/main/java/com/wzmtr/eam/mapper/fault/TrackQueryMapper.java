@@ -24,7 +24,7 @@ public interface TrackQueryMapper {
                                  String systemCode, String objectName, String recStatus, String equipTypeCode);
     FaultInfoBO faultDetail(FaultDetailReqDTO reqDTO);
 
-    FaultDetailResDTO repairDetail(String faultNo, String faultworkNo);
+    FaultDetailResDTO repairDetail(String faultNo, String faultWorkNo);
 
     void cancellGenZ(TrackQueryResDTO bo);
 }

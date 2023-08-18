@@ -12,5 +12,5 @@ public class FaultDetailReqDTO {
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
     @ApiModelProperty(value = "故障工单号")
-    private String faultworkNo;
+    private String faultWorkNo;
 }
