@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.SubmissionDetailReqDTO;
 import com.wzmtr.eam.dto.req.SubmissionListReqDTO;
 import com.wzmtr.eam.dto.req.SubmissionReqDTO;
 import com.wzmtr.eam.dto.res.SubmissionDetailResDTO;
@@ -30,9 +31,18 @@ public interface SubmissionMapper {
 
     void deleteSubmission(String id, String userId, String time);
 
-    void deleteSubmissionDetail(String sendVerifyNo, String userId, String time);
+    void deleteSubmissionDetail(String id, String sendVerifyNo, String userId, String time);
 
     List<SubmissionResDTO> listSubmission(SubmissionListReqDTO submissionListReqDTO);
 
     List<SubmissionDetailResDTO> listSubmissionDetail(String sendVerifyNo);
+
+    Page<SubmissionDetailResDTO> pageSubmissionDetail(Page<SubmissionResDTO> page, String sendVerifyNo);
+
+    SubmissionDetailResDTO getSubmissionDetailDetail(String id);
+
+    void addSubmissionDetail(SubmissionDetailReqDTO submissionDetailReqDTO);
+
+    void modifySubmissionDetail(SubmissionDetailReqDTO submissionDetailReqDTO);
+
 }

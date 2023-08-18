@@ -1,7 +1,9 @@
 package com.wzmtr.eam.controller.mea;
 
+import com.wzmtr.eam.dto.req.SubmissionDetailReqDTO;
 import com.wzmtr.eam.dto.req.SubmissionListReqDTO;
 import com.wzmtr.eam.dto.req.SubmissionReqDTO;
+import com.wzmtr.eam.dto.res.SubmissionDetailResDTO;
 import com.wzmtr.eam.dto.res.SubmissionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -74,5 +76,46 @@ public class SubmissionController {
     @ApiOperation(value = "导出送检单")
     public void exportSubmission(SubmissionListReqDTO submissionListReqDTO, HttpServletResponse response) {
         submissionService.exportSubmission(submissionListReqDTO, response);
+    }
+
+    @GetMapping("/detail/page")
+    @ApiOperation(value = "获取送检单列表")
+    public PageResponse<SubmissionDetailResDTO> pageSubmissionDetail(@RequestParam(required = false) @ApiParam("检测单号") String sendVerifyNo,
+                                                                     @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(submissionService.pageSubmissionDetail(sendVerifyNo, pageReqDTO));
+    }
+
+    @GetMapping("/detail/detail")
+    @ApiOperation(value = "获取送检单详情")
+    public DataResponse<SubmissionDetailResDTO> getSubmissionDetailDetail(@RequestParam @ApiParam("id") String id) {
+        return DataResponse.of(submissionService.getSubmissionDetailDetail(id));
+    }
+
+    @PostMapping("/detail/add")
+    @ApiOperation(value = "新增送检单")
+    public DataResponse<T> addSubmissionDetail(@RequestBody SubmissionDetailReqDTO submissionDetailReqDTO) {
+        submissionService.addSubmissionDetail(submissionDetailReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/detail/modify")
+    @ApiOperation(value = "编辑送检单")
+    public DataResponse<T> modifySubmissionDetail(@RequestBody SubmissionDetailReqDTO submissionDetailReqDTO) {
+        submissionService.modifySubmissionDetail(submissionDetailReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/detail/delete")
+    @ApiOperation(value = "删除送检单")
+    public DataResponse<T> deleteSubmissionDetail(@RequestBody BaseIdsEntity baseIdsEntity) {
+        submissionService.deleteSubmissionDetail(baseIdsEntity);
+        return DataResponse.success();
+    }
+
+    @GetMapping("/detail/export")
+    @ApiOperation(value = "导出送检单")
+    public void exportSubmissionDetail(@RequestParam(required = false) @ApiParam("检测单号") String sendVerifyNo,
+                                       HttpServletResponse response) {
+        submissionService.exportSubmissionDetail(sendVerifyNo, response);
     }
 }
