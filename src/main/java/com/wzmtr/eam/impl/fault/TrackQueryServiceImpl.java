@@ -44,7 +44,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
-        FaultInfoBO faultDetail = trackQueryMapper.faultDetail(reqDTO.getFaultNo(),reqDTO.getFaultworkNo());
+        FaultInfoBO faultDetail = trackQueryMapper.faultDetail(reqDTO);
         FaultDetailResDTO repairDetail = trackQueryMapper.repairDetail(reqDTO.getFaultNo(),reqDTO.getFaultworkNo());
         if (faultDetail == null ) {
             return repairDetail;

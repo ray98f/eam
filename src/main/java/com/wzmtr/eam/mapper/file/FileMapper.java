@@ -1,5 +1,6 @@
 package com.wzmtr.eam.mapper.file;
 
+import com.wzmtr.eam.dto.req.FileReqDTO;
 import com.wzmtr.eam.entity.File;
 
 /**
@@ -9,7 +10,7 @@ import com.wzmtr.eam.entity.File;
 public interface FileMapper {
 
 
-    File getFile(String url, String bizCode, String oldName);
+    File getFile(String url, String bucket, String oldName);
 
-    void insertFile(String url, String bizCode, String oldName);
+    void insertFile(FileReqDTO dto);
 }

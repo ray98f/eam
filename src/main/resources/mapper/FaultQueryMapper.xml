@@ -86,7 +86,6 @@
         IPLAT60.XS_USER u,
         WBPLAT.TDMFM02 df
         <trim prefix="WHERE" prefixOverrides="AND">
-
             <if test="recId != null">
                 AND d.REC_ID = #{recId}
             </if>
@@ -159,13 +158,21 @@
             <if test="endTime != null">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{endTime}, 'YYYY-MM-DD') + 1
             </if>
-
             AND d.FILLIN_USER_ID = u.LOGIN_NAME
             AND d.FAULT_NO = df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
         </trim>
 
 
+    </select>
+    <select id="queryOrderStatus" resultType="java.lang.String">
+        select
+        df2.ORDER_STATUS as "orderStatus"
+        from T_FAULT_INFO df1,T_FAULT_ORDER df2
+        where 1=1 and df1.FAULT_NO=df2.FAULT_NO
+        <if test="faultWorkNo != null">
+            AND df2.FAULT_WORK_NO = #faultWorkNo#
+        </if>
     </select>
 
 </mapper>

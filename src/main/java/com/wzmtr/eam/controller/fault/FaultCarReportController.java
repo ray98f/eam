@@ -1,7 +1,9 @@
 package com.wzmtr.eam.controller.fault;
 
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -40,8 +42,8 @@ public class FaultCarReportController {
     }
     @ApiOperation(value = "故障编号详情")
     @PostMapping("/detail")
-    public PageResponse<FaultReportResDTO> detail(@RequestBody FaultReportPageReqDTO reqDTO) {
-        return PageResponse.of(reportService.list(reqDTO));
+    public DataResponse<FaultDetailResDTO> detail(@RequestBody FaultDetailReqDTO reqDTO) {
+        return DataResponse.of(reportService.detail(reqDTO));
     }
 
 

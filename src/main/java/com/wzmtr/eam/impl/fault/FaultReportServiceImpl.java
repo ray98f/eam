@@ -3,11 +3,17 @@ package com.wzmtr.eam.impl.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
+import com.wzmtr.eam.entity.response.DataResponse;
+import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
+import com.wzmtr.eam.mapper.fault.TrackMapper;
+import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.__BeanUtil;
@@ -28,7 +34,8 @@ import java.util.UUID;
 public class FaultReportServiceImpl implements FaultReportService {
     @Autowired
     private FaultReportMapper faultReportMapper;
-
+    @Autowired
+    private TrackQueryMapper trackQueryMapper;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addToEquip(FaultReportReqDTO reqDTO) {
@@ -61,12 +68,20 @@ public class FaultReportServiceImpl implements FaultReportService {
         return faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd());
     }
 
-    @Override
-    public Page<FaultReportResDTO> detail(FaultReportPageReqDTO reqDTO) {
-        return null;
-    }
+
+
 
     @Override
     public void addToMajor(FaultReportToMajorReqDTO reqDTO) {
     }
+
+    @Override
+    public FaultDetailResDTO detail(FaultDetailReqDTO reqDTO) {
+        FaultInfoBO faultInfoBO = trackQueryMapper.faultDetail(reqDTO);
+        if (faultInfoBO==null){
+            return null;
+        }
+        return __BeanUtil.convert(faultInfoBO,FaultDetailResDTO.class);
+    }
+
 }

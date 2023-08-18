@@ -1,19 +1,16 @@
 package com.wzmtr.eam.controller.fault;
 
-import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
-import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
-import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
-import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,21 +36,24 @@ public class FaultReportController {
         reportService.addToEquip(reqDTO);
         return DataResponse.success();
     }
+
     @ApiOperation(value = "故障提报（到专业）")
     @PostMapping("/insert/major")
     public DataResponse<FaultReportResDTO> addToMajor(@RequestBody @Valid FaultReportToMajorReqDTO reqDTO) {
         reportService.addToMajor(reqDTO);
         return DataResponse.success();
     }
+
     @ApiOperation(value = "已提报故障")
     @PostMapping("/list")
     public PageResponse<FaultReportResDTO> list(@RequestBody FaultReportPageReqDTO reqDTO) {
         return PageResponse.of(reportService.list(reqDTO));
     }
+
     @ApiOperation(value = "故障编号详情")
     @PostMapping("/detail")
-    public PageResponse<FaultReportResDTO> detail(@RequestBody FaultReportPageReqDTO reqDTO) {
-        return PageResponse.of(reportService.detail(reqDTO));
+    public DataResponse<FaultDetailResDTO> detail(@RequestBody FaultDetailReqDTO reqDTO) {
+        return DataResponse.of(reportService.detail(reqDTO));
     }
 
 

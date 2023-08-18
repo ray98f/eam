@@ -15,8 +15,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class TrackReqDTO extends PageReqDTO {
 
-    @ApiModelProperty(value = "记录Id")
-    private String recId;
     @ApiModelProperty(value = "专业")
     private String majorCode;
     @ApiModelProperty(value = "系统")

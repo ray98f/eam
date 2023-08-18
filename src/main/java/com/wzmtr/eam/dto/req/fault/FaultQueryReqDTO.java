@@ -1,12 +1,6 @@
 package com.wzmtr.eam.dto.req.fault;
 
-import com.wzmtr.eam.bo.FaultInfoBO;
-import com.wzmtr.eam.bo.FaultOrderBO;
 import com.wzmtr.eam.entity.PageReqDTO;
-import com.wzmtr.eam.utils.DateUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel
-public class FaultReqDTO extends PageReqDTO {
+public class FaultQueryReqDTO extends PageReqDTO {
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
     @ApiModelProperty(value = "故障工单编号")

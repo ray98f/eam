@@ -1,13 +1,17 @@
 package com.wzmtr.eam.impl.minio;
 
 import com.wzmtr.eam.config.MinioConfig;
+import com.wzmtr.eam.dto.req.FileReqDTO;
 import com.wzmtr.eam.entity.File;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.MinIO.MinIOService;
+import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.FileUploadUtils;
 import com.wzmtr.eam.utils.MinioUtils;
+import com.wzmtr.eam.utils.TokenUtil;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import jdk.nashorn.internal.parser.Token;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,15 +35,15 @@ public class MinIOServiceImpl implements MinIOService {
     private FileMapper fileMapper;
 
     @Override
-    public File upload(MultipartFile file, String bizCode) {
-        if (!minioUtils.bucketExists(bizCode)) {
-            minioUtils.makeBucket(bizCode);
+    public File upload(MultipartFile file, String bucket) {
+        if (!minioUtils.bucketExists(bucket)) {
+            minioUtils.makeBucket(bucket);
         }
         String oldName = file.getOriginalFilename();
         String fileName = FileUploadUtils.extractFilename(file);
         try {
             client.putObject(PutObjectArgs.builder()
-                    .bucket(bizCode)
+                    .bucket(bucket)
                     .object(fileName)
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .contentType(file.getContentType())
@@ -47,8 +51,16 @@ public class MinIOServiceImpl implements MinIOService {
         } catch (Exception e) {
             log.error("upload error", e);
         }
-        String url = minioConfig.getImgPath() + "/" + bizCode + "/" + fileName;
-        fileMapper.insertFile(url, bizCode, oldName);
-        return fileMapper.getFile(url, bizCode, oldName);
+        String url = minioConfig.getImgPath() + "/" + bucket + "/" + fileName;
+        FileReqDTO build = FileReqDTO.builder()
+                .bucket(bucket)
+                .fileName(fileName)
+                .id(TokenUtil.getUuId())
+                .oldName(oldName)
+                .recCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS))
+                .recCreator(TokenUtil.getCurrentPersonId())
+                .build();
+        fileMapper.insertFile(build);
+        return fileMapper.getFile(url, bucket, oldName);
     }
 }

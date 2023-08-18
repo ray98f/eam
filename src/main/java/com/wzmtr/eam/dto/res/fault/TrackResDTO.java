@@ -27,8 +27,18 @@ public class TrackResDTO {
     private String workGroupName;
     @ApiModelProperty(value = "派工人工号")
     private String dispatchUserId;
+    @ApiModelProperty(value = "派工人姓名")
+    private String dispatchUserName;
+    @ApiModelProperty(value = "跟踪报告人姓名")
+    private String trackReportName;
+    @ApiModelProperty(value = "跟踪关闭人姓名")
+    private String trackCloserName;
     @ApiModelProperty(value = "派工时间")
     private String dispatchTime;
+    @ApiModelProperty(value = "对象编码")
+    private String objectCode;
+    @ApiModelProperty(value = "对象名称")
+    private String objectName;
     @ApiModelProperty(value = "跟踪报告人工号")
     private String trackReporterId;
     @ApiModelProperty(value = "跟踪报告时间")
