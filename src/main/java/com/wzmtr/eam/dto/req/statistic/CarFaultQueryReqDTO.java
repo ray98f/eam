@@ -17,7 +17,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class CarFaultQueryReqDTO extends PageReqDTO {
     @ApiModelProperty(value = "车辆codes")
-    private Set<String> objectCodes;
+    private Set<String> objectCode;
     @ApiModelProperty(value = "时间周期开始")
     private String startTime;
     @ApiModelProperty(value = "时间周期结束")

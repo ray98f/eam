@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.statistic;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.statistic.CarFaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.statistic.CarFaultQueryResDTO;
@@ -40,7 +41,7 @@ public class CarFaultServiceImpl implements CarFaultService {
             }
             calendar.setTime(parse);
             reqDTO.setStartTime(sdf.format(calendar.getTime()));
-            reqDTO.setEndTime(sdf.format(calendar.getTime()));
+            reqDTO.setEndTime(sdf.format(new Date()));
         }
         //todo 不懂 这里可能有字符串处理
         // if (inInfo.get("inqu_status-0-objectCode") != null && !inInfo.get("inqu_status-0-objectCode").toString().trim().equals("")) {
@@ -48,6 +49,10 @@ public class CarFaultServiceImpl implements CarFaultService {
         //     /* 40 */         objectCode = ("\"" + objectCode + "\"").replace("\"", "'");
         //     /* 41 */         map.put("objectCode", objectCode);
         //     /*    */       }
-        return carFaultMapper.query(reqDTO.of(), reqDTO);
+        Page<CarFaultQueryResDTO> query = carFaultMapper.query(reqDTO.of(), reqDTO.getObjectCode(),reqDTO.getEndTime(),reqDTO.getStartTime());
+        if (CollectionUtil.isEmpty(query.getRecords())){
+            return new Page<>();
+        }
+        return query;
     }
 }

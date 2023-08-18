@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,7 @@ public class CarFaultController {
 
     @PostMapping("/query")
     @ApiOperation(value = "获取车辆故障统计分析列表")
-    public PageResponse<CarFaultQueryResDTO> pageOverhaulWeekPlan(CarFaultQueryReqDTO reqDTO) {
+    public PageResponse<CarFaultQueryResDTO> query(@RequestBody CarFaultQueryReqDTO reqDTO) {
         return PageResponse.of(carFaultService.query(reqDTO));
     }
 }
