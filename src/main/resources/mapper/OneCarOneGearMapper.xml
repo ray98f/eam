@@ -209,10 +209,35 @@
         AND ER21.PLAN_NAME LIKE '%' || #{二级修(90天} || '%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#startDate#, 'YYYY-MM-DD')
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
         <if test="startDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#endDate#, 'YYYY-MM-DD')
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        group BY SUBSTR(DM06.FILLIN_TIME,0,10)
+        ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
+    </select>
+    <select id="queryER4" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
+        SELECT
+        MAX( DM06.TOTAL_MILES) as "dmer4km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer4date"
+        FROM
+        T_TRAIN_MILEAGE DM06,T_OVERHAUL_ORDER ER21
+        WHERE
+        SUBSTR(DM06.FILLIN_TIME,0,10) in
+        (
+        SELECT
+        SUBSTR(ER21.REAL_END_TIME,0,10)
+        FROM
+        T_OVERHAUL_ORDER ER21
+        WHERE
+        ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
+        AND ER21.PLAN_NAME LIKE '%' || #{二级修(180天} || '%'
+        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
+        <if test="startDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC

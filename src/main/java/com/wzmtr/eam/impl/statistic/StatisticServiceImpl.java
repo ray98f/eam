@@ -138,4 +138,9 @@ public class StatisticServiceImpl implements StatisticService {
     public InspectionJobListResDTO querydmer3(OneCarOneGearQueryReqDTO reqDTO) {
         return oneCarOneGearMapper.querydmer3(reqDTO);
     }
+
+    @Override
+    public InspectionJobListResDTO queryER4(OneCarOneGearQueryReqDTO reqDTO) {
+        return oneCarOneGearMapper.queryER4(reqDTO);
+    }
 }

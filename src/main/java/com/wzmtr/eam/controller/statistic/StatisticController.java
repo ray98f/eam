@@ -58,14 +58,14 @@ public class StatisticController {
     public DataResponse<OneCarOneGearResDTO> oneCarOneGearQuery(@RequestBody OneCarOneGearQueryReqDTO reqDTO) {
         return DataResponse.of(statisticService.oneCarOneGearQuery(reqDTO));
     }
-    @PostMapping("one/car/one/gear/job/list")
+    @PostMapping("one/car/one/gear/job/querydmer3")
     @ApiOperation(value = "一车一档检修作业列表查询(2级修90天包)")
-    public DataResponse<InspectionJobListResDTO> inspectionJobList(@RequestBody OneCarOneGearQueryReqDTO reqDTO) {
+    public DataResponse<InspectionJobListResDTO> querydmer3(@RequestBody OneCarOneGearQueryReqDTO reqDTO) {
         return DataResponse.of(statisticService.querydmer3(reqDTO));
     }
-    // @PostMapping("one/car/one/gear/job/list")
-    // @ApiOperation(value = "一车一档检修作业列表查询(2级修90天包)")
-    // public DataResponse<InspectionJobListResDTO> inspectionJobList(@RequestBody OneCarOneGearQueryReqDTO reqDTO) {
-    //     return DataResponse.of(statisticService.querydmer3(reqDTO));
-    // }
+    @PostMapping("one/car/one/gear/job/queryER4")
+    @ApiOperation(value = "一车一档检修作业列表查询(二级修(180天)")
+    public DataResponse<InspectionJobListResDTO> queryER4(@RequestBody OneCarOneGearQueryReqDTO reqDTO) {
+        return DataResponse.of(statisticService.queryER4(reqDTO));
+    }
 }

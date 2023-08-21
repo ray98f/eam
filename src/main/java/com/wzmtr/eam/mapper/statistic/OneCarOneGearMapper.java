@@ -19,4 +19,6 @@ public interface OneCarOneGearMapper {
     OneCarOneGearResDTO querySummary(String endTime, String startTime, String equipName);
 
     InspectionJobListResDTO querydmer3(OneCarOneGearQueryReqDTO reqDTO);
+
+    InspectionJobListResDTO queryER4(OneCarOneGearQueryReqDTO reqDTO);
 }

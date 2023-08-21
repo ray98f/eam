@@ -26,4 +26,6 @@ public interface StatisticService {
     OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearQueryReqDTO reqDTO);
 
     InspectionJobListResDTO querydmer3(OneCarOneGearQueryReqDTO reqDTO);
+
+    InspectionJobListResDTO queryER4(OneCarOneGearQueryReqDTO reqDTO);
 }
