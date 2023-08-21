@@ -167,7 +167,7 @@ public class FaultDetailResDTO {
     private String discovererPhone;
     @ApiModelProperty(value = "提报人工号")
     private String fillinUserId;
-    @ApiModelProperty(value = "提报人工号")
+    @ApiModelProperty(value = "提报人")
     private String fillinUserName;
     @ApiModelProperty(value = "提报部门")
     private String fillinDeptCode;
@@ -179,6 +179,8 @@ public class FaultDetailResDTO {
     private String assistDeptCode;
     @ApiModelProperty(value = "维修部门")
     private String repairDeptCode;
+    @ApiModelProperty(value = "维修部门名称")
+    private String repairDeptName;
     @ApiModelProperty(value = "下发人工号")
     private String publishUserId;
     @ApiModelProperty(value = "下发时间")

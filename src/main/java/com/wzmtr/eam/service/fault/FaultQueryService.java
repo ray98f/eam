@@ -6,6 +6,8 @@ import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/17 16:21
@@ -16,4 +18,6 @@ public interface FaultQueryService {
     String queryOrderStatus(SidEntity reqDTO);
 
     void issue(FaultDetailReqDTO reqDTO);
+
+    void export(FaultQueryReqDTO reqDTO, HttpServletResponse response);
 }

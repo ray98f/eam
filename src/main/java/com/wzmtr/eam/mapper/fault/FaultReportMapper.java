@@ -25,7 +25,7 @@ public interface FaultReportMapper {
 
     void updateFaultInfo(FaultInfoBO faultInfo);
 
-    String getFaultOrderFaultNoMaxCode();
+    String getFaultInfoFaultNoMaxCode();
 
     String getFaultOrderFaultWorkNoMaxCode();
 

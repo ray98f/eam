@@ -82,9 +82,9 @@
         df.ORDER_STATUS AS "orderStatus",
         df.EXT1 AS "levelfault"
         FROM
-        WBPLAT.TDMFM01 d,
+        T_FAULT_INFO d,
         IPLAT60.XS_USER u,
-        WBPLAT.TDMFM02 df
+        T_FAULT_ORDER df
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="recId != null">
                 AND d.REC_ID = #{recId}
@@ -162,8 +162,6 @@
             AND d.FAULT_NO = df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
         </trim>
-
-
     </select>
     <select id="queryOrderStatus" resultType="java.lang.String">
         select
@@ -173,6 +171,167 @@
         <if test="faultWorkNo != null">
             AND df2.FAULT_WORK_NO = #faultWorkNo#
         </if>
+    </select>
+    <select id="exportList" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        SELECT
+        d.REC_ID AS "recId",
+        df.REC_ID AS "workId",
+        df.WORK_CLASS AS "workClass",
+        d.COMPANY_CODE AS "companyCode",
+        d.COMPANY_NAME AS "companyName",
+        d.FAULT_NO AS "faultNo",
+        d.FAULT_FLAG AS "faultFlag",
+        d.OBJECT_CODE AS "objectCode",
+        d.OBJECT_CODE AS "objectCode_textField",
+        d.OBJECT_NAME AS "objectName",
+        d.TRAIN_TRUNK AS "trainTrunk",
+        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE = d.LINE_CODE AND ec.CODESET_CODE = 'line' )
+        AS
+        "lineName",
+        d.LINE_CODE AS "lineCode",
+        d.POSITION_CODE AS "positionCode",
+        d.POSITION2_CODE AS "position2Code",
+        d.PART_CODE AS "partCode",
+        d.PART_NAME AS "partName",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName_textField",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.MAJOR_CODE ) AS "majorName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.SYSTEM_CODE ) AS "systemName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.EQUIP_TYPE_CODE ) AS "equipTypeName",
+        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE = d.EXT1 ) AS "stationCode",
+        d.MAJOR_CODE AS "majorCode",
+        d.SYSTEM_CODE AS "systemCode",
+        d.EQUIP_TYPE_CODE AS "equipTypeCode",
+        d.FAULT_MODULE AS "faultModule",
+        d.FAULT_MODULE_ID AS "faultModuleId",
+        d.FAULT_TYPE AS "faultType",
+        d.SOURCE_CODE AS "sourceCode",
+        d.FAULT_DISPLAY_CODE AS "faultDisplayCode",
+        d.FAULT_DISPLAY_DETAIL AS "faultDisplayDetail",
+        d.FAULT_DETAIL AS "faultDetail",
+        d.DISCOVERER_ID AS "discovererId",
+        d.DISCOVERER_PHONE AS "discovererPhone",
+        d.DISCOVERER_NAME AS "discovererName",
+        d.DISCOVERY_TIME AS "discoveryTime",
+        d.FILLIN_USER_ID AS "fillinUserId",
+        d.FILLIN_DEPT_CODE AS "fillinDeptCode",
+        d.FILLIN_TIME AS "fillinTime",
+        d.RESP_DEPT_CODE AS "respDeptCode",
+        d.ASSIST_DEPT_CODE AS "assistDeptCode",
+        d.REPAIR_DEPT_CODE AS "repairDeptCode",
+        d.PUBLISH_USER_ID AS "publishUserId",
+        d.PUBLISH_TIME AS "publishTime",
+        d.FAULT_LEVEL AS "faultLevel",
+        d.FAULT_STATUS AS "faultStatus",
+        d.WORK_FLOW_INST_ID AS "workFlowInstId",
+        d.WORK_FLOW_INST_STATUS AS "workFlowInstStatus",
+        d.DOC_ID AS "docId",
+        d.REMARK AS "remark",
+        d.REC_CREATOR AS "recCreator",
+        d.REC_CREATE_TIME AS "recCreateTime",
+        d.REC_REVISOR AS "recRevisor",
+        d.REC_REVISE_TIME AS "recReviseTime",
+        d.REC_DELETOR AS "recDeletor",
+        d.REC_DELETE_TIME AS "recDeleteTime",
+        d.DELETE_FLAG AS "deleteFlag",
+        d.ARCHIVE_FLAG AS "archiveFlag",
+        d.REC_STATUS AS "recStatus",
+        d.EXT1 AS "ext1",
+        d.EXT2 AS "ext2",
+        d.EXT3 AS "affect",
+        d.EXT4 AS "ext4",
+        d.EXT5 AS "ext5",
+        d.TRAIN_TAG AS "traintag",
+        u.USER_NAME AS "fillinUserName",
+        df.CLOSE_TIME AS "closeTime",
+        ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME = df.CLOSE_USER_ID ) AS "closeUserName",
+        df.DEALER_UNIT AS "dealerUnit",
+        df.DEALER_NUM AS "dealerNum",
+        df.FAULT_WORK_NO AS "faultWorkNo",
+        df.REC_ID AS "orderRecId",
+        df.ORDER_STATUS AS "orderStatus",
+        df.EXT1 AS "levelfault"
+        FROM
+        T_FAULT_INFO d,
+        IPLAT60.XS_USER u,
+        T_FAULT_ORDER df
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="recId != null">
+                AND d.REC_ID = #{recId}
+            </if>
+            <if test="faultType != null">
+                AND d.FAULT_TYPE = #{faultType}
+            </if>
+            <if test="fillinUserId != null">
+                AND d.FILLIN_USER_ID = #{fillinUserId}
+            </if>
+            <if test="positionCode != null">
+                AND d.POSITION_CODE = #{positionCode}
+            </if>
+            <if test="orderStatus != null">
+                AND df.ORDER_STATUS = #{orderStatus}
+            </if>
+            <if test="workStatus1 != null">
+                AND df.ORDER_STATUS &lt;&gt; '99'
+            </if>
+            <if test="faultNo != null">
+                AND d.FAULT_NO LIKE '%' || #{faultNo} || '%'
+            </if>
+            <if test="faultWorkNo != null">
+                AND df.FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
+            </if>
+            <if test="workFlowInstId != null">
+                AND (df.REC_ID = #{workFlowInstId} OR d.REC_ID = #{workFlowInstId})
+            </if>
+            <if test="sqlCondition != null">
+                AND ${sqlCondition}
+            </if>
+            <if test="objectCode != null">
+                AND d.OBJECT_CODE = #{objectCode}
+            </if>
+            <if test="faultModuleId != null">
+                AND d.FAULT_MODULE_ID = #{faultModuleId}
+            </if>
+            <if test="faultDisplayCode != null">
+                AND d.FAULT_DISPLAY_CODE = #{faultDisplayCode}
+            </if>
+            <if test="objectName != null">
+                AND d.OBJECT_NAME = #{objectName}
+            </if>
+            <if test="majorCode != null">
+                AND d.MAJOR_CODE = #{majorCode}
+            </if>
+            <if test="systemCode != null">
+                AND d.SYSTEM_CODE = #{systemCode}
+            </if>
+            <if test="equipTypeCode != null">
+                AND d.EQUIP_TYPE_CODE = #{equipTypeCode}
+            </if>
+            <if test="trainTrunk != null">
+                AND d.TRAIN_TRUNK = #{trainTrunk}
+            </if>
+            <if test="faultModule != null">
+                AND d.FAULT_MODULE = #{faultModule}
+            </if>
+            <if test="faultStatus != null">
+                AND d.FAULT_STATUS = #{faultStatus}
+            </if>
+            <if test="faultFlag null">
+                AND d.FAULT_FLAG = #{faultFlag}
+            </if>
+            <if test="faultDetail != null">
+                AND d.FAULT_DETAIL LIKE '%' || #{faultDetail} || '%'
+            </if>
+            <if test="startTime != null">
+                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{startTime}, 'YYYY-MM-DD')
+            </if>
+            <if test="endTime != null">
+                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{endTime}, 'YYYY-MM-DD') + 1
+            </if>
+            AND d.FILLIN_USER_ID = u.LOGIN_NAME
+            AND d.FAULT_NO = df.FAULT_NO
+            AND d.FAULT_FLAG <![CDATA[!=]]> '2'
+        </trim>
     </select>
 
 </mapper>

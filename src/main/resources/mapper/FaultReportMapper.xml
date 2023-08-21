@@ -625,7 +625,7 @@
         SELECT max(FAULT_WORK_NO)
         FROM T_FAULT_ORDER
     </select>
-    <select id="getFaultOrderFaultNoMaxCode" resultType="java.lang.String">
+    <select id="getFaultInfoFaultNoMaxCode" resultType="java.lang.String">
         SELECT max(FAULT_NO)
         FROM T_FAULT_INFO
     </select>

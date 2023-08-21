@@ -7,6 +7,8 @@ import com.wzmtr.eam.entity.SidEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/17 16:53
@@ -17,4 +19,5 @@ public interface FaultQueryMapper {
     Page<FaultDetailResDTO> list(Page<Object> of, FaultQueryReqDTO reqDTO);
 
     String queryOrderStatus(SidEntity reqDTO);
+    List<FaultDetailResDTO> exportList(FaultQueryReqDTO reqDTO);
 }

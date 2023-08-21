@@ -10,5 +10,9 @@ import lombok.Data;
 public class File {
     private String oldName;
     private String newName;
-    private Long id;
+    private String url;
+    private String recCreator;
+    private String recCreateTime;
+    private String bucket;
+    private String id;
 }

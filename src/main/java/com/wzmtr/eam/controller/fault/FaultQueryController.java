@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.fault;
 
+import com.wzmtr.eam.dto.req.OverhaulPlanListReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
@@ -12,6 +13,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Author: Li.Wang
@@ -37,10 +40,17 @@ public class FaultQueryController {
     }
 
     @ApiOperation(value = "下发")
-    @GetMapping("/issue")
+    @PostMapping("/issue")
     public DataResponse<AnalyzeResDTO> issue(@RequestBody FaultDetailReqDTO reqDTO) {
         // faultWorkNo
         faultQueryService.issue(reqDTO);
+        return DataResponse.success();
+    }
+    @ApiOperation(value = "导出")
+    @GetMapping("/issue")
+    public DataResponse<AnalyzeResDTO> export(@RequestBody FaultQueryReqDTO reqDTO,HttpServletResponse response) {
+        // faultWorkNo
+        faultQueryService.export(reqDTO,response);
         return DataResponse.success();
     }
 

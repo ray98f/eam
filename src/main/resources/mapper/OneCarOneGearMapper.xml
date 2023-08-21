@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.statistic.OneCarOneGearMapper">
+
+
+    <select id="query" resultType="com.wzmtr.eam.dto.res.statistic.OneCarOneGearResDTO">
+        SELECT EQUIP_NAME       as "trainNo",
+               START_USE_DATE   as "startUseDate",
+               MANUFACTURE_DATE as "manufactureDate"
+        FROM T_EQUIPMENT
+        WHERE T_EQUIPMENT.EQUIP_NAME = #{equipName}
+    </select>
+    <select id="querySummary" resultType="com.wzmtr.eam.dto.res.statistic.OneCarOneGearResDTO">
+        select
+        (
+        SELECT
+        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM
+        T_OVERHAUL_ORDER
+        WHERE
+        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%$equipName$%'
+        AND TDMER21.PLAN_NAME LIKE '%二级修(30天%'
+        AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
+        WHERE
+        1=1
+        <if test="startDate!=null">
+            to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ) as "er2",
+        (
+        SELECT
+        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM
+        T_OVERHAUL_ORDER
+        WHERE
+        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%$equipName$%'
+        AND TDMER21.PLAN_NAME LIKE '%二级修(90天%'
+        AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
+        WHERE
+        1=1
+        <if test="startDate!=null">
+            to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ) as "er3",
+        (
+        SELECT
+        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM
+        T_OVERHAUL_ORDER
+        WHERE
+        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%$equipName$%'
+        AND TDMER21.PLAN_NAME LIKE '%二级修(180天%'
+        AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
+        WHERE
+        1=1
+        <if test="startDate!=null">
+            to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ) as "er4",
+        (
+        SELECT
+        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM
+        T_OVERHAUL_ORDER
+        WHERE
+        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%$equipName$%'
+        AND TDMER21.PLAN_NAME LIKE '%二级修(360天%'
+        AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
+        WHERE
+        1=1
+        <if test="startDate!=null">
+            to_date(t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ) as "er5",
+        ( SELECT
+        COUNT(1)
+        FROM
+        T_FAULT_INFO t1
+        LEFT JOIN
+        T_FAULT_ORDER t2
+        ON
+        t1.FAULT_NO=t2.FAULT_NO
+        WHERE
+        t1.MAJOR_CODE='07'
+        AND t1.OBJECT_NAME= #{equipName}
+        AND nvl(t2.IS_FAULT,'10')='10'
+        <if test="startDate!=null">
+            to_date( t1.FILLIN_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(t1.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ) as "fmCount",
+        (
+        SELECT
+        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM
+        T_OVERHAUL_ORDER
+        WHERE
+        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%$equipName$%'
+        AND TDMER21.PLAN_NAME LIKE '%一级修%'
+        AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
+        WHERE
+        1=1
+        <if test="startDate!=null">
+            to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ) as "er1",
+        (
+        SELECT
+        MAX(DM06.TOTAL_MILES)
+        FROM
+        T_TRAIN_MILEAGE DM06
+        WHERE
+        DM06.EQUIP_NAME = #{equipName}
+        ) as "maxMile",
+        (
+        SELECT
+        MAX(DM06.TOTAL_TRACTION_ENERGY)
+        FROM
+        T_TRAIN_MILEAGE DM06
+        WHERE
+        DM06.EQUIP_NAME =#{equipName}
+        ) as "maxkWh",
+        (
+        SELECT
+        MAX(DM06.TOTAL_REGENERATED_ELECTRICITY)
+        FROM
+        T_TRAIN_MILEAGE DM06
+        WHERE
+        DM06.EQUIP_NAME =#{equipName}
+
+        ) as "maxReEle",
+        (
+        SELECT
+        MAX(DM06.TOTAL_MILES)- MIN(DM06.TOTAL_MILES)
+        FROM
+        T_TRAIN_MILEAGE DM06
+        WHERE
+        DM06.EQUIP_NAME =#{equipName}
+        <if test="startDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ) as "minusMile",
+        (
+        SELECT
+        MAX(DM06.TOTAL_TRACTION_ENERGY)- MIN(DM06.TOTAL_TRACTION_ENERGY)
+        FROM
+        T_TRAIN_MILEAGE DM06
+        WHERE
+        DM06.EQUIP_NAME =#{equipName}
+        <if test="startDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ) as "minuskWh",
+        (
+        SELECT
+        MAX(DM06.TOTAL_REGENERATED_ELECTRICITY)- MIN(DM06.TOTAL_REGENERATED_ELECTRICITY)
+        FROM
+        T_TRAIN_MILEAGE DM06
+        WHERE
+        DM06.EQUIP_NAME =#{equipName}
+        <if test="startDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ) as "minusReEle"
+
+        from dual
+
+    </select>
+    <select id="querydmer3" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
+        SELECT
+        MAX( DM06.TOTAL_MILES) as "dmer3km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer3date"
+        FROM
+        T_TRAIN_MILEAGE DM06,T_OVERHAUL_ORDER ER21
+        WHERE
+        SUBSTR(DM06.FILLIN_TIME,0,10) in
+        (
+        SELECT
+        SUBSTR(ER21.REAL_END_TIME,0,10)
+        FROM
+        T_OVERHAUL_ORDER ER21
+        WHERE
+        ER21.PLAN_NAME like '%' || #{equipName} || '%'
+        AND ER21.PLAN_NAME LIKE '%' || #{二级修(90天} || '%'
+        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
+        <if test="startDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#startDate#, 'YYYY-MM-DD')
+        </if>
+        <if test="startDate!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#endDate#, 'YYYY-MM-DD')
+        </if>
+        group BY SUBSTR(DM06.FILLIN_TIME,0,10)
+        ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
+    </select>
+</mapper>

@@ -9,10 +9,7 @@ import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
-import com.wzmtr.eam.entity.response.DataResponse;
-import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
-import com.wzmtr.eam.mapper.fault.TrackMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.utils.CodeUtils;
@@ -21,10 +18,6 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Author: Li.Wang
@@ -39,7 +32,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addToEquip(FaultReportReqDTO reqDTO) {
-        String maxFaultNo = faultReportMapper.getFaultOrderFaultNoMaxCode();
+        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         // 获取AOP代理对象
         FaultReportServiceImpl aop = (FaultReportServiceImpl) AopContext.currentProxy();
