@@ -90,7 +90,7 @@
         EXT3	as "ext3",  <!-- 扩展字段3 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
-        FROM T_OVERHAUL_ITEM WHERE REC_ID=#{id}
+        FROM T_OVERHAUL_STATE WHERE REC_ID=#{id}
     </select>
 
     <select id="listOverhaulState" resultType="com.wzmtr.eam.dto.res.OverhaulStateResDTO">

@@ -21,10 +21,7 @@ import com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulStateMapper;
 import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__BeanUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -394,7 +391,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             String discovererPhone = TokenUtil.getCurrentPerson().getPhone();
             String currentUser = TokenUtil.getCurrentPerson().getPersonName();
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            CurrentLoginUser userInfo = TokenUtil.getCurrentPerson();
             String orgCode = TokenUtil.getCurrentPerson().getOfficeId();
             String orgName = TokenUtil.getCurrentPerson().getOfficeName();
             res.setFillinUserId(currentUser);
@@ -435,7 +431,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         }
         dmfm01.setFaultType("30");
         dmfm01.setMajorCode(list.get(0).getSubjectCode());
-        dmfm01.setMajorName(list.get(0).getSubjectCode());
+        dmfm01.setMajorName(list.get(0).getSubjectName());
         dmfm01.setSystemCode(list.get(0).getSystemCode());
         dmfm01.setSystemName(list.get(0).getSystemName());
         dmfm01.setEquipTypeCode(list.get(0).getEquipTypeCode());
@@ -446,13 +442,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         dmfm01.setRecCreateTime(dateTimeFormat.format(new Date()));
         dmfm01.setDiscoveryTime(dateTimeFormat.format(new Date()));
         dmfm01.setFillinTime(dateTimeFormat.format(new Date()));
-        // todo faultNo生成
-        String faultNo = "GZ";
+        String maxFaultNo = faultReportMapper.getFaultOrderFaultNoMaxCode();
+        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+        String faultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+        String faultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
         dmfm01.setFaultNo(faultNo);
         FaultOrderReqDTO dmfm02 = new FaultOrderReqDTO();
         BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm02);
         dmfm02.setRecId(TokenUtil.getUuId());
-        String faultWorkNo = "GD" + faultNo.substring(2);
         dmfm02.setFaultWorkNo(faultWorkNo);
         dmfm02.setFaultNo(faultNo);
         dmfm02.setOrderStatus("30");
