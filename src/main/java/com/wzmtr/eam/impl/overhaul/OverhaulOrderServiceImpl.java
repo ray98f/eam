@@ -442,7 +442,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         dmfm01.setRecCreateTime(dateTimeFormat.format(new Date()));
         dmfm01.setDiscoveryTime(dateTimeFormat.format(new Date()));
         dmfm01.setFillinTime(dateTimeFormat.format(new Date()));
-        String maxFaultNo = faultReportMapper.getFaultOrderFaultNoMaxCode();
+        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         String faultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
         String faultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
