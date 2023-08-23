@@ -1,10 +1,13 @@
 package com.wzmtr.eam.service.statistic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.statistic.CarFaultQueryReqDTO;
-import com.wzmtr.eam.dto.req.statistic.FailreRateQueryReqDTO;
-import com.wzmtr.eam.dto.req.statistic.MaterialQueryReqDTO;
-import com.wzmtr.eam.dto.req.statistic.OneCarOneGearQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.*;
+import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
+import com.wzmtr.eam.dto.res.GeneralSurveyResDTO;
+import com.wzmtr.eam.dto.res.PartReplaceResDTO;
+import com.wzmtr.eam.dto.res.WheelsetLathingResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 
 import java.util.List;
@@ -25,7 +28,51 @@ public interface StatisticService {
 
     OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearQueryReqDTO reqDTO);
 
-    InspectionJobListResDTO querydmer3(OneCarOneGearQueryReqDTO reqDTO);
+    Page<InspectionJobListResDTO> querydmer3(OneCarOneGearQueryReqDTO reqDTO);
 
-    InspectionJobListResDTO queryER4(OneCarOneGearQueryReqDTO reqDTO);
+    Page<InspectionJobListResDTO> queryER4(OneCarOneGearQueryReqDTO reqDTO);
+
+    Page<InspectionJobListResDTO> queryER5(OneCarOneGearQueryReqDTO reqDTO);
+
+    /**
+     * 故障列表
+     * @param reqDTO
+     * @return
+     */
+    Page<FaultDetailResDTO> queryFMHistory(OneCarOneGearQueryReqDTO reqDTO);
+
+    /**
+     * 故障跟踪
+     * @param reqDTO
+     * @return
+     */
+
+    Page<TrackQueryResDTO> queryDMFM21(OneCarOneGearQueryReqDTO reqDTO);
+
+    /**
+     * 部件跟换
+     * @param reqDTO
+     * @return
+     */
+
+    Page<PartReplaceResDTO> querydmdm20(OneCarOneGearQueryReqDTO reqDTO);
+
+    /**
+     * 齿轮箱换油
+     * @param reqDTO
+     * @return
+     */
+    Page<GearboxChangeOilResDTO> pageGearboxChangeOil(OneCarOneGearQueryReqDTO reqDTO);
+
+    Page<WheelsetLathingResDTO> pageWheelsetLathing(OneCarOneGearQueryReqDTO reqDTO);
+
+    Page<GeneralSurveyResDTO> pageGeneralSurvey(OneCarOneGearQueryReqDTO reqDTO);
+
+    Page<InspectionJobListResDTO> queryER2(OneCarOneGearQueryReqDTO reqDTO);
+
+    Page<InspectionJobListResDTO> queryER1(OneCarOneGearQueryReqDTO reqDTO);
+
+    RAMSResDTO query4AQYYZB(RAMSTimeReqDTO reqDTO);
+
+    List<SystemFaultsResDTO> systemFault(String startDate, String endDate,String sys);
 }

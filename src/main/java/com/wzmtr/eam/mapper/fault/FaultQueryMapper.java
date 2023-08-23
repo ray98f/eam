@@ -5,6 +5,7 @@ import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,8 +17,8 @@ import java.util.List;
 @Mapper
 @Repository
 public interface FaultQueryMapper {
-    Page<FaultDetailResDTO> list(Page<Object> of, FaultQueryReqDTO reqDTO);
+    Page<FaultDetailResDTO> list(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
 
-    String queryOrderStatus(SidEntity reqDTO);
+    List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
     List<FaultDetailResDTO> exportList(FaultQueryReqDTO reqDTO);
 }

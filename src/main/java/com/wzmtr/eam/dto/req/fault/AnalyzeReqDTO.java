@@ -35,6 +35,8 @@ public class AnalyzeReqDTO extends PageReqDTO {
     private String frequency;
     @ApiModelProperty(value = "责任部门")
     private String respDeptCode;
+    @ApiModelProperty(value = "责任部门姓名")
+    private String respDeptName;
     @ApiModelProperty(value = "故障影响")
     private String affectCodes;
 }

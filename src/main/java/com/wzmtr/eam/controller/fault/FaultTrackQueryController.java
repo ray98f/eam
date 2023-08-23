@@ -5,6 +5,7 @@ import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -42,8 +43,8 @@ public class FaultTrackQueryController {
         return DataResponse.of(trackQueryService.trackDetail(reqDTO));
     }
     @ApiOperation(value = "作废")
-    @GetMapping("/cancellGenZ")
-    public DataResponse<AnalyzeResDTO> cancellGenZ(@RequestBody SidEntity reqDTO) {
+    @PostMapping("/cancellGenZ")
+    public DataResponse<AnalyzeResDTO> cancellGenZ(@RequestBody BaseIdsEntity reqDTO) {
         // 		FAULT_TRACK_NO = #faultTrackNo#
         trackQueryService.cancellGenZ(reqDTO);
         return DataResponse.success();

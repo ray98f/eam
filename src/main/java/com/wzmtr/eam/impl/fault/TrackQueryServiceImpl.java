@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -19,6 +20,8 @@ import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.__BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -33,7 +36,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<TrackQueryResDTO> list = trackQueryMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(),
-                reqDTO.getFaultTrackWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(),
+                reqDTO.getFaultTrackWorkNo(),reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(),
                 reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(),
                 reqDTO.getEquipTypeCode());
         if (CollectionUtil.isEmpty(list.getRecords())) {
@@ -53,18 +56,20 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     }
 
     @Override
-    public void cancellGenZ(SidEntity reqDTO) {
-        //faultTrackNo
-        if (StringUtils.isEmpty(reqDTO.getId())){
-            throw new CommonException(ErrorCode.PARAM_ERROR);
+    public void cancellGenZ(BaseIdsEntity reqDTO) {
+        if (CollectionUtil.isNotEmpty(reqDTO.getIds())){
+            List<String> ids = reqDTO.getIds();
+            ids.forEach(a->{
+                TrackQueryResDTO bo = new TrackQueryResDTO();
+                bo.setFaultTrackNo(a);
+                bo.setRecStatus("99");
+                bo.setRecRevisor(TokenUtil.getCurrentPersonId());
+                bo.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                bo.setExt1("");
+                trackQueryMapper.cancellGenZ(bo);
+            });
         }
-        TrackQueryResDTO bo = new TrackQueryResDTO();
-        bo.setRecStatus("99");
-        bo.setFaultTrackNo(reqDTO.getId());
-        bo.setRecRevisor(TokenUtil.getCurrentPersonId());
-        bo.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        bo.setExt1("");
-        trackQueryMapper.cancellGenZ(bo);
+        //faultTrackNo
     }
 
     @Override

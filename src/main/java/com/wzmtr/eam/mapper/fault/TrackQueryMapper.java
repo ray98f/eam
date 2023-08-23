@@ -19,12 +19,13 @@ public interface TrackQueryMapper {
 
     TrackQueryResDTO detail(String id);
 
-    Page<TrackQueryResDTO> query(Page<Object> of, String faultTrackNo, String faultNo, String faultTrackWorkNo,
-                                 String lineCode, String majorCode, String objectCode, String positionCode,
-                                 String systemCode, String objectName, String recStatus, String equipTypeCode);
+
+    
     FaultInfoBO faultDetail(FaultDetailReqDTO reqDTO);
 
     FaultDetailResDTO repairDetail(String faultNo, String faultWorkNo);
 
     void cancellGenZ(TrackQueryResDTO bo);
+
+    Page<TrackQueryResDTO> query(Page<Object> of, String faultTrackNo, String faultNo, String faultTrackWorkNo, String faultWorkNo, String lineCode, String majorCode, String objectCode, String positionCode, String systemCode, String objectName, String recStatus, String equipTypeCode);
 }

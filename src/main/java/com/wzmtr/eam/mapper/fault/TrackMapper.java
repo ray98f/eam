@@ -20,9 +20,9 @@ public interface TrackMapper {
 
     TrackResDTO detail(@Param("id") String id);
 
-    TrackResDTO report(TrackReportReqDTO reqDTO);
+    void report(TrackReportReqDTO reqDTO);
 
-    TrackResDTO close(TrackCloseReqDTO reqDTO);
+    void close(TrackCloseReqDTO reqDTO);
     TrackResDTO queryFault(@Param("id") String id);
 
     void repair(TrackRepairReqDTO reqDTO);

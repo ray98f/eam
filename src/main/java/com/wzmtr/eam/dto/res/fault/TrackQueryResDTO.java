@@ -114,6 +114,8 @@ public class TrackQueryResDTO {
 
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
+    @ApiModelProperty(value = "故障处理")
+    private String faultActionDetail;
 
 
 }

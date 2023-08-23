@@ -86,91 +86,52 @@
         IPLAT60.XS_USER u,
         T_FAULT_ORDER df
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="recId != null">
-                AND d.REC_ID = #{recId}
+            <if test="req.faultType != null">
+                AND d.FAULT_TYPE = #{req.faultType}
             </if>
-            <if test="faultType != null">
-                AND d.FAULT_TYPE = #{faultType}
+            <if test="req.positionCode != null">
+                AND d.POSITION_CODE = #{req.positionCode}
             </if>
-            <if test="fillinUserId != null">
-                AND d.FILLIN_USER_ID = #{fillinUserId}
+            <if test="req.faultNo != null">
+                AND d.FAULT_NO LIKE '%' || #{req.faultNo} || '%'
             </if>
-            <if test="positionCode != null">
-                AND d.POSITION_CODE = #{positionCode}
+            <if test="req.faultWorkNo != null">
+                AND df.FAULT_WORK_NO LIKE '%' || #{req.faultWorkNo} || '%'
             </if>
-            <if test="orderStatus != null">
-                AND df.ORDER_STATUS = #{orderStatus}
+            <if test="req.orderStatus != null and req.orderStatus != ''">
+                AND df.ORDER_STATUS = #{req.orderStatus}
             </if>
-            <if test="workStatus1 != null">
-                AND df.ORDER_STATUS &lt;&gt; '99'
+            <if test="req.recStatus != null and req.recStatus != ''">
+                AND df.ORDER_STATUS <![CDATA[!=]]> #{req.recStatus}
             </if>
-            <if test="faultNo != null">
-                AND d.FAULT_NO LIKE '%' || #{faultNo} || '%'
+            <if test="req.objectCode != null">
+                AND d.OBJECT_CODE = #{req.objectCode}
             </if>
-            <if test="faultWorkNo != null">
-                AND df.FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
+            <if test="req.objectName != null">
+                AND d.OBJECT_NAME = #{req.objectName}
             </if>
-            <if test="workFlowInstId != null">
-                AND (df.REC_ID = #{workFlowInstId} OR d.REC_ID = #{workFlowInstId})
+            <if test="req.majorCode != null">
+                AND d.MAJOR_CODE = #{req.majorCode}
             </if>
-            <if test="sqlCondition != null">
-                AND ${sqlCondition}
+            <if test="req.systemCode != null and req.systemCode != ''">
+                AND d.SYSTEM_CODE = #{req.systemCode}
             </if>
-            <if test="objectCode != null">
-                AND d.OBJECT_CODE = #{objectCode}
+            <if test="req.equipTypeCode != null and req.equipTypeCode != ''">
+                AND d.EQUIP_TYPE_CODE = #{req.equipTypeCode}
             </if>
-            <if test="faultModuleId != null">
-                AND d.FAULT_MODULE_ID = #{faultModuleId}
+            <if test="req.faultDetail != null">
+                AND d.FAULT_DETAIL LIKE '%' || #{req.faultDetail} || '%'
             </if>
-            <if test="faultDisplayCode != null">
-                AND d.FAULT_DISPLAY_CODE = #{faultDisplayCode}
+            <if test="req.fillinTimeStart != null">
+                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD')
             </if>
-            <if test="objectName != null">
-                AND d.OBJECT_NAME = #{objectName}
-            </if>
-            <if test="majorCode != null">
-                AND d.MAJOR_CODE = #{majorCode}
-            </if>
-            <if test="systemCode != null">
-                AND d.SYSTEM_CODE = #{systemCode}
-            </if>
-            <if test="equipTypeCode != null">
-                AND d.EQUIP_TYPE_CODE = #{equipTypeCode}
-            </if>
-            <if test="trainTrunk != null">
-                AND d.TRAIN_TRUNK = #{trainTrunk}
-            </if>
-            <if test="faultModule != null">
-                AND d.FAULT_MODULE = #{faultModule}
-            </if>
-            <if test="faultStatus != null">
-                AND d.FAULT_STATUS = #{faultStatus}
-            </if>
-            <if test="faultFlag null">
-                AND d.FAULT_FLAG = #{faultFlag}
-            </if>
-            <if test="faultDetail != null">
-                AND d.FAULT_DETAIL LIKE '%' || #{faultDetail} || '%'
-            </if>
-            <if test="startTime != null">
-                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{startTime}, 'YYYY-MM-DD')
-            </if>
-            <if test="endTime != null">
-                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{endTime}, 'YYYY-MM-DD') + 1
+            <if test="req.fillinTimeEnd != null">
+                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD') + 1
             </if>
             AND d.FILLIN_USER_ID = u.LOGIN_NAME
             AND d.FAULT_NO = df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
         </trim>
-    </select>
-    <select id="queryOrderStatus" resultType="java.lang.String">
-        select
-        df2.ORDER_STATUS as "orderStatus"
-        from T_FAULT_INFO df1,T_FAULT_ORDER df2
-        where 1=1 and df1.FAULT_NO=df2.FAULT_NO
-        <if test="faultWorkNo != null">
-            AND df2.FAULT_WORK_NO = #faultWorkNo#
-        </if>
     </select>
     <select id="exportList" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
@@ -332,6 +293,15 @@
             AND d.FAULT_NO = df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
         </trim>
+    </select>
+    <select id="queryOrderStatus" resultType="java.lang.String">
+        select
+        df2.ORDER_STATUS
+        from T_FAULT_INFO df1,T_FAULT_ORDER df2
+        where 1=1 and df1.FAULT_NO=df2.FAULT_NO
+        <if test="reqDTO.id != null">
+            AND df2.FAULT_WORK_NO = #{reqDTO.id}
+        </if>
     </select>
 
 </mapper>

@@ -5,7 +5,7 @@
     <update id="report">
         UPDATE T_FAULT_TRACK_DETAIL
         SET
-        <if test="trackReporterId!=null">
+        <if test="recStatus!=null">
             REC_STATUS = #{recStatus},
         </if>
         <if test="trackReporterId!=null">
@@ -14,7 +14,7 @@
         <if test="trackResult!=null">
             TRACK_RESULT = #{trackResult},
         </if>
-        <if test="trackResult!=null">
+        <if test="trackReportTime!=null">
             TRACK_REPORT_TIME = #{trackReportTime}
         </if>
         <trim prefix="WHERE" prefixOverrides="AND">
@@ -137,9 +137,9 @@
         df11.WORK_GROUP_NAME as "workGroupName",
         df11.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
         df11.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
-        -- (Select u.USER_NAME from IPLAT60.c u where u.LOGIN_NAME =df11.TRACK_REPORTER_ID) as "trackReportName",
-        -- (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.DISPATCH_USER_ID) as "dispatchUserName",
-        -- (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.TRACK_CLOSER_ID) as "trackCloserName",
+        (Select u.USER_NAME from IPLAT60.c u where u.LOGIN_NAME =df11.TRACK_REPORTER_ID) as "trackReportName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.DISPATCH_USER_ID) as "dispatchUserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.TRACK_CLOSER_ID) as "trackCloserName",
         df11.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
         df11.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
         df11.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->

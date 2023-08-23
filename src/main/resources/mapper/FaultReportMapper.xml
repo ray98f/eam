@@ -168,8 +168,7 @@
         #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR},#{traintag,jdbcType=VARCHAR})
     </insert>
     <update id="updateFaultOrder">
-        UPDATE T_FAULT_ORDER
-        SET
+        UPDATE T_FAULT_ORDER SET
         <if test="planRecoveryTime != null">
             PLAN_RECOVERY_TIME = #{planRecoveryTime},
         </if>
@@ -187,9 +186,6 @@
         </if>
         <if test="companyName != null">
             COMPANY_NAME = #{companyName},
-        </if>
-        <if test="faultWorkNo != null">
-            FAULT_WORK_NO = #{faultWorkNo},
         </if>
         <if test="workClass != null">
             WORK_CLASS = #{workClass},
@@ -299,12 +295,6 @@
         <if test="recCreateTime != null and recCreateTime != ''">
             REC_CREATE_TIME = #{recCreateTime},
         </if>
-        <if test="recRevisor != null and recRevisor != ''">
-            REC_REVISOR = #{recRevisor},
-        </if>
-        <if test="recReviseTime != null and recReviseTime != ''">
-            REC_REVISE_TIME = #{recReviseTime},
-        </if>
         <if test="recDeletor != null and recDeletor != ''">
             REC_DELETOR = #{recDeletor},
         </if>
@@ -341,14 +331,13 @@
         <if test="dealerUnit != null and dealerUnit != ''">
             DEALER_UNIT = #{dealerUnit},
         </if>
-        WHERE
-        FAULT_NO = #{faultNo}
-        <if test="faultWorkNo != null and faultWorkNo != ''">
-            AND FAULT_WORK_NO = #{faultWorkNo}
-        </if>
+        REC_REVISOR = #{recRevisor},
+        REC_REVISE_TIME = #{recReviseTime}
+        where FAULT_NO = #{faultNo}
+        and FAULT_WORK_NO = #{faultWorkNo}
     </update>
     <update id="updateFaultInfo">
-        UPDATE T_FAULT_INFO SET
+        update "T_FAULT_INFO" set
         <if test="companyCode != null and companyCode != ''">
             COMPANY_CODE = #{companyCode},
         </if>
@@ -472,12 +461,6 @@
         <if test="recCreateTime != null and recCreateTime != ''">
             REC_CREATE_TIME = #{recCreateTime},
         </if>
-        <if test="recRevisor != null and recRevisor != ''">
-            REC_REVISOR = #{recRevisor},
-        </if>
-        <if test="recReviseTime != null and recReviseTime != ''">
-            REC_REVISE_TIME = #{recReviseTime},
-        </if>
         <if test="recDeletor != null and recDeletor != ''">
             REC_DELETOR = #{recDeletor},
         </if>
@@ -509,8 +492,10 @@
             EXT5 = #{ext5},
         </if>
         <if test="traintag != null and traintag != ''">
-            TRAIN_TAG = #{traintag},
+            TRAIN_TAG = #{traintag}
         </if>
+        REC_REVISOR = #{recRevisor},
+        REC_REVISE_TIME = #{recReviseTime}
         WHERE
         FAULT_NO = #{faultNo}
     </update>

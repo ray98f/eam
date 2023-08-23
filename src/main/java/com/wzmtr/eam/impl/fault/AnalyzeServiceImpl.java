@@ -31,7 +31,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
-        return mapper.query(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getMajorCode(), reqDTO.getRecStatus(), reqDTO.getLineCode(), reqDTO.getFrequency(), reqDTO.getPositionCode(), reqDTO.getDiscoveryStartTime(), reqDTO.getDiscoveryEndTime(), reqDTO.getRespDeptCode(), reqDTO.getAffectCodes());
+        return mapper.query(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getMajorCode(), reqDTO.getRecStatus(), reqDTO.getLineCode(), reqDTO.getFrequency(), reqDTO.getPositionCode(), reqDTO.getDiscoveryStartTime(), reqDTO.getDiscoveryEndTime(), reqDTO.getRespDeptCode(),reqDTO.getAffectCodes());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
             map.put("故障发现时间", resDTO.getDiscoveryTime());
             map.put("线路", resDTO.getLineCode());
             map.put("频次", resDTO.getFrequency());
-            map.put("位置", resDTO.getPosition());
+            map.put("位置", resDTO.getPositionName());
             map.put("牵头部门", StringUtils.isEmpty(respDept) ? resDTO.getRespDeptCode() : respDept);
             map.put("故障等级", resDTO.getFaultLevel());
             map.put("故障影响", resDTO.getAffectCodes());

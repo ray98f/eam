@@ -123,4 +123,17 @@
             AND T07.ORG_TYPE = #{orgType}
         </if>
     </select>
+    <select id="getDepartmentUserByGroupName" resultType="com.wzmtr.eam.entity.OrganMajorLineType">
+        SELECT LOGIN_NAME AS "loginName", USER_NAME AS "userName"
+        FROM (SELECT U.LOGIN_NAME, U.USER_NAME
+              FROM IPLAT60.XS_USER U
+              WHERE U.USER_ID IN
+                    (SELECT MEMBER_ID
+                     FROM IPLAT60.XS_USER_GROUP_MEMBER
+                     WHERE PARENT_ID =
+                           (SELECT ID FROM IPLAT60.XS_USER_GROUP WHERE GROUP_ENAME = #{groupCname})))
+        WHERE LOGIN_NAME IN (SELECT DISTINCT V_CO_ORG_USER.USER_CODE
+                             FROM rplat60.V_CO_ORG_USER
+                             WHERE V_CO_ORG_USER.ORG_CODE = #{dptCode})
+    </select>
 </mapper>

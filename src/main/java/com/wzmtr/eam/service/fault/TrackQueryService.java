@@ -5,6 +5,7 @@ import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
 
 /**
@@ -19,7 +20,7 @@ public interface TrackQueryService {
 
     FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO);
 
-    void cancellGenZ(SidEntity reqDTO);
+    void cancellGenZ(BaseIdsEntity reqDTO);
 
     // TrackResDTO detail(SidEntity reqDTO);
     //

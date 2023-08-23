@@ -18,10 +18,9 @@ public interface TrackService {
 
     TrackResDTO detail(SidEntity reqDTO);
 
+    void report(TrackReportReqDTO reqDTO);
 
-    TrackResDTO report(TrackReportReqDTO reqDTO);
-
-    TrackResDTO close(TrackCloseReqDTO reqDTO);
+    void close(TrackCloseReqDTO reqDTO);
 
     void repair(TrackRepairReqDTO reqDTO);
 }

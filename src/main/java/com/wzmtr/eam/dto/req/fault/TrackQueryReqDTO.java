@@ -15,12 +15,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class TrackQueryReqDTO extends PageReqDTO {
 
-    @ApiModelProperty(value = "故障单号")
+    @ApiModelProperty(value = "跟踪单号")
     private String faultTrackNo;
     @ApiModelProperty(value = "故障跟踪工单号")
     private String faultTrackWorkNo;
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
+    @ApiModelProperty(value = "故障工单号")
+    private String faultWorkNo;
     @ApiModelProperty(value = "对象编码")
     private String objectCode;
     @ApiModelProperty(value = "对象名称")

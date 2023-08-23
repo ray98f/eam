@@ -78,4 +78,5 @@ public interface OrgMajorMapper {
     List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(@Param("subjectCode") String subjectCode, @Param("line") String line, @Param("orgType") String orgType);
 
 
+    List<OrganMajorLineType> getDepartmentUserByGroupName(@Param("dptCode")String dptCode,@Param("groupCname") String groupCname);
 }

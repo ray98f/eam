@@ -71,7 +71,7 @@ public class AnalyzeResDTO {
     private String remark;
     @ApiModelProperty(value = "分析报告状态")
     private String recStatus;
-    @ApiModelProperty(value = "位置")
+    @ApiModelProperty(value = "创建人")
     private String recCreator;
     @ApiModelProperty(value = "牵头部门")
     private String respDeptCode;
@@ -83,6 +83,7 @@ public class AnalyzeResDTO {
     private String objectCode;
     @ApiModelProperty(value = "对象名称")
     private String objectName;
-    private String position;
+    @ApiModelProperty(value = "位置")
+    private String positionName;
 
 }

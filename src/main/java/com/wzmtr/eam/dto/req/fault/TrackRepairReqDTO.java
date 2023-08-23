@@ -10,8 +10,8 @@ import lombok.Data;
 @Data
 public class TrackRepairReqDTO {
 
-    @ApiModelProperty(value = "记录Id")
-    private String recId;
+    @ApiModelProperty(value = "faultTrackWorkNo")
+    private String faultTrackWorkNo;
     @ApiModelProperty(value = "维修部门编号")
     private String workerGroupCode;
     @ApiModelProperty(value = "记录状态")

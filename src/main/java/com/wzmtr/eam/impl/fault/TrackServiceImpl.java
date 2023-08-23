@@ -43,20 +43,20 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public TrackResDTO report(TrackReportReqDTO reqDTO) {
+    public void report(TrackReportReqDTO reqDTO) {
         reqDTO.setTrackReportTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
         reqDTO.setTrackReporterId(TokenUtil.getCurrentPersonId());
         reqDTO.setRecStatus("30");
-        return trackMapper.report(reqDTO);
+        trackMapper.report(reqDTO);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public TrackResDTO close(TrackCloseReqDTO reqDTO) {
+    public void close(TrackCloseReqDTO reqDTO) {
         reqDTO.setTrackCloseTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
         reqDTO.setTrackCloserId(TokenUtil.getCurrentPersonId());
         reqDTO.setRecStatus("40");
-        return trackMapper.close(reqDTO);
+        trackMapper.close(reqDTO);
     }
 
     @Override
@@ -68,8 +68,4 @@ public class TrackServiceImpl implements TrackService {
         reqDTO.setRecStatus("20");
         trackMapper.repair(reqDTO);
     }
-
-
-
-
 }

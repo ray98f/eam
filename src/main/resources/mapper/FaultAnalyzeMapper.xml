@@ -60,9 +60,6 @@
             <if test="faultNo!=null and faultNo!=''">
                 and d3.FAULT_NO =#{faultNo}
             </if>
-            <if test="faultAnalysisNo!=null and faultAnalysisNo!=''">
-                and d3.FAULT_ANALYSIS_NO =#{faultAnalysisNo}
-            </if>
             <if test="recStatus!=null and recStatus!=''">
                 and d3.REC_STATUS =#{recStatus}
             </if>

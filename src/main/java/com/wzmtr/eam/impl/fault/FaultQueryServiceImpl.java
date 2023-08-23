@@ -7,19 +7,17 @@ import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
-import com.wzmtr.eam.dto.res.OverhaulWeekPlanResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.service.fault.FaultQueryService;
-import com.wzmtr.eam.utils.DateUtil;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -41,23 +39,30 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<FaultDetailResDTO> list = faultQueryMapper.list(reqDTO.of(), reqDTO);
-        if (CollectionUtil.isEmpty(list.getRecords())) {
+        List<FaultDetailResDTO> records = list.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
+        records.forEach(a -> {
+            String repair = organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode());
+            a.setRepairDeptName(StringUtils.isEmpty(repair) ? a.getRepairDeptCode() : repair);
+        });
         return list;
     }
 
     @Override
     public String queryOrderStatus(SidEntity reqDTO) {
         // faultWorkNo
-        String status = faultQueryMapper.queryOrderStatus(reqDTO);
-        return StringUtils.isEmpty(status) ? null : status;
+        List<String> status = faultQueryMapper.queryOrderStatus(reqDTO);
+        return CollectionUtil.isEmpty(status) ? null : status.get(0);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void issue(FaultDetailReqDTO reqDTO) {
-        String status = faultQueryMapper.queryOrderStatus(SidEntity.builder().id(reqDTO.getFaultWorkNo()).build());
-        FaultOrderBO faultOrderBO = new FaultOrderBO();
+        FaultQueryServiceImpl aop = (FaultQueryServiceImpl) AopContext.currentProxy();
+        String status = aop.queryOrderStatus(SidEntity.builder().id(reqDTO.getFaultWorkNo()).build());
+        FaultOrderBO faultOrderBO = __BeanUtil.convert(reqDTO,FaultOrderBO.class);
         switch (status) {
             case "40":
                 faultOrderBO.setReportStartUserId(TokenUtil.getCurrentPersonId());
@@ -76,8 +81,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultOrderBO.setCheckTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
         }
+        faultOrderBO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        faultOrderBO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         reportMapper.updateFaultOrder(faultOrderBO);
-        FaultInfoBO faultInfoBO = new FaultInfoBO();
+        FaultInfoBO faultInfoBO = __BeanUtil.convert(reqDTO,FaultInfoBO.class);
+        faultInfoBO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        faultInfoBO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         reportMapper.updateFaultInfo(faultInfoBO);
     }
 
@@ -99,25 +108,25 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 map.put("故障工单编号", resDTO.getFaultWorkNo());
                 map.put("对象编码", resDTO.getObjectCode());
                 map.put("故障状态", resDTO.getRecStatus());
-                map.put("维修部门", StringUtils.isEmpty(repairDept) ? resDTO.getRepairDeptCode():repairDept);
-                map.put("提报部门",StringUtils.isEmpty(fillinDept) ? resDTO.getFillinDeptCode(): fillinDept);
-                map.put("提报人员",resDTO.getFillinUserName());
-                map.put("联系电话",resDTO.getDiscovererPhone());
-                map.put("提报时间",resDTO.getFillinTime());
-                map.put("发现人",resDTO.getDiscovererName());
-                map.put("发现时间",resDTO.getDiscoveryTime());
-                map.put("故障紧急程度",resDTO.getFaultLevel());
-                map.put("故障影响",resDTO.getFaultAffect());
-                map.put("线路",resDTO.getLineCode());
-                map.put("车底号/车厢号",resDTO.getTrainTrunk());
-                map.put("位置一",resDTO.getPositionName());
-                map.put("位置二",resDTO.getPosition2Name());
-                map.put("专业",resDTO.getMajorName());
-                map.put("系统",resDTO.getSystemName());
-                map.put("设备分类",resDTO.getEquipTypeName());
-                map.put("模块",resDTO.getFaultModule());
-                map.put("故障处理人员",resDTO.getDealerUnit());
-                map.put("故障处理人数",resDTO.getDealerNum());
+                map.put("维修部门", StringUtils.isEmpty(repairDept) ? resDTO.getRepairDeptCode() : repairDept);
+                map.put("提报部门", StringUtils.isEmpty(fillinDept) ? resDTO.getFillinDeptCode() : fillinDept);
+                map.put("提报人员", resDTO.getFillinUserName());
+                map.put("联系电话", resDTO.getDiscovererPhone());
+                map.put("提报时间", resDTO.getFillinTime());
+                map.put("发现人", resDTO.getDiscovererName());
+                map.put("发现时间", resDTO.getDiscoveryTime());
+                map.put("故障紧急程度", resDTO.getFaultLevel());
+                map.put("故障影响", resDTO.getFaultAffect());
+                map.put("线路", resDTO.getLineCode());
+                map.put("车底号/车厢号", resDTO.getTrainTrunk());
+                map.put("位置一", resDTO.getPositionName());
+                map.put("位置二", resDTO.getPosition2Name());
+                map.put("专业", resDTO.getMajorName());
+                map.put("系统", resDTO.getSystemName());
+                map.put("设备分类", resDTO.getEquipTypeName());
+                map.put("模块", resDTO.getFaultModule());
+                map.put("故障处理人员", resDTO.getDealerUnit());
+                map.put("故障处理人数", resDTO.getDealerNum());
                 list.add(map);
             }
         }
