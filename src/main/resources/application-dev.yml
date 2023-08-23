@@ -101,3 +101,12 @@ minio:
 
 pro:
   name: eam
+
+eip:
+  url: "http://esb.wzmtr.com:7003/iplwebservice/ps/CREATEtodoList?wsdl"
+
+bpmn:
+  account: "eameam"
+  password: "eameam"
+  #  url: "http://10.11.71.157:9998/fastflow-admin"
+  url: "http://192.168.30.227:9998/fastflow-admin"
