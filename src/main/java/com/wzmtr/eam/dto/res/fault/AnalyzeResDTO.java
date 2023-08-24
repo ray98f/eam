@@ -75,10 +75,14 @@ public class AnalyzeResDTO {
     private String recCreator;
     @ApiModelProperty(value = "牵头部门")
     private String respDeptCode;
+    @ApiModelProperty(value = "牵头部门名称")
+    private String respDeptName;
     @ApiModelProperty(value = "故障等级")
     private String faultLevel;
     @ApiModelProperty(value = "系统")
     private String systemCode;
+    @ApiModelProperty(value = "系统名称")
+    private String systemName;
     @ApiModelProperty(value = "对象编码")
     private String objectCode;
     @ApiModelProperty(value = "对象名称")

@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.fault;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
@@ -9,6 +10,7 @@ import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.fault.FaultReportService;
@@ -29,6 +31,9 @@ public class FaultReportServiceImpl implements FaultReportService {
     private FaultReportMapper faultReportMapper;
     @Autowired
     private TrackQueryMapper trackQueryMapper;
+    @Autowired
+    private OrganizationMapper organizationMapper;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addToEquip(FaultReportReqDTO reqDTO) {
@@ -58,23 +63,31 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO) {
-        return faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd());
+        Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd());
+        if (CollectionUtil.isEmpty(list.getRecords())) {
+            return new Page<>();
+        }
+        // todo 这里太影响性能了先不放出来 平均耗时6S
+        // list.getRecords().forEach(a->{
+        //     a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
+        //     a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
+        // });
+        return list;
     }
-
-
 
 
     @Override
     public void addToMajor(FaultReportToMajorReqDTO reqDTO) {
+        // __BeanUtil.convert(reqDTO,)
     }
 
     @Override
     public FaultDetailResDTO detail(FaultDetailReqDTO reqDTO) {
         FaultInfoBO faultInfoBO = trackQueryMapper.faultDetail(reqDTO);
-        if (faultInfoBO==null){
+        if (faultInfoBO == null) {
             return null;
         }
-        return __BeanUtil.convert(faultInfoBO,FaultDetailResDTO.class);
+        return __BeanUtil.convert(faultInfoBO, FaultDetailResDTO.class);
     }
 
 }

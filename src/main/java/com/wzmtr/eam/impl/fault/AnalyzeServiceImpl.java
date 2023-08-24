@@ -31,7 +31,13 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
-        return mapper.query(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getMajorCode(), reqDTO.getRecStatus(), reqDTO.getLineCode(), reqDTO.getFrequency(), reqDTO.getPositionCode(), reqDTO.getDiscoveryStartTime(), reqDTO.getDiscoveryEndTime(), reqDTO.getRespDeptCode(),reqDTO.getAffectCodes());
+        Page<AnalyzeResDTO> query = mapper.query(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getMajorCode(), reqDTO.getRecStatus(), reqDTO.getLineCode(), reqDTO.getFrequency(), reqDTO.getPositionCode(), reqDTO.getDiscoveryStartTime(), reqDTO.getDiscoveryEndTime(), reqDTO.getRespDeptCode(), reqDTO.getAffectCodes());
+        List<AnalyzeResDTO> records = query.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
+            return new Page<>();
+        }
+        records.forEach(a-> a.setRespDeptName(organizationMapper.getOrgById(a.getRespDeptCode())));
+        return query;
     }
 
     @Override

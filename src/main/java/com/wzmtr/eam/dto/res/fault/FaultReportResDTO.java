@@ -23,6 +23,8 @@ public class FaultReportResDTO {
     private String trainTrunk;
     @ApiModelProperty(value = "位置1")
     private String positionCode;
+    @ApiModelProperty(value = "位置1")
+    private String positionName;
     @ApiModelProperty(value = "对象编码")
     private String objectCodeTextField;
     @ApiModelProperty(value = "线别姓名")
@@ -81,10 +83,18 @@ public class FaultReportResDTO {
     private String respDeptCode;
     @ApiModelProperty(value = "配合部门")
     private String assistDeptCode;
+    @ApiModelProperty(value = "配合部门姓名")
+    private String assistDeptName;
     @ApiModelProperty(value = "维修部门")
     private String repairDeptCode;
+    @ApiModelProperty(value = "维修部门姓名")
+    private String repairDeptName;
     @ApiModelProperty(value = "附件编号")
     private String docId;
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
+    @ApiModelProperty(value = "故障紧急程度")
+    private String faultLevel;
+    @ApiModelProperty(value = "故障影响")
+    private String faultAffect;
 }
