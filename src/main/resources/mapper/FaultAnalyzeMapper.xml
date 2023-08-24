@@ -73,10 +73,10 @@
                 and d1.POSITION_CODE =#{positionCode}
             </if>
             <if test="discoveryStartTime!=null and discoveryStartTime!=''">
-                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{discoveryStartTime},'YYYY-MM-DD')
+                and to_date( d1.DISCOVERY_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{discoveryStartTime}, 'YYYY-MM-DD')
             </if>
             <if test="discoveryEndTime!=null and discoveryEndTime!=''">
-                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{discoveryEndTime},'YYYY-MM-DD')
+                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> TO_DATE(#{discoveryEndTime},'YYYY-MM-DD')
             </if>
             <if test="respDeptCode!=null and respDeptCode!=''">
                 and d1.RESP_DEPT_CODE =#{respDeptCode}

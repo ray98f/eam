@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
@@ -63,11 +64,11 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO) {
+        PageHelper.startPage(reqDTO.getPageNo(),reqDTO.getPageSize());
         Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd());
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
-        // todo 这里太影响性能了先不放出来 平均耗时6S
         // list.getRecords().forEach(a->{
         //     a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
         //     a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
