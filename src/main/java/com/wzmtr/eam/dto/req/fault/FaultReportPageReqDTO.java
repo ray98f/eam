@@ -54,7 +54,7 @@ public class FaultReportPageReqDTO extends PageReqDTO {
     private String sourceCode;
     @ApiModelProperty(value = "来源编号")
     private String discoveryTime;
-    @ApiModelProperty(value = "发现时间")
+    @ApiModelProperty(value = "发现人")
     private String discovererName;
     @ApiModelProperty(value = "发现人工号")
     private String discovererId;

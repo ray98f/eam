@@ -247,7 +247,7 @@
             <if test="faultTrackNo!=null and faultTrackNo!=''">
                 and df9.FAULT_TRACK_NO = #{faultTrackNo}
             </if>
-            and DELETE_FLAG='0'
+            and df9.DELETE_FLAG='0'
         </trim>
     </select>
     <select id="faultDetail" resultType="com.wzmtr.eam.bo.FaultInfoBO">
@@ -414,8 +414,8 @@
             <if test="faultNo!=null and faultNo!=''">
                 and FAULT_NO = #{faultNo}
             </if>
-            <if test="faultworkNo!=null and faultworkNo!=''">
-                and FAULT_WORK_NO = #{faultworkNo}
+            <if test="faultWorkNo!=null and faultWorkNo!=''">
+                and FAULT_WORK_NO = #{faultWorkNo}
             </if>
         </trim>
     </select>

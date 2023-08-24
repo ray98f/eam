@@ -4,20 +4,20 @@ import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
+import com.wzmtr.eam.dto.res.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.service.basic.OrgMajorService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -29,6 +29,8 @@ import javax.validation.Valid;
 public class FaultReportController {
     @Autowired
     private FaultReportService reportService;
+    @Autowired
+    private OrgMajorService orgMajorService;
 
     @ApiOperation(value = "故障提报（到设备）")
     @PostMapping("/insert/epuip")
@@ -55,6 +57,10 @@ public class FaultReportController {
     public DataResponse<FaultDetailResDTO> detail(@RequestBody FaultDetailReqDTO reqDTO) {
         return DataResponse.of(reportService.detail(reqDTO));
     }
-
+    @GetMapping("/queryTypeAndDeptCode")
+    @ApiOperation(value = "获取维修部门和")
+    public List<OrgMajorResDTO> queryTypeAndDeptCode(@RequestParam String lineCode) {
+        return DataResponse.of(orgMajorService.queryTypeAndDeptCode(lineCode));
+    }
 
 }

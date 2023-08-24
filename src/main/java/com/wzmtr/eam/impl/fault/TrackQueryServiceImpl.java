@@ -12,6 +12,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.DateUtil;
@@ -31,12 +32,14 @@ import java.util.List;
 public class TrackQueryServiceImpl implements TrackQueryService {
     @Autowired
     private TrackQueryMapper trackQueryMapper;
+    @Autowired
+    private OrganizationMapper organizationMapper;
 
     @Override
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<TrackQueryResDTO> list = trackQueryMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(),
-                reqDTO.getFaultTrackWorkNo(),reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(),
+                reqDTO.getFaultTrackWorkNo(), reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(),
                 reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(),
                 reqDTO.getEquipTypeCode());
         if (CollectionUtil.isEmpty(list.getRecords())) {
@@ -48,18 +51,23 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
         FaultInfoBO faultDetail = trackQueryMapper.faultDetail(reqDTO);
-        FaultDetailResDTO repairDetail = trackQueryMapper.repairDetail(reqDTO.getFaultNo(),reqDTO.getFaultWorkNo());
-        if (faultDetail == null ) {
+        FaultDetailResDTO repairDetail = trackQueryMapper.repairDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        if (faultDetail == null) {
             return repairDetail;
         }
-        return __BeanUtil.copy(faultDetail, repairDetail);
+        FaultDetailResDTO res = __BeanUtil.copy(faultDetail, repairDetail);
+        String respDeptCode = res.getRespDeptCode();
+        res.setRespDeptName(organizationMapper.getOrgById(respDeptCode));
+        res.setFillinDeptName(organizationMapper.getOrgById(res.getFillinDeptCode()));
+        res.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(res.getRepairDeptCode()));
+        return res;
     }
 
     @Override
     public void cancellGenZ(BaseIdsEntity reqDTO) {
-        if (CollectionUtil.isNotEmpty(reqDTO.getIds())){
+        if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
             List<String> ids = reqDTO.getIds();
-            ids.forEach(a->{
+            ids.forEach(a -> {
                 TrackQueryResDTO bo = new TrackQueryResDTO();
                 bo.setFaultTrackNo(a);
                 bo.setRecStatus("99");
@@ -69,12 +77,12 @@ public class TrackQueryServiceImpl implements TrackQueryService {
                 trackQueryMapper.cancellGenZ(bo);
             });
         }
-        //faultTrackNo
+        // faultTrackNo
     }
 
     @Override
     public TrackQueryResDTO trackDetail(SidEntity reqDTO) {
-        //faultTrackNo
+        // faultTrackNo
         return trackQueryMapper.detail(reqDTO.getId());
     }
 

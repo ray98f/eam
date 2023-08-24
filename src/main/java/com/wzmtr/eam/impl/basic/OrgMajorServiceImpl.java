@@ -3,13 +3,16 @@ package com.wzmtr.eam.impl.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.OrgMajorReqDTO;
+import com.wzmtr.eam.dto.res.FaultResDTO;
+import com.wzmtr.eam.dto.res.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.OrgMajorResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.basic.FaultMapper;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.service.basic.OrgMajorService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
@@ -56,6 +59,8 @@ public class OrgMajorServiceImpl implements OrgMajorService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+    @Autowired
+    private FaultMapper faultMapper;
 
     @Override
     public Page<OrgMajorResDTO> listOrgMajor(String orgCode, String majorCode, PageReqDTO pageReqDTO) {
@@ -128,6 +133,32 @@ public class OrgMajorServiceImpl implements OrgMajorService {
             }
         }
         ExcelPortUtil.excelPort("组织机构专业信息", listName, list, null, response);
+    }
+
+    @Override
+    public FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode) {
+        //todo
+        String faultCode = "E";
+        String equipTypeCode = "";
+        String systemCode = "";
+        String majorCode = "";
+        FaultRespAndRepairDeptResDTO faultRespAndRepairDeptResDTO = new FaultRespAndRepairDeptResDTO();
+        String organType = "30";
+        List<FaultResDTO> list = new ArrayList<>();
+        list = getEquipTypeByMajorCode(majorCode, lineCode);
+        // List list = "DMBM0002.queryDeptCode;
+        // String majorCode = null;
+        List<OrgMajorResDTO> respDept = orgMajorMapper.queryTypeAndDeptCode(organType, majorCode, lineCode);
+        faultRespAndRepairDeptResDTO.setResp(respDept);
+        organType = "20";
+        majorCode = null;
+        List<OrgMajorResDTO> repairDept = orgMajorMapper.queryTypeAndDeptCode(organType, majorCode, lineCode);
+        faultRespAndRepairDeptResDTO.setRepair(repairDept);
+        return faultRespAndRepairDeptResDTO;
+    }
+
+    private List<FaultResDTO> getEquipTypeByMajorCode(String majorCode, String lineCode) {
+        return faultMapper.listFault(null, null, lineCode, null);
     }
 
 }

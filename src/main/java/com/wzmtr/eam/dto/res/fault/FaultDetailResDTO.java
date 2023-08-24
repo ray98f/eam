@@ -105,6 +105,7 @@ public class FaultDetailResDTO {
     private String dealerNum;
     @ApiModelProperty(value = "检修车/运营车标识")
     private String traintag;
+    /***************************************/
     @ApiModelProperty(value = "公司代码")
     private String companyCode;
     @ApiModelProperty(value = "公司名称")
@@ -171,10 +172,14 @@ public class FaultDetailResDTO {
     private String fillinUserName;
     @ApiModelProperty(value = "提报部门")
     private String fillinDeptCode;
+    @ApiModelProperty(value = "提报部门名称")
+    private String fillinDeptName;
     @ApiModelProperty(value = "提报时间")
     private String fillinTime;
     @ApiModelProperty(value = "主责部门")
     private String respDeptCode;
+    @ApiModelProperty(value = "主责部门名称")
+    private String respDeptName;
     @ApiModelProperty(value = "配合部门")
     private String assistDeptCode;
     @ApiModelProperty(value = "维修部门")

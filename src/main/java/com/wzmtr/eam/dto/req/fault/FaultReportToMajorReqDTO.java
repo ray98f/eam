@@ -80,26 +80,4 @@ public class FaultReportToMajorReqDTO {
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
 
-
-    public FaultOrderBO toFaultOrderBO(FaultReportToMajorReqDTO req) {
-        FaultOrderBO convert = __BeanUtil.convert(req, FaultOrderBO.class);
-        if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
-            convert.setWorkClass(req.getRepairDeptCode());
-        }
-        convert.setRecId(TokenUtil.getUuId());
-        if (StringUtils.isNotEmpty(req.getFaultType()) && req.getFaultType().equals("30")) {
-            convert.setOrderStatus("30");
-        }
-        convert.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        convert.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        return convert;
-    }
-    public FaultInfoBO toFaultInfoBO(FaultReportToMajorReqDTO req) {
-        FaultInfoBO convert = __BeanUtil.convert(req, FaultInfoBO.class);
-        convert.setRecId(TokenUtil.getUuId());
-        convert.setFillinTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        convert.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        convert.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        return convert;
-    }
 }

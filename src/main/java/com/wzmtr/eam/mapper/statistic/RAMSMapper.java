@@ -24,4 +24,6 @@ public interface RAMSMapper {
     List<RAMSResDTO> query4AQYYZB(Page<Object> of, String startTime, String endTime);
 
     List<SystemFaultsResDTO> queryFautTypeByMonthBySys(Set<String> moduleIds, String startDate, String endDate);
+
+    List<RAMSResDTO> queryresult2(String startDate, String endDate);
 }

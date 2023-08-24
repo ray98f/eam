@@ -2,6 +2,7 @@ package com.wzmtr.eam.service.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.OrgMajorReqDTO;
+import com.wzmtr.eam.dto.res.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.OrgMajorResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -21,4 +22,6 @@ public interface OrgMajorService {
     void deleteOrgMajor(BaseIdsEntity baseIdsEntity);
 
     void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response);
+
+    FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode);
 }

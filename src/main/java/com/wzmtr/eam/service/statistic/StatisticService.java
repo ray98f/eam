@@ -74,5 +74,7 @@ public interface StatisticService {
 
     RAMSResDTO query4AQYYZB(RAMSTimeReqDTO reqDTO);
 
-    List<SystemFaultsResDTO> systemFault(String startDate, String endDate,String sys);
+    List<SystemFaultsResDTO> queryresult3(String startDate, String endDate,String sys);
+
+    List<RAMSResDTO> queryresult2(String startDate, String endDate);
 }

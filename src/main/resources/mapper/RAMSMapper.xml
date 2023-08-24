@@ -103,4 +103,71 @@
             GROUP BY c.YEAR_MONTH
             ORDER BY c.YEAR_MONTH DESC
     </select>
+    <select id="queryresult2" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResDTO">
+        select c.YEAR_MONTH                                       as "yearMonth",
+               (select count(1)
+                from T_FAULT_INFO d,
+                     T_FAULT_ORDER df
+                where d.FAULT_NO = df.FAULT_NO
+                  and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+                  and nvl(df.IS_FAULT, '10') = '10'
+                  and d.MAJOR_CODE = '07'
+                  and df.order_Status != '99'
+                  and d.EXT3 in ('05', '06', '08', '09'))         as "noService",
+               (select count(1)
+                from T_FAULT_INFO d,
+                     T_FAULT_ORDER df
+                where d.FAULT_NO = df.FAULT_NO
+                  and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+                  and nvl(df.IS_FAULT, '10') = '10'
+                  and d.MAJOR_CODE = '07'
+                  and df.order_Status != '99'
+                  and d.EXT3 = '02')                              as "late3",
+               (select count(1)
+                from T_FAULT_INFO d,
+                     T_FAULT_ORDER df
+                where d.FAULT_NO = df.FAULT_NO
+                  and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+                  and nvl(df.IS_FAULT, '10') = '10'
+                  and d.MAJOR_CODE = '07'
+                  and df.order_Status != '99'
+                  and d.EXT3 = '03')                              as "late5to15",
+               (select count(1)
+                from T_FAULT_INFO d,
+                     T_FAULT_ORDER df
+                where d.FAULT_NO = df.FAULT_NO
+                  and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+                  and nvl(df.IS_FAULT, '10') = '10'
+                  and d.MAJOR_CODE = '07'
+                  and df.order_Status != '99'
+                  and d.EXT3 = '04')                              as "late15",
+               (select count(1)
+                from T_FAULT_INFO d,
+                     T_FAULT_ORDER df
+                where d.FAULT_NO = df.FAULT_NO
+                  and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+                  and nvl(df.IS_FAULT, '10') = '10'
+                  and d.MAJOR_CODE = '07'
+                  and df.order_Status != '99'
+                  and d.EXT3 in ('02', '03', '04'))               as "late",
+               (select count(1)
+                from T_FAULT_INFO d,
+                     T_FAULT_ORDER df
+                where d.FAULT_NO = df.FAULT_NO
+                  and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+                  and nvl(df.IS_FAULT, '10') = '10'
+                  and d.MAJOR_CODE = '07'
+                  and df.order_Status != '99')                    as "sum",
+               (select sum(a.MILES_INCREMENT)
+                from T_TRAIN_MILEAGE a
+                where substr(a.FILLIN_TIME, 1, 7) = c.YEAR_MONTH) as "miles"
+        from T_FAULT_INFO t,
+             (select to_char(add_months(to_date(#{startDate}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') AS YEAR_MONTH
+              from dual
+                  connect by rownum <![CDATA[<=]]> months_between(to_date(#{endDate}, 'YYYY-MM'), to_date(#{startDate}, 'YYYY-MM'))+1) c
+        where (substr(t.DISCOVERY_TIME, 1, 7) >= #{startDate}) and (substr(t.DISCOVERY_TIME, 1, 7) <![CDATA[<=]]> #{endDate})
+           or (substr(t.DISCOVERY_TIME, 1, 7) >= #{startDate}) and (substr(t.DISCOVERY_TIME, 1, 7) <![CDATA[<=]]> #{endDate})
+        group by c.YEAR_MONTH
+        ORDER by c.YEAR_MONTH desc
+    </select>
 </mapper>

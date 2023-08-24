@@ -66,7 +66,7 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "发现人手机号")
     private String discovererPhone;
     @ApiModelProperty(value = "知会OCC调度")
-    private String maintenance;
+    private Boolean maintenance;
     @ApiModelProperty(value = "故障现象")
     private String faultDisplayDetail;
     @ApiModelProperty(value = "提报时间")

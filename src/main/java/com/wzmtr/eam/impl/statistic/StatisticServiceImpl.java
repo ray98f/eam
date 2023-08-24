@@ -249,7 +249,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public List<SystemFaultsResDTO> systemFault(String startDate, String endDate, String sys) {
+    public List<SystemFaultsResDTO> queryresult3(String startDate, String endDate, String sys) {
         if (StringUtils.isEmpty(sys)) {
             sys = "01";
         }
@@ -321,6 +321,42 @@ public class StatisticServiceImpl implements StatisticService {
         c.add(Calendar.MONTH, -i);
         Date m = c.getTime();
         return sdf.format(m);
+    }
+
+    /**
+     * 故障影响统计
+     */
+    public List<RAMSResDTO> queryresult2(String startDate, String endDate) {
+        if (StringUtils.isNotEmpty(startDate)) {
+            startDate = startDate.substring(0, 7);
+        } else {
+            startDate = _getLastMouths(11);
+        }
+        if (StringUtils.isNotEmpty(endDate)) {
+            endDate = endDate.substring(0, 7);
+        } else {
+            endDate = _getLastMouths(0);
+        }
+        DecimalFormat df = new DecimalFormat("#0.00");
+        List<RAMSResDTO> ramsResDTOS = ramsMapper.queryresult2(startDate, endDate);
+        ramsResDTOS.forEach(a -> {
+            double lateZ = 0.0D;
+            double noServiceZ = 0.0D;
+            double miles = Double.parseDouble(a.getMiles());
+            if (Double.parseDouble(a.getLate()) == 0.0D) {
+                lateZ = Double.parseDouble("0");
+            } else {
+                lateZ = Double.parseDouble(a.getLate()) * 1000000.0D / miles / 4.0D;
+            }
+            if (Double.parseDouble(a.getNoService()) == 0.0D) {
+                noServiceZ = Double.parseDouble("0");
+            } else {
+                noServiceZ = Double.parseDouble(a.getNoService()) * 1000000.0D / miles / 4.0D;
+            }
+            a.setLate(df.format(lateZ));
+            a.setNoService(df.format(noServiceZ));
+        });
+        return ramsResDTOS;
     }
 }
 
