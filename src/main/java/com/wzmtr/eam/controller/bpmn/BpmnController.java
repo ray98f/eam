@@ -3,6 +3,7 @@ package com.wzmtr.eam.controller.bpmn;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
 import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
+import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -72,5 +74,17 @@ public class BpmnController {
     @ApiOperation(value = "根据procId获取最新的TaskId")
     public DataResponse<String> queryTaskIdByProcId(@RequestParam("procId") String procId) {
         return DataResponse.of(bpmnService.queryTaskIdByProcId(procId));
+    }
+
+    @GetMapping("/queryFlowList")
+    @ApiOperation(value = "根据登录人获取流程列表")
+    public DataResponse<List<FlowRes>> queryFlowList(@RequestParam("name") String name, @RequestParam("modelKey") String modelKey) throws Exception {
+        return DataResponse.of(bpmnService.queryFlowList(name, modelKey));
+    }
+
+    @GetMapping("/queryFirstTaskKeyByModelId")
+    @ApiOperation(value = "根据modelId查询第一个流程节点")
+    public DataResponse<String> queryFirstTaskKeyByModelId(@RequestParam("modelId") String modelId) throws Exception {
+        return DataResponse.of(bpmnService.queryFirstTaskKeyByModelId(modelId));
     }
 }

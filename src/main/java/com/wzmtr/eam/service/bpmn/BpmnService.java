@@ -3,6 +3,10 @@ package com.wzmtr.eam.service.bpmn;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
+import com.wzmtr.eam.dto.res.bpmn.FlowRes;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -24,4 +28,8 @@ public interface BpmnService {
     String nextTaskKey(String procId);
 
     String queryTaskIdByProcId(String procId);
+
+    List<FlowRes> queryFlowList(String name, String modelKey) throws Exception;
+
+    String queryFirstTaskKeyByModelId(String modelId) throws Exception;
 }

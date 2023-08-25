@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
 public interface CheckPlanService {
@@ -27,7 +28,7 @@ public interface CheckPlanService {
 
     void deleteCheckPlan(BaseIdsEntity baseIdsEntity);
 
-    void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO);
+    void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO) throws Exception;
 
     void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response);
 

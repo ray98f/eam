@@ -6,6 +6,9 @@ import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
 import com.wzmtr.eam.dto.req.bpmn.LoginDTO;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
+import com.wzmtr.eam.dto.res.bpmn.FlowRes;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.dto.result.ResultEntity;
 import com.wzmtr.eam.utils.bpmn.FastFlowPathUrl;
@@ -14,8 +17,19 @@ import com.wzmtr.eam.utils.bpmn.JointUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +102,6 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.NEXT_TASK_KEY + procId, authorization));
         JSONArray running = jsonObject.getJSONArray("runing");
-
         return running.size() == 0 ? null : running.getString(0);
     }
 
@@ -97,5 +110,50 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization");
         ResultEntity result = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_TASKID_BY_PROCID + "?procId=" + procId, authorization), ResultEntity.class);
         return String.valueOf(result.getData());
+    }
+
+    @Override
+    public List<FlowRes> queryFlowList(String name, String modelKey) throws Exception {
+        String authorization = httpServletRequest.getHeader("Authorization");
+        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.FLOW_LIST + "?name=" + URLEncoder.encode(name, "UTF-8") + "&modelkey=" + modelKey + "&page=1&limit=100000&pageSize=100000&type=2", authorization), ResultEntity.class);
+        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        List<FlowRes> list = new ArrayList<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            FlowRes res = new FlowRes();
+            res.setModelId(jsonObject.getString("id"));
+            res.setName(jsonObject.getString("name"));
+            res.setVersion(jsonObject.getString("version"));
+            res.setDefId(jsonObject.getString("defId"));
+            res.setGroupId(jsonObject.getString("typeKey"));
+            String[] parts = jsonObject.getString("defId").split(":");
+            if (parts.length > 0) {
+                String extractedString = parts[0];
+                res.setDefKey(extractedString);
+            }
+            res.setLastUpdated(jsonObject.getString("lastUpdated"));
+            list.add(res);
+        }
+        return list;
+    }
+
+    @Override
+    public String queryFirstTaskKeyByModelId(String modelId) throws Exception {
+        String authorization = httpServletRequest.getHeader("Authorization");
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
+        if (!"0".equals(jsonObject.getString("code"))) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, jsonObject.getString("msg"));
+        }
+        String xml = jsonObject.getString("xml");
+        // 创建DOM解析器工厂
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputStream xmlStream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
+        Document document = builder.parse(xmlStream);
+        // 获取第一个userTask元素
+        NodeList userTaskList = document.getElementsByTagName("bpmn:userTask");
+        Element firstUserTask = (Element) userTaskList.item(0);
+        // 获取id属性值
+        return firstUserTask.getAttribute("id");
     }
 }

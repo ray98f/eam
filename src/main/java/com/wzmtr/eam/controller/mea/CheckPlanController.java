@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
 @Slf4j
@@ -69,7 +70,7 @@ public class CheckPlanController {
 
     @PostMapping("/submit")
     @ApiOperation(value = "提交定检计划")
-    public DataResponse<T> submitCheckPlan(@RequestBody CheckPlanReqDTO checkPlanReqDTO) {
+    public DataResponse<T> submitCheckPlan(@RequestBody CheckPlanReqDTO checkPlanReqDTO) throws Exception {
         checkPlanService.submitCheckPlan(checkPlanReqDTO);
         return DataResponse.success();
     }
