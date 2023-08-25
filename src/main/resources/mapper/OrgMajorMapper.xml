@@ -145,7 +145,7 @@
           AND d6.ORG_CODE = d7.ORG_CODE
           AND d5.MAJOR_CODE = #{majorCode}
           AND d6.LINE_CODE = #{lineCode}
-          AND d7.ORG_TYPE = #{orgType}
+          AND d7.ORG_TYPE = #{organType}
         order by d5.ORG_CODE asc
     </select>
 </mapper>

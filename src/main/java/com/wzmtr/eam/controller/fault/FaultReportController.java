@@ -4,6 +4,7 @@ import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
+import com.wzmtr.eam.dto.res.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
@@ -13,6 +14,7 @@ import com.wzmtr.eam.service.basic.OrgMajorService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,9 +60,9 @@ public class FaultReportController {
         return DataResponse.of(reportService.detail(reqDTO));
     }
     @GetMapping("/queryTypeAndDeptCode")
-    @ApiOperation(value = "获取维修部门和")
-    public List<OrgMajorResDTO> queryTypeAndDeptCode(@RequestParam String lineCode) {
-        return DataResponse.of(orgMajorService.queryTypeAndDeptCode(lineCode));
+    @ApiOperation(value = "获取维修部门和牵头部门")
+    public DataResponse<FaultRespAndRepairDeptResDTO> queryTypeAndDeptCode(@RequestParam @ApiParam("线路code")String lineCode, @RequestParam @ApiParam("专业code")String majorCode) {
+        return DataResponse.of(orgMajorService.queryTypeAndDeptCode(lineCode,majorCode));
     }
 
 }

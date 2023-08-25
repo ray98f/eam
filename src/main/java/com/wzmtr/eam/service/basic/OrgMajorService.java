@@ -23,5 +23,5 @@ public interface OrgMajorService {
 
     void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response);
 
-    FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode);
+    FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode, String majorCode);
 }

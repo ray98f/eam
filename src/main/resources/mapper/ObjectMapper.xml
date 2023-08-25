@@ -45,10 +45,10 @@
         <if test="majorCode != null">
             AND dd.MAJOR_CODE = #{majorCode}
         </if>
-        <if test="systemCode != null">
+        <if test="systemCode != null and systemCode!=''">
             AND dd.SYSTEM_CODE = #{systemCode}
         </if>
-        <if test="equipTypeCode != null">
+        <if test="equipTypeCode != null  and equipTypeCode!='' ">
             AND dd.EQUIP_TYPE_CODE = #{equipTypeCode}
         </if>
         <if test="brand != null">
