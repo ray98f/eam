@@ -68,7 +68,7 @@
         #{dispatchUserId,jdbcType=VARCHAR}, #{dispatchTime,jdbcType=VARCHAR}, #{repairRespUserId,jdbcType=VARCHAR},
         #{workArea,jdbcType=VARCHAR}, #{orderStatus,jdbcType=VARCHAR}, #{repairDispatchNo,jdbcType=VARCHAR},
         #{rushRepairNo,jdbcType=VARCHAR}, #{arrivalTime,jdbcType=VARCHAR}, #{repairStartTime,jdbcType=VARCHAR},
-        #{repairEndTime,jdbcType=VARCHAR}, #{repairTime,jdbcType=NUMERIC}{, #{leaveTime,jdbcType=VARCHAR},
+        #{repairEndTime,jdbcType=VARCHAR}, #{repairTime,jdbcType=NUMERIC},#{leaveTime,jdbcType=VARCHAR},
         #{faultReasonCode,jdbcType=VARCHAR}, #{faultReasonDetail,jdbcType=VARCHAR}, #{faultActionCode,jdbcType=VARCHAR},
         #{faultActionDetail,jdbcType=VARCHAR}, #{faultProcessResult,jdbcType=VARCHAR},
         #{reportStartUserId,jdbcType=VARCHAR},

@@ -1,11 +1,5 @@
 package com.wzmtr.eam.dto.req.fault;
 
-import com.wzmtr.eam.bo.FaultInfoBO;
-import com.wzmtr.eam.bo.FaultOrderBO;
-import com.wzmtr.eam.utils.DateUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,6 +25,10 @@ public class FaultReportToMajorReqDTO {
     private String majorCode;
     @ApiModelProperty(value = "系统code")
     private String systemCode;
+    @ApiModelProperty(value = "公司code")
+    private String companyCode;
+    @ApiModelProperty(value = "公司Name")
+    private String companyName;
     @ApiModelProperty(value = "线别code")
     private String lineCode;
     @ApiModelProperty(value = "位置1")
@@ -48,7 +46,7 @@ public class FaultReportToMajorReqDTO {
     @ApiModelProperty(value = "故障模块Id")
     private String faultModuleId;
     @ApiModelProperty(value = "来源编号")
-    private String sourceCode;
+    private String sourceCode = "";
     @ApiModelProperty(value = "发现时间")
     private String discoveryTime;
     @ApiModelProperty(value = "发现人姓名")
@@ -79,5 +77,7 @@ public class FaultReportToMajorReqDTO {
     private String docId;
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
+    @ApiModelProperty(value = "状态")
+    private String recStatus;
 
 }

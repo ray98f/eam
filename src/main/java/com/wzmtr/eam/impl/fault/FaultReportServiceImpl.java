@@ -40,16 +40,17 @@ public class FaultReportServiceImpl implements FaultReportService {
     private OrganizationMapper organizationMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    // @Transactional(rollbackFor = Exception.class)
     public void addToEquip(FaultReportReqDTO reqDTO) {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         // 获取AOP代理对象
-        FaultReportServiceImpl aop = (FaultReportServiceImpl) AopContext.currentProxy();
-        FaultOrderBO faultOrderBO = reqDTO.toFaultOrderBO(reqDTO);
-        aop._insertToFaultOrder(faultOrderBO, maxFaultNo, maxFaultWorkNo);
+        // FaultReportServiceImpl aop = (FaultReportServiceImpl) AopContext.currentProxy();
         FaultInfoBO faultInfoBO = reqDTO.toFaultInfoBO(reqDTO);
-        aop._insertToFaultInfo(faultInfoBO, maxFaultNo);
+        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+        _insertToFaultInfo(faultInfoBO, nextFaultNo);
+        FaultOrderBO faultOrderBO = reqDTO.toFaultOrderBO(reqDTO);
+        _insertToFaultOrder(faultOrderBO, nextFaultNo, maxFaultWorkNo);
         // TODO: 2023/8/24 知会OCC调度 可能要发通知？
         // if ("Y".equals(maintenance)) {
         //     /* 1756 */             String groupName = "DM_021";
@@ -63,16 +64,14 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     private void _insertToFaultInfo(FaultInfoBO faultInfoBO, String maxFaultNo) {
-        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-        faultInfoBO.setFaultNo(nextFaultNo);
+        faultInfoBO.setFaultNo(maxFaultNo);
         faultReportMapper.addToFaultInfo(faultInfoBO);
     }
 
     private void _insertToFaultOrder(FaultOrderBO faultOrderBO, String maxFaultNo, String maxFaultWorkNo) {
-        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
         String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
         faultOrderBO.setFaultWorkNo(nextFaultWorkNo);
-        faultOrderBO.setFaultNo(nextFaultNo);
+        faultOrderBO.setFaultNo(maxFaultNo);
         faultReportMapper.addToFaultOrder(faultOrderBO);
     }
 
@@ -105,7 +104,6 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (reqDTO.getRepairDeptCode() != null) {
             faultOrderBO.setWorkClass(reqDTO.getRepairDeptCode());
         }
-        faultOrderBO.setRecId(TokenUtil.getUuId());
         faultOrderBO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
         faultOrderBO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         _insertToFaultOrder(faultOrderBO, maxFaultNo, maxFaultWorkNo);

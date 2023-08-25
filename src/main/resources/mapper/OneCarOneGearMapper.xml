@@ -26,8 +26,8 @@
         <if test="startDate!=null">
             to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ) as "er2",
         (
@@ -44,8 +44,8 @@
         <if test="startDate!=null">
             to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ) as "er3",
         (
@@ -62,8 +62,8 @@
         <if test="startDate!=null">
             to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ) as "er4",
         (
@@ -80,8 +80,8 @@
         <if test="startDate!=null">
             to_date(t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ) as "er5",
         ( SELECT
@@ -99,8 +99,8 @@
         <if test="startDate!=null">
             to_date( t1.FILLIN_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(t1.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(t1.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ) as "fmCount",
         (
@@ -117,8 +117,8 @@
         <if test="startDate!=null">
             to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ) as "er1",
         (
@@ -156,8 +156,8 @@
         <if test="startDate!=null">
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ) as "minusMile",
         (
@@ -170,8 +170,8 @@
         <if test="startDate!=null">
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ) as "minuskWh",
         (
@@ -184,8 +184,8 @@
         <if test="startDate!=null">
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ) as "minusReEle"
 
@@ -212,14 +212,14 @@
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
         <if test="startDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
     </select>
     <select id="queryER4" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
         SELECT
-        MAX( DM06.TOTAL_MILES) as "dmer4km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer4date"
+        MAX( DM06.TOTAL_MILES) as "dmer3km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer3date"
         FROM
         T_TRAIN_MILEAGE DM06,T_OVERHAUL_ORDER ER21
         WHERE
@@ -236,15 +236,15 @@
         <if test="startDate!=null">
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
     </select>
     <select id="queryER5" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
         SELECT
-        MAX( DM06.TOTAL_MILES) as "dmer5km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer5date"
+        MAX( DM06.TOTAL_MILES) as "dmer3km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer3date"
         FROM
         T_TRAIN_MILEAGE DM06,T_OVERHAUL_ORDER ER21
         WHERE
@@ -255,14 +255,14 @@
         FROM
         T_OVERHAUL_ORDER ER21
         WHERE
-        ER21.PLAN_NAME LIKE '%$equipName$%'
+        ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
         AND ER21.PLAN_NAME LIKE '%二级修(360天%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startDate!=null">
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
@@ -324,8 +324,8 @@
         <if test="startDate!=null">
            and to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate!=null">
-            to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        <if test="endTime!=null">
+            to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -342,7 +342,7 @@
         T21.TRACK_USER_ID	as "trackUserId",  <!-- 转跟踪人员工号 -->
         T21.TRACK_TIME	as "trackTime",  <!-- 转跟踪时间 -->
         T21.TRACK_PERIOD	as "trackPeriod",  <!-- 跟踪期限 -->
-        T21.TRACK_END_DATE  as "trackEndDate",<!-- 跟踪截止日期 -->
+        T21.TRACK_END_DATE  as "trackendTime",<!-- 跟踪截止日期 -->
         T21.TRACK_CYCLE	as "trackCycle",  <!-- 跟踪周期 -->
         T21.TRACK_REPORTER_ID	as "trackReporterId",  <!-- 跟踪报告人工号 -->
         T21.TRACK_REPORT_TIME	as "trackReportTime",  <!-- 跟踪报告时间 -->
@@ -379,8 +379,8 @@
         <if test="startDate!=null">
           AND  T21.TRACK_START_DATE <![CDATA[>=]]> #{startDate}
         </if>
-        <if test="endDate!=null">
-          AND  T21.TRACK_START_DATE <![CDATA[<=]]> #{endDate}
+        <if test="endTime!=null">
+          AND  T21.TRACK_START_DATE <![CDATA[<=]]> #{endTime}
         </if>
              ORDER BY T21.REC_ID asc
     </select>
@@ -424,14 +424,14 @@
         <if test="startDate != null">
             AND REPLACE_DATE <![CDATA[>=]]> #{startDate}
         </if>
-        <if test="endDate != null">
-            AND REPLACE_DATE <![CDATA[<=]]> #{endDate}
+        <if test="endTime != null">
+            AND REPLACE_DATE <![CDATA[<=]]> #{endTime}
         </if>
         ORDER BY REPLACE_DATE desc,REC_CREATE_TIME desc
     </select>
     <select id="queryER2" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
         SELECT
-        MAX( DM06.TOTAL_MILES) as "dmer2km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer2date"
+        MAX( DM06.TOTAL_MILES) as "dmer3km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer3date"
         FROM
         T_TRAIN_MILEAGE DM06,T_OVERHAUL_ORDER ER21
         WHERE
@@ -445,18 +445,18 @@
         ER21.PLAN_NAME  like '%' || #{equipName} || '%'
         AND ER21.PLAN_NAME LIKE '%二级修(30天%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
-        <if test="startDate != null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#startDate#, 'YYYY-MM-DD')
+        <if test="startTime != null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate != null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#endDate#, 'YYYY-MM-DD')
+        <if test="endTime != null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
     </select>
     <select id="queryER1" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
         SELECT
-        MAX( DM06.TOTAL_MILES) as "dmer1km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer1date"
+        MAX( DM06.TOTAL_MILES) as "dmer3km", SUBSTR(DM06.FILLIN_TIME,0,10) as "dmer3date"
         FROM
         T_TRAIN_MILEAGE DM06,T_OVERHAUL_ORDER ER21
         WHERE
@@ -471,10 +471,10 @@
         AND ER21.PLAN_NAME LIKE '%一级修%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startDate != null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#startDate#, 'YYYY-MM-DD')
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate != null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#endDate#, 'YYYY-MM-DD')
+        <if test="endTime != null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
