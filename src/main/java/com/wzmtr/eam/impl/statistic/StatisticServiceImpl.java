@@ -358,6 +358,80 @@ public class StatisticServiceImpl implements StatisticService {
         });
         return ramsResDTOS;
     }
+
+    @Override
+    public List<RAMSResDTO> querySysPerform() {
+        List<RAMSResDTO> ramsResDTOS = ramsMapper.querySysPerform();
+        System.out.println(ramsResDTOS);
+        ramsResDTOS.forEach(a -> {
+            switch (a.getModuleName()) {
+                case "01":
+                case "02":
+                case "03":
+                case "04":
+                    rebuildBlock4SP(a, 0, "车门系统", "10000", "7000");
+                    break;
+                case "12":
+                    rebuildBlock4SP(a, 1, "制动系统", "49500", "49500");
+                    break;
+                case "13":
+                    rebuildBlock4SP(a, 2, "空调系统", "210000", "46000");
+                    break;
+                case "14":
+                    rebuildBlock4SP(a, 3, "转向架", "409500", "409500");
+                    break;
+                case "17":
+                    rebuildBlock4SP(a, 4, "PIDS", "191000", "91000");
+                    break;
+                case "10":
+                    rebuildBlock4SP(a, 5, "网络系统", "254000", "254000");
+                    break;
+                case "05":
+                case "08":
+                case "09":
+                case "21":
+                    rebuildBlock4SP(a, 6, "车体结构及车身内部", "204800", "204800");
+                    break;
+                case "06":
+                case "07":
+                    rebuildBlock4SP(a, 7, "通道与车钩系统", "409500", "204800");
+                    break;
+                case "18":
+                case "19":
+                    rebuildBlock4SP(a, 8, "牵引设备系统", "36588", "11000");
+                    break;
+                case "11":
+                case "15":
+                case "16":
+                case "20":
+                    rebuildBlock4SP(a, 9, "辅助供电设备系统", "647749", "323825");
+                    break;
+            }
+        });
+        return ramsResDTOS;
+    }
+
+    public void rebuildBlock4SP(RAMSResDTO map, int rowNo, String moduleName, String contractZB_LATE, String contractZB_NOS) {
+        DecimalFormat df = new DecimalFormat("#0");
+        String NUM_LATE = map.getNumLate();
+        String NUM_NOS = map.getNumNos();
+        if (rowNo > 0) {
+            map.setModuleName(moduleName);
+            map.setNumLate(df.format(Double.parseDouble(NUM_LATE)));
+            map.setNumNos(df.format(Double.parseDouble(NUM_NOS)));
+        } else {
+            map.setModuleName(moduleName);
+            map.setNumLate(NUM_LATE);
+            map.setNumNos(NUM_NOS);
+            map.setContractZBLATE(contractZB_LATE);
+            map.setContractZBNOS(contractZB_NOS);
+        }
+    }
+
+    public static void main(String[] args) {
+        DecimalFormat df = new DecimalFormat("#0");
+        System.out.println(df.format(Double.parseDouble("0") + 1));
+    }
 }
 
 

@@ -30,4 +30,13 @@ public class RAMSResDTO {
     private String sum;
     @ApiModelProperty(value = "总公里数")
     private String miles;
+    /***********/
+    @ApiModelProperty(value = "moduleName")
+    private String moduleName;
+    @ApiModelProperty(value = "NUM_LATE")
+    private String numLate;
+    @ApiModelProperty(value = "NUM_NOS")
+    private String numNos;
+    private String contractZBLATE;
+    private String contractZBNOS;
 }

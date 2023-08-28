@@ -26,9 +26,9 @@ public class FaultReportToMajorReqDTO {
     @ApiModelProperty(value = "系统code")
     private String systemCode;
     @ApiModelProperty(value = "公司code")
-    private String companyCode;
+    private String companyCode = " ";
     @ApiModelProperty(value = "公司Name")
-    private String companyName;
+    private String companyName = " ";
     @ApiModelProperty(value = "线别code")
     private String lineCode;
     @ApiModelProperty(value = "位置1")
@@ -46,7 +46,7 @@ public class FaultReportToMajorReqDTO {
     @ApiModelProperty(value = "故障模块Id")
     private String faultModuleId;
     @ApiModelProperty(value = "来源编号")
-    private String sourceCode = "";
+    private String sourceCode = " ";
     @ApiModelProperty(value = "发现时间")
     private String discoveryTime;
     @ApiModelProperty(value = "发现人姓名")
@@ -56,15 +56,15 @@ public class FaultReportToMajorReqDTO {
     @ApiModelProperty(value = "发现人手机号")
     private String discovererPhone;
     @ApiModelProperty(value = "知会OCC调度")
-    private String maintenance;
+    private Boolean maintenance;
     @ApiModelProperty(value = "提报时间")
     private String fillinTime;
     @ApiModelProperty(value = "提报人工号")
-    private String fillinUserId;
+    private String fillinUserId = " ";
     @ApiModelProperty(value = "提报人")
     private String fillinUserName;
     @ApiModelProperty(value = "提报部门Code")
-    private String fillinDeptCode;
+    private String fillinDeptCode = " ";
     @ApiModelProperty(value = "提报部门")
     private String fillinDeptName;
     @ApiModelProperty(value = "牵头部门")
@@ -74,10 +74,10 @@ public class FaultReportToMajorReqDTO {
     @ApiModelProperty(value = "维修部门")
     private String repairDeptCode;
     @ApiModelProperty(value = "附件编号")
-    private String docId;
+    private String docId = " ";
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
     @ApiModelProperty(value = "状态")
-    private String recStatus;
+    private String recStatus = " ";
 
 }

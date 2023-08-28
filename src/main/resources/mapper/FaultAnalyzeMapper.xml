@@ -182,6 +182,7 @@
         d3.RECOVERY_TIME	as "recoveryTime",  <!-- 恢复时间 -->
         d3.FAULT_ANALYSIS_NO as "faultAnalysisNo",
         d3.FAULT_WORK_NO as "faultWorkNo",
+        d3.FAULT_DETAIL as "faultDetail",  <!-- 故障详情 -->
         d3.DOC_ID as "docId",
         d3.REC_CREATOR as "recCreator"
         FROM T_FAULT_INFO d1 , T_FAULT_DETAIL d3
