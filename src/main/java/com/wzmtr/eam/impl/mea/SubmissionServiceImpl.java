@@ -2,27 +2,30 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.CheckPlanListReqDTO;
-import com.wzmtr.eam.dto.req.SubmissionDetailReqDTO;
-import com.wzmtr.eam.dto.req.SubmissionListReqDTO;
-import com.wzmtr.eam.dto.req.SubmissionReqDTO;
+import com.wzmtr.eam.dto.req.*;
+import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.SubmissionDetailResDTO;
 import com.wzmtr.eam.dto.res.SubmissionResDTO;
 import com.wzmtr.eam.dto.res.MeaInfoResDTO;
+import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionMapper;
+import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.mea.SubmissionService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.bpmn.WorkflowUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,9 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Autowired
     private SubmissionMapper submissionMapper;
+
+    @Autowired
+    private BpmnService bpmnService;
 
     @Override
     public Page<SubmissionResDTO> pageSubmission(SubmissionListReqDTO submissionListReqDTO, PageReqDTO pageReqDTO) {
@@ -102,7 +108,9 @@ public class SubmissionServiceImpl implements SubmissionService {
                 }
                 submissionMapper.deleteSubmissionDetail(null, res.getSendVerifyNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
-                    // todo 删除工作流
+                    BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
+                    bpmnExamineDTO.setTaskId(res.getWorkFlowInstId());
+                    bpmnService.rejectInstance(bpmnExamineDTO);
                 }
                 submissionMapper.deleteSubmission(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
@@ -112,7 +120,7 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
 
     @Override
-    public void submitSubmission(SubmissionReqDTO submissionReqDTO) {
+    public void submitSubmission(SubmissionReqDTO submissionReqDTO) throws Exception {
         SubmissionResDTO res = submissionMapper.getSubmissionDetail(submissionReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
@@ -124,7 +132,20 @@ public class SubmissionServiceImpl implements SubmissionService {
             if (result.size() == 0) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "此送检单不存在计划明细，无法提交");
             }
-            // todo 工作流 ServiceDMAM0101 submit
+            List<FlowRes> list = bpmnService.queryFlowList(BpmnFlowEnum.SUBMISSION_SUBMIT.label(), BpmnFlowEnum.SUBMISSION_SUBMIT.value());
+            if (null == list || list.size() == 0) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
+            }
+            String processId = WorkflowUtils.submit(list, res.getSendVerifyNo());
+            if (processId == null || "-1".equals(processId)) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
+            }
+            SubmissionReqDTO reqDTO = new SubmissionReqDTO();
+            BeanUtils.copyProperties(res, reqDTO);
+            reqDTO.setWorkFlowInstId(processId);
+            reqDTO.setWorkFlowInstStatus("已提交");
+            reqDTO.setSendVerifyStatus("20");
+            submissionMapper.modifySubmission(reqDTO);
         }
     }
 

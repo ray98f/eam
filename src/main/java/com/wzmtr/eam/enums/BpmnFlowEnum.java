@@ -11,7 +11,9 @@ import java.util.List;
  */
 public enum BpmnFlowEnum {
     //当麒麟流程发布新版本时需要更新modelId与defId
-    CHECK_PLAN_SUBMIT("check_plan_submit", "计量器具检测计划流程");
+    CHECK_PLAN_SUBMIT("check_plan_submit", "计量器具检测计划流程"),
+    SUBMISSION_RECORD_SUBMIT("submission_record_submit", "计量器具送检流程"),
+    SUBMISSION_SUBMIT("submission_submit", "计量器具检测单流程");
 
     private String value;
     private String label;

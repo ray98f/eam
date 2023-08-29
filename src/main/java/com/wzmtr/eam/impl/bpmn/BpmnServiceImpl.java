@@ -11,6 +11,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.dto.result.ResultEntity;
+import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.bpmn.FastFlowPathUrl;
 import com.wzmtr.eam.utils.bpmn.HttpUtil;
 import com.wzmtr.eam.utils.bpmn.JointUtils;
@@ -75,7 +76,10 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public void rejectInstance(BpmnExamineDTO bpmnExamineDTO) {
-        HttpUtil.doGet(FastFlowPathUrl.INSTANCE_REJECT + bpmnExamineDTO.getTaskId() + "?option=" + bpmnExamineDTO.getOpinion());
+        HttpUtil.doGet(FastFlowPathUrl.INSTANCE_REJECT + bpmnExamineDTO.getTaskId()
+                + "?option=" + bpmnExamineDTO.getOpinion()
+                + "&userId=" + TokenUtil.getCurrentPersonId()
+                + "&userName=" + TokenUtil.getCurrentPerson().getPersonName());
     }
 
     @Override

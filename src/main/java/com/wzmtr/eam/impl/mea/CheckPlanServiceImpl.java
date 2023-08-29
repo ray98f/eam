@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.MeaInfoReqDTO;
+import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.MeaInfoResDTO;
@@ -150,7 +151,9 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 }
                 checkPlanMapper.deleteCheckPlanDetail(null, res.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
-                    // todo 删除工作流
+                    BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
+                    bpmnExamineDTO.setTaskId(res.getWorkFlowInstId());
+                    bpmnService.rejectInstance(bpmnExamineDTO);
                 }
                 checkPlanMapper.deleteCheckPlan(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }

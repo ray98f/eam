@@ -70,7 +70,7 @@ public class SubmissionRecordController {
 
     @PostMapping("/submit")
     @ApiOperation(value = "提交检定记录")
-    public DataResponse<T> submitSubmissionRecord(@RequestBody SubmissionRecordReqDTO submissionRecordReqDTO) {
+    public DataResponse<T> submitSubmissionRecord(@RequestBody SubmissionRecordReqDTO submissionRecordReqDTO) throws Exception {
         submissionRecordService.submitSubmissionRecord(submissionRecordReqDTO);
         return DataResponse.success();
     }

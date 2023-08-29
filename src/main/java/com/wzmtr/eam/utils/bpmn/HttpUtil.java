@@ -41,7 +41,7 @@ public class HttpUtil {
         OutputStreamWriter out = null;
         BufferedReader br = null;
         String result = "";
-        data=data==null?"{}":data;
+        data = data == null ? "{}" : data;
         try {
             URL url = new URL(pathUrl);
 
@@ -123,6 +123,7 @@ public class HttpUtil {
         //处理流文件
         return result;
     }
+
     /***
      *
      * @Description post请求 使用form-data
