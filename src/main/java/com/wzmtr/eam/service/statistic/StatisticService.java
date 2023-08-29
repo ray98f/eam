@@ -22,9 +22,9 @@ public interface StatisticService {
 
     Page<MaterialResDTO> query(MaterialQueryReqDTO reqDTO);
 
-    Page<CarFaultQueryResDTO> query(CarFaultQueryReqDTO reqDTO);
+    CarFaultQueryResDTO query(CarFaultQueryReqDTO reqDTO);
 
-    List<ReliabilityResDTO> reliabilityQuery(FailreRateQueryReqDTO reqDTO);
+    ReliabilityListResDTO reliabilityQuery(FailreRateQueryReqDTO reqDTO);
 
     OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearQueryReqDTO reqDTO);
 

@@ -51,6 +51,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
+    public List<FaultDetailResDTO> statisticList(FaultQueryReqDTO reqDTO) {
+        return faultQueryMapper.exportList(reqDTO);
+    }
+
+    @Override
     public String queryOrderStatus(SidEntity reqDTO) {
         // faultWorkNo
         List<String> status = faultQueryMapper.queryOrderStatus(reqDTO);

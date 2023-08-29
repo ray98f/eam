@@ -7,6 +7,7 @@ import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface FaultQueryService {
     Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO);
+    List<FaultDetailResDTO> statisticList(FaultQueryReqDTO reqDTO);
 
     String queryOrderStatus(SidEntity reqDTO);
 

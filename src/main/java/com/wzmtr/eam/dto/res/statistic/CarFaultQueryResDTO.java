@@ -1,7 +1,12 @@
 package com.wzmtr.eam.dto.res.statistic;
 
+import com.wzmtr.eam.bo.StatisticBO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Author: Li.Wang
@@ -17,4 +22,9 @@ public class CarFaultQueryResDTO {
     private String objectName;
     @ApiModelProperty(value = "数量")
     private Integer faultCount;
+
+    private Set<String> monthData;
+    private List<StatisticBO> tableData;
+    private Set<String> titleData;
+    private List<Map<String, Object>> tableData2;
 }

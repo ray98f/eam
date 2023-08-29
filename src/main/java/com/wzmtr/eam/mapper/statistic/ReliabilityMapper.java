@@ -16,11 +16,11 @@ import java.util.Set;
 @Repository
 @Mapper
 public interface ReliabilityMapper {
-    ReliabilityResDTO queryTicketFault(String endTime, String startTime);
+    List<ReliabilityResDTO> queryTicketFault(String endTime, String startTime);
 
-    ReliabilityResDTO queryGateBrakeFault(String endTime, String startTime);
+    List<ReliabilityResDTO> queryGateBrakeFault(String endTime, String startTime);
 
-    ReliabilityResDTO queryEscalatorFault(String endTime, String startTime);
+    List<ReliabilityResDTO> queryEscalatorFault(String endTime, String startTime);
 
     /**
      * 垂直扶梯可靠度
@@ -28,10 +28,10 @@ public interface ReliabilityMapper {
      * @param startTime
      * @return
      */
-    ReliabilityResDTO queryVerticalEscalatorFault(String endTime, String startTime);
+    List<ReliabilityResDTO> queryVerticalEscalatorFault(String endTime, String startTime);
 
-    ReliabilityResDTO queryTrainPassengerInformationFault(String endTime, String startTime);
-    ReliabilityResDTO queryStationPassengerInformationFault(String endTime, String startTime);
+    List<ReliabilityResDTO> queryTrainPassengerInformationFault(String endTime, String startTime);
+    List<ReliabilityResDTO> queryStationPassengerInformationFault(String endTime, String startTime);
 
-    ReliabilityResDTO queryFireFightingEquipmentFault(String endTime, String startTime);
+    List<ReliabilityResDTO> queryFireFightingEquipmentFault(String endTime, String startTime);
 }

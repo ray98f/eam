@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.statistic;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bo.StatisticBO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.GeneralSurveyResDTO;
@@ -77,9 +78,8 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public Page<CarFaultQueryResDTO> query(CarFaultQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        if (StringUtils.isEmpty(reqDTO.getStartTime()) || StringUtils.isEmpty(reqDTO.getEndTime())) {
+    public CarFaultQueryResDTO query(CarFaultQueryReqDTO reqDTO) {
+        if (StringUtils.isEmpty(reqDTO.getStartTime()) && StringUtils.isEmpty(reqDTO.getEndTime())) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
@@ -94,47 +94,133 @@ public class StatisticServiceImpl implements StatisticService {
             reqDTO.setStartTime(sdf.format(calendar.getTime()));
             reqDTO.setEndTime(sdf.format(new Date()));
         }
-        // todo 不懂 这里可能有字符串处理
-        // if (inInfo.get("inqu_status-0-objectCode") != null && !inInfo.get("inqu_status-0-objectCode").toString().trim().equals("")) {
-        //     /* 39 */         String objectCode = inInfo.get("inqu_status-0-objectCode").toString().substring(2, inInfo.get("inqu_status-0-objectCode").toString().length() - 2);
-        //     /* 40 */         objectCode = ("\"" + objectCode + "\"").replace("\"", "'");
-        //     /* 41 */         map.put("objectCode", objectCode);
-        //     /*    */       }
-        Page<CarFaultQueryResDTO> query = carFaultMapper.query(reqDTO.of(), reqDTO.getObjectCode(), reqDTO.getEndTime(), reqDTO.getStartTime());
-        if (CollectionUtil.isEmpty(query.getRecords())) {
-            return new Page<>();
+        List<CarFaultQueryResDTO> query = carFaultMapper.query(reqDTO.getObjectCode(), reqDTO.getEndTime(), reqDTO.getStartTime());
+        if (CollectionUtil.isEmpty(query)) {
+            return new CarFaultQueryResDTO();
         }
-        return query;
+        return getCarFaultQueryResDTO(query);
+    }
+
+    private static CarFaultQueryResDTO getCarFaultQueryResDTO(List<CarFaultQueryResDTO> query) {
+        TreeSet<String> titleData = new TreeSet<>();
+        TreeSet<String> monthData = new TreeSet<>();
+        Map<String, List<Integer>> tableData1 = new HashMap<>();
+        query.forEach(a -> {
+            titleData.add(a.getObjectName());
+            monthData.add(a.getFillinTime());
+        });
+        for (String title : titleData) {
+            List<Integer> endData = new ArrayList<>();
+            for (String date1 : monthData) {
+                int flag = 0;
+                for (CarFaultQueryResDTO res : query) {
+                    if (title.equals(res.getObjectName()) && date1.equals(res.getFillinTime())) {
+                        endData.add(res.getFaultCount());
+                        flag = 1;
+                    }
+                }
+                if (flag == 0) {
+                    endData.add(0);
+                }
+            }
+            tableData1.put(title, endData);
+        }
+        List<Map<String, Object>> tableData = new ArrayList<>();
+        for (String title : titleData) {
+            Map<String, Object> map1 = new HashMap<>();
+            for (String table : tableData1.keySet()) {
+                if (title.equals(table)) {
+                    map1.put("name", title);
+                    map1.put("type", "line");
+                    map1.put("tiled", "总量");
+                    map1.put("data", tableData1.get(title));
+                    tableData.add(map1);
+                }
+            }
+        }
+        CarFaultQueryResDTO carFaultQueryResDTO = new CarFaultQueryResDTO();
+        carFaultQueryResDTO.setTableData2(tableData);
+        carFaultQueryResDTO.setMonthData(monthData);
+        carFaultQueryResDTO.setTitleData(titleData);
+        return carFaultQueryResDTO;
+    }
+
+    @Deprecated
+    private static CarFaultQueryResDTO getCarFaultQueryResDTO2(List<CarFaultQueryResDTO> query) {
+        TreeSet<String> titleData = new TreeSet<>();
+        TreeSet<String> monthData = new TreeSet<>();
+        Map<String, List<Integer>> faultCountMap = new HashMap<>();
+        query.forEach(carFault -> {
+            String objectName = carFault.getObjectName();
+            int faultCount = carFault.getFaultCount();
+            if (faultCountMap.containsKey(objectName)) {
+                List<Integer> faultCountList = faultCountMap.get(objectName);
+                faultCountList.add(faultCount);
+            } else {
+                List<Integer> faultCountList = new ArrayList<>();
+                faultCountList.add(faultCount);
+                faultCountMap.put(objectName, faultCountList);
+            }
+            monthData.add(carFault.getFillinTime());
+            titleData.add(carFault.getObjectName());
+        });
+        List<StatisticBO> statisticBOS = new ArrayList<>();
+        for (Map.Entry<String, List<Integer>> entry : faultCountMap.entrySet()) {
+            StatisticBO statisticBO = new StatisticBO();
+            String objName = entry.getKey();
+            List<Integer> faultCountList = entry.getValue();
+            statisticBO.setCount(faultCountList);
+            statisticBO.setObjName(objName);
+            statisticBOS.add(statisticBO);
+        }
+        CarFaultQueryResDTO carFaultQueryResDTO = new CarFaultQueryResDTO();
+        carFaultQueryResDTO.setMonthData(monthData);
+        carFaultQueryResDTO.setTitleData(titleData);
+        carFaultQueryResDTO.setTableData(statisticBOS);
+        return carFaultQueryResDTO;
     }
 
     @Override
-    public List<ReliabilityResDTO> reliabilityQuery(FailreRateQueryReqDTO reqDTO) {
-        List<ReliabilityResDTO> reliabilityResDTOS = new ArrayList<>();
-        // 售票机可靠度
-        ReliabilityResDTO queryTicketFault = reliabilityMapper.queryTicketFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 进出站闸机可靠度
-        ReliabilityResDTO queryGateBrakeFault = reliabilityMapper.queryGateBrakeFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 自动扶梯可靠度
-        ReliabilityResDTO queryEscalatorFault = reliabilityMapper.queryEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 垂直扶梯可靠度
-        ReliabilityResDTO queryVerticalEscalatorFault = reliabilityMapper.queryVerticalEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 列车乘客信息系统可靠度
-        ReliabilityResDTO queryTrainPassengerInformationFault = reliabilityMapper.queryTrainPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 车站乘客信息系统可靠度
-        ReliabilityResDTO queryStationPassengerInformationFault = reliabilityMapper.queryStationPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 消防设备可靠度
-        ReliabilityResDTO queryFireFightingEquipmentFault = reliabilityMapper.queryFireFightingEquipmentFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        reliabilityResDTOS.add(queryTicketFault);
-        reliabilityResDTOS.add(queryTrainPassengerInformationFault);
-        reliabilityResDTOS.add(queryFireFightingEquipmentFault);
-        reliabilityResDTOS.add(queryStationPassengerInformationFault);
-        reliabilityResDTOS.add(queryVerticalEscalatorFault);
-        reliabilityResDTOS.add(queryEscalatorFault);
-        reliabilityResDTOS.add(queryGateBrakeFault);
-        if (CollectionUtil.isEmpty(reliabilityResDTOS)) {
-            return new ArrayList<>();
+    public ReliabilityListResDTO reliabilityQuery(FailreRateQueryReqDTO reqDTO) {
+        if (StringUtils.isEmpty(reqDTO.getStartTime()) && StringUtils.isEmpty(reqDTO.getEndTime())) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            String starDate = calendar.get(Calendar.YEAR) + "-01-01";
+            Date parse = null;
+            try {
+                parse = sdf.parse(starDate);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            calendar.setTime(parse);
+            reqDTO.setStartTime(sdf.format(calendar.getTime()));
+            calendar.add(Calendar.YEAR, 1);
+            reqDTO.setEndTime(sdf.format(calendar.getTime()));
         }
-        return reliabilityResDTOS;
+        // 售票机可靠度
+        List<ReliabilityResDTO> queryTicketFault = reliabilityMapper.queryTicketFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+        // 进出站闸机可靠度
+        List<ReliabilityResDTO> queryGateBrakeFault = reliabilityMapper.queryGateBrakeFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+        // 自动扶梯可靠度
+        List<ReliabilityResDTO> queryEscalatorFault = reliabilityMapper.queryEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+        // 垂直扶梯可靠度
+        List<ReliabilityResDTO> queryVerticalEscalatorFault = reliabilityMapper.queryVerticalEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+        // 列车乘客信息系统可靠度
+        List<ReliabilityResDTO> queryTrainPassengerInformationFault = reliabilityMapper.queryTrainPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+        // 车站乘客信息系统可靠度
+        List<ReliabilityResDTO> queryStationPassengerInformationFault = reliabilityMapper.queryStationPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+        // 消防设备可靠度
+        List<ReliabilityResDTO> queryFireFightingEquipmentFault = reliabilityMapper.queryFireFightingEquipmentFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+        ReliabilityListResDTO reliabilityListResDTO = new ReliabilityListResDTO();
+        reliabilityListResDTO.setQueryTicketFault(queryTicketFault);
+        reliabilityListResDTO.setQueryGateBrakeFault(queryGateBrakeFault);
+        reliabilityListResDTO.setQueryEscalatorFault(queryEscalatorFault);
+        reliabilityListResDTO.setQueryVerticalEscalatorFault(queryVerticalEscalatorFault);
+        reliabilityListResDTO.setQueryTrainPassengerInformationFault(queryTrainPassengerInformationFault);
+        reliabilityListResDTO.setQueryStationPassengerInformationFault(queryStationPassengerInformationFault);
+        reliabilityListResDTO.setQueryFireFightingEquipmentFault(queryFireFightingEquipmentFault);
+        return reliabilityListResDTO;
     }
 
     @Override
@@ -223,8 +309,8 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public RAMSResDTO query4AQYYZB(RAMSTimeReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        List<RAMSResDTO> records = ramsMapper.query4AQYYZB(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime());
+        // PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        List<RAMSResDTO> records = ramsMapper.query4AQYYZB();
         if (CollectionUtil.isEmpty(records)) {
             return null;
         }

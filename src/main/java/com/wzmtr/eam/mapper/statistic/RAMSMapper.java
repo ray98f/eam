@@ -21,7 +21,7 @@ import java.util.Set;
 @Repository
 @Mapper
 public interface RAMSMapper {
-    List<RAMSResDTO> query4AQYYZB(Page<Object> of, String startTime, String endTime);
+    List<RAMSResDTO> query4AQYYZB();
 
     List<SystemFaultsResDTO> queryFautTypeByMonthBySys(Set<String> moduleIds, String startDate, String endDate);
 

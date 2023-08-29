@@ -77,8 +77,8 @@
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE
         1=1
-        <if test="startDate!=null">
-            to_date(t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        <if test="startTime!=null">
+            to_date(t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
             to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
@@ -181,8 +181,8 @@
         T_TRAIN_MILEAGE DM06
         WHERE
         DM06.EQUIP_NAME =#{equipName}
-        <if test="startDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        <if test="startTime!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
@@ -233,8 +233,8 @@
         ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
         AND ER21.PLAN_NAME LIKE '%' || #{二级修(180天} || '%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
-        <if test="startDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        <if test="startTime!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
@@ -258,8 +258,8 @@
         ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
         AND ER21.PLAN_NAME LIKE '%二级修(360天%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
-        <if test="startDate!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        <if test="startTime!=null">
+            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
@@ -321,8 +321,8 @@
         FROM T_FAULT_INFO d left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO left join T_FAULT_DETAIL d3 on d3.FAULT_NO=df.FAULT_NO
         WHERE 1=1 and d.MAJOR_CODE='07' and nvl(df.IS_FAULT,'10')='10'
         and d.OBJECT_NAME = #{equipName}
-        <if test="startDate!=null">
-           and to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        <if test="startTime!=null">
+           and to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
             to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
@@ -376,8 +376,8 @@
         <if test="equipName!=null">
            AND T01.OBJECT_NAME =#{equipName}
         </if>
-        <if test="startDate!=null">
-          AND  T21.TRACK_START_DATE <![CDATA[>=]]> #{startDate}
+        <if test="startTime!=null">
+          AND  T21.TRACK_START_DATE <![CDATA[>=]]> #{startTime}
         </if>
         <if test="endTime!=null">
           AND  T21.TRACK_START_DATE <![CDATA[<=]]> #{endTime}
@@ -421,8 +421,8 @@
         <if test="equipName != null">
             AND EQUIP_NAME = #{equipName}
         </if>
-        <if test="startDate != null">
-            AND REPLACE_DATE <![CDATA[>=]]> #{startDate}
+        <if test="startTime != null">
+            AND REPLACE_DATE <![CDATA[>=]]> #{startTime}
         </if>
         <if test="endTime != null">
             AND REPLACE_DATE <![CDATA[<=]]> #{endTime}
@@ -470,7 +470,7 @@
         ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
         AND ER21.PLAN_NAME LIKE '%一级修%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
-        <if test="startDate != null">
+        <if test="startTime != null">
             to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime != null">

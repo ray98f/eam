@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,5 +18,5 @@ import java.util.Set;
 @Mapper
 public interface CarFaultMapper {
 
-    Page<CarFaultQueryResDTO> query(Page<Object> of, Set<String> objectCode, String endTime, String startTime);
+    List<CarFaultQueryResDTO> query(Set<String> objectCode, String endTime, String startTime);
 }

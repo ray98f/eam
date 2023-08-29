@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.statistic;
 
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.GeneralSurveyResDTO;
@@ -10,6 +11,7 @@ import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.statistic.StatisticService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,11 +35,19 @@ import java.util.List;
 public class StatisticController {
     @Autowired
     private StatisticService statisticService;
+    @Autowired
+    private FaultQueryService faultQueryService;
 
     @PostMapping("car/fault/query")
     @ApiOperation(value = "获取车辆故障统计列表")
-    public PageResponse<CarFaultQueryResDTO> query(@RequestBody CarFaultQueryReqDTO reqDTO) {
-        return PageResponse.of(statisticService.query(reqDTO));
+    public DataResponse<CarFaultQueryResDTO> query(@RequestBody CarFaultQueryReqDTO reqDTO) {
+        return DataResponse.of(statisticService.query(reqDTO));
+    }
+
+    @ApiOperation(value = "故障统计列表")
+    @PostMapping("fault/list")
+    public DataResponse<List<FaultDetailResDTO>> list(@RequestBody FaultQueryReqDTO reqDTO) {
+        return DataResponse.of(faultQueryService.statisticList(reqDTO));
     }
 
     @PostMapping("material/query")
@@ -54,7 +64,7 @@ public class StatisticController {
 
     @PostMapping("reliability/query")
     @ApiOperation(value = "可靠度指标")
-    public DataResponse<List<ReliabilityResDTO>> reliabilityQuery(@RequestBody FailreRateQueryReqDTO reqDTO) {
+    public DataResponse<ReliabilityListResDTO> reliabilityQuery(@RequestBody FailreRateQueryReqDTO reqDTO) {
         return DataResponse.of(statisticService.reliabilityQuery(reqDTO));
     }
 
