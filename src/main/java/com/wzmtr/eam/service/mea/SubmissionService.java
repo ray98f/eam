@@ -23,7 +23,7 @@ public interface SubmissionService {
 
     void deleteSubmission(BaseIdsEntity baseIdsEntity);
 
-    void submitSubmission(SubmissionReqDTO submissionReqDTO);
+    void submitSubmission(SubmissionReqDTO submissionReqDTO) throws Exception;
 
     void exportSubmission(SubmissionListReqDTO submissionListReqDTO, HttpServletResponse response);
 

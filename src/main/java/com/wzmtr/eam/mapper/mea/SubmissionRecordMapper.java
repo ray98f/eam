@@ -23,9 +23,9 @@ public interface SubmissionRecordMapper {
 
     String getMaxCode();
 
-    void addSubmissionRecord(SubmissionRecordReqDTO checkPlanReqDTO);
+    void addSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO);
 
-    void modifySubmissionRecord(SubmissionRecordReqDTO checkPlanReqDTO);
+    void modifySubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO);
 
     void deleteSubmissionRecord(String id, String userId, String time);
 

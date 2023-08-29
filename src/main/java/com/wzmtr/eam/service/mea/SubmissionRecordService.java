@@ -22,7 +22,7 @@ public interface SubmissionRecordService {
 
     void deleteSubmissionRecord(BaseIdsEntity baseIdsEntity);
 
-    void submitSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO);
+    void submitSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO) throws Exception;
 
     void exportSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, HttpServletResponse response);
 
