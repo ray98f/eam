@@ -68,7 +68,11 @@ public class SubmissionController {
     @PostMapping("/submit")
     @ApiOperation(value = "提交送检单")
     public DataResponse<T> submitSubmission(@RequestBody SubmissionReqDTO submissionReqDTO) {
-        submissionService.submitSubmission(submissionReqDTO);
+        try {
+            submissionService.submitSubmission(submissionReqDTO);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return DataResponse.success();
     }
 

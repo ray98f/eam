@@ -17,14 +17,12 @@
         <!--开始、结束日期作为参数-->
         AND TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> TO_DATE(#{startTime}, 'YYYY-MM-DD')
         AND TO_DATE(#{endTime}, 'YYYY-MM-DD') + 1 <![CDATA[>]]> TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')
-        <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="objectCode!=null and objectCode.size()>0">
-                AND OBJECT_CODE IN
-                <foreach item="item" index="index" collection="objectCode" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-        </trim>
+        <if test="objectCode!=null and objectCode.size()>0">
+            AND OBJECT_NAME IN
+            <foreach item="item" index="index" collection="objectCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         GROUP BY TO_CHAR(TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS'), 'YYYYMM'), t.OBJECT_CODE, t.OBJECT_NAME
         ORDER BY TO_CHAR(TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS'), 'YYYYMM'), t.OBJECT_CODE
     </select>

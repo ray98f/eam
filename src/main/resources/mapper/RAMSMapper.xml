@@ -2,106 +2,124 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.statistic.RAMSMapper">
     <select id="query4AQYYZB" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResDTO">
-        SELECT
-            (SELECT count(1)
-             FROM T_FAULT_INFO d left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
-             WHERE 1=1 and d.MAJOR_CODE='07' and nvl(df.IS_FAULT,'10')='10' and df.order_Status !='99' and d.FAULT_TYPE in('10','20')) as "faultNum",
-            (SELECT count(1)
-             FROM T_FAULT_INFO d left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
-             WHERE 1=1 and d.MAJOR_CODE='07' and nvl(df.IS_FAULT,'10')='10' and df.order_Status !='99'and d.EXT3 in ('02','03','04')) as "affect11",
-            (SELECT count(1)
-             FROM T_FAULT_INFO d left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
-             WHERE 1=1 and d.MAJOR_CODE='07' and nvl(df.IS_FAULT,'10')='10' and df.order_Status !='99'and d.EXT3 in ('05','06','08','09')) as "affect21",
-            round( (select sum(a.TOTAL_MILES) from T_EQUIPMENT a where a.MAJOR_CODE='07')/1000000,2)  as "millionMiles"
+        SELECT (SELECT count(1)
+                FROM T_FAULT_INFO d
+                         left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
+                WHERE 1 = 1
+                  and d.MAJOR_CODE = '07'
+                  and nvl(df.IS_FAULT, '10') = '10'
+                  and df.order_Status != '99'
+                  and d.FAULT_TYPE in ('10', '20'))       as "faultNum",
+               (SELECT count(1)
+                FROM T_FAULT_INFO d
+                         left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
+                WHERE 1 = 1
+                  and d.MAJOR_CODE = '07'
+                  and nvl(df.IS_FAULT, '10') = '10'
+                  and df.order_Status != '99'
+                  and d.EXT3 in ('02', '03', '04'))       as "affect11",
+               (SELECT count(1)
+                FROM T_FAULT_INFO d
+                         left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
+                WHERE 1 = 1
+                  and d.MAJOR_CODE = '07'
+                  and nvl(df.IS_FAULT, '10') = '10'
+                  and df.order_Status != '99'
+                  and d.EXT3 in ('05', '06', '08', '09')) as "affect21",
+               round((select sum(a.TOTAL_MILES) from T_EQUIPMENT a where a.MAJOR_CODE = '07') / 1000000,
+                     2)                                   as "millionMiles"
         from dual
     </select>
     <select id="queryFautTypeByMonthBySys" resultType="com.wzmtr.eam.dto.res.statistic.SystemFaultsResDTO">
-    SELECT
-            c.YEAR_MONTH AS "yearMonth",
-            (
-            SELECT COUNT(1)
-            FROM T_FAULT_INFO d, T_FAULT_ORDER df
-            WHERE d.FAULT_NO = df.FAULT_NO
-            AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-            AND NVL(df.IS_FAULT, '10') = '10'
-            AND d.MAJOR_CODE = '07'
-            AND df.ORDER_STATUS != '99'
-            AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
-            <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
-                 #{moduleId}
-            </foreach>
-            AND d.FAULT_TYPE = '10'
-            ) AS "zx",
-            (
-            SELECT COUNT(1)
-            FROM T_FAULT_INFO d, T_FAULT_ORDER df
-            WHERE d.FAULT_NO = df.FAULT_NO
-            AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-            AND NVL(df.IS_FAULT, '10') = '10'
-            AND d.MAJOR_CODE = '07'
-            AND df.ORDER_STATUS != '99'
-            AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
-            <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
-                #{moduleId}
-            </foreach>
-            AND d.FAULT_TYPE = '20'
-            ) AS "crk",
-            (
-            SELECT COUNT(1)
-            FROM T_FAULT_INFO d, T_FAULT_ORDER df
-            WHERE d.FAULT_NO = df.FAULT_NO
-            AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-            AND NVL(df.IS_FAULT, '10') = '10'
-            AND d.MAJOR_CODE = '07'
-            AND df.ORDER_STATUS != '99'
-            AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
-            <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
-                 #{moduleId}
-            </foreach>
-            AND d.FAULT_TYPE = '30'
-            ) AS "yf",
-            (
-            SELECT COUNT(1)
-            FROM T_FAULT_INFO d, T_FAULT_ORDER df
-            WHERE d.FAULT_NO = df.FAULT_NO
-            AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-            AND NVL(df.IS_FAULT, '10') = '10'
-            AND d.MAJOR_CODE = '07'
-            AND df.ORDER_STATUS != '99'
-            AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
-            <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
-                #{moduleId}
-            </foreach>
-            ) AS "sum",
-            (
-            SELECT COUNT(1)
-            FROM T_FAULT_INFO d, T_FAULT_ORDER df
-            WHERE d.FAULT_NO = df.FAULT_NO
-            AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-            AND NVL(df.IS_FAULT, '10') = '10'
-            AND d.MAJOR_CODE = '07'
-            AND df.ORDER_STATUS != '99'
-            AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
-            <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
-                #{moduleId}
-            </foreach>
-            AND d.FAULT_TYPE IN ('10', '20')
-            ) AS "noyfsum",
-            (
-            SELECT SUM(a.MILES_INCREMENT)
-            FROM T_TRAIN_MILEAGE a
-            WHERE SUBSTR(a.FILLIN_TIME, 1, 7) = c.YEAR_MONTH
-            ) AS "miles"
-            FROM T_FAULT_INFO t,
-            (
-            SELECT TO_CHAR(ADD_MONTHS(TO_DATE(#{startDate}, 'YYYY-MM'), ROWNUM - 1), 'YYYY-MM') AS YEAR_MONTH
-            FROM DUAL
-            CONNECT BY ROWNUM <![CDATA[<=]]> MONTHS_BETWEEN(TO_DATE(#{endDate}, 'YYYY-MM'), TO_DATE(#{startDate}, 'YYYY-MM')) + 1
-            ) c
-            WHERE (SUBSTR(t.DISCOVERY_TIME, 1, 7) >= #{startDate}) AND (SUBSTR(t.DISCOVERY_TIME, 1, 7) <![CDATA[<=]]> #{endDate})
-            OR (SUBSTR(t.DISCOVERY_TIME, 1, 7) >= #{startDate}) AND (SUBSTR(t.DISCOVERY_TIME, 1, 7) <![CDATA[<=]]> #{endDate})
-            GROUP BY c.YEAR_MONTH
-            ORDER BY c.YEAR_MONTH DESC
+        SELECT
+        c.YEAR_MONTH AS "yearMonth",
+        (
+        SELECT COUNT(1)
+        FROM T_FAULT_INFO d, T_FAULT_ORDER df
+        WHERE d.FAULT_NO = df.FAULT_NO
+        AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+        AND NVL(df.IS_FAULT, '10') = '10'
+        AND d.MAJOR_CODE = '07'
+        AND df.ORDER_STATUS != '99'
+        AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
+        <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
+            #{moduleId}
+        </foreach>
+        AND d.FAULT_TYPE = '10'
+        ) AS "zx",
+        (
+        SELECT COUNT(1)
+        FROM T_FAULT_INFO d, T_FAULT_ORDER df
+        WHERE d.FAULT_NO = df.FAULT_NO
+        AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+        AND NVL(df.IS_FAULT, '10') = '10'
+        AND d.MAJOR_CODE = '07'
+        AND df.ORDER_STATUS != '99'
+        AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
+        <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
+            #{moduleId}
+        </foreach>
+        AND d.FAULT_TYPE = '20'
+        ) AS "crk",
+        (
+        SELECT COUNT(1)
+        FROM T_FAULT_INFO d, T_FAULT_ORDER df
+        WHERE d.FAULT_NO = df.FAULT_NO
+        AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+        AND NVL(df.IS_FAULT, '10') = '10'
+        AND d.MAJOR_CODE = '07'
+        AND df.ORDER_STATUS != '99'
+        AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
+        <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
+            #{moduleId}
+        </foreach>
+        AND d.FAULT_TYPE = '30'
+        ) AS "yf",
+        (
+        SELECT COUNT(1)
+        FROM T_FAULT_INFO d, T_FAULT_ORDER df
+        WHERE d.FAULT_NO = df.FAULT_NO
+        AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+        AND NVL(df.IS_FAULT, '10') = '10'
+        AND d.MAJOR_CODE = '07'
+        AND df.ORDER_STATUS != '99'
+        AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
+        <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
+            #{moduleId}
+        </foreach>
+        ) AS "sum",
+        (
+        SELECT COUNT(1)
+        FROM T_FAULT_INFO d, T_FAULT_ORDER df
+        WHERE d.FAULT_NO = df.FAULT_NO
+        AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
+        AND NVL(df.IS_FAULT, '10') = '10'
+        AND d.MAJOR_CODE = '07'
+        AND df.ORDER_STATUS != '99'
+        AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
+        <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
+            #{moduleId}
+        </foreach>
+        AND d.FAULT_TYPE IN ('10', '20')
+        ) AS "noyfsum",
+        (
+        SELECT SUM(a.MILES_INCREMENT)
+        FROM T_TRAIN_MILEAGE a
+        WHERE SUBSTR(a.FILLIN_TIME, 1, 7) = c.YEAR_MONTH
+        ) AS "miles"
+        FROM T_FAULT_INFO t,
+        (
+        SELECT TO_CHAR(ADD_MONTHS(TO_DATE(#{startDate}, 'YYYY-MM'), ROWNUM - 1), 'YYYY-MM') AS YEAR_MONTH
+        FROM DUAL
+        CONNECT BY ROWNUM <![CDATA[<=]]> MONTHS_BETWEEN(TO_DATE(#{endDate}, 'YYYY-MM'), TO_DATE(#{startDate},
+        'YYYY-MM')) + 1
+        ) c
+        WHERE (SUBSTR(t.DISCOVERY_TIME, 1, 7) >= #{startDate}) AND (SUBSTR(t.DISCOVERY_TIME, 1, 7) <![CDATA[<=]]>
+        #{endDate})
+        OR (SUBSTR(t.DISCOVERY_TIME, 1, 7) >= #{startDate}) AND (SUBSTR(t.DISCOVERY_TIME, 1, 7) <![CDATA[<=]]>
+        #{endDate})
+        GROUP BY c.YEAR_MONTH
+        ORDER BY c.YEAR_MONTH DESC
     </select>
     <select id="queryresult2" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResDTO">
         select c.YEAR_MONTH                                       as "yearMonth",
@@ -171,71 +189,104 @@
         ORDER by c.YEAR_MONTH desc
     </select>
     <select id="querySysPerform" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResDTO">
-        SELECT
-        LATE.SC AS "moduleName",
-        LATE.NUM_LATE AS "numLate",
-        NOS.NUM_NOS AS "numNos"
-        FROM
-        (
-        (
-        SELECT
-        c."SC",
-        SUM( CASE WHEN t."moId" = c."SC" THEN 1 ELSE 0 END ) AS "NUM_LATE"
-        FROM
-        (
-        SELECT
-        COUNT( 1 ),
-        nvl( SUBSTR( a.FAULT_MODULE_ID, 4, 2 ), '21' ) AS "moId"
-        FROM
-        WBPLAT.TDMFM01 a
-        LEFT JOIN WBPLAT.TDMFM02 df ON a.FAULT_NO = df.FAULT_NO
-        WHERE
-        a.MAJOR_CODE = '07'
-        AND a.EXT3 IN ( '02', '03', '04' )
-        AND NVL( df.IS_FAULT, '10' ) = '10'
-        AND df.order_Status != '99'
-        GROUP BY
-        a.FAULT_MODULE_ID
-        ) t,
-        ( SELECT lpad( ROWNUM, 2, '0' ) AS "SC" FROM dual CONNECT BY ROWNUM <![CDATA[<=]]> 21 ) c
-        WHERE
-        c."SC" IS NOT NULL
-        GROUP BY
-        c."SC"
-        ORDER BY
-        c."SC" ASC
-        ) LATE
-        LEFT JOIN (
-        SELECT
-        c."SC",
-        SUM( CASE WHEN t."moId" = c."SC" THEN 1 ELSE 0 END ) AS "NUM_NOS"
-        FROM
-        (
-        SELECT
-        COUNT( 1 ),
-        nvl( SUBSTR( a.FAULT_MODULE_ID, 4, 2 ), '21' ) AS "moId"
-        FROM
-        WBPLAT.TDMFM01 a
-        LEFT JOIN WBPLAT.TDMFM02 df ON a.FAULT_NO = df.FAULT_NO
-        WHERE
-        a.MAJOR_CODE = '07'
-        AND a.EXT3 IN ( '05', '06', '08', '09' )
-        AND NVL( df.IS_FAULT, '10' ) = '10'
-        AND df.order_Status != '99'
-        GROUP BY
-        a.FAULT_MODULE_ID
-        ) t,
-        ( SELECT lpad( ROWNUM, 2, '0' ) AS "SC" FROM dual CONNECT BY ROWNUM <![CDATA[<=]]> 21 ) c
-        WHERE
-        c."SC" IS NOT NULL
-        GROUP BY
-        c."SC"
-        ORDER BY
-        c."SC" ASC
-        ) NOS ON NOS.SC = LATE.SC
-        )
+        SELECT LATE.SC       AS "moduleName",
+               LATE.NUM_LATE AS "numLate",
+               NOS.NUM_NOS   AS "numNos"
+        FROM (
+                 (SELECT c."SC",
+                         SUM(CASE WHEN t."moId" = c."SC" THEN 1 ELSE 0 END) AS "NUM_LATE"
+                  FROM (SELECT COUNT(1),
+                               nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') AS "moId"
+                        FROM WBPLAT.TDMFM01 a
+                                 LEFT JOIN WBPLAT.TDMFM02 df ON a.FAULT_NO = df.FAULT_NO
+                        WHERE a.MAJOR_CODE = '07'
+                          AND a.EXT3 IN ('02', '03', '04')
+                          AND NVL(df.IS_FAULT, '10') = '10'
+                          AND df.order_Status != '99'
+                        GROUP BY a.FAULT_MODULE_ID) t,
+                       (SELECT lpad(ROWNUM, 2, '0') AS "SC" FROM dual CONNECT BY ROWNUM <![CDATA[<=]]> 21) c
+                  WHERE c."SC" IS NOT NULL
+                  GROUP BY c."SC"
+                  ORDER BY c."SC" ASC) LATE
+                     LEFT JOIN (SELECT c."SC",
+                                       SUM(CASE WHEN t."moId" = c."SC" THEN 1 ELSE 0 END) AS "NUM_NOS"
+                                FROM (SELECT COUNT(1),
+                                             nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') AS "moId"
+                                      FROM WBPLAT.TDMFM01 a
+                                               LEFT JOIN WBPLAT.TDMFM02 df ON a.FAULT_NO = df.FAULT_NO
+                                      WHERE a.MAJOR_CODE = '07'
+                                        AND a.EXT3 IN ('05', '06', '08', '09')
+                                        AND NVL(df.IS_FAULT, '10') = '10'
+                                        AND df.order_Status != '99'
+                                      GROUP BY a.FAULT_MODULE_ID) t,
+                                     (SELECT lpad(ROWNUM, 2, '0') AS "SC" FROM dual CONNECT BY ROWNUM <![CDATA[<=]]> 21) c
+                                WHERE c."SC" IS NOT NULL
+                                GROUP BY c."SC"
+                                ORDER BY c."SC" ASC) NOS ON NOS.SC = LATE.SC
+                 )
     </select>
     <select id="querytotalMiles" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResDTO">
-        select sum(a.TOTAL_MILES) as "totalMiles" from WBPLAT.TDMDM01 a where a.MAJOR_CODE='07' and a.EQUIP_TYPE_CODE='070101'
+        select sum(a.TOTAL_MILES) as "totalMiles"
+        from T_EQUIPMENT a
+        where a.MAJOR_CODE = '07'
+          and a.EQUIP_TYPE_CODE = '070101'
+    </select>
+
+
+    <select id="queryCountFautType4RAMS" resultType="com.wzmtr.eam.dto.res.statistic.FaultConditionResDTO">
+        select FAULT10.SC,
+               FAULT10.ZX,
+               FAULT20.CRK,
+               FAULT30.YF,
+               (FAULT10.ZX + FAULT20.CRK + FAULT30.YF) as "ZS",
+               (FAULT10.ZX + FAULT20.CRK)              as NOYF
+        from (select c."SC",
+                     sum(case
+                             when t."moId" = c."SC" then 1
+                             else 0 end) as "ZX"
+              from (select count(1), nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') as "moId"
+                    from WBPLAT.TDMFM01 a
+                             left join WBPLAT.TDMFM02 df on a.FAULT_NO = df.FAULT_NO
+                    where a.MAJOR_CODE = '07'
+                      and a.FAULT_TYPE = '10'
+                      and nvl(df.IS_FAULT, '10') = '10'
+                      and df.order_Status != '99'
+                    group by a.FAULT_MODULE_ID) t,
+                   (select lpad(rownum, 2, '0') as "SC" from dual connect by rownum <![CDATA[<=]]> 21) c
+              where c."SC" is not null
+              group by c."SC"
+              order by c."SC" asc) FAULT10
+                 left join (select c."SC",
+                                   sum(case
+                                           when t."moId" = c."SC" then 1
+                                           else 0 end) as "CRK"
+                            from (select count(1), nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') as "moId"
+                                  from WBPLAT.TDMFM01 a
+                                           left join WBPLAT.TDMFM02 df on a.FAULT_NO = df.FAULT_NO
+                                  where a.MAJOR_CODE = '07'
+                                    and a.FAULT_TYPE = '20'
+                                    and nvl(df.IS_FAULT, '10') = '10'
+                                    and df.order_Status != '99'
+                                  group by a.FAULT_MODULE_ID) t,
+                                 (select lpad(rownum, 2, '0') as "SC" from dual connect by rownum <![CDATA[<=]]> 21) c
+                            where c."SC" is not null
+                            group by c."SC"
+                            order by c."SC" asc) FAULT20 on FAULT10.SC = FAULT20.SC
+                 left join (select c."SC",
+                                   sum(case
+                                           when t."moId" = c."SC" then 1
+                                           else 0 end) as "YF"
+                            from (select count(1), nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') as "moId"
+                                  from WBPLAT.TDMFM01 a
+                                           left join WBPLAT.TDMFM02 df on a.FAULT_NO = df.FAULT_NO
+                                  where a.MAJOR_CODE = '07'
+                                    and a.FAULT_TYPE = '30'
+                                    and nvl(df.IS_FAULT, '10') = '10'
+                                    and df.order_Status != '99'
+                                  group by a.FAULT_MODULE_ID) t,
+                                 (select lpad(rownum, 2, '0') as "SC" from dual connect by rownum <![CDATA[<=]]> 21) c
+                            where c."SC" is not null
+                            group by c."SC"
+                            order by c."SC" asc) FAULT30 on FAULT10.SC = FAULT30.SC
     </select>
 </mapper>

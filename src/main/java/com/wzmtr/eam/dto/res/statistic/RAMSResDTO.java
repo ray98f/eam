@@ -16,6 +16,8 @@ public class RAMSResDTO {
     private String affect11Performance;
     private String affect21Performance;
 
+    private String totalMiles;
+
 
     /*******/
     @ApiModelProperty(value = "不适合服务")

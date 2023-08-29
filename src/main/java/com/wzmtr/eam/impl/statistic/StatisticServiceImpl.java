@@ -4,7 +4,10 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bo.StatisticBO;
-import com.wzmtr.eam.dto.req.statistic.*;
+import com.wzmtr.eam.dto.req.statistic.CarFaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.FailreRateQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.MaterialQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.OneCarOneGearQueryReqDTO;
 import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.PartReplaceResDTO;
@@ -56,9 +59,13 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public List<FailureRateResDTO> query(FailreRateQueryReqDTO reqDTO) {
         List<FailureRateResDTO> list = new ArrayList<>();
+        // 车辆系统故障率
         FailureRateResDTO vehicleRate = failureRateMapper.vehicleRate(reqDTO);
+        //<!--信号系统故障率-->
         FailureRateResDTO signalRate = failureRateMapper.signalRate(reqDTO);
+        // 供电系统故障率
         FailureRateResDTO powerRate = failureRateMapper.powerRate(reqDTO);
+        // 屏蔽门故障率
         FailureRateResDTO PSDrate = failureRateMapper.PSDrate(reqDTO);
         list.add(vehicleRate);
         list.add(signalRate);
@@ -308,7 +315,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public RAMSResDTO query4AQYYZB(RAMSTimeReqDTO reqDTO) {
+    public RAMSResDTO query4AQYYZB() {
         // PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         List<RAMSResDTO> records = ramsMapper.query4AQYYZB();
         if (CollectionUtil.isEmpty(records)) {
@@ -395,9 +402,7 @@ public class StatisticServiceImpl implements StatisticService {
                 break;
         }
 
-        List<SystemFaultsResDTO> systemFaultsResDTOS = ramsMapper.queryFautTypeByMonthBySys(moduleIds, startDate, endDate);
-        systemFaultsResDTOS.forEach(a -> a.setCompliance(a.getNoyfsum() - a.getMiles() > 0));
-        return systemFaultsResDTOS;
+        return ramsMapper.queryFautTypeByMonthBySys(moduleIds, startDate, endDate);
     }
 
     private static String _getLastMouths(int i) {
@@ -409,9 +414,6 @@ public class StatisticServiceImpl implements StatisticService {
         return sdf.format(m);
     }
 
-    /**
-     * 故障影响统计
-     */
     public List<RAMSResDTO> queryresult2(String startDate, String endDate) {
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
@@ -497,6 +499,88 @@ public class StatisticServiceImpl implements StatisticService {
         return ramsResDTOS;
     }
 
+    /**
+     * 各系统故障情况统计
+     *
+     * @return
+     */
+    @Override
+    public List<FaultConditionResDTO> queryCountFaultType() {
+        List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4RAMS();
+        List<RAMSResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
+        RAMSResDTO ramsResDTO = ramsResDTOS.get(0);
+        list.forEach(a -> {
+            switch (a.getSC()) {
+                case "01":
+                case "02":
+                case "03":
+                case "04":
+                    rebuildBlock(a, 0, "车门系统", "9000");
+                    break;
+                /*     */
+                case "12":
+                    rebuildBlock(a, 1, "制动系统", "43000");
+                    break;
+                case "13":
+                    rebuildBlock(a, 2, "空调系统", "85000");
+                    break;
+                case "14":
+                    rebuildBlock(a, 3, "转向架", "381000");
+                    break;
+                case "17":
+                    rebuildBlock(a, 4, "PIDS", "191000");
+                    break;
+                case "10":
+                    rebuildBlock(a, 5, "网络系统", "254000");
+                    break;
+                case "05":
+                case "08":
+                case "09":
+                case "21":
+                    rebuildBlock(a, 6, "车体结构及车身内部", "191000");
+                    break;
+                case "06":
+                case "07":
+                    rebuildBlock(a, 7, "通道与车钩系统", "381000");
+                    break;
+                case "18":
+                case "19":
+                    rebuildBlock(a, 8, "牵引设备系统", "11000");
+                    break;
+                case "11":
+                case "15":
+                case "16":
+                case "20":
+                    rebuildBlock(a, 9, "辅助供电设备系统", "38000");
+                    break;
+            }
+            DecimalFormat df = new DecimalFormat("#0");
+            double ZB;
+            if (Double.parseDouble(a.getNOYF()) == 0.0D) {
+                ZB = Double.parseDouble(ramsResDTO.getTotalMiles()) * 4.0D / 55.0D;
+            } else {
+                ZB = Double.parseDouble(ramsResDTO.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNOYF());
+            }
+            a.setZB(df.format(ZB));
+            if (ZB >= Double.parseDouble(a.getContractZB())) {
+                a.setIsDB("达标");
+            } else {
+                a.setIsDB("未达标");
+            }
+        });
+        return list;
+    }
+
+
+    /**
+     * 各系统故障情况统计
+     */
+    // public List<RAMSResDTO> queryCountFautType4RAMS() {
+    //
+    //     List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4RAMS();
+    //     list.forEach();
+    //     return ramsResDTOS;
+    // }
     public void rebuildBlock4SP(RAMSResDTO map, int rowNo, String moduleName, String contractZB_LATE, String contractZB_NOS) {
         DecimalFormat df = new DecimalFormat("#0");
         String NUM_LATE = map.getNumLate();
@@ -514,9 +598,30 @@ public class StatisticServiceImpl implements StatisticService {
         }
     }
 
-    public static void main(String[] args) {
+    public void rebuildBlock(FaultConditionResDTO map, int rowNo, String moduleName, String contractZB) {
         DecimalFormat df = new DecimalFormat("#0");
-        System.out.println(df.format(Double.parseDouble("0") + 1));
+        String ZX = map.getZX();
+        String CRK = map.getCRK();
+        String YF = map.getYF();
+        String ZS = map.getZS();
+        String NOYF = map.getNOYF();
+        if (rowNo > 0) {
+            map.setModuleName(moduleName);
+            map.setZX(df.format(Double.parseDouble(ZX)));
+            map.setCRK(df.format(Double.parseDouble(CRK)));
+            map.setYF(df.format(Double.parseDouble(YF)));
+            map.setZS(df.format(Double.parseDouble(ZS)));
+            map.setContractZB(contractZB);
+            map.setNOYF(df.format(Double.parseDouble(NOYF)));
+        } else {
+            map.setModuleName(moduleName);
+            map.setZX(ZX);
+            map.setCRK(CRK);
+            map.setYF(YF);
+            map.setZS(ZS);
+            map.setNOYF(NOYF);
+            map.setContractZB(contractZB);
+        }
     }
 }
 

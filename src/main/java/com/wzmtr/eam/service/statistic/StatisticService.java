@@ -72,11 +72,13 @@ public interface StatisticService {
 
     Page<InspectionJobListResDTO> queryER1(OneCarOneGearQueryReqDTO reqDTO);
 
-    RAMSResDTO query4AQYYZB(RAMSTimeReqDTO reqDTO);
+    RAMSResDTO query4AQYYZB();
 
     List<SystemFaultsResDTO> queryresult3(String startDate, String endDate,String sys);
 
     List<RAMSResDTO> queryresult2(String startDate, String endDate);
 
     List<RAMSResDTO> querySysPerform();
+
+    List<FaultConditionResDTO> queryCountFaultType();
 }
