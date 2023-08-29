@@ -15,6 +15,7 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.fault.FaultReportService;
+import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -38,6 +39,8 @@ public class FaultReportServiceImpl implements FaultReportService {
     private TrackQueryMapper trackQueryMapper;
     @Autowired
     private OrganizationMapper organizationMapper;
+    @Autowired
+    private TrackQueryService trackQueryService;
 
     @Override
     // @Transactional(rollbackFor = Exception.class)
@@ -111,11 +114,7 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public FaultDetailResDTO detail(FaultDetailReqDTO reqDTO) {
-        FaultInfoBO faultInfoBO = trackQueryMapper.faultDetail(reqDTO);
-        if (faultInfoBO == null) {
-            return null;
-        }
-        return __BeanUtil.convert(faultInfoBO, FaultDetailResDTO.class);
+        return trackQueryService.faultDetail(reqDTO);
     }
 
 }

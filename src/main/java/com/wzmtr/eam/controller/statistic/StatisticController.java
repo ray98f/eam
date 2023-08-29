@@ -144,10 +144,17 @@ public class StatisticController {
     public DataResponse<List<SystemFaultsResDTO>> queryresult3(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate, @RequestParam(required = false) @ApiParam("系统分类") String sys) {
         return DataResponse.of(statisticService.queryresult3(startDate, endDate, sys));
     }
+
     @GetMapping("rams/queryresult2")
     @ApiOperation(value = "故障影响统计")
     public DataResponse<List<RAMSResDTO>> queryresult2(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate) {
         return DataResponse.of(statisticService.queryresult2(startDate, endDate));
+    }
+
+    @GetMapping("rams/querySysPerform")
+    @ApiOperation(value = "querySysPerform")
+    public DataResponse<List<RAMSResDTO>> querySysPerform() {
+        return DataResponse.of(statisticService.querySysPerform());
     }
 
 }

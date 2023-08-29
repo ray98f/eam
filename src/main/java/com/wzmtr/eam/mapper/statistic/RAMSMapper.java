@@ -26,4 +26,6 @@ public interface RAMSMapper {
     List<SystemFaultsResDTO> queryFautTypeByMonthBySys(Set<String> moduleIds, String startDate, String endDate);
 
     List<RAMSResDTO> queryresult2(String startDate, String endDate);
+    List<RAMSResDTO> querySysPerform();
+    List<RAMSResDTO> querytotalMiles();
 }
