@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.MeaListReqDTO;
 import com.wzmtr.eam.dto.req.MeaReqDTO;
 import com.wzmtr.eam.dto.res.MeaResDTO;
+import com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -25,4 +26,6 @@ public interface MeaMapper {
     List<MeaResDTO> listMea(MeaListReqDTO meaListReqDTO);
 
     void updateone(MeaResDTO meaResDTO);
+
+    Page<SubmissionRecordDetailResDTO> pageMeaRecord(Page<SubmissionRecordDetailResDTO> page, String equipCode);
 }

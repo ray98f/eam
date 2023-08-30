@@ -14,36 +14,33 @@ public class MeaListReqDTO {
     @ApiModelProperty(value = "设备分类id")
     private String recId;
 
-    @ApiModelProperty(value = "父节点id")
-    private String parentNodeRecId;
+    @ApiModelProperty(value = "计量器具名称")
+    private String equipName;
 
-    @ApiModelProperty(value = "级别")
-    private Integer nodeLevel;
+    @ApiModelProperty(value = "计量器具代码")
+    private String equipCode;
 
-    @ApiModelProperty(value = "设备分类节点编号")
-    private String nodeCode;
+    @ApiModelProperty(value = "型号规格")
+    private String matSpecifi;
 
-    @ApiModelProperty(value = "设备分类节点名称")
-    private String nodeName;
+    @ApiModelProperty(value = "使用单位")
+    private String useDeptCname;
 
-    @ApiModelProperty(value = "记录状态 10 启用 20 禁用")
-    private String recStatus;
+    @ApiModelProperty(value = "使用责任人")
+    private String useName;
 
     @ApiModelProperty(value = "线路编号 01 S1线 02 S2线")
-    private String lineCode;
+    private String lineNo;
 
-    @ApiModelProperty(value = "备注")
-    private String remark;
+    @ApiModelProperty(value = "出厂编号")
+    private String manufactureNo;
 
-    @ApiModelProperty(value = "创建人")
-    private String recCreator;
+    @ApiModelProperty(value = "送检10:否;20:是")
+    private String sendVerifyFlag;
 
-    @ApiModelProperty(value = "修改人")
-    private String recRevisor;
+    @ApiModelProperty(value = "开始使用日期开始时间")
+    private String useBeginBeginDate;
 
-    @ApiModelProperty(value = "创建时间")
-    private String recCreateTime;
-
-    @ApiModelProperty(value = "修改时间")
-    private String recReviseTime;
+    @ApiModelProperty(value = "开始使用日期结束时间")
+    private String useBeginEndDate;
 }

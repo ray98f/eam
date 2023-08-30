@@ -3,6 +3,7 @@ package com.wzmtr.eam.service.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 
@@ -22,4 +23,8 @@ public interface FaultQueryService {
     void issue(FaultDetailReqDTO reqDTO);
 
     void export(FaultQueryReqDTO reqDTO, HttpServletResponse response);
+
+    Page<ConstructionResDTO> construction(FaultQueryReqDTO reqDTO);
+
+    Page<ConstructionResDTO> cancellation(FaultQueryReqDTO reqDTO);
 }

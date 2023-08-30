@@ -222,11 +222,6 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     }
 
     @Override
-    public void importOverhaulWeekPlan(MultipartFile file) {
-        // todo 导入
-    }
-
-    @Override
     public void exportOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "周计划编号", "周计划名称", "周末", "线路", "专业", "作业工班", "工班长", "审批状态");
         List<OverhaulWeekPlanResDTO> overhaulWeekPlan = overhaulWeekPlanMapper.listOverhaulWeekPlan(overhaulWeekPlanListReqDTO);

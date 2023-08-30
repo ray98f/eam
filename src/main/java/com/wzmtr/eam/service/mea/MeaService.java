@@ -17,5 +17,7 @@ public interface MeaService {
     void importMea(MultipartFile file);
 
     void exportMea(MeaListReqDTO meaListReqDTO, HttpServletResponse response);
+
+    Page<SubmissionRecordDetailResDTO> pageMeaRecord(String equipCode, PageReqDTO pageReqDTO);
     
 }

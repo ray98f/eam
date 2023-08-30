@@ -76,4 +76,10 @@ public class MeaServiceImpl implements MeaService {
         ExcelPortUtil.excelPort("计量器具台账信息", listName, list, null, response);
     }
 
+    @Override
+    public Page<SubmissionRecordDetailResDTO> pageMeaRecord(String equipCode, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return meaMapper.pageMeaRecord(pageReqDTO.of(), equipCode);
+    }
+
 }

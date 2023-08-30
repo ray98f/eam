@@ -81,13 +81,6 @@ public class ZTTOverhaulWeekPlanController {
         return DataResponse.success();
     }
 
-    @PostMapping("/weekPlan/import")
-    @ApiOperation(value = "导入检修周计划（中铁通）")
-    public DataResponse<T> importOverhaulWeekPlan(@RequestParam MultipartFile file) {
-        overhaulWeekPlanService.importOverhaulWeekPlan(file);
-        return DataResponse.success();
-    }
-
     @GetMapping("/weekPlan/export")
     @ApiOperation(value = "导出检修周计划（中铁通）")
     public void exportOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO,

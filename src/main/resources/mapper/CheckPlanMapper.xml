@@ -69,7 +69,7 @@
 
     <select id="getCheckPlanDetail" resultType="com.wzmtr.eam.dto.res.CheckPlanResDTO">
         <include refid="checkPlan-instrument-cols"/>
-        FROM T_MEA_CHECK_PLAN WHERE REC_ID=#{id}
+        FROM T_MEA_CHECK_PLAN a WHERE a.REC_ID=#{id}
     </select>
 
     <select id="getMaxCode" resultType="java.lang.String">

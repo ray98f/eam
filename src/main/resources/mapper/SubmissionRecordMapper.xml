@@ -3,7 +3,7 @@
 <mapper namespace="com.wzmtr.eam.mapper.mea.SubmissionRecordMapper">
 
     <sql id="submission-record-cols">
-        ELECT
+        SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.CHECK_NO as "checkNo",
         a.SEND_VERIFY_NO	as "sendVerifyNo",  <!-- 检测单号 -->
@@ -50,24 +50,24 @@
     <select id="pageSubmissionRecord" resultType="com.wzmtr.eam.dto.res.SubmissionRecordResDTO">
         <include refid="submission-record-cols"/>
         WHERE 1=1 and a.DELETE_FLAG='0'
-        <if test="req.checkNo!=null and req.checkNo!=''">
-            and a.CHECK_NO like '%' || #{req.checkNo} || '%'
+        <if test="checkNo!=null and checkNo!=''">
+            and a.CHECK_NO like '%' || #{checkNo} || '%'
         </if>
-        <if test="req.instrmPlanNo!=null and req.instrmPlanNo!=''">
-            and a.INSTRM_PLAN_NO like '%' || #{req.instrmPlanNo} || '%'
+        <if test="instrmPlanNo!=null and instrmPlanNo!=''">
+            and a.INSTRM_PLAN_NO like '%' || #{instrmPlanNo} || '%'
         </if>
-        <if test="req.recStatus!=null and req.recStatus!=''">
-            and a.REC_STATUS=#{req.recStatus}
+        <if test="recStatus!=null and recStatus!=''">
+            and a.REC_STATUS=#{recStatus}
         </if>
-        <if test="req.workFlowInstId!=null and req.workFlowInstId!=''">
-            and a.WORK_FLOW_INST_ID=#{req.workFlowInstId}
+        <if test="workFlowInstId!=null and workFlowInstId!=''">
+            and a.WORK_FLOW_INST_ID=#{workFlowInstId}
         </if>
         order by a.CHECK_NO desc
     </select>
 
     <select id="getSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.SubmissionRecordResDTO">
         <include refid="submission-record-cols"/>
-        WHERE REC_ID=#{id}
+        WHERE a.REC_ID=#{id}
     </select>
 
     <select id="getMaxCode" resultType="java.lang.String">

@@ -267,4 +267,61 @@
         WHERE EQUIP_CODE=#{equipCode}
     </update>
 
+    <select id="pageMeaRecord" resultType="com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
+        a.TEST_LIST_DETAIL_REC_ID	as "testListDetailRecId",  <!-- 检测单明细表REC_ID -->
+        a.SEND_VERIFY_NO	as "sendVerifyNo",  <!-- 检测单号 -->
+        a.EQUIP_CODE	as "equipCode",  <!-- 计量器具代码 -->
+        a.EQUIP_NAME	as "equipName",  <!-- 计量器具名称 -->
+        a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
+        a.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
+        a.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
+        a.INSTALLATION_UNIT	as "installationUnit",  <!-- 安装单位 -->
+        a.MEASURE_BARCODE	as "measureBarcode",  <!-- 送检条码号 -->
+        a.VERIFY_DATE	as "verifyDate",  <!-- 检定日期 -->
+        a.VERIFY_DEPT	as "verifyDept",  <!-- 检定校准单位 -->
+        a.VERIFICATION_NO	as "verificationNo",  <!-- 证书编号 -->
+        a.VERIFICATION_TYPE	as "verificationType",  <!-- 证书类型 -->
+        a.VERIFY_PROOF	as "verifyProof",  <!-- 检定依据 -->
+        a.VERIFY_REPORT_NO	as "verifyReportNo",  <!-- 检定报告编号 -->
+        a.VERIFY_REPORT_TYPE	as "verifyReportType",  <!-- 检定报告类型 0:检定证书;1:校准证书;2:检定结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
+        a.VERIFY_REPORT_NAME	as "verifyReportName",  <!-- 检定报告名称 -->
+        a.VERIFY_REPORT_DATE	as "verifyReportDate",  <!-- 检定报告日期 -->
+        a.VERIFY_FEE	as "verifyFee",  <!-- 检定费用 -->
+        a.VERIFY_RESULT	as "verifyResult",  <!-- 检定结果（0:合格;1:不合格） -->
+        a.VERIFY_CONCLUSION	as "verifyConclusion",  <!-- 检定结果说明 -->
+        a.VERIFY_REPORT_FILEID	as "verifyReportFileid",  <!-- 检定报告附件 -->
+        a.LAST_VERIFY_DATE	as "lastVerifyDate",  <!-- 上次检定日期 -->
+        a.NEXT_VERIFY_DATE	as "nextVerifyDate",  <!-- 下次检定日期 -->
+        a.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
+        a.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
+        a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        a.POSITION3	as "position3",  <!-- 位置三 -->
+        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        a.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
+        a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
+        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5"<!-- 扩展字段5 -->
+        FROM T_SUBMISSION_RECORD_DETAIL a
+        WHERE 1=1 AND a.EQUIP_CODE=#{equipCode}
+        order by a.REC_CREATE_TIME desc
+    </select>
+
 </mapper>

@@ -140,17 +140,15 @@ public class StatisticController {
         return PageResponse.of(statisticService.queryER1(reqDTO));
     }
 
-    /**
-     * RAMS
-     **/
-    @PostMapping("rams/query4AQYYZB")
-    @ApiOperation(value = "车辆可靠性表现")
-    public DataResponse<RAMSResDTO> query4AQYYZB(@RequestBody RAMSTimeReqDTO reqDTO) {
-        return DataResponse.of(statisticService.query4AQYYZB(reqDTO));
+
+    @PostMapping("rams/queryCountFaultType")
+    @ApiOperation(value = "各系统故障情况统计")
+    public DataResponse<List<FaultConditionResDTO>> queryCountFaultType() {
+        return DataResponse.of(statisticService.queryCountFaultType());
     }
 
     @GetMapping("rams/queryresult3")
-    @ApiOperation(value = "各系统故障情况统计")
+    @ApiOperation(value = "系统故障统计趋势")
     public DataResponse<List<SystemFaultsResDTO>> queryresult3(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate, @RequestParam(required = false) @ApiParam("系统分类") String sys) {
         return DataResponse.of(statisticService.queryresult3(startDate, endDate, sys));
     }
@@ -162,7 +160,7 @@ public class StatisticController {
     }
 
     @GetMapping("rams/querySysPerform")
-    @ApiOperation(value = "querySysPerform")
+    @ApiOperation(value = "各系统可靠性统计")
     public DataResponse<List<RAMSResDTO>> querySysPerform() {
         return DataResponse.of(statisticService.querySysPerform());
     }

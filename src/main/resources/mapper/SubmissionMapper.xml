@@ -59,7 +59,7 @@
 
     <select id="getSubmissionDetail" resultType="com.wzmtr.eam.dto.res.SubmissionResDTO">
         <include refid="submission-instrument-cols"/>
-        FROM T_MEA_SUBMISSION WHERE REC_ID=#{id}
+        FROM T_MEA_SUBMISSION a WHERE a.REC_ID=#{id}
     </select>
 
     <select id="getMaxCode" resultType="java.lang.String">

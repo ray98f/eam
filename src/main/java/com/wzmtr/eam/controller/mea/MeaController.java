@@ -1,9 +1,8 @@
 package com.wzmtr.eam.controller.mea;
 
 import com.wzmtr.eam.dto.req.MeaListReqDTO;
-import com.wzmtr.eam.dto.req.MeaListReqDTO;
 import com.wzmtr.eam.dto.res.MeaResDTO;
-import com.wzmtr.eam.dto.res.MeaResDTO;
+import com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -44,7 +43,7 @@ public class MeaController {
     }
 
     @PostMapping("/import")
-    @ApiOperation(value = "导入检修模板")
+    @ApiOperation(value = "导入计量器具台账")
     public DataResponse<T> importMea(@RequestParam MultipartFile file) {
         meaService.importMea(file);
         return DataResponse.success();
@@ -54,5 +53,12 @@ public class MeaController {
     @ApiOperation(value = "导出计量器具台账")
     public void exportMea(MeaListReqDTO meaListReqDTO, HttpServletResponse response) {
         meaService.exportMea(meaListReqDTO, response);
+    }
+
+    @GetMapping("/record/page")
+    @ApiOperation(value = "获取计量器具检定历史记录列表")
+    public PageResponse<SubmissionRecordDetailResDTO> pageMeaRecord(@RequestParam(required = false) @ApiParam("计量器具编号") String equipCode,
+                                                                    @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(meaService.pageMeaRecord(equipCode, pageReqDTO));
     }
 }
