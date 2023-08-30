@@ -140,16 +140,7 @@ public class StatisticController {
         return PageResponse.of(statisticService.queryER1(reqDTO));
     }
 
-    /**
-    //  * RAMS
-    //  **/
-    // @PostMapping("rams/query4AQYYZB")
-    // @ApiOperation(value = "各系统故障情况统计")
-    // public DataResponse<RAMSResDTO> query4AQYYZB() {
-    //     return DataResponse.of(statisticService.query4AQYYZB());
-    // }
 
-    //DMDM3101/queryCountFaultType
     @PostMapping("rams/queryCountFaultType")
     @ApiOperation(value = "各系统故障情况统计")
     public DataResponse<List<FaultConditionResDTO>> queryCountFaultType() {

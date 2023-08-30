@@ -15,7 +15,6 @@ public class RAMSResDTO {
     private String millionMiles;
     private String affect11Performance;
     private String affect21Performance;
-
     private String totalMiles;
 
 
@@ -30,15 +29,25 @@ public class RAMSResDTO {
     private String late;
     @ApiModelProperty(value = "总数")
     private String sum;
-    @ApiModelProperty(value = "总公里数")
+    @ApiModelProperty(value = "实际车公里数")
     private String miles;
-    /***********/
+    /*****各系统可靠性情况统计******/
     @ApiModelProperty(value = "moduleName")
     private String moduleName;
-    @ApiModelProperty(value = "NUM_LATE")
+    @ApiModelProperty(value = "晚点故障数")
     private String numLate;
-    @ApiModelProperty(value = "NUM_NOS")
+    @ApiModelProperty(value = "不适合继续服务故障数")
     private String numNos;
+    @ApiModelProperty(value = "不适合继续服务合同故障数")
     private String contractZBLATE;
+    @ApiModelProperty(value = "不适合继续服务合同指标")
     private String contractZBNOS;
+    @ApiModelProperty(value = "晚点MTBF")
+    private String MTBF_LATE;
+    @ApiModelProperty(value = "是否达标---故障数")
+    private String isDB_LATE;
+    @ApiModelProperty(value = "是否达标---继续服务")
+    private String isDB_NOS;
+    @ApiModelProperty(value = "不适合继续服务MTBF")
+    private String MTBF_NOS;
 }

@@ -3,7 +3,6 @@ package com.wzmtr.eam.impl.statistic;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.bo.StatisticBO;
 import com.wzmtr.eam.dto.req.statistic.CarFaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.FailreRateQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.MaterialQueryReqDTO;
@@ -15,6 +14,7 @@ import com.wzmtr.eam.dto.res.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
@@ -152,41 +152,6 @@ public class StatisticServiceImpl implements StatisticService {
         return carFaultQueryResDTO;
     }
 
-    @Deprecated
-    private static CarFaultQueryResDTO getCarFaultQueryResDTO2(List<CarFaultQueryResDTO> query) {
-        TreeSet<String> titleData = new TreeSet<>();
-        TreeSet<String> monthData = new TreeSet<>();
-        Map<String, List<Integer>> faultCountMap = new HashMap<>();
-        query.forEach(carFault -> {
-            String objectName = carFault.getObjectName();
-            int faultCount = carFault.getFaultCount();
-            if (faultCountMap.containsKey(objectName)) {
-                List<Integer> faultCountList = faultCountMap.get(objectName);
-                faultCountList.add(faultCount);
-            } else {
-                List<Integer> faultCountList = new ArrayList<>();
-                faultCountList.add(faultCount);
-                faultCountMap.put(objectName, faultCountList);
-            }
-            monthData.add(carFault.getFillinTime());
-            titleData.add(carFault.getObjectName());
-        });
-        List<StatisticBO> statisticBOS = new ArrayList<>();
-        for (Map.Entry<String, List<Integer>> entry : faultCountMap.entrySet()) {
-            StatisticBO statisticBO = new StatisticBO();
-            String objName = entry.getKey();
-            List<Integer> faultCountList = entry.getValue();
-            statisticBO.setCount(faultCountList);
-            statisticBO.setObjName(objName);
-            statisticBOS.add(statisticBO);
-        }
-        CarFaultQueryResDTO carFaultQueryResDTO = new CarFaultQueryResDTO();
-        carFaultQueryResDTO.setMonthData(monthData);
-        carFaultQueryResDTO.setTitleData(titleData);
-        carFaultQueryResDTO.setTableData(statisticBOS);
-        return carFaultQueryResDTO;
-    }
-
     @Override
     public ReliabilityListResDTO reliabilityQuery(FailreRateQueryReqDTO reqDTO) {
         if (StringUtils.isEmpty(reqDTO.getStartTime()) && StringUtils.isEmpty(reqDTO.getEndTime())) {
@@ -205,28 +170,42 @@ public class StatisticServiceImpl implements StatisticService {
             calendar.add(Calendar.YEAR, 1);
             reqDTO.setEndTime(sdf.format(calendar.getTime()));
         }
-        // 售票机可靠度
-        List<ReliabilityResDTO> queryTicketFault = reliabilityMapper.queryTicketFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 进出站闸机可靠度
-        List<ReliabilityResDTO> queryGateBrakeFault = reliabilityMapper.queryGateBrakeFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 自动扶梯可靠度
-        List<ReliabilityResDTO> queryEscalatorFault = reliabilityMapper.queryEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 垂直扶梯可靠度
-        List<ReliabilityResDTO> queryVerticalEscalatorFault = reliabilityMapper.queryVerticalEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 列车乘客信息系统可靠度
-        List<ReliabilityResDTO> queryTrainPassengerInformationFault = reliabilityMapper.queryTrainPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 车站乘客信息系统可靠度
-        List<ReliabilityResDTO> queryStationPassengerInformationFault = reliabilityMapper.queryStationPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
-        // 消防设备可靠度
-        List<ReliabilityResDTO> queryFireFightingEquipmentFault = reliabilityMapper.queryFireFightingEquipmentFault(reqDTO.getEndTime(), reqDTO.getStartTime());
         ReliabilityListResDTO reliabilityListResDTO = new ReliabilityListResDTO();
-        reliabilityListResDTO.setQueryTicketFault(queryTicketFault);
-        reliabilityListResDTO.setQueryGateBrakeFault(queryGateBrakeFault);
-        reliabilityListResDTO.setQueryEscalatorFault(queryEscalatorFault);
-        reliabilityListResDTO.setQueryVerticalEscalatorFault(queryVerticalEscalatorFault);
-        reliabilityListResDTO.setQueryTrainPassengerInformationFault(queryTrainPassengerInformationFault);
-        reliabilityListResDTO.setQueryStationPassengerInformationFault(queryStationPassengerInformationFault);
-        reliabilityListResDTO.setQueryFireFightingEquipmentFault(queryFireFightingEquipmentFault);
+        if (reqDTO.getSystemType().contains(SystemType.TICKET)) {
+            // 售票机可靠度
+            List<ReliabilityResDTO> queryTicketFault = reliabilityMapper.queryTicketFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            reliabilityListResDTO.setQueryTicketFault(queryTicketFault);
+        }
+        if (reqDTO.getSystemType().contains(SystemType.GATE_BRAKE)) {
+            // 进出站闸机可靠度
+            List<ReliabilityResDTO> queryGateBrakeFault = reliabilityMapper.queryGateBrakeFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            reliabilityListResDTO.setQueryGateBrakeFault(queryGateBrakeFault);
+        }
+        if (reqDTO.getSystemType().contains(SystemType.ESCALATOR)) {
+            // 自动扶梯可靠度
+            List<ReliabilityResDTO> queryEscalatorFault = reliabilityMapper.queryEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            reliabilityListResDTO.setQueryEscalatorFault(queryEscalatorFault);
+        }
+        if (reqDTO.getSystemType().contains(SystemType.VERTICAL_ESCALATOR)) {
+            // 垂直扶梯可靠度
+            List<ReliabilityResDTO> queryVerticalEscalatorFault = reliabilityMapper.queryVerticalEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            reliabilityListResDTO.setQueryVerticalEscalatorFault(queryVerticalEscalatorFault);
+        }
+        if (reqDTO.getSystemType().contains(SystemType.TRAIN_PASSENGER)) {
+            // 列车乘客信息系统可靠度
+            List<ReliabilityResDTO> queryTrainPassengerInformationFault = reliabilityMapper.queryTrainPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            reliabilityListResDTO.setQueryTrainPassengerInformationFault(queryTrainPassengerInformationFault);
+        }
+        if (reqDTO.getSystemType().contains(SystemType.STATION_PASSENGER)) {
+            // 车站乘客信息系统可靠度
+            List<ReliabilityResDTO> queryStationPassengerInformationFault = reliabilityMapper.queryStationPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            reliabilityListResDTO.setQueryStationPassengerInformationFault(queryStationPassengerInformationFault);
+        }
+        if (reqDTO.getSystemType().contains(SystemType.FIRE_FIGHTING)) {
+            // 消防设备可靠度
+            List<ReliabilityResDTO> queryFireFightingEquipmentFault = reliabilityMapper.queryFireFightingEquipmentFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            reliabilityListResDTO.setQueryFireFightingEquipmentFault(queryFireFightingEquipmentFault);
+        }
         return reliabilityListResDTO;
     }
 
@@ -272,6 +251,9 @@ public class StatisticServiceImpl implements StatisticService {
         return oneCarOneGearMapper.queryDMFM21(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
+    /**
+     * 一车一档部件更换记录
+     */
     @Override
     public Page<PartReplaceResDTO> querydmdm20(OneCarOneGearQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
@@ -414,6 +396,12 @@ public class StatisticServiceImpl implements StatisticService {
         return sdf.format(m);
     }
 
+    /**
+     * 故障影响统计
+     * @param startDate
+     * @param endDate
+     * @return
+     */
     public List<RAMSResDTO> queryresult2(String startDate, String endDate) {
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
@@ -450,52 +438,81 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public List<RAMSResDTO> querySysPerform() {
         List<RAMSResDTO> ramsResDTOS = ramsMapper.querySysPerform();
+        List<RAMSResDTO> totalMilesList = ramsMapper.querytotalMiles();
+        RAMSResDTO totalMiles = totalMilesList.get(0);
         System.out.println(ramsResDTOS);
         ramsResDTOS.forEach(a -> {
-            switch (a.getModuleName()) {
-                case "01":
-                case "02":
-                case "03":
-                case "04":
-                    rebuildBlock4SP(a, 0, "车门系统", "10000", "7000");
-                    break;
-                case "12":
-                    rebuildBlock4SP(a, 1, "制动系统", "49500", "49500");
-                    break;
-                case "13":
-                    rebuildBlock4SP(a, 2, "空调系统", "210000", "46000");
-                    break;
-                case "14":
-                    rebuildBlock4SP(a, 3, "转向架", "409500", "409500");
-                    break;
-                case "17":
-                    rebuildBlock4SP(a, 4, "PIDS", "191000", "91000");
-                    break;
-                case "10":
-                    rebuildBlock4SP(a, 5, "网络系统", "254000", "254000");
-                    break;
-                case "05":
-                case "08":
-                case "09":
-                case "21":
-                    rebuildBlock4SP(a, 6, "车体结构及车身内部", "204800", "204800");
-                    break;
-                case "06":
-                case "07":
-                    rebuildBlock4SP(a, 7, "通道与车钩系统", "409500", "204800");
-                    break;
-                case "18":
-                case "19":
-                    rebuildBlock4SP(a, 8, "牵引设备系统", "36588", "11000");
-                    break;
-                case "11":
-                case "15":
-                case "16":
-                case "20":
-                    rebuildBlock4SP(a, 9, "辅助供电设备系统", "647749", "323825");
-                    break;
-            }
-        });
+                    switch (a.getModuleName()) {
+                        case "01":
+                        case "02":
+                        case "03":
+                        case "04":
+                            rebuildBlock4SP(a, 0, "车门系统", "10000", "7000");
+                            break;
+                        case "12":
+                            rebuildBlock4SP(a, 1, "制动系统", "49500", "49500");
+                            break;
+                        case "13":
+                            rebuildBlock4SP(a, 2, "空调系统", "210000", "46000");
+                            break;
+                        case "14":
+                            rebuildBlock4SP(a, 3, "转向架", "409500", "409500");
+                            break;
+                        case "17":
+                            rebuildBlock4SP(a, 4, "PIDS", "191000", "91000");
+                            break;
+                        case "10":
+                            rebuildBlock4SP(a, 5, "网络系统", "254000", "254000");
+                            break;
+                        case "05":
+                        case "08":
+                        case "09":
+                        case "21":
+                            rebuildBlock4SP(a, 6, "车体结构及车身内部", "204800", "204800");
+                            break;
+                        case "06":
+                        case "07":
+                            rebuildBlock4SP(a, 7, "通道与车钩系统", "409500", "204800");
+                            break;
+                        case "18":
+                        case "19":
+                            rebuildBlock4SP(a, 8, "牵引设备系统", "36588", "11000");
+                            break;
+                        case "11":
+                        case "15":
+                        case "16":
+                        case "20":
+                            rebuildBlock4SP(a, 9, "辅助供电设备系统", "647749", "323825");
+                            break;
+                    }
+                    DecimalFormat df = new DecimalFormat("#0");
+                    Double MTBF_LATE;
+                    if (Double.parseDouble(a.getNumLate()) == 0.0D) {
+                        MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
+                    } else {
+                        MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumLate());
+                    }
+                    a.setMTBF_LATE(df.format(MTBF_LATE));
+                    if (MTBF_LATE >= Double.parseDouble(a.getContractZBLATE())) {
+                        a.setIsDB_LATE("达标");
+                    } else {
+                        a.setIsDB_LATE("未达标");
+                    }
+                    Double MTBF_NOS;
+                    if (Double.parseDouble(a.getNumNos()) == 0.0D) {
+                        MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
+                    } else {
+                        MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumNos());
+                    }
+                    a.setMTBF_NOS(df.format(MTBF_NOS));
+                    if (MTBF_NOS >= Double.parseDouble(a.getContractZBNOS())) {
+                        a.setIsDB_NOS("达标");
+                    } else {
+                        a.setIsDB_NOS("未达标");
+                    }
+                }
+
+        );
         return ramsResDTOS;
     }
 
@@ -517,7 +534,6 @@ public class StatisticServiceImpl implements StatisticService {
                 case "04":
                     rebuildBlock(a, 0, "车门系统", "9000");
                     break;
-                /*     */
                 case "12":
                     rebuildBlock(a, 1, "制动系统", "43000");
                     break;
