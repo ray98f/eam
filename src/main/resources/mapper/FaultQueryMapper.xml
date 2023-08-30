@@ -141,7 +141,8 @@
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD')
             </if>
             <if test="req.fillinTimeEnd != null">
-                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD') + 1
+                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD') +
+                1
             </if>
             AND d.FILLIN_USER_ID = u.LOGIN_NAME
             AND d.FAULT_NO = df.FAULT_NO
@@ -309,5 +310,79 @@
             AND df2.FAULT_WORK_NO = #{reqDTO.id}
         </if>
     </select>
+    <select id="construction" resultType="com.wzmtr.eam.dto.res.fault.ConstructionResDTO">
+        SELECT
+        REC_ID AS "recId",  <!-- 记录编号 -->
+        SYSCODE AS "syscode",  <!-- 系统编码 -->
+        OPER_TYPE AS "operType",  <!-- 操作类型 -->
+        WORKPN AS "workpn",  <!-- 施工计划代码 -->
+        WORKNO AS "workNo",  <!-- 工单号 -->
+        WORKORDER AS "workorder",  <!-- 工单类型 -->
+        PLANTIME AS "plantime",  <!-- 提报批准时间 -->
+        CIRCULARTIME AS "circulartime",  <!-- 通告时间 -->
+        PLANWORKER AS "planworker",  <!-- 提报人 -->
+        CONSTLEADER AS "constleader",  <!-- 施工负责人 -->
+        REMARK AS "remark",  <!-- 备注 -->
+        REC_CREATOR AS "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME AS "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR AS "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME AS "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR AS "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME AS "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG AS "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG AS "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS AS "recStatus",  <!-- 记录状态 -->
+        EXT1 AS "ext1",  <!-- 扩展字段1 -->
+        EXT2 AS "ext2",  <!-- 扩展字段2 -->
+        EXT3 AS "ext3",  <!-- 扩展字段3 -->
+        EXT4 AS "ext4",  <!-- 扩展字段4 -->
+        EXT5 AS "ext5"  <!-- 扩展字段5 -->
+        FROM T_WORK_PLAN
+        WHERE 1=1
+        <if test="req.faultWorkNo != null">
+            AND WORKNO = #{req.faultWorkNo}
+        </if>
+        ORDER BY REC_ID ASC
+    </select>
 
+    <select id="cancellation" resultType="com.wzmtr.eam.dto.res.fault.ConstructionResDTO" >
+        SELECT
+        REC_ID as "recId",  <!-- 记录编号 -->
+        SYSCODE as "syscode",  <!-- 系统编码 -->
+        OPER_TYPE as "operType",  <!-- 操作类型 -->
+        WORKPN as "workpn",  <!-- 施工计划代码 -->
+        WORKNO as "workno",  <!-- 检修工单号 -->
+        WORKORDER as "workorder",  <!-- 工单类型 -->
+        APPLYTIME as "applytime",  <!-- 请点批准时间 -->
+        DELAYTIME as "delaytime",  <!-- 销点批准时间 -->
+        CONSTLEADER as "constleader",  <!-- 施工负责人 -->
+        WORKERSUM as "workersum",  <!-- 施工人数 -->
+        DEVICESUM as "devicesum",  <!-- 携带工器具数量 -->
+        MASTERAPPSTAITON as "masterappstaiton",  <!-- 请点主站 -->
+        MASTERDELSTAITON as "masterdelstaiton",  <!-- 销点主站 -->
+        MASTERSTAITON as "masterstaiton",  <!-- 辅站 -->
+        FINISHSTATUS as "finishstatus",  <!-- 是否完成 -->
+        REMARK as "remark",  <!-- 完成情况 -->
+        REASON as "reason",  <!-- 未完成原因 -->
+        REMARKS as "remarks",  <!-- 备注 -->
+        REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        EXT1 as "ext1",  <!-- 扩展字段1 -->
+        EXT2 as "ext2",  <!-- 扩展字段2 -->
+        EXT3 as "ext3",  <!-- 扩展字段3 -->
+        EXT4 as "ext4",  <!-- 扩展字段4 -->
+        EXT5 as "ext5" <!-- 扩展字段5 -->
+        FROM WBPLAT.TDMER63 WHERE 1=1
+        <if test="req.faultWorkNo != null">
+            AND WORKNO = #{req.faultWorkNo}
+        </if>
+        order by REC_ID asc
+    </select>
 </mapper>

@@ -7,6 +7,7 @@ import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
@@ -136,5 +137,26 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             }
         }
         ExcelPortUtil.excelPort("xxxx", listName, list, null, response);
+    }
+
+    @Override
+    public Page<ConstructionResDTO> construction(FaultQueryReqDTO reqDTO) {
+        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        Page<ConstructionResDTO> list = faultQueryMapper.construction(reqDTO.of(), reqDTO);
+        List<ConstructionResDTO> records = list.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
+            return new Page<>();
+        }
+        return list;
+    }
+    @Override
+    public Page<ConstructionResDTO> cancellation(FaultQueryReqDTO reqDTO) {
+        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        Page<ConstructionResDTO> list = faultQueryMapper.cancellation(reqDTO.of(), reqDTO);
+        List<ConstructionResDTO> records = list.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
+            return new Page<>();
+        }
+        return list;
     }
 }

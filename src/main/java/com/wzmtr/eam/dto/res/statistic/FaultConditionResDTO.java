@@ -1,6 +1,5 @@
 package com.wzmtr.eam.dto.res.statistic;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -9,14 +8,14 @@ import lombok.Data;
  */
 @Data
 public class FaultConditionResDTO {
-   private String ZX;
-   private String CRK;
-   private String YF;
-   private String ZS;
-   private String NOYF;
-   private String SC;
-   private String moduleName;
-   private String contractZB;
-   private String isDB;
-   private String ZB;
+    private String ZX;
+    private String CRK;
+    private String YF;
+    private String ZS;
+    private String NOYF;
+    private String SC;
+    private String moduleName;
+    private String contractZB;
+    private String isDB;
+    private String ZB;
 }
