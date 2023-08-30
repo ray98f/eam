@@ -314,7 +314,7 @@
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO = df.FAULT_NO
         LEFT JOIN T_FAULT_DETAIL d3 ON d3.FAULT_NO = df.FAULT_NO
         LEFT JOIN IPLAT60.XS_USER xu ON d.FILLIN_USER_ID = xu.LOGIN_NAME
-        LEFT JOIN WBPLAT.TDMBM21 b21 ON b21.ORG_CODE = d.FILLIN_DEPT_CODE
+        LEFT JOIN T_SUPPLIER b21 ON b21.ORG_CODE = d.FILLIN_DEPT_CODE
         LEFT JOIN IPLAT60.XS_USER xu1 ON df.REPORT_FINISH_USER_ID = xu1.LOGIN_NAME
         WHERE 1 = 1
         AND d.MAJOR_CODE = '07'
@@ -338,9 +338,9 @@
                nvl(listagg(to_char(dm20.OPERATE_COST_TIME), '; ') within group (order by dm20.OPERATE_COST_TIME),
                    ' ') AS
                            "operateCostTime"
-        FROM wbplat.tdmdm20 dm20
+        FROM T_PART_REPLACEMENT dm20
                  LEFT JOIN
-             WBPLAT.TDMFM02 fm02
+             T_FAULT_ORDER fm02
              ON
                  fm02.FAULT_WORK_NO = dm20.FAULT_WORK_NO
         WHERE fm02.FAULT_WORK_NO = #{faultWorkNo}
