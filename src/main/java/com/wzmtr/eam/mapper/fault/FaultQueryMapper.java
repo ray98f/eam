@@ -21,9 +21,11 @@ public interface FaultQueryMapper {
     Page<FaultDetailResDTO> list(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
 
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
-    List<FaultDetailResDTO> exportList(@Param("req")FaultQueryReqDTO req);
+
+    List<FaultDetailResDTO> exportList(@Param("req") FaultQueryReqDTO req);
 
     Page<ConstructionResDTO> construction(Page<Object> of, FaultQueryReqDTO req);
+
     Page<ConstructionResDTO> cancellation(Page<Object> of, FaultQueryReqDTO req);
 
 }

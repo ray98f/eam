@@ -23,7 +23,18 @@ public interface RAMSMapper {
     List<SystemFaultsResDTO> queryFautTypeByMonthBySys(Set<String> moduleIds, String startDate, String endDate);
 
     List<RAMSResDTO> queryresult2(String startDate, String endDate);
+
     List<FaultConditionResDTO> queryCountFautType4RAMS();
+
     List<RAMSResDTO> querySysPerform();
+
     List<RAMSResDTO> querytotalMiles();
+
+    Page<FaultRAMSResDTO> queryRAMSFaultList(Page<Object> of, String startDate, String endDate);
+
+    /**
+     * 故障列表更换部件查询
+     * @return
+     */
+    FaultRAMSResDTO queryPart(String faultWorkNo);
 }

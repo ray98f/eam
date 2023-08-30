@@ -81,4 +81,6 @@ public interface StatisticService {
     List<RAMSResDTO> querySysPerform();
 
     List<FaultConditionResDTO> queryCountFaultType();
+
+    Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO);
 }

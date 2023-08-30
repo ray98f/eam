@@ -3,10 +3,8 @@ package com.wzmtr.eam.impl.statistic;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.statistic.CarFaultQueryReqDTO;
-import com.wzmtr.eam.dto.req.statistic.FailreRateQueryReqDTO;
-import com.wzmtr.eam.dto.req.statistic.MaterialQueryReqDTO;
-import com.wzmtr.eam.dto.req.statistic.OneCarOneGearQueryReqDTO;
+import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.PartReplaceResDTO;
@@ -308,8 +306,10 @@ public class StatisticServiceImpl implements StatisticService {
         String affect11 = ramsResDTO.getAffect11();
         String millionMiles = ramsResDTO.getMillionMiles();
         String affect21 = ramsResDTO.getAffect21();
+        String faultNum = ramsResDTO.getFaultNum();
         String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles) * 4.0D);
         String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles) * 4.0D);
+        faultNum = df.format(Double.parseDouble(faultNum) - Double.parseDouble(affect11) - Double.parseDouble(affect21));
         if (Double.parseDouble(affect12) > 1.5D) {
             ramsResDTO.setAffect11("未达标");
         } else {
@@ -320,6 +320,7 @@ public class StatisticServiceImpl implements StatisticService {
         } else {
             ramsResDTO.setAffect21Performance("达标");
         }
+        ramsResDTO.setFaultNum(faultNum);
         return ramsResDTO;
     }
 
@@ -383,7 +384,6 @@ public class StatisticServiceImpl implements StatisticService {
                 moduleIds.add("04");
                 break;
         }
-
         return ramsMapper.queryFautTypeByMonthBySys(moduleIds, startDate, endDate);
     }
 
@@ -398,6 +398,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     /**
      * 故障影响统计
+     *
      * @param startDate
      * @param endDate
      * @return
@@ -589,14 +590,30 @@ public class StatisticServiceImpl implements StatisticService {
 
 
     /**
-     * 各系统故障情况统计
+     * RAMS 故障列表
      */
-    // public List<RAMSResDTO> queryCountFautType4RAMS() {
-    //
-    //     List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4RAMS();
-    //     list.forEach();
-    //     return ramsResDTOS;
-    // }
+    public Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO) {
+        Page<FaultRAMSResDTO> list = ramsMapper.queryRAMSFaultList(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime());
+        if (CollectionUtil.isEmpty(list.getRecords())) {
+            return new Page<>();
+        }
+        List<FaultRAMSResDTO> records = list.getRecords();
+        records.forEach(a -> {
+            FaultRAMSResDTO faultRAMSResDTO = ramsMapper.queryPart(a.getFaultWorkNo());
+            if (null != faultRAMSResDTO) {
+                String replacementName = faultRAMSResDTO.getReplacementName();
+                String oldRepNo = faultRAMSResDTO.getOldRepNo();
+                String newRepNo = faultRAMSResDTO.getNewRepNo();
+                String operateCostTime = faultRAMSResDTO.getOperateCostTime();
+                a.setReplacementName(replacementName == null ? CommonConstants.EMPTY : replacementName);
+                a.setOldRepNo(oldRepNo == null ? CommonConstants.EMPTY : oldRepNo);
+                a.setNewRepNo(newRepNo == null ? CommonConstants.EMPTY : newRepNo);
+                a.setOperateCostTime(operateCostTime == null ? CommonConstants.EMPTY : operateCostTime);
+            }
+        });
+        return list;
+    }
+
     public void rebuildBlock4SP(RAMSResDTO map, int rowNo, String moduleName, String contractZB_LATE, String contractZB_NOS) {
         DecimalFormat df = new DecimalFormat("#0");
         String NUM_LATE = map.getNumLate();

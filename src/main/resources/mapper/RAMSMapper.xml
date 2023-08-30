@@ -197,8 +197,8 @@
                          SUM(CASE WHEN t."moId" = c."SC" THEN 1 ELSE 0 END) AS "NUM_LATE"
                   FROM (SELECT COUNT(1),
                                nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') AS "moId"
-                        FROM WBPLAT.TDMFM01 a
-                                 LEFT JOIN WBPLAT.TDMFM02 df ON a.FAULT_NO = df.FAULT_NO
+                        FROM T_FAULT_INFO a
+                                 LEFT JOIN T_FAULT_ORDER df ON a.FAULT_NO = df.FAULT_NO
                         WHERE a.MAJOR_CODE = '07'
                           AND a.EXT3 IN ('02', '03', '04')
                           AND NVL(df.IS_FAULT, '10') = '10'
@@ -212,8 +212,8 @@
                                        SUM(CASE WHEN t."moId" = c."SC" THEN 1 ELSE 0 END) AS "NUM_NOS"
                                 FROM (SELECT COUNT(1),
                                              nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') AS "moId"
-                                      FROM WBPLAT.TDMFM01 a
-                                               LEFT JOIN WBPLAT.TDMFM02 df ON a.FAULT_NO = df.FAULT_NO
+                                      FROM T_FAULT_INFO a
+                                               LEFT JOIN T_FAULT_ORDER df ON a.FAULT_NO = df.FAULT_NO
                                       WHERE a.MAJOR_CODE = '07'
                                         AND a.EXT3 IN ('05', '06', '08', '09')
                                         AND NVL(df.IS_FAULT, '10') = '10'
@@ -245,8 +245,8 @@
                              when t."moId" = c."SC" then 1
                              else 0 end) as "ZX"
               from (select count(1), nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') as "moId"
-                    from WBPLAT.TDMFM01 a
-                             left join WBPLAT.TDMFM02 df on a.FAULT_NO = df.FAULT_NO
+                    from T_FAULT_INFO a
+                             left join T_FAULT_ORDER df on a.FAULT_NO = df.FAULT_NO
                     where a.MAJOR_CODE = '07'
                       and a.FAULT_TYPE = '10'
                       and nvl(df.IS_FAULT, '10') = '10'
@@ -261,8 +261,8 @@
                                            when t."moId" = c."SC" then 1
                                            else 0 end) as "CRK"
                             from (select count(1), nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') as "moId"
-                                  from WBPLAT.TDMFM01 a
-                                           left join WBPLAT.TDMFM02 df on a.FAULT_NO = df.FAULT_NO
+                                  from T_FAULT_INFO a
+                                           left join T_FAULT_ORDER df on a.FAULT_NO = df.FAULT_NO
                                   where a.MAJOR_CODE = '07'
                                     and a.FAULT_TYPE = '20'
                                     and nvl(df.IS_FAULT, '10') = '10'
@@ -277,8 +277,8 @@
                                            when t."moId" = c."SC" then 1
                                            else 0 end) as "YF"
                             from (select count(1), nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') as "moId"
-                                  from WBPLAT.TDMFM01 a
-                                           left join WBPLAT.TDMFM02 df on a.FAULT_NO = df.FAULT_NO
+                                  from T_FAULT_INFO a
+                                           left join T_FAULT_ORDER df on a.FAULT_NO = df.FAULT_NO
                                   where a.MAJOR_CODE = '07'
                                     and a.FAULT_TYPE = '30'
                                     and nvl(df.IS_FAULT, '10') = '10'
@@ -289,4 +289,62 @@
                             group by c."SC"
                             order by c."SC" asc) FAULT30 on FAULT10.SC = FAULT30.SC
     </select>
+
+    <select id="queryRAMSFaultList" resultType="com.wzmtr.eam.dto.res.statistic.FaultRAMSResDTO">
+        SELECT
+        d.FAULT_NO as "faultNo",  <!-- 故障编号 -->
+        d.OBJECT_NAME as "objectName",  <!-- 对象名称 -->
+        d.FAULT_TYPE as "faultType",  <!-- 故障分类（10-运营故障；20-自检故障；30-新线调试；40-正线故障；50-出库故障） -->
+        d.FAULT_DETAIL as "faultDetail",  <!-- 故障详情 -->
+        d.DISCOVERY_TIME as "discoveryTime",  <!-- 发现时间 -->
+        d.FILLIN_USER_ID as "fillinUserId",  <!-- 提报人工号 -->
+        d.FILLIN_DEPT_CODE as "fillinDeptCode",  <!-- 提报部门 -->
+        df.ARRIVAL_TIME as "arrivalTime",
+        b21.ORG_NAME_S || '-' || xu.USER_NAME as "fillinUser",
+        df.REPAIR_END_TIME as "repairEndTime",  <!-- 维修结束时间 -->
+        round(((to_date(decode(df.REPAIR_END_TIME, ' ', '2019-11-11 11:11:11', df.REPAIR_END_TIME), 'yyyy-mm-dd HH24:mi:ss') - to_date(decode(df.ARRIVAL_TIME, ' ', '2019-11-11 11:11:11', df.ARRIVAL_TIME), 'yyyy-mm-dd HH24:mi:ss')) * 24 * 60), 0) as "repairTime",
+        df.REPORT_FINISH_USER_ID as "reportFinishUserId",  <!-- 完工人工号 -->
+        nvl(xu1.USER_NAME, ' ') as "reportFinishUser",
+        df.ORDER_STATUS as "orderStatus",  <!-- 工单状态 -->
+        df.FAULT_ACTION_DETAIL as "faultActionDetail",
+        df.FAULT_WORK_NO as "faultWorkNo",
+        d.EXT3 as "affect",
+        d3.FAULT_ANALYSIS_NO as "faultAnalysisNo"
+        FROM T_FAULT_INFO d
+        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO = df.FAULT_NO
+        LEFT JOIN T_FAULT_DETAIL d3 ON d3.FAULT_NO = df.FAULT_NO
+        LEFT JOIN IPLAT60.XS_USER xu ON d.FILLIN_USER_ID = xu.LOGIN_NAME
+        LEFT JOIN WBPLAT.TDMBM21 b21 ON b21.ORG_CODE = d.FILLIN_DEPT_CODE
+        LEFT JOIN IPLAT60.XS_USER xu1 ON df.REPORT_FINISH_USER_ID = xu1.LOGIN_NAME
+        WHERE 1 = 1
+        AND d.MAJOR_CODE = '07'
+        AND NVL(df.IS_FAULT, '10') = '10'
+        AND df.ORDER_STATUS <![CDATA[!=]]> '99'
+        <if test="startDate != null">
+            AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate != null">
+            AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        ORDER BY d.FAULT_NO DESC
+    </select>
+    <select id="queryPart" resultType="com.wzmtr.eam.dto.res.statistic.FaultRAMSResDTO">
+        SELECT nvl(listagg(to_char(dm20.REPLACEMENT_NAME), '; ') within group (order by dm20.REPLACEMENT_NAME),
+                   ' ') AS "replacementName",
+               nvl(listagg(to_char(dm20.OLD_REP_NO), '; ') within group (order by dm20.OLD_REP_NO),
+                   ' ') AS "oldRepNo",
+               nvl(listagg(to_char(dm20.NEW_REP_NO), '; ') within group (order by dm20.NEW_REP_NO),
+                   ' ') AS "newRepNo",
+               nvl(listagg(to_char(dm20.OPERATE_COST_TIME), '; ') within group (order by dm20.OPERATE_COST_TIME),
+                   ' ') AS
+                           "operateCostTime"
+        FROM wbplat.tdmdm20 dm20
+                 LEFT JOIN
+             WBPLAT.TDMFM02 fm02
+             ON
+                 fm02.FAULT_WORK_NO = dm20.FAULT_WORK_NO
+        WHERE fm02.FAULT_WORK_NO = #{faultWorkNo}
+    </select>
+
+
 </mapper>

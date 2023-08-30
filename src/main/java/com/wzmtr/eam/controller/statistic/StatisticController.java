@@ -164,5 +164,10 @@ public class StatisticController {
     public DataResponse<List<RAMSResDTO>> querySysPerform() {
         return DataResponse.of(statisticService.querySysPerform());
     }
+    @PostMapping("rams/queryRAMSFaultList")
+    @ApiOperation(value = "RAMS故障列表")
+    public PageResponse<FaultRAMSResDTO> queryRAMSFaultList(@RequestBody RAMSTimeReqDTO reqDTO) {
+        return PageResponse.of(statisticService.queryRAMSFaultList(reqDTO));
+    }
 
 }
