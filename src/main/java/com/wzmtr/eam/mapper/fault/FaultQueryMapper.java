@@ -23,7 +23,7 @@ public interface FaultQueryMapper {
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
     List<FaultDetailResDTO> exportList(@Param("req")FaultQueryReqDTO req);
 
-    Page<ConstructionResDTO> construction(Page<Object> of, FaultQueryReqDTO reqDTO);
-    Page<ConstructionResDTO> cancellation(Page<Object> of, FaultQueryReqDTO reqDTO);
+    Page<ConstructionResDTO> construction(Page<Object> of, FaultQueryReqDTO req);
+    Page<ConstructionResDTO> cancellation(Page<Object> of, FaultQueryReqDTO req);
 
 }
