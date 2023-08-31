@@ -18,15 +18,15 @@ import java.util.Set;
 @Repository
 @Mapper
 public interface RAMSMapper {
-    List<RAMSResDTO> query4AQYYZB();
+    List<RAMSCarResDTO> query4AQYYZB();
 
     List<SystemFaultsResDTO> queryFautTypeByMonthBySys(Set<String> moduleIds, String startDate, String endDate);
 
-    List<RAMSResDTO> queryresult2(String startDate, String endDate);
+    List<RAMSResult2ResDTO> queryresult2(String startDate, String endDate);
 
     List<FaultConditionResDTO> queryCountFautType4RAMS();
 
-    List<RAMSResDTO> querySysPerform();
+    List<RAMSSysPerformResDTO> querySysPerform();
 
     List<RAMSResDTO> querytotalMiles();
 

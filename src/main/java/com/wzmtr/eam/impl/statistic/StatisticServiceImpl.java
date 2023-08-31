@@ -3,6 +3,8 @@ package com.wzmtr.eam.impl.statistic;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
@@ -12,6 +14,7 @@ import com.wzmtr.eam.dto.res.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.enums.SystemClassify;
 import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
@@ -53,6 +56,7 @@ public class StatisticServiceImpl implements StatisticService {
     private GeneralSurveyMapper generalSurveyMapper;
     @Autowired
     private RAMSMapper ramsMapper;
+    private static final List<String> ignore = Arrays.asList("NOYF", "SC", "moduleName", "contractZB", "ZB");
 
     @Override
     public List<FailureRateResDTO> query(FailreRateQueryReqDTO reqDTO) {
@@ -295,38 +299,40 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public RAMSResDTO query4AQYYZB() {
+    public RAMSCarResDTO query4AQYYZB() {
         // PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        List<RAMSResDTO> records = ramsMapper.query4AQYYZB();
+        List<RAMSCarResDTO> records = ramsMapper.query4AQYYZB();
         if (CollectionUtil.isEmpty(records)) {
             return null;
         }
         DecimalFormat df = new DecimalFormat("#0.00");
-        RAMSResDTO ramsResDTO = records.get(0);
-        String affect11 = ramsResDTO.getAffect11();
-        String millionMiles = ramsResDTO.getMillionMiles();
-        String affect21 = ramsResDTO.getAffect21();
-        String faultNum = ramsResDTO.getFaultNum();
+        RAMSCarResDTO ramsCarResDTO = records.get(0);
+        String millionMiles = ramsCarResDTO.getMillionMiles();
+        String affect11 = ramsCarResDTO.getAffect11();// 1
+        String affect21 = ramsCarResDTO.getAffect21();// 147
+        String faultNum = ramsCarResDTO.getFaultNum();
+
         String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles) * 4.0D);
         String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles) * 4.0D);
-        faultNum = df.format(Double.parseDouble(faultNum) - Double.parseDouble(affect11) - Double.parseDouble(affect21));
         if (Double.parseDouble(affect12) > 1.5D) {
-            ramsResDTO.setAffect11("未达标");
+            ramsCarResDTO.setAffect13("未达标");
         } else {
-            ramsResDTO.setAffect11("达标");
+            ramsCarResDTO.setAffect13("达标");
         }
-        if (Double.parseDouble(affect22) > (4.5D)) {
-            ramsResDTO.setAffect21Performance("未达标");
+        if (Double.parseDouble(affect22) > 4.5D) {
+            ramsCarResDTO.setAffect23("未达标");
         } else {
-            ramsResDTO.setAffect21Performance("达标");
+            ramsCarResDTO.setAffect23("达标");
         }
-        ramsResDTO.setFaultNum(faultNum);
-        return ramsResDTO;
+        ramsCarResDTO.setAffect12(affect12);
+        ramsCarResDTO.setAffect22(affect22);
+        ramsCarResDTO.setFaultNum(faultNum);
+        return ramsCarResDTO;
     }
 
     @Override
     public List<SystemFaultsResDTO> queryresult3(String startDate, String endDate, String sys) {
-        if (StringUtils.isEmpty(sys)) {
+        if (sys == null) {
             sys = "01";
         }
         if (StringUtils.isNotEmpty(startDate)) {
@@ -403,7 +409,7 @@ public class StatisticServiceImpl implements StatisticService {
      * @param endDate
      * @return
      */
-    public List<RAMSResDTO> queryresult2(String startDate, String endDate) {
+    public List<RAMSResult2ResDTO> queryresult2(String startDate, String endDate) {
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
         } else {
@@ -415,11 +421,12 @@ public class StatisticServiceImpl implements StatisticService {
             endDate = _getLastMouths(0);
         }
         DecimalFormat df = new DecimalFormat("#0.00");
-        List<RAMSResDTO> ramsResDTOS = ramsMapper.queryresult2(startDate, endDate);
+        List<RAMSResult2ResDTO> ramsResDTOS = ramsMapper.queryresult2(startDate, endDate);
         ramsResDTOS.forEach(a -> {
             double lateZ = 0.0D;
             double noServiceZ = 0.0D;
-            double miles = Double.parseDouble(a.getMiles());
+            a.setMiles(a.getMiles() == null ? "0" : a.getMiles());
+            double miles = Double.parseDouble(a.getMiles()) != 0.0D ? Double.parseDouble(a.getMiles()) : 0.0D;
             if (Double.parseDouble(a.getLate()) == 0.0D) {
                 lateZ = Double.parseDouble("0");
             } else {
@@ -437,53 +444,55 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public List<RAMSResDTO> querySysPerform() {
-        List<RAMSResDTO> ramsResDTOS = ramsMapper.querySysPerform();
+    public List<RAMSSysPerformResDTO> querySysPerform() {
+        List<RAMSSysPerformResDTO> ramsResDTOS = ramsMapper.querySysPerform();
         List<RAMSResDTO> totalMilesList = ramsMapper.querytotalMiles();
         RAMSResDTO totalMiles = totalMilesList.get(0);
         System.out.println(ramsResDTOS);
+        Map<String, RAMSSysPerformResDTO> map = Maps.newHashMap();
+        Set<String> names = Sets.newHashSet();
         ramsResDTOS.forEach(a -> {
                     switch (a.getModuleName()) {
                         case "01":
                         case "02":
                         case "03":
                         case "04":
-                            rebuildBlock4SP(a, 0, "车门系统", "10000", "7000");
+                            rebuildBlock4SP(a, names, "车门系统", "10000", "7000");
                             break;
                         case "12":
-                            rebuildBlock4SP(a, 1, "制动系统", "49500", "49500");
+                            rebuildBlock4SP(a, names, "制动系统", "49500", "49500");
                             break;
                         case "13":
-                            rebuildBlock4SP(a, 2, "空调系统", "210000", "46000");
+                            rebuildBlock4SP(a, names, "空调系统", "210000", "46000");
                             break;
                         case "14":
-                            rebuildBlock4SP(a, 3, "转向架", "409500", "409500");
+                            rebuildBlock4SP(a, names, "转向架", "409500", "409500");
                             break;
                         case "17":
-                            rebuildBlock4SP(a, 4, "PIDS", "191000", "91000");
+                            rebuildBlock4SP(a, names, "PIDS", "191000", "91000");
                             break;
                         case "10":
-                            rebuildBlock4SP(a, 5, "网络系统", "254000", "254000");
+                            rebuildBlock4SP(a, names, "网络系统", "254000", "254000");
                             break;
                         case "05":
                         case "08":
                         case "09":
                         case "21":
-                            rebuildBlock4SP(a, 6, "车体结构及车身内部", "204800", "204800");
+                            rebuildBlock4SP(a, names, "车体结构及车身内部", "204800", "204800");
                             break;
                         case "06":
                         case "07":
-                            rebuildBlock4SP(a, 7, "通道与车钩系统", "409500", "204800");
+                            rebuildBlock4SP(a, names, "通道与车钩系统", "409500", "204800");
                             break;
                         case "18":
                         case "19":
-                            rebuildBlock4SP(a, 8, "牵引设备系统", "36588", "11000");
+                            rebuildBlock4SP(a, names, "牵引设备系统", "36588", "11000");
                             break;
                         case "11":
                         case "15":
                         case "16":
                         case "20":
-                            rebuildBlock4SP(a, 9, "辅助供电设备系统", "647749", "323825");
+                            rebuildBlock4SP(a, names, "辅助供电设备系统", "647749", "323825");
                             break;
                     }
                     DecimalFormat df = new DecimalFormat("#0");
@@ -494,11 +503,6 @@ public class StatisticServiceImpl implements StatisticService {
                         MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumLate());
                     }
                     a.setMTBF_LATE(df.format(MTBF_LATE));
-                    if (MTBF_LATE >= Double.parseDouble(a.getContractZBLATE())) {
-                        a.setIsDB_LATE("达标");
-                    } else {
-                        a.setIsDB_LATE("未达标");
-                    }
                     Double MTBF_NOS;
                     if (Double.parseDouble(a.getNumNos()) == 0.0D) {
                         MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
@@ -506,71 +510,98 @@ public class StatisticServiceImpl implements StatisticService {
                         MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumNos());
                     }
                     a.setMTBF_NOS(df.format(MTBF_NOS));
-                    if (MTBF_NOS >= Double.parseDouble(a.getContractZBNOS())) {
-                        a.setIsDB_NOS("达标");
+                    RAMSSysPerformResDTO last = map.get(a.getModuleName());
+                    if (map.containsKey(a.getModuleName())) {
+                        a.setNumNos(String.valueOf(Integer.parseInt(a.getNumNos()) + Integer.parseInt(last.getNumNos())));
+                        a.setMTBF_NOS(String.valueOf(Integer.parseInt(a.getMTBF_NOS()) + Integer.parseInt(last.getMTBF_NOS())));
+                        map.put(a.getModuleName(), a);
                     } else {
-                        a.setIsDB_NOS("未达标");
+                        map.put(a.getModuleName(), a);
                     }
                 }
-
         );
-        return ramsResDTOS;
+        map.values().forEach(a -> {
+            if (Double.parseDouble(a.getMTBF_LATE()) >= Double.parseDouble(a.getContractZBLATE())) {
+                a.setIsDB_LATE("达标");
+            } else {
+                a.setIsDB_LATE("未达标");
+            }
+            if (Double.parseDouble(a.getMTBF_NOS()) >= Double.parseDouble(a.getContractZBNOS())) {
+                a.setIsDB_NOS("达标");
+            } else {
+                a.setIsDB_NOS("未达标");
+            }
+        });
+        return new ArrayList<>(map.values());
     }
 
     /**
      * 各系统故障情况统计
-     *
-     * @return
      */
     @Override
     public List<FaultConditionResDTO> queryCountFaultType() {
         List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4RAMS();
         List<RAMSResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
         RAMSResDTO ramsResDTO = ramsResDTOS.get(0);
-        list.forEach(a -> {
+        Set<String> names = Sets.newHashSet();
+        Map<String, FaultConditionResDTO> map = new HashMap<>();
+        for (FaultConditionResDTO a : list) {
             switch (a.getSC()) {
                 case "01":
                 case "02":
                 case "03":
                 case "04":
-                    rebuildBlock(a, 0, "车门系统", "9000");
+                    rebuildBlock(a, names, "车门系统", "9000");
                     break;
                 case "12":
-                    rebuildBlock(a, 1, "制动系统", "43000");
+                    rebuildBlock(a, names, "制动系统", "43000");
                     break;
                 case "13":
-                    rebuildBlock(a, 2, "空调系统", "85000");
+                    rebuildBlock(a, names, "空调系统", "85000");
                     break;
                 case "14":
-                    rebuildBlock(a, 3, "转向架", "381000");
+                    rebuildBlock(a, names, "转向架", "381000");
                     break;
                 case "17":
-                    rebuildBlock(a, 4, "PIDS", "191000");
+                    rebuildBlock(a, names, "PIDS", "191000");
                     break;
                 case "10":
-                    rebuildBlock(a, 5, "网络系统", "254000");
+                    rebuildBlock(a, names, "网络系统", "254000");
                     break;
                 case "05":
                 case "08":
                 case "09":
                 case "21":
-                    rebuildBlock(a, 6, "车体结构及车身内部", "191000");
+                    rebuildBlock(a, names, "车体结构及车身内部", "191000");
                     break;
                 case "06":
                 case "07":
-                    rebuildBlock(a, 7, "通道与车钩系统", "381000");
+                    rebuildBlock(a, names, "通道与车钩系统", "381000");
                     break;
                 case "18":
                 case "19":
-                    rebuildBlock(a, 8, "牵引设备系统", "11000");
+                    rebuildBlock(a, names, "牵引设备系统", "11000");
                     break;
                 case "11":
                 case "15":
                 case "16":
                 case "20":
-                    rebuildBlock(a, 9, "辅助供电设备系统", "38000");
+                    rebuildBlock(a, names, "辅助供电设备系统", "38000");
                     break;
             }
+            FaultConditionResDTO last = map.get(a.getModuleName());
+            if (map.containsKey(a.getModuleName())) {
+                a.setCRK(String.valueOf(Integer.parseInt(a.getCRK()) + Integer.parseInt(last.getCRK())));
+                a.setZX(String.valueOf(Integer.parseInt(a.getZX()) + Integer.parseInt(last.getZX())));
+                a.setZS(String.valueOf(Integer.parseInt(a.getZS()) + Integer.parseInt(last.getZS())));
+                a.setYF(String.valueOf(Integer.parseInt(a.getYF()) + Integer.parseInt(last.getYF())));
+                a.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()) + Integer.parseInt(last.getNOYF())));
+                map.put(a.getModuleName(), a);
+            } else {
+                map.put(a.getModuleName(), a);
+            }
+        }
+        map.values().forEach(a -> {
             DecimalFormat df = new DecimalFormat("#0");
             double ZB;
             if (Double.parseDouble(a.getNOYF()) == 0.0D) {
@@ -585,7 +616,7 @@ public class StatisticServiceImpl implements StatisticService {
                 a.setIsDB("未达标");
             }
         });
-        return list;
+        return new ArrayList<>(map.values());
     }
 
 
@@ -614,38 +645,37 @@ public class StatisticServiceImpl implements StatisticService {
         return list;
     }
 
-    public void rebuildBlock4SP(RAMSResDTO map, int rowNo, String moduleName, String contractZB_LATE, String contractZB_NOS) {
+    public void rebuildBlock4SP(RAMSSysPerformResDTO map, Set<String> module, String moduleName, String contractZB_LATE, String contractZB_NOS) {
         DecimalFormat df = new DecimalFormat("#0");
         String NUM_LATE = map.getNumLate();
         String NUM_NOS = map.getNumNos();
-        if (rowNo > 0) {
-            map.setModuleName(moduleName);
-            map.setNumLate(df.format(Double.parseDouble(NUM_LATE)));
-            map.setNumNos(df.format(Double.parseDouble(NUM_NOS)));
+        map.setModuleName(moduleName);
+        map.setContractZBLATE(contractZB_LATE);
+        map.setContractZBNOS(contractZB_NOS);
+        if (module.contains(moduleName)) {
+            map.setNumLate(df.format(Double.parseDouble(NUM_LATE) + NUM_LATE));
+            map.setNumNos(df.format(Double.parseDouble(NUM_NOS) + NUM_NOS));
         } else {
-            map.setModuleName(moduleName);
             map.setNumLate(NUM_LATE);
             map.setNumNos(NUM_NOS);
-            map.setContractZBLATE(contractZB_LATE);
-            map.setContractZBNOS(contractZB_NOS);
         }
     }
 
-    public void rebuildBlock(FaultConditionResDTO map, int rowNo, String moduleName, String contractZB) {
+    public void rebuildBlock(FaultConditionResDTO map, Set<String> module, String moduleName, String contractZB) {
         DecimalFormat df = new DecimalFormat("#0");
         String ZX = map.getZX();
         String CRK = map.getCRK();
         String YF = map.getYF();
         String ZS = map.getZS();
         String NOYF = map.getNOYF();
-        if (rowNo > 0) {
-            map.setModuleName(moduleName);
-            map.setZX(df.format(Double.parseDouble(ZX)));
-            map.setCRK(df.format(Double.parseDouble(CRK)));
-            map.setYF(df.format(Double.parseDouble(YF)));
-            map.setZS(df.format(Double.parseDouble(ZS)));
-            map.setContractZB(contractZB);
-            map.setNOYF(df.format(Double.parseDouble(NOYF)));
+        map.setContractZB(contractZB);
+        map.setModuleName(moduleName);
+        if (module.contains(moduleName)) {
+            map.setZX(df.format(Double.parseDouble(ZX) + ZX));
+            map.setCRK(df.format(Double.parseDouble(CRK) + CRK));
+            map.setYF(df.format(Double.parseDouble(YF) + YF));
+            map.setZS(df.format(Double.parseDouble(ZS) + ZS));
+            map.setNOYF(df.format(Double.parseDouble(NOYF) + NOYF));
         } else {
             map.setModuleName(moduleName);
             map.setZX(ZX);
@@ -653,7 +683,6 @@ public class StatisticServiceImpl implements StatisticService {
             map.setYF(YF);
             map.setZS(ZS);
             map.setNOYF(NOYF);
-            map.setContractZB(contractZB);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.res.statistic;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import lombok.Data;
  * Date: 2023/8/30 15:23
  */
 @Data
+@ApiModel
 public class FaultRAMSResDTO {
     @ApiModelProperty(value = "故障编号")
     private String faultNo;

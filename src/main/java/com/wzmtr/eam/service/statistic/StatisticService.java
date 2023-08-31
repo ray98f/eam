@@ -9,6 +9,7 @@ import com.wzmtr.eam.dto.res.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.enums.SystemClassify;
 
 import java.util.List;
 
@@ -72,13 +73,13 @@ public interface StatisticService {
 
     Page<InspectionJobListResDTO> queryER1(OneCarOneGearQueryReqDTO reqDTO);
 
-    RAMSResDTO query4AQYYZB();
+    RAMSCarResDTO query4AQYYZB();
 
-    List<SystemFaultsResDTO> queryresult3(String startDate, String endDate,String sys);
+    List<SystemFaultsResDTO> queryresult3(String startDate, String endDate, String sys);
 
-    List<RAMSResDTO> queryresult2(String startDate, String endDate);
+    List<RAMSResult2ResDTO> queryresult2(String startDate, String endDate);
 
-    List<RAMSResDTO> querySysPerform();
+    List<RAMSSysPerformResDTO> querySysPerform();
 
     List<FaultConditionResDTO> queryCountFaultType();
 

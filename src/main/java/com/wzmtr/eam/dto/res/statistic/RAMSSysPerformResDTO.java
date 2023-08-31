@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.res.statistic;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -7,34 +8,9 @@ import lombok.Data;
  * Author: Li.Wang
  * Date: 2023/8/22 17:14
  */
+@ApiModel
 @Data
-public class RAMSResDTO {
-    private String faultNum;
-    private String affect11;
-    private String affect12;
-    private String affect13;
-    private String affect21;
-    private String affect22;
-    private String affect23;
-    private String millionMiles;
-    private String affect11Performance;
-    private String affect21Performance;
-    private String totalMiles;
-
-
-    /*******/
-    @ApiModelProperty(value = "不适合服务")
-    private String noService;
-    @ApiModelProperty(value = "年月")
-    private String yearMonth;
-    private String late5to15;
-    private String late15;
-    @ApiModelProperty(value = "晚点")
-    private String late;
-    @ApiModelProperty(value = "总数")
-    private String sum;
-    @ApiModelProperty(value = "实际车公里数")
-    private String miles;
+public class RAMSSysPerformResDTO {
     /*****各系统可靠性情况统计******/
     @ApiModelProperty(value = "moduleName")
     private String moduleName;

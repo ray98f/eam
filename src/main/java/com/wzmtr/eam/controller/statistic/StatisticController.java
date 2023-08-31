@@ -11,6 +11,7 @@ import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.SystemClassify;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.statistic.StatisticService;
 import io.swagger.annotations.Api;
@@ -146,6 +147,11 @@ public class StatisticController {
     public DataResponse<List<FaultConditionResDTO>> queryCountFaultType() {
         return DataResponse.of(statisticService.queryCountFaultType());
     }
+    @GetMapping("rams/query4AQYYZB")
+    @ApiOperation(value = "车辆可靠性表现")
+    public DataResponse<RAMSCarResDTO> query4AQYYZB() {
+        return DataResponse.of(statisticService.query4AQYYZB());
+    }
 
     @GetMapping("rams/queryresult3")
     @ApiOperation(value = "系统故障统计趋势")
@@ -155,13 +161,13 @@ public class StatisticController {
 
     @GetMapping("rams/queryresult2")
     @ApiOperation(value = "故障影响统计")
-    public DataResponse<List<RAMSResDTO>> queryresult2(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate) {
+    public DataResponse<List<RAMSResult2ResDTO>> queryresult2(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate) {
         return DataResponse.of(statisticService.queryresult2(startDate, endDate));
     }
 
     @GetMapping("rams/querySysPerform")
     @ApiOperation(value = "各系统可靠性统计")
-    public DataResponse<List<RAMSResDTO>> querySysPerform() {
+    public DataResponse<List<RAMSSysPerformResDTO>> querySysPerform() {
         return DataResponse.of(statisticService.querySysPerform());
     }
     @PostMapping("rams/queryRAMSFaultList")

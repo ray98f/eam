@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.statistic.RAMSMapper">
-    <select id="query4AQYYZB" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResDTO">
+    <select id="query4AQYYZB" resultType="com.wzmtr.eam.dto.res.statistic.RAMSCarResDTO">
         SELECT (SELECT count(1)
                 FROM T_FAULT_INFO d
                          left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
@@ -121,7 +121,7 @@
         GROUP BY c.YEAR_MONTH
         ORDER BY c.YEAR_MONTH DESC
     </select>
-    <select id="queryresult2" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResDTO">
+    <select id="queryresult2" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResult2ResDTO">
         select c.YEAR_MONTH                                       as "yearMonth",
                (select count(1)
                 from T_FAULT_INFO d,
@@ -188,7 +188,7 @@
         group by c.YEAR_MONTH
         ORDER by c.YEAR_MONTH desc
     </select>
-    <select id="querySysPerform" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResDTO">
+    <select id="querySysPerform" resultType="com.wzmtr.eam.dto.res.statistic.RAMSSysPerformResDTO">
         SELECT LATE.SC       AS "moduleName",
                LATE.NUM_LATE AS "numLate",
                NOS.NUM_NOS   AS "numNos"
