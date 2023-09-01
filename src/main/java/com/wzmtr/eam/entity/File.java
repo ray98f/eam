@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class File {
     private String oldName;
-    private String newName;
+    private String fileName;
     private String url;
     private String recCreator;
     private String recCreateTime;

@@ -4,14 +4,14 @@
 
     <insert id="insertFile">
         INSERT INTO T_FILE (ID, FILE_NAME, OLD_NAME, BUCKET, URL, REC_CREATOR,
-                                 REC_CREATETIME VALUES ( #{id,jdbcType=VARCHAR},
-                                     #{fileName,jdbcType=VARCHAR},
-                                     #{oldName,jdbcType=VARCHAR},
-                                     #{bucket,jdbcType=VARCHAR},
-                                     #{url,jdbcType=VARCHAR},
-                                     #{recCreator,jdbcType=VARCHAR},
-                                     #{recCreateTime,jdbcType=VARCHAR},
-                                     )
+                            REC_CREATE_TIME) VALUES ( #{id,jdbcType=VARCHAR},
+                                #{fileName,jdbcType=VARCHAR},
+                                #{oldName,jdbcType=VARCHAR},
+                                #{bucket,jdbcType=VARCHAR},
+                                #{url,jdbcType=VARCHAR},
+                                #{recCreator,jdbcType=VARCHAR},
+                                #{recCreateTime,jdbcType=VARCHAR}
+                                )
     </insert>
     <select id="getFile" resultType="com.wzmtr.eam.entity.File">
         select * from T_FILE

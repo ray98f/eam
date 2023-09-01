@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/11 15:38
@@ -42,12 +44,14 @@ public class MinIOServiceImpl implements MinIOService {
         String oldName = file.getOriginalFilename();
         String fileName = FileUploadUtils.extractFilename(file);
         try {
+            InputStream inputStream = file.getInputStream();
             client.putObject(PutObjectArgs.builder()
                     .bucket(bucket)
                     .object(fileName)
-                    .stream(file.getInputStream(), file.getSize(), -1)
+                    .stream(inputStream, file.getSize(), -1)
                     .contentType(file.getContentType())
                     .build());
+            inputStream.close();
         } catch (Exception e) {
             log.error("upload error", e);
         }
@@ -57,6 +61,7 @@ public class MinIOServiceImpl implements MinIOService {
                 .fileName(fileName)
                 .id(TokenUtil.getUuId())
                 .oldName(oldName)
+                .url(url)
                 .recCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS))
                 .recCreator(TokenUtil.getCurrentPersonId())
                 .build();
