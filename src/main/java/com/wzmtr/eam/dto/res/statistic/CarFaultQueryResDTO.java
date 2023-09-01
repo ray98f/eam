@@ -24,7 +24,6 @@ public class CarFaultQueryResDTO {
     private Integer faultCount;
 
     private Set<String> monthData;
-    private List<StatisticBO> tableData;
     private Set<String> titleData;
     private List<Map<String, Object>> tableData2;
 }

@@ -11,7 +11,7 @@ import lombok.Data;
 public class MaterialResDTO {
     @ApiModelProperty(value = "检修作业时间")
     private String realTime;
-    @ApiModelProperty(value = "计划名称")
+    @ApiModelProperty(value = "工单名称")
     private String planName;
     @ApiModelProperty(value = "出库单号")
     private String deliveryNo;

@@ -3,29 +3,28 @@ package com.wzmtr.eam.impl.statistic;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.statistic.*;
-import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
-import com.wzmtr.eam.dto.res.GeneralSurveyResDTO;
-import com.wzmtr.eam.dto.res.PartReplaceResDTO;
-import com.wzmtr.eam.dto.res.WheelsetLathingResDTO;
+import com.wzmtr.eam.dto.res.*;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
-import com.wzmtr.eam.enums.SystemClassify;
 import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
+import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -176,36 +175,92 @@ public class StatisticServiceImpl implements StatisticService {
         if (reqDTO.getSystemType().contains(SystemType.TICKET)) {
             // 售票机可靠度
             List<ReliabilityResDTO> queryTicketFault = reliabilityMapper.queryTicketFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            queryTicketFault.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            reliabilityListResDTO.setQueryTicketFaultMonth(month);
+            reliabilityListResDTO.setQueryTicketFaultData(data);
             reliabilityListResDTO.setQueryTicketFault(queryTicketFault);
         }
         if (reqDTO.getSystemType().contains(SystemType.GATE_BRAKE)) {
             // 进出站闸机可靠度
             List<ReliabilityResDTO> queryGateBrakeFault = reliabilityMapper.queryGateBrakeFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            queryGateBrakeFault.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            reliabilityListResDTO.setQueryGateBrakeData(data);
+            reliabilityListResDTO.setQueryGateBrakeMonth(month);
             reliabilityListResDTO.setQueryGateBrakeFault(queryGateBrakeFault);
         }
         if (reqDTO.getSystemType().contains(SystemType.ESCALATOR)) {
             // 自动扶梯可靠度
             List<ReliabilityResDTO> queryEscalatorFault = reliabilityMapper.queryEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            queryEscalatorFault.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            reliabilityListResDTO.setQueryEscalatorData(data);
+            reliabilityListResDTO.setQueryEscalatorMonth(month);
             reliabilityListResDTO.setQueryEscalatorFault(queryEscalatorFault);
         }
         if (reqDTO.getSystemType().contains(SystemType.VERTICAL_ESCALATOR)) {
             // 垂直扶梯可靠度
             List<ReliabilityResDTO> queryVerticalEscalatorFault = reliabilityMapper.queryVerticalEscalatorFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            queryVerticalEscalatorFault.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            reliabilityListResDTO.setQueryVerticalEscalatorMonth(month);
+            reliabilityListResDTO.setQueryVerticalEscalatorData(data);
             reliabilityListResDTO.setQueryVerticalEscalatorFault(queryVerticalEscalatorFault);
         }
         if (reqDTO.getSystemType().contains(SystemType.TRAIN_PASSENGER)) {
             // 列车乘客信息系统可靠度
             List<ReliabilityResDTO> queryTrainPassengerInformationFault = reliabilityMapper.queryTrainPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            queryTrainPassengerInformationFault.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            reliabilityListResDTO.setQueryTrainPassengerInformationMonth(month);
+            reliabilityListResDTO.setQueryTrainPassengerInformationData(data);
             reliabilityListResDTO.setQueryTrainPassengerInformationFault(queryTrainPassengerInformationFault);
         }
         if (reqDTO.getSystemType().contains(SystemType.STATION_PASSENGER)) {
             // 车站乘客信息系统可靠度
             List<ReliabilityResDTO> queryStationPassengerInformationFault = reliabilityMapper.queryStationPassengerInformationFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            queryStationPassengerInformationFault.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            reliabilityListResDTO.setQueryStationPassengerInformationMonth(month);
+            reliabilityListResDTO.setQueryStationPassengerInformationData(data);
             reliabilityListResDTO.setQueryStationPassengerInformationFault(queryStationPassengerInformationFault);
         }
         if (reqDTO.getSystemType().contains(SystemType.FIRE_FIGHTING)) {
             // 消防设备可靠度
             List<ReliabilityResDTO> queryFireFightingEquipmentFault = reliabilityMapper.queryFireFightingEquipmentFault(reqDTO.getEndTime(), reqDTO.getStartTime());
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            queryFireFightingEquipmentFault.forEach(a->{
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            reliabilityListResDTO.setQueryFireFightingEquipmentFaultMonth(month);
+            reliabilityListResDTO.setQueryFireFightingEquipmentFaultData(data);
             reliabilityListResDTO.setQueryFireFightingEquipmentFault(queryFireFightingEquipmentFault);
         }
         return reliabilityListResDTO;
@@ -643,6 +698,28 @@ public class StatisticServiceImpl implements StatisticService {
             }
         });
         return list;
+    }
+
+    @Override
+    public void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response) {
+        List<String> listName = Arrays.asList("检修作业时间", "对象号", "工单名称", "物资名称", "物资编码", "规格型号", "领用数量", "计量单位");
+        List<MaterialResDTO> exportList = materialMapper.exportList(reqDTO);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (exportList != null && !exportList.isEmpty()) {
+            for (MaterialResDTO resDTO : exportList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("检修作业时间", resDTO.getRealTime());
+                map.put("对象号", resDTO.getObjectName());
+                map.put("工单名称", resDTO.getPlanName());
+                map.put("物资名称", resDTO.getMatname());
+                map.put("物资编码", resDTO.getMatcode());
+                map.put("规格型号", resDTO.getSpecifi());
+                map.put("领用数量", resDTO.getDeliveryNum());
+                map.put("计量单位", resDTO.getUnit());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("物料统计", listName, list, null, response);
     }
 
     public void rebuildBlock4SP(RAMSSysPerformResDTO map, Set<String> module, String moduleName, String contractZB_LATE, String contractZB_NOS) {

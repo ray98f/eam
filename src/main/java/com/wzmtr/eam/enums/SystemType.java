@@ -9,12 +9,12 @@ import lombok.Getter;
 @Getter
 public enum SystemType {
     TICKET("1", "售票机可靠度"),
-    GATE_BRAKE("2", "售票机可靠度"),
-    ESCALATOR("3", "自动扶梯"),
-    VERTICAL_ESCALATOR("4", "垂直扶梯"),
-    TRAIN_PASSENGER("5", "列车乘客信息"),
-    STATION_PASSENGER("6", "车站乘客信息系统"),
-    FIRE_FIGHTING("7", "车站乘客信息系统");
+    GATE_BRAKE("2", "进出站闸机可靠度"),
+    ESCALATOR("3", "自动扶梯可靠度"),
+    VERTICAL_ESCALATOR("4", "垂直扶梯可靠度"),
+    TRAIN_PASSENGER("5", "列车乘客信息系统可靠度"),
+    STATION_PASSENGER("6", "车站乘客信息系统可靠度"),
+    FIRE_FIGHTING("7", "消防设备可靠度");
 
     private final String code;
     private final String desc;

@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -55,6 +56,11 @@ public class StatisticController {
     @ApiOperation(value = "物料统计")
     public PageResponse<MaterialResDTO> query(@RequestBody MaterialQueryReqDTO reqDTO) {
         return PageResponse.of(statisticService.query(reqDTO));
+    }
+    @GetMapping("material/query/export")
+    @ApiOperation(value = "物料统计导出")
+    public void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response) {
+        statisticService.materialExport(reqDTO,response);
     }
 
     @PostMapping("failure/rate/query")

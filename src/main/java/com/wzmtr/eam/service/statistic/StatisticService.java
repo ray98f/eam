@@ -11,6 +11,7 @@ import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import com.wzmtr.eam.enums.SystemClassify;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -84,4 +85,6 @@ public interface StatisticService {
     List<FaultConditionResDTO> queryCountFaultType();
 
     Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO);
+
+    void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response);
 }
