@@ -9,26 +9,18 @@ import java.util.List;
  * @Author lize
  * @Date 2023/6/9
  */
-public enum BpmnFlowEnum {
+public enum SupplyStatusEnum {
     //当麒麟流程发布新版本时需要更新modelId与defId
-    CHECK_PLAN_SUBMIT("check_plan_submit", "计量器具检测计划流程"),
-    SUBMISSION_RECORD_SUBMIT("submission_record_submit", "计量器具送检流程"),
-    SUBMISSION_SUBMIT("submission_submit", "计量器具检测单流程");
+    draft("draft", "草稿"),
+    approving("approving", "审批中"),
+    approved("approved", "审批完成"),
+    unapproved("unapproved", "审批不通过");
     private String value;
     private String label;
 
-    BpmnFlowEnum(String value, String label) {
+    SupplyStatusEnum(String value, String label) {
         this.value = value;
         this.label = label;
-    }
-
-    public static BpmnFlowEnum find(String flowId) {
-        for (BpmnFlowEnum bpmnFlowEnum : values()) {
-            if (bpmnFlowEnum.value.equals(flowId)) {
-                return bpmnFlowEnum;
-            }
-        }
-        return null;
     }
 
     public String value() {
@@ -40,7 +32,7 @@ public enum BpmnFlowEnum {
     }
 
     public static String getLabelByValue(String value) {
-        for (BpmnFlowEnum orgTypeEnum : BpmnFlowEnum.values()) {
+        for (SupplyStatusEnum orgTypeEnum : SupplyStatusEnum.values()) {
             if (orgTypeEnum.value.equals(value)) {
                 return orgTypeEnum.label;
             }
@@ -49,7 +41,7 @@ public enum BpmnFlowEnum {
     }
 
     public static String getValueByLabel(String label) {
-        for (BpmnFlowEnum orgTypeEnum : BpmnFlowEnum.values()) {
+        for (SupplyStatusEnum orgTypeEnum : SupplyStatusEnum.values()) {
             if (orgTypeEnum.label.equals(label)) {
                 return orgTypeEnum.value;
             }
@@ -60,7 +52,7 @@ public enum BpmnFlowEnum {
     public static List<HashMap<String, String>> printAllValuesAndLabels() {
         List<HashMap<String, String>> list = new ArrayList<>();
 
-        for (BpmnFlowEnum orgTypeEnum : BpmnFlowEnum.values()) {
+        for (SupplyStatusEnum orgTypeEnum : SupplyStatusEnum.values()) {
             HashMap<String, String> map = new HashMap<>();
             map.put("id", orgTypeEnum.value);
             map.put("name", orgTypeEnum.label);
