@@ -35,6 +35,18 @@ public class FastFlowPathUrl {
     public static final String POST_ADD = BASE_URL + "/uc/api/orgPost/save";
     //退出
     public static final String LOGOUT = BASE_URL + "/logout";
+    //待办
+    public static final String EXAMINE_LIST = BASE_URL + "/a1bpmn/api/runtime/task/v2/list";
+    //已办
+    public static final String EXAMINED_LIST = BASE_URL + "/a1bpmn/api/history/task/v1/list";
+    //已发
+    public static final String INSTANCE_RUNNING_LIST = BASE_URL + "/a1bpmn/api/startUp/list/running";
+    //办结
+    public static final String INSTANCE_ENDING_LIST = BASE_URL + "/a1bpmn/api/startUp/his/list";
+    //获得表单参数
+    public static final String RENDER_HIS_FORM = BASE_URL + "/form/bus/render/get/renderHisForm/";
+    //用taskId获取流程的key
+    public static final String GET_DEF_KEY = BASE_URL + "/a1bpmn/api/runtime/getTaskBtn/";
 
 
 }

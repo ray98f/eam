@@ -2,12 +2,22 @@ package com.wzmtr.eam.impl.bpmn;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageInfo;
+import com.wzmtr.eam.dto.req.BpmnExaminePersonIdReq;
+import com.wzmtr.eam.dto.req.ExamineListReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
+import com.wzmtr.eam.dto.res.ExamineListRes;
+import com.wzmtr.eam.dto.res.ExaminedListRes;
+import com.wzmtr.eam.dto.res.HisListRes;
+import com.wzmtr.eam.dto.res.RunningListRes;
 import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
 import com.wzmtr.eam.dto.req.bpmn.LoginDTO;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
 import com.wzmtr.eam.dto.res.bpmn.FlowRes;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.SupplyStatusEnum;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.dto.result.ResultEntity;
@@ -68,10 +78,10 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     @Override
-    public void agreeInstance(BpmnExamineDTO bpmnExamineDTO) {
+    public ResultEntity agreeInstance(BpmnExamineDTO bpmnExamineDTO) {
         String authorization = httpServletRequest.getHeader("Authorization");
         StringBuilder data = JointUtils.jointEntity(bpmnExamineDTO);
-        HttpUtil.doPost(FastFlowPathUrl.INSTANCE_AGREE + data, null, authorization);
+        return JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_AGREE + data, null, authorization), ResultEntity.class);
     }
 
     @Override
@@ -99,6 +109,14 @@ public class BpmnServiceImpl implements BpmnService {
             list.add(res);
         }
         return list;
+    }
+
+    @Override
+    public String taskProgress(String instId) {
+        List<ExamineOpinionRes> list = new ArrayList<>();
+        String authorization = httpServletRequest.getHeader("Authorization");
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.EXAMINE_OPINION + "?instId=" + instId, authorization));
+        return jsonObject.getString("XML");
     }
 
     @Override
@@ -159,5 +177,188 @@ public class BpmnServiceImpl implements BpmnService {
         Element firstUserTask = (Element) userTaskList.item(0);
         // 获取id属性值
         return firstUserTask.getAttribute("id");
+    }
+
+    @Override
+    public String queryTaskNameByModelIdAndTaskKey(String modelId, String taskKey) throws Exception {
+        String authorization = httpServletRequest.getHeader("Authorization");
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
+        if (!"0".equals(jsonObject.getString("code"))) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, jsonObject.getString("msg"));
+        }
+        String xml = jsonObject.getString("xml");
+        // 创建DOM解析器工厂
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputStream xmlStream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
+        Document document = builder.parse(xmlStream);
+        // 获取第一个userTask元素
+        NodeList userTaskList = document.getElementsByTagName("bpmn:userTask");
+        for (int i = 0; i < userTaskList.getLength(); i++) {
+            Element userTask = (Element) userTaskList.item(i);
+            // 获取id属性值
+            String id = userTask.getAttribute("id");
+            if (taskKey.equals(id)) {
+                return userTask.getAttribute("name");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<ExamineListRes> examineList(ExamineListReq req) {
+        String authorization = httpServletRequest.getHeader("Authorization");
+        req.setPageNo(1);
+        req.setPageSize(10000);
+        String data = JSONObject.toJSONString(req);
+        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.EXAMINE_LIST, data, authorization), ResultEntity.class);
+        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        return JSONArray.parseArray(jsonArray.toJSONString(), ExamineListRes.class);
+    }
+
+    @Override
+    public Page<ExaminedListRes> examinedList(ExamineListReq req) {
+        String authorization = httpServletRequest.getHeader("Authorization");
+        StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
+        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.EXAMINED_LIST + data, null, authorization), ResultEntity.class);
+        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        //pagehelper不支持普通list分页 手动分页
+        List<ExaminedListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), ExaminedListRes.class);
+        int total = originalList.size();  // 总记录数
+        int startIndex = (req.getPageNo() - 1) * req.getPageSize();    // 起始索引
+        int endIndex = Math.min(startIndex + req.getPageSize(), total);   // 结束索引，防止越界
+        if (startIndex > endIndex) {
+            return null;
+        }
+        List<ExaminedListRes> paginatedList = originalList.subList(startIndex, endIndex);   // 获取分页结果
+        Page<ExaminedListRes> pageInfo = new Page<>();
+        pageInfo.setRecords(paginatedList);
+        pageInfo.setTotal(total);
+        pageInfo.setCurrent(req.getPageNo());
+        pageInfo.setSize(req.getPageSize());
+        return pageInfo;
+    }
+
+    @Override
+    public Page<RunningListRes> runningList(ExamineListReq req) {
+        String authorization = httpServletRequest.getHeader("Authorization");
+        StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
+        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_RUNNING_LIST + data, null, authorization), ResultEntity.class);
+        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        //pagehelper不支持普通list分页 手动分页
+        List<RunningListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), RunningListRes.class);
+        int total = originalList.size();  // 总记录数
+        int startIndex = (req.getPageNo() - 1) * req.getPageSize();    // 起始索引
+        int endIndex = Math.min(startIndex + req.getPageSize(), total);   // 结束索引，防止越界
+        if (startIndex > endIndex) {
+            return null;
+        }
+        List<RunningListRes> paginatedList = originalList.subList(startIndex, endIndex);   // 获取分页结果
+        Page<RunningListRes> pageInfo = new Page<>();
+        pageInfo.setRecords(paginatedList);
+        pageInfo.setTotal(total);
+        pageInfo.setCurrent(req.getPageNo());
+        pageInfo.setSize(req.getPageSize());
+        for (int i = 0; i < req.getPageSize(); i++) {
+            if (req.getPageSize() * (req.getPageNo() - 1) + i >= total) {
+                return pageInfo;
+            }
+            pageInfo.getRecords().get(i).setTaskId(jsonArray.getJSONObject((req.getPageNo() - 1) * req.getPageSize()).getJSONArray("newTask").getJSONObject(0).getString("taskId"));
+            pageInfo.getRecords().get(i).setTaskName(jsonArray.getJSONObject(i).getJSONArray("newTask").getJSONObject(0).getString("taskName"));
+        }
+        return pageInfo;
+    }
+
+    @Override
+    public Page<HisListRes> hisList(ExamineListReq req) {
+        String authorization = httpServletRequest.getHeader("Authorization");
+        StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
+        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_ENDING_LIST + data, null, authorization), ResultEntity.class);
+        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+
+        //pagehelper不支持普通list分页 手动分页
+        List<HisListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), HisListRes.class);
+        int total = originalList.size();  // 总记录数
+        int startIndex = (req.getPageNo() - 1) * req.getPageSize();    // 起始索引
+        int endIndex = Math.min(startIndex + req.getPageSize(), total);   // 结束索引，防止越界
+        if (startIndex > endIndex) {
+            return null;
+        }
+        List<HisListRes> paginatedList = originalList.subList(startIndex, endIndex);   // 获取分页结果
+        Page<HisListRes> pageInfo = new Page<>();
+        pageInfo.setRecords(paginatedList);
+        pageInfo.setTotal(total);
+        pageInfo.setCurrent(req.getPageNo());
+        pageInfo.setSize(req.getPageSize());
+
+        return pageInfo;
+    }
+
+    @Override
+    public String getSelfId(String procId) {
+        String authorization = httpServletRequest.getHeader("Authorization");
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.RENDER_HIS_FORM + procId, authorization));
+        JSONObject editData = jsonObject.getJSONObject("editData");
+        return editData.getString("id");
+    }
+
+    @Override
+    public void agree(String taskId, String opinion, String fromId) {
+        BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
+        //根据procId获取最新的taskId
+        bpmnExamineDTO.setTaskId(taskId);
+        //获取流程引擎下一个流程节点key
+        String nodeId = nextTaskKey(taskId);
+        //获取审核人是谁填入
+        BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
+        String flowId = getDefKeyByTaskId(taskId);
+        req.setFlowId(flowId);
+        req.setNodeId(nodeId);
+        // todo 角色获取
+//        List<String> bpmnExaminePersonId = sysService.getBpmnExaminePersonId(req);
+//        //如果没有审核人则走默认的下一步流程与审核人
+//        if (null != bpmnExaminePersonId && bpmnExaminePersonId.size() > 0) {
+//            String chooseNodeUser = "";
+//            for (String s : bpmnExaminePersonId) {
+//                s = "csm" + s;
+//                chooseNodeUser = chooseNodeUser + s + ",";
+//            }
+//            //获取审核人是谁填入,这个是逗号隔开
+//            bpmnExamineDTO.setChooseNodeUser(chooseNodeUser.substring(0, chooseNodeUser.length() - 1));
+//            bpmnExamineDTO.setChooseNode(nodeId);
+//        } else {
+//            //没有审核人证明为最后一步则状态改为通过
+////            updateFromStatus(flowId,PowerSupplyStatusEnum.approved.value(),fromId);
+//        }
+        //这个是显示在流程引擎的标题
+        bpmnExamineDTO.setTaskTitle(BpmnFlowEnum.getLabelByValue(flowId));
+        //审核意见
+        bpmnExamineDTO.setOpinion(opinion);
+        ResultEntity result = agreeInstance(bpmnExamineDTO);
+        if (result.getCode() != 0) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, result.getMsg());
+        }
+
+    }
+
+    @Override
+    public void reject(String id, String opinion, String fromId) {
+        BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
+        //根据procId获取最新的taskId
+        bpmnExamineDTO.setTaskId(id);
+        //审核意见
+        bpmnExamineDTO.setOpinion(opinion);
+        rejectInstance(bpmnExamineDTO);
+        String flowId = getDefKeyByTaskId(id);
+        updateFromStatus(flowId, SupplyStatusEnum.unapproved.value(), fromId);
+    }
+
+    public void updateFromStatus(String flowId, String status, String fromId) {
+        // todo 修改审批状态
+    }
+
+    public String getDefKeyByTaskId(String taskId) {
+        String processDefinitionId = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.GET_DEF_KEY + taskId, null)).getString("processDefinitionId");
+        return processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
     }
 }
