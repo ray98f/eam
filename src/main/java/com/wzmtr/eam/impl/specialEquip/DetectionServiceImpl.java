@@ -3,21 +3,26 @@ package com.wzmtr.eam.impl.specialEquip;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.DetectionDetailReqDTO;
+import com.wzmtr.eam.dto.req.DetectionPlanReqDTO;
 import com.wzmtr.eam.dto.req.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.DetectionDetailResDTO;
 import com.wzmtr.eam.dto.res.DetectionResDTO;
 import com.wzmtr.eam.dto.res.DetectionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.specialEquip.DetectionMapper;
+import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.specialEquip.DetectionService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +43,9 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private BpmnService bpmnService;
 
     @Override
     public Page<DetectionResDTO> pageDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, PageReqDTO pageReqDTO) {
@@ -129,8 +137,36 @@ public class DetectionServiceImpl implements DetectionService {
     }
 
     @Override
-    public void submitDetection(String id) {
-        // todo ServiceDMSE0301 submit
+    public void submitDetection(String id) throws Exception {
+        // ServiceDMSE0301 submit
+        DetectionResDTO res = detectionMapper.getDetectionDetail(id);
+        if (Objects.isNull(res)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        List<DetectionDetailResDTO> result = detectionMapper.listDetectionDetail(res.getRecId());
+        if (result.size() == 0) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "此检测单不存在检测明细，无法提交");
+        }
+        for (DetectionDetailResDTO temp : result) {
+            if (StringUtil.isBlank(temp.getVerifyResult()) || StringUtil.isBlank(temp.getVerifyDate()) ||
+                    StringUtil.isBlank(temp.getVerifyValidityDate())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "存在检测记录明细检测结果或检测日期或检测有效期为空，无法提交");
+            }
+        }
+        if (!"10".equals(res.getRecStatus())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可提交");
+        } else {
+            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null,null);
+            if (processId == null || "-1".equals(processId)) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
+            }
+            DetectionReqDTO reqDTO = new DetectionReqDTO();
+            BeanUtils.copyProperties(res, reqDTO);
+            reqDTO.setWorkFlowInstId(processId);
+            reqDTO.setWorkFlowInstStatus("已提交");
+            reqDTO.setRecStatus("20");
+            detectionMapper.modifyDetection(reqDTO);
+        }
     }
 
     @Override

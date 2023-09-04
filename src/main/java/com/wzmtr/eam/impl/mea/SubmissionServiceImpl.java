@@ -4,18 +4,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.*;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
-import com.wzmtr.eam.dto.res.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.SubmissionDetailResDTO;
 import com.wzmtr.eam.dto.res.SubmissionResDTO;
-import com.wzmtr.eam.dto.res.MeaInfoResDTO;
-import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.entity.BaseIdsEntity;
-import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.mea.SubmissionService;
@@ -23,7 +18,6 @@ import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.bpmn.WorkflowUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +115,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public void submitSubmission(SubmissionReqDTO submissionReqDTO) throws Exception {
+        // ServiceDMAM0101 submit
         SubmissionResDTO res = submissionMapper.getSubmissionDetail(submissionReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
@@ -132,11 +127,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             if (result.size() == 0) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "此送检单不存在计划明细，无法提交");
             }
-            List<FlowRes> list = bpmnService.queryFlowList(BpmnFlowEnum.SUBMISSION_SUBMIT.label(), BpmnFlowEnum.SUBMISSION_SUBMIT.value());
-            if (null == list || list.size() == 0) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
-            }
-            String processId = WorkflowUtils.submit(list, res.getSendVerifyNo());
+            String processId = bpmnService.commit(res.getSendVerifyNo(), BpmnFlowEnum.SUBMISSION_SUBMIT.value(), null, null);
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }

@@ -71,7 +71,7 @@ public class DetectionController {
 
     @GetMapping("/submit")
     @ApiOperation(value = "提交检测记录")
-    public DataResponse<T> submitDetection(@RequestParam @ApiParam("id") String id) {
+    public DataResponse<T> submitDetection(@RequestParam @ApiParam("id") String id) throws Exception {
         detectionService.submitDetection(id);
         return DataResponse.success();
     }

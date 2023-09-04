@@ -25,7 +25,7 @@ public interface DetectionService {
 
     void deleteDetection(BaseIdsEntity baseIdsEntity);
 
-    void submitDetection(String id);
+    void submitDetection(String id) throws Exception;
 
     void exportDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, HttpServletResponse response);
 

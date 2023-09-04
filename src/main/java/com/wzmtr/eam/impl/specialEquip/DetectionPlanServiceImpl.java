@@ -2,21 +2,26 @@ package com.wzmtr.eam.impl.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.DetectionPlanDetailReqDTO;
 import com.wzmtr.eam.dto.req.DetectionPlanReqDTO;
 import com.wzmtr.eam.dto.res.DetectionPlanDetailResDTO;
 import com.wzmtr.eam.dto.res.DetectionPlanResDTO;
+import com.wzmtr.eam.dto.res.MeaInfoResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.specialEquip.DetectionPlanMapper;
+import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.specialEquip.DetectionPlanService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +42,9 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private BpmnService bpmnService;
 
     @Override
     public Page<DetectionPlanResDTO> pageDetectionPlan(String instrmPlanNo, String planStatus, String editDeptCode,
@@ -132,8 +140,30 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
     }
 
     @Override
-    public void submitDetectionPlan(String id) {
-        // todo ServiceDMSE0001 submit
+    public void submitDetectionPlan(String id) throws Exception {
+        // ServiceDMSE0001 submit
+        DetectionPlanResDTO res = detectionPlanMapper.getDetectionPlanDetail(id);
+        if (Objects.isNull(res)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        List<DetectionPlanDetailResDTO> result = detectionPlanMapper.listDetectionPlanDetail(res.getInstrmPlanNo());
+        if (result.size() == 0) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "此计划不存在计划明细，无法提交");
+        }
+        if (!"10".equals(res.getPlanStatus())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态无法提交");
+        } else {
+            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null,null);
+            if (processId == null || "-1".equals(processId)) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
+            }
+            DetectionPlanReqDTO reqDTO = new DetectionPlanReqDTO();
+            BeanUtils.copyProperties(res, reqDTO);
+            reqDTO.setWorkFlowInstId(processId);
+            reqDTO.setWorkFlowInstStatus("已提交");
+            reqDTO.setPlanStatus("20");
+            detectionPlanMapper.modifyDetectionPlan(reqDTO);
+        }
     }
 
     @Override

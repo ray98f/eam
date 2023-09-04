@@ -7,9 +7,7 @@ import com.wzmtr.eam.dto.req.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.MeaInfoReqDTO;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.CheckPlanResDTO;
-import com.wzmtr.eam.dto.res.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.MeaInfoResDTO;
-import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -24,16 +22,12 @@ import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.bpmn.WorkflowUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -164,6 +158,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO) throws Exception {
+        // ServiceDMAM0201 submit
         CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(checkPlanReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
@@ -178,11 +173,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         if (!"10".equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         } else {
-            List<FlowRes> list = bpmnService.queryFlowList(BpmnFlowEnum.CHECK_PLAN_SUBMIT.label(), BpmnFlowEnum.CHECK_PLAN_SUBMIT.value());
-            if (null == list || list.size() == 0) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
-            }
-            String processId = WorkflowUtils.submit(list, res.getInstrmPlanNo());
+            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.CHECK_PLAN_SUBMIT.value(), null,null);
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
