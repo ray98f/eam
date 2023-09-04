@@ -155,6 +155,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public ReliabilityListResDTO reliabilityQuery(FailreRateQueryReqDTO reqDTO) {
+        //todo 代码结构过于冗余，后期优化。
         if (StringUtils.isEmpty(reqDTO.getStartTime()) && StringUtils.isEmpty(reqDTO.getEndTime())) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
             Calendar calendar = Calendar.getInstance();
@@ -181,9 +182,11 @@ public class StatisticServiceImpl implements StatisticService {
                 data.add(a.getPrecent());
                 month.add(a.getYearMonth());
             });
-            reliabilityListResDTO.setQueryTicketFaultMonth(month);
-            reliabilityListResDTO.setQueryTicketFaultData(data);
-            reliabilityListResDTO.setQueryTicketFault(queryTicketFault);
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(SystemType.TICKET.getDesc());
+            reliabilityListResDTO.setQueryTicketFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.GATE_BRAKE)) {
             // 进出站闸机可靠度
@@ -194,9 +197,11 @@ public class StatisticServiceImpl implements StatisticService {
                 data.add(a.getPrecent());
                 month.add(a.getYearMonth());
             });
-            reliabilityListResDTO.setQueryGateBrakeData(data);
-            reliabilityListResDTO.setQueryGateBrakeMonth(month);
-            reliabilityListResDTO.setQueryGateBrakeFault(queryGateBrakeFault);
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(SystemType.GATE_BRAKE.getDesc());
+            reliabilityListResDTO.setQueryGateBrakeFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.ESCALATOR)) {
             // 自动扶梯可靠度
@@ -207,9 +212,11 @@ public class StatisticServiceImpl implements StatisticService {
                 data.add(a.getPrecent());
                 month.add(a.getYearMonth());
             });
-            reliabilityListResDTO.setQueryEscalatorData(data);
-            reliabilityListResDTO.setQueryEscalatorMonth(month);
-            reliabilityListResDTO.setQueryEscalatorFault(queryEscalatorFault);
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(SystemType.ESCALATOR.getDesc());
+            reliabilityListResDTO.setQueryEscalatorFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.VERTICAL_ESCALATOR)) {
             // 垂直扶梯可靠度
@@ -220,9 +227,11 @@ public class StatisticServiceImpl implements StatisticService {
                 data.add(a.getPrecent());
                 month.add(a.getYearMonth());
             });
-            reliabilityListResDTO.setQueryVerticalEscalatorMonth(month);
-            reliabilityListResDTO.setQueryVerticalEscalatorData(data);
-            reliabilityListResDTO.setQueryVerticalEscalatorFault(queryVerticalEscalatorFault);
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(SystemType.VERTICAL_ESCALATOR.getDesc());
+            reliabilityListResDTO.setQueryVerticalEscalatorFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.TRAIN_PASSENGER)) {
             // 列车乘客信息系统可靠度
@@ -233,9 +242,11 @@ public class StatisticServiceImpl implements StatisticService {
                 data.add(a.getPrecent());
                 month.add(a.getYearMonth());
             });
-            reliabilityListResDTO.setQueryTrainPassengerInformationMonth(month);
-            reliabilityListResDTO.setQueryTrainPassengerInformationData(data);
-            reliabilityListResDTO.setQueryTrainPassengerInformationFault(queryTrainPassengerInformationFault);
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(SystemType.TRAIN_PASSENGER.getDesc());
+            reliabilityListResDTO.setQueryTrainPassengerInformationFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.STATION_PASSENGER)) {
             // 车站乘客信息系统可靠度
@@ -246,9 +257,11 @@ public class StatisticServiceImpl implements StatisticService {
                 data.add(a.getPrecent());
                 month.add(a.getYearMonth());
             });
-            reliabilityListResDTO.setQueryStationPassengerInformationMonth(month);
-            reliabilityListResDTO.setQueryStationPassengerInformationData(data);
-            reliabilityListResDTO.setQueryStationPassengerInformationFault(queryStationPassengerInformationFault);
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(SystemType.STATION_PASSENGER.getDesc());
+            reliabilityListResDTO.setQueryStationPassengerInformationFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.FIRE_FIGHTING)) {
             // 消防设备可靠度
@@ -259,16 +272,18 @@ public class StatisticServiceImpl implements StatisticService {
                 data.add(a.getPrecent());
                 month.add(a.getYearMonth());
             });
-            reliabilityListResDTO.setQueryFireFightingEquipmentFaultMonth(month);
-            reliabilityListResDTO.setQueryFireFightingEquipmentFaultData(data);
-            reliabilityListResDTO.setQueryFireFightingEquipmentFault(queryFireFightingEquipmentFault);
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(SystemType.FIRE_FIGHTING.getDesc());
+            reliabilityListResDTO.setQueryFireFightingEquipmentFault(reliabilityDetailResDTO);
         }
         return reliabilityListResDTO;
     }
 
     @Override
-    public OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearQueryReqDTO reqDTO) {
-        OneCarOneGearResDTO query = oneCarOneGearMapper.query(reqDTO.getEndTime(), reqDTO.getStartTime(), reqDTO.getEquipName());
+    public OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearReqDTO reqDTO) {
+        OneCarOneGearResDTO query = oneCarOneGearMapper.query(reqDTO.getEquipName());
         OneCarOneGearResDTO summary = oneCarOneGearMapper.querySummary(reqDTO.getEndTime(), reqDTO.getStartTime(), reqDTO.getEquipName());
         if (query != null) {
             summary.setStartUseDate(query.getStartUseDate());
