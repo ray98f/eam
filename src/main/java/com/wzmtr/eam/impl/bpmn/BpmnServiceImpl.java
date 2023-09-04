@@ -7,10 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.wzmtr.eam.dto.req.BpmnExaminePersonIdReq;
 import com.wzmtr.eam.dto.req.ExamineListReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
-import com.wzmtr.eam.dto.res.ExamineListRes;
-import com.wzmtr.eam.dto.res.ExaminedListRes;
-import com.wzmtr.eam.dto.res.HisListRes;
-import com.wzmtr.eam.dto.res.RunningListRes;
+import com.wzmtr.eam.dto.res.*;
 import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
 import com.wzmtr.eam.dto.req.bpmn.LoginDTO;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
@@ -26,6 +23,7 @@ import com.wzmtr.eam.utils.bpmn.FastFlowPathUrl;
 import com.wzmtr.eam.utils.bpmn.HttpUtil;
 import com.wzmtr.eam.utils.bpmn.JointUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -43,6 +41,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -113,7 +112,6 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public String taskProgress(String instId) {
-        List<ExamineOpinionRes> list = new ArrayList<>();
         String authorization = httpServletRequest.getHeader("Authorization");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.EXAMINE_OPINION + "?instId=" + instId, authorization));
         return jsonObject.getString("XML");
@@ -320,15 +318,12 @@ public class BpmnServiceImpl implements BpmnService {
 //        if (null != bpmnExaminePersonId && bpmnExaminePersonId.size() > 0) {
 //            String chooseNodeUser = "";
 //            for (String s : bpmnExaminePersonId) {
-//                s = "csm" + s;
+//                s = "eam" + s;
 //                chooseNodeUser = chooseNodeUser + s + ",";
 //            }
 //            //获取审核人是谁填入,这个是逗号隔开
 //            bpmnExamineDTO.setChooseNodeUser(chooseNodeUser.substring(0, chooseNodeUser.length() - 1));
 //            bpmnExamineDTO.setChooseNode(nodeId);
-//        } else {
-//            //没有审核人证明为最后一步则状态改为通过
-////            updateFromStatus(flowId,PowerSupplyStatusEnum.approved.value(),fromId);
 //        }
         //这个是显示在流程引擎的标题
         bpmnExamineDTO.setTaskTitle(BpmnFlowEnum.getLabelByValue(flowId));
@@ -338,7 +333,6 @@ public class BpmnServiceImpl implements BpmnService {
         if (result.getCode() != 0) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, result.getMsg());
         }
-
     }
 
     @Override
@@ -349,16 +343,56 @@ public class BpmnServiceImpl implements BpmnService {
         //审核意见
         bpmnExamineDTO.setOpinion(opinion);
         rejectInstance(bpmnExamineDTO);
-        String flowId = getDefKeyByTaskId(id);
-        updateFromStatus(flowId, SupplyStatusEnum.unapproved.value(), fromId);
-    }
-
-    public void updateFromStatus(String flowId, String status, String fromId) {
-        // todo 修改审批状态
     }
 
     public String getDefKeyByTaskId(String taskId) {
         String processDefinitionId = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.GET_DEF_KEY + taskId, null)).getString("processDefinitionId");
         return processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
+    }
+
+    @Override
+    public String commit(String id, String flow, String otherParam, String roleId) throws Exception {
+        List<FlowRes> list = queryFlowList(BpmnFlowEnum.getLabelByValue(flow), flow);
+        if (null == list || list.size() == 0) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
+        }
+        StartInstanceVO startInstanceVO = new StartInstanceVO();
+        BeanUtils.copyProperties(list.get(0), startInstanceVO);
+        //插入数据
+        startInstanceVO.setTypeTitle("eam流程");
+        if (otherParam == null) {
+            startInstanceVO.setFormData("{\"id\":\"" + id + "\"}");
+        } else {
+            startInstanceVO.setFormData(otherParam);
+        }
+        //获取流程引擎该表单第一个taskKey
+        String nodeId = queryFirstTaskKeyByModelId(startInstanceVO.getModelId());
+        List<String> bpmnExaminePersonId = new ArrayList<>();
+        // todo 如果传入角色id 则不需要查询
+        if (roleId != null) {
+//            SysUserRoleExample example = new SysUserRoleExample();
+//            SysUserRoleExample.Criteria criteria = example.createCriteria();
+//            criteria.andRoleIdEqualTo(roleId);
+//            bpmnExaminePersonId = sysUserRoleMapper.selectByExample(example).stream().map(SysUserRole::getRoleId).collect(Collectors.toList());
+        } else {
+            //获取审核人是谁填入
+//            BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
+//            req.setFlowId(flow);
+//            req.setNodeId(nodeId);
+//            bpmnExaminePersonId = sysService.getBpmnExaminePersonId(req);
+        }
+        NodeInfos nodeInfos = new NodeInfos();
+        List<NodeInfo> arrayList = new ArrayList<>();
+        if (bpmnExaminePersonId != null && bpmnExaminePersonId.size() > 0) {
+            for (String s : bpmnExaminePersonId) {
+                NodeInfo nodeInfo = new NodeInfo();
+                nodeInfo.setNodeId(nodeId);
+                nodeInfo.setNodeHanderUser("eam" + s);
+                arrayList.add(nodeInfo);
+            }
+        }
+        nodeInfos.setList(arrayList);
+        startInstanceVO.setNodeInfos(nodeInfos.toString());
+        return startInstance(startInstanceVO);
     }
 }

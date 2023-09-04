@@ -2,21 +2,18 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.SubmissionRecordDetailReqDTO;
 import com.wzmtr.eam.dto.req.SubmissionRecordReqDTO;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.MeaResDTO;
 import com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.dto.res.SubmissionRecordResDTO;
-import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionRecordMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
@@ -25,7 +22,6 @@ import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.bpmn.WorkflowUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,11 +140,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             if (result.size() == 0) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "此定检计划不存在计划明细，无法提交");
             }
-            List<FlowRes> list = bpmnService.queryFlowList(BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.label(), BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.value());
-            if (null == list || list.size() == 0) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
-            }
-            String processId = WorkflowUtils.submit(list, res.getCheckNo());
+            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.value(), null, null);
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
