@@ -129,6 +129,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public void submitSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO) throws Exception {
+        // ServiceDMAM0301 submit
         SubmissionRecordResDTO res = submissionRecordMapper.getSubmissionRecordDetail(submissionRecordReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
@@ -138,7 +139,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         } else {
             List<SubmissionRecordDetailResDTO> result = submissionRecordMapper.listSubmissionRecordDetail(res.getRecId());
             if (result.size() == 0) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "此定检计划不存在计划明细，无法提交");
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "此定检记录不存在计划明细，无法提交");
             }
             String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.value(), null, null);
             if (processId == null || "-1".equals(processId)) {

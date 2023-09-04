@@ -24,7 +24,7 @@ public interface DetectionPlanService {
 
     void deleteDetectionPlan(BaseIdsEntity baseIdsEntity);
 
-    void submitDetectionPlan(String id);
+    void submitDetectionPlan(String id) throws Exception;
 
     void exportDetectionPlan(String instrmPlanNo, String  planStatus, String  editDeptCode,
                              String assetKindCode, String  planPeriodMark, HttpServletResponse response);
