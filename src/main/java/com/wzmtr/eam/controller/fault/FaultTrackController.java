@@ -55,6 +55,4 @@ public class FaultTrackController {
         trackService.repair(reqDTO);
         return DataResponse.success();
     }
-
-
 }

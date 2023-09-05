@@ -13,4 +13,5 @@ public class ExamineOpinionRes {
     private String completeTime;
     private String opinion;
     private String auditor;
+    private String status;
 }

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.fault.FaultQueryMapper">
+    <update id="transmit">
+
+    </update>
 
     <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
@@ -384,5 +387,8 @@
             AND WORKNO = #{req.faultWorkNo}
         </if>
         order by REC_ID asc
+    </select>
+    <select id="queryOneByFaultWorkNoAndFaultNo" resultType="com.wzmtr.eam.dto.res.fault.TrackQueryResDTO">
+
     </select>
 </mapper>

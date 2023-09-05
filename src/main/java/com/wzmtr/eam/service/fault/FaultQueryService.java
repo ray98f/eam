@@ -27,4 +27,8 @@ public interface FaultQueryService {
     Page<ConstructionResDTO> construction(FaultQueryReqDTO reqDTO);
 
     Page<ConstructionResDTO> cancellation(FaultQueryReqDTO reqDTO);
+
+    void transmit(FaultQueryReqDTO reqDTO);
+
+    void submit(FaultQueryReqDTO reqDTO);
 }

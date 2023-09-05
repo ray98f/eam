@@ -308,7 +308,7 @@
         round(((to_date(decode(df.REPAIR_END_TIME,' ','2019-11-11 11:11:11',df.REPAIR_END_TIME),'yyyy-mm-dd HH24:mi:ss') - to_date(decode(df.REPAIR_START_TIME,' ','2019-11-11 11:11:11',df.REPAIR_START_TIME),'yyyy-mm-dd HH24:mi:ss'))*24*60),0) as "repairTime",
         d.EXT1	as "ext1",  <!-- 扩展字段1 -->
         d.EXT2	as "ext2",  <!-- 扩展字段2 -->
-        d.EXT3	as "affect",  <!-- 扩展字段3 -->
+        d.EXT3	as "affectCodes",  <!-- 扩展字段3 -->
         d.EXT4	as "ext4",  <!-- 扩展字段4 -->
         d.EXT5	as "ext5", <!-- 扩展字段5 -->
         d.TRAIN_TAG as "traintag",
@@ -318,7 +318,8 @@
         df.REC_ID	as "orderRecId",  <!-- 记录编号 -->
         df.ORDER_STATUS	as "orderStatus" , <!-- 工单状态 -->
         df.FAULT_ACTION_DETAIL	as "faultActionDetail",
-        df.EXT1	as "levelfault"  <!-- 派工状态 -->
+        df.EXT1	as "levelfault"  <!-- 派工状态 -->,
+        d3.FAULT_ANALYSIS_NO as "faultAnalysisNo"  <!-- 故障分析编号 -->
         FROM T_FAULT_INFO d left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO left join T_FAULT_DETAIL d3 on d3.FAULT_NO=df.FAULT_NO
         WHERE 1=1 and d.MAJOR_CODE='07' and nvl(df.IS_FAULT,'10')='10'
         and d.OBJECT_NAME = #{equipName}

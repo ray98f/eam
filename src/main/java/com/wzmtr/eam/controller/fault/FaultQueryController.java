@@ -66,4 +66,19 @@ public class FaultQueryController {
         // faultWorkNo
         return PageResponse.of(faultQueryService.cancellation(reqDTO));
     }
+
+    @ApiOperation(value = "故障跟踪下达")
+    @PostMapping("/fault/track/transmit")
+    public DataResponse<String> transmit(@RequestBody FaultQueryReqDTO reqDTO) {
+        // faultWorkNo
+        faultQueryService.transmit(reqDTO);
+        return DataResponse.success();
+    }
+    @ApiOperation(value = "故障跟踪送审")
+    @PostMapping("/fault/track/submit")
+    public DataResponse<String> submit(@RequestBody FaultQueryReqDTO reqDTO) {
+        // faultWorkNo
+        faultQueryService.submit(reqDTO);
+        return DataResponse.success();
+    }
 }

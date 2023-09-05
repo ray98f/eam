@@ -12,6 +12,8 @@ public class TrackRepairReqDTO {
 
     @ApiModelProperty(value = "faultTrackWorkNo")
     private String faultTrackWorkNo;
+    @ApiModelProperty(value = "recId")
+    private String recId;
     @ApiModelProperty(value = "维修部门编号")
     private String workerGroupCode;
     @ApiModelProperty(value = "记录状态")

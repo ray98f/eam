@@ -5,14 +5,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
+import com.wzmtr.eam.bo.FaultTrackBO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.utils.*;
 import org.springframework.aop.framework.AopContext;
@@ -35,6 +38,19 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     FaultReportMapper reportMapper;
     @Autowired
     private OrganizationMapper organizationMapper;
+    @Autowired
+    private OverTodoService overTodoService;
+
+    private static final Map<String, String> processMap = new HashMap<>();
+    static {
+        processMap.put("A30", "跟踪报告编制");
+        processMap.put("A40", "技术主管审核");
+        processMap.put("A50", "维保经理审核");
+        processMap.put("A60", "运营公司专业工程师审核");
+        processMap.put("A70", "中铁通科长审核");
+        processMap.put("A80", "中铁通部长审核");
+        processMap.put("A90", "部长审核");
+    }
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
@@ -68,7 +84,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public void issue(FaultDetailReqDTO reqDTO) {
         FaultQueryServiceImpl aop = (FaultQueryServiceImpl) AopContext.currentProxy();
         String status = aop.queryOrderStatus(SidEntity.builder().id(reqDTO.getFaultWorkNo()).build());
-        FaultOrderBO faultOrderBO = __BeanUtil.convert(reqDTO,FaultOrderBO.class);
+        FaultOrderBO faultOrderBO = __BeanUtil.convert(reqDTO, FaultOrderBO.class);
         switch (status) {
             case "40":
                 faultOrderBO.setReportStartUserId(TokenUtil.getCurrentPersonId());
@@ -90,7 +106,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         faultOrderBO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultOrderBO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         reportMapper.updateFaultOrder(faultOrderBO);
-        FaultInfoBO faultInfoBO = __BeanUtil.convert(reqDTO,FaultInfoBO.class);
+        FaultInfoBO faultInfoBO = __BeanUtil.convert(reqDTO, FaultInfoBO.class);
         faultInfoBO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultInfoBO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         reportMapper.updateFaultInfo(faultInfoBO);
@@ -149,6 +165,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         return list;
     }
+
     @Override
     public Page<ConstructionResDTO> cancellation(FaultQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
@@ -158,5 +175,37 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             return new Page<>();
         }
         return list;
+    }
+
+    @Override
+    public void transmit(FaultQueryReqDTO reqDTO) {
+        TrackQueryResDTO res = faultQueryMapper.queryOneByFaultWorkNoAndFaultNo(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        if (res == null) {
+            return;
+        }
+        String workFlowInstId;
+        if (StringUtils.isNotEmpty(res.getWorkFlowInstId())) {
+            workFlowInstId = res.getWorkFlowInstId();
+        } else {
+            workFlowInstId = res.getRecId() + "_" + res.getFaultWorkNo();
+        }
+        overTodoService.overTodo(workFlowInstId, "跟踪工单");
+        FaultTrackBO bo = __BeanUtil.convert(res, FaultTrackBO.class);
+        bo.setRecStatus("20");
+        bo.setExt1(workFlowInstId);
+        faultQueryMapper.transmit(bo);
+    }
+
+    @Override
+    public void submit(FaultQueryReqDTO reqDTO) {
+
+        String type;
+        String isCommit;
+        String comment;
+        String faultNo;
+        String faultWorkNo;
+        String checkFaultAnalysisNo;
+        String faultTrackNo;
+        // todo 流程相关 故障跟踪送审 ServiceDMFM0010 submit
     }
 }

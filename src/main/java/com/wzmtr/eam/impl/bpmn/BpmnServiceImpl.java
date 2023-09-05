@@ -3,21 +3,19 @@ package com.wzmtr.eam.impl.bpmn;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageInfo;
 import com.wzmtr.eam.dto.req.BpmnExaminePersonIdReq;
 import com.wzmtr.eam.dto.req.ExamineListReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
-import com.wzmtr.eam.dto.res.*;
-import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
 import com.wzmtr.eam.dto.req.bpmn.LoginDTO;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
+import com.wzmtr.eam.dto.res.*;
+import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
 import com.wzmtr.eam.dto.res.bpmn.FlowRes;
+import com.wzmtr.eam.dto.result.ResultEntity;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.enums.SupplyStatusEnum;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.bpmn.BpmnService;
-import com.wzmtr.eam.dto.result.ResultEntity;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.bpmn.FastFlowPathUrl;
 import com.wzmtr.eam.utils.bpmn.HttpUtil;
@@ -33,15 +31,12 @@ import org.w3c.dom.NodeList;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -105,6 +100,7 @@ public class BpmnServiceImpl implements BpmnService {
             res.setCompleteTime(jsonObject1.getString("completeTime"));
             res.setAuditor(jsonObject1.getString("auditor"));
             res.setOpinion(jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity") == null ? "" : jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity").getString("opinion"));
+            res.setStatus(res.getAuditor() == null ? "待办" : "已办");
             list.add(res);
         }
         return list;
@@ -220,7 +216,7 @@ public class BpmnServiceImpl implements BpmnService {
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.EXAMINED_LIST + data, null, authorization), ResultEntity.class);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
-        //pagehelper不支持普通list分页 手动分页
+        // pagehelper不支持普通list分页 手动分页
         List<ExaminedListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), ExaminedListRes.class);
         int total = originalList.size();  // 总记录数
         int startIndex = (req.getPageNo() - 1) * req.getPageSize();    // 起始索引
@@ -243,7 +239,7 @@ public class BpmnServiceImpl implements BpmnService {
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_RUNNING_LIST + data, null, authorization), ResultEntity.class);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
-        //pagehelper不支持普通list分页 手动分页
+        // pagehelper不支持普通list分页 手动分页
         List<RunningListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), RunningListRes.class);
         int total = originalList.size();  // 总记录数
         int startIndex = (req.getPageNo() - 1) * req.getPageSize();    // 起始索引
@@ -274,7 +270,7 @@ public class BpmnServiceImpl implements BpmnService {
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_ENDING_LIST + data, null, authorization), ResultEntity.class);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
 
-        //pagehelper不支持普通list分页 手动分页
+        // pagehelper不支持普通list分页 手动分页
         List<HisListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), HisListRes.class);
         int total = originalList.size();  // 总记录数
         int startIndex = (req.getPageNo() - 1) * req.getPageSize();    // 起始索引
@@ -303,11 +299,11 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public void agree(String taskId, String opinion, String fromId) {
         BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
-        //根据procId获取最新的taskId
+        // 根据procId获取最新的taskId
         bpmnExamineDTO.setTaskId(taskId);
-        //获取流程引擎下一个流程节点key
+        // 获取流程引擎下一个流程节点key
         String nodeId = nextTaskKey(taskId);
-        //获取审核人是谁填入
+        // 获取审核人是谁填入
         BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
         String flowId = getDefKeyByTaskId(taskId);
         req.setFlowId(flowId);
@@ -325,9 +321,9 @@ public class BpmnServiceImpl implements BpmnService {
 //            bpmnExamineDTO.setChooseNodeUser(chooseNodeUser.substring(0, chooseNodeUser.length() - 1));
 //            bpmnExamineDTO.setChooseNode(nodeId);
 //        }
-        //这个是显示在流程引擎的标题
+        // 这个是显示在流程引擎的标题
         bpmnExamineDTO.setTaskTitle(BpmnFlowEnum.getLabelByValue(flowId));
-        //审核意见
+        // 审核意见
         bpmnExamineDTO.setOpinion(opinion);
         ResultEntity result = agreeInstance(bpmnExamineDTO);
         if (result.getCode() != 0) {
@@ -338,9 +334,9 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public void reject(String id, String opinion, String fromId) {
         BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
-        //根据procId获取最新的taskId
+        // 根据procId获取最新的taskId
         bpmnExamineDTO.setTaskId(id);
-        //审核意见
+        // 审核意见
         bpmnExamineDTO.setOpinion(opinion);
         rejectInstance(bpmnExamineDTO);
     }
@@ -358,14 +354,14 @@ public class BpmnServiceImpl implements BpmnService {
         }
         StartInstanceVO startInstanceVO = new StartInstanceVO();
         BeanUtils.copyProperties(list.get(0), startInstanceVO);
-        //插入数据
+        // 插入数据
         startInstanceVO.setTypeTitle("eam流程");
         if (otherParam == null) {
             startInstanceVO.setFormData("{\"id\":\"" + id + "\"}");
         } else {
             startInstanceVO.setFormData(otherParam);
         }
-        //获取流程引擎该表单第一个taskKey
+        // 获取流程引擎该表单第一个taskKey
         String nodeId = queryFirstTaskKeyByModelId(startInstanceVO.getModelId());
         List<String> bpmnExaminePersonId = new ArrayList<>();
         // todo 如果传入角色id 则不需要查询
@@ -375,7 +371,7 @@ public class BpmnServiceImpl implements BpmnService {
 //            criteria.andRoleIdEqualTo(roleId);
 //            bpmnExaminePersonId = sysUserRoleMapper.selectByExample(example).stream().map(SysUserRole::getRoleId).collect(Collectors.toList());
         } else {
-            //获取审核人是谁填入
+            // 获取审核人是谁填入
 //            BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
 //            req.setFlowId(flow);
 //            req.setNodeId(nodeId);

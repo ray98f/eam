@@ -1,9 +1,11 @@
 package com.wzmtr.eam.mapper.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.bo.FaultTrackBO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -28,4 +30,7 @@ public interface FaultQueryMapper {
 
     Page<ConstructionResDTO> cancellation(Page<Object> of, FaultQueryReqDTO req);
 
+    TrackQueryResDTO queryOneByFaultWorkNoAndFaultNo(String faultNo, String faultWorkNo);
+
+    void transmit(FaultTrackBO bo);
 }
