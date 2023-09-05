@@ -5,6 +5,8 @@ import com.wzmtr.eam.dto.res.statistic.FailureRateResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/18 11:03
@@ -13,11 +15,11 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface FailureRateMapper {
 
-    FailureRateResDTO exitingRate(FailreRateQueryReqDTO reqDTO);
+    List<FailureRateResDTO>  exitingRate(FailreRateQueryReqDTO reqDTO);
 
-    FailureRateResDTO vehicleRate(FailreRateQueryReqDTO reqDTO);
+    List<FailureRateResDTO> vehicleRate(FailreRateQueryReqDTO reqDTO);
 
-    FailureRateResDTO signalRate(FailreRateQueryReqDTO reqDTO);
-    FailureRateResDTO powerRate(FailreRateQueryReqDTO reqDTO);
-    FailureRateResDTO PSDrate(FailreRateQueryReqDTO reqDTO);
+    List<FailureRateResDTO>  signalRate(FailreRateQueryReqDTO reqDTO);
+    List<FailureRateResDTO>  powerRate(FailreRateQueryReqDTO reqDTO);
+    List<FailureRateResDTO>  PSDrate(FailreRateQueryReqDTO reqDTO);
 }

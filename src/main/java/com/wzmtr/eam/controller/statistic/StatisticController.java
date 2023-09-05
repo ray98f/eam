@@ -65,7 +65,7 @@ public class StatisticController {
 
     @PostMapping("failure/rate/query")
     @ApiOperation(value = "故障率")
-    public DataResponse<List<FailureRateResDTO>> query(@RequestBody FailreRateQueryReqDTO reqDTO) {
+    public DataResponse<FailureRateDetailResDTO> query(@RequestBody FailreRateQueryReqDTO reqDTO) {
         return DataResponse.of(statisticService.query(reqDTO));
     }
 

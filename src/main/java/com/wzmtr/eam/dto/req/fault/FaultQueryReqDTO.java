@@ -50,10 +50,6 @@ public class FaultQueryReqDTO extends PageReqDTO {
     private String orderStatus;
     @ApiModelProperty(value = "分类-dm.DispatcherType")
     private String typeCode;
-
-
-
-
-
-
+    @ApiModelProperty(value = "故障紧急程度")
+    private String levelfault;
 }

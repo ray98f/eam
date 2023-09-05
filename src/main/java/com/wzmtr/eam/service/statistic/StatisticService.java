@@ -20,7 +20,7 @@ import java.util.List;
  */
 public interface StatisticService {
 
-    List<FailureRateResDTO> query(FailreRateQueryReqDTO reqDTO);
+    FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO);
 
     Page<MaterialResDTO> query(MaterialQueryReqDTO reqDTO);
 

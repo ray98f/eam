@@ -12,7 +12,10 @@ import com.wzmtr.eam.dto.res.*;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
@@ -58,21 +61,88 @@ public class StatisticServiceImpl implements StatisticService {
     private static final List<String> ignore = Arrays.asList("NOYF", "SC", "moduleName", "contractZB", "ZB");
 
     @Override
-    public List<FailureRateResDTO> query(FailreRateQueryReqDTO reqDTO) {
-        List<FailureRateResDTO> list = new ArrayList<>();
-        // 车辆系统故障率
-        FailureRateResDTO vehicleRate = failureRateMapper.vehicleRate(reqDTO);
-        //<!--信号系统故障率-->
-        FailureRateResDTO signalRate = failureRateMapper.signalRate(reqDTO);
-        // 供电系统故障率
-        FailureRateResDTO powerRate = failureRateMapper.powerRate(reqDTO);
-        // 屏蔽门故障率
-        FailureRateResDTO PSDrate = failureRateMapper.PSDrate(reqDTO);
-        list.add(vehicleRate);
-        list.add(signalRate);
-        list.add(powerRate);
-        list.add(PSDrate);
-        return list;
+    public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
+        //todo 结构后期优化
+        FailureRateDetailResDTO failureRateDetailResDTO = new FailureRateDetailResDTO();
+        if (CollectionUtil.isEmpty(reqDTO.getIndex())){
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        if (reqDTO.getIndex().contains(RateIndex.VEHICLE_RATE)) {
+            // 车辆系统故障率
+            List<FailureRateResDTO> vehicleRate = failureRateMapper.vehicleRate(reqDTO);
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            vehicleRate.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(RateIndex.VEHICLE_RATE.getDesc());
+            failureRateDetailResDTO.setVehicleRate(reliabilityDetailResDTO);
+        }
+        if (reqDTO.getIndex().contains(RateIndex.SIGNAL_RATE)) {
+            //<!--信号系统故障率-->
+            List<FailureRateResDTO> signalRate = failureRateMapper.signalRate(reqDTO);
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            signalRate.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(RateIndex.SIGNAL_RATE.getDesc());
+            failureRateDetailResDTO.setSignalRate(reliabilityDetailResDTO);
+        }
+        if (reqDTO.getIndex().contains(RateIndex.POWER_RATE)) {
+            //<!--供电系统故障率-->
+            List<FailureRateResDTO> powerRate = failureRateMapper.powerRate(reqDTO);
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            powerRate.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(RateIndex.POWER_RATE.getDesc());
+            failureRateDetailResDTO.setPowerRate(reliabilityDetailResDTO);
+        }
+        if (reqDTO.getIndex().contains(RateIndex.PSD_RATE)) {
+            //<!--屏蔽门故障率-->
+            List<FailureRateResDTO> psDrate = failureRateMapper.PSDrate(reqDTO);
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            psDrate.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(RateIndex.PSD_RATE.getDesc());
+            failureRateDetailResDTO.setPowerRate(reliabilityDetailResDTO);
+        }
+        if (reqDTO.getIndex().contains(RateIndex.EXITING_RATE)) {
+            // 退出正线运营故障率
+            List<FailureRateResDTO> exitingRate = failureRateMapper.exitingRate(reqDTO);
+            List<String> data = Lists.newArrayList();
+            List<String> month = Lists.newArrayList();
+            exitingRate.forEach(a -> {
+                data.add(a.getPrecent());
+                month.add(a.getYearMonth());
+            });
+            ReliabilityDetailResDTO reliabilityDetailResDTO = new ReliabilityDetailResDTO();
+            reliabilityDetailResDTO.setMonth(month);
+            reliabilityDetailResDTO.setData(data);
+            reliabilityDetailResDTO.setName(RateIndex.EXITING_RATE.getDesc());
+            failureRateDetailResDTO.setPowerRate(reliabilityDetailResDTO);
+        }
+        return failureRateDetailResDTO;
     }
 
     @Override
@@ -155,7 +225,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public ReliabilityListResDTO reliabilityQuery(FailreRateQueryReqDTO reqDTO) {
-        //todo 代码结构过于冗余，后期优化。
+        // todo 代码结构过于冗余，后期优化。
         if (StringUtils.isEmpty(reqDTO.getStartTime()) && StringUtils.isEmpty(reqDTO.getEndTime())) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
             Calendar calendar = Calendar.getInstance();
@@ -268,7 +338,7 @@ public class StatisticServiceImpl implements StatisticService {
             List<ReliabilityResDTO> queryFireFightingEquipmentFault = reliabilityMapper.queryFireFightingEquipmentFault(reqDTO.getEndTime(), reqDTO.getStartTime());
             List<String> data = Lists.newArrayList();
             List<String> month = Lists.newArrayList();
-            queryFireFightingEquipmentFault.forEach(a->{
+            queryFireFightingEquipmentFault.forEach(a -> {
                 data.add(a.getPrecent());
                 month.add(a.getYearMonth());
             });
