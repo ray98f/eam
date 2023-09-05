@@ -77,7 +77,7 @@ public class StatisticController {
 
     @PostMapping("one/car/one/gear/query")
     @ApiOperation(value = "一车一档查询")
-    public DataResponse<OneCarOneGearResDTO> oneCarOneGearQuery(@RequestBody OneCarOneGearQueryReqDTO reqDTO) {
+    public DataResponse<OneCarOneGearResDTO> oneCarOneGearQuery(@RequestBody OneCarOneGearReqDTO reqDTO) {
         return DataResponse.of(statisticService.oneCarOneGearQuery(reqDTO));
     }
 

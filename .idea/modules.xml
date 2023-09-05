@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/eam-server.iml" filepath="$PROJECT_DIR$/eam-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/eam-server.iml" filepath="$PROJECT_DIR$/.idea/eam-server.iml" />
     </modules>
   </component>
 </project>

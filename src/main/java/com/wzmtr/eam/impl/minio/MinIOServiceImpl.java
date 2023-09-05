@@ -11,7 +11,6 @@ import com.wzmtr.eam.utils.MinioUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
-import jdk.nashorn.internal.parser.Token;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

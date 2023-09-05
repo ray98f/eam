@@ -28,7 +28,7 @@ public interface StatisticService {
 
     ReliabilityListResDTO reliabilityQuery(FailreRateQueryReqDTO reqDTO);
 
-    OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearQueryReqDTO reqDTO);
+    OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearReqDTO reqDTO);
 
     Page<InspectionJobListResDTO> querydmer3(OneCarOneGearQueryReqDTO reqDTO);
 

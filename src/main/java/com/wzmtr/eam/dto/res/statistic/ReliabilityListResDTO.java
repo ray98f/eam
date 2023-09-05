@@ -12,31 +12,17 @@ import java.util.List;
 @Data
 public class ReliabilityListResDTO {
     @ApiModelProperty(value = "售票机可靠度")
-    List<ReliabilityResDTO> queryTicketFault;
-    List<String> queryTicketFaultMonth;
-    List<String> queryTicketFaultData;
+    ReliabilityDetailResDTO queryTicketFault;
     @ApiModelProperty(value = "进出站闸机可靠度")
-    List<ReliabilityResDTO> queryGateBrakeFault;
-    List<String> queryGateBrakeMonth;
-    List<String> queryGateBrakeData;
+    ReliabilityDetailResDTO queryGateBrakeFault;
     @ApiModelProperty(value = "自动扶梯可靠度")
-    List<ReliabilityResDTO> queryEscalatorFault;
-    List<String> queryEscalatorMonth;
-    List<String> queryEscalatorData;
+    ReliabilityDetailResDTO queryEscalatorFault;
     @ApiModelProperty(value = "垂直扶梯可靠度")
-    List<ReliabilityResDTO> queryVerticalEscalatorFault;
-    List<String> queryVerticalEscalatorMonth;
-    List<String> queryVerticalEscalatorData;
+    ReliabilityDetailResDTO queryVerticalEscalatorFault;
     @ApiModelProperty(value = "列车乘客信息系统可靠度")
-    List<ReliabilityResDTO> queryTrainPassengerInformationFault;
-    List<String> queryTrainPassengerInformationMonth;
-    List<String> queryTrainPassengerInformationData;
+    ReliabilityDetailResDTO queryTrainPassengerInformationFault;
     @ApiModelProperty(value = "车站乘客信息系统可靠度")
-    List<ReliabilityResDTO> queryStationPassengerInformationFault;
-    List<String> queryStationPassengerInformationMonth;
-    List<String> queryStationPassengerInformationData;
+    ReliabilityDetailResDTO queryStationPassengerInformationFault;
     @ApiModelProperty(value = "消防设备可靠度")
-    List<ReliabilityResDTO> queryFireFightingEquipmentFault;
-    List<String> queryFireFightingEquipmentFaultMonth;
-    List<String> queryFireFightingEquipmentFaultData;
+    ReliabilityDetailResDTO queryFireFightingEquipmentFault;
 }
