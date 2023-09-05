@@ -79,7 +79,7 @@ public class ZCOverhaulPlanController {
 
     @PostMapping("/plan/submit")
     @ApiOperation(value = "提交检修计划（中车）")
-    public DataResponse<T> submitOverhaulPlan(@RequestBody OverhaulPlanReqDTO overhaulPlanReqDTO) {
+    public DataResponse<T> submitOverhaulPlan(@RequestBody OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
         overhaulPlanService.submitOverhaulPlan(overhaulPlanReqDTO);
         return DataResponse.success();
     }

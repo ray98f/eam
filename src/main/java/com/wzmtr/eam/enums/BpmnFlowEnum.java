@@ -15,7 +15,10 @@ public enum BpmnFlowEnum {
     SUBMISSION_RECORD_SUBMIT("submission_record_submit", "计量器具送检流程"),
     SUBMISSION_SUBMIT("submission_submit", "计量器具检测单流程"),
     DETECTION_PLAN_SUBMIT("detection_plan_submit", "特种设备检测计划流程"),
-    DETECTION_SUBMIT("detection_submit", "特种设备检测记录流程");
+    DETECTION_SUBMIT("detection_submit", "特种设备检测记录流程"),
+    OVERHAUL_TPL_SUBMIT("overhaul_tpl_submit", "检修模板审批流程"),
+    ORDER_PLAN_SUBMIT("order_plan_submit", "检修计划审批流程"),
+    OVERHAUL_WEEK_PLAN_SUBMIT("overhaul_week_plan_submit", "检修周计划流程");
     private String value;
     private String label;
 

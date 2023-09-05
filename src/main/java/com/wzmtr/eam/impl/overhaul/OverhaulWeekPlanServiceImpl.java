@@ -3,15 +3,18 @@ package com.wzmtr.eam.impl.overhaul;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.*;
+import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.*;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Message;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
+import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.overhaul.OverhaulWeekPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.CodeUtils;
@@ -61,6 +64,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     @Autowired
     private OrganizationMapper organizationMapper;
 
+    @Autowired
+    private BpmnService bpmnService;
+
     @Override
     public Page<OverhaulWeekPlanResDTO> pageOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
@@ -74,7 +80,6 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void addOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         if (StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName()) || StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime()) ||
                 StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode()) || StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode()) ||
                 StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
@@ -149,7 +154,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                     }
                 }
                 if (StringUtils.isNotBlank(resDTO.getWorkFlowInstId())) {
-                    // todo 删除工作流
+                    BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
+                    bpmnExamineDTO.setTaskId(resDTO.getWorkFlowInstId());
+                    bpmnService.rejectInstance(bpmnExamineDTO);
                 }
                 overhaulWeekPlanMapper.deleteOverhaulWeekPlan(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 overhaulWeekPlanMapper.deleteOverhaulPlan(resDTO.getWeekPlanCode(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -208,10 +215,15 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             if (StringUtils.isBlank(TokenUtil.getCurrentPerson().getOfficeId())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您的组织机构为空，请确认。");
             }
-            // todo 工作流
-//            overhaulWeekPlanReqDTO.setWorkFlowInstStatus();
-//            overhaulWeekPlanReqDTO.setWorkFlowInstId();
-            overhaulWeekPlanReqDTO.setTrialStatus("20");
+            // ServiceDMER0111 submit
+            String processId = bpmnService.commit(overhaulWeekPlanReqDTO.getWeekPlanCode(), BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value(), null, null);
+            overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已提交");
+            if (processId == null || "-1".equals(processId)) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
+            } else {
+                overhaulWeekPlanReqDTO.setWorkFlowInstId(processId);
+                overhaulWeekPlanReqDTO.setTrialStatus("20");
+            }
         } else {
             overhaulWeekPlanReqDTO.setTrialStatus("30");
             triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
@@ -471,10 +483,6 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
     }
 
-    public void submitOrderWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) {
-        // todo  OrderWeekPlan  submitOrderWeekPlan
-    }
-
     @Override
     public Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO) {
         if (overhaulPlanListReqDTO.getWeekPlanCode() == null || "".equals(overhaulPlanListReqDTO.getWeekPlanCode().trim())) {
@@ -543,7 +551,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 overhaulPlanMapper.deleteOverhaulPlanDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 overhaulPlanMapper.deleteOverhaulPlan(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (StringUtils.isNotBlank(resDTO.getWorkFlowInstId())) {
-                    // todo 删除工作流
+                    BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
+                    bpmnExamineDTO.setTaskId(resDTO.getWorkFlowInstId());
+                    bpmnService.rejectInstance(bpmnExamineDTO);
                 }
             }
         } else {

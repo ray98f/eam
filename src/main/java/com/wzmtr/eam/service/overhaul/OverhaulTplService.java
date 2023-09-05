@@ -33,7 +33,7 @@ public interface OverhaulTplService {
 
     void changeOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO);
 
-    void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO);
+    void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) throws Exception;
 
     void importOverhaulTpl(MultipartFile file);
 

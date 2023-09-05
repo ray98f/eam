@@ -86,7 +86,7 @@ public class OverhaulTplController {
 
     @PostMapping("/submit")
     @ApiOperation(value = "提交检修模板")
-    public DataResponse<T> submitOverhaulTpl(@RequestBody OverhaulTplReqDTO overhaulTplReqDTO) {
+    public DataResponse<T> submitOverhaulTpl(@RequestBody OverhaulTplReqDTO overhaulTplReqDTO) throws Exception {
         overhaulTplService.submitOverhaulTpl(overhaulTplReqDTO);
         return DataResponse.success();
     }

@@ -312,7 +312,7 @@ public class BpmnServiceImpl implements BpmnService {
         String flowId = getDefKeyByTaskId(taskId);
         req.setFlowId(flowId);
         req.setNodeId(nodeId);
-        // todo 角色获取
+        // todo 审核人获取
 //        List<String> bpmnExaminePersonId = sysService.getBpmnExaminePersonId(req);
 //        //如果没有审核人则走默认的下一步流程与审核人
 //        if (null != bpmnExaminePersonId && bpmnExaminePersonId.size() > 0) {

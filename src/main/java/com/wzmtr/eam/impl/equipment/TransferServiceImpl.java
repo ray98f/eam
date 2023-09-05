@@ -15,6 +15,7 @@ import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentPartMapper;
 import com.wzmtr.eam.mapper.equipment.PartFaultMapper;
 import com.wzmtr.eam.mapper.equipment.TransferMapper;
+import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.equipment.TransferService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,9 @@ public class TransferServiceImpl implements TransferService {
 
     @Autowired
     private PartFaultMapper partFaultMapper;
+
+    @Autowired
+    private BpmnService bpmnService;
 
     @Override
     public Page<TransferResDTO> pageTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
@@ -280,6 +284,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public void submitSplitTransfer(TransferSplitReqDTO transferSplitReqDTO) throws Exception {
+        // ServiceDMDM0103 submit
         if (transferSplitReqDTO.getEquipmentList() != null && !transferSplitReqDTO.getEquipmentList().isEmpty()) {
             for (EquipmentResDTO resDTO : transferSplitReqDTO.getEquipmentList()) {
                 if (StringUtils.isBlank(resDTO.getStartUseDate()) || StringUtils.isBlank(resDTO.getSystemCode()) || StringUtils.isBlank(resDTO.getEquipTypeCode())) {
@@ -302,39 +307,7 @@ public class TransferServiceImpl implements TransferService {
                         overTodo(sourceRecId, "");
                     }
                     resDTO.setApprovalStatus("30");
-                    List<Bom> boms = transferMapper.queryBomTree(resDTO.getBomType());
-                    if (boms != null && boms.size() > 0) {
-                        for (Bom bom : boms) {
-                            if (bom.getQuantity() != null) {
-                                for (int i = 0; i < bom.getQuantity().intValue(); i++) {
-                                    EquipmentPartReqDTO equipmentPartReqDTO = new EquipmentPartReqDTO();
-                                    equipmentPartReqDTO.setRecId(TokenUtil.getUuId());
-                                    equipmentPartReqDTO.setEquipCode(resDTO.getEquipCode());
-                                    equipmentPartReqDTO.setEquipName(resDTO.getEquipName());
-                                    equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode(), 1));
-                                    equipmentPartReqDTO.setPartName(bom.getCname());
-                                    equipmentPartReqDTO.setBomEname(bom.getEname());
-                                    equipmentPartReqDTO.setInAccountTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                                    equipmentPartReqDTO.setDeleteFlag(" ");
-                                    equipmentPartReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                                    equipmentPartReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                                    equipmentPartReqDTO.setRecStatus("0");
-                                    equipmentPartReqDTO.setEquipStatus("10");
-                                    equipmentPartReqDTO.setQuantity(new BigDecimal("1"));
-                                    equipmentPartMapper.insertEquipmentPart(equipmentPartReqDTO);
-                                    PartFaultReqDTO partFaultReqDTO = new PartFaultReqDTO();
-                                    BeanUtils.copyProperties(equipmentPartReqDTO, partFaultReqDTO);
-                                    partFaultReqDTO.setRecId(TokenUtil.getUuId());
-                                    partFaultReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                                    partFaultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                                    partFaultReqDTO.setOperateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                                    partFaultReqDTO.setLogType("10");
-                                    partFaultReqDTO.setRemark("设备移交的部件！");
-                                    partFaultMapper.insertPartFault(partFaultReqDTO);
-                                }
-                            }
-                        }
-                    }
+                    buildPart(resDTO);
                     updateTransfer(resDTO);
                 }
                 Map<String, String> map = new HashMap<>();
@@ -367,8 +340,9 @@ public class TransferServiceImpl implements TransferService {
                 if (transferSplitReqDTO.getType() == 1) {
                     getOSBsend(list);
                 } else if (transferSplitReqDTO.getType() == 2) {
-//                    String url = DMConstant.getPath4();
-//                    sendOSBbase(list, "EAM-MT-01", url);
+                    // todo ServiceDMDM0103 sendOSBbase
+                    String url = "";
+                    sendOSBbase(list, "EAM-MT-01", url);
                 }
             }
         } else {
@@ -480,24 +454,50 @@ public class TransferServiceImpl implements TransferService {
             throw new CommonException(ErrorCode.REQUIRED_NULL);
         }
         try {
-            List<WorkFlow> list = transferMapper.queryNotWorkFlow(businessRecId);
-            for (WorkFlow workFlow : list) {
-                Map<Object, Object> map3 = new HashMap<>();
-                map3.put("userId", workFlow.getUserId());
-                map3.put("workFlowInstId", businessRecId);
-                map3.put("todoId", businessRecId);
-                map3.put("auditOpinion", auditOpinion);
-                // todo SendNotWorkFlow
-//                SendNotWorkFlow.update(map3);
-                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
-            }
+            bpmnService.agree(bpmnService.queryTaskIdByProcId(businessRecId), auditOpinion, null);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "结束待办任务失败");
         }
     }
 
-    // todo getOSBsend
+    public void buildPart(EquipmentResDTO resDTO) {
+        List<Bom> boms = transferMapper.queryBomTree(resDTO.getBomType());
+        if (boms != null && boms.size() > 0) {
+            for (Bom bom : boms) {
+                if (bom.getQuantity() != null) {
+                    for (int i = 0; i < bom.getQuantity().intValue(); i++) {
+                        EquipmentPartReqDTO equipmentPartReqDTO = new EquipmentPartReqDTO();
+                        equipmentPartReqDTO.setRecId(TokenUtil.getUuId());
+                        equipmentPartReqDTO.setEquipCode(resDTO.getEquipCode());
+                        equipmentPartReqDTO.setEquipName(resDTO.getEquipName());
+                        equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode(), 1));
+                        equipmentPartReqDTO.setPartName(bom.getCname());
+                        equipmentPartReqDTO.setBomEname(bom.getEname());
+                        equipmentPartReqDTO.setInAccountTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                        equipmentPartReqDTO.setDeleteFlag(" ");
+                        equipmentPartReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                        equipmentPartReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                        equipmentPartReqDTO.setRecStatus("0");
+                        equipmentPartReqDTO.setEquipStatus("10");
+                        equipmentPartReqDTO.setQuantity(new BigDecimal("1"));
+                        equipmentPartMapper.insertEquipmentPart(equipmentPartReqDTO);
+                        PartFaultReqDTO partFaultReqDTO = new PartFaultReqDTO();
+                        BeanUtils.copyProperties(equipmentPartReqDTO, partFaultReqDTO);
+                        partFaultReqDTO.setRecId(TokenUtil.getUuId());
+                        partFaultReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                        partFaultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                        partFaultReqDTO.setOperateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                        partFaultReqDTO.setLogType("10");
+                        partFaultReqDTO.setRemark("设备移交的部件！");
+                        partFaultMapper.insertPartFault(partFaultReqDTO);
+                    }
+                }
+            }
+        }
+    }
+
+    // ServiceDMDM0103 getOSBsend
     public void getOSBsend(List<Map<String, String>> list) throws Exception {
 //        String methodName = "setData";
 //        String method = "S_AT_09";
@@ -508,6 +508,20 @@ public class TransferServiceImpl implements TransferService {
 //        OSBGetMessage osbGetMessage = new OSBGetMessage();
 //        String orgCode = user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId();
 //        String result = osbGetMessage.getMessage(method, user.getPersonId(), orgCode, systemName, json, url, methodName, "set", "Data", 0);
+//        JSONObject jsonObject = JSONObject.fromObject(result);
+//        if (!"0".equals(jsonObject.get("state"))) {
+//            throw new Exception("接口调用失败!");
+//        }
+    }
+
+    public void sendOSBbase(List<Map<String, String>> list, String method, String url) throws Exception {
+//        String methodName = "setData";
+//        String systemName = "DM";
+//        String json = JSONArray.fromObject(list).toString();
+//        String user = UserSession.getLoginName();
+//        OSBGetMessage osbGetMessage = new OSBGetMessage();
+//        String orgCode = UserFactory.getUserAllInfo().getUserInfo(UserSession.getLoginName()).getUserCoInfo().getOrgCode();
+//        String result = osbGetMessage.getMessage(method, user, orgCode, systemName, json, url, methodName, "set", "Data", 0);
 //        JSONObject jsonObject = JSONObject.fromObject(result);
 //        if (!"0".equals(jsonObject.get("state"))) {
 //            throw new Exception("接口调用失败!");

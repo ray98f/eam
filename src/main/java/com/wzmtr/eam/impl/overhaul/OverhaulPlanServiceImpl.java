@@ -3,13 +3,16 @@ package com.wzmtr.eam.impl.overhaul;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.*;
+import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.*;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
+import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.overhaul.OverhaulPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.CodeUtils;
@@ -55,6 +58,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Autowired
     private OverhaulItemMapper overhaulItemMapper;
+
+    @Autowired
+    private BpmnService bpmnService;
 
     @Override
     public Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO) {
@@ -152,7 +158,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 overhaulPlanMapper.deleteOverhaulPlanDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 overhaulPlanMapper.deleteOverhaulPlan(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (StringUtils.isNotBlank(resDTO.getWorkFlowInstId())) {
-                    // todo 删除工作流
+                    BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
+                    bpmnExamineDTO.setTaskId(resDTO.getWorkFlowInstId());
+                    bpmnService.rejectInstance(bpmnExamineDTO);
                 }
             }
         } else {
@@ -180,7 +188,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     }
 
     @Override
-    public void submitOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
+    public void submitOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
         if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
@@ -514,8 +522,40 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
     }
 
-    public void submitOrderPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
-        // todo  OrderPlan  submitOrderPlan
+    public void submitOrderPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
+        // OrderPlan  submitOrderPlan
+        String userId = TokenUtil.getCurrentPersonId();
+        List<Map<String, String>> nextUser = new ArrayList<>();
+        String roleEname = "";
+        // todo 根据角色获取人员
+        if ("07".equals(overhaulPlanReqDTO.getSubjectCode())) {
+            roleEname = "DM_005";
+//            nextUser.addAll(InterfaceHelper.getUserHelpe().getUserBySubjectAndLineAndGroup(overhaulPlanReqDTO.getSubjectCode(), overhaulPlanReqDTO.getLineNo(), roleEname));
+        }
+        else if ("06".equals(overhaulPlanReqDTO.getSubjectCode())) {
+            roleEname = "DM_004";
+//            nextUser.addAll(InterfaceHelper.getUserHelpe().getUserByGroupAndOrg(roleEname, "D0901"));
+        } else {
+            roleEname = "DM_004";
+//            nextUser.addAll(InterfaceHelper.getUserHelpe().getUserBySubjectAndLineAndGroup(overhaulPlanReqDTO.getSubjectCode(), overhaulPlanReqDTO.getLineNo(), roleEname));
+        }
+        if (nextUser.size() <= 0) {
+            if ("DM_004".equals(roleEname)) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（运营）角色中没有人员，不能进行送审操作");
+            }
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（车辆部）角色中没有人员，不能进行送审操作");
+        }
+        String processId = bpmnService.commit(overhaulPlanReqDTO.getPlanCode(), BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(), null, null);
+        if (processId == null || "-1".equals(processId)) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
+        }
+        overhaulPlanReqDTO.setWorkFlowInstId(processId);
+        overhaulPlanReqDTO.setWorkFlowInstStatus("已提交");
+        overhaulPlanReqDTO.setPlanStatus("20");
+        overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulPlanReqDTO.setExt1(" ");
+        overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
     }
 
     @Override

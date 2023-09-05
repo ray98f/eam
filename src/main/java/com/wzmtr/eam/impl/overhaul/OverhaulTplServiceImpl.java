@@ -10,9 +10,11 @@ import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.overhaul.OverhaulTplMapper;
+import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.overhaul.OverhaulTplService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +48,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Autowired
     private OverhaulTplMapper overhaulTplMapper;
+
+    @Autowired
+    private BpmnService bpmnService;
 
     @Override
     public Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
@@ -146,7 +151,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
+    public void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) throws Exception {
         if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
@@ -163,9 +168,27 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (list == null || list.size() <= 0) {
             throw new CommonException(ErrorCode.NO_DETAIL, "勾选模板中没有检修项！");
         }
-
-        // todo ServiceDMER0003 submit 工作流
-
+        // ServiceDMER0003 submit
+        // todo 获取用户角色
+        String roleCode = "";
+//        String roleCode = InterfaceHelper.getUserHelpe().getRoleTypeNameByLoginId(TokenUtil.getCurrentPersonId());
+        if (roleCode.contains("5") || roleCode.contains("6")) {
+            overhaulTplReqDTO.setWorkFlowInstStatus("运营-车辆专工：" + TokenUtil.getCurrentPersonId());
+            overhaulTplReqDTO.setTrialStatus("30");
+        } else {
+//            List<Map<String, String>> nextUser = new ArrayList<>();
+//            nextUser.addAll(inInfo.getBlock("uult").getRows());
+//            if (nextUser == null || nextUser.size() <= 0) {
+//                throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（运营）角色中没有人员，不能进行送审操作");
+//            }
+            String processId = bpmnService.commit(overhaulTplReqDTO.getTemplateId(), BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null);
+            overhaulTplReqDTO.setWorkFlowInstStatus("已提交");
+            if (processId == null || "-1".equals(processId)) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败！");
+            }
+            overhaulTplReqDTO.setWorkFlowInstId(processId);
+            overhaulTplReqDTO.setTrialStatus("20");
+        }
         overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
     }
 
