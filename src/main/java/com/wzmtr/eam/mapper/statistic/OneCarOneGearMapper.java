@@ -20,7 +20,7 @@ import java.util.List;
 @Mapper
 public interface OneCarOneGearMapper {
 
-    OneCarOneGearResDTO query(String equipName);
+    List<OneCarOneGearResDTO> query(String equipName);
 
     OneCarOneGearResDTO querySummary(String endTime, String startTime, String equipName);
 

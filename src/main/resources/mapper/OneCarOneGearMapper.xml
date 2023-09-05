@@ -207,13 +207,13 @@
         T_OVERHAUL_ORDER ER21
         WHERE
         ER21.PLAN_NAME like '%' || #{equipName} || '%'
-        AND ER21.PLAN_NAME LIKE '%' || #{二级修(90天} || '%'
+        AND ER21.PLAN_NAME LIKE '%二级修(90天%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startTime!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND  to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
@@ -232,13 +232,13 @@
         T_OVERHAUL_ORDER ER21
         WHERE
         ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND ER21.PLAN_NAME LIKE '%' || #{二级修(180天} || '%'
+        AND ER21.PLAN_NAME LIKE '%二级修(180天%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startTime!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+          and  to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+          and  to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
@@ -260,10 +260,10 @@
         AND ER21.PLAN_NAME LIKE '%二级修(360天%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startTime!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            AND  to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND  to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
@@ -326,7 +326,7 @@
            and to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-            to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -447,10 +447,10 @@
         AND ER21.PLAN_NAME LIKE '%二级修(30天%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startTime != null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime != null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC
@@ -472,10 +472,10 @@
         AND ER21.PLAN_NAME LIKE '%一级修%'
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startTime != null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            AND  to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime != null">
-            to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(DM06.FILLIN_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
         group BY SUBSTR(DM06.FILLIN_TIME,0,10)
         ORDER BY SUBSTR(DM06.FILLIN_TIME,0,10) DESC

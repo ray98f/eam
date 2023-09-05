@@ -283,12 +283,12 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearReqDTO reqDTO) {
-        OneCarOneGearResDTO query = oneCarOneGearMapper.query(reqDTO.getEquipName());
+        List<OneCarOneGearResDTO> query = oneCarOneGearMapper.query(reqDTO.getEquipName());
         OneCarOneGearResDTO summary = oneCarOneGearMapper.querySummary(reqDTO.getEndTime(), reqDTO.getStartTime(), reqDTO.getEquipName());
         if (query != null) {
-            summary.setStartUseDate(query.getStartUseDate());
-            summary.setManufactureDate(query.getManufactureDate());
-            summary.setTrainNo(query.getTrainNo());
+            summary.setStartUseDate(query.get(0).getStartUseDate());
+            summary.setManufactureDate(query.get(0).getManufactureDate());
+            summary.setTrainNo(query.get(0).getTrainNo());
         }
         return summary;
     }
@@ -367,6 +367,7 @@ public class StatisticServiceImpl implements StatisticService {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.queryER1(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
+
 
     @Override
     public RAMSCarResDTO query4AQYYZB() {
