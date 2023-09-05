@@ -14,12 +14,14 @@ public enum ErrorCode {
     /**
      * 该用户无相关资源操作权限
      */
-    RESOURCE_AUTH_FAIL(32000001, "resource.authority.error"),
+    RESOURCE_AUTH_FAIL(32000000, "resource.authority.error"),
 
     /**
      * 参数错误
      */
-    PARAM_ERROR(32000002, "param.error"),
+    PARAM_ERROR(32000001, "param.error"),
+
+    PARAM_NULL(32000002, "param.null"),
 
     /**
      * 参数超过范围

@@ -16,6 +16,7 @@ import com.wzmtr.eam.mapper.equipment.EquipmentPartMapper;
 import com.wzmtr.eam.mapper.equipment.PartFaultMapper;
 import com.wzmtr.eam.mapper.equipment.TransferMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.equipment.TransferService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,9 @@ public class TransferServiceImpl implements TransferService {
 
     @Autowired
     private BpmnService bpmnService;
+
+    @Autowired
+    private OverTodoService overTodoService;
 
     @Override
     public Page<TransferResDTO> pageTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
@@ -304,7 +308,7 @@ public class TransferServiceImpl implements TransferService {
                     equipmentReqDTO.setApprovalStatus("10");
                     List<EquipmentResDTO> queryState = equipmentMapper.siftEquipment(equipmentReqDTO);
                     if (queryState == null || queryState.size() <= 0) {
-                        overTodo(sourceRecId, "");
+                        overTodoService.overTodo(sourceRecId, "");
                     }
                     resDTO.setApprovalStatus("30");
                     buildPart(resDTO);
@@ -447,18 +451,6 @@ public class TransferServiceImpl implements TransferService {
         equipmentReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         equipmentReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         equipmentMapper.updateEquipment(equipmentReqDTO);
-    }
-
-    public void overTodo(String businessRecId, String auditOpinion) {
-        if (StringUtils.isBlank(businessRecId)) {
-            throw new CommonException(ErrorCode.REQUIRED_NULL);
-        }
-        try {
-            bpmnService.agree(bpmnService.queryTaskIdByProcId(businessRecId), auditOpinion, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "结束待办任务失败");
-        }
     }
 
     public void buildPart(EquipmentResDTO resDTO) {

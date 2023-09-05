@@ -13,12 +13,14 @@ import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulItemMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulStateMapper;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
@@ -43,6 +45,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     private OverhaulOrderMapper overhaulOrderMapper;
 
     @Autowired
+    private EquipmentCategoryMapper equipmentCategoryMapper;
+
+    @Autowired
     private OverhaulWorkRecordService overhaulWorkRecordService;
 
     @Autowired
@@ -59,6 +64,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Autowired
     private FaultReportMapper faultReportMapper;
+
+    @Autowired
+    private OverTodoService overTodoService;
 
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
@@ -157,7 +165,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
-        // todo ServiceDMER0201  auditWorkers
+        // ServiceDMER0201  auditWorkers
+        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
+        // todo 根据角色获取用户列表
+//        List<Map<String, String>> userList = InterfaceHelper.getUserHelpe().getUserBySubjectAndLineAndGroup(dmer21.getSubjectCode(), dmer21.getLineNo(), "DM_007");
+        List<Map<String, String>> userList = new ArrayList<>();
+        for (Map<String, String> map2 : userList) {
+            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), map2.get("userId"), "检修工单完工确认", "DMER0200", TokenUtil.getCurrentPersonId());
+        }
     }
 
     @Override
@@ -227,7 +242,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 }
             }
         }
-        // todo ServiceDMER0201  confirmWorkers
+        // ServiceDMER0201  confirmWorkers
+        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
     }
 
     @Override
@@ -408,7 +424,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void upState(OverhaulUpStateReqDTO overhaulUpStateReqDTO) {
-        StringBuilder detail = new StringBuilder();
         String currentUser = TokenUtil.getCurrentPerson().getPersonName();
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String orderCode = overhaulUpStateReqDTO.getOrderCode();
@@ -463,7 +478,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         faultReportMapper.addToFaultOrder(f2);
         overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
         String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
-        // todo ServiceDMER0205 insertUpFaultMessage
+        // ServiceDMER0205 insertUpFaultMessage
+        overTodoService.insertTodoWithUserGroupAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + "】故障管理流程",
+                dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content);
     }
 
     public String queryNowUser(String userCode) {
