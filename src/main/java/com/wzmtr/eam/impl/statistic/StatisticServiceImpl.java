@@ -125,7 +125,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(RateIndex.PSD_RATE.getDesc());
-            failureRateDetailResDTO.setPowerRate(reliabilityDetailResDTO);
+            failureRateDetailResDTO.setPSDrate(reliabilityDetailResDTO);
         }
         if (reqDTO.getIndex().contains(RateIndex.EXITING_RATE)) {
             // 退出正线运营故障率
@@ -140,7 +140,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(RateIndex.EXITING_RATE.getDesc());
-            failureRateDetailResDTO.setPowerRate(reliabilityDetailResDTO);
+            failureRateDetailResDTO.setExitingRate(reliabilityDetailResDTO);
         }
         return failureRateDetailResDTO;
     }
