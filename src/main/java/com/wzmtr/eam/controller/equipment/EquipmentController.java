@@ -1,8 +1,10 @@
 package com.wzmtr.eam.controller.equipment;
 
+import com.wzmtr.eam.dto.res.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.EquipmentTreeResDTO;
 import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -99,9 +101,9 @@ public class EquipmentController {
                 systemCode, equipTypeCode, brand, startTime, endTime, majorCode, response);
     }
 
-    @GetMapping("/qr")
+    @PostMapping("/qr")
     @ApiOperation(value = "生成二维码")
-    public DataResponse<String> generateQr(@RequestParam @ApiParam("id") String id) throws ParseException {
-        return DataResponse.of(equipmentService.generateQr(id));
+    public DataResponse<List<EquipmentQrResDTO>> generateQr(@RequestBody BaseIdsEntity baseIdsEntity) throws ParseException {
+        return DataResponse.of(equipmentService.generateQr(baseIdsEntity));
     }
 }

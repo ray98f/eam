@@ -1,22 +1,24 @@
 package com.wzmtr.eam.impl.overhaul;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.*;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.*;
 import com.wzmtr.eam.entity.BaseIdsEntity;
-import com.wzmtr.eam.entity.Message;
+import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.overhaul.OverhaulWeekPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
+import com.wzmtr.eam.soft.csm.planWork.vo.Message;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
@@ -29,7 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -66,6 +67,10 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Autowired
     private BpmnService bpmnService;
+
+    @Autowired
+    private DictionariesMapper dictionariesMapper;
+
 
     @Override
     public Page<OverhaulWeekPlanResDTO> pageOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO, PageReqDTO pageReqDTO) {
@@ -387,19 +392,20 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     }
 
     public String sendContractOrder(Message json) throws Exception {
-        // todo IorderRecordCreator sendContractOrder
-//        if (OPEN) {
-//            String url = DMConstant.getPath2();
-//            RequestMessage requestMessage = new RequestMessage();
-//            requestMessage.setMessage(json);
-//            requestMessage.setVerb("Get");
-//            requestMessage.setNoun("faultInfo");
-//            URL wsdlLocation = new URL(url);
-//            ISetEamplanwork serverData = (new SetEamplanworkImplService(wsdlLocation)).getSetEamplanworkImplPort();
-//            ResponseMessage responseMessage = serverData.setEamplanwork(requestMessage);
-//            return JSONObject.fromObject(responseMessage).toString();
-//        }
-        return "";
+        // IorderRecordCreator sendContractOrder
+        List<Dictionaries> dictionaries = dictionariesMapper.list("dm.contextPath", "01", "1");
+        if (dictionaries == null || dictionaries.isEmpty()) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        String url = dictionaries.get(0).getItemEname();
+        com.wzmtr.eam.soft.csm.planWork.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.csm.planWork.vo.RequestMessage();
+        requestMessage.setMessage(json);
+        requestMessage.setVerb("Get");
+        requestMessage.setNoun("faultInfo");
+        URL wsdlLocation = new URL(url);
+        com.wzmtr.eam.soft.csm.planWork.service.impl.ISetEamplanwork serverData = (new com.wzmtr.eam.soft.csm.planWork.vo.SetEamplanworkImplService(wsdlLocation)).getSetEamplanworkImplPort();
+        com.wzmtr.eam.soft.csm.planWork.vo.ResponseMessage responseMessage = serverData.setEamplanwork(requestMessage);
+        return JSONObject.toJSONString(responseMessage);
     }
 
     public void insertInspectObject(String planCode, String orderCode) {

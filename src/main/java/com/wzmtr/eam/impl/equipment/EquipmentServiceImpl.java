@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.UnitCodeReqDTO;
+import com.wzmtr.eam.dto.res.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.EquipmentTreeResDTO;
 import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -275,15 +277,28 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    public String generateQr(String id) throws ParseException {
-        String qr = "";
-        EquipmentResDTO resDTO = equipmentMapper.getEquipmentDetail(id);
-        if (!Objects.isNull(resDTO)) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd");
-            qr = resDTO.getEquipCode() + "\n设备名称：" + resDTO.getEquipName() + "\n开始使用时间：" + sdf1.format(sdf.parse(resDTO.getStartUseDate()));
+    public List<EquipmentQrResDTO> generateQr(BaseIdsEntity baseIdsEntity) throws ParseException {
+        List<EquipmentQrResDTO> list = new ArrayList<>();
+        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+            for (String id : baseIdsEntity.getIds()) {
+                EquipmentQrResDTO res = new EquipmentQrResDTO();
+                EquipmentResDTO resDTO = equipmentMapper.getEquipmentDetail(id);
+                if (!Objects.isNull(resDTO)) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                    SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd");
+                    String qr = resDTO.getEquipCode() + "\n设备名称：" + resDTO.getEquipName() + "\n开始使用时间：" + sdf1.format(sdf.parse(resDTO.getStartUseDate()));
+                    res.setRecId(id);
+                    res.setCompanyName(resDTO.getCompanyName());
+                    res.setDeptName(resDTO.getDeptName());
+                    res.setEquipCode(resDTO.getEquipCode());
+                    res.setEquipName(resDTO.getEquipName());
+                    res.setStartUseDate(sdf1.format(sdf.parse(resDTO.getStartUseDate())));
+                    res.setQr(QrCodeUtil.generateAsBase64(qr, QrUtils.initQrConfig(), "png"));
+                    list.add(res);
+                }
+            }
         }
-        return QrCodeUtil.generateAsBase64(qr, QrUtils.initQrConfig(), "png");
+        return list;
     }
 
 }

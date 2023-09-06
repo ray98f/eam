@@ -13,7 +13,7 @@ public interface DictionariesMapper {
 
     Page<Dictionaries> page(Page<Dictionaries> page, String itemName, String itemCode);
 
-    List<Dictionaries> list(String codesetCode);
+    List<Dictionaries> list(String codesetCode, String itemCode, String status);
 
     Dictionaries detail(String itemCode);
 
