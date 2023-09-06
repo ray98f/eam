@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/10 9:53
@@ -28,7 +30,7 @@ public interface TrackMapper {
 
     void repair(TrackRepairReqDTO reqDTO);
 
-    FaultTrackBO queryOne(String faultNo, String faultWorkNo, String faultAnalysisNo, String faultTrackNo);
+    List<FaultTrackBO> queryOne(String faultNo, String faultWorkNo, String faultAnalysisNo, String faultTrackNo);
 
     void update(FaultTrackBO dmfm09);
 }

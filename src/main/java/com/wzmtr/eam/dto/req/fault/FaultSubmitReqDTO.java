@@ -22,4 +22,5 @@ public class FaultSubmitReqDTO {
     private String faultAnalysisNo;
     private String isCommit;
     private String comment;
+    private String backOpinion;
 }

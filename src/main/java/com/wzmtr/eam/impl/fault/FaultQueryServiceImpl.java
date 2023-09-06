@@ -10,11 +10,11 @@ import com.google.common.collect.Lists;
 import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
 import com.wzmtr.eam.bo.FaultTrackBO;
-import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
 import com.wzmtr.eam.dto.res.PersonResDTO;
+import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
@@ -223,7 +223,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public void submit(FaultSubmitReqDTO reqDTO) {
         // dmfm09.query
-        FaultTrackBO dmfm09 = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
+        List<FaultTrackBO> dmfm9List = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
+        if (CollectionUtil.isEmpty(dmfm9List)) {
+            return;
+        }
+        FaultTrackBO dmfm09 = dmfm9List.get(0);
         // dmfm01.query
         List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.exportList(FaultQueryReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
         FaultDetailResDTO faultDetailResDTO = faultDetailResDTOS.get(0);
@@ -311,5 +315,24 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             return queryUserList(userCode, orgCode);
         }
         return orgUsers;
+    }
+
+    // 驳回
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void returns(FaultSubmitReqDTO reqDTO) {
+        List<FaultTrackBO> list = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
+        FaultTrackBO dmfm09 = list.get(0);
+        // String userId = UserUtil.getLoginId();
+        String processId = dmfm09.getWorkFlowInstId();
+        String task = bpmnService.nextTaskKey(processId);
+        if (StringUtils.isEmpty(task)) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权审核");
+        } else {
+            bpmnService.reject(task,reqDTO.getBackOpinion(),null);
+            dmfm09.setRecStatus("30");
+            dmfm09.setWorkFlowInstStatus("驳回成功");
+            trackMapper.update(dmfm09);
+        }
     }
 }
