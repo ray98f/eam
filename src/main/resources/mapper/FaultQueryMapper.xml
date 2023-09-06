@@ -4,7 +4,7 @@
     <update id="transmit">
 
     </update>
-
+<!--dmfm01.query-->
     <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
         d.REC_ID AS "recId",

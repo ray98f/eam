@@ -13,7 +13,7 @@ public enum BpmnFlowEnum {
     //当麒麟流程发布新版本时需要更新modelId与defId
     CHECK_PLAN_SUBMIT("check_plan_submit", "计量器具检测计划流程"),
     SUBMISSION_RECORD_SUBMIT("submission_record_submit", "计量器具送检流程"),
-    FAULT_TRACK("dm02", "故障跟踪流程"),
+    FAULT_TRACK("fault_track", "故障跟踪流程"),
     DETECTION_PLAN_SUBMIT("detection_plan_submit", "特种设备检测计划流程"),
     DETECTION_SUBMIT("detection_submit", "特种设备检测记录流程"),
     OVERHAUL_TPL_SUBMIT("overhaul_tpl_submit", "检修模板审批流程"),

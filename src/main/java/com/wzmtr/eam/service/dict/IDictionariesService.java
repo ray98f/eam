@@ -15,6 +15,8 @@ public interface IDictionariesService {
 
     Dictionaries detail(String itemCode);
 
+    Dictionaries queryOneByItemCodeAndCodesetCode(String itemCode, String codesetCode);
+
     void add(Dictionaries dictionaries);
 
     void modify(Dictionaries dictionaries);

@@ -1,21 +1,36 @@
 package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
 import com.wzmtr.eam.bo.FaultTrackBO;
+import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
+import com.wzmtr.eam.dto.res.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
+import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.fault.AnalyzeMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
+import com.wzmtr.eam.mapper.fault.TrackMapper;
+import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.utils.*;
 import org.springframework.aop.framework.AopContext;
@@ -40,8 +55,17 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private OrganizationMapper organizationMapper;
     @Autowired
     private OverTodoService overTodoService;
+    @Autowired
+    private TrackMapper trackMapper;
+    @Autowired
+    private IDictionariesService dictService;
+    @Autowired
+    private AnalyzeMapper analyzeMapper;
+    @Autowired
+    private BpmnService bpmnService;
 
     private static final Map<String, String> processMap = new HashMap<>();
+
     static {
         processMap.put("A30", "跟踪报告编制");
         processMap.put("A40", "技术主管审核");
@@ -197,15 +221,95 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public void submit(FaultQueryReqDTO reqDTO) {
+    public void submit(FaultSubmitReqDTO reqDTO) {
+        // dmfm09.query
+        FaultTrackBO dmfm09 = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
+        // dmfm01.query
+        List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.exportList(FaultQueryReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
+        FaultDetailResDTO faultDetailResDTO = faultDetailResDTOS.get(0);
+        String type = reqDTO.getType();
+        String majorCode = faultDetailResDTO.getMajorCode();
+        String currentPersonId = TokenUtil.getCurrentPersonId();
+        if (dmfm09.getWorkFlowInstId().trim().isEmpty() && "COMMIT".equals(type)) {
+            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+            String itemEname = dictionaries.getItemEname();
+            List<String> cos = Arrays.asList(itemEname.split(","));
+            Map<String, Object> variables = new HashMap<>();
+            // EiInfo eiInfo = new EiInfo();
+            // eiInfo.set("processKey", "DMFM02");
+            // eiInfo.set(EiConstant.serviceId, "S_EW_38");
+            // EiInfo out = XServiceManager.call(eiInfo);
+            List<Map> list = Lists.newArrayList();
+            // List<Map> processList = (List) out.get("processKey");
+            JSONArray userJson = null;
+            for (int i = 0; i < processMap.values().size(); i++) {
+                String nodeKey = processMap.get("nodeKey");
+                if ("A40".equals(nodeKey) && cos.contains(majorCode)) {
+                    String cocode = "ZC";
+                    userJson = JSON.parseArray(processMap.get("userList"));
+                    variables.put("CO_CODE", cocode);
+                    break;
+                }
+                if ("A70".equals(nodeKey) && !cos.contains(majorCode)) {
+                    String cocode = "ZTT";
+                    userJson = JSONArray.parseArray(processMap.get("userList"));
+                    variables.put("CO_CODE", cocode);
+                    break;
+                }
+            }
+            List<String> userCode = new ArrayList<>();
+            for (int j = 0; j < userJson.size(); j++) {
+                userCode.add((String) ((JSONObject) userJson.get(j)).get("userId"));
+            }
+            String orgCode = dmfm09.getWorkClass();
+            Set<String> userCodeSet = new HashSet<>(userCode);
+            List<PersonResDTO> nextUser = new ArrayList<>();
+            if ("ZC".equals(variables.get("CO_CODE"))) {
+                // TODO 根据group获取用户
+                // nextUser = InterfaceHelper.getUserHelpe().getUserByGroup("DM_010");
+                for (PersonResDTO res : nextUser) {
+                    res.setUserId(res.getLoginName());
+                }
+            } else if ("ZTT".equals(variables.get("CO_CODE"))) {
+                nextUser = queryUserList(userCodeSet, orgCode);
+            }
+            if (nextUser.isEmpty()) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "下一步参与者不存在");
+            }
+            // todo 流程start
+            String stuts = null;
+            try {
+                String processId = bpmnService.commit(dmfm09.getWorkFlowInstId(), BpmnFlowEnum.FAULT_TRACK.value(), null, null);
+                stuts = bpmnService.nextTaskKey(processId);
+            } catch (Exception e) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
+            }
+//             String processId = WorkflowHelper.start("DMFM02", (String) dmfm09.get("workFlowInstId"), userId, (String) dmfm09.get("faultTrackNo"), nextUser, variables);
+            dmfm09.setWorkFlowInstStatus("提交审核");
+            // String workFlowIns = dmfm09.getWorkFlowInstId();
+            // DMUtil.overTODO(workFlowIns, "故障跟踪");
+            dmfm09.setWorkFlowInstStatus(stuts);
+            dmfm09.setRecStatus("40");
+        }
+        trackMapper.update(dmfm09);
 
-        String type;
-        String isCommit;
-        String comment;
-        String faultNo;
-        String faultWorkNo;
-        String checkFaultAnalysisNo;
-        String faultTrackNo;
-        // todo 流程相关 故障跟踪送审 ServiceDMFM0010 submit
+    }
+
+    /*      */
+    public List<PersonResDTO> queryUserList(Set<String> userCode, String organCode) {
+        List<PersonResDTO> orgUsers = analyzeMapper.getOrgUsers(userCode, organCode);
+        if (CollectionUtil.isEmpty(orgUsers)) {
+            List<PersonResDTO> parentList = analyzeMapper.queryCoParent(organCode);
+            if (CollectionUtil.isEmpty(parentList)) {
+                return orgUsers;
+            }
+            PersonResDTO parent = parentList.get(0);
+            String orgCode = parent.getOrgCode();
+            if (StringUtils.isEmpty(orgCode)) {
+                return orgUsers;
+            }
+            return queryUserList(userCode, orgCode);
+        }
+        return orgUsers;
     }
 }

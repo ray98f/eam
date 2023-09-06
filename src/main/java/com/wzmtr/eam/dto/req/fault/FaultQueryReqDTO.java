@@ -3,8 +3,7 @@ package com.wzmtr.eam.dto.req.fault;
 import com.wzmtr.eam.entity.PageReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 /**
  * Author: Li.Wang
@@ -13,6 +12,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class FaultQueryReqDTO extends PageReqDTO {
     @ApiModelProperty(value = "故障编号")
     private String faultNo;

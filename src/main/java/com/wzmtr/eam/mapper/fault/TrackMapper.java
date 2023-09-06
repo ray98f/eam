@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.bo.FaultTrackBO;
 import com.wzmtr.eam.dto.req.fault.TrackCloseReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackRepairReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackReportReqDTO;
@@ -26,4 +27,8 @@ public interface TrackMapper {
     TrackResDTO queryFault(@Param("id") String id);
 
     void repair(TrackRepairReqDTO reqDTO);
+
+    FaultTrackBO queryOne(String faultNo, String faultWorkNo, String faultAnalysisNo, String faultTrackNo);
+
+    void update(FaultTrackBO dmfm09);
 }

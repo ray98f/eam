@@ -73,10 +73,12 @@
                 and d1.POSITION_CODE =#{positionCode}
             </if>
             <if test="discoveryStartTime!=null and discoveryStartTime!=''">
-                and to_date( d1.DISCOVERY_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{discoveryStartTime}, 'YYYY-MM-DD')
+                and to_date( d1.DISCOVERY_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{discoveryStartTime},
+                'YYYY-MM-DD')
             </if>
             <if test="discoveryEndTime!=null and discoveryEndTime!=''">
-                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> TO_DATE(#{discoveryEndTime},'YYYY-MM-DD')
+                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]>
+                TO_DATE(#{discoveryEndTime},'YYYY-MM-DD')
             </if>
             <if test="respDeptCode!=null and respDeptCode!=''">
                 and d1.RESP_DEPT_CODE =#{respDeptCode}
@@ -154,32 +156,32 @@
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">
         SELECT
-        d1.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
-        d1.LINE_CODE	as "lineCode",  <!-- 线路编码 -->
-        d1.MAJOR_CODE	as "majorCode",  <!-- 专业代码 -->
-        d1.SYSTEM_CODE	as "systemCode",  <!-- 系统代码 -->
+        d1.FAULT_NO as "faultNo",  <!-- 故障编号 -->
+        d1.LINE_CODE as "lineCode",  <!-- 线路编码 -->
+        d1.MAJOR_CODE as "majorCode",  <!-- 专业代码 -->
+        d1.SYSTEM_CODE as "systemCode",  <!-- 系统代码 -->
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d1.MAJOR_CODE) as "majorName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d1.SYSTEM_CODE) as "systemName",
-        d1.FAULT_DISPLAY_CODE	as "faultDisplayCode",
-        d1.FAULT_DISPLAY_DETAIL	as "faultDisplayDetail",<!-- 故障现象 -->
-        d3.FAULT_REASON_DETAIL	as "faultReasonDetail",  <!-- 故障原因 -->
-        d3.FAULT_PROCESS_DETAIL	as "faultProcessDetail",  <!-- 故障调查及处置 -->
-        d1.DISCOVERY_TIME	as "discoveryTime",  <!-- 发现时间 -->
-        d1.RESP_DEPT_CODE	as "respDeptCode",  <!-- 主责部门 -->
-        (select  rv.ORG_NAME from RPLAT60.V_CO_ORG rv where rv.ORG_CODE=d1.RESP_DEPT_CODE) as "respDeptName",
-        d1.FAULT_LEVEL	as "faultLevel",  <!-- 故障等级 -->
-        d3.AFFECT_CODES	as "affectCodes",  <!-- 故障影响 -->
-        d1.FAULT_STATUS	as "faultStatus",  <!-- 故障状态 -->
-        d3.PROBLEM_DESCR	as "problemDescr",  <!-- 暴露问题 -->
-        d3.IMPROVE_DETAIL	as "improveDetail",  <!-- 整改措施 -->
+        d1.FAULT_DISPLAY_CODE as "faultDisplayCode",
+        d1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail",<!-- 故障现象 -->
+        d3.FAULT_REASON_DETAIL as "faultReasonDetail",  <!-- 故障原因 -->
+        d3.FAULT_PROCESS_DETAIL as "faultProcessDetail",  <!-- 故障调查及处置 -->
+        d1.DISCOVERY_TIME as "discoveryTime",  <!-- 发现时间 -->
+        d1.RESP_DEPT_CODE as "respDeptCode",  <!-- 主责部门 -->
+        (select rv.ORG_NAME from RPLAT60.V_CO_ORG rv where rv.ORG_CODE=d1.RESP_DEPT_CODE) as "respDeptName",
+        d1.FAULT_LEVEL as "faultLevel",  <!-- 故障等级 -->
+        d3.AFFECT_CODES as "affectCodes",  <!-- 故障影响 -->
+        d1.FAULT_STATUS as "faultStatus",  <!-- 故障状态 -->
+        d3.PROBLEM_DESCR as "problemDescr",  <!-- 暴露问题 -->
+        d3.IMPROVE_DETAIL as "improveDetail",  <!-- 整改措施 -->
         d3.REC_STATUS as "recStatus",
         d3.FREQUENCY as "frequency",
         d1.POSITION_CODE as "positionCode",
         (SELECT db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d1.POSITION_CODE) as "positionName",
-        d1.OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
-        d1.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        d1.OBJECT_CODE as "objectCode",  <!-- 对象编码 -->
+        d1.OBJECT_NAME as "objectName",  <!-- 对象名称 -->
         (SELECT dd.MANUFACTURE from T_EQUIPMENT dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",  <!-- 生产厂家 -->
-        d3.RECOVERY_TIME	as "recoveryTime",  <!-- 恢复时间 -->
+        d3.RECOVERY_TIME as "recoveryTime",  <!-- 恢复时间 -->
         d3.FAULT_ANALYSIS_NO as "faultAnalysisNo",
         d3.FAULT_WORK_NO as "faultWorkNo",
         d3.FAULT_DETAIL as "faultDetail",  <!-- 故障详情 -->
@@ -198,6 +200,24 @@
         </if>
         order by d1.FAULT_NO asc
     </select>
-
-
+    <select id="getOrgUsers" resultType="com.wzmtr.eam.dto.res.PersonResDTO">
+        SELECT USER_CODE as "userId", USER_NAME as "userName", ORG_CODE as "orgCode" FROM RPLAT60.V_CO_ORG_USER
+        WHERE 1=1
+        <if test="userCode != null and userCode.size() > 0">
+            AND USER_CODE IN
+            <foreach collection="userCode" item="code" open="(" close=")" separator=",">
+                #{code}
+            </foreach>
+        </if>
+        <if test="orgCode != null">
+            AND ORG_CODE = #{orgCode}
+        </if>
+    </select>
+    <select id="queryCoParent" resultType="com.wzmtr.eam.dto.res.PersonResDTO">
+        SELECT PARENT_CODE as "orgCode" FROM RPLAT60.T_WW_ORG
+        WHERE 1=1
+        <if test="orgCode != null">
+            AND ORG_CODE = #{orgCode}
+        </if>
+    </select>
 </mapper>

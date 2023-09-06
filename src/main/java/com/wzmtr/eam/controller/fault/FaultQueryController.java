@@ -3,6 +3,7 @@ package com.wzmtr.eam.controller.fault;
 import com.wzmtr.eam.dto.req.OverhaulPlanListReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
@@ -76,7 +77,7 @@ public class FaultQueryController {
     }
     @ApiOperation(value = "故障跟踪送审")
     @PostMapping("/fault/track/submit")
-    public DataResponse<String> submit(@RequestBody FaultQueryReqDTO reqDTO) {
+    public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
         // faultWorkNo
         faultQueryService.submit(reqDTO);
         return DataResponse.success();
