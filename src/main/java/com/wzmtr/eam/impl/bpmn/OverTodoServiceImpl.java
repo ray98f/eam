@@ -2,10 +2,12 @@ package com.wzmtr.eam.impl.bpmn;
 
 import com.wzmtr.eam.dto.req.EipMsgPushReq;
 import com.wzmtr.eam.dto.res.overTodo.QueryNotWorkFlowResDTO;
+import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.StatusWorkFlowLog;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.bpmn.OverTodoMapper;
+import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.utils.EipMsgPushUtils;
 import com.wzmtr.eam.utils.StringUtils;
@@ -24,6 +26,9 @@ public class OverTodoServiceImpl implements OverTodoService {
 
     @Autowired
     private OverTodoMapper overTodoMapper;
+
+    @Autowired
+    private DictionariesMapper dictionariesMapper;
 
     @Override
     public void overTodo(String businessRecId, String auditOpinion) {
@@ -61,9 +66,11 @@ public class OverTodoServiceImpl implements OverTodoService {
             throw new CommonException(ErrorCode.PARAM_NULL);
         }
         try {
-            // todo URL
-//            String contextPath = CodeFactory.getCodeService().getCodeEName("dm.contextPath", "01", "1");
-            String contextPath = "";
+            List<Dictionaries> dictionaries = dictionariesMapper.list("dm.contextPath", "01", "1");
+            if (dictionaries == null || dictionaries.isEmpty()) {
+                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+            }
+            String contextPath = dictionaries.get(0).getItemEname();
             String fullPath = contextPath + taskUrl + "?inqu_status-0-workFlowInstId=" + businessRecId;
             EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
             eipMsgPushReq.add();

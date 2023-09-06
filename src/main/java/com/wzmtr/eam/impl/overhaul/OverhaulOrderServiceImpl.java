@@ -469,11 +469,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         dmfm02.setFaultNo(faultNo);
         dmfm02.setOrderStatus("30");
         dmfm02.setWorkClass(list.get(0).getWorkerGroupCode());
-        // BeanUtils.copyProperties(dmfm01, f1);
         FaultInfoBO f1 = __BeanUtil.convert(dmfm01, FaultInfoBO.class);
         faultReportMapper.addToFaultInfo(f1);
-        // FaultReportReqDTO f2 = new FaultReportReqDTO();
-        // BeanUtils.copyProperties(dmfm02, f2);
         FaultOrderBO f2 = __BeanUtil.convert(dmfm02, FaultOrderBO.class);
         faultReportMapper.addToFaultOrder(f2);
         overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());

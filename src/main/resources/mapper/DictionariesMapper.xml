@@ -20,7 +20,16 @@
     <select id="list" resultType="com.wzmtr.eam.entity.Dictionaries">
         SELECT ITEM_CODE, ITEM_CNAME, ITEM_ENAME
         FROM SYS_DICT
-        WHERE STATUS='1' and CODESET_CODE=#{codesetCode}
+        WHERE CODESET_CODE=#{codesetCode}
+        <if test="itemCode!=null and itemCode!=''">
+            and ITEM_CODE=#{itemCode}
+        </if>
+        <if test="status!=null and status!=''">
+            and STATUS=#{status}
+        </if>
+        <if test="status==null">
+            and STATUS='1'
+        </if>
         ORDER BY SORT_ID ASC
     </select>
 

@@ -36,8 +36,10 @@ public class DictionariesController {
 
     @GetMapping("/list")
     @ApiOperation(value = "根据字典类型获取字典值")
-    public DataResponse<List<Dictionaries>> list(@RequestParam @ApiParam("名称") String codesetCode) {
-        return DataResponse.of(dictionariesService.list(codesetCode));
+    public DataResponse<List<Dictionaries>> list(@RequestParam @ApiParam("名称") String codesetCode,
+                                                 @RequestParam(required = false) @ApiParam("编码") String itemCode,
+                                                 @RequestParam(required = false) @ApiParam("状态") String status) {
+        return DataResponse.of(dictionariesService.list(codesetCode, itemCode, status));
     }
 
     @GetMapping("/detail")

@@ -26,8 +26,8 @@ public class DictionariesServiceImpl implements IDictionariesService {
     }
 
     @Override
-    public List<Dictionaries> list(String codesetCode) {
-        return dictionariesMapper.list(codesetCode);
+    public List<Dictionaries> list(String codesetCode, String itemCode, String status) {
+        return dictionariesMapper.list(codesetCode, itemCode, status);
     }
 
     @Override
