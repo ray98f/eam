@@ -75,7 +75,7 @@ public class FaultQueryController {
         faultQueryService.transmit(reqDTO);
         return DataResponse.success();
     }
-    @ApiOperation(value = "故障跟踪送审")
+    @ApiOperation(value = "故障跟踪表单提交 包含送审 审核通过")
     @PostMapping("/fault/track/submit")
     public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
         // faultWorkNo

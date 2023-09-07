@@ -1,6 +1,7 @@
 package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.SubmitType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,7 +19,7 @@ public class FaultSubmitReqDTO {
     @ApiModelProperty(value = "故障工单编号")
     private String faultWorkNo;
     private String faultTrackNo;
-    private String type;
+    private SubmitType type;
     private String faultAnalysisNo;
     private String isCommit;
     private String comment;
