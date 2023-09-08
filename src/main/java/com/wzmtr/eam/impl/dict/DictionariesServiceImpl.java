@@ -34,6 +34,10 @@ public class DictionariesServiceImpl implements IDictionariesService {
     public Dictionaries detail(String itemCode) {
         return dictionariesMapper.detail(itemCode);
     }
+    @Override
+    public Dictionaries queryOneByItemCodeAndCodesetCode(String itemCode,String codesetCode) {
+        return dictionariesMapper.queryOneByItemCodeAndCodesetCode(itemCode,codesetCode);
+    }
 
     @Override
     public void add(Dictionaries dictionaries) {

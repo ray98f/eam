@@ -2,6 +2,11 @@ package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+<<<<<<< HEAD
+=======
+import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
+import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
+>>>>>>> 6dd1583ae04d1bc01101d96f3ba7b6c0f071ccc9
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
@@ -72,9 +77,9 @@ public class FaultQueryController {
         faultQueryService.transmit(reqDTO);
         return DataResponse.success();
     }
-    @ApiOperation(value = "故障跟踪送审")
+    @ApiOperation(value = "故障跟踪表单提交 包含送审 审核通过")
     @PostMapping("/fault/track/submit")
-    public DataResponse<String> submit(@RequestBody FaultQueryReqDTO reqDTO) {
+    public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
         // faultWorkNo
         faultQueryService.submit(reqDTO);
         return DataResponse.success();

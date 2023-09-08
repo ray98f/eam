@@ -58,6 +58,111 @@
             </if>
         </trim>
     </update>
+    <update id="update">
+        UPDATE WBPLAT.TDMFM21
+        SET
+        <if test="companyCode != null">
+            COMPANY_CODE = #{companyCode},
+        </if>
+        <if test="companyName != null">
+            COMPANY_NAME = #{companyName},
+        </if>
+        <if test="faultAnalysisNo != null">
+            FAULT_ANALYSIS_NO = #{faultAnalysisNo},
+        </if>
+        <if test="trackReason != null">
+            TRACK_REASON = #{trackReason},
+        </if>
+        <if test="trackUserId != null">
+            TRACK_USER_ID = #{trackUserId},
+        </if>
+        <if test="trackTime != null">
+            TRACK_TIME = #{trackTime},
+        </if>
+        <if test="trackPeriod != null">
+            TRACK_PERIOD = #{trackPeriod},
+        </if>
+        <if test="trackCycle != null">
+            TRACK_CYCLE = #{trackCycle},
+        </if>
+        <if test="trackReporterId != null">
+            TRACK_REPORTER_ID = #{trackReporterId},
+        </if>
+        <if test="trackStartDate != null">
+            TRACK_START_DATE = #{trackStartDate},
+        </if>
+        <if test="trackEndDate != null">
+            TRACK_END_DATE = #{trackEndDate},
+        </if>
+        <if test="trackReportTime != null">
+            TRACK_REPORT_TIME = #{trackReportTime},
+        </if>
+        <if test="trackResult != null">
+            TRACK_RESULT = #{trackResult},
+        </if>
+        <if test="trackCloserId != null">
+            TRACK_CLOSER_ID = #{trackCloserId},
+        </if>
+        <if test="trackCloseTime != null">
+            TRACK_CLOSE_TIME = #{trackCloseTime},
+        </if>
+        <if test="workFlowInstId != null">
+            WORK_FLOW_INST_ID = #{workFlowInstId},
+        </if>
+        <if test="workFlowInstStatus != null">
+            WORK_FLOW_INST_STATUS = #{workFlowInstStatus},
+        </if>
+        <if test="docId != null">
+            DOC_ID = #{docId},
+        </if>
+        <if test="remark != null">
+            REMARK = #{remark},
+        </if>
+        <if test="recCreator != null">
+            REC_CREATOR = #{recCreator},
+        </if>
+        <if test="recCreateTime != null">
+            REC_CREATE_TIME = #{recCreateTime},
+        </if>
+        <if test="recRevisor != null">
+            REC_REVISOR = #{recRevisor},
+        </if>
+        <if test="recReviseTime != null">
+            REC_REVISE_TIME = #{recReviseTime},
+        </if>
+        <if test="recDeletor != null">
+            REC_DELETOR = #{recDeletor},
+        </if>
+        <if test="recDeleteTime != null">
+            REC_DELETE_TIME = #{recDeleteTime},
+        </if>
+        <if test="deleteFlag != null">
+            DELETE_FLAG = #{deleteFlag},
+        </if>
+        <if test="archiveFlag != null">
+            ARCHIVE_FLAG = #{archiveFlag},
+        </if>
+        <if test="recStatus != null">
+            REC_STATUS = #{recStatus},
+        </if>
+        <if test="ext1 != null">
+            EXT1 = #{ext1},
+        </if>
+        <if test="ext2 != null">
+            EXT2 = #{ext2},
+        </if>
+        <if test="ext3 != null">
+            EXT3 = #{ext3},
+        </if>
+        <if test="ext4 != null">
+            EXT4 = #{ext4},
+        </if>
+        <if test="ext5 != null">
+            EXT5 = #{ext5},
+        </if>
+        WHERE
+        FAULT_TRACK_NO = #{faultTrackNo}
+    </update>
     <select id="query" resultType="com.wzmtr.eam.dto.res.fault.TrackResDTO">
         SELECT
         df11.REC_ID	as "recId",  <!-- 记录编号 -->
@@ -124,6 +229,74 @@
         </trim>
         order by df11.FAULT_TRACK_WORK_NO
     </select>
+
+    <select id="queryOne" resultType="com.wzmtr.eam.bo.FaultTrackBO">
+        SELECT
+        df9.REC_ID	as "recId",  <!-- 记录编号 -->
+        df9.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        df9.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        df9.FAULT_TRACK_NO	as "faultTrackNo",  <!-- 故障跟踪编号 -->
+        df9.FAULT_ANALYSIS_NO	as "faultAnalysisNo",  <!-- 故障分析编号 -->
+        df9.FAULT_ANALYSIS_NO as "faultAnalysisNo_textField",
+        df9.TRACK_REASON	as "trackReason",  <!-- 跟踪原因 -->
+        df9.TRACK_USER_ID	as "trackUserId",  <!-- 转跟踪人员工号 -->
+        (SELECT USER_NAME FROM IPLAT60.XS_USER WHERE df9.TRACK_USER_ID = LOGIN_NAME) as "trackUserName",
+        df9.TRACK_TIME	as "trackTime",  <!-- 转跟踪时间 -->
+        df9.TRACK_PERIOD	as "trackPeriod",  <!-- 跟踪期限 -->
+        df9.TRACK_CYCLE	as "trackCycle",  <!-- 跟踪周期 -->
+        df9.TRACK_START_DATE	as "trackStartDate",
+        df9.TRACK_END_DATE	as "trackEndDate",
+        df9.TRACK_REPORTER_ID	as "trackReporterId",  <!-- 跟踪报告人工号 -->
+        df9.TRACK_REPORT_TIME	as "trackReportTime",  <!-- 跟踪报告时间 -->
+        df9.TRACK_RESULT	as "trackResult",  <!-- 跟踪结果 -->
+        df9.TRACK_CLOSER_ID	as "trackCloserId",  <!-- 跟踪关闭人工号 -->
+        df9.TRACK_CLOSE_TIME	as "trackCloseTime",  <!-- 跟踪关闭时间 -->
+        df9.WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        df9.WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        df2.WORK_CLASS as "workClass",
+        df9.DOC_ID	as "docId",  <!-- 附件编号 -->
+        df9.REMARK	as "remark",  <!-- 备注 -->
+        df9.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        df1.FAULT_NO as "faultNo",
+        df2.FAULT_WORK_NO as "faultWorkNo",
+        df1.OBJECT_CODE as "objectCode",
+        df1.OBJECT_NAME as "objectName",
+        df1.POSITION_CODE as "positionCode",
+        db3.NODE_NAME as "positionName",
+        df1.FAULT_DISPLAY_CODE	as "faultDisplayCode",
+        df1.FAULT_DISPLAY_DETAIL	as "faultDisplayDetail",
+        df2.FAULT_REASON_CODE	as "faultReasonCode",
+        df2.FAULT_REASON_DETAIL	as "faultReasonDetail",
+        df1.LINE_CODE	as "lineCode",
+        df1.MAJOR_CODE as "majorCode",
+        df1.FAULT_DETAIL as "faultDetail",
+        (SELECT db.NODE_NAME from WBPLAT.TDMBM01 db where db.NODE_CODE=df1.MAJOR_CODE) as "majorName",
+        df2.FAULT_ACTION_DETAIL	as "faultActionDetail"
+        FROM WBPLAT.TDMFM21 df9,WBPLAT.TDMFM02 df2,WBPLAT.TDMFM01 df1,WBPLAT.TDMBM03 db3
+        <trim prefix="WHERE" prefixOverrides="AND">
+            and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+            and df9.FAULT_NO=df1.FAULT_NO
+            and df1.FAULT_NO=df2.FAULT_NO
+            and df1.POSITION_CODE=db3.NODE_CODE
+            <if test="faultTrackNo!=null and faultTrackNo!=''">
+                and df9.FAULT_TRACK_NO = #{faultTrackNo}
+            </if>
+            <if test="faultTrackWorkNo!=null and faultWorkNo!=''">
+                and  df2.FAULT_WORK_NO = #{faultWorkNo}
+            </if>
+            <if test="faultNo!=null and faultNo!=''">
+                and df1.FAULT_NO = #{faultNo}
+            </if>
+            <if test="faultAnalysisNo!=null and faultAnalysisNo!=''">
+                df9.FAULT_ANALYSIS_NO = #{faultAnalysisNo}
+            </if>
+        </trim>
+        order by df9.FAULT_TRACK_NO desc
+    </select>
+
+
+
+
     <select id="detail" resultType="com.wzmtr.eam.dto.res.fault.TrackResDTO">
         SELECT
         df11.REC_ID as "recId",  <!-- 记录编号 -->
@@ -192,5 +365,8 @@
             df2.FAULT_WORK_NO =#{faultWorkNo}
         </if>
     </select>
+
+
+
 
 </mapper>

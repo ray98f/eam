@@ -3,9 +3,11 @@ package com.wzmtr.eam.service.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -30,5 +32,9 @@ public interface FaultQueryService {
 
     void transmit(FaultQueryReqDTO reqDTO);
 
-    void submit(FaultQueryReqDTO reqDTO);
+    void submit(FaultSubmitReqDTO reqDTO);
+
+    // 驳回
+    @Transactional(rollbackFor = Exception.class)
+    void returns(FaultSubmitReqDTO reqDTO);
 }

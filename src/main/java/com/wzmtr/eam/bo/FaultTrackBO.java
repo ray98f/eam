@@ -12,6 +12,7 @@ import lombok.Data;
 public class FaultTrackBO {
     private String recId;
     /*  20 */   private String companyCode;
+    /*  20 */   private String workClass;
     /*  21 */   private String companyName;
     /*  22 */   private String faultTrackNo;
     /*  23 */   private String faultAnalysisNo;
