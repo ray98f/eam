@@ -28,4 +28,6 @@ public interface AnalyzeMapper {
     AnalyzeResDTO detail(FaultAnalyzeDetailReqDTO reqDTO);
     List<PersonResDTO> getOrgUsers(Set<String> userCode,String orgCode);
     List<PersonResDTO> queryCoParent(String orgCode);
+    List<AnalyzeResDTO> getFaultAnalysisList(String faultAnalysisNo, String faultNo, String faultWorkNo);
+
 }

@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -45,5 +46,11 @@ public class FaultAnalyzeController {
         return DataResponse.success();
     }
 
-
+    // fault_analize
+    @ApiOperation(value = "故障分析流程提交")
+    @PostMapping("/submit")
+    public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
+        analyzeService.submit(reqDTO);
+        return DataResponse.success();
+    }
 }

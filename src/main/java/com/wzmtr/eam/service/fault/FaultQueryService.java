@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
+import com.wzmtr.eam.dto.res.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Author: Li.Wang
@@ -33,6 +35,8 @@ public interface FaultQueryService {
     void transmit(FaultQueryReqDTO reqDTO);
 
     void submit(FaultSubmitReqDTO reqDTO);
+
+    /*      */ List<PersonResDTO> queryUserList(Set<String> userCode, String organCode);
 
     // 驳回
     @Transactional(rollbackFor = Exception.class)

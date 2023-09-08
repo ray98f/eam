@@ -332,8 +332,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                     for (int i = 0; i < userJson.size(); i++) {
                         userCode.add(((JSONObject) userJson.get(i)).get("userId"));
                     }
-                    Map<Object, Object> orgMap = new HashMap<>();
-                    orgMap.put("userCode", userCode.toArray());
                     if ("A40".equals(taskDefKey)) {
                         String groupName = "DM_005";
                         List<Object> nextUser = Lists.newArrayList();
@@ -412,7 +410,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                         dmfm09.setRecStatus("40");
                         dmfm09.setWorkFlowInstStatus("A60");
                     } else {
-                        orgMap.put("orgCode", dmfm09.getWorkClass());
                         List<Map<String, Object>> nextUser = new ArrayList<>();
                         // submtStatus = WorkflowHelper.submit(taskId, userId, comment, "", nextUser, null);
                         dmfm09.setRecStatus("50");
@@ -527,6 +524,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
 
+    @Override
     /*      */
     public List<PersonResDTO> queryUserList(Set<String> userCode, String organCode) {
         List<PersonResDTO> orgUsers = analyzeMapper.getOrgUsers(userCode, organCode);

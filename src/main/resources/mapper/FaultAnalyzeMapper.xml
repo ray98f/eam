@@ -220,4 +220,70 @@
             AND ORG_CODE = #{orgCode}
         </if>
     </select>
+    <select id="getFaultAnalysisList" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">
+        SELECT
+        d3.REC_ID as "recId",
+        d3.COMPANY_CODE as "companyCode",
+        d3.COMPANY_NAME as "companyName",
+        d3.FAULT_ANALYSIS_NO as "faultAnalysisNo",
+        d3.FAULT_NO as "faultNo",
+        d3.FAULT_WORK_NO as "faultWorkNo",
+        d3.MAIN_EQUIP_CODE as "mainEquipCode",
+        d3.MAIN_EQUIP_NAME as "mainEquipName",
+        d3.MAJOR_CODE as "majorCode",
+        (SELECT db.NODE_NAME from WBPLAT.TDMBM01 db where db.NODE_CODE=d3.MAJOR_CODE) as "majorName",
+        (SELECT db.NODE_NAME from WBPLAT.TDMBM01 db where db.NODE_CODE=d1.SYSTEM_CODE) as "systemName",
+        (SELECT db.NODE_NAME from WBPLAT.TDMBM03 db where db.NODE_CODE=d1.POSITION_CODE) as "positionName",
+        d3.RECOVERY_TIME as "recoveryTime",
+        d3.AFFECT_CODES as "affectCodes",
+        d3.FREQUENCY as "frequency",
+        (SELECT dd.MANUFACTURE from WBPLAT.TDMDM01 dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",
+        d3.FAULT_DETAIL as "faultDetail",
+        d3.FAULT_PROCESS_DETAIL as "faultProcessDetail",
+        d3.FAULT_REASON_DETAIL as "faultReasonDetail",
+        d3.PROBLEM_DESCR as "problemDescr",
+        d3.IMPROVE_DETAIL as "improveDetail",
+        d3.WORK_FLOW_INST_ID as "workFlowInstId",
+        d3.WORK_FLOW_INST_STATUS as "workFlowInstStatus",
+        d3.DOC_ID as "docId",
+        d3.REMARK as "remark",
+        d3.REC_STATUS as "recStatus",
+        d3.REC_CREATOR as "recCreator",
+        d3.REC_CREATE_TIME as "recCreateTime",
+        d3.REC_REVISOR as "recRevisor",
+        d3.REC_REVISE_TIME as "recReviseTime",
+        d3.REC_DELETOR as "recDeletor",
+        d3.REC_DELETE_TIME as "recDeleteTime",
+        d3.DELETE_FLAG as "deleteFlag",
+        d3.ARCHIVE_FLAG as "archiveFlag",
+        d3.EXT1 as "ext1",
+        d3.EXT2 as "ext2",
+        d3.EXT3 as "ext3",
+        d3.EXT4 as "ext4",
+        d3.EXT5 as "ext5",
+        d1.RESP_DEPT_CODE as "respDeptCode",
+        d2.FAULT_REASON_CODE as "faultReasonCode",
+        d1.POSITION_CODE as "positionCode",
+        d1.SYSTEM_CODE as "systemCode",
+        d1.FAULT_LEVEL as "faultLevel",
+        d1.LINE_CODE as "lineCode",
+        d2.WORK_CLASS as "workClass",
+        d1.DISCOVERY_TIME as "discoveryTime",
+        d1.FAULT_DISPLAY_CODE as "faultDisplayCode",
+        d1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail"
+        FROM WBPLAT.TDMFM03 d3, WBPLAT.TDMFM01 d1, WBPLAT.TDMFM02 d2
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="faultNo!=null and faultNo!=''">
+                and d3.FAULT_NO =#{faultNo}
+            </if>
+            <if test="faultAnalysisNo!=null and faultAnalysisNo!=''">
+                and d3.FAULT_ANALYSIS_NO =#{faultAnalysisNo}
+            </if>
+            <if test="faultWorkNo!=null and faultWorkNo!=''">
+                and d3.FAULT_WORK_NO =#{faultWorkNo}
+            </if>
+            and d3.FAULT_NO = d1.FAULT_NO and d1.FAULT_NO = d2.FAULT_NO and d2.FAULT_WORK_NO = d3.FAULT_WORK_NO
+        </trim>
+        ORDER BY d3.FAULT_ANALYSIS_NO DESC
+    </select>
 </mapper>

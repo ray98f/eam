@@ -20,4 +20,5 @@ public interface AnalyzeService {
 
     AnalyzeResDTO detail(FaultAnalyzeDetailReqDTO reqDTO);
 
+    void submit(FaultSubmitReqDTO reqDTO);
 }
