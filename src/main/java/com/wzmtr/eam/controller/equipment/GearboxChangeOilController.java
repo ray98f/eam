@@ -1,8 +1,7 @@
 package com.wzmtr.eam.controller.equipment;
 
-import com.wzmtr.eam.dto.req.GearboxChangeOilReqDTO;
-import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.req.equipment.GearboxChangeOilReqDTO;
+import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RestController

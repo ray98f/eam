@@ -1,8 +1,8 @@
 package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.GeneralSurveyReqDTO;
-import com.wzmtr.eam.dto.res.GeneralSurveyResDTO;
+import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
+import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

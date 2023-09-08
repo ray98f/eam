@@ -1,22 +1,17 @@
 package com.wzmtr.eam.service.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.OverhaulMaterialReqDTO;
-import com.wzmtr.eam.dto.req.OverhaulTplDetailReqDTO;
-import com.wzmtr.eam.dto.req.OverhaulTplReqDTO;
-import com.wzmtr.eam.dto.res.OverhaulMaterialResDTO;
-import com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO;
-import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulMaterialReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulTplDetailReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulTplReqDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulTplResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.ParseException;
-import java.util.List;
 
 public interface OverhaulTplService {
 

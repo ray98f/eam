@@ -2,12 +2,10 @@ package com.wzmtr.eam.impl.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.CheckPlanReqDTO;
-import com.wzmtr.eam.dto.req.DetectionPlanDetailReqDTO;
-import com.wzmtr.eam.dto.req.DetectionPlanReqDTO;
-import com.wzmtr.eam.dto.res.DetectionPlanDetailResDTO;
-import com.wzmtr.eam.dto.res.DetectionPlanResDTO;
-import com.wzmtr.eam.dto.res.MeaInfoResDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanDetailReqDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanDetailResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
@@ -24,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;

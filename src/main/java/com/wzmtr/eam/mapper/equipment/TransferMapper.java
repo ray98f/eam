@@ -1,8 +1,7 @@
 package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.res.TransferResDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.res.equipment.TransferResDTO;
 import com.wzmtr.eam.entity.Bom;
 import com.wzmtr.eam.entity.WorkFlow;
 import org.apache.ibatis.annotations.Mapper;

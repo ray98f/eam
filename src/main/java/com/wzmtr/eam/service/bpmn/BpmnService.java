@@ -1,21 +1,17 @@
 package com.wzmtr.eam.service.bpmn;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.ExamineListReq;
+import com.wzmtr.eam.dto.req.bpmn.ExamineListReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
-import com.wzmtr.eam.dto.res.ExamineListRes;
-import com.wzmtr.eam.dto.res.ExaminedListRes;
-import com.wzmtr.eam.dto.res.HisListRes;
-import com.wzmtr.eam.dto.res.RunningListRes;
+import com.wzmtr.eam.dto.res.bpmn.ExamineListRes;
+import com.wzmtr.eam.dto.res.bpmn.ExaminedListRes;
+import com.wzmtr.eam.dto.res.bpmn.HisListRes;
+import com.wzmtr.eam.dto.res.bpmn.RunningListRes;
 import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
 import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.dto.result.ResultEntity;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

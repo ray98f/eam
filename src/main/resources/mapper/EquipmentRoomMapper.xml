@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper">
 
-    <select id="pageEquipmentRoom" resultType="com.wzmtr.eam.dto.res.EquipmentRoomResDTO">
+    <select id="pageEquipmentRoom" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 统一编号 -->
         EQUIP_ROOM_CODE	as "equipRoomCode",  <!-- 设备房编码 -->
@@ -52,7 +52,7 @@
         ORDER BY EQUIP_ROOM_CODE desc
     </select>
 
-    <select id="getEquipmentRoomDetail" resultType="com.wzmtr.eam.dto.res.EquipmentRoomResDTO">
+    <select id="getEquipmentRoomDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 统一编号 -->
         EQUIP_ROOM_CODE	as "equipRoomCode",  <!-- 设备房编码 -->
@@ -220,7 +220,7 @@
         )
     </update>
 
-    <select id="listEquipmentRoom" resultType="com.wzmtr.eam.dto.res.EquipmentRoomResDTO">
+    <select id="listEquipmentRoom" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 统一编号 -->
         EQUIP_ROOM_CODE	as "equipRoomCode",  <!-- 设备房编码 -->

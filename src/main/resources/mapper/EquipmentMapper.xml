@@ -2,21 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.equipment.EquipmentMapper">
 
-    <select id="listTrainRegion" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
+    <select id="listTrainRegion" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
         SELECT REC_ID, EQUIP_CODE as NODE_CODE, EQUIP_NAME as NODE_NAME
         FROM T_EQUIPMENT
         WHERE MAJOR_CODE='07' and APPROVAL_STATUS ='30'
         order by EQUIP_CODE asc
     </select>
 
-    <select id="listLine" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
+    <select id="listLine" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
         SELECT ITEM_CODE as REC_ID, 'root' as PARENT_NODE_REC_ID, ITEM_CODE as NODE_CODE, ITEM_CNAME as NODE_NAME, ITEM_CODE as LINE_CODE
         FROM SYS_DICT
         WHERE CODESET_CODE='line'
         ORDER BY ITEM_CODE ASC
     </select>
 
-    <select id="listRegion" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
+    <select id="listRegion" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
         SELECT REC_ID, PARENT_NODE_REC_ID, NODE_CODE, NODE_NAME, LINE_CODE
         FROM SYS_REGION
         WHERE DELETE_FLAG='0' and REC_STATUS='10' and LINE_CODE=#{lineCode}
@@ -29,7 +29,7 @@
         ORDER BY NODE_CODE ASC
     </select>
 
-    <select id="listCarRegion" resultType="com.wzmtr.eam.dto.res.RegionResDTO">
+    <select id="listCarRegion" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
         SELECT REC_ID, #{recId} as PARENT_NODE_REC_ID, EQUIP_CODE as NODE_CODE, EQUIP_NAME as NODE_NAME, USE_LINE_NO as LINE_CODE
         FROM T_EQUIPMENT
         WHERE MAJOR_CODE='07' and APPROVAL_STATUS ='30'
@@ -37,7 +37,7 @@
         order by EQUIP_CODE  asc
     </select>
 
-    <select id="listEquipmentCategory" resultType="com.wzmtr.eam.dto.res.EquipmentCategoryResDTO">
+    <select id="listEquipmentCategory" resultType="com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO">
         select REC_ID, PARENT_NODE_REC_ID, NODE_CODE, NODE_NAME, #{lineCode} as LINE_CODE,  #{regionCode} as REGION_CODE
         from T_EQUIPMENT_CATEGORY
         where DELETE_FLAG='0' and REC_STATUS='10'
@@ -50,7 +50,7 @@
         ORDER BY NODE_CODE ASC
     </select>
 
-    <select id="pageEquipment" resultType="com.wzmtr.eam.dto.res.EquipmentResDTO">
+    <select id="pageEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
@@ -167,7 +167,7 @@
         ORDER BY EQUIP_CODE ASC
     </select>
 
-    <select id="getEquipmentDetail" resultType="com.wzmtr.eam.dto.res.EquipmentResDTO">
+    <select id="getEquipmentDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
@@ -333,8 +333,8 @@
         #{brand,jdbcType=VARCHAR})
     </insert>
 
-    <insert id="importEquipment" parameterType="com.wzmtr.eam.dto.req.EquipmentReqDTO">
-        insert ALL
+    <insert id="importEquipment" parameterType="com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO">
+        INSERT ALL
         <foreach collection="list" index="index" item="equipment" separator=" ">
             INTO T_EQUIPMENT
             (REC_ID,  <!-- 记录编号 -->
@@ -409,7 +409,7 @@
             (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{equipment.equipTypeName} and NODE_LEVEL=3),
             #{equipment.equipTypeName},
             #{equipment.specialEquipFlag},
-            '',
+            ' ',
             #{equipment.manufacture},
             #{equipment.matSpecifi},
             #{equipment.brand},
@@ -417,47 +417,46 @@
             #{equipment.manufactureNo,jdbcType=VARCHAR},
             #{equipment.startUseDate,jdbcType=VARCHAR},
             #{equipment.quantity,jdbcType=NUMERIC},
-            '',
-            '',
-            '',
-            '',
-            '',
+            ' ',
+            ' ',
+            ' ',
+            ' ',
+            ' ',
             #{equipment.installDealer,jdbcType=VARCHAR},
-            '',
-            '',
-            '',
-            '',
-            '',
+            ' ',
+            ' ',
+            ' ',
+            ' ',
+            ' ',
             #{equipment.useLineNo,jdbcType=VARCHAR},
             #{equipment.useLineName,jdbcType=VARCHAR},
             #{equipment.useSegNo,jdbcType=VARCHAR},
             #{equipment.useSegName,jdbcType=VARCHAR},
-            #position1Code,jdbcType=VARCHAR},
-            (SELECT NODE_CODE FROM SYS_REGION where NODE_NAME=#{equipment.position1Name,jdbcType=VARCHAR} and LINE_CODE=#{useLineNo,jdbcType=VARCHAR}),
+            (SELECT NODE_CODE FROM SYS_REGION where NODE_NAME=#{equipment.position1Name,jdbcType=VARCHAR} and LINE_CODE=#{equipment.useLineNo,jdbcType=VARCHAR}),
             #{equipment.position1Name,jdbcType=VARCHAR},
-            (SELECT NODE_CODE FROM SYS_REGION where NODE_NAME=#{equipment.position2Name,jdbcType=VARCHAR} and LINE_CODE=#{useLineNo,jdbcType=VARCHAR}),
+            (SELECT NODE_CODE FROM SYS_REGION where NODE_NAME=#{equipment.position2Name,jdbcType=VARCHAR} and LINE_CODE=#{equipment.useLineNo,jdbcType=VARCHAR}),
             #{equipment.position2Name,jdbcType=VARCHAR},
             #{equipment.position3,jdbcType=VARCHAR},
             #{equipment.positionRemark,jdbcType=VARCHAR},
             0,
             #{equipment.remark,jdbcType=VARCHAR},
             #{equipment.approvalStatus,jdbcType=VARCHAR},
-            '',
-            '',
+            ' ',
+            ' ',
             #{equipment.recCreator},
             #{equipment.recCreateTime},
-            '',
-            '',
-            '',
-            '',
+            ' ',
+            ' ',
+            ' ',
+            ' ',
             '0',
-            '',
-            '')
+            ' ',
+            ' ')
         </foreach>
         SELECT * FROM dual
     </insert>
 
-    <insert id="insertEquipment" parameterType="com.wzmtr.eam.dto.req.EquipmentReqDTO">
+    <insert id="insertEquipment" parameterType="com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO">
         INSERT INTO T_EQUIPMENT
         (REC_ID,  <!-- 记录编号 -->
         COMPANY_CODE,  <!-- 公司代码 -->
@@ -606,7 +605,7 @@
         #{ext5,jdbcType=VARCHAR})
     </insert>
 
-    <select id="listEquipment" resultType="com.wzmtr.eam.dto.res.EquipmentResDTO">
+    <select id="listEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
@@ -723,7 +722,7 @@
         ORDER BY EQUIP_CODE ASC
     </select>
 
-    <select id="siftEquipment" resultType="com.wzmtr.eam.dto.res.EquipmentResDTO">
+    <select id="siftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
@@ -858,7 +857,7 @@
         ORDER BY EQUIP_CODE ASC
     </select>
 
-    <select id="selectByEquipName" resultType="com.wzmtr.eam.dto.res.EquipmentResDTO">
+    <select id="selectByEquipName" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         SELECT
         EQUIP_CODE as equipCode,
         EQUIP_NAME as equipName
@@ -871,7 +870,7 @@
     </select>
 
 
-    <select id="queryMajor" resultType="com.wzmtr.eam.dto.res.EquipmentResDTO" >
+    <select id="queryMajor" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO" >
         select
             MAJOR_CODE as "majorCode",
             USE_LINE_NO as "useLineNo"

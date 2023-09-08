@@ -1,7 +1,7 @@
 package com.wzmtr.eam.controller.basic;
 
-import com.wzmtr.eam.dto.req.WoRuleReqDTO;
-import com.wzmtr.eam.dto.res.WoRuleResDTO;
+import com.wzmtr.eam.dto.req.basic.WoRuleReqDTO;
+import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;

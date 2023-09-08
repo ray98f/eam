@@ -1,6 +1,6 @@
 package com.wzmtr.eam.controller.equipment;
 
-import com.wzmtr.eam.dto.res.PillarResDTO;
+import com.wzmtr.eam.dto.res.equipment.PillarResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.equipment.PillarService;

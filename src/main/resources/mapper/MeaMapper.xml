@@ -81,7 +81,7 @@
         EXPIRATION_DATE  as "expirationDate"
     </sql>
 
-    <select id="pageMea" resultType="com.wzmtr.eam.dto.res.MeaResDTO">
+    <select id="pageMea" resultType="com.wzmtr.eam.dto.res.mea.MeaResDTO">
         <include refid="mea-instrument-cols"/>
         FROM T_MEA_INSTRUMENT WHERE 1=1
         <if test="req.equipName!=null and req.equipName!=''">
@@ -117,7 +117,7 @@
         order by REC_ID asc
     </select>
 
-    <select id="getMeaDetail" resultType="com.wzmtr.eam.dto.res.MeaResDTO">
+    <select id="getMeaDetail" resultType="com.wzmtr.eam.dto.res.mea.MeaResDTO">
         <include refid="mea-instrument-cols"/>
         FROM T_MEA_INSTRUMENT WHERE REC_ID=#{id}
     </select>
@@ -218,7 +218,7 @@
         #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR}, #{docId,jdbcType=VARCHAR}, #{transferDate,jdbcType=VARCHAR}, #{phoneNo,jdbcType=VARCHAR}, #{expirationDate,jdbcType=VARCHAR})
     </insert>
 
-    <select id="listMea" resultType="com.wzmtr.eam.dto.res.MeaResDTO">
+    <select id="listMea" resultType="com.wzmtr.eam.dto.res.mea.MeaResDTO">
         <include refid="mea-instrument-cols"/>
         FROM T_MEA_INSTRUMENT WHERE 1=1
         <if test="equipName!=null and equipName!=''">
@@ -267,7 +267,7 @@
         WHERE EQUIP_CODE=#{equipCode}
     </update>
 
-    <select id="pageMeaRecord" resultType="com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO">
+    <select id="pageMeaRecord" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->

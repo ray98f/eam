@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.overhaul.OverhaulItemMapper">
 
-    <select id="pageOverhaulItem" resultType="com.wzmtr.eam.dto.res.OverhaulItemResDTO">
+    <select id="pageOverhaulItem" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO">
         SELECT
         OBJECT_ID as "objectId",<!--DMER22表主键-->
         REC_ID	as "recId",  <!-- 记录ID -->
@@ -60,7 +60,7 @@
         order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
     </select>
 
-    <select id="getOverhaulItemDetail" resultType="com.wzmtr.eam.dto.res.OverhaulItemResDTO">
+    <select id="getOverhaulItemDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO">
         SELECT
         OBJECT_ID as "objectId",<!--DMER22表主键-->
         REC_ID	as "recId",  <!-- 记录ID -->
@@ -105,7 +105,7 @@
         FROM T_OVERHAUL_ITEM WHERE REC_ID=#{id}
     </select>
 
-    <select id="listOverhaulItem" resultType="com.wzmtr.eam.dto.res.OverhaulItemResDTO">
+    <select id="listOverhaulItem" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO">
         SELECT
         OBJECT_ID as "objectId",<!--DMER22表主键-->
         REC_ID	as "recId",  <!-- 记录ID -->

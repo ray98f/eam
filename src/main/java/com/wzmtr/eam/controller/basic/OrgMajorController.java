@@ -1,7 +1,7 @@
 package com.wzmtr.eam.controller.basic;
 
-import com.wzmtr.eam.dto.req.OrgMajorReqDTO;
-import com.wzmtr.eam.dto.res.OrgMajorResDTO;
+import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
+import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
-import java.util.List;
 
 @Slf4j
 @RestController

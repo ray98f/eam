@@ -1,9 +1,8 @@
 package com.wzmtr.eam.mapper.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.EquipmentCategoryReqDTO;
-import com.wzmtr.eam.dto.req.RegionReqDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.req.basic.RegionReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

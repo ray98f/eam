@@ -24,15 +24,9 @@ import java.io.IOException;
 @Validated
 public class CommonController {
 
-    /**
-     * cas 的server地址
-     */
     @Value("${cas.serverUrlPrefix}")
     public String casServerUrlPrefix;
 
-    /**
-     * 对外提供的服务地址
-     */
     @Value("${cas.serviceUrlPrefix}")
     public String casServiceUrlPrefix;
 
@@ -41,9 +35,6 @@ public class CommonController {
     @Value("${cas.loginUrlPattern}")
     public String loginUrlPattern;
 
-    /**
-     * 退出的地址
-     */
     @Value("${cas.logoutUrlPattern}")
     public String logoutUrlPattern;
 

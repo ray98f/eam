@@ -2,8 +2,7 @@ package com.wzmtr.eam.utils.tree;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.wzmtr.eam.dto.res.EquipmentCategoryResDTO;
-import com.wzmtr.eam.entity.CompanyStructureTreeDTO;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 
 import java.util.List;
 import java.util.Map;

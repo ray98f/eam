@@ -36,7 +36,7 @@ mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
-  #    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+#      log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
   global-config:
     db-config:
       logic-delete-field: 1

@@ -1,6 +1,6 @@
 package com.wzmtr.eam.mapper.equipment;
 
-import com.wzmtr.eam.dto.req.EquipmentPartReqDTO;
+import com.wzmtr.eam.dto.req.equipment.EquipmentPartReqDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper">
 
-    <select id="pageOverhaulPlan" resultType="com.wzmtr.eam.dto.res.OverhaulPlanResDTO">
+    <select id="pageOverhaulPlan" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->
@@ -100,7 +100,7 @@
         ORDER BY PLAN_CODE desc
     </select>
 
-    <select id="getOverhaulPlanDetail" resultType="com.wzmtr.eam.dto.res.OverhaulPlanResDTO">
+    <select id="getOverhaulPlanDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->
@@ -180,7 +180,7 @@
         AND ROWNUM=1))
     </select>
 
-    <select id="getOrderIsValid" resultType="com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO">
+    <select id="getOrderIsValid" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO">
         SELECT TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
         TEMPLATE_NAME	as "templateName"  <!-- 模板名称 -->
         FROM T_OVERHAUL_TPL_DETAIL
@@ -489,7 +489,7 @@
         WHERE REC_ID=#{id}
     </update>
 
-    <select id="listOverhaulPlan" resultType="com.wzmtr.eam.dto.res.OverhaulPlanResDTO">
+    <select id="listOverhaulPlan" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->
@@ -587,14 +587,14 @@
         ORDER BY PLAN_CODE desc
     </select>
 
-    <select id="queryWeekObj" resultType="com.wzmtr.eam.dto.res.OverhaulPlanResDTO">
+    <select id="queryWeekObj" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
         select PLAN_CODE	as "planCode"  <!-- 计划编号 -->
         from T_OVERHAUL_PLAN t
         where not exists(select 1 from T_OVERHAUL_OBJECT a where a.PLAN_CODE=t.PLAN_CODE)
         AND t.WEEK_PLAN_CODE = #{weekPlanCode}
     </select>
 
-    <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.OverhaulObjectResDTO">
+    <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->
@@ -642,7 +642,7 @@
         ORDER BY REC_ID desc
     </select>
 
-    <select id="queryObject" resultType="com.wzmtr.eam.dto.res.OverhaulObjectResDTO">
+    <select id="queryObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
         SELECT
         (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME), ',')
         WITHIN GROUP (
@@ -663,7 +663,7 @@
         WHERE REC_ID=#{recId}
     </update>
 
-    <select id="queryAllRule" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
+    <select id="queryAllRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
         SELECT T1.REC_ID as "recId",  <!-- 记录ID -->
         T1.PLAN_CODE as "ext1",
         T2.PERIOD as "period"
@@ -674,7 +674,7 @@
         ORDER BY T2.PERIOD DESC
     </select>
 
-    <select id="pageOverhaulObject" resultType="com.wzmtr.eam.dto.res.OverhaulObjectResDTO">
+    <select id="pageOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->
@@ -722,7 +722,7 @@
         ORDER BY REC_ID desc
     </select>
 
-    <select id="getOverhaulObjectDetail" resultType="com.wzmtr.eam.dto.res.OverhaulObjectResDTO">
+    <select id="getOverhaulObjectDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->

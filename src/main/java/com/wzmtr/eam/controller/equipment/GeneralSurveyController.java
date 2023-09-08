@@ -1,7 +1,7 @@
 package com.wzmtr.eam.controller.equipment;
 
-import com.wzmtr.eam.dto.req.GeneralSurveyReqDTO;
-import com.wzmtr.eam.dto.res.GeneralSurveyResDTO;
+import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
+import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;

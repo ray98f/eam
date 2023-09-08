@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.equipment.PillarMapper">
 
-    <select id="pagePillar" resultType="com.wzmtr.eam.dto.res.PillarResDTO">
+    <select id="pagePillar" resultType="com.wzmtr.eam.dto.res.equipment.PillarResDTO">
         SELECT
         REC_ID	as "recId",
         POWER_SUPPLY_SECTION	as "powerSupplySection",

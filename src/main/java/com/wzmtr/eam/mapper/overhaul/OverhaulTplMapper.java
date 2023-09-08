@@ -1,13 +1,12 @@
 package com.wzmtr.eam.mapper.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.OverhaulMaterialReqDTO;
-import com.wzmtr.eam.dto.req.OverhaulTplDetailReqDTO;
-import com.wzmtr.eam.dto.req.OverhaulTplReqDTO;
-import com.wzmtr.eam.dto.res.OverhaulMaterialResDTO;
-import com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO;
-import com.wzmtr.eam.dto.res.OverhaulTplResDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulMaterialReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulTplDetailReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulTplReqDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulTplResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

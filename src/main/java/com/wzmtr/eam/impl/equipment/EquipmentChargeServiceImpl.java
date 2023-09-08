@@ -2,8 +2,8 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.EquipmentChargeReqDTO;
-import com.wzmtr.eam.dto.res.EquipmentChargeResDTO;
+import com.wzmtr.eam.dto.req.equipment.EquipmentChargeReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentChargeResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;

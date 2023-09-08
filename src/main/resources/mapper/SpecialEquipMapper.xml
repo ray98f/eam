@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.specialEquip.SpecialEquipMapper">
 
-    <select id="pageSpecialEquip" resultType="com.wzmtr.eam.dto.res.SpecialEquipResDTO">
+    <select id="pageSpecialEquip" resultType="com.wzmtr.eam.dto.res.specialEquip.SpecialEquipResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
@@ -89,7 +89,7 @@
         a.EQUIP_CODE asc
     </select>
 
-    <select id="getSpecialEquipDetail" resultType="com.wzmtr.eam.dto.res.SpecialEquipResDTO">
+    <select id="getSpecialEquipDetail" resultType="com.wzmtr.eam.dto.res.specialEquip.SpecialEquipResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
@@ -146,7 +146,7 @@
 
     <insert id="importSpecialEquip">
         insert ALL
-        <foreach collection="list" index="index" item="equipment" separator=" ">
+        <foreach collection="list" index="index" item="special" separator=" ">
             INTO T_SPECIAL_EQUIP_EXT (
             REC_ID,  <!-- 统一编号 -->
             REG_ORG,  <!-- 使用登记机构 -->
@@ -183,40 +183,40 @@
             EXT4,  <!-- 扩展字段4 -->
             EXT5  <!-- 扩展字段5 -->)
             VALUES (
-            #{recId,jdbcType=VARCHAR},
-            #{regOrg,jdbcType=VARCHAR},
-            #{regNo,jdbcType=VARCHAR},
-            #{equipCode,jdbcType=VARCHAR},
-            #{specialEquipType,jdbcType=VARCHAR},
-            #{specialEquipCode,jdbcType=VARCHAR},
-            #{factNo,jdbcType=VARCHAR},
-            #{equipInnerNo,jdbcType=VARCHAR},
-            #{equipPosition,jdbcType=VARCHAR},
-            #{equipDetailedPosition,jdbcType=VARCHAR},
-            #{equipParameter,jdbcType=VARCHAR},
-            #{manageOrg,jdbcType=VARCHAR},
-            #{secOrg,jdbcType=VARCHAR},
-            #{secStaffName,jdbcType=VARCHAR},
-            #{secStaffPhone,jdbcType=VARCHAR},
-            #{secStaffMobile,jdbcType=VARCHAR},
-            #{linkmanName,jdbcType=VARCHAR},
-            #{linkmanPhone,jdbcType=VARCHAR},
-            #{linkmanMobile,jdbcType=VARCHAR},
-            #{remark,jdbcType=VARCHAR},
-            #{recCreator,jdbcType=VARCHAR},
-            #{recCreateTime,jdbcType=VARCHAR},
-            #{recRevisor,jdbcType=VARCHAR},
-            #{recReviseTime,jdbcType=VARCHAR},
-            #{recDeletor,jdbcType=VARCHAR},
-            #{recDeleteTime,jdbcType=VARCHAR},
+            #{special.recId,jdbcType=VARCHAR},
+            #{special.regOrg,jdbcType=VARCHAR},
+            #{special.regNo,jdbcType=VARCHAR},
+            #{special.equipCode,jdbcType=VARCHAR},
+            #{special.specialEquipType,jdbcType=VARCHAR},
+            #{special.specialEquipCode,jdbcType=VARCHAR},
+            #{special.factNo,jdbcType=VARCHAR},
+            #{special.equipInnerNo,jdbcType=VARCHAR},
+            #{special.equipPosition,jdbcType=VARCHAR},
+            #{special.equipDetailedPosition,jdbcType=VARCHAR},
+            #{special.equipParameter,jdbcType=VARCHAR},
+            #{special.manageOrg,jdbcType=VARCHAR},
+            #{special.secOrg,jdbcType=VARCHAR},
+            #{special.secStaffName,jdbcType=VARCHAR},
+            #{special.secStaffPhone,jdbcType=VARCHAR},
+            #{special.secStaffMobile,jdbcType=VARCHAR},
+            #{special.linkmanName,jdbcType=VARCHAR},
+            #{special.linkmanPhone,jdbcType=VARCHAR},
+            #{special.linkmanMobile,jdbcType=VARCHAR},
+            #{special.remark,jdbcType=VARCHAR},
+            #{special.recCreator,jdbcType=VARCHAR},
+            #{special.recCreateTime,jdbcType=VARCHAR},
+            #{special.recRevisor,jdbcType=VARCHAR},
+            #{special.recReviseTime,jdbcType=VARCHAR},
+            #{special.recDeletor,jdbcType=VARCHAR},
+            #{special.recDeleteTime,jdbcType=VARCHAR},
             '0',
-            #{archiveFlag,jdbcType=VARCHAR},
-            #{recStatus,jdbcType=VARCHAR},
-            #{ext1,jdbcType=VARCHAR},
-            #{ext2,jdbcType=VARCHAR},
-            #{ext3,jdbcType=VARCHAR},
-            #{ext4,jdbcType=VARCHAR},
-            #{ext5,jdbcType=VARCHAR})
+            #{special.archiveFlag,jdbcType=VARCHAR},
+            #{special.recStatus,jdbcType=VARCHAR},
+            #{special.ext1,jdbcType=VARCHAR},
+            #{special.ext2,jdbcType=VARCHAR},
+            #{special.ext3,jdbcType=VARCHAR},
+            #{special.ext4,jdbcType=VARCHAR},
+            #{special.ext5,jdbcType=VARCHAR})
         </foreach>
         SELECT * FROM dual
     </insert>
@@ -306,7 +306,7 @@
         WHERE EQUIP_CODE = #{equipCode}
     </update>
 
-    <select id="listSpecialEquip" resultType="com.wzmtr.eam.dto.res.SpecialEquipResDTO">
+    <select id="listSpecialEquip" resultType="com.wzmtr.eam.dto.res.specialEquip.SpecialEquipResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
@@ -393,7 +393,7 @@
         a.EQUIP_CODE asc
     </select>
 
-    <select id="pageSpecialEquipHistory" resultType="com.wzmtr.eam.dto.res.SpecialEquipHistoryResDTO">
+    <select id="pageSpecialEquipHistory" resultType="com.wzmtr.eam.dto.res.specialEquip.SpecialEquipHistoryResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
@@ -456,7 +456,7 @@
         order by a.VERIFY_VALIDITY_DATE desc
     </select>
 
-    <select id="getSpecialEquipHistoryDetail" resultType="com.wzmtr.eam.dto.res.SpecialEquipHistoryResDTO">
+    <select id="getSpecialEquipHistoryDetail" resultType="com.wzmtr.eam.dto.res.specialEquip.SpecialEquipHistoryResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
@@ -518,7 +518,7 @@
         WHERE 1=1 and a.REC_ID = #{id}
     </select>
 
-    <select id="listSpecialEquiHistory" resultType="com.wzmtr.eam.dto.res.SpecialEquipHistoryResDTO">
+    <select id="listSpecialEquiHistory" resultType="com.wzmtr.eam.dto.res.specialEquip.SpecialEquipHistoryResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->

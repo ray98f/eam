@@ -1,9 +1,8 @@
 package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.WheelsetLathingReqDTO;
-import com.wzmtr.eam.dto.res.WheelsetLathingResDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.req.equipment.WheelsetLathingReqDTO;
+import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

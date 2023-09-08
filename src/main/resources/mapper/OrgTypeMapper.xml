@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.basic.OrgTypeMapper">
 
-    <select id="pageOrgType" resultType="com.wzmtr.eam.dto.res.OrgTypeResDTO">
+    <select id="pageOrgType" resultType="com.wzmtr.eam.dto.res.basic.OrgTypeResDTO">
         SELECT ot.REC_ID, ot.ORG_CODE, ot.ORG_NAME, ot.ORG_TYPE,
         ot.REC_STATUS, ot.REMARK, u.NAME AS REC_CREATOR, ot.REC_CREATE_TIME
         FROM SYS_ORG_TYPE ot
@@ -23,7 +23,7 @@
         ORDER BY ot.REC_CREATE_TIME ASC
     </select>
 
-    <select id="getOrgTypeDetail" resultType="com.wzmtr.eam.dto.res.OrgTypeResDTO">
+    <select id="getOrgTypeDetail" resultType="com.wzmtr.eam.dto.res.basic.OrgTypeResDTO">
         SELECT ot.REC_ID, ot.ORG_CODE, ot.ORG_NAME, ot.ORG_TYPE,
         ot.REC_STATUS, ot.REMARK, u.NAME AS REC_CREATOR, ot.REC_CREATE_TIME
         FROM SYS_ORG_TYPE ot
@@ -84,7 +84,7 @@
         )
     </update>
 
-    <select id="listOrgType" resultType="com.wzmtr.eam.dto.res.OrgTypeResDTO">
+    <select id="listOrgType" resultType="com.wzmtr.eam.dto.res.basic.OrgTypeResDTO">
         SELECT ot.REC_ID, ot.ORG_CODE, ot.ORG_NAME, ot.ORG_TYPE,
         ot.REC_STATUS, ot.REMARK, u.NAME AS REC_CREATOR, ot.REC_CREATE_TIME
         FROM SYS_ORG_TYPE ot

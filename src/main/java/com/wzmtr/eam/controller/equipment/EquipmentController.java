@@ -1,9 +1,9 @@
 package com.wzmtr.eam.controller.equipment;
 
-import com.wzmtr.eam.dto.res.EquipmentQrResDTO;
-import com.wzmtr.eam.dto.res.EquipmentResDTO;
-import com.wzmtr.eam.dto.res.EquipmentTreeResDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;

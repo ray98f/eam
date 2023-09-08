@@ -1,8 +1,8 @@
 package com.wzmtr.eam.controller.mea;
 
-import com.wzmtr.eam.dto.req.MeaListReqDTO;
-import com.wzmtr.eam.dto.res.MeaResDTO;
-import com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO;
+import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
+import com.wzmtr.eam.dto.res.mea.MeaResDTO;
+import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;

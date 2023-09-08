@@ -23,6 +23,8 @@ import java.util.Objects;
 @Component
 public class JwtFilter implements Filter {
 
+    private static final String JSESSIONID_FIX = ";jsessionid";
+
     @Value("${excluded.swagger-pages}")
     private String[] swaggerPages;
 
@@ -34,6 +36,15 @@ public class JwtFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String uri = httpRequest.getRequestURI();
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        if(uri.contains(JSESSIONID_FIX)){
+            String newUri = uri.substring(0, uri.indexOf(";"));
+            String jsessionid = uri.replace(newUri+";jsessionid=","");
+            httpRequest.getSession();
+            Cookie cookie = new Cookie("JSESSIONID", jsessionid);
+            httpResponse.addCookie(cookie);
+            httpResponse.sendRedirect(newUri);
+            return;
+        }
         if (Arrays.asList(pages).contains(uri) || Arrays.asList(swaggerPages).contains(uri)
                 || uri.contains("mdmSync") || uri.contains("swagger")) {
             chain.doFilter(httpRequest, httpResponse);

@@ -42,7 +42,7 @@
         EXT5	as "ext5" <!-- 扩展字段5 -->
     </sql>
 
-    <select id="pageOverhaulWeekPlan" resultType="com.wzmtr.eam.dto.res.OverhaulWeekPlanResDTO">
+    <select id="pageOverhaulWeekPlan" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulWeekPlanResDTO">
         <include refid="weekPlan-cols"/>
         FROM T_WEEKLY_PLAN WHERE 1=1 and DELETE_FLAG='0'
         <if test="req.weekPlanCode!=null and req.weekPlanCode!=''">
@@ -72,7 +72,7 @@
         ORDER BY WEEK_PLAN_CODE desc
     </select>
 
-    <select id="getOverhaulWeekPlanDetail" resultType="com.wzmtr.eam.dto.res.OverhaulWeekPlanResDTO">
+    <select id="getOverhaulWeekPlanDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulWeekPlanResDTO">
         <include refid="weekPlan-cols"/>
         FROM T_WEEKLY_PLAN WHERE REC_ID=#{id}
     </select>
@@ -273,7 +273,7 @@
         WHERE PLAN_CODE IN (SELECT T11.PLAN_CODE FROM T_OVERHAUL_PLAN T11 WHERE T11.WEEK_PLAN_CODE = #{weekPlanCode})
     </update>
 
-    <select id="listOverhaulWeekPlan" resultType="com.wzmtr.eam.dto.res.OverhaulWeekPlanResDTO">
+    <select id="listOverhaulWeekPlan" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulWeekPlanResDTO">
         <include refid="weekPlan-cols"/>
         FROM T_WEEKLY_PLAN WHERE 1=1 and DELETE_FLAG='0'
         <if test="weekPlanCode!=null and weekPlanCode!=''">

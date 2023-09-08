@@ -1,8 +1,9 @@
 package com.wzmtr.eam.service.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.MeaListReqDTO;
-import com.wzmtr.eam.dto.res.*;
+import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
+import com.wzmtr.eam.dto.res.mea.MeaResDTO;
+import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import org.springframework.web.multipart.MultipartFile;
 

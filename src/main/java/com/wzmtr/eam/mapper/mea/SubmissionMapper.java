@@ -1,12 +1,11 @@
 package com.wzmtr.eam.mapper.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.SubmissionDetailReqDTO;
-import com.wzmtr.eam.dto.req.SubmissionListReqDTO;
-import com.wzmtr.eam.dto.req.SubmissionReqDTO;
-import com.wzmtr.eam.dto.res.SubmissionDetailResDTO;
-import com.wzmtr.eam.dto.res.SubmissionResDTO;
-import com.wzmtr.eam.dto.res.MeaInfoResDTO;
+import com.wzmtr.eam.dto.req.mea.SubmissionDetailReqDTO;
+import com.wzmtr.eam.dto.req.mea.SubmissionListReqDTO;
+import com.wzmtr.eam.dto.req.mea.SubmissionReqDTO;
+import com.wzmtr.eam.dto.res.mea.SubmissionDetailResDTO;
+import com.wzmtr.eam.dto.res.mea.SubmissionResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

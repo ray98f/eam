@@ -125,7 +125,7 @@
         0)
     </insert>
 
-    <select id="searchParent" resultType="com.wzmtr.eam.dto.res.OrgParentResDTO">
+    <select id="searchParent" resultType="com.wzmtr.eam.dto.res.basic.OrgParentResDTO">
         SELECT DISTINCT ID, PARENT_IDS, replace(NAMES, ',', '-') NAMES
         from (SELECT ID, PARENT_IDS, NAMES from
         (SELECT DISTINCT tt.id,

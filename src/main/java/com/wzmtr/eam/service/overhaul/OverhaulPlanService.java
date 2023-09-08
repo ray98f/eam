@@ -1,16 +1,14 @@
 package com.wzmtr.eam.service.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.OverhaulObjectReqDTO;
-import com.wzmtr.eam.dto.req.OverhaulPlanListReqDTO;
-import com.wzmtr.eam.dto.req.OverhaulPlanReqDTO;
-import com.wzmtr.eam.dto.res.OverhaulObjectResDTO;
-import com.wzmtr.eam.dto.res.OverhaulPlanResDTO;
-import com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulObjectReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulPlanListReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulPlanReqDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
