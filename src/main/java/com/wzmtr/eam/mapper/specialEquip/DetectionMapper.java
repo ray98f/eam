@@ -1,11 +1,10 @@
 package com.wzmtr.eam.mapper.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.DetectionDetailReqDTO;
-import com.wzmtr.eam.dto.req.DetectionReqDTO;
-import com.wzmtr.eam.dto.res.DetectionDetailResDTO;
-import com.wzmtr.eam.dto.res.DetectionResDTO;
-import com.wzmtr.eam.dto.res.DetectionResDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

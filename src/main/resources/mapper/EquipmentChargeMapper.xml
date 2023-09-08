@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.equipment.EquipmentChargeMapper">
 
-    <select id="pageEquipmentCharge" resultType="com.wzmtr.eam.dto.res.EquipmentChargeResDTO">
+    <select id="pageEquipmentCharge" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentChargeResDTO">
         SELECT
         a.REC_ID	as "recId",
         a.EQUIP_CODE	as "equipCode",
@@ -55,7 +55,7 @@
         ORDER BY a.CHARGE_DATE desc, a.EQUIP_CODE asc
     </select>
 
-    <select id="getEquipmentChargeDetail" resultType="com.wzmtr.eam.dto.res.EquipmentChargeResDTO">
+    <select id="getEquipmentChargeDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentChargeResDTO">
         SELECT
         a.REC_ID	as "recId",
         a.EQUIP_CODE	as "equipCode",
@@ -142,7 +142,7 @@
         )
     </update>
 
-    <select id="listEquipmentCharge" resultType="com.wzmtr.eam.dto.res.EquipmentChargeResDTO">
+    <select id="listEquipmentCharge" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentChargeResDTO">
         SELECT
         a.REC_ID	as "recId",
         a.EQUIP_CODE	as "equipCode",

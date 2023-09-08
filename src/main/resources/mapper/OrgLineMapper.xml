@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.basic.OrgLineMapper">
 
-    <select id="pageOrgLine" resultType="com.wzmtr.eam.dto.res.OrgLineResDTO">
+    <select id="pageOrgLine" resultType="com.wzmtr.eam.dto.res.basic.OrgLineResDTO">
         SELECT ol.REC_ID, ol.ORG_CODE, ol.ORG_NAME, ol.LINE_CODE,
         ol.REC_STATUS, ol.REMARK, u.NAME AS REC_CREATOR, ol.REC_CREATE_TIME
         FROM SYS_ORG_LINE ol
@@ -23,7 +23,7 @@
         ORDER BY ol.REC_CREATE_TIME ASC
     </select>
 
-    <select id="getOrgLineDetail" resultType="com.wzmtr.eam.dto.res.OrgLineResDTO">
+    <select id="getOrgLineDetail" resultType="com.wzmtr.eam.dto.res.basic.OrgLineResDTO">
         SELECT ol.REC_ID, ol.ORG_CODE, ol.ORG_NAME, ol.LINE_CODE,
         ol.REC_STATUS, ol.REMARK, u.NAME AS REC_CREATOR, ol.REC_CREATE_TIME
         FROM SYS_ORG_LINE ol
@@ -84,7 +84,7 @@
         )
     </update>
 
-    <select id="listOrgLine" resultType="com.wzmtr.eam.dto.res.OrgLineResDTO">
+    <select id="listOrgLine" resultType="com.wzmtr.eam.dto.res.basic.OrgLineResDTO">
         SELECT ol.REC_ID, ol.ORG_CODE, ol.ORG_NAME, ol.LINE_CODE,
         ol.REC_STATUS, ol.REMARK, u.NAME AS REC_CREATOR, ol.REC_CREATE_TIME
         FROM SYS_ORG_LINE ol

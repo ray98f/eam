@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.equipment.PartReplaceMapper">
 
-    <select id="pagePartReplace" resultType="com.wzmtr.eam.dto.res.PartReplaceResDTO">
+    <select id="pagePartReplace" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号 -->
@@ -43,7 +43,7 @@
         ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
     </select>
 
-    <select id="getPartReplaceDetail" resultType="com.wzmtr.eam.dto.res.PartReplaceResDTO">
+    <select id="getPartReplaceDetail" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号 -->
@@ -88,7 +88,7 @@
         and  EQUIP_CODE=#{equipCode}
     </select>
 
-    <select id="getBom" resultType="com.wzmtr.eam.dto.res.PartReplaceBomResDTO">
+    <select id="getBom" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO">
         SELECT
         REC_ID,
         ENAME	as "ename",  <!-- 代码编号 -->
@@ -247,7 +247,7 @@
         SELECT * FROM dual
     </insert>
 
-    <select id="listPartReplace" resultType="com.wzmtr.eam.dto.res.PartReplaceResDTO">
+    <select id="listPartReplace" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号 -->

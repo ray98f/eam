@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper">
 
-    <select id="pageOverhaulOrder" resultType="com.wzmtr.eam.dto.res.OverhaulOrderResDTO">
+    <select id="pageOverhaulOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
@@ -127,7 +127,7 @@
         ORDER BY sort,ORDER_CODE DESC
     </select>
 
-    <select id="getOverhaulOrderDetail" resultType="com.wzmtr.eam.dto.res.OverhaulOrderResDTO">
+    <select id="getOverhaulOrderDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
@@ -484,7 +484,7 @@
         WHERE REC_ID =#{recId}
     </update>
 
-    <select id="listOverhaulOrder" resultType="com.wzmtr.eam.dto.res.OverhaulOrderResDTO">
+    <select id="listOverhaulOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
@@ -725,7 +725,7 @@
         #{ext5,jdbcType=VARCHAR})
     </insert>
 
-    <select id="pageOrder" resultType="com.wzmtr.eam.dto.res.OverhaulOrderResDTO">
+    <select id="pageOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
@@ -852,7 +852,7 @@
         ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
     </select>
 
-    <select id="getOrder" resultType="com.wzmtr.eam.dto.res.OverhaulOrderResDTO">
+    <select id="getOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
@@ -933,7 +933,7 @@
         FROM T_OVERHAUL_ORDER WHERE REC_ID=#{recId}
     </select>
 
-    <select id="listOrder" resultType="com.wzmtr.eam.dto.res.OverhaulOrderResDTO">
+    <select id="listOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
@@ -1078,7 +1078,7 @@
         WHERE PLAN_CODE = #{planCode})
     </select>
 
-    <select id="pageOverhaulObject" resultType="com.wzmtr.eam.dto.res.OverhaulOrderDetailResDTO">
+    <select id="pageOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
         SELECT
         REC_ID	as "objectId",
         REC_ID	as "recId",  <!-- 记录ID -->
@@ -1150,7 +1150,7 @@
         order by REC_ID asc
     </select>
 
-    <select id="getOverhaulObjectDetail" resultType="com.wzmtr.eam.dto.res.OverhaulOrderDetailResDTO">
+    <select id="getOverhaulObjectDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
         SELECT
         REC_ID	as "objectId",
         REC_ID	as "recId",  <!-- 记录ID -->
@@ -1212,7 +1212,7 @@
         FROM T_OVERHAUL_ORDER_DETAIL WHERE REC_ID=#{id}
     </select>
 
-    <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.OverhaulOrderDetailResDTO">
+    <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
         SELECT
         REC_ID	as "objectId",
         REC_ID	as "recId",  <!-- 记录ID -->

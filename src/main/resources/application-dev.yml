@@ -31,16 +31,16 @@ excluded:
 
 sso:
   url: http://mbtt.wzmtr.com:4443/cas
-  home: http://192.168.30.58:8002/rights/
+  home: http://192.168.34.118:8002/eam/
 
 cas:
   serverUrlPrefix: "${sso.url}"
-  serviceUrlPrefix: "http://192.168.30.58:8002/rights"
+  serviceUrlPrefix: "http://192.168.34.118:8002/eam"
   casFilterUrlPattern: "/cas"
   loginUrlPattern: "/login"
   logoutUrlPattern: "/logout"
   successUrlPattern: "/index"
-  serviceFront: "http://192.168.30.58:8899/index.html"
+  serviceFront: "http://192.168.34.118:8899/index.html"
 
 diboot:
   core:

@@ -2,9 +2,8 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.GeneralSurveyReqDTO;
-import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
-import com.wzmtr.eam.dto.res.GeneralSurveyResDTO;
+import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
+import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;

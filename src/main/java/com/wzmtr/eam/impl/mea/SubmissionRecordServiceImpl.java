@@ -2,12 +2,12 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.SubmissionRecordDetailReqDTO;
-import com.wzmtr.eam.dto.req.SubmissionRecordReqDTO;
+import com.wzmtr.eam.dto.req.mea.SubmissionRecordDetailReqDTO;
+import com.wzmtr.eam.dto.req.mea.SubmissionRecordReqDTO;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
-import com.wzmtr.eam.dto.res.MeaResDTO;
-import com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO;
-import com.wzmtr.eam.dto.res.SubmissionRecordResDTO;
+import com.wzmtr.eam.dto.res.mea.MeaResDTO;
+import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
+import com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;

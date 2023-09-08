@@ -39,7 +39,7 @@
         a.EXT5	as "ext5" <!-- 扩展字段5 -->
     </sql>
 
-    <select id="pageSubmission" resultType="com.wzmtr.eam.dto.res.SubmissionResDTO">
+    <select id="pageSubmission" resultType="com.wzmtr.eam.dto.res.mea.SubmissionResDTO">
         <include refid="submission-instrument-cols"/>
         FROM T_MEA_SUBMISSION a WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="req.sendVerifyNo!=null and req.sendVerifyNo!=''">
@@ -57,7 +57,7 @@
         order by a.SEND_VERIFY_NO desc
     </select>
 
-    <select id="getSubmissionDetail" resultType="com.wzmtr.eam.dto.res.SubmissionResDTO">
+    <select id="getSubmissionDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionResDTO">
         <include refid="submission-instrument-cols"/>
         FROM T_MEA_SUBMISSION a WHERE a.REC_ID=#{id}
     </select>
@@ -237,7 +237,7 @@
         WHERE REC_ID=#{id}
     </update>
 
-    <select id="listSubmission" resultType="com.wzmtr.eam.dto.res.SubmissionResDTO">
+    <select id="listSubmission" resultType="com.wzmtr.eam.dto.res.mea.SubmissionResDTO">
         <include refid="submission-instrument-cols"/>
         FROM T_MEA_SUBMISSION a WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="sendVerifyNo!=null and sendVerifyNo!=''">
@@ -305,13 +305,13 @@
         LEFT JOIN T_SUBMISSION_RECORD_DETAIL c ON a.REC_ID=c.TEST_LIST_DETAIL_REC_ID
     </sql>
 
-    <select id="pageSubmissionDetail" resultType="com.wzmtr.eam.dto.res.SubmissionDetailResDTO">
+    <select id="pageSubmissionDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionDetailResDTO">
         <include refid="submission-detail-cols"/>
         WHERE 1=1 and a.SEND_VERIFY_NO=#{sendVerifyNo}
         order by a.REC_CREATE_TIME asc
     </select>
 
-    <select id="getSubmissionDetailDetail" resultType="com.wzmtr.eam.dto.res.SubmissionDetailResDTO">
+    <select id="getSubmissionDetailDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionDetailResDTO">
         <include refid="submission-detail-cols"/>
         WHERE a.REC_ID=#{id}
     </select>
@@ -504,7 +504,7 @@
         WHERE REC_ID=#{recId}
     </update>
 
-    <select id="listSubmissionDetail" resultType="com.wzmtr.eam.dto.res.SubmissionDetailResDTO">
+    <select id="listSubmissionDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionDetailResDTO">
         <include refid="submission-detail-cols"/>
         WHERE 1=1 and a.SEND_VERIFY_NO=#{sendVerifyNo}
         order by a.REC_CREATE_TIME asc

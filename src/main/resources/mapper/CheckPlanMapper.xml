@@ -40,7 +40,7 @@
         a.EDIT_DEPT_CODE as "editDeptCode"
     </sql>
 
-    <select id="pageCheckPlan" resultType="com.wzmtr.eam.dto.res.CheckPlanResDTO">
+    <select id="pageCheckPlan" resultType="com.wzmtr.eam.dto.res.mea.CheckPlanResDTO">
         <include refid="checkPlan-instrument-cols"/>
         FROM T_MEA_CHECK_PLAN a WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="req.instrmPlanNo!=null and req.instrmPlanNo!=''">
@@ -67,7 +67,7 @@
         order by a.INSTRM_PLAN_NO desc
     </select>
 
-    <select id="getCheckPlanDetail" resultType="com.wzmtr.eam.dto.res.CheckPlanResDTO">
+    <select id="getCheckPlanDetail" resultType="com.wzmtr.eam.dto.res.mea.CheckPlanResDTO">
         <include refid="checkPlan-instrument-cols"/>
         FROM T_MEA_CHECK_PLAN a WHERE a.REC_ID=#{id}
     </select>
@@ -252,7 +252,7 @@
         WHERE REC_ID=#{id}
     </update>
 
-    <select id="listCheckPlan" resultType="com.wzmtr.eam.dto.res.CheckPlanResDTO">
+    <select id="listCheckPlan" resultType="com.wzmtr.eam.dto.res.mea.CheckPlanResDTO">
         <include refid="checkPlan-instrument-cols"/>
         FROM T_MEA_CHECK_PLAN a WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="instrmPlanNo!=null and instrmPlanNo!=''">
@@ -328,7 +328,7 @@
         left join T_MEA_INSTRUMENT b on a.EQUIP_CODE=b.EQUIP_CODE
     </sql>
 
-    <select id="pageInfo" resultType="com.wzmtr.eam.dto.res.MeaInfoResDTO">
+    <select id="pageInfo" resultType="com.wzmtr.eam.dto.res.mea.MeaInfoResDTO">
         <include refid="info-cols"/>
         WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="equipCode!=null and equipCode!=''">
@@ -340,7 +340,7 @@
         order by a.REC_CREATE_TIME desc
     </select>
 
-    <select id="getInfoDetail" resultType="com.wzmtr.eam.dto.res.MeaInfoResDTO">
+    <select id="getInfoDetail" resultType="com.wzmtr.eam.dto.res.mea.MeaInfoResDTO">
         <include refid="info-cols"/>
         WHERE 1=1 and a.REC_ID=#{id}
     </select>
@@ -533,7 +533,7 @@
         WHERE REC_ID=#{recId}
     </update>
 
-    <select id="listInfo" resultType="com.wzmtr.eam.dto.res.MeaInfoResDTO">
+    <select id="listInfo" resultType="com.wzmtr.eam.dto.res.mea.MeaInfoResDTO">
         <include refid="info-cols"/>
         WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="equipCode!=null and equipCode!=''">

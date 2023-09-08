@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.basic.FaultMapper">
 
-    <select id="pageFault" resultType="com.wzmtr.eam.dto.res.FaultResDTO">
+    <select id="pageFault" resultType="com.wzmtr.eam.dto.res.basic.FaultResDTO">
         SELECT f.REC_ID, f.EQUIPMENT_TYPE_CODE, f.LINE_CODE, f.FAULT_CODE_TYPE, f.FAULT_CODE, f.FAULT_DESCR,
         f.REC_STATUS, f.REMARK, u.NAME AS REC_CREATOR, f.REC_CREATE_TIME, f.RELATED_CODES, ec.NODE_NAME AS EQUIPMENT_TYPE_NAME
         FROM T_FAULT f
@@ -24,7 +24,7 @@
         ORDER BY f.FAULT_CODE ASC
     </select>
 
-    <select id="getFaultDetail" resultType="com.wzmtr.eam.dto.res.FaultResDTO">
+    <select id="getFaultDetail" resultType="com.wzmtr.eam.dto.res.basic.FaultResDTO">
         SELECT f.REC_ID, f.EQUIPMENT_TYPE_CODE, f.LINE_CODE, f.FAULT_CODE_TYPE, f.FAULT_CODE, f.FAULT_DESCR,
         f.REC_STATUS, f.REMARK, u.NAME AS REC_CREATOR, f.REC_CREATE_TIME, f.RELATED_CODES, ec.NODE_NAME AS EQUIPMENT_TYPE_NAME
         FROM T_FAULT f
@@ -101,7 +101,7 @@
         )
     </update>
 
-    <select id="listFault" resultType="com.wzmtr.eam.dto.res.FaultResDTO">
+    <select id="listFault" resultType="com.wzmtr.eam.dto.res.basic.FaultResDTO">
         SELECT f.REC_ID, f.EQUIPMENT_TYPE_CODE, f.LINE_CODE, f.FAULT_CODE_TYPE, f.FAULT_CODE, f.FAULT_DESCR,
         f.REC_STATUS, f.REMARK, u.NAME AS REC_CREATOR, f.REC_CREATE_TIME, f.RELATED_CODES, ec.NODE_NAME AS EQUIPMENT_TYPE_NAME
         FROM T_FAULT f

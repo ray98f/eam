@@ -1,9 +1,9 @@
 package com.wzmtr.eam.controller.specialEquip;
 
-import com.wzmtr.eam.dto.req.DetectionDetailReqDTO;
-import com.wzmtr.eam.dto.req.DetectionReqDTO;
-import com.wzmtr.eam.dto.res.DetectionDetailResDTO;
-import com.wzmtr.eam.dto.res.DetectionResDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;

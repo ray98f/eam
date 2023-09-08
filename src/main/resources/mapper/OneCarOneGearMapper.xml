@@ -386,7 +386,7 @@
         </if>
              ORDER BY T21.REC_ID asc
     </select>
-    <select id="querydmdm20" resultType="com.wzmtr.eam.dto.res.PartReplaceResDTO">
+    <select id="querydmdm20" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
         SELECT
         REC_ID as "recId",  <!-- 记录编号 -->
         FAULT_WORK_NO as "faultWorkNo",  <!-- 故障工单编号 -->

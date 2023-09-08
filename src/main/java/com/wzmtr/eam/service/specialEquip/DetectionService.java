@@ -1,14 +1,12 @@
 package com.wzmtr.eam.service.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.DetectionDetailReqDTO;
-import com.wzmtr.eam.dto.req.DetectionReqDTO;
-import com.wzmtr.eam.dto.res.DetectionDetailResDTO;
-import com.wzmtr.eam.dto.res.DetectionResDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;

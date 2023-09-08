@@ -1,10 +1,9 @@
 package com.wzmtr.eam.service.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
-import com.wzmtr.eam.dto.res.EquipmentResDTO;
-import com.wzmtr.eam.dto.res.PartReplaceBomResDTO;
-import com.wzmtr.eam.dto.res.PartReplaceResDTO;
+import com.wzmtr.eam.dto.req.equipment.PartReplaceReqDTO;
+import com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO;
+import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import org.springframework.web.multipart.MultipartFile;

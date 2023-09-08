@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.specialEquip.DetectionMapper">
 
-    <select id="pageDetection" resultType="com.wzmtr.eam.dto.res.DetectionResDTO">
+    <select id="pageDetection" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.CHECK_NO  as "checkNo",
@@ -58,7 +58,7 @@
         ORDER BY a.CHECK_NO desc
     </select>
 
-    <select id="getDetectionDetail" resultType="com.wzmtr.eam.dto.res.DetectionResDTO">
+    <select id="getDetectionDetail" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.CHECK_NO  as "checkNo",
@@ -252,7 +252,7 @@
         WHERE REC_ID=#{id}
     </update>
 
-    <select id="listDetection" resultType="com.wzmtr.eam.dto.res.DetectionResDTO">
+    <select id="listDetection" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.CHECK_NO  as "checkNo",
@@ -311,7 +311,7 @@
         ORDER BY a.CHECK_NO desc
     </select>
 
-    <select id="pageDetectionDetail" resultType="com.wzmtr.eam.dto.res.DetectionDetailResDTO">
+    <select id="pageDetectionDetail" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
@@ -376,7 +376,7 @@
         order by a.EQUIP_CODE asc
     </select>
 
-    <select id="getDetectionDetailDetail" resultType="com.wzmtr.eam.dto.res.DetectionDetailResDTO">
+    <select id="getDetectionDetailDetail" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
@@ -670,7 +670,7 @@
         WHERE REC_ID = #{recId}
     </update>
 
-    <select id="listDetectionDetail" resultType="com.wzmtr.eam.dto.res.DetectionDetailResDTO">
+    <select id="listDetectionDetail" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->

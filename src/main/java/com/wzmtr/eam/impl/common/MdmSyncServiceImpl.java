@@ -7,7 +7,7 @@ import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.entity.SysOrgUser;
 import com.wzmtr.eam.entity.SysUser;
-import com.wzmtr.eam.dto.res.OrgParentResDTO;
+import com.wzmtr.eam.dto.res.basic.OrgParentResDTO;
 import com.wzmtr.eam.service.common.MdmSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

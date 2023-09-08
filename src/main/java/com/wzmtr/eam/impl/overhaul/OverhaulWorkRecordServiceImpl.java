@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.overhaul;
 
-import com.wzmtr.eam.dto.req.OverhaulOrderReqDTO;
-import com.wzmtr.eam.dto.req.OverhaulWorkRecordReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulWorkRecordReqDTO;
 import com.wzmtr.eam.mapper.overhaul.OverhaulWorkRecordMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;

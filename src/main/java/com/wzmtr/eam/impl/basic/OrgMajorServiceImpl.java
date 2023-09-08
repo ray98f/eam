@@ -2,10 +2,10 @@ package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.OrgMajorReqDTO;
-import com.wzmtr.eam.dto.res.FaultResDTO;
-import com.wzmtr.eam.dto.res.FaultRespAndRepairDeptResDTO;
-import com.wzmtr.eam.dto.res.OrgMajorResDTO;
+import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
+import com.wzmtr.eam.dto.res.basic.FaultResDTO;
+import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
+import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;

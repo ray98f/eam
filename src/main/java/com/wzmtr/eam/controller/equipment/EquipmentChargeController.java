@@ -1,7 +1,7 @@
 package com.wzmtr.eam.controller.equipment;
 
-import com.wzmtr.eam.dto.req.EquipmentChargeReqDTO;
-import com.wzmtr.eam.dto.res.EquipmentChargeResDTO;
+import com.wzmtr.eam.dto.req.equipment.EquipmentChargeReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentChargeResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;

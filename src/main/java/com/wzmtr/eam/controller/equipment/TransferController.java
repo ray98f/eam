@@ -1,9 +1,8 @@
 package com.wzmtr.eam.controller.equipment;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.TransferSplitReqDTO;
-import com.wzmtr.eam.dto.res.EquipmentResDTO;
-import com.wzmtr.eam.dto.res.TransferResDTO;
+import com.wzmtr.eam.dto.req.equipment.TransferSplitReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
+import com.wzmtr.eam.dto.res.equipment.TransferResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RestController

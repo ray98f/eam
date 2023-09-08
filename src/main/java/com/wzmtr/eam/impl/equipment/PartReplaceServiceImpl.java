@@ -2,13 +2,10 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.EquipmentReqDTO;
-import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
-import com.wzmtr.eam.dto.req.UnitCodeReqDTO;
-import com.wzmtr.eam.dto.res.PartReplaceBomResDTO;
-import com.wzmtr.eam.dto.res.PartReplaceResDTO;
+import com.wzmtr.eam.dto.req.equipment.PartReplaceReqDTO;
+import com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO;
+import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
-import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -29,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 

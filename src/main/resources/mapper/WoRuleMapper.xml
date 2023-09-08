@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.basic.WoRuleMapper">
 
-    <select id="pageWoRule" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO">
+    <select id="pageWoRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO">
         SELECT wr.REC_ID, wr.RULE_CODE, wr.RULE_NAME, wr.RULE_USEAGE,
         wr.REC_STATUS, wr.REMARK, u1.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, u2.NAME AS REC_REVISOR, wr.REC_REVISE_TIME
         FROM T_WO_RULE wr
@@ -21,7 +21,7 @@
         ORDER BY wr.RULE_CODE ASC
     </select>
 
-    <select id="getWoRule" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO">
+    <select id="getWoRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO">
         SELECT wr.REC_ID, wr.RULE_CODE, wr.RULE_NAME, wr.RULE_USEAGE,
         wr.REC_STATUS, wr.REMARK, u1.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, u2.NAME AS REC_REVISOR, wr.REC_REVISE_TIME
         FROM T_WO_RULE wr
@@ -30,7 +30,7 @@
         where wr.REC_ID=#{id}
     </select>
 
-    <select id="pageWoRuleDetail" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
+    <select id="pageWoRuleDetail" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
         SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
         wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
         FROM T_WO_RULE_DETAIL wd
@@ -42,7 +42,7 @@
         ORDER BY wd.RULE_SORT ASC
     </select>
 
-    <select id="getWoRuleDetail" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
+    <select id="getWoRuleDetail" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
         SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
         wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
         FROM T_WO_RULE_DETAIL wd
@@ -178,7 +178,7 @@
         ))
     </update>
 
-    <select id="listWoRule" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO">
+    <select id="listWoRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO">
         SELECT wr.REC_ID, wr.RULE_CODE, wr.RULE_NAME, wr.RULE_USEAGE,
         wr.REC_STATUS, wr.REMARK, u1.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, u2.NAME AS REC_REVISOR, wr.REC_REVISE_TIME
         FROM T_WO_RULE wr
@@ -197,7 +197,7 @@
         ORDER BY wr.RULE_CODE ASC
     </select>
 
-    <select id="listWoRuleDetail" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
+    <select id="listWoRuleDetail" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
         SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
         wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.BEFORE_TIME
         FROM T_WO_RULE_DETAIL wd
@@ -215,7 +215,7 @@
         ORDER BY wd.RULE_SORT ASC
     </select>
 
-    <select id="queryRuleList" resultType="com.wzmtr.eam.dto.res.WoRuleResDTO$WoRuleDetail">
+    <select id="queryRuleList" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
         SELECT
         d.REC_ID as "recId",
         d.RULE_CODE as "ruleCode",

@@ -4,8 +4,7 @@ import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
-import com.wzmtr.eam.dto.res.FaultRespAndRepairDeptResDTO;
-import com.wzmtr.eam.dto.res.OrgMajorResDTO;
+import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * Author: Li.Wang

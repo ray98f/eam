@@ -1,10 +1,8 @@
 package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.GearboxChangeOilReqDTO;
-import com.wzmtr.eam.dto.req.PartReplaceReqDTO;
-import com.wzmtr.eam.dto.res.GearboxChangeOilResDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.req.equipment.GearboxChangeOilReqDTO;
+import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

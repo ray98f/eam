@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.overhaul.OverhaulTplMapper">
 
-    <select id="pageOverhaulTpl" resultType="com.wzmtr.eam.dto.res.OverhaulTplResDTO">
+    <select id="pageOverhaulTpl" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
@@ -64,7 +64,7 @@
         ORDER BY TEMPLATE_ID desc
     </select>
 
-    <select id="getOverhaulTplDetail" resultType="com.wzmtr.eam.dto.res.OverhaulTplResDTO">
+    <select id="getOverhaulTplDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
@@ -290,7 +290,7 @@
         WHERE REC_ID =#{recId}
     </update>
 
-    <select id="listOverhaulTplDetail" resultType="com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO">
+    <select id="listOverhaulTplDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
@@ -330,7 +330,7 @@
         order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
     </select>
 
-    <select id="listOverhaulTpl" resultType="com.wzmtr.eam.dto.res.OverhaulTplResDTO">
+    <select id="listOverhaulTpl" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
@@ -392,7 +392,7 @@
         ORDER BY TEMPLATE_ID desc
     </select>
 
-    <select id="pageOverhaulDetailTpl" resultType="com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO">
+    <select id="pageOverhaulDetailTpl" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
@@ -432,7 +432,7 @@
         order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
     </select>
 
-    <select id="getOverhaulTplDetailDetail" resultType="com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO">
+    <select id="getOverhaulTplDetailDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
@@ -624,7 +624,7 @@
         WHERE REC_ID =#{recId}
     </update>
 
-    <select id="pageOverhaulMaterial" resultType="com.wzmtr.eam.dto.res.OverhaulMaterialResDTO">
+    <select id="pageOverhaulMaterial" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO">
         SELECT
         REC_ID	as "recId",
         TEMPLATE_ID	as "templateId",
@@ -653,7 +653,7 @@
         order by REC_ID asc
     </select>
 
-    <select id="getOverhaulMaterialDetail" resultType="com.wzmtr.eam.dto.res.OverhaulMaterialResDTO">
+    <select id="getOverhaulMaterialDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO">
         SELECT
         REC_ID	as "recId",
         TEMPLATE_ID	as "templateId",
@@ -681,7 +681,7 @@
         WHERE REC_ID=#{id}
     </select>
 
-    <select id="listOverhaulTplStatus" resultType="com.wzmtr.eam.dto.res.OverhaulTplResDTO">
+    <select id="listOverhaulTplStatus" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
@@ -816,7 +816,7 @@
         )
     </update>
 
-    <select id="listOverhaulMaterial" resultType="com.wzmtr.eam.dto.res.OverhaulMaterialResDTO">
+    <select id="listOverhaulMaterial" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO">
         SELECT
         REC_ID	as "recId",
         TEMPLATE_ID	as "templateId",
@@ -845,7 +845,7 @@
         order by REC_ID asc
     </select>
 
-    <select id="queryTemplate" resultType="com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO">
+    <select id="queryTemplate" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO">
         SELECT DISTINCT
         TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
         TEMPLATE_NAME	as "templateName"  <!-- 模板名称 -->

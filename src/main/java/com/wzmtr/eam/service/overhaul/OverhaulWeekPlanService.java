@@ -1,18 +1,16 @@
 package com.wzmtr.eam.service.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.*;
-import com.wzmtr.eam.dto.res.OverhaulObjectResDTO;
-import com.wzmtr.eam.dto.res.OverhaulPlanResDTO;
-import com.wzmtr.eam.dto.res.OverhaulWeekPlanResDTO;
-import com.wzmtr.eam.dto.res.OverhaulTplDetailResDTO;
+import com.wzmtr.eam.dto.req.overhaul.*;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulWeekPlanResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
-import java.util.List;
 
 public interface OverhaulWeekPlanService {
 

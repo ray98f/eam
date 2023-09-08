@@ -1,8 +1,8 @@
 package com.wzmtr.eam.mapper.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.OrgMajorReqDTO;
-import com.wzmtr.eam.dto.res.OrgMajorResDTO;
+import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
+import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

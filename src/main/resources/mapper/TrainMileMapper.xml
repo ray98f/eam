@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.equipment.TrainMileMapper">
 
-    <select id="pageTrainMile" resultType="com.wzmtr.eam.dto.res.TrainMileResDTO">
+    <select id="pageTrainMile" resultType="com.wzmtr.eam.dto.res.equipment.TrainMileResDTO">
         select
         a.REC_ID as "recId",
         a.EQUIP_CODE as "equipCode",
@@ -26,7 +26,7 @@
         order by a.ORIGIN_LINE_NO,a.EQUIP_NAME asc
     </select>
 
-    <select id="getTrainMileDetail" resultType="com.wzmtr.eam.dto.res.TrainMileResDTO">
+    <select id="getTrainMileDetail" resultType="com.wzmtr.eam.dto.res.equipment.TrainMileResDTO">
         select
         a.REC_ID as "recId",
         a.EQUIP_CODE as "equipCode",
@@ -40,7 +40,7 @@
         where a.MAJOR_CODE='07' and a.REC_ID=#{id}
     </select>
 
-    <select id="listTrainMile" resultType="com.wzmtr.eam.dto.res.TrainMileResDTO">
+    <select id="listTrainMile" resultType="com.wzmtr.eam.dto.res.equipment.TrainMileResDTO">
         select
         a.REC_ID as "recId",
         a.EQUIP_CODE as "equipCode",
@@ -134,7 +134,7 @@
         #{regenratedIncrement,jdbcType=NUMERIC})
     </insert>
 
-    <select id="pageTrainMileage" resultType="com.wzmtr.eam.dto.res.TrainMileageResDTO">
+    <select id="pageTrainMileage" resultType="com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO">
         SELECT
         tm.REC_ID	as "recId",
         tm.EQUIP_CODE	as "equipCode",
@@ -180,7 +180,7 @@
         order by tm.FILLIN_TIME desc
     </select>
 
-    <select id="getTrainMileageDetail" resultType="com.wzmtr.eam.dto.res.TrainMileageResDTO">
+    <select id="getTrainMileageDetail" resultType="com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO">
         SELECT
         tm.REC_ID	as "recId",
         tm.EQUIP_CODE	as "equipCode",
@@ -216,7 +216,7 @@
         WHERE tm.REC_ID = #{id}
     </select>
 
-    <select id="listTrainMileage" resultType="com.wzmtr.eam.dto.res.TrainMileageResDTO">
+    <select id="listTrainMileage" resultType="com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO">
         SELECT
         tm.REC_ID	as "recId",
         tm.EQUIP_CODE	as "equipCode",

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.equipment.TransferMapper">
 
-    <select id="pageTransfer" resultType="com.wzmtr.eam.dto.res.TransferResDTO">
+    <select id="pageTransfer" resultType="com.wzmtr.eam.dto.res.equipment.TransferResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         TRANSFER_NO	as "transferNo",  <!-- 移交单号 -->
@@ -107,7 +107,7 @@
         ORDER BY SUBSTR(TRANSFER_NO,3) DESC,ITEM_CODE DESC
     </select>
 
-    <select id="getTransferDetail" resultType="com.wzmtr.eam.dto.res.TransferResDTO">
+    <select id="getTransferDetail" resultType="com.wzmtr.eam.dto.res.equipment.TransferResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         TRANSFER_NO	as "transferNo",  <!-- 移交单号 -->
@@ -181,7 +181,7 @@
         FROM T_TRANSFER_DETAIL WHERE REC_ID=#{id}
     </select>
 
-    <select id="listTransfer" resultType="com.wzmtr.eam.dto.res.TransferResDTO">
+    <select id="listTransfer" resultType="com.wzmtr.eam.dto.res.equipment.TransferResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         TRANSFER_NO	as "transferNo",  <!-- 移交单号 -->

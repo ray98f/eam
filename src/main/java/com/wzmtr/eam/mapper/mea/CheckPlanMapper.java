@@ -1,11 +1,11 @@
 package com.wzmtr.eam.mapper.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.CheckPlanListReqDTO;
-import com.wzmtr.eam.dto.req.CheckPlanReqDTO;
-import com.wzmtr.eam.dto.req.MeaInfoReqDTO;
-import com.wzmtr.eam.dto.res.CheckPlanResDTO;
-import com.wzmtr.eam.dto.res.MeaInfoResDTO;
+import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
+import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
+import com.wzmtr.eam.dto.req.mea.MeaInfoReqDTO;
+import com.wzmtr.eam.dto.res.mea.CheckPlanResDTO;
+import com.wzmtr.eam.dto.res.mea.MeaInfoResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

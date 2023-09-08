@@ -1,8 +1,8 @@
 package com.wzmtr.eam.service.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.RegionReqDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.req.basic.RegionReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 

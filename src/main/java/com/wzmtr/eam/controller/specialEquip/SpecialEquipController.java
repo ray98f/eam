@@ -1,8 +1,8 @@
 package com.wzmtr.eam.controller.specialEquip;
 
-import com.wzmtr.eam.dto.req.SpecialEquipReqDTO;
-import com.wzmtr.eam.dto.res.SpecialEquipHistoryResDTO;
-import com.wzmtr.eam.dto.res.SpecialEquipResDTO;
+import com.wzmtr.eam.dto.req.specialEquip.SpecialEquipReqDTO;
+import com.wzmtr.eam.dto.res.specialEquip.SpecialEquipHistoryResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.SpecialEquipResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;

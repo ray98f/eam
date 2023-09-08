@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.res.MemberResDTO;
 import com.wzmtr.eam.entity.CompanyStructureTreeDTO;
 import com.wzmtr.eam.entity.SysOffice;
-import com.wzmtr.eam.dto.res.OrgParentResDTO;
+import com.wzmtr.eam.dto.res.basic.OrgParentResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

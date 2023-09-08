@@ -1,9 +1,6 @@
 package com.wzmtr.eam.mapper.statistic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.res.PartReplaceResDTO;
-import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
-import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;

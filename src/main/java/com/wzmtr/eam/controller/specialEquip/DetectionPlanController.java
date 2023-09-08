@@ -1,9 +1,9 @@
 package com.wzmtr.eam.controller.specialEquip;
 
-import com.wzmtr.eam.dto.req.DetectionPlanDetailReqDTO;
-import com.wzmtr.eam.dto.req.DetectionPlanReqDTO;
-import com.wzmtr.eam.dto.res.DetectionPlanDetailResDTO;
-import com.wzmtr.eam.dto.res.DetectionPlanResDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanDetailReqDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanDetailResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;

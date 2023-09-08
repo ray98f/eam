@@ -1,8 +1,8 @@
 package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.EquipmentRoomReqDTO;
-import com.wzmtr.eam.dto.res.EquipmentRoomResDTO;
+import com.wzmtr.eam.dto.req.equipment.EquipmentRoomReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
 package com.wzmtr.eam.controller.basic;
 
-import com.wzmtr.eam.dto.req.RegionReqDTO;
-import com.wzmtr.eam.dto.res.RegionResDTO;
+import com.wzmtr.eam.dto.req.basic.RegionReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;

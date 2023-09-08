@@ -1,6 +1,6 @@
 package com.wzmtr.eam.service.overhaul;
 
-import com.wzmtr.eam.dto.req.OverhaulOrderReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 
 public interface OverhaulWorkRecordService {
 

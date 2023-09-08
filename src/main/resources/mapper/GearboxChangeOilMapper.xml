@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper">
 
-    <select id="pageGearboxChangeOil" resultType="com.wzmtr.eam.dto.res.GearboxChangeOilResDTO">
+    <select id="pageGearboxChangeOil" resultType="com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         TRAIN_NO	as "trainNo",  <!-- 列车号 -->
@@ -36,7 +36,7 @@
         ORDER BY REC_CREATE_TIME desc
     </select>
 
-    <select id="getGearboxChangeOilDetail" resultType="com.wzmtr.eam.dto.res.GearboxChangeOilResDTO">
+    <select id="getGearboxChangeOilDetail" resultType="com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         TRAIN_NO	as "trainNo",  <!-- 列车号 -->
@@ -186,7 +186,7 @@
         SELECT * FROM dual
     </insert>
 
-    <select id="listGearboxChangeOil" resultType="com.wzmtr.eam.dto.res.GearboxChangeOilResDTO">
+    <select id="listGearboxChangeOil" resultType="com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         TRAIN_NO	as "trainNo",  <!-- 列车号 -->

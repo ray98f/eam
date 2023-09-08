@@ -47,7 +47,7 @@
         LEFT JOIN T_MEA_SUBMISSION b ON a.SEND_VERIFY_NO=b.SEND_VERIFY_NO
     </sql>
 
-    <select id="pageSubmissionRecord" resultType="com.wzmtr.eam.dto.res.SubmissionRecordResDTO">
+    <select id="pageSubmissionRecord" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO">
         <include refid="submission-record-cols"/>
         WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="checkNo!=null and checkNo!=''">
@@ -65,7 +65,7 @@
         order by a.CHECK_NO desc
     </select>
 
-    <select id="getSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.SubmissionRecordResDTO">
+    <select id="getSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO">
         <include refid="submission-record-cols"/>
         WHERE a.REC_ID=#{id}
     </select>
@@ -210,7 +210,7 @@
         WHERE REC_ID=#{id}
     </update>
 
-    <select id="listSubmissionRecord" resultType="com.wzmtr.eam.dto.res.SubmissionRecordResDTO">
+    <select id="listSubmissionRecord" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO">
         <include refid="submission-record-cols"/>
         WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="recId!=null and recId!=''">
@@ -292,13 +292,13 @@
         LEFT JOIN T_MEA_CHECK_PLAN d ON b.INSTRM_PLAN_NO=d.INSTRM_PLAN_NO
     </sql>
 
-    <select id="pageSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO">
+    <select id="pageSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO">
         <include refid="submission-record-detail-cols"/>
         WHERE 1=1 AND a.TEST_REC_ID=#{testRecId}
         order by a.REC_CREATE_TIME desc
     </select>
 
-    <select id="getSubmissionRecordDetailDetail" resultType="com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO">
+    <select id="getSubmissionRecordDetailDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO">
         <include refid="submission-record-detail-cols"/>
         WHERE a.REC_ID=#{id}
     </select>
@@ -541,7 +541,7 @@
         WHERE REC_ID=#{recId}
     </update>
 
-    <select id="listSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.SubmissionRecordDetailResDTO">
+    <select id="listSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO">
         <include refid="submission-record-detail-cols"/>
         WHERE 1=1 AND a.TEST_REC_ID=#{testRecId}
         order by a.REC_CREATE_TIME desc
