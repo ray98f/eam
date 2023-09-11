@@ -1,6 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.fault.AnalyzeMapper">
+    <update id="update">
+        UPDATE T_FAULT_DETAIL
+        SET
+        <if test="companyCode != null and companyCode != ''">
+            , COMPANY_CODE = #{companyCode}
+        </if>
+        <if test="companyName != null and companyName != ''">
+            , COMPANY_NAME = #{companyName}
+        </if>
+        <if test="faultAnalysisNo != null and faultAnalysisNo != ''">
+            , FAULT_ANALYSIS_NO = #{faultAnalysisNo}
+        </if>
+        <if test="faultWorkNo != null and faultWorkNo != ''">
+            , FAULT_WORK_NO = #{faultWorkNo}
+        </if>
+        <if test="mainEquipCode != null and mainEquipCode != ''">
+            , MAIN_EQUIP_CODE = #{mainEquipCode}
+        </if>
+        <if test="mainEquipName != null and mainEquipName != ''">
+            , MAIN_EQUIP_NAME = #{mainEquipName}
+        </if>
+        <if test="majorCode != null and majorCode != ''">
+            , MAJOR_CODE = #{majorCode}
+        </if>
+        <if test="recoveryTime != null">
+            , RECOVERY_TIME = #{recoveryTime}
+        </if>
+        <if test="affectCodes != null and affectCodes != ''">
+            , AFFECT_CODES = #{affectCodes}
+        </if>
+        <if test="frequency != null">
+            , FREQUENCY = #{frequency}
+        </if>
+        <if test="manufacture != null and manufacture != ''">
+            , MANUFACTURE = #{manufacture}
+        </if>
+        <if test="faultDetail != null and faultDetail != ''">
+            , FAULT_DETAIL = #{faultDetail}
+        </if>
+        <if test="faultProcessDetail != null and faultProcessDetail != ''">
+            , FAULT_PROCESS_DETAIL = #{faultProcessDetail}
+        </if>
+        <if test="faultReasonDetail != null and faultReasonDetail != ''">
+            , FAULT_REASON_DETAIL = #{faultReasonDetail}
+        </if>
+        <if test="problemDescr != null and problemDescr != ''">
+            , PROBLEM_DESCR = #{problemDescr}
+        </if>
+        <if test="improveDetail != null and improveDetail != ''">
+            , IMPROVE_DETAIL = #{improveDetail}
+        </if>
+        <if test="workFlowInstId != null and workFlowInstId != ''">
+            , WORK_FLOW_INST_ID = #{workFlowInstId}
+        </if>
+        <if test="workFlowInstStatus != null and workFlowInstStatus != ''">
+            , WORK_FLOW_INST_STATUS = #{workFlowInstStatus}
+        </if>
+        <if test="docId != null and docId != ''">
+            , DOC_ID = #{docId}
+        </if>
+        <if test="remark != null and remark != ''">
+            , REMARK = #{remark}
+        </if>
+        <if test="recStatus != null">
+            , REC_STATUS = #{recStatus}
+        </if>
+        <if test="recCreator != null and recCreator != ''">
+            , REC_CREATOR = #{recCreator}
+        </if>
+        <if test="recCreateTime != null">
+            , REC_CREATE_TIME = #{recCreateTime}
+        </if>
+        <if test="recRevisor != null and recRevisor != ''">
+            , REC_REVISOR = #{recRevisor}
+        </if>
+        <if test="recReviseTime != null">
+            , REC_REVISE_TIME = #{recReviseTime}
+        </if>
+        <if test="recDeletor != null and recDeletor != ''">
+            , REC_DELETOR = #{recDeletor}
+        </if>
+        <if test="recDeleteTime != null">
+            , REC_DELETE_TIME = #{recDeleteTime}
+        </if>
+        <if test="deleteFlag != null">
+            , DELETE_FLAG = #{deleteFlag}
+        </if>
+        <if test="archiveFlag != null">
+            , ARCHIVE_FLAG = #{archiveFlag}
+        </if>
+        <if test="ext1 != null and ext1 != ''">
+            , EXT1 = #{ext1}
+        </if>
+        <if test="ext2 != null and ext2 != ''">
+            , EXT2 = #{ext2}
+        </if>
+        <if test="ext3 != null and ext3 != ''">
+            , EXT3 = #{ext3}
+        </if>
+        <if test="ext4 != null and ext4 != ''">
+            , EXT4 = #{ext4}
+        </if>
+        <if test="ext5 != null and ext5 != ''">
+            , EXT5 = #{ext5}
+        </if>
+        WHERE 1=1
+        <if test="faultAnalysisNo != null and faultAnalysisNo != ''">
+            AND FAULT_ANALYSIS_NO = #{faultAnalysisNo}
+        </if>
+        <if test="faultNo != null and faultNo != ''">
+            AND FAULT_NO = #{faultNo}
+        </if>
+        <if test="faultWorkNo != null and faultWorkNo != ''">
+            AND FAULT_WORK_NO = #{faultWorkNo}
+        </if>
+    </update>
 
 
     <select id="query" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">
@@ -220,7 +336,7 @@
             AND ORG_CODE = #{orgCode}
         </if>
     </select>
-    <select id="getFaultAnalysisList" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">
+    <select id="getFaultAnalysisList" resultType="com.wzmtr.eam.bo.FaultAnalyzeBO">
         SELECT
         d3.REC_ID as "recId",
         d3.COMPANY_CODE as "companyCode",

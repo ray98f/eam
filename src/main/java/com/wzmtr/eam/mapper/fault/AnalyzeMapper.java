@@ -1,12 +1,11 @@
 package com.wzmtr.eam.mapper.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.bo.FaultAnalyzeBO;
+import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.res.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
-import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,8 +25,12 @@ public interface AnalyzeMapper {
     List<AnalyzeResDTO> list(String faultAnalysisNo, String faultNo, String faultWorkNo);
 
     AnalyzeResDTO detail(FaultAnalyzeDetailReqDTO reqDTO);
-    List<PersonResDTO> getOrgUsers(Set<String> userCode,String orgCode);
-    List<PersonResDTO> queryCoParent(String orgCode);
-    List<AnalyzeResDTO> getFaultAnalysisList(String faultAnalysisNo, String faultNo, String faultWorkNo);
 
+    List<PersonResDTO> getOrgUsers(Set<String> userCode, String orgCode);
+
+    List<PersonResDTO> queryCoParent(String orgCode);
+
+    List<FaultAnalyzeBO> getFaultAnalysisList(String faultAnalysisNo, String faultNo, String faultWorkNo);
+
+    void update(FaultAnalyzeBO dmfm03);
 }

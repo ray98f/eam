@@ -20,6 +20,7 @@ import java.util.Set;
  */
 public interface FaultQueryService {
     Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO);
+
     List<FaultDetailResDTO> statisticList(FaultQueryReqDTO reqDTO);
 
     String queryOrderStatus(SidEntity reqDTO);
@@ -36,7 +37,7 @@ public interface FaultQueryService {
 
     void submit(FaultSubmitReqDTO reqDTO);
 
-    /*      */ List<PersonResDTO> queryUserList(Set<String> userCode, String organCode);
+    List<PersonResDTO> queryUserList(Set<String> userCode, String organCode);
 
     // 驳回
     @Transactional(rollbackFor = Exception.class)

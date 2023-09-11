@@ -525,7 +525,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
 
     @Override
-    /*      */
     public List<PersonResDTO> queryUserList(Set<String> userCode, String organCode) {
         List<PersonResDTO> orgUsers = analyzeMapper.getOrgUsers(userCode, organCode);
         if (CollectionUtil.isEmpty(orgUsers)) {

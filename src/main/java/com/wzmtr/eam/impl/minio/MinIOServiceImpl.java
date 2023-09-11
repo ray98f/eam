@@ -4,7 +4,7 @@ import com.wzmtr.eam.config.MinioConfig;
 import com.wzmtr.eam.dto.req.FileReqDTO;
 import com.wzmtr.eam.entity.File;
 import com.wzmtr.eam.mapper.file.FileMapper;
-import com.wzmtr.eam.service.MinIO.MinIOService;
+import com.wzmtr.eam.service.minio.MinIOService;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.FileUploadUtils;
 import com.wzmtr.eam.utils.MinioUtils;

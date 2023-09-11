@@ -15,5 +15,7 @@ public class PersonResDTO {
     private String userName;
     private String orgCode;
     private String loginName;
+    private String groupName;
+
 
 }

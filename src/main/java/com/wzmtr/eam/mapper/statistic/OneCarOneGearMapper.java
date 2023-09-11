@@ -31,6 +31,8 @@ public interface OneCarOneGearMapper {
      */
     Page<InspectionJobListResDTO> querydmer3(Page<Object> of, String equipName, String startTime, String endTime);
 
+    List<InspectionJobListResDTO> querydmer3(String equipName, String startTime, String endTime);
+
     /**
      * 、二级修(180天
      *
@@ -44,12 +46,16 @@ public interface OneCarOneGearMapper {
      */
     Page<InspectionJobListResDTO> queryER5(Page<Object> of, String equipName, String startTime, String endTime);
 
+    List<InspectionJobListResDTO> queryER5(String equipName, String startTime, String endTime);
+
     /**
      * 故障列表
      *
      * @return
      */
     Page<FaultDetailResDTO> queryFMHistory(Page<Object> of, String equipName, String startTime, String endTime);
+
+    List<FaultDetailResDTO> queryFMHistory(String equipName, String startTime, String endTime);
 
     /**
      * 故障跟踪记录
@@ -58,12 +64,16 @@ public interface OneCarOneGearMapper {
      */
     Page<TrackQueryResDTO> queryDMFM21(Page<Object> of, String equipName, String startTime, String endTime);
 
+    List<TrackQueryResDTO> queryDMFM21(String equipName, String startTime, String endTime);
+
     /**
      * 部件更换列表
      *
      * @return
      */
     Page<PartReplaceResDTO> querydmdm20(Page<Object> of, String equipName, String startTime, String endTime);
+
+    List<PartReplaceResDTO> querydmdm20(String equipName, String startTime, String endTime);
 
     /**
      * 2机修 30 天
@@ -72,5 +82,7 @@ public interface OneCarOneGearMapper {
 
 
     Page<InspectionJobListResDTO> queryER1(Page<Object> of, String equipName, String startTime, String endTime);
+    List<InspectionJobListResDTO> queryER1( String equipName, String startTime, String endTime);
 
+    List<InspectionJobListResDTO> queryER4(String equipName, String startTime, String endTime);
 }

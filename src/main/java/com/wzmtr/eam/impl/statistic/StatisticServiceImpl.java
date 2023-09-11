@@ -65,9 +65,9 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
-        //todo 结构后期优化
+        // todo 结构后期优化
         FailureRateDetailResDTO failureRateDetailResDTO = new FailureRateDetailResDTO();
-        if (CollectionUtil.isEmpty(reqDTO.getIndex())){
+        if (CollectionUtil.isEmpty(reqDTO.getIndex())) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
         if (reqDTO.getIndex().contains(RateIndex.VEHICLE_RATE)) {
@@ -385,9 +385,44 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
+    public void queryER5Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
+        List<InspectionJobListResDTO> inspectionJobListResDTOS = oneCarOneGearMapper.queryER5(equipName, startTime, endTime);
+        List<String> listName = Arrays.asList("当天总公里数", "日期");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(inspectionJobListResDTOS)) {
+            for (InspectionJobListResDTO res : inspectionJobListResDTOS) {
+                Map<String, String> map = new HashMap<>();
+                map.put("当天总公里数", res.getDmer3km());
+                map.put("日期", res.getDmer3date());
+            }
+        }
+        ExcelPortUtil.excelPort("二级修(360天)", listName, list, null, response);
+    }
+
+    @Override
     public Page<FaultDetailResDTO> queryFMHistory(OneCarOneGearQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.queryFMHistory(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
+    }
+
+    @Override
+    public void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) {
+        List<FaultDetailResDTO> faultDetailResDTOS = oneCarOneGearMapper.queryFMHistory(equipName, startTime, endTime);
+        List<String> listName = Arrays.asList("故障编号", "发现时间", "故障影响", "故障系统", "故障描述", "处理过程", "处理人员", "故障分析", "处理时间");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
+            for (FaultDetailResDTO res : faultDetailResDTOS) {
+                Map<String, String> map = new HashMap<>();
+                map.put("故障编号", res.getFaultNo());
+                map.put("发现时间", res.getDiscoveryTime());
+                map.put("故障影响", res.getFaultAffect());
+                map.put("故障系统", res.getSystemName());
+                map.put("故障描述", res.getFaultDisplayDetail());
+                map.put("处理人员", res.getDealerUnit());
+                map.put("处理时间", res.getRepairTime().toString());
+            }
+        }
+        ExcelPortUtil.excelPort("故障列表", listName, list, null, response);
     }
 
     @Override
@@ -406,9 +441,117 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
+    public void querydmdm20Export(String equipName, String startTime, String endTime, HttpServletResponse response) {
+        List<PartReplaceResDTO> resDTOS = oneCarOneGearMapper.querydmdm20(equipName, startTime, endTime);
+        List<String> listName = Arrays.asList("故障工单编号", "作业单位", "作业人员", "更换配件名称", "更换原因", "旧配件编号", "新配件编号", "更换所用时间", "处理日期", "备注");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(resDTOS)) {
+            for (PartReplaceResDTO res : resDTOS) {
+                Map<String, String> map = new HashMap<>();
+                map.put("故障工单编号", res.getFaultWorkNo());
+                map.put("作业单位", res.getOrgType());
+                map.put("作业人员", res.getOperator());
+                map.put("更换配件名称", res.getReplacementNo());
+                map.put("更换原因", res.getReplaceReason());
+                map.put("旧配件编号", res.getOldRepNo());
+                map.put("新配件编号", res.getNewRepNo());
+                map.put("更换所用时间", res.getOperateCostTime());
+                map.put("处理日期", res.getReplaceDate());
+                map.put("备注", res.getRemark());
+            }
+        }
+        ExcelPortUtil.excelPort("齿轮箱换油", listName, list, null, response);
+    }
+
+
+    @Override
     public Page<GearboxChangeOilResDTO> pageGearboxChangeOil(OneCarOneGearQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return gearboxChangeOilMapper.pageGearboxChangeOil(reqDTO.of(), reqDTO.getEquipName());
+    }
+
+    @Override
+    public void pageGearboxChangeOilExport(String equipName, HttpServletResponse response) {
+        List<GearboxChangeOilResDTO> resDTOS = gearboxChangeOilMapper.listGearboxChangeOil(equipName);
+        List<String> listName = Arrays.asList("完成日期", "作业单位", "作业人员", "确认人员", "备注");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(resDTOS)) {
+            for (GearboxChangeOilResDTO res : resDTOS) {
+                Map<String, String> map = new HashMap<>();
+                map.put("处理时间", res.getCompleteDate());
+                map.put("作业单位", res.getOrgType());
+                map.put("作业人员", res.getOperator());
+                map.put("确认人员", res.getConfirmor());
+                map.put("备注", res.getRemark());
+            }
+        }
+        ExcelPortUtil.excelPort("齿轮箱换油", listName, list, null, response);
+    }
+
+    @Override
+    public void querydmer3Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
+        List<InspectionJobListResDTO> resList = oneCarOneGearMapper.querydmer3(equipName, startTime, endTime);
+        List<String> listName = Arrays.asList("当天总公里数", "日期");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(resList)) {
+            for (InspectionJobListResDTO res : resList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("当天总公里数", res.getDmer3km());
+                map.put("日期", res.getDmer3date());
+            }
+        }
+        ExcelPortUtil.excelPort("2级修90天包", listName, list, null, response);
+    }
+
+    @Override
+    public void queryER4Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
+        // 2级修180天
+        List<InspectionJobListResDTO> resList = oneCarOneGearMapper.queryER4(equipName, startTime, endTime);
+        List<String> listName = Arrays.asList("当天总公里数", "日期");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(resList)) {
+            for (InspectionJobListResDTO res : resList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("当天总公里数", res.getDmer3km());
+                map.put("日期", res.getDmer3date());
+            }
+        }
+        ExcelPortUtil.excelPort("2级修180天", listName, list, null, response);
+    }
+
+    @Override
+    public void queryER1Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
+        List<InspectionJobListResDTO> resList = oneCarOneGearMapper.queryER1(equipName, startTime, endTime);
+        List<String> listName = Arrays.asList("当天总公里数", "日期");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(resList)) {
+            for (InspectionJobListResDTO res : resList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("当天总公里数", res.getDmer3km());
+                map.put("日期", res.getDmer3date());
+            }
+        }
+        ExcelPortUtil.excelPort("1级修", listName, list, null, response);
+    }
+
+    @Override
+    public void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) {
+        List<WheelsetLathingResDTO> wheelsetLathingResDTOS = wheelsetLathingMapper.listWheelsetLathing(equipName);
+        List<String> listName = Arrays.asList("车厢号", "镟修轮对车轴","镟修详情","开始日期","完成日期","负责人","备注");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(wheelsetLathingResDTOS)) {
+            for (WheelsetLathingResDTO res : wheelsetLathingResDTOS) {
+                Map<String, String> map = new HashMap<>();
+                map.put("车厢号", res.getCarriageNo());
+                map.put("镟修轮对车轴", res.getAxleNo());
+                map.put("镟修详情", res.getRepairDetail());
+                map.put("开始日期", res.getStartDate());
+                map.put("完成日期", res.getCompleteDate());
+                map.put("负责人", res.getRespPeople());
+                map.put("备注", res.getRemark());
+            }
+        }
+        ExcelPortUtil.excelPort("轮对镟修记录", listName, list, null, response);
     }
 
     /**
@@ -428,6 +571,26 @@ public class StatisticServiceImpl implements StatisticService {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return generalSurveyMapper.pageGeneralSurvey(reqDTO.of(), reqDTO.getEquipName());
     }
+
+    @Override
+    public void pageGeneralSurveyExport(String equipName, HttpServletResponse response) {
+        List<GeneralSurveyResDTO> resDTOS = generalSurveyMapper.listGeneralSurvey(equipName);
+        List<String> listName = Arrays.asList("类别", "技术通知单编号","项目内容","完成时间","作业单位","备注");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(resDTOS)) {
+            for (GeneralSurveyResDTO res : resDTOS) {
+                Map<String, String> map = new HashMap<>();
+                map.put("类别", res.getRecType());
+                map.put("技术通知单编号", res.getRecNotifyNo());
+                map.put("项目内容", res.getRecDetail());
+                map.put("完成时间", res.getCompleteDate());
+                map.put("作业单位", res.getOrgType());
+                map.put("备注", res.getRemark());
+            }
+        }
+        ExcelPortUtil.excelPort("普查与技改", listName, list, null, response);
+    }
+
 
     @Override
     public Page<InspectionJobListResDTO> queryER2(OneCarOneGearQueryReqDTO reqDTO) {
@@ -596,74 +759,73 @@ public class StatisticServiceImpl implements StatisticService {
         Map<String, RAMSSysPerformResDTO> map = Maps.newHashMap();
         Set<String> names = Sets.newHashSet();
         ramsResDTOS.forEach(a -> {
-                    switch (a.getModuleName()) {
-                        case "01":
-                        case "02":
-                        case "03":
-                        case "04":
-                            rebuildBlock4SP(a, names, "车门系统", "10000", "7000");
-                            break;
-                        case "12":
-                            rebuildBlock4SP(a, names, "制动系统", "49500", "49500");
-                            break;
-                        case "13":
-                            rebuildBlock4SP(a, names, "空调系统", "210000", "46000");
-                            break;
-                        case "14":
-                            rebuildBlock4SP(a, names, "转向架", "409500", "409500");
-                            break;
-                        case "17":
-                            rebuildBlock4SP(a, names, "PIDS", "191000", "91000");
-                            break;
-                        case "10":
-                            rebuildBlock4SP(a, names, "网络系统", "254000", "254000");
-                            break;
-                        case "05":
-                        case "08":
-                        case "09":
-                        case "21":
-                            rebuildBlock4SP(a, names, "车体结构及车身内部", "204800", "204800");
-                            break;
-                        case "06":
-                        case "07":
-                            rebuildBlock4SP(a, names, "通道与车钩系统", "409500", "204800");
-                            break;
-                        case "18":
-                        case "19":
-                            rebuildBlock4SP(a, names, "牵引设备系统", "36588", "11000");
-                            break;
-                        case "11":
-                        case "15":
-                        case "16":
-                        case "20":
-                            rebuildBlock4SP(a, names, "辅助供电设备系统", "647749", "323825");
-                            break;
-                    }
-                    DecimalFormat df = new DecimalFormat("#0");
-                    Double MTBF_LATE;
-                    if (Double.parseDouble(a.getNumLate()) == 0.0D) {
-                        MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
-                    } else {
-                        MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumLate());
-                    }
-                    a.setMTBF_LATE(df.format(MTBF_LATE));
-                    Double MTBF_NOS;
-                    if (Double.parseDouble(a.getNumNos()) == 0.0D) {
-                        MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
-                    } else {
-                        MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumNos());
-                    }
-                    a.setMTBF_NOS(df.format(MTBF_NOS));
-                    RAMSSysPerformResDTO last = map.get(a.getModuleName());
-                    if (map.containsKey(a.getModuleName())) {
-                        a.setNumNos(String.valueOf(Integer.parseInt(a.getNumNos()) + Integer.parseInt(last.getNumNos())));
-                        a.setMTBF_NOS(String.valueOf(Integer.parseInt(a.getMTBF_NOS()) + Integer.parseInt(last.getMTBF_NOS())));
-                        map.put(a.getModuleName(), a);
-                    } else {
-                        map.put(a.getModuleName(), a);
-                    }
-                }
-        );
+            switch (a.getModuleName()) {
+                case "01":
+                case "02":
+                case "03":
+                case "04":
+                    rebuildBlock4SP(a, names, "车门系统", "10000", "7000");
+                    break;
+                case "12":
+                    rebuildBlock4SP(a, names, "制动系统", "49500", "49500");
+                    break;
+                case "13":
+                    rebuildBlock4SP(a, names, "空调系统", "210000", "46000");
+                    break;
+                case "14":
+                    rebuildBlock4SP(a, names, "转向架", "409500", "409500");
+                    break;
+                case "17":
+                    rebuildBlock4SP(a, names, "PIDS", "191000", "91000");
+                    break;
+                case "10":
+                    rebuildBlock4SP(a, names, "网络系统", "254000", "254000");
+                    break;
+                case "05":
+                case "08":
+                case "09":
+                case "21":
+                    rebuildBlock4SP(a, names, "车体结构及车身内部", "204800", "204800");
+                    break;
+                case "06":
+                case "07":
+                    rebuildBlock4SP(a, names, "通道与车钩系统", "409500", "204800");
+                    break;
+                case "18":
+                case "19":
+                    rebuildBlock4SP(a, names, "牵引设备系统", "36588", "11000");
+                    break;
+                case "11":
+                case "15":
+                case "16":
+                case "20":
+                    rebuildBlock4SP(a, names, "辅助供电设备系统", "647749", "323825");
+                    break;
+            }
+            DecimalFormat df = new DecimalFormat("#0");
+            Double MTBF_LATE;
+            if (Double.parseDouble(a.getNumLate()) == 0.0D) {
+                MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
+            } else {
+                MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumLate());
+            }
+            a.setMTBF_LATE(df.format(MTBF_LATE));
+            Double MTBF_NOS;
+            if (Double.parseDouble(a.getNumNos()) == 0.0D) {
+                MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
+            } else {
+                MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumNos());
+            }
+            a.setMTBF_NOS(df.format(MTBF_NOS));
+            RAMSSysPerformResDTO last = map.get(a.getModuleName());
+            if (map.containsKey(a.getModuleName())) {
+                a.setNumNos(String.valueOf(Integer.parseInt(a.getNumNos()) + Integer.parseInt(last.getNumNos())));
+                a.setMTBF_NOS(String.valueOf(Integer.parseInt(a.getMTBF_NOS()) + Integer.parseInt(last.getMTBF_NOS())));
+                map.put(a.getModuleName(), a);
+            } else {
+                map.put(a.getModuleName(), a);
+            }
+        });
         map.values().forEach(a -> {
             if (Double.parseDouble(a.getMTBF_LATE()) >= Double.parseDouble(a.getContractZBLATE())) {
                 a.setIsDB_LATE("达标");
@@ -805,6 +967,27 @@ public class StatisticServiceImpl implements StatisticService {
                 map.put("规格型号", resDTO.getSpecifi());
                 map.put("领用数量", resDTO.getDeliveryNum());
                 map.put("计量单位", resDTO.getUnit());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("物料统计", listName, list, null, response);
+    }
+
+    @Override
+    public void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
+        List<TrackQueryResDTO> trackQueryResDTOS = oneCarOneGearMapper.queryDMFM21(startTime, endTime, equipName);
+        List<String> listName = Arrays.asList("故障描述", "跟踪原因", "跟踪开始时间", "跟踪结束时间", "跟踪周期", "跟踪结果", "跟踪人员", "是否结束跟踪");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (trackQueryResDTOS != null && !trackQueryResDTOS.isEmpty()) {
+            for (TrackQueryResDTO resDTO : trackQueryResDTOS) {
+                Map<String, String> map = new HashMap<>();
+                map.put("故障描述", resDTO.getFaultDisplayDetail());
+                map.put("跟踪原因", resDTO.getTrackReason());
+                map.put("跟踪开始时间", resDTO.getTrackStartDate());
+                map.put("跟踪结束时间", resDTO.getTrackEndDate());
+                map.put("跟踪周期", String.valueOf(resDTO.getTrackCycle()));
+                map.put("跟踪结果", resDTO.getTrackResult());
+                map.put("跟踪人员", resDTO.getTrackUserName());
                 list.add(map);
             }
         }
