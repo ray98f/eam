@@ -27,7 +27,7 @@
 
     <select id="listMember" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
         select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
-        listagg(sou.POSTNAME, ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
+        listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
         su.EMAIL, su.ROOM from SYS_USER su
         left join SYS_OFFICE so on su.OFFICE_ID=so.ID and so.DEL_FLAG=0 and so.USEABLE=1
         left join SYS_ORG_USER sou on sou.USER_ID=su.ID and sou.ACTIVESTATUS=1 AND sou.LEAVEDATE>=SYSDATE
@@ -50,7 +50,7 @@
 
     <select id="listMembers" parameterType="string" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
         select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
-        listagg(sou.POSTNAME, ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
+        listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
         su.EMAIL, su.ROOM from SYS_USER su
         left join SYS_OFFICE so on su.OFFICE_ID=so.ID and so.DEL_FLAG=0 and so.USEABLE=1
         left join SYS_ORG_USER sou on sou.USER_ID=su.ID and sou.ACTIVESTATUS=1 AND sou.LEAVEDATE>=SYSDATE
@@ -154,14 +154,14 @@
     </select>
 
     <select id="getExtraOrgByAreaId" resultType="java.lang.String">
-        select listagg(NAME, '-') WITHIN GROUP (ORDER BY AREA_ID) NAME
+        select listagg(to_char(NAME), '-') WITHIN GROUP (ORDER BY AREA_ID) NAME
         from SYS_OFFICE WHERE ID!='root'
         start with AREA_ID = #{areaId}
         connect by prior PARENT_ID = ID
     </select>
 
     <select id="getOrgById" resultType="java.lang.String">
-        select listagg(NAME, '-') WITHIN GROUP (ORDER BY ID) NAME
+        select listagg(to_char(NAME), '-') WITHIN GROUP (ORDER BY ID) NAME
         from SYS_OFFICE WHERE ID!='root'
         start with ID = #{id}
         connect by prior PARENT_ID = ID

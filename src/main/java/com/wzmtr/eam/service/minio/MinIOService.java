@@ -1,4 +1,4 @@
-package com.wzmtr.eam.service.minio;
+package com.wzmtr.eam.service.MinIO;
 
 import com.wzmtr.eam.entity.File;
 import org.springframework.web.multipart.MultipartFile;

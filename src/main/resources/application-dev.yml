@@ -30,7 +30,7 @@ spring:
 
 excluded:
   swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
-  pages: /eam/iam/user/getToken
+  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout
 
 sso:
   url: http://mbtt.wzmtr.com:4443/cas
@@ -94,7 +94,7 @@ mdm:
     address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
 
 local:
-  base-url: http://10.11.82.104:8002/rights
+  base-url: http://10.11.82.104:8002/eam
 
 minio:
   url: http://zxgd.softether.net:9000

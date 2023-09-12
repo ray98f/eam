@@ -72,9 +72,11 @@ public class EquipmentServiceImpl implements EquipmentService {
                     regionResDTO.setLineCode(lineCode);
                     region.add(regionResDTO);
                 } else if ("ES1".equals(regionCode) || "ES2".equals(regionCode)) {
-                    region = equipmentMapper.listCarRegion(regionCode, recId);
+                    region = equipmentMapper.listCarRegion(lineCode, recId);
                 }
                 res.setRegion(region);
+            } else if ("01".equals(parentNodeRecId) && "ES1".equals(recId) && "01".equals(lineCode)) {
+                res.setRegion(equipmentMapper.listCarRegion(lineCode, recId));
             } else if (!"ES1".equals(parentNodeRecId) && !"ES2".equals(parentNodeRecId)) {
                 res.setEquipment(equipmentMapper.listEquipmentCategory(equipmentCategoryCode, lineCode, recId, regionCode));
             }
