@@ -2,7 +2,7 @@ package com.wzmtr.eam.controller.minio;
 
 import com.wzmtr.eam.entity.File;
 import com.wzmtr.eam.entity.response.DataResponse;
-import com.wzmtr.eam.service.minio.MinIOService;
+import com.wzmtr.eam.service.minio.MinioService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/minIO")
 @Api(tags = "文件上传")
-public class MinIOController {
+public class MinioController {
     @Autowired
-    private MinIOService minIOService;
+    private MinioService minioService;
 
     @ApiOperation(value = "上传")
     @PostMapping("/upload")
     public DataResponse<File> upload(@RequestParam MultipartFile file, String bucketCode) {
-        return DataResponse.of(minIOService.upload(file, bucketCode));
+        return DataResponse.of(minioService.upload(file, bucketCode));
     }
 }
