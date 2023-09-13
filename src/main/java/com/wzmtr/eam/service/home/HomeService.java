@@ -1,5 +1,6 @@
 package com.wzmtr.eam.service.home;
 
+import com.wzmtr.eam.dto.res.home.EChartResDTO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 
 /**
@@ -9,4 +10,6 @@ import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 public interface HomeService {
 
     HomeCountResDTO count();
+
+    EChartResDTO queryEChart();
 }

@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.home;
 
 import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
+import com.wzmtr.eam.dto.res.home.EChartResDTO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 import com.wzmtr.eam.dto.res.mea.CheckPlanResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -32,10 +33,9 @@ public class HomeController {
     public DataResponse<HomeCountResDTO> count() {
         return DataResponse.of(homeService.count());
     }
-    // @ApiOperation(value = "故障分析流程提交")
-    // @PostMapping("/submit")
-    // public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
-    //     analyzeService.submit(reqDTO);
-    //     return DataResponse.success();
-    // }
+    @ApiOperation(value = "图表查询")
+    @PostMapping("/queryEChart")
+    public DataResponse<EChartResDTO> queryEChart() {
+        return DataResponse.of(homeService.queryEChart());
+    }
 }

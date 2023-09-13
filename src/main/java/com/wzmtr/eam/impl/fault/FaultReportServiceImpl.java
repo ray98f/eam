@@ -36,8 +36,6 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Autowired
     private FaultReportMapper faultReportMapper;
     @Autowired
-    private TrackQueryMapper trackQueryMapper;
-    @Autowired
     private OrganizationMapper organizationMapper;
     @Autowired
     private TrackQueryService trackQueryService;
@@ -54,7 +52,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         _insertToFaultInfo(faultInfoBO, nextFaultNo);
         FaultOrderBO faultOrderBO = reqDTO.toFaultOrderBO(reqDTO);
         _insertToFaultOrder(faultOrderBO, nextFaultNo, maxFaultWorkNo);
-        // TODO: 2023/8/24 知会OCC调度 可能要发通知？
+        // TODO: 2023/8/24 知会OCC调度
         // if ("Y".equals(maintenance)) {
         //     /* 1756 */             String groupName = "DM_021";
         //     /* 1757 */             String content2 = userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "提报了一条" + majorName + "故障，工单号：" + faultWorkNo + "的故障，请知晓。";

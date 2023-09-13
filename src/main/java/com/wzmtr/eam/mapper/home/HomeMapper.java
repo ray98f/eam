@@ -1,7 +1,12 @@
 package com.wzmtr.eam.mapper.home;
 
 import com.wzmtr.eam.bo.HomeCountBO;
+import com.wzmtr.eam.dto.res.home.EChartResDTO;
+import com.wzmtr.eam.dto.res.home.ShowAResDTO;
+import com.wzmtr.eam.dto.res.home.ShowBCResDTO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -12,4 +17,8 @@ public interface HomeMapper {
     Integer count(HomeCountBO countBO);
 
     Integer queryForIndex(HomeCountBO countBO);
+    List<ShowBCResDTO> queryC();
+
+    List<ShowBCResDTO> queryB();
+    List<ShowAResDTO> queryA();
 }

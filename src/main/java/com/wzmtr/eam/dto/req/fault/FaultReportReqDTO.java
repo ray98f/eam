@@ -107,6 +107,7 @@ public class FaultReportReqDTO {
         if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
             convert.setWorkClass(req.getRepairDeptCode());
         }
+        convert.setDeleteFlag("0");
         convert.setRecId(TokenUtil.getUuId());
         convert.setOrderStatus("30");
         convert.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
@@ -117,6 +118,7 @@ public class FaultReportReqDTO {
     public FaultInfoBO toFaultInfoBO(FaultReportReqDTO req) {
         FaultInfoBO convert = __BeanUtil.convert(req, FaultInfoBO.class);
         convert.setRecId(TokenUtil.getUuId());
+        convert.setDeleteFlag("0");
         convert.setFillinTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         convert.setFillinUserId(TokenUtil.getCurrentPerson().getPersonId());
         convert.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());

@@ -1,9 +1,6 @@
 package com.wzmtr.eam.controller.fault;
 
-import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
+import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
@@ -50,6 +47,13 @@ public class FaultReportController {
     @PostMapping("/list")
     public PageResponse<FaultReportResDTO> list(@RequestBody FaultReportPageReqDTO reqDTO) {
         return PageResponse.of(reportService.list(reqDTO));
+    }
+    @ApiOperation(value = "已提报故障单作废")
+    @PostMapping("/fault/cancel")
+    public DataResponse<String> cancel(@RequestBody FaultSubmitReqDTO reqDTO) {
+        // faultWorkNo
+        // reportService.cancel(reqDTO);
+        return DataResponse.success();
     }
 
     @ApiOperation(value = "故障编号详情")
