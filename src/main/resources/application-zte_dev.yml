@@ -1,4 +1,4 @@
-# 本地环境 根据自身ip修改
+# 中兴测试环境
 spring:
   datasource:
     url: jdbc:oracle:thin:@192.168.30.104:1521/ORCLCDB
@@ -28,33 +28,33 @@ spring:
 
 excluded:
   swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
-  pages: /eam/iam/user/getToken
+  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout
 
 sso:
   url: http://mbtt.wzmtr.com:4443/cas
-  home: http://192.168.34.104:8002/eam/
+  home: http://192.168.30.153:8002/eam/
 
 cas:
   serverUrlPrefix: "${sso.url}"
-  serviceUrlPrefix: "http://192.168.34.104:8002/eam"
+  serviceUrlPrefix: "http://192.168.30.153:8002/eam"
   casFilterUrlPattern: "/cas"
   loginUrlPattern: "/login"
   logoutUrlPattern: "/logout"
   successUrlPattern: "/index"
-  serviceFront: "http://192.168.34.104:8899/index.html"
+  serviceFront: "http://192.168.30.153:8899/index.html"
 
 diboot:
   core:
     init-sql: false
   iam:
     init-sql: false
-#    anon-urls:
-#      - /swagger**/**
-#      - /webjars/**
-#      - /v3/**
-#      - /doc.html
-#    enable-permission-check: true
-#    token-expires-minutes: 60
+  #    anon-urls:
+  #      - /swagger**/**
+  #      - /webjars/**
+  #      - /v3/**
+  #      - /doc.html
+  #    enable-permission-check: true
+  #    token-expires-minutes: 60
   component:
     file:
       init-sql: false
