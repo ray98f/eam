@@ -45,7 +45,7 @@ public class StatisticController {
         return DataResponse.of(statisticService.query(reqDTO));
     }
 
-    @ApiOperation(value = "故障统计列表")
+    @ApiOperation(value = "故障统计报表")
     @PostMapping("fault/list")
     public DataResponse<List<FaultDetailResDTO>> list(@RequestBody FaultQueryReqDTO reqDTO) {
         return DataResponse.of(faultQueryService.statisticList(reqDTO));

@@ -26,4 +26,6 @@ public interface FaultReportService {
     void addToMajor(FaultReportToMajorReqDTO reqDTO);
 
     FaultDetailResDTO detail(FaultDetailReqDTO reqDTO);
+
+    void cancel(FaultCancelReqDTO reqDTO);
 }

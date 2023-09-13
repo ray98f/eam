@@ -409,6 +409,12 @@
             <if test="req.typeCode != null and req.typeCode != ''">
                 AND df.FAULT_PROCESS_RESULT = #{req.typeCode}
             </if>
+            <if test="req.faultNos != null and req.faultNos.size() > 0">
+                AND d.FAULT_NO IN
+                <foreach collection="faultNos" item="code" open="(" close=")" separator=",">
+                    #{code}
+                </foreach>
+            </if>
             AND d.FILLIN_USER_ID = u.LOGIN_NAME
             AND d.FAULT_NO = df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'

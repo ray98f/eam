@@ -48,11 +48,12 @@ public class FaultReportController {
     public PageResponse<FaultReportResDTO> list(@RequestBody FaultReportPageReqDTO reqDTO) {
         return PageResponse.of(reportService.list(reqDTO));
     }
+
     @ApiOperation(value = "已提报故障单作废")
     @PostMapping("/fault/cancel")
-    public DataResponse<String> cancel(@RequestBody FaultSubmitReqDTO reqDTO) {
+    public DataResponse<String> cancel(@RequestBody FaultCancelReqDTO reqDTO) {
         // faultWorkNo
-        // reportService.cancel(reqDTO);
+        reportService.cancel(reqDTO);
         return DataResponse.success();
     }
 
@@ -61,10 +62,11 @@ public class FaultReportController {
     public DataResponse<FaultDetailResDTO> detail(@RequestBody FaultDetailReqDTO reqDTO) {
         return DataResponse.of(reportService.detail(reqDTO));
     }
+
     @GetMapping("/queryTypeAndDeptCode")
     @ApiOperation(value = "获取维修部门和牵头部门")
-    public DataResponse<FaultRespAndRepairDeptResDTO> queryTypeAndDeptCode(@RequestParam @ApiParam("线路code")String lineCode, @RequestParam @ApiParam("专业code")String majorCode) {
-        return DataResponse.of(orgMajorService.queryTypeAndDeptCode(lineCode,majorCode));
+    public DataResponse<FaultRespAndRepairDeptResDTO> queryTypeAndDeptCode(@RequestParam @ApiParam("线路code") String lineCode, @RequestParam @ApiParam("专业code") String majorCode) {
+        return DataResponse.of(orgMajorService.queryTypeAndDeptCode(lineCode, majorCode));
     }
 
 }

@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.Set;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/15 17:18
@@ -54,4 +56,6 @@ public class FaultQueryReqDTO extends PageReqDTO {
     private String typeCode;
     @ApiModelProperty(value = "故障紧急程度")
     private String levelfault;
+    @ApiModelProperty(value = "故障编号集合")
+    private Set<String> faultNos;
 }

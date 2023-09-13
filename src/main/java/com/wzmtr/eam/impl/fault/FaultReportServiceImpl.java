@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
-import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportToMajorReqDTO;
+import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
@@ -115,4 +112,10 @@ public class FaultReportServiceImpl implements FaultReportService {
         return trackQueryService.faultDetail(reqDTO);
     }
 
+    @Override
+    public void cancel(FaultCancelReqDTO reqDTO) {
+        //已提报故障单撤销/作废 逻辑删 涉及faultinfo和faultorder两张表
+        faultReportMapper.cancelOrder(reqDTO);
+        faultReportMapper.cancelInfo(reqDTO);
+    }
 }

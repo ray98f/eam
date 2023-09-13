@@ -3,6 +3,7 @@ package com.wzmtr.eam.mapper.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.bo.FaultInfoBO;
 import com.wzmtr.eam.bo.FaultOrderBO;
+import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -29,4 +30,7 @@ public interface FaultReportMapper {
 
     String getFaultOrderFaultWorkNoMaxCode();
 
+    void cancelOrder(FaultCancelReqDTO reqDTO);
+
+    void cancelInfo(FaultCancelReqDTO reqDTO);
 }

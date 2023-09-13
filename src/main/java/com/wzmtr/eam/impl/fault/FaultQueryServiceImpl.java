@@ -175,6 +175,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 map.put("设备分类", resDTO.getEquipTypeName());
                 map.put("模块", resDTO.getFaultModule());
                 map.put("故障处理人员", resDTO.getDealerUnit());
+                map.put("故障处理情况", resDTO.getFaultActionDetail());
                 map.put("故障处理人数", resDTO.getDealerNum());
                 list.add(map);
             }
