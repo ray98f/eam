@@ -43,9 +43,9 @@ public class PartReplaceServiceImpl implements PartReplaceService {
     private PartReplaceMapper partReplaceMapper;
 
     @Override
-    public Page<PartReplaceResDTO> pagePartReplace(String equipName, PageReqDTO pageReqDTO) {
+    public Page<PartReplaceResDTO> pagePartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return partReplaceMapper.pagePartReplace(pageReqDTO.of(), equipName);
+        return partReplaceMapper.pagePartReplace(pageReqDTO.of(), equipName, replacementName, faultWorkNo, orgType, replaceReason);
     }
 
     @Override
@@ -150,10 +150,10 @@ public class PartReplaceServiceImpl implements PartReplaceService {
     }
 
     @Override
-    public void exportPartReplace(String equipName, HttpServletResponse response) {
+    public void exportPartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "故障工单编号", "设备编码", "设备名称", "作业单位", "作业人员", "更换配件代码",
                 "更换配件名称", "更换原因", "旧配件编号", "新配件编号", "更换所用时间", "处理日期", "备注", "附件编号", "创建者", "创建时间");
-        List<PartReplaceResDTO> partReplaceResDTOList = partReplaceMapper.listPartReplace(equipName);
+        List<PartReplaceResDTO> partReplaceResDTOList = partReplaceMapper.listPartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason);
         List<Map<String, String>> list = new ArrayList<>();
         if (partReplaceResDTOList != null && !partReplaceResDTOList.isEmpty()) {
             for (PartReplaceResDTO resDTO : partReplaceResDTOList) {

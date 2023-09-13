@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author frp
  */
@@ -12,34 +14,37 @@ import lombok.Data;
 public class GearboxChangeOilResDTO {
     
     @ApiModelProperty(value = "记录编号")
-    private String recId = " ";
+    private String recId;
 
     @ApiModelProperty(value = "列车号")
-    private String trainNo = " ";
+    private String trainNo;
+
+    @ApiModelProperty(value = "里程(公里)")
+    private BigDecimal totalMiles;
 
     @ApiModelProperty(value = "完成日期")
-    private String completeDate = " ";
+    private String completeDate;
 
     @ApiModelProperty(value = "作业单位")
-    private String orgType = " ";
+    private String orgType;
 
     @ApiModelProperty(value = "作业人员")
-    private String operator = " ";
+    private String operator;
 
     @ApiModelProperty(value = "确认人员")
-    private String confirmor = " ";
+    private String confirmor;
     
     @ApiModelProperty(value = "备注")
-    private String remark = " ";
+    private String remark;
     
     @ApiModelProperty(value = "附件编号")
-    private String docId = " ";
+    private String docId;
 
     @ApiModelProperty(value = "创建者")
-    private String recCreator = " ";
+    private String recCreator;
 
     @ApiModelProperty(value = "创建时间")
-    private String recCreateTime = " ";
+    private String recCreateTime;
 
     @ApiModelProperty(value = "修改者")
     private String recRevisor;

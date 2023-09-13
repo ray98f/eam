@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface PartReplaceMapper {
 
-    Page<PartReplaceResDTO> pagePartReplace(Page<PartReplaceResDTO> page, String equipName);
+    Page<PartReplaceResDTO> pagePartReplace(Page<PartReplaceResDTO> page, String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason);
 
     PartReplaceResDTO getPartReplaceDetail(String id);
 
@@ -30,6 +30,6 @@ public interface PartReplaceMapper {
 
     void importPartReplace(List<PartReplaceReqDTO> list);
 
-    List<PartReplaceResDTO> listPartReplace(String equipName);
+    List<PartReplaceResDTO> listPartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason);
 
 }

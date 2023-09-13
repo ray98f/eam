@@ -40,6 +40,18 @@
         <if test="equipName!=null and equipName!=''">
             and EQUIP_NAME like '%' || #{equipName} || '%'
         </if>
+        <if test="replacementName!=null and replacementName!=''">
+            and REPLACEMENT_NAME like '%' || #{replacementName} || '%'
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            and FAULT_WORK_NO like '%' || #{faultWorkNo} || '%'
+        </if>
+        <if test="orgType!=null and orgType!=''">
+            and orgType=#{orgType}
+        </if>
+        <if test="replaceReason!=null and replaceReason!=''">
+            and REPLACE_REASON like '%' || #{replaceReason} || '%'
+        </if>
         ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
     </select>
 
@@ -284,6 +296,18 @@
         WHERE 1=1 and DELETE_FLAG='0'
         <if test="equipName!=null and equipName!=''">
             and EQUIP_NAME like '%' || #{equipName} || '%'
+        </if>
+        <if test="replacementName!=null and replacementName!=''">
+            and REPLACEMENT_NAME like '%' || #{replacementName} || '%'
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            and FAULT_WORK_NO like '%' || #{faultWorkNo} || '%'
+        </if>
+        <if test="orgType!=null and orgType!=''">
+            and orgType=#{orgType}
+        </if>
+        <if test="replaceReason!=null and replaceReason!=''">
+            and REPLACE_REASON like '%' || #{replaceReason} || '%'
         </if>
         ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
     </select>

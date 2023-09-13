@@ -35,8 +35,12 @@ public class PartReplaceController {
     @GetMapping("/page")
     @ApiOperation(value = "获取部件更换台账列表")
     public PageResponse<PartReplaceResDTO> pagePartReplace(@RequestParam(required = false) @ApiParam("设备名称") String equipName,
+                                                           @RequestParam(required = false) @ApiParam("部件名称") String replacementName,
+                                                           @RequestParam(required = false) @ApiParam("故障工单编号") String faultWorkNo,
+                                                           @RequestParam(required = false) @ApiParam("作业单位") String orgType,
+                                                           @RequestParam(required = false) @ApiParam("更换原因") String replaceReason,
                                                            @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(partReplaceService.pagePartReplace(equipName, pageReqDTO));
+        return PageResponse.of(partReplaceService.pagePartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason, pageReqDTO));
     }
 
     @GetMapping("/detail")
@@ -76,8 +80,12 @@ public class PartReplaceController {
     @GetMapping("/export")
     @ApiOperation(value = "导出部件更换台账")
     public void exportPartReplace(@RequestParam(required = false) @ApiParam("设备名称") String equipName,
+                                  @RequestParam(required = false) @ApiParam("部件名称") String replacementName,
+                                  @RequestParam(required = false) @ApiParam("故障工单编号") String faultWorkNo,
+                                  @RequestParam(required = false) @ApiParam("作业单位") String orgType,
+                                  @RequestParam(required = false) @ApiParam("更换原因") String replaceReason,
                                   HttpServletResponse response) {
-        partReplaceService.exportPartReplace(equipName, response);
+        partReplaceService.exportPartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason, response);
     }
 
 }
