@@ -1,3 +1,4 @@
+# 铁投测试环境
 spring:
   datasource:
     url: jdbc:oracle:thin:@10.11.82.66:1521/pdborcl
@@ -112,4 +113,3 @@ bpmn:
   account: "eameam"
   password: "eameam"
   url: "http://10.11.71.157:9998/fastflow-admin"
-#  url: "http://192.168.30.227:9998/fastflow-admin"
