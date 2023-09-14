@@ -8,7 +8,11 @@
         TRAIN_NO	as "trainNo",  <!-- 列车号 -->
         CARRIAGE_NO	as "carriageNo",  <!-- 车厢号 -->
         AXLE_NO	as "axleNo",  <!-- 镟修轮对车轴 -->
-        REPAIR_DETAIL	as "repairDetail",  <!-- 镟修详情 -->
+        WHEEL_NO  as "wheelNo",  <!-- 镟修轮对号 -->
+        WHEEL_HEIGHT  as "wheelHeight",  <!-- 轮高 -->
+        WHEEL_THICK  as "wheelThick",  <!-- 轮厚 -->
+        WHEEL_DIAMETER  as "wheelDiameter",  <!-- 轮径 -->
+        REPAIR_DETAIL  as "repairDetail",  <!-- 镟修详情 -->
         START_DATE	as "startDate",  <!-- 开始日期 -->
         COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
         RESP_PEOPLE	as "respPeople",  <!-- 负责人 -->
@@ -35,6 +39,15 @@
         <if test="trainNo!=null and trainNo!=''">
             and TRAIN_NO like '%' || #{trainNo} || '%'
         </if>
+        <if test="carriageNo!=null and carriageNo!=''">
+            and CARRIAGE_NO like '%' || #{carriageNo} || '%'
+        </if>
+        <if test="axleNo!=null and axleNo!=''">
+            and AXLE_NO like '%' || #{axleNo} || '%'
+        </if>
+        <if test="wheelNo!=null and wheelNo!=''">
+            and WHEEL_NO like '%' || #{wheelNo} || '%'
+        </if>
         ORDER BY REC_CREATE_TIME desc
     </select>
 
@@ -44,6 +57,10 @@
         TRAIN_NO	as "trainNo",  <!-- 列车号 -->
         CARRIAGE_NO	as "carriageNo",  <!-- 车厢号 -->
         AXLE_NO	as "axleNo",  <!-- 镟修轮对车轴 -->
+        WHEEL_NO  as "wheelNo",  <!-- 镟修轮对号 -->
+        WHEEL_HEIGHT  as "wheelHeight",  <!-- 轮高 -->
+        WHEEL_THICK  as "wheelThick",  <!-- 轮厚 -->
+        WHEEL_DIAMETER  as "wheelDiameter",  <!-- 轮径 -->
         REPAIR_DETAIL	as "repairDetail",  <!-- 镟修详情 -->
         START_DATE	as "startDate",  <!-- 开始日期 -->
         COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
@@ -76,6 +93,10 @@
         TRAIN_NO,  <!-- 列车号 -->
         CARRIAGE_NO,  <!-- 车厢号 -->
         AXLE_NO,  <!-- 镟修轮对车轴 -->
+        WHEEL_NO,  <!-- 镟修轮对号 -->
+        WHEEL_HEIGHT,  <!-- 轮高 -->
+        WHEEL_THICK,  <!-- 轮厚 -->
+        WHEEL_DIAMETER,  <!-- 轮径 -->
         REPAIR_DETAIL,  <!-- 镟修详情 -->
         START_DATE,  <!-- 开始日期 -->
         COMPLETE_DATE,  <!-- 完成日期 -->
@@ -103,6 +124,10 @@
         #{trainNo,jdbcType=VARCHAR},
         #{carriageNo,jdbcType=VARCHAR},
         #{axleNo,jdbcType=VARCHAR},
+        #{wheelNo,jdbcType=VARCHAR},
+        #{wheelHeight,jdbcType=VARCHAR},
+        #{wheelThick,jdbcType=VARCHAR},
+        #{wheelDiameter,jdbcType=VARCHAR},
         #{repairDetail,jdbcType=VARCHAR},
         #{startDate,jdbcType=VARCHAR},
         #{completeDate,jdbcType=VARCHAR},
@@ -145,6 +170,10 @@
             TRAIN_NO,  <!-- 列车号 -->
             CARRIAGE_NO,  <!-- 车厢号 -->
             AXLE_NO,  <!-- 镟修轮对车轴 -->
+            WHEEL_NO,  <!-- 镟修轮对号 -->
+            WHEEL_HEIGHT,  <!-- 轮高 -->
+            WHEEL_THICK,  <!-- 轮厚 -->
+            WHEEL_DIAMETER,  <!-- 轮径 -->
             REPAIR_DETAIL,  <!-- 镟修详情 -->
             START_DATE,  <!-- 开始日期 -->
             COMPLETE_DATE,  <!-- 完成日期 -->
@@ -172,6 +201,10 @@
             #{wheel.trainNo,jdbcType=VARCHAR},
             #{wheel.carriageNo,jdbcType=VARCHAR},
             #{wheel.axleNo,jdbcType=VARCHAR},
+            #{wheel.wheelNo,jdbcType=VARCHAR},
+            #{wheel.wheelHeight,jdbcType=VARCHAR},
+            #{wheel.wheelThick,jdbcType=VARCHAR},
+            #{wheel.wheelDiameter,jdbcType=VARCHAR},
             #{wheel.repairDetail,jdbcType=VARCHAR},
             #{wheel.startDate,jdbcType=VARCHAR},
             #{wheel.completeDate,jdbcType=VARCHAR},
@@ -204,6 +237,10 @@
         TRAIN_NO	as "trainNo",  <!-- 列车号 -->
         CARRIAGE_NO	as "carriageNo",  <!-- 车厢号 -->
         AXLE_NO	as "axleNo",  <!-- 镟修轮对车轴 -->
+        WHEEL_NO  as "wheelNo",  <!-- 镟修轮对号 -->
+        WHEEL_HEIGHT  as "wheelHeight",  <!-- 轮高 -->
+        WHEEL_THICK  as "wheelThick",  <!-- 轮厚 -->
+        WHEEL_DIAMETER  as "wheelDiameter",  <!-- 轮径 -->
         REPAIR_DETAIL	as "repairDetail",  <!-- 镟修详情 -->
         START_DATE	as "startDate",  <!-- 开始日期 -->
         COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
@@ -230,6 +267,15 @@
         WHERE 1=1 and DELETE_FLAG='0'
         <if test="trainNo!=null and trainNo!=''">
             and TRAIN_NO like '%' || #{trainNo} || '%'
+        </if>
+        <if test="carriageNo!=null and carriageNo!=''">
+            and CARRIAGE_NO like '%' || #{carriageNo} || '%'
+        </if>
+        <if test="axleNo!=null and axleNo!=''">
+            and AXLE_NO like '%' || #{axleNo} || '%'
+        </if>
+        <if test="wheelNo!=null and wheelNo!=''">
+            and WHEEL_NO like '%' || #{wheelNo} || '%'
         </if>
         ORDER BY REC_CREATE_TIME desc
     </select>

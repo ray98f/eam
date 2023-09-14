@@ -536,7 +536,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) {
-        List<WheelsetLathingResDTO> wheelsetLathingResDTOS = wheelsetLathingMapper.listWheelsetLathing(equipName);
+        List<WheelsetLathingResDTO> wheelsetLathingResDTOS = wheelsetLathingMapper.listWheelsetLathing(equipName, null, null, null);
         List<String> listName = Arrays.asList("车厢号", "镟修轮对车轴","镟修详情","开始日期","完成日期","负责人","备注");
         List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(wheelsetLathingResDTOS)) {
@@ -560,7 +560,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<WheelsetLathingResDTO> pageWheelsetLathing(OneCarOneGearQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return wheelsetLathingMapper.pageWheelsetLathing(reqDTO.of(), reqDTO.getEquipName());
+        return wheelsetLathingMapper.pageWheelsetLathing(reqDTO.of(), reqDTO.getEquipName(), null, null, null);
     }
 
     /**

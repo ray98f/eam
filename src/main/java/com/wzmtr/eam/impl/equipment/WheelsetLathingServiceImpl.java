@@ -42,9 +42,9 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
     private WheelsetLathingMapper wheelsetLathingMapper;
 
     @Override
-    public Page<WheelsetLathingResDTO> pageWheelsetLathing(String trainNo, PageReqDTO pageReqDTO) {
+    public Page<WheelsetLathingResDTO> pageWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return wheelsetLathingMapper.pageWheelsetLathing(pageReqDTO.of(), trainNo);
+        return wheelsetLathingMapper.pageWheelsetLathing(pageReqDTO.of(), trainNo, carriageNo, axleNo, wheelNo);
     }
 
     @Override
@@ -106,15 +106,23 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                     reqDTO.setAxleNo(axleNo);
                 }
                 cells.getCell(3).setCellType(1);
-                reqDTO.setRepairDetail(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
+                reqDTO.setWheelNo(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
                 cells.getCell(4).setCellType(1);
-                reqDTO.setStartDate(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
+                reqDTO.setWheelHeight(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
                 cells.getCell(5).setCellType(1);
-                reqDTO.setCompleteDate(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
+                reqDTO.setWheelThick(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
                 cells.getCell(6).setCellType(1);
-                reqDTO.setRespPeople(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
+                reqDTO.setWheelDiameter(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
                 cells.getCell(7).setCellType(1);
-                reqDTO.setRemark(cells.getCell(7) == null ? "" : cells.getCell(7).getStringCellValue());
+                reqDTO.setRepairDetail(cells.getCell(7) == null ? "" : cells.getCell(7).getStringCellValue());
+                cells.getCell(8).setCellType(1);
+                reqDTO.setStartDate(cells.getCell(8) == null ? "" : cells.getCell(8).getStringCellValue());
+                cells.getCell(9).setCellType(1);
+                reqDTO.setCompleteDate(cells.getCell(9) == null ? "" : cells.getCell(9).getStringCellValue());
+                cells.getCell(10).setCellType(1);
+                reqDTO.setRespPeople(cells.getCell(10) == null ? "" : cells.getCell(10).getStringCellValue());
+                cells.getCell(11).setCellType(1);
+                reqDTO.setRemark(cells.getCell(11) == null ? "" : cells.getCell(11).getStringCellValue());
                 reqDTO.setRecId(TokenUtil.getUuId());
                 reqDTO.setDeleteFlag("0");
                 reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
@@ -131,9 +139,9 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
     }
 
     @Override
-    public void exportWheelsetLathing(String trainNo, HttpServletResponse response) {
+    public void exportWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "列车号", "车厢号", "镟修轮对车轴", "镟修详情", "开始日期", "完成日期", "负责人", "备注", "附件编号", "创建者", "创建时间");
-        List<WheelsetLathingResDTO> wheelsetLathingResDTOList = wheelsetLathingMapper.listWheelsetLathing(trainNo);
+        List<WheelsetLathingResDTO> wheelsetLathingResDTOList = wheelsetLathingMapper.listWheelsetLathing(trainNo, carriageNo, axleNo, wheelNo);
         List<Map<String, String>> list = new ArrayList<>();
         if (wheelsetLathingResDTOList != null && !wheelsetLathingResDTOList.isEmpty()) {
             for (WheelsetLathingResDTO resDTO : wheelsetLathingResDTOList) {

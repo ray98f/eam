@@ -23,6 +23,18 @@ public class WheelsetLathingReqDTO {
     @ApiModelProperty(value = "镟修轮对车轴")
     private String axleNo;
 
+    @ApiModelProperty(value = "镟修轮对号")
+    private String wheelNo;
+
+    @ApiModelProperty(value = "轮高")
+    private String wheelHeight;
+
+    @ApiModelProperty(value = "轮厚")
+    private String wheelThick;
+
+    @ApiModelProperty(value = "轮径")
+    private String wheelDiameter;
+
     @ApiModelProperty(value = "镟修详情")
     private String repairDetail;
 

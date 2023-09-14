@@ -33,8 +33,11 @@ public class WheelsetLathingController {
     @GetMapping("/page")
     @ApiOperation(value = "获取轮对镟修台账列表")
     public PageResponse<WheelsetLathingResDTO> pageWheelsetLathing(@RequestParam(required = false) @ApiParam("列车号") String trainNo,
+                                                                   @RequestParam(required = false) @ApiParam("车厢号") String carriageNo,
+                                                                   @RequestParam(required = false) @ApiParam("镟修轮对车轴") String axleNo,
+                                                                   @RequestParam(required = false) @ApiParam("镟修轮对号") String wheelNo,
                                                                    @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(wheelsetLathingService.pageWheelsetLathing(trainNo, pageReqDTO));
+        return PageResponse.of(wheelsetLathingService.pageWheelsetLathing(trainNo, carriageNo, axleNo, wheelNo, pageReqDTO));
     }
 
     @GetMapping("/detail")
@@ -67,8 +70,11 @@ public class WheelsetLathingController {
     @GetMapping("/export")
     @ApiOperation(value = "导出轮对镟修台账")
     public void exportWheelsetLathing(@RequestParam(required = false) @ApiParam("列车号") String trainNo,
+                                      @RequestParam(required = false) @ApiParam("车厢号") String carriageNo,
+                                      @RequestParam(required = false) @ApiParam("镟修轮对车轴") String axleNo,
+                                      @RequestParam(required = false) @ApiParam("镟修轮对号") String wheelNo,
                                       HttpServletResponse response) {
-        wheelsetLathingService.exportWheelsetLathing(trainNo, response);
+        wheelsetLathingService.exportWheelsetLathing(trainNo, carriageNo, axleNo, wheelNo, response);
     }
 
 }

@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface WheelsetLathingMapper {
 
-    Page<WheelsetLathingResDTO> pageWheelsetLathing(Page<WheelsetLathingResDTO> page, String trainNo);
+    Page<WheelsetLathingResDTO> pageWheelsetLathing(Page<WheelsetLathingResDTO> page, String trainNo, String carriageNo, String axleNo, String wheelNo);
 
     WheelsetLathingResDTO getWheelsetLathingDetail(String id);
 
@@ -25,6 +25,6 @@ public interface WheelsetLathingMapper {
 
     void importWheelsetLathing(List<WheelsetLathingReqDTO> list);
 
-    List<WheelsetLathingResDTO> listWheelsetLathing(String trainNo);
+    List<WheelsetLathingResDTO> listWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo);
 
 }
