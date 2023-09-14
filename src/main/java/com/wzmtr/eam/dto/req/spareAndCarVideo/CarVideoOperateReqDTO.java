@@ -15,4 +15,11 @@ public class CarVideoOperateReqDTO {
     private String recStatus;
     @ApiModelProperty(value = "调阅记录号")
     private String recId;
+    @ApiModelProperty(value = "调度人")
+    private String dispatchUserId;
+    @ApiModelProperty(value = "维修人。如有多个则','隔开")
+    private String workerId;
+    @ApiModelProperty(value = "工班")
+    private String workClass;
+
 }

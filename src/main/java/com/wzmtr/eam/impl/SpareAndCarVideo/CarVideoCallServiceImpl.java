@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.SpareAndCarVideo;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dataobject.CarVideoDO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoOperateReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoReqDTO;
@@ -14,10 +15,11 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.SpareAndCarVideo.CarVideoMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.carVideoCall.CarVideoService;
+import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -41,6 +45,8 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     CarVideoMapper carVideoMapper;
     @Autowired
     EquipmentMapper equipmentMapper;
+    @Autowired
+    OverTodoService overTodoService;
 
     @Override
     public Page<CarVideoResDTO> list(CarVideoReqDTO reqDTO) {
@@ -117,11 +123,72 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void operate(CarVideoOperateReqDTO reqDTO) {
-        // todo
+        // 这里的recId传生成的uuid
+        CarVideoResDTO detail = carVideoMapper.detail(reqDTO.getRecId());
+        if (detail == null) {
+            log.error("该记录不存在-{}", reqDTO.getRecId());
+            return;
+        }
+        CarVideoDO carVideoDO = new CarVideoDO();
+        if ("20".equals(reqDTO.getRecStatus())) {
+            if (!"10".equals(detail.getRecStatus())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可下达!");
+            }
+            if (StringUtils.isBlank(detail.getDispatchUserId())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,检修调度不能为空");
+            }
+            carVideoDO.setDispatchUserId(reqDTO.getDispatchUserId());
+            carVideoDO.setRecStatus(reqDTO.getRecStatus());
+            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getApplyNo(), reqDTO.getDispatchUserId(), "视频调阅下达", "DMBR0022", TokenUtil.getCurrentPersonId());
+        }
+        if ("30".equals(reqDTO.getRecStatus())) {
+            if (!"20".equals(detail.getRecStatus())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非下达状态下不可派工");
+            }
+            overTodoService.overTodo(reqDTO.getRecId(), "");
+            String[] split = reqDTO.getWorkerId().split(",");
+            for (int i = 0; i < split.length; i++) {
+                overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), split[i], "视频调阅派工", "DMBR0022", TokenUtil.getCurrentPersonId());
+            }
+            carVideoDO.setRecStatus(reqDTO.getRecStatus());
+            carVideoDO.setDispatchTime(DateUtil.getTime());
+            carVideoDO.setWorkerId(reqDTO.getWorkerId());
+            carVideoDO.setWorkClass(reqDTO.getWorkClass());
+        }
+        if ("40".equals(reqDTO.getRecStatus())) {
+            if (!"30".equals(detail.getRecStatus())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非派工状态下不可完工");
+            }
+            overTodoService.overTodo(reqDTO.getRecId(), "");
+            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getRecId(), reqDTO.getDispatchUserId(), "视频调阅完工", "DMBR0022", TokenUtil.getCurrentPersonId());
+            // TODO: 2023/9/14 发短信
+            // Map<Object, Object> User = new HashMap<>();
+            // User.put("loginName", (detail.getDispatchUserId()));
+            // List phones = this.dao.query("DMDM59.queryPhoneByUser", User);
+            // if (phones != null && phones.size() > 0) {
+            //     String content = "视频调阅已完工，请注意";
+            //     EiInfo eiInfo = new EiInfo();
+            //     eiInfo.set("contacts", phones);
+            //     eiInfo.set("content", content);
+            //     ISendMessage.sendMessageByPhoneList(eiInfo);
+            // }
+            carVideoDO.setRecCreator(reqDTO.getRecStatus());
+            carVideoDO.setWorkTime(DateUtil.getTime());
+        }
+        if ("50".equals(reqDTO.getRecStatus())) {
+            if (!"40".equals(detail.getRecStatus())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR,"失败,非完工状态下不可关闭\"");
+            }
+            overTodoService.overTodo(reqDTO.getRecId(), "");
+            carVideoDO.setRecStatus(reqDTO.getRecStatus());
+            carVideoDO.setCloseTime(DateUtil.getTime());
+            carVideoDO.setCloserId(TokenUtil.getCurrentPersonId());
+        }
+        carVideoMapper.operate(carVideoDO);
     }
 
     @Override
     public void export(String recId, HttpServletResponse response) {
-        //TODO
+        // TODO
     }
 }
