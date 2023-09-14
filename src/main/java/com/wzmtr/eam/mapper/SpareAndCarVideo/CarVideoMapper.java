@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.SpareAndCarVideo;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dataobject.CarVideoDO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
 import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,4 +28,6 @@ public interface CarVideoMapper {
     void add(CarVideoAddReqDTO reqDTO);
 
     void update(CarVideoAddReqDTO reqDTO);
+
+    void operate(CarVideoDO reqDTO);
 }

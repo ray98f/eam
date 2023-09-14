@@ -87,6 +87,32 @@
             #{id}
         </foreach>
     </update>
+    <update id="operate">
+        UPDATE T_VIDEO_ACCESS set
+        REC_STATUS=#{recStatus}
+        <if test="dispatchTime != null">
+            ,DISPATCH_TIME=#{dispatchTime}
+        </if>
+        <if test="dispatchUserId != null">
+            , DISPATCH_USER_ID=#{dispatchUserId}
+        </if>
+        <if test="workerId != null">
+            , WORKER_ID=#{workerId}
+        </if>
+        <if test="workTime != null">
+            , WORK_TIME=#{workTime}
+        </if>
+        <if test="closerId != null">
+            , CLOSER_ID=#{closerId}
+        </if>
+        <if test="closeTime != null">
+            , CLOSE_TIME=#{closeTime}
+        </if>
+        <if test="workClass != null">
+            , WORK_CLASS=#{workClass}
+        </if>
+        WHERE REC_ID=#{recId}
+    </update>
     <select id="query" resultType="com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO">
         SELECT
         REC_ID	as "recId",
