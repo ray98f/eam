@@ -9,6 +9,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.equipment.GeneralSurveyService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.FileUtils;
@@ -41,15 +42,41 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     @Autowired
     private GeneralSurveyMapper generalSurveyMapper;
 
+    @Autowired
+    private FileMapper fileMapper;
+
     @Override
     public Page<GeneralSurveyResDTO> pageGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return generalSurveyMapper.pageGeneralSurvey(pageReqDTO.of(), trainNo, recNotifyNo, recDetail, orgType);
+        Page<GeneralSurveyResDTO> page = generalSurveyMapper.pageGeneralSurvey(pageReqDTO.of(), trainNo, recNotifyNo, recDetail, orgType);
+        List<GeneralSurveyResDTO> list = page.getRecords();
+        if (list != null && !list.isEmpty()) {
+            for (GeneralSurveyResDTO res : list) {
+                if (res.getDocId() != null && !"".equals(res.getDocId())) {
+                    res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+                }
+                if (res.getRecordId() != null && !"".equals(res.getRecordId())) {
+                    res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public GeneralSurveyResDTO getGeneralSurveyDetail(String id) {
-        return generalSurveyMapper.getGeneralSurveyDetail(id);
+        GeneralSurveyResDTO res = generalSurveyMapper.getGeneralSurveyDetail(id);
+        if (Objects.isNull(res)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        if (res.getDocId() != null && !"".equals(res.getDocId())) {
+            res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+        }
+        if (res.getRecordId() != null && !"".equals(res.getRecordId())) {
+            res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
+        }
+        return res;
     }
 
     @Override

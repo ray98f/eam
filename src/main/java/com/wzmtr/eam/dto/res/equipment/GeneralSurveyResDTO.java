@@ -1,8 +1,11 @@
 package com.wzmtr.eam.dto.res.equipment;
 
+import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author frp
@@ -38,8 +41,14 @@ public class GeneralSurveyResDTO {
     @ApiModelProperty(value = "附件编号")
     private String docId;
 
+    @ApiModelProperty(value = "附件文件")
+    private List<File> docFile;
+
     @ApiModelProperty(value = "作业记录编号")
     private String recordId;
+
+    @ApiModelProperty(value = "作业记录文件")
+    private List<File> recordFiles;
 
     @ApiModelProperty(value = "创建者")
     private String recCreator;
