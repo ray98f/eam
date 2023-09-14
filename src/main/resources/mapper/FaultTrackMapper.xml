@@ -230,7 +230,7 @@
         order by df11.FAULT_TRACK_WORK_NO
     </select>
 
-    <select id="queryOne" resultType="com.wzmtr.eam.bo.FaultTrackBO">
+    <select id="queryOne" resultType="com.wzmtr.eam.dataobject.FaultTrackDO">
         SELECT
         df9.REC_ID	as "recId",  <!-- 记录编号 -->
         df9.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->

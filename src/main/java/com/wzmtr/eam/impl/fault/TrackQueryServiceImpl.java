@@ -6,17 +6,14 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
-import com.wzmtr.eam.bo.FaultInfoBO;
+import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.DateUtil;
-import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.__BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +47,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
-        FaultInfoBO faultDetail = trackQueryMapper.faultDetail(reqDTO);
+        FaultInfoDO faultDetail = trackQueryMapper.faultDetail(reqDTO);
         FaultDetailResDTO repairDetail = trackQueryMapper.repairDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (faultDetail == null) {
             return repairDetail;

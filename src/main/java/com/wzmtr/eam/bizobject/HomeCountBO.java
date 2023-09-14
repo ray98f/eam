@@ -1,4 +1,4 @@
-package com.wzmtr.eam.bo;
+package com.wzmtr.eam.bizobject;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

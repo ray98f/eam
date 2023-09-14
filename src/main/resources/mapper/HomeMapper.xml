@@ -2,65 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.home.HomeMapper">
 
-    <select id="queryForIndex" resultType="integer">
-        SELECT count(*)
-        FROM (
-        SELECT
-        A.TASK_ID as taskId,
-        A.TASK_NAME as taskName,
-        A.PROCESS_INSTANCE_ID as processInstanceId,
-        A.ASSIGNEE_ID as assigneeId,
-        A.ASSIGNEE_FULLNAME as assigneeFullname,
-        A.REC_CREATOR as recCreator,
-        (SELECT MAX(USER_NAME) FROM iplat60.XS_USER WHERE LOGIN_NAME = A.REC_CREATOR) as recCreatorName,
-        to_char(to_date(A.START_TIME,'YYYYMMDDHH24miss'),'YYYY-MM-DD HH24:mi:ss') as startTime,
-        A.FORM as form,
-        A.DURATION as duration,
-        to_char(A.OPINION) as opinion,
-        B.BUSINESS_KEY as businessKey,
-        B.PROCESS_DEF_NAME as processDefName
-        FROM iplat60.TEWPT00 A
-        INNER JOIN iplat60.TEWPI00 B ON A.ACT_INSTANCE_ID=B.ACT_INSTANCE_ID
-        WHERE 1=1
-        <if test="modelName != null and !modelName.isEmpty()">
-            AND A.PROCESS_KEY LIKE CONCAT('%', #{modelName}, '%')
-        </if>
-        <if test="userId != null and !userId.isEmpty()">
-            AND A.ASSIGNEE_ID = #{userId}
-        </if>
-        <if test="state != null">
-            AND A.STATE = #{state}
-        </if>
-        UNION ALL
-        SELECT
-        EXT1 as taskId,
-        STEP_NAME as taskName,
-        TODO_ID as processInstanceId,
-        USER_ID as assigneeId,
-        (SELECT MAX(USER_NAME) FROM iplat60.XS_USER WHERE LOGIN_NAME = B.USER_ID) as assigneeFullname,
-        LAST_STEP_USER_ID as recCreator,
-        (SELECT MAX(USER_NAME) FROM iplat60.XS_USER WHERE LOGIN_NAME = LAST_STEP_USER_ID) as recCreatorName,
-        to_char(to_date(TASK_RCV_TIME,'YYYYMMDDHH24miss'),'YYYY-MM-DD HH24:mi:ss') as startTime,
-        EIP_URL as form,
-        round(to_number((select to_date(to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd hh24:mi:ss') FROM DUAL) -
-        to_date(TASK_RCV_TIME,'yyyy-mm-dd hh24:mi:ss'))*1440) as duration,
-        AUDIT_OPINION  as opinion,
-        EXT1 as businessKey,
-        TITLE as processDefName
-        FROM iplat60.STATUS_WORK_FLOW_LOG B
-        WHERE 1=1
-        <if test="modelName != null and !modelName.isEmpty()">
-            AND B.SYSCODE LIKE CONCAT('%', #{modelName}, '%')
-        </if>
-        <if test="userId != null and !userId.isEmpty()">
-            AND B.USER_ID = #{userId}
-        </if>
-        <if test="todoStatus != null">
-            AND B.TODO_STATUS = #{todoStatus}
-        </if>
-        ) A
-        ORDER BY A.startTime DESC
-    </select>
+
     <select id="count" resultType="integer">
             SELECT COUNT(*)
             FROM IPLAT60.USER_MESSAGE
@@ -134,6 +76,65 @@
         AND d.DISCOVERY_TIME>=to_char(add_months( SYSDATE, -5), 'YYYY/MM/DD hh:mm')
         GROUP BY i.ITEM_CNAME, t.ORDER_STATUS
         ORDER BY cnt DESC-->
+    </select>
+    <select id="queryForIndex" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM (
+        SELECT
+        A.TASK_ID as taskId,
+        A.TASK_NAME as taskName,
+        A.PROCESS_INSTANCE_ID as processInstanceId,
+        A.ASSIGNEE_ID as assigneeId,
+        A.ASSIGNEE_FULLNAME as assigneeFullname,
+        A.REC_CREATOR as recCreator,
+        (SELECT MAX(USER_NAME) FROM iplat60.XS_USER WHERE LOGIN_NAME = A.REC_CREATOR) as recCreatorName,
+        to_char(to_date(A.START_TIME,'YYYYMMDDHH24miss'),'YYYY-MM-DD HH24:mi:ss') as startTime,
+        A.FORM as form,
+        A.DURATION as duration,
+        to_char(A.OPINION) as opinion,
+        B.BUSINESS_KEY as businessKey,
+        B.PROCESS_DEF_NAME as processDefName
+        FROM iplat60.TEWPT00 A
+        INNER JOIN iplat60.TEWPI00 B ON A.ACT_INSTANCE_ID=B.ACT_INSTANCE_ID
+        WHERE 1=1
+        <if test="modelName != null and modelName != ''">
+            AND A.PROCESS_KEY LIKE  concat(concat('%',#{modelName}),'%')
+        </if>
+        <if test="userId != null and userId != ''">
+            AND A.ASSIGNEE_ID = #{userId}
+        </if>
+        <if test="state != null and state != ''">
+            AND A.STATE = #{state}
+        </if>
+        UNION ALL
+        SELECT
+        EXT1 as taskId,
+        STEP_NAME as taskName,
+        TODO_ID as processInstanceId,
+        USER_ID as assigneeId,
+        (SELECT MAX(USER_NAME) FROM iplat60.XS_USER WHERE LOGIN_NAME = B.USER_ID) as assigneeFullname,
+        LAST_STEP_USER_ID as recCreator,
+        (SELECT MAX(USER_NAME) FROM iplat60.XS_USER WHERE LOGIN_NAME = LAST_STEP_USER_ID) as recCreatorName,
+        to_char(to_date(TASK_RCV_TIME,'YYYYMMDDHH24miss'),'YYYY-MM-DD HH24:mi:ss') as startTime,
+        EIP_URL as form,
+        round(to_number((select to_date(to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd hh24:mi:ss') FROM DUAL) -
+        to_date(TASK_RCV_TIME,'yyyy-mm-dd hh24:mi:ss'))*1440) as duration,
+        AUDIT_OPINION  as opinion,
+        EXT1 as businessKey,
+        TITLE as processDefName
+        FROM iplat60.STATUS_WORK_FLOW_LOG B
+        WHERE 1=1
+        <if test="modelName != null and modelName != ''">
+            AND B.SYSCODE LIKE concat(concat('%',#{modelName}),'%')
+        </if>
+        <if test="userId != null and userId != ''">
+            AND B.USER_ID = #{userId}
+        </if>
+        <if test="todoStatus != null and todoStatus != ''">
+            AND B.TODO_STATUS = #{todoStatus}
+        </if>
+        ) A
+        ORDER BY A.startTime DESC
     </select>
 
 </mapper>

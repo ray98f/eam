@@ -1,7 +1,7 @@
 package com.wzmtr.eam.mapper.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.bo.FaultTrackBO;
+import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
@@ -32,5 +32,5 @@ public interface FaultQueryMapper {
 
     TrackQueryResDTO queryOneByFaultWorkNoAndFaultNo(String faultNo, String faultWorkNo);
 
-    void transmit(FaultTrackBO bo);
+    void transmit(FaultTrackDO bo);
 }

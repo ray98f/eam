@@ -1,6 +1,5 @@
 package com.wzmtr.eam.dto.res.statistic;
 
-import com.wzmtr.eam.bo.StatisticBO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

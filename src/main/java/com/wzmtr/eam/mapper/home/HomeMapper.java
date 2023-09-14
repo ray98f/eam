@@ -1,7 +1,6 @@
 package com.wzmtr.eam.mapper.home;
 
-import com.wzmtr.eam.bo.HomeCountBO;
-import com.wzmtr.eam.dto.res.home.EChartResDTO;
+import com.wzmtr.eam.bizobject.HomeCountBO;
 import com.wzmtr.eam.dto.res.home.ShowAResDTO;
 import com.wzmtr.eam.dto.res.home.ShowBCResDTO;
 import org.apache.ibatis.annotations.Mapper;

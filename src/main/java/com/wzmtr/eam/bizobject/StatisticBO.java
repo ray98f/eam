@@ -1,11 +1,8 @@
-package com.wzmtr.eam.bo;
+package com.wzmtr.eam.bizobject;
 
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Author: Li.Wang

@@ -7,9 +7,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
-import com.wzmtr.eam.bo.FaultInfoBO;
-import com.wzmtr.eam.bo.FaultOrderBO;
-import com.wzmtr.eam.bo.FaultTrackBO;
+import com.wzmtr.eam.dataobject.FaultInfoDO;
+import com.wzmtr.eam.dataobject.FaultOrderDO;
+import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
@@ -111,32 +111,32 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public void issue(FaultDetailReqDTO reqDTO) {
         FaultQueryServiceImpl aop = (FaultQueryServiceImpl) AopContext.currentProxy();
         String status = aop.queryOrderStatus(SidEntity.builder().id(reqDTO.getFaultWorkNo()).build());
-        FaultOrderBO faultOrderBO = __BeanUtil.convert(reqDTO, FaultOrderBO.class);
+        FaultOrderDO faultOrderDO = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
         switch (status) {
             case "40":
-                faultOrderBO.setReportStartUserId(TokenUtil.getCurrentPersonId());
-                faultOrderBO.setReportStartTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                faultOrderDO.setReportStartUserId(TokenUtil.getCurrentPersonId());
+                faultOrderDO.setReportStartTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
             case "50":
-                faultOrderBO.setReportFinishUserId(TokenUtil.getCurrentPersonId());
-                faultOrderBO.setReportFinishTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                faultOrderDO.setReportFinishUserId(TokenUtil.getCurrentPersonId());
+                faultOrderDO.setReportFinishTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
             case "60":
-                faultOrderBO.setConfirmUserId(TokenUtil.getCurrentPersonId());
-                faultOrderBO.setConfirmTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                faultOrderDO.setConfirmUserId(TokenUtil.getCurrentPersonId());
+                faultOrderDO.setConfirmTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
             case "55":
-                faultOrderBO.setCheckUserId(TokenUtil.getCurrentPersonId());
-                faultOrderBO.setCheckTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                faultOrderDO.setCheckUserId(TokenUtil.getCurrentPersonId());
+                faultOrderDO.setCheckTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
         }
-        faultOrderBO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        faultOrderBO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        reportMapper.updateFaultOrder(faultOrderBO);
-        FaultInfoBO faultInfoBO = __BeanUtil.convert(reqDTO, FaultInfoBO.class);
-        faultInfoBO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        faultInfoBO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        reportMapper.updateFaultInfo(faultInfoBO);
+        faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        faultOrderDO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        reportMapper.updateFaultOrder(faultOrderDO);
+        FaultInfoDO faultInfoDO = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
+        faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        faultInfoDO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        reportMapper.updateFaultInfo(faultInfoDO);
     }
 
     @Override
@@ -218,7 +218,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             workFlowInstId = res.getRecId() + "_" + res.getFaultWorkNo();
         }
         overTodoService.overTodo(workFlowInstId, "跟踪工单");
-        FaultTrackBO bo = __BeanUtil.convert(res, FaultTrackBO.class);
+        FaultTrackDO bo = __BeanUtil.convert(res, FaultTrackDO.class);
         bo.setRecStatus("20");
         bo.setExt1(workFlowInstId);
         // todo 发短信
@@ -236,11 +236,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public void submit(FaultSubmitReqDTO reqDTO) {
         // dmfm09.query
-        List<FaultTrackBO> dmfm9List = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
+        List<FaultTrackDO> dmfm9List = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
         if (CollectionUtil.isEmpty(dmfm9List)) {
             return;
         }
-        FaultTrackBO dmfm09 = dmfm9List.get(0);
+        FaultTrackDO dmfm09 = dmfm9List.get(0);
         // dmfm01.query
         List<FaultDetailResDTO> dmfm01List = faultQueryMapper.exportList(FaultQueryReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
         FaultDetailResDTO faultDetailResDTO = dmfm01List.get(0);
@@ -547,8 +547,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void returns(FaultSubmitReqDTO reqDTO) {
-        List<FaultTrackBO> list = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
-        FaultTrackBO dmfm09 = list.get(0);
+        List<FaultTrackDO> list = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
+        FaultTrackDO dmfm09 = list.get(0);
         // String userId = UserUtil.getLoginId();
         String processId = dmfm09.getWorkFlowInstId();
         String task = bpmnService.nextTaskKey(processId);

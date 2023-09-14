@@ -1,4 +1,4 @@
-package com.wzmtr.eam.bo;
+package com.wzmtr.eam.dataobject;
 
 import lombok.Data;
 
@@ -7,7 +7,7 @@ import lombok.Data;
  * Date: 2023/8/17 10:15
  */
 @Data
-public class FaultOrderBO {
+public class FaultOrderDO {
     private String recId;
     private String companyCode;
     private String companyName;

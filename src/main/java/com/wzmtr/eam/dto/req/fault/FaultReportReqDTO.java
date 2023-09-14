@@ -1,7 +1,7 @@
 package com.wzmtr.eam.dto.req.fault;
 
-import com.wzmtr.eam.bo.FaultInfoBO;
-import com.wzmtr.eam.bo.FaultOrderBO;
+import com.wzmtr.eam.dataobject.FaultInfoDO;
+import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -102,8 +102,8 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "记录状态")
     private String recStatus = " ";
 
-    public FaultOrderBO toFaultOrderBO(FaultReportReqDTO req) {
-        FaultOrderBO convert = __BeanUtil.convert(req, FaultOrderBO.class);
+    public FaultOrderDO toFaultOrderInsertBO(FaultReportReqDTO req) {
+        FaultOrderDO convert = __BeanUtil.convert(req, FaultOrderDO.class);
         if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
             convert.setWorkClass(req.getRepairDeptCode());
         }
@@ -115,8 +115,8 @@ public class FaultReportReqDTO {
         return convert;
     }
 
-    public FaultInfoBO toFaultInfoBO(FaultReportReqDTO req) {
-        FaultInfoBO convert = __BeanUtil.convert(req, FaultInfoBO.class);
+    public FaultInfoDO toFaultInfoInsertBO(FaultReportReqDTO req) {
+        FaultInfoDO convert = __BeanUtil.convert(req, FaultInfoDO.class);
         convert.setRecId(TokenUtil.getUuId());
         convert.setDeleteFlag("0");
         convert.setFillinTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));

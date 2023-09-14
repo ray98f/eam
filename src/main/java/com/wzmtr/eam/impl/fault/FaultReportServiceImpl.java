@@ -1,16 +1,17 @@
 package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.bo.FaultInfoBO;
-import com.wzmtr.eam.bo.FaultOrderBO;
+import com.wzmtr.eam.dataobject.FaultInfoDO;
+import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
-import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.CodeUtils;
@@ -18,10 +19,8 @@ import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.__BeanUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Author: Li.Wang
@@ -36,6 +35,8 @@ public class FaultReportServiceImpl implements FaultReportService {
     private OrganizationMapper organizationMapper;
     @Autowired
     private TrackQueryService trackQueryService;
+    @Autowired
+    private FaultInfoMapper faultInfoMapper;
 
     @Override
     // @Transactional(rollbackFor = Exception.class)
@@ -44,11 +45,11 @@ public class FaultReportServiceImpl implements FaultReportService {
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         // 获取AOP代理对象
         // FaultReportServiceImpl aop = (FaultReportServiceImpl) AopContext.currentProxy();
-        FaultInfoBO faultInfoBO = reqDTO.toFaultInfoBO(reqDTO);
+        FaultInfoDO faultInfoDO = reqDTO.toFaultInfoInsertBO(reqDTO);
         String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-        _insertToFaultInfo(faultInfoBO, nextFaultNo);
-        FaultOrderBO faultOrderBO = reqDTO.toFaultOrderBO(reqDTO);
-        _insertToFaultOrder(faultOrderBO, nextFaultNo, maxFaultWorkNo);
+        _insertToFaultInfo(faultInfoDO, nextFaultNo);
+        FaultOrderDO faultOrderDO = reqDTO.toFaultOrderInsertBO(reqDTO);
+        _insertToFaultOrder(faultOrderDO, nextFaultNo, maxFaultWorkNo);
         // TODO: 2023/8/24 知会OCC调度
         // if ("Y".equals(maintenance)) {
         //     /* 1756 */             String groupName = "DM_021";
@@ -61,16 +62,16 @@ public class FaultReportServiceImpl implements FaultReportService {
         //     /*      */           }
     }
 
-    private void _insertToFaultInfo(FaultInfoBO faultInfoBO, String maxFaultNo) {
-        faultInfoBO.setFaultNo(maxFaultNo);
-        faultReportMapper.addToFaultInfo(faultInfoBO);
+    private void _insertToFaultInfo(FaultInfoDO faultInfoDO, String maxFaultNo) {
+        faultInfoDO.setFaultNo(maxFaultNo);
+        faultReportMapper.addToFaultInfo(faultInfoDO);
     }
 
-    private void _insertToFaultOrder(FaultOrderBO faultOrderBO, String maxFaultNo, String maxFaultWorkNo) {
+    private void _insertToFaultOrder(FaultOrderDO faultOrderDO, String maxFaultNo, String maxFaultWorkNo) {
         String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
-        faultOrderBO.setFaultWorkNo(nextFaultWorkNo);
-        faultOrderBO.setFaultNo(maxFaultNo);
-        faultReportMapper.addToFaultOrder(faultOrderBO);
+        faultOrderDO.setFaultWorkNo(nextFaultWorkNo);
+        faultOrderDO.setFaultNo(maxFaultNo);
+        faultReportMapper.addToFaultOrder(faultOrderDO);
     }
 
     @Override
@@ -92,19 +93,19 @@ public class FaultReportServiceImpl implements FaultReportService {
     public void addToMajor(FaultReportToMajorReqDTO reqDTO) {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-        FaultInfoBO faultInfoBO = __BeanUtil.convert(reqDTO, FaultInfoBO.class);
-        faultInfoBO.setRecId(TokenUtil.getUuId());
-        faultInfoBO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        faultInfoBO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        _insertToFaultInfo(faultInfoBO, maxFaultNo);
-        FaultOrderBO faultOrderBO = __BeanUtil.convert(reqDTO, FaultOrderBO.class);
-        faultOrderBO.setRecId(TokenUtil.getUuId());
+        FaultInfoDO faultInfoDO = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
+        faultInfoDO.setRecId(TokenUtil.getUuId());
+        faultInfoDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
+        faultInfoDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        _insertToFaultInfo(faultInfoDO, maxFaultNo);
+        FaultOrderDO faultOrderDO = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
+        faultOrderDO.setRecId(TokenUtil.getUuId());
         if (reqDTO.getRepairDeptCode() != null) {
-            faultOrderBO.setWorkClass(reqDTO.getRepairDeptCode());
+            faultOrderDO.setWorkClass(reqDTO.getRepairDeptCode());
         }
-        faultOrderBO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        faultOrderBO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        _insertToFaultOrder(faultOrderBO, maxFaultNo, maxFaultWorkNo);
+        faultOrderDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
+        faultOrderDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        _insertToFaultOrder(faultOrderDO, maxFaultNo, maxFaultWorkNo);
     }
 
     @Override
@@ -114,8 +115,26 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public void cancel(FaultCancelReqDTO reqDTO) {
-        //已提报故障单撤销/作废 逻辑删 涉及faultinfo和faultorder两张表
+        // 已提报故障单撤销/作废 逻辑删 涉及faultinfo和faultorder两张表
         faultReportMapper.cancelOrder(reqDTO);
         faultReportMapper.cancelInfo(reqDTO);
     }
+
+    @Override
+    public void update(FaultReportReqDTO reqDTO) {
+        // 修改已提报故障单  修改时间 修改人， 各属性的值
+        FaultInfoDO infoUpdate = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
+        infoUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
+        infoUpdate.setRecReviseTime(DateUtil.getTime());
+        faultReportMapper.updateFaultInfo(infoUpdate);
+        FaultOrderDO orderUpdate = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
+        orderUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
+        orderUpdate.setRecReviseTime(DateUtil.getTime());
+        faultReportMapper.updateFaultOrder(orderUpdate);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(DateUtil.getTime());
+    }
 }
+

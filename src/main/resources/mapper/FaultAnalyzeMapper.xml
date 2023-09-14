@@ -336,7 +336,7 @@
             AND ORG_CODE = #{orgCode}
         </if>
     </select>
-    <select id="getFaultAnalysisList" resultType="com.wzmtr.eam.bo.FaultAnalyzeBO">
+    <select id="getFaultAnalysisList" resultType="com.wzmtr.eam.dataobject.FaultAnalyzeDO">
         SELECT
         d3.REC_ID as "recId",
         d3.COMPANY_CODE as "companyCode",

@@ -2,8 +2,8 @@ package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.bo.FaultInfoBO;
-import com.wzmtr.eam.bo.FaultOrderBO;
+import com.wzmtr.eam.dataobject.FaultInfoDO;
+import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultInfoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
@@ -468,9 +468,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         dmfm02.setFaultNo(faultNo);
         dmfm02.setOrderStatus("30");
         dmfm02.setWorkClass(list.get(0).getWorkerGroupCode());
-        FaultInfoBO f1 = __BeanUtil.convert(dmfm01, FaultInfoBO.class);
+        FaultInfoDO f1 = __BeanUtil.convert(dmfm01, FaultInfoDO.class);
         faultReportMapper.addToFaultInfo(f1);
-        FaultOrderBO f2 = __BeanUtil.convert(dmfm02, FaultOrderBO.class);
+        FaultOrderDO f2 = __BeanUtil.convert(dmfm02, FaultOrderDO.class);
         faultReportMapper.addToFaultOrder(f2);
         overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
         String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";

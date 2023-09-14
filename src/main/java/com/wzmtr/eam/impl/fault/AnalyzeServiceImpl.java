@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
-import com.wzmtr.eam.bo.FaultAnalyzeBO;
+import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
@@ -112,7 +112,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public void submit(FaultSubmitReqDTO reqDTO) {
-        List<FaultAnalyzeBO> list = mapper.getFaultAnalysisList(reqDTO.getFaultAnalysisNo(), reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        List<FaultAnalyzeDO> list = mapper.getFaultAnalysisList(reqDTO.getFaultAnalysisNo(), reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (CollectionUtil.isEmpty(list)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -127,7 +127,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         } catch (Exception e) {
             log.error("获取任务列表失败");
         }
-        FaultAnalyzeBO dmfm03 = list.get(0);
+        FaultAnalyzeDO dmfm03 = list.get(0);
         String majorCode = dmfm03.getMajorCode();
         Dictionaries dictionaries = dictionaryService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
         String itemEname = dictionaries.getItemEname();

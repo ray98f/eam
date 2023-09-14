@@ -250,7 +250,7 @@
             and df9.DELETE_FLAG='0'
         </trim>
     </select>
-    <select id="faultDetail" resultType="com.wzmtr.eam.bo.FaultInfoBO">
+    <select id="faultDetail" resultType="com.wzmtr.eam.dataobject.FaultInfoDO">
         SELECT
         d.REC_ID AS "recId",
         df.REC_ID AS "workId",

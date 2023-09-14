@@ -28,4 +28,6 @@ public interface FaultReportService {
     FaultDetailResDTO detail(FaultDetailReqDTO reqDTO);
 
     void cancel(FaultCancelReqDTO reqDTO);
+
+    void update(FaultReportReqDTO reqDTO);
 }

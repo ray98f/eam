@@ -1,4 +1,4 @@
-package com.wzmtr.eam.bo;
+package com.wzmtr.eam.dataobject;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class FaultAnalyzeBO {
+public class FaultAnalyzeDO {
     /*  18 */   private String recId;
     /*  19 */   private String companyCode;
     /*  20 */   private String companyName;

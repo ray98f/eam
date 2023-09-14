@@ -1,7 +1,7 @@
 package com.wzmtr.eam.mapper.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.bo.FaultAnalyzeBO;
+import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.res.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
@@ -30,7 +30,7 @@ public interface AnalyzeMapper {
 
     List<PersonResDTO> queryCoParent(String orgCode);
 
-    List<FaultAnalyzeBO> getFaultAnalysisList(String faultAnalysisNo, String faultNo, String faultWorkNo);
+    List<FaultAnalyzeDO> getFaultAnalysisList(String faultAnalysisNo, String faultNo, String faultWorkNo);
 
-    void update(FaultAnalyzeBO dmfm03);
+    void update(FaultAnalyzeDO dmfm03);
 }

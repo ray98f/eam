@@ -56,6 +56,14 @@ public class FaultReportController {
         reportService.cancel(reqDTO);
         return DataResponse.success();
     }
+    @ApiOperation(value = "已提报故障单修改")
+    @PostMapping("/fault/update")
+    public DataResponse<String> update(@RequestBody FaultReportReqDTO reqDTO) {
+        // faultWorkNo
+        reportService.update(reqDTO);
+        return DataResponse.success();
+    }
+
 
     @ApiOperation(value = "故障编号详情")
     @PostMapping("/detail")
