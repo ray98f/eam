@@ -3,6 +3,8 @@ package com.wzmtr.eam.impl.minio;
 import com.wzmtr.eam.config.MinioConfig;
 import com.wzmtr.eam.dto.req.FileReqDTO;
 import com.wzmtr.eam.entity.File;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.minio.MinioService;
 import com.wzmtr.eam.utils.DateUtil;
@@ -28,10 +30,13 @@ public class MinioServiceImpl implements MinioService {
 
     @Autowired
     private MinioUtils minioUtils;
+
     @Autowired
     private MinioClient client;
+
     @Autowired
     private MinioConfig minioConfig;
+
     @Autowired
     private FileMapper fileMapper;
 
@@ -43,16 +48,15 @@ public class MinioServiceImpl implements MinioService {
         String oldName = file.getOriginalFilename();
         String fileName = FileUploadUtils.extractFilename(file);
         try {
-            InputStream inputStream = file.getInputStream();
-            client.putObject(PutObjectArgs.builder()
+            PutObjectArgs args = PutObjectArgs.builder()
                     .bucket(bucket)
                     .object(fileName)
-                    .stream(inputStream, file.getSize(), -1)
+                    .stream(file.getInputStream(), file.getSize(), -1)
                     .contentType(file.getContentType())
-                    .build());
-            inputStream.close();
+                    .build();
+            client.putObject(args);
         } catch (Exception e) {
-            log.error("upload error", e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "上传失败");
         }
         String url = minioConfig.getImgPath() + "/" + bucket + "/" + fileName;
         FileReqDTO build = FileReqDTO.builder()

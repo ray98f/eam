@@ -22,10 +22,8 @@ public class FileUploadUtils {
      * 编码文件名
      */
     public static String extractFilename(MultipartFile file) {
-        String fileName;
         String extension = getExtension(file);
-        fileName = DateUtil.datePath() + UUID.randomUUID() + "." + extension;
-        return fileName;
+        return DateUtils.datePath() + "/" + UUID.randomUUID().toString() + "." + extension;
     }
 
     /**
