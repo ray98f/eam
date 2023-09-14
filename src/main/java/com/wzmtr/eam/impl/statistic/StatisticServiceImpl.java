@@ -569,12 +569,12 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<GeneralSurveyResDTO> pageGeneralSurvey(OneCarOneGearQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return generalSurveyMapper.pageGeneralSurvey(reqDTO.of(), reqDTO.getEquipName());
+        return generalSurveyMapper.pageGeneralSurvey(reqDTO.of(), reqDTO.getEquipName(), null, null, null);
     }
 
     @Override
     public void pageGeneralSurveyExport(String equipName, HttpServletResponse response) {
-        List<GeneralSurveyResDTO> resDTOS = generalSurveyMapper.listGeneralSurvey(equipName);
+        List<GeneralSurveyResDTO> resDTOS = generalSurveyMapper.listGeneralSurvey(equipName, null, null, null);
         List<String> listName = Arrays.asList("类别", "技术通知单编号","项目内容","完成时间","作业单位","备注");
         List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(resDTOS)) {

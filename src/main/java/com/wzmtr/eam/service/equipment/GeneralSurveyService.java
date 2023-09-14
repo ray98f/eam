@@ -5,13 +5,15 @@ import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 
 public interface GeneralSurveyService {
 
-    Page<GeneralSurveyResDTO> pageGeneralSurvey(String trainNo, PageReqDTO pageReqDTO);
+    Page<GeneralSurveyResDTO> pageGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, PageReqDTO pageReqDTO);
 
     GeneralSurveyResDTO getGeneralSurveyDetail(String id);
 
@@ -21,6 +23,6 @@ public interface GeneralSurveyService {
 
     void importGeneralSurvey(MultipartFile file);
 
-    void exportGeneralSurvey(String trainNo, HttpServletResponse response);
+    void exportGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, HttpServletResponse response);
 
 }

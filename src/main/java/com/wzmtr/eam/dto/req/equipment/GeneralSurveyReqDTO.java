@@ -38,6 +38,9 @@ public class GeneralSurveyReqDTO {
     @ApiModelProperty(value = "附件编号")
     private String docId;
 
+    @ApiModelProperty(value = "作业记录编号")
+    private String recordId;
+
     @ApiModelProperty(value = "创建者")
     private String recCreator;
 

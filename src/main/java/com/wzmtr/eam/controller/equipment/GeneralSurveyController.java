@@ -33,8 +33,11 @@ public class GeneralSurveyController {
     @GetMapping("/page")
     @ApiOperation(value = "获取普查与技改台账列表")
     public PageResponse<GeneralSurveyResDTO> pageGeneralSurvey(@RequestParam(required = false) @ApiParam("列车号") String trainNo,
+                                                               @RequestParam(required = false) @ApiParam("技术通知单编号") String recNotifyNo,
+                                                               @RequestParam(required = false) @ApiParam("项目内容") String recDetail,
+                                                               @RequestParam(required = false) @ApiParam("作业单位") String orgType,
                                                                @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(generalSurveyService.pageGeneralSurvey(trainNo, pageReqDTO));
+        return PageResponse.of(generalSurveyService.pageGeneralSurvey(trainNo, recNotifyNo, recDetail, orgType, pageReqDTO));
     }
 
     @GetMapping("/detail")
@@ -67,8 +70,11 @@ public class GeneralSurveyController {
     @GetMapping("/export")
     @ApiOperation(value = "导出普查与技改台账")
     public void exportGeneralSurvey(@RequestParam(required = false) @ApiParam("列车号") String trainNo,
+                                    @RequestParam(required = false) @ApiParam("技术通知单编号") String recNotifyNo,
+                                    @RequestParam(required = false) @ApiParam("项目内容") String recDetail,
+                                    @RequestParam(required = false) @ApiParam("作业单位") String orgType,
                                     HttpServletResponse response) {
-        generalSurveyService.exportGeneralSurvey(trainNo, response);
+        generalSurveyService.exportGeneralSurvey(trainNo, recNotifyNo, recDetail, orgType, response);
     }
 
 }

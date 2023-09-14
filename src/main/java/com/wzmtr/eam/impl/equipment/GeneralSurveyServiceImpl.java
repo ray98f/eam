@@ -42,9 +42,9 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     private GeneralSurveyMapper generalSurveyMapper;
 
     @Override
-    public Page<GeneralSurveyResDTO> pageGeneralSurvey(String trainNo, PageReqDTO pageReqDTO) {
+    public Page<GeneralSurveyResDTO> pageGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return generalSurveyMapper.pageGeneralSurvey(pageReqDTO.of(), trainNo);
+        return generalSurveyMapper.pageGeneralSurvey(pageReqDTO.of(), trainNo, recNotifyNo, recDetail, orgType);
     }
 
     @Override
@@ -124,9 +124,9 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     }
 
     @Override
-    public void exportGeneralSurvey(String trainNo, HttpServletResponse response) {
+    public void exportGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "列车号", "类别", "技术通知单编号", "项目内容", "完成时间", "作业单位", "备注", "附件编号", "创建者", "创建时间");
-        List<GeneralSurveyResDTO> generalSurveyResDTOList = generalSurveyMapper.listGeneralSurvey(trainNo);
+        List<GeneralSurveyResDTO> generalSurveyResDTOList = generalSurveyMapper.listGeneralSurvey(trainNo, recNotifyNo, recDetail, orgType);
         List<Map<String, String>> list = new ArrayList<>();
         if (generalSurveyResDTOList != null && !generalSurveyResDTOList.isEmpty()) {
             for (GeneralSurveyResDTO resDTO : generalSurveyResDTOList) {

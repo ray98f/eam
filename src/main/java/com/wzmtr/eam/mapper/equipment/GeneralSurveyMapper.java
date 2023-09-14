@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface GeneralSurveyMapper {
 
-    Page<GeneralSurveyResDTO> pageGeneralSurvey(Page<GeneralSurveyResDTO> page, String trainNo);
+    Page<GeneralSurveyResDTO> pageGeneralSurvey(Page<GeneralSurveyResDTO> page, String trainNo, String recNotifyNo, String recDetail, String orgType);
 
     GeneralSurveyResDTO getGeneralSurveyDetail(String id);
 
@@ -25,6 +25,6 @@ public interface GeneralSurveyMapper {
 
     void importGeneralSurvey(List<GeneralSurveyReqDTO> list);
 
-    List<GeneralSurveyResDTO> listGeneralSurvey(String trainNo);
+    List<GeneralSurveyResDTO> listGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType);
 
 }

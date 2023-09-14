@@ -12,37 +12,40 @@ import lombok.Data;
 public class GeneralSurveyResDTO {
     
     @ApiModelProperty(value = "记录编号")
-    private String recId = " ";
+    private String recId;
 
     @ApiModelProperty(value = "列车号")
-    private String trainNo = " ";
+    private String trainNo;
 
     @ApiModelProperty(value = "类别")
-    private String recType = " ";
+    private String recType;
 
     @ApiModelProperty(value = "技术通知单编号")
-    private String recNotifyNo = " ";
+    private String recNotifyNo;
 
     @ApiModelProperty(value = "项目内容")
-    private String recDetail = " ";
+    private String recDetail;
 
     @ApiModelProperty(value = "完成时间")
-    private String completeDate = " ";
+    private String completeDate;
 
     @ApiModelProperty(value = "作业单位")
-    private String orgType = " ";
+    private String orgType;
     
     @ApiModelProperty(value = "备注")
-    private String remark = " ";
+    private String remark;
     
     @ApiModelProperty(value = "附件编号")
-    private String docId = " ";
+    private String docId;
+
+    @ApiModelProperty(value = "作业记录编号")
+    private String recordId;
 
     @ApiModelProperty(value = "创建者")
-    private String recCreator = " ";
+    private String recCreator;
 
     @ApiModelProperty(value = "创建时间")
-    private String recCreateTime = " ";
+    private String recCreateTime;
 
     @ApiModelProperty(value = "修改者")
     private String recRevisor;

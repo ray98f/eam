@@ -13,6 +13,7 @@
         ORG_TYPE	as "orgType",  <!-- 作业单位 -->
         REMARK	as "remark",  <!-- 备注 -->
         DOC_ID	as "docId",  <!-- 附件编号 -->
+        RECORD_ID	as "recordId",  <!-- 作业记录编号 -->
         REC_CREATOR	as "recCreator",  <!-- 创建者 -->
         REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
         REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
@@ -34,6 +35,15 @@
         <if test="trainNo!=null and trainNo!=''">
             and TRAIN_NO like '%' || #{trainNo} || '%'
         </if>
+        <if test="recNotifyNo!=null and recNotifyNo!=''">
+            and REC_NOTIFY_NO like '%' || #{recNotifyNo} || '%'
+        </if>
+        <if test="recDetail!=null and recDetail!=''">
+            and REC_DETAIL like '%' || #{recDetail} || '%'
+        </if>
+        <if test="orgType!=null and orgType!=''">
+            and ORG_TYPE=#{orgType}
+        </if>
         ORDER BY REC_CREATE_TIME desc
     </select>
 
@@ -48,6 +58,7 @@
         ORG_TYPE	as "orgType",  <!-- 作业单位 -->
         REMARK	as "remark",  <!-- 备注 -->
         DOC_ID	as "docId",  <!-- 附件编号 -->
+        RECORD_ID	as "recordId",  <!-- 作业记录编号 -->
         REC_CREATOR	as "recCreator",  <!-- 创建者 -->
         REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
         REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
@@ -79,6 +90,7 @@
         ORG_TYPE,  <!-- 作业单位 -->
         REMARK,  <!-- 备注 -->
         DOC_ID,  <!-- 附件编号 -->
+        RECORD_ID,  <!-- 作业记录编号 -->
         REC_CREATOR,  <!-- 创建者 -->
         REC_CREATE_TIME,  <!-- 创建时间 -->
         REC_REVISOR,  <!-- 修改者 -->
@@ -105,6 +117,7 @@
         #{orgType,jdbcType=VARCHAR},
         #{remark,jdbcType=VARCHAR},
         #{docId,jdbcType=VARCHAR},
+        #{recordId,jdbcType=VARCHAR},
         #{recCreator,jdbcType=VARCHAR},
         #{recCreateTime,jdbcType=VARCHAR},
         #{recRevisor,jdbcType=VARCHAR},
@@ -146,6 +159,7 @@
             ORG_TYPE,  <!-- 作业单位 -->
             REMARK,  <!-- 备注 -->
             DOC_ID,  <!-- 附件编号 -->
+            RECORD_ID,  <!-- 作业记录编号 -->
             REC_CREATOR,  <!-- 创建者 -->
             REC_CREATE_TIME,  <!-- 创建时间 -->
             REC_REVISOR,  <!-- 修改者 -->
@@ -172,6 +186,7 @@
             #{generalSurvey.orgType,jdbcType=VARCHAR},
             #{generalSurvey.remark,jdbcType=VARCHAR},
             #{generalSurvey.docId,jdbcType=VARCHAR},
+            #{generalSurvey。recordId,jdbcType=VARCHAR},
             #{generalSurvey.recCreator,jdbcType=VARCHAR},
             #{generalSurvey.recCreateTime,jdbcType=VARCHAR},
             #{generalSurvey.recRevisor,jdbcType=VARCHAR},
@@ -203,6 +218,7 @@
         ORG_TYPE	as "orgType",  <!-- 作业单位 -->
         REMARK	as "remark",  <!-- 备注 -->
         DOC_ID	as "docId",  <!-- 附件编号 -->
+        RECORD_ID	as "recordId",  <!-- 作业记录编号 -->
         REC_CREATOR	as "recCreator",  <!-- 创建者 -->
         REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
         REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
@@ -223,6 +239,15 @@
         WHERE 1=1 and DELETE_FLAG='0'
         <if test="trainNo!=null and trainNo!=''">
             and TRAIN_NO like '%' || #{trainNo} || '%'
+        </if>
+        <if test="recNotifyNo!=null and recNotifyNo!=''">
+            and REC_NOTIFY_NO like '%' || #{recNotifyNo} || '%'
+        </if>
+        <if test="recDetail!=null and recDetail!=''">
+            and REC_DETAIL like '%' || #{recDetail} || '%'
+        </if>
+        <if test="orgType!=null and orgType!=''">
+            and ORG_TYPE=#{orgType}
         </if>
         ORDER BY REC_CREATE_TIME desc
     </select>
