@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.fault.CompareRowsReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
@@ -39,7 +40,8 @@ public interface FaultQueryService {
 
     List<PersonResDTO> queryUserList(Set<String> userCode, String organCode);
 
+    Boolean compareRows(CompareRowsReqDTO req);
+
     // 驳回
-    @Transactional(rollbackFor = Exception.class)
     void returns(FaultSubmitReqDTO reqDTO);
 }

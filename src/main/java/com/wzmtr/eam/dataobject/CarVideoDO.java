@@ -49,6 +49,4 @@ public class CarVideoDO {
     /*  56 */   private String ext4 = " ";
     /*  57 */   private String ext5 = " ";
     /*  58 */   private String workClass = " ";
-    /*     */
-    /*     */
 }

@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
+import com.wzmtr.eam.dto.req.fault.CompareRowsReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
@@ -42,6 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Author: Li.Wang
@@ -541,6 +543,32 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             return queryUserList(userCode, orgCode);
         }
         return orgUsers;
+    }
+
+    @Override
+    public Boolean compareRows(CompareRowsReqDTO req) {
+        List<FaultDetailResDTO> list = req.getList();
+        if ((((list != null) ? 1 : 0) & ((list.size() > 1) ? 1 : 0)) != 0) {
+            List<String> majorCodelist =  list.stream().map(FaultDetailResDTO::getMajorCode).collect(Collectors.toList());
+            List<String> orderStatuslist = list.stream().map(FaultDetailResDTO::getOrderStatus).collect(Collectors.toList());
+            List<String> lineCodelist =  list.stream().map(FaultDetailResDTO::getLineCode).collect(Collectors.toList());
+            Set<String> s = new HashSet<>(majorCodelist);
+            Set<String> hs = new HashSet<>(lineCodelist);
+            Set<String> hhs = new HashSet<>(orderStatuslist);
+            List<String> str = Collections.singletonList("10");
+            if (orderStatuslist.contains("10")) {
+                hhs.removeAll(str);
+                if (s.size() == 1 && hs.size() == 1 && hhs.isEmpty()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 
     // 驳回
