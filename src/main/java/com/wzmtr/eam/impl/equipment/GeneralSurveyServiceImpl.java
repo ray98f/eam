@@ -89,8 +89,8 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
 
     @Override
     public void modifyGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO) {
-        generalSurveyReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        generalSurveyReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        generalSurveyReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        generalSurveyReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         generalSurveyMapper.modifyGeneralSurvey(generalSurveyReqDTO);
     }
 

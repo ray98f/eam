@@ -13,6 +13,7 @@ import com.wzmtr.eam.utils.MinioUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,10 +49,12 @@ public class MinioServiceImpl implements MinioService {
         String oldName = file.getOriginalFilename();
         String fileName = FileUploadUtils.extractFilename(file);
         try {
+            @Cleanup
+            InputStream inputStream = file.getInputStream();
             PutObjectArgs args = PutObjectArgs.builder()
                     .bucket(bucket)
                     .object(fileName)
-                    .stream(file.getInputStream(), file.getSize(), -1)
+                    .stream(inputStream, file.getSize(), -1)
                     .contentType(file.getContentType())
                     .build();
             client.putObject(args);

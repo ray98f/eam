@@ -30,11 +30,11 @@
     </select>
 
     <select id="selectFileInfo" resultType="com.wzmtr.eam.entity.File">
-        select ID, URL, FILE_NAME FROM T_FILE
+        select * from T_FILE
         where id in (
         <foreach collection="list" index="index" item="id" separator=",">
             #{id}
         </foreach>
-        ) and DEL=0
+        )
     </select>
 </mapper>
