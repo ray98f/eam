@@ -18,9 +18,7 @@ import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
-import com.wzmtr.eam.enums.BpmnFlowEnum;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.enums.SubmitType;
+import com.wzmtr.eam.enums.*;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.AnalyzeMapper;
@@ -95,7 +93,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public List<FaultDetailResDTO> statisticList(FaultQueryReqDTO reqDTO) {
-        return faultQueryMapper.exportList(reqDTO);
+        return faultQueryMapper.list(reqDTO);
     }
 
     @Override
@@ -140,7 +138,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public void export(FaultExportReqDTO reqDTO, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("故障编号", "故障现象", "故障详情", "对象名称", "部件名称", "故障工单编号", "对象编码", "故障状态", "维修部门", "提报部门", "提报人员", "联系电话", "提报时间", "发现人", "发现时间", "故障紧急程度", "故障影响", "线路", "车底号/车厢号", "位置一", "位置二", "专业", "系统", "设备分类", "模块", "更换部件", "旧配件编号", "新配件编号", "部件更换时间", "故障处理人员","故障处理情况", "故障处理人数");
+        // com.baosight.wzplat.dm.fm.service.ServiceDMFM0001#export
+        List<String> listName = Arrays.asList("故障编号", "故障现象", "故障详情", "对象名称", "部件名称", "故障工单编号", "对象编码", "故障状态", "维修部门", "提报部门", "提报人员", "联系电话", "提报时间", "发现人", "发现时间", "故障紧急程度", "故障影响", "线路", "车底号/车厢号", "位置一", "位置二", "专业", "系统", "设备分类", "模块", "更换部件", "旧配件编号", "新配件编号", "部件更换时间", "故障处理人员", "故障处理情况", "故障处理人数");
         List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.export(reqDTO);
         List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
@@ -148,6 +147,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 String repairDept = organizationMapper.getOrgById(resDTO.getRepairDeptCode());
                 String fillinDept = organizationMapper.getOrgById(resDTO.getFillinDeptCode());
                 Map<String, String> map = new HashMap<>();
+                OrderStatus orderStatus = OrderStatus.getByCode(resDTO.getOrderStatus());
+                FaultAffect faultAffect = FaultAffect.getByCode(resDTO.getFaultAffect());
+                FaultLevel faultLevel = FaultLevel.getByCode(resDTO.getOrderStatus());
+                DealerUnit dealerUnit = DealerUnit.getByCode(resDTO.getDealerUnit());
+                LineCode lineCode = LineCode.getByCode(resDTO.getLineCode());
                 map.put("故障编号", resDTO.getFaultNo());
                 map.put("故障现象", resDTO.getFaultDisplayDetail());
                 map.put("故障详情", resDTO.getFaultDetail());
@@ -155,7 +159,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 map.put("部件名称", resDTO.getPartName());
                 map.put("故障工单编号", resDTO.getFaultWorkNo());
                 map.put("对象编码", resDTO.getObjectCode());
-                map.put("故障状态", resDTO.getRecStatus());
+                map.put("故障状态", orderStatus != null ? orderStatus.getDesc() : resDTO.getOrderStatus());
                 map.put("维修部门", StringUtils.isEmpty(repairDept) ? resDTO.getRepairDeptCode() : repairDept);
                 map.put("提报部门", StringUtils.isEmpty(fillinDept) ? resDTO.getFillinDeptCode() : fillinDept);
                 map.put("提报人员", resDTO.getFillinUserName());
@@ -163,9 +167,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 map.put("提报时间", resDTO.getFillinTime());
                 map.put("发现人", resDTO.getDiscovererName());
                 map.put("发现时间", resDTO.getDiscoveryTime());
-                map.put("故障紧急程度", resDTO.getFaultLevel());
-                map.put("故障影响", resDTO.getFaultAffect());
-                map.put("线路", resDTO.getLineCode());
+                map.put("故障紧急程度", faultLevel == null ? resDTO.getFaultLevel() : faultLevel.getDesc());
+                map.put("故障影响", faultAffect != null ? faultAffect.getDesc() : resDTO.getFaultAffect());
+                map.put("线路", lineCode != null ? lineCode.getDesc() : resDTO.getLineCode());
                 map.put("车底号/车厢号", resDTO.getTrainTrunk());
                 map.put("位置一", resDTO.getPositionName());
                 map.put("位置二", resDTO.getPosition2Name());
@@ -173,7 +177,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 map.put("系统", resDTO.getSystemName());
                 map.put("设备分类", resDTO.getEquipTypeName());
                 map.put("模块", resDTO.getFaultModule());
-                map.put("故障处理人员", resDTO.getDealerUnit());
+                map.put("故障处理人员", dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
                 map.put("故障处理情况", resDTO.getFaultActionDetail());
                 map.put("故障处理人数", resDTO.getDealerNum());
                 list.add(map);
@@ -241,7 +245,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         FaultTrackDO dmfm09 = dmfm9List.get(0);
         // dmfm01.query
-        List<FaultDetailResDTO> dmfm01List = faultQueryMapper.exportList(FaultQueryReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
+        List<FaultDetailResDTO> dmfm01List = faultQueryMapper.list(FaultQueryReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
         FaultDetailResDTO faultDetailResDTO = dmfm01List.get(0);
         SubmitType type = reqDTO.getType();
         String majorCode = faultDetailResDTO.getMajorCode();
@@ -546,9 +550,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public Boolean compareRows(CompareRowsReqDTO req) {
         List<FaultDetailResDTO> list = req.getList();
         if ((((list != null) ? 1 : 0) & ((list.size() > 1) ? 1 : 0)) != 0) {
-            List<String> majorCodelist =  list.stream().map(FaultDetailResDTO::getMajorCode).collect(Collectors.toList());
+            List<String> majorCodelist = list.stream().map(FaultDetailResDTO::getMajorCode).collect(Collectors.toList());
             List<String> orderStatuslist = list.stream().map(FaultDetailResDTO::getOrderStatus).collect(Collectors.toList());
-            List<String> lineCodelist =  list.stream().map(FaultDetailResDTO::getLineCode).collect(Collectors.toList());
+            List<String> lineCodelist = list.stream().map(FaultDetailResDTO::getLineCode).collect(Collectors.toList());
             Set<String> s = new HashSet<>(majorCodelist);
             Set<String> hs = new HashSet<>(lineCodelist);
             Set<String> hhs = new HashSet<>(orderStatuslist);

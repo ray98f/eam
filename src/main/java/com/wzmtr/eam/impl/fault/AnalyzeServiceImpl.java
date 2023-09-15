@@ -116,7 +116,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (CollectionUtil.isEmpty(list)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        List<FaultDetailResDTO> dmfm01List = faultQueryMapper.exportList(FaultQueryReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
+        List<FaultDetailResDTO> dmfm01List = faultQueryMapper.list(FaultQueryReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
         if (CollectionUtil.isEmpty(dmfm01List)) {
             log.info("dmfm01List is empty!");
             return;

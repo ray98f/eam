@@ -25,7 +25,7 @@ public interface FaultQueryMapper {
 
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
 
-    List<FaultDetailResDTO> exportList(@Param("req") FaultQueryReqDTO req);
+    List<FaultDetailResDTO> list(@Param("req") FaultQueryReqDTO req);
 
     List<FaultDetailResDTO> export(FaultExportReqDTO req);
 

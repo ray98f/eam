@@ -261,7 +261,7 @@
         </trim>
         ORDER BY sort,df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
-    <select id="exportList" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
         d.REC_ID AS "recId",
         df.REC_ID AS "workId",
