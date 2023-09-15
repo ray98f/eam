@@ -10,10 +10,7 @@ import com.google.common.collect.Lists;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
-import com.wzmtr.eam.dto.req.fault.CompareRowsReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
+import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.PersonResDTO;
 import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
@@ -142,9 +139,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public void export(FaultQueryReqDTO reqDTO, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("故障编号", "故障现象", "故障详情", "对象名称", "部件名称", "故障工单编号", "对象编码", "故障状态", "维修部门", "提报部门", "提报人员", "联系电话", "提报时间", "发现人", "发现时间", "故障紧急程度", "故障影响", "线路", "车底号/车厢号", "位置一", "位置二", "专业", "系统", "设备分类", "模块", "更换部件", "旧配件编号", "新配件编号", "部件更换时间", "故障处理人员", "故障处理人数");
-        List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.exportList(reqDTO);
+    public void export(FaultExportReqDTO reqDTO, HttpServletResponse response) {
+        List<String> listName = Arrays.asList("故障编号", "故障现象", "故障详情", "对象名称", "部件名称", "故障工单编号", "对象编码", "故障状态", "维修部门", "提报部门", "提报人员", "联系电话", "提报时间", "发现人", "发现时间", "故障紧急程度", "故障影响", "线路", "车底号/车厢号", "位置一", "位置二", "专业", "系统", "设备分类", "模块", "更换部件", "旧配件编号", "新配件编号", "部件更换时间", "故障处理人员","故障处理情况", "故障处理人数");
+        List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.export(reqDTO);
         List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {

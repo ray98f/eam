@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dataobject;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +12,7 @@ import lombok.Data;
 @Data
 @TableName(value = "T_FAULT_INFO")
 public class FaultInfoDO {
-    @ApiModelProperty(value = "记录编号")
+    @TableId(value = "recId")
     private String recId;
     @ApiModelProperty(value = "公司代码")
     private String companyCode = " ";

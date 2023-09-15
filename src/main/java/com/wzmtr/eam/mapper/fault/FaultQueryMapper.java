@@ -2,6 +2,7 @@ package com.wzmtr.eam.mapper.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
+import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
@@ -25,6 +26,8 @@ public interface FaultQueryMapper {
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
 
     List<FaultDetailResDTO> exportList(@Param("req") FaultQueryReqDTO req);
+
+    List<FaultDetailResDTO> export(FaultExportReqDTO req);
 
     Page<ConstructionResDTO> construction(Page<Object> of, FaultQueryReqDTO req);
 

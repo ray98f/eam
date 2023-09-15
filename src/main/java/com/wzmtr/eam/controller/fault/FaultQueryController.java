@@ -1,6 +1,7 @@
 package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
@@ -46,19 +47,22 @@ public class FaultQueryController {
         faultQueryService.issue(reqDTO);
         return DataResponse.success();
     }
+
     @ApiOperation(value = "导出")
-    @GetMapping("/issue")
-    public DataResponse<String> export(@RequestBody FaultQueryReqDTO reqDTO,HttpServletResponse response) {
+    @GetMapping("/export")
+    public DataResponse<String> export(@RequestBody FaultExportReqDTO reqDTO, HttpServletResponse response) {
         // faultWorkNo
-        faultQueryService.export(reqDTO,response);
+        faultQueryService.export(reqDTO, response);
         return DataResponse.success();
     }
-        @ApiOperation(value = "施工计划")
+
+    @ApiOperation(value = "施工计划")
     @PostMapping("/construction")
     public PageResponse<ConstructionResDTO> construction(@RequestBody FaultQueryReqDTO reqDTO) {
         // faultWorkNo
         return PageResponse.of(faultQueryService.construction(reqDTO));
     }
+
     @ApiOperation(value = "请销点")
     @PostMapping("/cancellation")
     public PageResponse<ConstructionResDTO> cancellation(@RequestBody FaultQueryReqDTO reqDTO) {
@@ -73,6 +77,7 @@ public class FaultQueryController {
         faultQueryService.transmit(reqDTO);
         return DataResponse.success();
     }
+
     @ApiOperation(value = "故障跟踪表单提交")
     @PostMapping("/fault/track/submit")
     public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
