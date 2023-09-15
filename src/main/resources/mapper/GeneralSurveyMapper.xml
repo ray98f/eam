@@ -136,6 +136,18 @@
         #{ext7,jdbcType=VARCHAR})
     </insert>
 
+    <update id="modifyGeneralSurvey">
+        UPDATE T_GENERAL_SURVEY SET
+        <if test="docId!=null">
+            DOC_ID=#{docId},
+        </if>
+        <if test="recordId!=null">
+            RECORD_ID=#{recordId},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId}
+    </update>
+
     <update id="deleteGeneralSurvey">
         UPDATE T_GENERAL_SURVEY SET
         DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}

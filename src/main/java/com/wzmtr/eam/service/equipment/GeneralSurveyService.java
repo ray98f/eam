@@ -19,6 +19,8 @@ public interface GeneralSurveyService {
 
     void addGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO);
 
+    void modifyGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO);
+
     void deleteGeneralSurvey(BaseIdsEntity baseIdsEntity);
 
     void importGeneralSurvey(MultipartFile file);

@@ -88,6 +88,13 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     }
 
     @Override
+    public void modifyGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO) {
+        generalSurveyReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        generalSurveyReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        generalSurveyMapper.modifyGeneralSurvey(generalSurveyReqDTO);
+    }
+
+    @Override
     public void deleteGeneralSurvey(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             for (String id : baseIdsEntity.getIds()) {

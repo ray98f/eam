@@ -53,6 +53,13 @@ public class GeneralSurveyController {
         return DataResponse.success();
     }
 
+    @PostMapping("/modify")
+    @ApiOperation(value = "编辑普查与技改台账")
+    public DataResponse<T> modifyGeneralSurvey(@RequestBody GeneralSurveyReqDTO generalSurveyReqDTO) {
+        generalSurveyService.modifyGeneralSurvey(generalSurveyReqDTO);
+        return DataResponse.success();
+    }
+
     @PostMapping("/delete")
     @ApiOperation(value = "删除普查与技改台账")
     public DataResponse<T> deleteGeneralSurvey(@RequestBody BaseIdsEntity baseIdsEntity) {

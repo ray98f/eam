@@ -35,6 +35,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -373,7 +374,19 @@ public class BpmnServiceImpl implements BpmnService {
 //            BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
 //            req.setFlowId(flow);
 //            req.setNodeId(nodeId);
-//            bpmnExaminePersonId = sysService.getBpmnExaminePersonId(req);
+//            List<BpmnExaminePersonIdRes> resList = sysService.getBpmnExaminePersonId(req);
+//            String currentUserDepartCode = sysService.getCurrentUserDepartCode();
+//            for (BpmnExaminePersonIdRes res : resList) {
+//                if (null != res.getIsOwnerDepart() && "1".equals(res.getIsOwnerDepart())) {
+//                    //找出为自己部门的
+//                    if (currentUserDepartCode.equals(res.getDepartCode())) {
+//                        bpmnExaminePersonId.add(res.getUserId());
+//                    }
+//                } else {
+//                    //全部
+//                    bpmnExaminePersonId.add(res.getUserId());
+//                }
+//            }
         }
         NodeInfos nodeInfos = new NodeInfos();
         List<NodeInfo> arrayList = new ArrayList<>();

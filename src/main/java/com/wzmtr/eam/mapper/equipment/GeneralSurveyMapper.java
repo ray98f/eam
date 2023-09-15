@@ -21,6 +21,8 @@ public interface GeneralSurveyMapper {
 
     void addGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO);
 
+    void modifyGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO);
+
     void deleteGeneralSurvey(List<String> ids, String userId, String time);
 
     void importGeneralSurvey(List<GeneralSurveyReqDTO> list);
