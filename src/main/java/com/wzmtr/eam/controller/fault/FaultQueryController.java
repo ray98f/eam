@@ -50,10 +50,9 @@ public class FaultQueryController {
 
     @ApiOperation(value = "导出")
     @GetMapping("/export")
-    public DataResponse<String> export(@RequestBody FaultExportReqDTO reqDTO, HttpServletResponse response) {
+    public void export(@RequestBody FaultExportReqDTO reqDTO, HttpServletResponse response) {
         // faultWorkNo
         faultQueryService.export(reqDTO, response);
-        return DataResponse.success();
     }
 
     @ApiOperation(value = "施工计划")
