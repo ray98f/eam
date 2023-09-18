@@ -196,8 +196,8 @@
     <update id="deleteSubmissionRecordDetail">
         UPDATE T_SUBMISSION_RECORD_DETAIL SET
         DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
-        <if test="checkNo!=null and checkNo!=''">
-            WHERE CHECK_NO=#{checkNo}
+        <if test="testRecId!=null and testRecId!=''">
+            WHERE TEST_REC_ID=#{testRecId}
         </if>
         <if test="id!=null and id!=''">
             WHERE REC_ID=#{id}

@@ -29,7 +29,7 @@ public interface SubmissionRecordMapper {
 
     void deleteSubmissionRecord(String id, String userId, String time);
 
-    void deleteSubmissionRecordDetail(String id, String checkNo, String userId, String time);
+    void deleteSubmissionRecordDetail(String id, String testRecId, String userId, String time);
 
     List<SubmissionRecordResDTO> listSubmissionRecord(String recId, String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId);
 

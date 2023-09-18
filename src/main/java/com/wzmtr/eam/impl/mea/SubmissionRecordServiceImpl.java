@@ -114,7 +114,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 if (!"10".equals(res.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                submissionRecordMapper.deleteSubmissionRecordDetail(null, res.getCheckNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionRecordMapper.deleteSubmissionRecordDetail(null, res.getRecId(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
                     BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
                     bpmnExamineDTO.setTaskId(res.getWorkFlowInstId());
