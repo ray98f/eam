@@ -40,4 +40,6 @@ public interface FaultQueryService {
 
     // 驳回
     void returns(FaultSubmitReqDTO reqDTO);
+
+    void finishConfirm(FaultFinishConfirmReqDTO reqDTO);
 }

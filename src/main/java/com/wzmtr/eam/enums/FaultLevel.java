@@ -9,8 +9,8 @@ import lombok.Getter;
 @Getter
 public enum FaultLevel {
     URGENCY("01","紧急"),
-    SIGNIFICANCE("01","重要"),
-    NORMAL("01","一般");
+    SIGNIFICANCE("02","重要"),
+    NORMAL("03","一般");
     FaultLevel(String code, String desc) {
         this.code = code;
         this.desc = desc;

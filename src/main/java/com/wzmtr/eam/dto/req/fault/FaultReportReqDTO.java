@@ -102,7 +102,7 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "记录状态")
     private String recStatus = " ";
 
-    public FaultOrderDO toFaultOrderInsertBO(FaultReportReqDTO req) {
+    public FaultOrderDO toFaultOrderInsertDO(FaultReportReqDTO req) {
         FaultOrderDO convert = __BeanUtil.convert(req, FaultOrderDO.class);
         if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
             convert.setWorkClass(req.getRepairDeptCode());
@@ -115,7 +115,7 @@ public class FaultReportReqDTO {
         return convert;
     }
 
-    public FaultInfoDO toFaultInfoInsertBO(FaultReportReqDTO req) {
+    public FaultInfoDO toFaultInfoInsertDO(FaultReportReqDTO req) {
         FaultInfoDO convert = __BeanUtil.convert(req, FaultInfoDO.class);
         convert.setRecId(TokenUtil.getUuId());
         convert.setDeleteFlag("0");

@@ -21,7 +21,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface FaultQueryMapper {
-    Page<FaultDetailResDTO> list(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
+    Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
 
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
 

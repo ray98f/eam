@@ -1,9 +1,6 @@
 package com.wzmtr.eam.controller.fault;
 
-import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
+import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.SidEntity;
@@ -55,6 +52,13 @@ public class FaultQueryController {
         faultQueryService.export(reqDTO, response);
     }
 
+    @ApiOperation(value = "完工确认")
+    @GetMapping("/finishConfirm")
+    public void finishConfirm(@RequestBody FaultFinishConfirmReqDTO reqDTO) {
+        // faultWorkNo
+        faultQueryService.finishConfirm(reqDTO);
+    }
+
     @ApiOperation(value = "施工计划")
     @PostMapping("/construction")
     public PageResponse<ConstructionResDTO> construction(@RequestBody FaultQueryReqDTO reqDTO) {
@@ -83,6 +87,13 @@ public class FaultQueryController {
         // faultWorkNo
         faultQueryService.submit(reqDTO);
         return DataResponse.success();
+    }
+
+    @ApiOperation(value = "操作前对选中的作前置校验")
+    @PostMapping("/fault/track/compareRows")
+    public DataResponse<Boolean> compareRows(@RequestBody CompareRowsReqDTO reqDTO) {
+        // faultWorkNo
+        return DataResponse.of(faultQueryService.compareRows(reqDTO));
     }
 
     @ApiOperation(value = "故障跟踪表单驳回")

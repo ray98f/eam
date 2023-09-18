@@ -18,7 +18,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FaultExportReqDTO {
+public class FaultFinishConfirmReqDTO {
     @ApiModelProperty(value = "对象编码")
     private String objectCode;
     @ApiModelProperty(value = "对象名称")
@@ -53,8 +53,6 @@ public class FaultExportReqDTO {
     private String typeCode;
     @ApiModelProperty(value = "故障紧急程度")
     private String levelfault;
-    @ApiModelProperty(value = "记录Ids")
-    private Set<String> recIds;
     @ApiModelProperty(value = "故障编号集合")
-    private Set<String> faultNos;
+    private Set<String> recIds;
 }

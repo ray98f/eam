@@ -1,7 +1,6 @@
 package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
@@ -45,10 +44,10 @@ public class FaultReportServiceImpl implements FaultReportService {
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         // 获取AOP代理对象
         // FaultReportServiceImpl aop = (FaultReportServiceImpl) AopContext.currentProxy();
-        FaultInfoDO faultInfoDO = reqDTO.toFaultInfoInsertBO(reqDTO);
+        FaultInfoDO faultInfoDO = reqDTO.toFaultInfoInsertDO(reqDTO);
         String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
         _insertToFaultInfo(faultInfoDO, nextFaultNo);
-        FaultOrderDO faultOrderDO = reqDTO.toFaultOrderInsertBO(reqDTO);
+        FaultOrderDO faultOrderDO = reqDTO.toFaultOrderInsertDO(reqDTO);
         _insertToFaultOrder(faultOrderDO, nextFaultNo, maxFaultWorkNo);
         // TODO: 2023/8/24 知会OCC调度
         // if ("Y".equals(maintenance)) {
@@ -62,15 +61,15 @@ public class FaultReportServiceImpl implements FaultReportService {
         //     /*      */           }
     }
 
-    private void _insertToFaultInfo(FaultInfoDO faultInfoDO, String maxFaultNo) {
-        faultInfoDO.setFaultNo(maxFaultNo);
+    private void _insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {
+        faultInfoDO.setFaultNo(nextFaultNo);
         faultReportMapper.addToFaultInfo(faultInfoDO);
     }
 
-    private void _insertToFaultOrder(FaultOrderDO faultOrderDO, String maxFaultNo, String maxFaultWorkNo) {
+    private void _insertToFaultOrder(FaultOrderDO faultOrderDO, String nextFaultNo, String maxFaultWorkNo) {
         String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
         faultOrderDO.setFaultWorkNo(nextFaultWorkNo);
-        faultOrderDO.setFaultNo(maxFaultNo);
+        faultOrderDO.setFaultNo(nextFaultNo);
         faultReportMapper.addToFaultOrder(faultOrderDO);
     }
 
@@ -132,6 +131,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         orderUpdate.setRecReviseTime(DateUtil.getTime());
         faultReportMapper.updateFaultOrder(orderUpdate);
     }
+
+
 
     public static void main(String[] args) {
         System.out.println(DateUtil.getTime());

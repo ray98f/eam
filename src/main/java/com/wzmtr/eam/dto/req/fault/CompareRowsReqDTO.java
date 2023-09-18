@@ -1,10 +1,9 @@
 package com.wzmtr.eam.dto.req.fault;
 
-import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Author: Li.Wang
@@ -14,5 +13,5 @@ import java.util.List;
 @ApiModel
 public class CompareRowsReqDTO {
     //选中的行
-    List<FaultDetailResDTO> list;
+    Set<String> faultNos;
 }
