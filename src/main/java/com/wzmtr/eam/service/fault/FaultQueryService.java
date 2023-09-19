@@ -46,4 +46,6 @@ public interface FaultQueryService {
     void faultListExport(FaultQueryReqDTO reqDTO);
 
     void sendWork(FaultSendWorkReqDTO reqDTO);
+
+    void eqCheck(FaultEqCheckReqDTO reqDTO) throws Exception;
 }

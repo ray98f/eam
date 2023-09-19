@@ -654,8 +654,6 @@
     <select id="queryOneFaultInfo" resultType="com.wzmtr.eam.dataobject.FaultInfoDO">
             SELECT
             d.REC_ID AS "recId",
-            df.REC_ID AS "workId",
-            df.WORK_CLASS AS "workClass",
             d.COMPANY_CODE AS "companyCode",
             d.COMPANY_NAME AS "companyName",
             d.FAULT_NO AS "faultNo",
@@ -722,39 +720,15 @@
             d.EXT5 AS "ext5",
             d.TRAIN_TAG AS "traintag",
             u.USER_NAME AS "fillinUserName",
-            df.CLOSE_TIME AS "closeTime",
-            ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME = df.CLOSE_USER_ID ) AS "closeUserName",
-            df.DEALER_UNIT AS "dealerUnit",
-            df.DEALER_NUM AS "dealerNum",
-            df.FAULT_WORK_NO AS "faultWorkNo",
-            df.REC_ID AS "orderRecId",
-            df.ORDER_STATUS AS "orderStatus",
-            df.EXT1 AS "levelfault",
-            (
-            case
-            when to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss')  <![CDATA[<]]> to_date(SYSDATE - 20) and
-            (df.ORDER_STATUS = '10' or df.ORDER_STATUS = '20' or df.ORDER_STATUS = '30') and
-            df.ORDER_STATUS != '99' and df.ORDER_STATUS != '60' and df.ORDER_STATUS != '70' then 1
-            when to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') >= to_date(SYSDATE - 20) and
-            to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss')  <![CDATA[<=]]> to_date(SYSDATE - 10) and
-            (df.ORDER_STATUS = '10' or df.ORDER_STATUS = '20' or df.ORDER_STATUS = '30') and
-            df.ORDER_STATUS != '99' and df.ORDER_STATUS != '60' and df.ORDER_STATUS != '70' then 2
-            when to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') >= to_date(SYSDATE - 10) and
-            (df.ORDER_STATUS = '10' or df.ORDER_STATUS = '20' or df.ORDER_STATUS = '30') and
-            df.ORDER_STATUS != '99' and df.ORDER_STATUS != '60' and df.ORDER_STATUS != '70' then 3
-            else 9
-            end
-            ) as sort
             FROM
             T_FAULT_INFO d,
-            IPLAT60.XS_USER u,
-            T_FAULT_ORDER df
+            IPLAT60.XS_USER u
             <trim prefix="WHERE" prefixOverrides="AND">
                 <if test="faultNo != null">
-                    AND d.FAULT_NO LIKE '%' || #{faultNo} || '%'
+                   and d.FAULT_NO LIKE '%' || #{faultNo} || '%'
                 </if>
             </trim>
-            ORDER BY sort,df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
+            ORDER BY d.FAULT_NO desc
     </select>
     <select id="queryOneFaultOrder" resultType="com.wzmtr.eam.dataobject.FaultOrderDO">
         SELECT
@@ -823,15 +797,6 @@
         EXT5 as "ext5"
         FROM T_FAULT_ORDER
         WHERE 1=1
-        <if test="recId != null and recId != ''">
-            AND REC_ID = #{recId}
-        </if>
-        <if test="faultNo != null and faultNo != ''">
-            AND FAULT_NO = #{faultNo}
-        </if>
-        <if test="reportUserId != null and reportUserId != ''">
-            AND REPORT_USER_ID = #{reportUserId}
-        </if>
         <if test="faultWorkNo != null and faultWorkNo != ''">
             AND FAULT_WORK_NO = #{faultWorkNo}
         </if>

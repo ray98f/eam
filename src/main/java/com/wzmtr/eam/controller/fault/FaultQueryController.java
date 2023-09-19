@@ -52,6 +52,13 @@ public class FaultQueryController {
         faultQueryService.sendWork(reqDTO);
     }
 
+    @ApiOperation(value = "设调确认")
+    @PostMapping("/eqCheck")
+    public void eqCheck(@RequestBody FaultEqCheckReqDTO reqDTO) {
+        // faultWorkNo
+        faultQueryService.eqCheck(reqDTO);
+    }
+
 
     @ApiOperation(value = "导出")
     @GetMapping("/export")

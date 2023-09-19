@@ -10,11 +10,13 @@ import lombok.Data;
  */
 @ApiModel
 @Data
-public class FaultSendWorkReqDTO {
+public class FaultEqCheckReqDTO {
     @ApiModelProperty(value = "维修工班组code")
     private String workerGroupCode;
     @ApiModelProperty(value = "故障工单号")
     private String faultWorkNo;
+    @ApiModelProperty(value = "故障编号")
+    private String faultNo;
     @ApiModelProperty(value = "faultInfo表RecId")
     private String faultInfoRecId;
     @ApiModelProperty(value = "order表recId")
@@ -43,4 +45,5 @@ public class FaultSendWorkReqDTO {
     private String ext1;
     @ApiModelProperty(value = "故障紧急程度")
     private String levelFault;
+    private String majorName;
 }
