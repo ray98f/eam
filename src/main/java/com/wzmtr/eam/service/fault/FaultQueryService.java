@@ -42,4 +42,6 @@ public interface FaultQueryService {
     void returns(FaultSubmitReqDTO reqDTO);
 
     void finishConfirm(FaultFinishConfirmReqDTO reqDTO);
+
+    void faultListExport(FaultQueryReqDTO reqDTO);
 }

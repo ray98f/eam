@@ -59,7 +59,7 @@
         </trim>
     </update>
     <update id="update">
-        UPDATE WBPLAT.TDMFM21
+        UPDATE T_FAULT_TRACK
         SET
         <if test="companyCode != null">
             COMPANY_CODE = #{companyCode},
@@ -270,9 +270,9 @@
         df1.LINE_CODE	as "lineCode",
         df1.MAJOR_CODE as "majorCode",
         df1.FAULT_DETAIL as "faultDetail",
-        (SELECT db.NODE_NAME from WBPLAT.TDMBM01 db where db.NODE_CODE=df1.MAJOR_CODE) as "majorName",
+        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=df1.MAJOR_CODE) as "majorName",
         df2.FAULT_ACTION_DETAIL	as "faultActionDetail"
-        FROM WBPLAT.TDMFM21 df9,WBPLAT.TDMFM02 df2,WBPLAT.TDMFM01 df1,WBPLAT.TDMBM03 db3
+        FROM T_FAULT_TRACK df9,T_FAULT_ORDER df2,T_FAULT_INFO df1,SYS_REGION db3
         <trim prefix="WHERE" prefixOverrides="AND">
             and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
             and df9.FAULT_NO=df1.FAULT_NO

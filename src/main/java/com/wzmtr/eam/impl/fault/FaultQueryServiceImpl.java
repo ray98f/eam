@@ -548,7 +548,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public Boolean compareRows(CompareRowsReqDTO req) {
-        //返回true 则代表不能同时进行操作
+        // 返回true 则代表不能进行操作
         Set<String> faultNos = req.getFaultNos();
         List<FaultDetailResDTO> list = faultQueryMapper.export(FaultExportReqDTO.builder().faultNos(faultNos).build());
         if ((((list != null) ? 1 : 0) & ((list.size() > 1) ? 1 : 0)) != 0) {
@@ -561,7 +561,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             List<String> str = Collections.singletonList("10");
             if (orderStatuslist.contains("10")) {
                 hhs.removeAll(str);
-                // 检查s集合和hs集合的大小是否都为1，并且hhs为空。如果满足这些条件，则返回false.
+                // 检查s集合和hs集合的大小是否都为1则为相同的major和lineCode，并且hhs为空。如果满足这些条件，则返回false.
                 return s.size() != 1 || hs.size() != 1 || !hhs.isEmpty();
                 // if (s.size() == 1 && hs.size() == 1 && hhs.isEmpty()) {
             } else {
@@ -593,9 +593,48 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public void finishConfirm(FaultFinishConfirmReqDTO reqDTO) {
+        //todo
+        Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+        String itemEname = dictionaries.getItemEname();
+        Map<Object, Object> reportMap = new HashMap<>();
+        String resultType = null;
+        List<String> cos = Arrays.asList(itemEname.split(","));
+        if (reqDTO!=null){
+            String arrivalTime = reqDTO.getArrivalTime();
+            String repairStartTime = reqDTO.getRepairStartTime();
+            String repairEndTime = reqDTO.getRepairEndTime();
+            String faultProcessResult = reqDTO.getFaultProcessResult();
+            String faultAffect = reqDTO.getFaultAffect();
+            String faultReasonCode = reqDTO.getFaultReasonCode();
+            String faultReasonDetail = reqDTO.getFaultReasonDetail();
+            String faultActionCode = reqDTO.getFaultActionCode();
+            String faultActionDetail = reqDTO.getFaultActionDetail();
+            String reportUserId = reqDTO.getReportUserId();
+            String reportUserName = reqDTO.getReportUserName();
+            String remark = reqDTO.getRemark();
+            reportMap.put("arrivalTime", arrivalTime);
+            reportMap.put("repairStartTime", repairStartTime);
+            reportMap.put("repairEndTime", repairEndTime);
+            reportMap.put("faultProcessResult", faultProcessResult);
+            reportMap.put("faultAffect", faultAffect);
+            reportMap.put("faultReasonCode", faultReasonCode);
+            reportMap.put("faultReasonDetail", faultReasonDetail);
+            reportMap.put("faultActionCode", faultActionCode);
+            reportMap.put("faultActionDetail", faultActionDetail);
+            reportMap.put("reportUserId", reportUserId);
+            reportMap.put("reportUserName", reportUserName);
+            reportMap.put("remark", remark);
+            resultType = reqDTO.getFaultProcessResult();
+        }
+
+    }
+
+    @Override
+    public void faultListExport(FaultQueryReqDTO reqDTO) {
+
     }
 }
-    // @Override
+// @Override
 //     public void finishConfirm(FaultFinishConfirmReqDTO reqDTO) {
 //             StringBuffer buffer = new StringBuffer();
 //             StringBuffer detail = new StringBuffer();

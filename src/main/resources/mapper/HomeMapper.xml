@@ -16,9 +16,9 @@
     </select>
     <select id="queryB" resultType="com.wzmtr.eam.dto.res.home.ShowBCResDTO">
         SELECT db.NODE_NAME as "majorName",count(b.MAJOR_CODE) as cnt
-        from WBPLAT.TDMBM01 db
+        from T_EQUIPMENT_CATEGORY	 db
         left join (select d.MAJOR_CODE
-        from WBPLAT.TDMFM01 d,WBPLAT.TDMFM02 d2
+        from T_FAULT_INFO d,T_FAULT_ORDER d2
         where d.FAULT_NO=d2.FAULT_NO
         and to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') >=      add_months(SYSDATE, -3)
         and d.FAULT_FLAG<![CDATA[ <> ]]>'2'
@@ -32,9 +32,9 @@
     </select>
     <select id="queryC" resultType="com.wzmtr.eam.dto.res.home.ShowBCResDTO">
         SELECT db.NODE_NAME as "majorName",count(b.MAJOR_CODE) as cnt
-        from WBPLAT.TDMBM01 db
+        from T_EQUIPMENT_CATEGORY	 db
         left join (select d.MAJOR_CODE
-        from WBPLAT.TDMFM01 d,WBPLAT.TDMFM02 d2
+        from T_FAULT_INFO d,T_FAULT_ORDER d2
         where   d.FAULT_NO=d2.FAULT_NO
         and to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') -trunc(sysdate) between -7 and 7
         and d.FAULT_FLAG<![CDATA[ <> ]]>'2'
@@ -50,8 +50,8 @@
         SELECT
         t.ORDER_STATUS AS status,
         iplat60.QUERYCODECNAME('dm.faultStatus',t.ORDER_STATUS,'1') AS cname,count(1) as cnt
-        FROM WBPLAT.TDMFM02 t,
-        WBPLAT.TDMFM01 d
+        FROM T_FAULT_ORDER t,
+        T_FAULT_INFO d
         WHERE 1 = 1
         AND d.FAULT_NO = t.FAULT_NO
         and d.FAULT_FLAG<![CDATA[ <> ]]>'2'
@@ -64,9 +64,9 @@
         i.ITEM_CNAME       AS cname,
         t.ORDER_STATUS     AS status,
         count(i.ITEM_CODE) AS cnt
-        FROM WBPLAT.TDMFM02 t,
+        FROM T_FAULT_ORDER t,
         iplat60.TEDCM01 i,
-        WBPLAT.TDMFM01 d
+        T_FAULT_INFO d
         WHERE 1 = 1
         AND i.CODESET_CODE LIKE '%dm.faultStatus%'
         AND i.PROJECT_NAME IN ('TEST', 'IPLAT4J', 'XSERVICES', 'WZPLAT', 'APM')

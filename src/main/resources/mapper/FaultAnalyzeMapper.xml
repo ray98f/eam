@@ -347,13 +347,13 @@
         d3.MAIN_EQUIP_CODE as "mainEquipCode",
         d3.MAIN_EQUIP_NAME as "mainEquipName",
         d3.MAJOR_CODE as "majorCode",
-        (SELECT db.NODE_NAME from WBPLAT.TDMBM01 db where db.NODE_CODE=d3.MAJOR_CODE) as "majorName",
-        (SELECT db.NODE_NAME from WBPLAT.TDMBM01 db where db.NODE_CODE=d1.SYSTEM_CODE) as "systemName",
-        (SELECT db.NODE_NAME from WBPLAT.TDMBM03 db where db.NODE_CODE=d1.POSITION_CODE) as "positionName",
+        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d3.MAJOR_CODE) as "majorName",
+        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d1.SYSTEM_CODE) as "systemName",
+        (SELECT db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d1.POSITION_CODE) as "positionName",
         d3.RECOVERY_TIME as "recoveryTime",
         d3.AFFECT_CODES as "affectCodes",
         d3.FREQUENCY as "frequency",
-        (SELECT dd.MANUFACTURE from WBPLAT.TDMDM01 dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",
+        (SELECT dd.MANUFACTURE from T_EQUIPMENT dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",
         d3.FAULT_DETAIL as "faultDetail",
         d3.FAULT_PROCESS_DETAIL as "faultProcessDetail",
         d3.FAULT_REASON_DETAIL as "faultReasonDetail",
@@ -387,7 +387,7 @@
         d1.DISCOVERY_TIME as "discoveryTime",
         d1.FAULT_DISPLAY_CODE as "faultDisplayCode",
         d1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail"
-        FROM WBPLAT.TDMFM03 d3, WBPLAT.TDMFM01 d1, WBPLAT.TDMFM02 d2
+        FROM T_FAULT_DETAIL d3, T_FAULT_INFO d1, T_FAULT_ORDER d2
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultNo!=null and faultNo!=''">
                 and d3.FAULT_NO =#{faultNo}

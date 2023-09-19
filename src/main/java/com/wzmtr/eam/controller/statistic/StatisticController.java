@@ -50,6 +50,11 @@ public class StatisticController {
     public DataResponse<List<FaultDetailResDTO>> list(@RequestBody FaultQueryReqDTO reqDTO) {
         return DataResponse.of(faultQueryService.statisticList(reqDTO));
     }
+    // @ApiOperation(value = "故障统计报表导出")
+    // @GetMapping("fault/list/export")
+    // public void faultListExport(@RequestParam FaultQueryReqDTO reqDTO) {
+    //     return faultQueryService.faultListExport(reqDTO);
+    // }
 
     @PostMapping("material/query")
     @ApiOperation(value = "物料统计")

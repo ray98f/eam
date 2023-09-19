@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.fault.FaultQueryMapper">
     <update id="transmit">
-        UPDATE WBPLAT.TDMFM21
+        UPDATE T_FAULT_TRACK
         SET
         <if test="companyCode != null">
             COMPANY_CODE = #{companyCode}
@@ -498,7 +498,7 @@
         EXT3 as "ext3",  <!-- 扩展字段3 -->
         EXT4 as "ext4",  <!-- 扩展字段4 -->
         EXT5 as "ext5" <!-- 扩展字段5 -->
-        FROM WBPLAT.TDMER63 WHERE 1=1
+        FROM T_REQUEST_POINTS WHERE 1=1
         <if test="req.faultWorkNo != null">
             AND WORKNO = #{req.faultWorkNo}
         </if>
