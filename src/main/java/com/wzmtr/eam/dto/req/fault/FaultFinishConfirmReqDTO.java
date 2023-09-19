@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.fault;
 
+import com.wzmtr.eam.enums.FaultOperateType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,9 @@ public class FaultFinishConfirmReqDTO {
     private String repairStartTime;
     private String repairEndTime;
     private String faultProcessResult;
+    private String faultNo;
+    private String faultWorkNo;
+    private String orderStatus;
     private String faultAffect;
     private String faultReasonCode;
     private String faultReasonDetail;
@@ -34,4 +38,6 @@ public class FaultFinishConfirmReqDTO {
     private String isFault;
     private String dealerUnit;
     private String dealerNum;
+    private FaultOperateType type;
+
 }

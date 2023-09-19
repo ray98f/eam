@@ -45,6 +45,14 @@ public class FaultQueryController {
         return DataResponse.success();
     }
 
+    @ApiOperation(value = "派工")
+    @PostMapping("/send/work")
+    public void sendWork(@RequestBody FaultSendWorkReqDTO reqDTO) {
+        // faultWorkNo
+        faultQueryService.sendWork(reqDTO);
+    }
+
+
     @ApiOperation(value = "导出")
     @GetMapping("/export")
     public void export(@RequestBody FaultExportReqDTO reqDTO, HttpServletResponse response) {

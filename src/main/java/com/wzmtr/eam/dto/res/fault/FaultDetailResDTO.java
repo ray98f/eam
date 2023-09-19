@@ -9,6 +9,10 @@ import lombok.Data;
  */
 @Data
 public class FaultDetailResDTO {
+    @ApiModelProperty(value = "FaultInfo表recId")
+    private String faultInfoRecId;
+    @ApiModelProperty(value = "FaultOrder表recId")
+    private String faultOrderRecId;
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
     @ApiModelProperty(value = "故障工单号")
