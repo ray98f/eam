@@ -54,7 +54,7 @@ public class FaultQueryController {
 
     @ApiOperation(value = "设调确认")
     @PostMapping("/eqCheck")
-    public void eqCheck(@RequestBody FaultEqCheckReqDTO reqDTO) {
+    public void eqCheck(@RequestBody FaultEqCheckReqDTO reqDTO) throws Exception {
         // faultWorkNo
         faultQueryService.eqCheck(reqDTO);
     }
