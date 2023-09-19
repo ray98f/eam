@@ -22,8 +22,11 @@ public class SubmissionRecordDetailResDTO {
     @ApiModelProperty(value = "检测单明细表REC_ID")
     private String testListDetailRecId;
     
-    @ApiModelProperty(value = "检测单号")
+    @ApiModelProperty(value = "送检单号")
     private String sendVerifyNo;
+
+    @ApiModelProperty(value = "检测单号")
+    private String checkNo;
     
     @ApiModelProperty(value = "计量器具代码")
     private String equipCode;

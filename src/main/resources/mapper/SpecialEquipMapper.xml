@@ -443,6 +443,7 @@
         a.EXT4	as "ext4",  <!-- 扩展字段4 -->
         a.EXT5	as "ext5", <!-- 扩展字段5 -->
         b.SEND_VERIFY_NO as "sendVerifyNo",
+        b.CHECK_NO as "checkNo",
         b.VERIFY_DEPT as "verifyDept",
         a.VERIFY_VALIDITY_DATE as "verifyValidityDate",
         b.EDIT_DEPT_CODE	as "editDeptCode",
@@ -506,6 +507,7 @@
         a.EXT4	as "ext4",  <!-- 扩展字段4 -->
         a.EXT5	as "ext5", <!-- 扩展字段5 -->
         b.SEND_VERIFY_NO as "sendVerifyNo",
+        b.CHECK_NO as "checkNo",
         b.VERIFY_DEPT as "verifyDept",
         a.VERIFY_VALIDITY_DATE as "verifyValidityDate",
         b.EDIT_DEPT_CODE	as "editDeptCode",
@@ -568,6 +570,7 @@
         a.EXT4	as "ext4",  <!-- 扩展字段4 -->
         a.EXT5	as "ext5", <!-- 扩展字段5 -->
         b.SEND_VERIFY_NO as "sendVerifyNo",
+        b.CHECK_NO as "checkNo",
         b.VERIFY_DEPT as "verifyDept",
         a.VERIFY_VALIDITY_DATE as "verifyValidityDate",
         b.EDIT_DEPT_CODE	as "editDeptCode",

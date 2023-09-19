@@ -272,7 +272,8 @@
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
         a.TEST_LIST_DETAIL_REC_ID	as "testListDetailRecId",  <!-- 检测单明细表REC_ID -->
-        a.SEND_VERIFY_NO	as "sendVerifyNo",  <!-- 检测单号 -->
+        a.SEND_VERIFY_NO	as "sendVerifyNo",  <!-- 送检单号 -->
+        b.CHECK_NO	as "checkNo",  <!-- 检测单号 -->
         a.EQUIP_CODE	as "equipCode",  <!-- 计量器具代码 -->
         a.EQUIP_NAME	as "equipName",  <!-- 计量器具名称 -->
         a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
@@ -320,6 +321,7 @@
         a.EXT4	as "ext4",  <!-- 扩展字段4 -->
         a.EXT5	as "ext5"<!-- 扩展字段5 -->
         FROM T_SUBMISSION_RECORD_DETAIL a
+        LEFT JOIN T_MEA_SUBMISSION_RECORD b ON a.TEST_REC_ID=b.REC_ID
         WHERE 1=1 AND a.EQUIP_CODE=#{equipCode}
         order by a.REC_CREATE_TIME desc
     </select>

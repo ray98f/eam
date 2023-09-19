@@ -42,8 +42,8 @@ mybatis-plus:
       logic-delete-field: 1
       logic-not-delete-value: 0
 logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: ./logs
   level:
-    com:
-      wzmtr:
-        eam:
-          mapper: debug
+    com.wzmtr.eam: debug

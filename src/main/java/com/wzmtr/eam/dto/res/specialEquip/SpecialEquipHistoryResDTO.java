@@ -115,6 +115,9 @@ public class SpecialEquipHistoryResDTO {
     @ApiModelProperty(value = "送检单号")
     private String sendVerifyNo;
 
+    @ApiModelProperty(value = "检测单号")
+    private String checkNo;
+
     @ApiModelProperty(value = "使用单位名称")
     private String useDeptCname;
 
