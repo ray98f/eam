@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.bpmn;
 
+import com.wzmtr.eam.bizobject.QueryNotWorkFlowBO;
 import com.wzmtr.eam.dto.req.EipMsgPushReq;
 import com.wzmtr.eam.dto.res.overTodo.QueryNotWorkFlowResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -9,6 +10,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.bpmn.OverTodoMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.EipMsgPushUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -108,6 +110,23 @@ public class OverTodoServiceImpl implements OverTodoService {
             for (Map<String, String> user : userList) {
                 insertTodo(taskTitle, businessRecId, businessNo, (String) ((Map) user).get("userCode"), stepName, taskUrl, lastStepUserId);
             }
+        }
+    }
+
+    @Override
+    public void cancelTODO(String businessRecId) {
+        List<QueryNotWorkFlowResDTO> queryNotWorkFlowResDTOS = overTodoMapper.queryNotWorkFlow(businessRecId);
+        for (QueryNotWorkFlowResDTO l : queryNotWorkFlowResDTOS) {
+            /* 476 */
+            QueryNotWorkFlowBO queryNotWorkFlowBO = new QueryNotWorkFlowBO();
+            /* 477 */
+            queryNotWorkFlowBO.setUserId(l.getUserId());
+            /* 478 */
+            queryNotWorkFlowBO.setWorkFlowInstId(businessRecId);
+            /* 479 */
+            queryNotWorkFlowBO.setTodoId(businessRecId);
+            /* 480 */
+            overTodoMapper.delete(queryNotWorkFlowBO);
         }
     }
 }

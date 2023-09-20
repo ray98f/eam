@@ -11,6 +11,7 @@ import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.CodeUtils;
@@ -37,6 +38,8 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Autowired
     private FaultInfoMapper faultInfoMapper;
 
+    @Autowired
+    private OverTodoService overTodoService;
     @Override
     // @Transactional(rollbackFor = Exception.class)
     public void addToEquip(FaultReportReqDTO reqDTO) {
@@ -113,10 +116,16 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     @Override
-    public void cancel(FaultCancelReqDTO reqDTO) {
+    public void delete(FaultCancelReqDTO reqDTO) {
         // 已提报故障单撤销/作废 逻辑删 涉及faultinfo和faultorder两张表
         faultReportMapper.cancelOrder(reqDTO);
         faultReportMapper.cancelInfo(reqDTO);
+    }
+
+    @Override
+    public void cancel(FaultCancelReqDTO reqDTO) {
+        //faultWorkNo的recId
+        overTodoService.cancelTODO(reqDTO.getOrderRecId());
     }
 
     @Override
@@ -124,18 +133,18 @@ public class FaultReportServiceImpl implements FaultReportService {
         // 修改已提报故障单  修改时间 修改人， 各属性的值
         FaultInfoDO infoUpdate = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
         infoUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
-        infoUpdate.setRecReviseTime(DateUtil.getTime());
+        infoUpdate.setRecReviseTime(DateUtil.getCurrentTime());
         faultReportMapper.updateFaultInfo(infoUpdate);
         FaultOrderDO orderUpdate = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
         orderUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
-        orderUpdate.setRecReviseTime(DateUtil.getTime());
+        orderUpdate.setRecReviseTime(DateUtil.getCurrentTime());
         faultReportMapper.updateFaultOrder(orderUpdate);
     }
 
 
 
     public static void main(String[] args) {
-        System.out.println(DateUtil.getTime());
+        System.out.println(DateUtil.getCurrentTime());
     }
 }
 

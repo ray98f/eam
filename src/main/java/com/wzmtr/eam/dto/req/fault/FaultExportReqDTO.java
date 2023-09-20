@@ -54,7 +54,7 @@ public class FaultExportReqDTO {
     @ApiModelProperty(value = "故障紧急程度")
     private String levelfault;
     @ApiModelProperty(value = "记录Ids")
-    private Set<String> recIds;
+    private Set<String> faultInfoRecId;
     @ApiModelProperty(value = "故障编号集合")
     private Set<String> faultNos;
 }

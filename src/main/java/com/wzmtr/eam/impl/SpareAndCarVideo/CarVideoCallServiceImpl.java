@@ -27,9 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -151,7 +149,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
                 overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), split[i], "视频调阅派工", "DMBR0022", TokenUtil.getCurrentPersonId());
             }
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
-            carVideoDO.setDispatchTime(DateUtil.getTime());
+            carVideoDO.setDispatchTime(DateUtil.getCurrentTime());
             carVideoDO.setWorkerId(reqDTO.getWorkerId());
             carVideoDO.setWorkClass(reqDTO.getWorkClass());
         }
@@ -173,7 +171,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             //     ISendMessage.sendMessageByPhoneList(eiInfo);
             // }
             carVideoDO.setRecCreator(reqDTO.getRecStatus());
-            carVideoDO.setWorkTime(DateUtil.getTime());
+            carVideoDO.setWorkTime(DateUtil.getCurrentTime());
         }
         if ("50".equals(reqDTO.getRecStatus())) {
             if (!"40".equals(detail.getRecStatus())) {
@@ -181,7 +179,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             }
             overTodoService.overTodo(reqDTO.getRecId(), "");
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
-            carVideoDO.setCloseTime(DateUtil.getTime());
+            carVideoDO.setCloseTime(DateUtil.getCurrentTime());
             carVideoDO.setCloserId(TokenUtil.getCurrentPersonId());
         }
         carVideoMapper.operate(carVideoDO);

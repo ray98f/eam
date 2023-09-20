@@ -47,12 +47,12 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
-        FaultInfoDO faultDetail = trackQueryMapper.faultDetail(reqDTO);
-        FaultDetailResDTO repairDetail = trackQueryMapper.repairDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
-        if (faultDetail == null) {
-            return repairDetail;
+        FaultInfoDO faultInfo = trackQueryMapper.faultDetail(reqDTO);
+        FaultDetailResDTO faultOrder = trackQueryMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        if (faultInfo == null) {
+            return faultOrder;
         }
-        FaultDetailResDTO res = __BeanUtil.copy(faultDetail, repairDetail);
+        FaultDetailResDTO res = __BeanUtil.copy(faultInfo, faultOrder);
         String respDeptCode = res.getRespDeptCode();
         res.setRespDeptName(organizationMapper.getOrgById(respDeptCode));
         res.setFillinDeptName(organizationMapper.getOrgById(res.getFillinDeptCode()));

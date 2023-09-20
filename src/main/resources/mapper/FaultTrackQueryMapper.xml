@@ -344,7 +344,7 @@
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
         </trim>
     </select>
-    <select id="repairDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <select id="faultOrderDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
         REC_ID	as "recId",
         COMPANY_CODE	as "companyCode",

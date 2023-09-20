@@ -510,8 +510,10 @@
 
     <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         SELECT
-        d.REC_ID as "recId",  <!-- 记录编号 -->
-        df.REC_ID as "workId",
+        df.FAULT_WORK_NO as "faultWorkNo",
+        df.ORDER_STATUS as "orderStatus" , <!-- 工单状态 -->
+        df.EXT1 as "levelfault",  <!-- 派工状态 -->
+        df.FAULT_AFFECT as "faultAffect",
         d.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
         d.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
         d.FAULT_NO as "faultNo",  <!-- 故障编号 -->
@@ -527,19 +529,16 @@
         d.POSITION2_CODE as "position2Code",
         d.PART_CODE as "partCode",
         d.PART_NAME as "partName",
-        -- (SELECT db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d.POSITION_CODE) as "positionName_textField",
         (SELECT db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d.POSITION_CODE) as "positionName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d.MAJOR_CODE) as "majorName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d.SYSTEM_CODE) as "systemName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d.EQUIP_TYPE_CODE) as "equipTypeName",
-        -- (select d3.NODE_NAME from SYS_REGION d3 where d3.NODE_CODE=d.EXT1) as "stationCode",
         d.MAJOR_CODE as "majorCode",  <!-- 专业代码 -->
         d.SYSTEM_CODE as "systemCode",  <!-- 系统代码 -->
         d.EQUIP_TYPE_CODE as "equipTypeCode",  <!-- 设备分类代码 -->
         d.FAULT_MODULE as "faultModule",  <!-- 故障模块 -->
         d.FAULT_MODULE_ID as "faultModuleId",
         d.FAULT_TYPE as "faultType",  <!-- 故障分类（10-运营故障；20-自检故障；30-新线调试；40-正线故障；50-出库故障） -->
-        -- d.SOURCE_CODE as "sourceCode",  <!-- 来源编号 -->
         d.FAULT_DISPLAY_CODE as "faultDisplayCode",  <!-- 故障现象 -->
         d.FAULT_DISPLAY_DETAIL as "faultDisplayDetail",
         d.FAULT_DETAIL as "faultDetail",  <!-- 故障详情 -->
@@ -575,15 +574,9 @@
         d.EXT3 as "affect",  <!-- 扩展字段3 -->
         d.EXT4 as "ext4",  <!-- 扩展字段4 -->
         d.EXT5 as "ext5", <!-- 扩展字段5 -->
-        -- d.TRAIN_TAG as "traintag",
-        u.USER_NAME as "fillinUserName",
-        df.FAULT_WORK_NO as "faultWorkNo",
-        df.REC_ID as "orderRecId",  <!-- 记录编号 -->
-        df.ORDER_STATUS as "orderStatus" , <!-- 工单状态 -->
-        df.EXT1 as "levelfault",  <!-- 派工状态 -->
-        df.FAULT_AFFECT as "faultAffect"
+        u.USER_NAME as "fillinUserName"
         FROM T_FAULT_INFO d,IPLAT60.XS_USER u,T_FAULT_ORDER df
-        WHERE 1=1 and d.FILLIN_USER_ID = u.LOGIN_NAME and d.FAULT_NO = df.FAULT_NO
+        WHERE d.FILLIN_USER_ID = u.LOGIN_NAME and d.FAULT_NO = df.FAULT_NO
         and d.MAJOR_CODE NOT IN('07','06')
         and d.DELETE_FLAG = '0'
         <if test="faultNo != null">

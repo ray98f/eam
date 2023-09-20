@@ -16,4 +16,5 @@ public class FaultCancelReqDTO {
     private String faultNo;
     @ApiModelProperty(value = "故障工单编号")
     private String faultWorkNo;
+    private String orderRecId;
 }

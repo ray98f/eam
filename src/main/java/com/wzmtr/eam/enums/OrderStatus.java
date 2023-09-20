@@ -8,14 +8,14 @@ import lombok.Getter;
  */
 @Getter
 public enum OrderStatus {
-    tibao("10", "提报"),
-    xiafa("20", "下发"),
-    paigong("30", "派工"),
-    wangong("50", "完工"),
-    yanshou("55", "验收"),
-    wangongqueren("60", "完工确认"),
-    guanbi("70", "关闭"),
-    zuofei("99", "作废");
+    TI_BAO("10", "提报"),
+    XIA_FA("20", "下发"),
+    PAI_GONG("30", "派工"),
+    WAN_GONG("50", "完工"),
+    YAN_SHOU("55", "验收"),
+    WAN_GONG_QUE_REN("60", "完工确认"),
+    GUAN_BI("70", "关闭"),
+    ZUO_FEI("99", "作废");
 
     private final String code;
     private final String desc;

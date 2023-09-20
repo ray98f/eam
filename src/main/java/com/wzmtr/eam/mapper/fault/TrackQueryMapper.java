@@ -23,7 +23,7 @@ public interface TrackQueryMapper {
     
     FaultInfoDO faultDetail(FaultDetailReqDTO reqDTO);
 
-    FaultDetailResDTO repairDetail(String faultNo, String faultWorkNo);
+    FaultDetailResDTO faultOrderDetail(String faultNo, String faultWorkNo);
 
     void cancellGenZ(TrackQueryResDTO bo);
 

@@ -130,6 +130,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        faultOrderDO.setOrderStatus(OrderStatus.XIA_FA.getCode());
         reportMapper.updateFaultOrder(faultOrderDO);
         FaultInfoDO faultInfoDO = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
         faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -725,34 +726,49 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public void sendWork(FaultSendWorkReqDTO reqDTO) {
         // 派工
-        FaultOrderDO faultOrderDO = new FaultOrderDO();
-        String workerGroupCode = reqDTO.getWorkerGroupCode();
-        FaultDetailResDTO faultDetailResDTO = faultQueryMapper.queryDetail(FaultQueryDetailReqDTO.builder().faultWorkNo(reqDTO.getFaultWorkNo()).build());
-        String majorName = faultDetailResDTO.getMajorName();
-        if (StringUtils.isNotEmpty(reqDTO.getLevelFault())) {
-            faultOrderDO.setExt1(reqDTO.getLevelFault());
-        }
-        reportMapper.updateFaultOrder(faultOrderDO);
-        FaultInfoDO faultInfoDO = new FaultInfoDO();
-        faultInfoDO.setRepairDeptCode(workerGroupCode);
-        if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) & reqDTO.getIsTiKai().equals("08")) {
-            faultInfoDO.setExt3("08");
-        }
-        reportMapper.updateFaultInfo(faultInfoDO);
-        overTodoService.overTodo(reqDTO.getFaultOrderRecId(), "故障维修");
-        // todo 发短信
-        // String content = "【市铁投集团】" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "向您指派了一条故障工单，故障位置：" + positionName + "," + position2Name + "，设备名称：" + objectName + ",故障现象：" + faultDisplayDetail + "请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
-        overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", reqDTO.getFaultOrderRecId(), reqDTO.getFaultWorkNo(), "DM_013", reqDTO.getWorkClass(), "故障维修", "DMFM0001", TokenUtil.getCurrentPersonId(), null);
-        Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "01");
-        String zcStepOrg = dictionaries.getItemEname();
-        if (!faultOrderDO.getWorkClass().contains(zcStepOrg)) {
-            // todo 调用施工调度接口
-            sendContractFault(faultOrderDO);
-        }
+        List<String> faultWorkNos = Arrays.asList(reqDTO.getFaultWorkNo().split(","));
+        faultWorkNos.forEach(a->{
+            String workerGroupCode = reqDTO.getWorkerGroupCode();
+            FaultDetailResDTO faultDetailResDTO = faultQueryMapper.queryDetail(FaultQueryDetailReqDTO.builder().faultWorkNo(reqDTO.getFaultWorkNo()).build());
+            if (faultDetailResDTO!=null){
+                String majorName = faultDetailResDTO.getMajorName();
+                FaultOrderDO faultOrderDO = new FaultOrderDO();
+                if (StringUtils.isNotEmpty(reqDTO.getLevelFault())) {
+                    faultOrderDO.setExt1(reqDTO.getLevelFault());
+                }
+                faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+                faultOrderDO.setRecReviseTime(DateUtil.getCurrentTime());
+                reportMapper.updateFaultOrder(faultOrderDO);
+                FaultInfoDO faultInfoDO = new FaultInfoDO();
+                faultInfoDO.setRepairDeptCode(workerGroupCode);
+                if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) & reqDTO.getIsTiKai().equals("08")) {
+                    faultInfoDO.setExt3("08");
+                }
+                faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+                faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
+                faultInfoDO.setFaultNo(faultDetailResDTO.getFaultNo());
+                reportMapper.updateFaultInfo(faultInfoDO);
+                overTodoService.overTodo(faultDetailResDTO.getFaultOrderRecId(), "故障维修");
+                // todo 发短信
+                // String content = "【市铁投集团】" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "向您指派了一条故障工单，故障位置：" + positionName + "," + position2Name + "，设备名称：" + objectName + ",故障现象：" + faultDisplayDetail + "请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
+                overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", faultDetailResDTO.getFaultOrderRecId(), faultDetailResDTO.getFaultWorkNo(), "DM_013", reqDTO.getWorkClass(), "故障维修", "DMFM0001", TokenUtil.getCurrentPersonId(), null);
+                Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "01");
+                String zcStepOrg = dictionaries.getItemEname();
+                if (!faultOrderDO.getWorkClass().contains(zcStepOrg)) {
+                    // todo 调用施工调度接口
+                    sendContractFault(faultOrderDO);
+                }
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        String a = "sdadasda,sadsa";
+        List<String> list = Arrays.asList(a.split(","));
     }
 
     @Override
-    public void eqCheck(FaultEqCheckReqDTO reqDTO) throws Exception {
+    public void eqCheck(FaultEqCheckReqDTO reqDTO) {
         String faultWorkNo = reqDTO.getFaultWorkNo();
         String currentUser = TokenUtil.getCurrentPersonId();
         String faultNo = reqDTO.getFaultNo();
