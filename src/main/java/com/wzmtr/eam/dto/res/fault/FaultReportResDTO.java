@@ -13,6 +13,10 @@ public class FaultReportResDTO {
     private String faultNo;
     @ApiModelProperty(value = "故障工单号")
     private String faultWorkNo;
+    @ApiModelProperty(value = "Info表RecId")
+    private String infoRecId;
+    @ApiModelProperty("order表recId")
+    private String orderRecId;
     @ApiModelProperty(value = "故障状态")
     private String faultStatus;
     @ApiModelProperty(value = "对象编码")

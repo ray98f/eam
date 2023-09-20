@@ -637,12 +637,6 @@
         <if test="fillinTimeEnd != null">
             AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{fillinTimeEnd}, 'YYYY-MM-DD') + 1
         </if>
-        <if test="recIds != null and recIds.size() > 0">
-            AND d.REC_ID IN
-            <foreach collection="recIds" item="code" open="(" close=")" separator=",">
-                #{code}
-            </foreach>
-        </if>
         <if test="faultNos != null and faultNos.size() > 0">
             AND d.faultNos IN
             <foreach collection="faultNos" item="code" open="(" close=")" separator=",">
