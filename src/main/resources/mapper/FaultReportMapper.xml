@@ -333,11 +333,17 @@
         </if>
         REC_REVISOR = #{recRevisor},
         REC_REVISE_TIME = #{recReviseTime}
-        where FAULT_NO = #{faultNo}
-        and FAULT_WORK_NO = #{faultWorkNo}
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="faultNo != null and faultNo!=''">
+                and FAULT_NO = #{faultNo}
+            </if>
+            <if test="faultWorkNo != null and faultWorkNo!=''">
+                and FAULT_WORK_NO = #{faultWorkNo}
+            </if>
+        </trim>
     </update>
     <update id="updateFaultInfo">
-        update "T_FAULT_INFO" set
+        update T_FAULT_INFO set
         <if test="companyCode != null and companyCode != ''">
             COMPANY_CODE = #{companyCode},
         </if>

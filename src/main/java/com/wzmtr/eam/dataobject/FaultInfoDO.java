@@ -128,8 +128,6 @@ public class FaultInfoDO {
     private String ext4;
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
-    @ApiModelProperty(value = "提报人工号")
-    private String fillinUserName;
     @ApiModelProperty(value = "检修车/运营车标识")
     private String traintag;
     @ApiModelProperty(value = "故障模块")

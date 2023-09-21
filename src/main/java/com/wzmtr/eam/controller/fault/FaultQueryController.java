@@ -47,16 +47,18 @@ public class FaultQueryController {
 
     @ApiOperation(value = "派工")
     @PostMapping("/send/work")
-    public void sendWork(@RequestBody FaultSendWorkReqDTO reqDTO) {
+    public DataResponse<String> sendWork(@RequestBody FaultSendWorkReqDTO reqDTO) {
         // faultWorkNo
         faultQueryService.sendWork(reqDTO);
+        return DataResponse.success();
     }
 
     @ApiOperation(value = "设调确认")
     @PostMapping("/eqCheck")
-    public void eqCheck(@RequestBody FaultEqCheckReqDTO reqDTO) throws Exception {
+    public DataResponse<String> eqCheck(@RequestBody FaultEqCheckReqDTO reqDTO) throws Exception {
         // faultWorkNo
         faultQueryService.eqCheck(reqDTO);
+        return DataResponse.success();
     }
 
 
@@ -68,10 +70,11 @@ public class FaultQueryController {
     }
 
     @ApiOperation(value = "完工确认")
-    @GetMapping("/finishConfirm")
-    public void finishConfirm(@RequestBody FaultFinishConfirmReqDTO reqDTO) {
+    @PostMapping("/finishConfirm")
+    public DataResponse<String> finishConfirm(@RequestBody FaultFinishConfirmReqDTO reqDTO) {
         // faultWorkNo
         faultQueryService.finishConfirm(reqDTO);
+        return DataResponse.success();
     }
 
     @ApiOperation(value = "施工计划")

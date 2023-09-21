@@ -712,11 +712,9 @@
             d.EXT3 AS "affect",
             d.EXT4 AS "ext4",
             d.EXT5 AS "ext5",
-            d.TRAIN_TAG AS "traintag",
-            u.USER_NAME AS "fillinUserName",
+            d.TRAIN_TAG AS "traintag"
             FROM
-            T_FAULT_INFO d,
-            IPLAT60.XS_USER u
+            T_FAULT_INFO d
             <trim prefix="WHERE" prefixOverrides="AND">
                 <if test="faultNo != null">
                    and d.FAULT_NO LIKE '%' || #{faultNo} || '%'
