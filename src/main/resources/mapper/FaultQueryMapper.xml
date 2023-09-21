@@ -794,6 +794,9 @@
         <if test="faultWorkNo != null and faultWorkNo != ''">
             AND FAULT_WORK_NO = #{faultWorkNo}
         </if>
+        <if test="faultNo != null and faultNo != ''">
+            AND FAULT_NO = #{faultNo}
+        </if>
         order by FAULT_WORK_NO DESC
     </select>
     <select id="queryDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">

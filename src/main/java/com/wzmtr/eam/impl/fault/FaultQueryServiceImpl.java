@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.wzmtr.eam.bizobject.StationBO;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
@@ -21,6 +22,7 @@ import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.*;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.StationMapper;
 import com.wzmtr.eam.mapper.fault.AnalyzeMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
@@ -37,6 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,7 +53,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Autowired
     FaultQueryMapper faultQueryMapper;
     @Autowired
-    FaultReportMapper reportMapper;
+    FaultReportMapper faultReportMapper;
     @Autowired
     private OrganizationMapper organizationMapper;
     @Autowired
@@ -63,6 +66,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private AnalyzeMapper analyzeMapper;
     @Autowired
     private BpmnService bpmnService;
+    @Autowired
+    private StationMapper stationMapper;
 
 
     private static final Map<String, String> processMap = new HashMap<>();
@@ -131,11 +136,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         faultOrderDO.setOrderStatus(OrderStatus.XIA_FA.getCode());
-        reportMapper.updateFaultOrder(faultOrderDO);
+        faultReportMapper.updateFaultOrder(faultOrderDO);
         FaultInfoDO faultInfoDO = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
         faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultInfoDO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        reportMapper.updateFaultInfo(faultInfoDO);
+        faultReportMapper.updateFaultInfo(faultInfoDO);
     }
 
     @Override
@@ -595,127 +600,107 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public void finishConfirm(FaultFinishConfirmReqDTO reqDTO) {
-        // todo
-        // Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
-        // String itemEname = dictionaries.getItemEname();
-        // String resultType = null;
-        // List<String> cos = Arrays.asList(itemEname.split(","));
-        // FaultOrderDO faultOrderDO = new FaultOrderDO();
-        // if (reqDTO != null) {
-        //     faultOrderDO.setRepairStartTime(reqDTO.getRepairStartTime());
-        //     faultOrderDO.setRepairEndTime(reqDTO.getRepairEndTime());
-        //     faultOrderDO.setFaultProcessResult(reqDTO.getFaultProcessResult());
-        //     faultOrderDO.setFaultAffect(reqDTO.getFaultAffect());
-        //     faultOrderDO.setFaultReasonCode(reqDTO.getFaultReasonCode());
-        //     faultOrderDO.setFaultReasonDetail(reqDTO.getFaultReasonDetail());
-        //     faultOrderDO.setFaultActionCode(reqDTO.getFaultActionCode());
-        //     faultOrderDO.setFaultActionDetail(reqDTO.getFaultActionDetail());
-        //     faultOrderDO.setReportUserId(reqDTO.getReportUserId());
-        //     faultOrderDO.setReportUserName(reqDTO.getReportUserName());
-        //     resultType = reqDTO.getFaultProcessResult();
+        Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+        String itemEname = dictionaries.getItemEname();
+        List<String> cos = Arrays.asList(itemEname.split(","));
+        String currentUser = TokenUtil.getCurrentPersonId();
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String faultNo = reqDTO.getFaultNo();
+        String faultWorkNo = reqDTO.getFaultWorkNo();
+        FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(faultNo);
+        FaultOrderDO dmfm02 = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
+        String stationCode = dmfm02.getExt1();
+        String majorName = faultInfo.getMajorName();
+        String majorCode = faultInfo.getMajorCode();
+        String ext2 = dmfm02.getExt2();
+        // String content2 = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请知晓！";
+        // todo 发短信
+        // List<Map> list = this.dao.query("DMDM59.queryMByUserGroup", faultInfo.getFillinUserId());
+        // if (list != null && list.size() > 0 && isToSend.equals("ToSend") && !list.contains("DM_021")) {
+        //     EiInfo eiInfo = new EiInfo();
+        //     eiInfo.set("group", "DM_021");
+        //     eiInfo.set("content", content2);
+        //     ISendMessage.sendMoblieMessageByGroup(eiInfo);
+        //     ISendMessage.sendMessageByGroup(eiInfo);
         // }
-        // SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // if (reqDTO.getOrderStatus() != null) {
-        //     if (reqDTO.getOrderStatus().equals("40")) {
-        //         faultOrderDO.setReportStartUserId(TokenUtil.getCurrentPersonId());
-        //         faultOrderDO.setReportStartTime(dateTimeFormat.format(new Date()));
-        //     } else if (reqDTO.getOrderStatus().equals("50")) {
-        //         faultOrderDO.setReportFinishUserId(TokenUtil.getCurrentPersonId());
-        //         faultOrderDO.setReportFinishTime(dateTimeFormat.format(new Date()));
-        //         // map.putAll(reportMap);
-        //     } else if (reqDTO.getOrderStatus().equals("60")) {
-        //         faultOrderDO.setConfirmUserId(TokenUtil.getCurrentPersonId());
-        //         faultOrderDO.setConfirmTime(dateTimeFormat.format(new Date()));
-        //     } else if (reqDTO.getOrderStatus().equals("55")) {
-        //         faultOrderDO.setCheckUserId(TokenUtil.getCurrentPersonId());
-        //         faultOrderDO.setCheckTime(dateTimeFormat.format(new Date()));
-        //     }
-        //     reportMapper.updateFaultOrder(faultOrderDO);
-        // }
-        // String faultNo = reqDTO.getFaultNo();
-        // String faultWorkNo = reqDTO.getFaultWorkNo();
-        // FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(faultNo);
-        // FaultOrderDO dmfm02 = faultQueryMapper.queryOneFaultOrder(faultWorkNo);
-        // String stationCode = dmfm02.getExt1();
-        // String ext2 = dmfm02.getExt2();
-        // String respDeptCode = faultInfo.getRespDeptCode();
-        // String lineCode = faultInfo.getLineCode();
-        // String workClass = dmfm02.getWorkClass();
-        // // if (reqDTO.getType() == FaultOperateType.LOWERHAIR) {
-        // //     DMUtil.overTODO(dmfm02.getRecId(), "提报成功，准备下发");
-        // //     content = "【市铁投集团】" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "下发一条" + majorName + "故障，工单号：" + faultWorkNo + "，尽快派工。";
-        // //     if (cos.contains(majorCode)) {
-        // //         String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "04", "1");
-        // //         status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障派工", "DMFM0001", currentUser, majorCode, lineCode, "20", content);
-        // //     } else {
-        // //         String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "03", "1");
-        // //         status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障派工", "DMFM0001", currentUser, majorCode, lineCode, "20", content);
-        // //     }
-        // // }
-        //     String bussId = dmfm02.getRecId() + "_" + faultWorkNo;
-        //     DMUtil.overTODO(dmfm02.getRecId(), "故障维修");
-        //     if ("02".equals(resultType)) {
-        //         content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已提报完工，请及时在EAM系统验收！";
-        //         String content4 = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已提报完工，但需要故障跟踪，请及时在EAM系统跟踪观察！";
-        //         if (cos.contains(majorCode)) {
-        //             String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "05", "1");
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", bussId, faultWorkNo, "DM_006", zcStepOrg, "故障跟踪", "DMFM0010", currentUser, majorCode, lineCode, "10", content4);
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_009", zcStepOrg, "故障验收", "DMFM0001", currentUser, majorCode, lineCode, "20", content);
-        //         } else {
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", bussId, faultWorkNo, "DM_006", dmfm02.getWorkClass(), "故障跟踪", "DMFM0010", currentUser, majorCode, lineCode, "10", content4);
-        //             if (isToSubmit != null && isToSubmit.equals("ToSubmit")) {
-        //                 status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", queryFaultWorkRecId(faultWorkNo), faultWorkNo, "DM_006", workClass, "故障验收", "DMFM0001", currentUser, majorCode, lineCode, "20", content);
-        //             } else {
-        //                 String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "03", "1");
-        //                 String content3 = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已验收，请及时在EAM系统完工确认！";
-        //                 status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", queryFaultWorkRecId(faultWorkNo), faultWorkNo, "DM_007", zcStepOrg, "故障完工确认", "DMFM0001", currentUser, majorCode, lineCode, "30", content3);
-        //             }
-        //         }
-        //     } else if ("03".equals(resultType)) {
-        //         content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "未处理，请在EAM系统完工确认，并对故障及时处理！";
-        //         if (cos.contains(majorCode)) {
-        //             String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "04", "1");
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障派工", "DMFM0001", currentUser, majorCode, lineCode, "10", content);
-        //         } else {
-        //             String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "03", "1");
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障派工", "DMFM0001", currentUser, majorCode, lineCode, "10", content);
-        //         }
-        //     } else if ("04".equals(resultType)) {
-        //         String groupName = "DM_006";
-        //         String orgCode = null;
-        //         if (cos.contains(majorCode)) {
-        //             orgCode = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "05", "1");
-        //         } else {
-        //             orgCode = dmfm02.getWorkClass();
-        //         }
-        //         String content1 = "工班人员报告故障无法处理，工单号：" + faultWorkNo + "，请关注。";
-        //         conditionInfo1.set("group", groupName);
-        //         conditionInfo1.set("content", content1);
-        //         conditionInfo1.set("orgCode", orgCode);
-        //         ISendMessage.senMessageByGroupAndOrgCode(conditionInfo1);
-        //         content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "无法处理，请在EAM系统完工确认，并对故障及时处理！";
-        //         if (cos.contains(majorCode)) {
-        //             String stepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "01", "1");
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_007", stepOrg, "故障完工确认", "DMFM0001", currentUser, majorCode, lineCode, "30", content);
-        //         } else {
-        //             String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "03", "1");
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", queryFaultWorkRecId(faultWorkNo), faultWorkNo, "DM_007", zcStepOrg, "故障完工确认", "DMFM0001", currentUser, majorCode, lineCode, "30", content);
-        //         }
-        //     } else {
-        //         content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已提报完工，请及时在EAM系统验收！";
-        //         if (cos.contains(majorCode)) {
-        //             String stepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "05", "1");
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_009", stepOrg, "故障验收", "DMFM0001", currentUser, majorCode, lineCode, "20", content);
-        //         }
-        //         else if (isToSubmit != null && isToSubmit.equals("ToSubmit")) {
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", queryFaultWorkRecId(faultWorkNo), faultWorkNo, "DM_006", workClass, "故障验收", "DMFM0001", currentUser, majorCode, lineCode, "20", content);
-        //         }
-        //         else {
-        //             String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "03", "1");
-        //             String content3 = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已验收，请及时在EAM系统完工确认！";
-        //             status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", queryFaultWorkRecId(faultWorkNo), faultWorkNo, "DM_007", zcStepOrg, "故障完工确认", "DMFM0001", currentUser, majorCode, lineCode, "30", content3);
-        //     }
-        // }
+        String Toocc = faultInfo.getExt4();
+        String Toclose = faultInfo.getExt5();
+        if (Toocc != null && !Toocc.trim().isEmpty() && "Y".equals(Toocc)) {
+            overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_021", null,"故障设调确认", "DMFM0001", currentUser,null);
+        } else if (Toclose != null && !Toclose.trim().isEmpty()) {
+            FaultOrderDO faultOrderDO1 = new FaultOrderDO();
+            faultOrderDO1.setOrderStatus(OrderStatus.GUAN_BI.getCode());
+            faultOrderDO1.setFaultNo(faultInfo.getFaultNo());
+            faultOrderDO1.setCloseTime(dateTimeFormat.format(new Date()));
+            faultOrderDO1.setCloseUserId(currentUser);
+            faultOrderDO1.setFaultWorkNo(dmfm02.getFaultWorkNo());
+            faultReportMapper.updateFaultOrder(faultOrderDO1);
+            overTodoService.overTodo(dmfm02.getRecId(),"故障关闭");
+        } else if (cos.contains(majorCode)) {
+            overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
+        } else if (ext2.equals("DM_013")) {
+            overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
+            // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
+            // status = overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_013", workClass, "故障关闭", "DMFM0001", currentUser, majorCode, lineCode, "30");
+        } else if (ext2.equals("DM_006")) {
+            overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
+            if (cos.contains(majorCode)) {
+                if (majorCode.equals("07")) {
+                    // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
+                    // String stepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "04", "1");
+                    // status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_007", stepOrg, "故障关闭", "DMFM0001", currentUser, majorCode, lineCode, "30", content);
+                } else if (majorCode.equals("06")) {
+                    // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
+                    // String stepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "05", "1");
+                    // status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_037", stepOrg, "故障关闭", "DMFM0001", currentUser, majorCode, lineCode, "30", content);
+                }
+            } else {
+                // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
+                // status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", queryFaultWorkRecId(faultWorkNo), faultWorkNo, "DM_006", respDeptCode, "故障关闭", "DMFM0001", currentUser, majorCode, lineCode, "30", content);
+            }
+        } else if (ext2.equals("DM_007")) {
+            overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认并关闭");
+            FaultOrderDO faultOrderDO = new FaultOrderDO();
+            faultOrderDO.setFaultWorkNo(dmfm02.getFaultWorkNo());
+            faultOrderDO.setFaultNo(dmfm02.getFaultNo());
+            faultOrderDO.setOrderStatus(OrderStatus.GUAN_BI.getCode());
+            faultOrderDO.setCloseUserId(currentUser);
+            faultOrderDO.setCloseTime(dateTimeFormat.format(new Date()));
+        } else if (ext2.equals("DM_031")) {
+            overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
+            String faultProcessResult = dmfm02.getFaultProcessResult();
+            // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
+            if ("01".equals(faultProcessResult) || "02".equals(faultProcessResult)) {
+                if (stationCode != null && !"".equals(stationCode.trim())) {
+                    List<StationBO> stationBOS = stationMapper.queryStation(null, stationCode);
+                    for (StationBO bo : stationBOS) {
+                        overTodoService.insertTodo("【" + majorName + "】故障管理流程",dmfm02.getRecId(), faultWorkNo, bo.getUserId(), "故障关闭", "DMFM0001", currentUser);
+                        // if (map1.get("mobile") != null && !"".equals(map1.get("mobile"))) {
+                        //     ISendMessage.messageCons(map1.get("mobile"), content);
+                        //     continue;
+                        // }
+                        throw new CommonException(ErrorCode.NORMAL_ERROR, "该人员无电话信息");
+                    }
+                }
+            }
+        } else if (ext2.equals("DM_020") || ext2.equals("DM_044") || ext2.equals("DM_030")) {
+            overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
+            // todo 发短信
+            // status = DMUtil.insertTODOWithUserGroup("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, ext2, "故障关闭", "DMFM0001", currentUser);
+            // EiInfo eiInfo = new EiInfo();
+            // eiInfo.set("group", ext2);
+            // eiInfo.set("content", content);
+            // ISendMessage.sendMoblieMessageByGroup(eiInfo);
+        } else {
+            overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
+            List<Map<Object, Object>> userList = new ArrayList();
+            Map<Object, Object> userMap = new HashMap<>();
+            // userMap.put("userCode", fillinUserId);
+            userList.add(userMap);
+            // overTodoService.insertTodo();
+            //  DMUtil.insertTODOWithUserList(userList, "【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "故障关闭", "DMFM0001", currentUser);
+        }
     }
 
     @Override
@@ -726,11 +711,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public void sendWork(FaultSendWorkReqDTO reqDTO) {
         // 派工
+        if (StringUtils.isEmpty(reqDTO.getWorkerGroupCode())) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
         List<String> faultWorkNos = Arrays.asList(reqDTO.getFaultWorkNo().split(","));
-        faultWorkNos.forEach(a->{
+        faultWorkNos.forEach(a -> {
             String workerGroupCode = reqDTO.getWorkerGroupCode();
             FaultDetailResDTO faultDetailResDTO = faultQueryMapper.queryDetail(FaultQueryDetailReqDTO.builder().faultWorkNo(reqDTO.getFaultWorkNo()).build());
-            if (faultDetailResDTO!=null){
+            if (faultDetailResDTO != null) {
                 String majorName = faultDetailResDTO.getMajorName();
                 FaultOrderDO faultOrderDO = new FaultOrderDO();
                 if (StringUtils.isNotEmpty(reqDTO.getLevelFault())) {
@@ -738,7 +726,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 }
                 faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setRecReviseTime(DateUtil.getCurrentTime());
-                reportMapper.updateFaultOrder(faultOrderDO);
+                faultReportMapper.updateFaultOrder(faultOrderDO);
                 FaultInfoDO faultInfoDO = new FaultInfoDO();
                 faultInfoDO.setRepairDeptCode(workerGroupCode);
                 if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) & reqDTO.getIsTiKai().equals("08")) {
@@ -747,7 +735,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
                 faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
                 faultInfoDO.setFaultNo(faultDetailResDTO.getFaultNo());
-                reportMapper.updateFaultInfo(faultInfoDO);
+                faultReportMapper.updateFaultInfo(faultInfoDO);
                 overTodoService.overTodo(faultDetailResDTO.getFaultOrderRecId(), "故障维修");
                 // todo 发短信
                 // String content = "【市铁投集团】" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "向您指派了一条故障工单，故障位置：" + positionName + "," + position2Name + "，设备名称：" + objectName + ",故障现象：" + faultDisplayDetail + "请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
@@ -762,10 +750,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         });
     }
 
-    public static void main(String[] args) {
-        String a = "sdadasda,sadsa";
-        List<String> list = Arrays.asList(a.split(","));
-    }
 
     @Override
     public void eqCheck(FaultEqCheckReqDTO reqDTO) {
@@ -780,7 +764,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String fillinUserId = faultInfoDO.getFillinUserId();
         String respDeptCode = faultInfoDO.getRespDeptCode();
         String lineCode = faultInfoDO.getLineCode();
-        FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultWorkNo);
+        FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
         String workClass = faultOrderDO.getWorkClass();
         overTodoService.overTodo(faultOrderDO.getRecId(), "故障设调确认");
         Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
@@ -789,11 +773,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         List<String> cos = Arrays.asList(cos01);
         if (cos.contains(majorCode)) {
             overTodoService.overTodo(faultOrderDO.getRecId(), "故障设调确认");
-        }
-        else if (ext2.equals("DM_013")) {
+        } else if (ext2.equals("DM_013")) {
             overTodoService.overTodo(faultOrderDO.getRecId(), "故障设调确认");
             // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已设调确认，请及时在EAM系统关闭工单！";
-             overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程",faultOrderDO.getRecId(), faultWorkNo, "DM_013", workClass,"故障关闭", "DMFM0001", currentUser, null);
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", faultOrderDO.getRecId(), faultWorkNo, "DM_013", workClass, "故障关闭", "DMFM0001", currentUser, null);
             /*      */
         }
         /* 1369 */
@@ -892,19 +875,19 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //     // eiInfo.set("content", content);
         //     // ISendMessage.sendMoblieMessageByGroup(eiInfo);
         // } else {
-            /* 1438 */
-            overTodoService.overTodo(faultOrderDO.getRecId(), "故障设调确认");
-            /* 1439 */
-            List<Map<Object, Object>> userList = new ArrayList();
-            /* 1440 */
-            Map<Object, Object> userMap = new HashMap<>();
-            /* 1441 */
-            userMap.put("userCode", fillinUserId);
-            /* 1442 */
-            userList.add(userMap);
-            /* 1443 */
-            // status = DMUtil.insertTODOWithUserList(userList, "【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "故障关闭", "DMFM0001", currentUser);
-            /*      */
+        /* 1438 */
+        overTodoService.overTodo(faultOrderDO.getRecId(), "故障设调确认");
+        /* 1439 */
+        List<Map<Object, Object>> userList = new ArrayList();
+        /* 1440 */
+        Map<Object, Object> userMap = new HashMap<>();
+        /* 1441 */
+        userMap.put("userCode", fillinUserId);
+        /* 1442 */
+        userList.add(userMap);
+        /* 1443 */
+        // status = DMUtil.insertTODOWithUserList(userList, "【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "故障关闭", "DMFM0001", currentUser);
+        /*      */
     }
 
     public void sendContractFault(FaultOrderDO dmfm02) {

@@ -27,7 +27,7 @@ public interface FaultQueryMapper {
     Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
     FaultDetailResDTO queryDetail(@Param("req") FaultQueryDetailReqDTO req);
     FaultInfoDO queryOneFaultInfo(String faultNo);
-    FaultOrderDO queryOneFaultOrder(String faultWorkNo);
+    FaultOrderDO queryOneFaultOrder(String faultNo,String faultWorkNo);
 
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
 

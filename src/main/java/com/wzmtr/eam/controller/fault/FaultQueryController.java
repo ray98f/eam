@@ -62,7 +62,7 @@ public class FaultQueryController {
 
     @ApiOperation(value = "导出")
     @GetMapping("/export")
-    public void export(@RequestBody FaultExportReqDTO reqDTO, HttpServletResponse response) {
+    public void export(@RequestParam FaultExportReqDTO reqDTO, HttpServletResponse response) {
         // faultWorkNo
         faultQueryService.export(reqDTO, response);
     }

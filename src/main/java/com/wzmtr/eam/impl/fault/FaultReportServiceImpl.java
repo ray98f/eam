@@ -90,7 +90,9 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
-        List<FaultReportResDTO> filter = list.getRecords().stream().filter(a -> !a.getMajorCode().equals("07") && !a.getMajorCode().equals("06")).sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed()).collect(Collectors.toList());
+        List<FaultReportResDTO> filter = list.getRecords().stream()
+                .filter(a -> !a.getMajorCode().equals("07") && !a.getMajorCode().equals("06"))
+                .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed()).collect(Collectors.toList());
         filter.forEach(a -> {
             a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
             a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
@@ -134,7 +136,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     public void cancel(FaultCancelReqDTO reqDTO) {
         //faultWorkNo的recId
         String faultWorkNo = reqDTO.getFaultWorkNo();
-        FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultWorkNo);
+        FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(null,faultWorkNo);
         faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtil.getCurrentTime());
         //order表作废状态

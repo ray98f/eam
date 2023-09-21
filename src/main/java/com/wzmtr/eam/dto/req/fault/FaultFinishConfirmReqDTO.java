@@ -20,24 +20,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FaultFinishConfirmReqDTO {
-    private String arrivalTime;
-    private String repairStartTime;
-    private String repairEndTime;
-    private String faultProcessResult;
     private String faultNo;
     private String faultWorkNo;
-    private String orderStatus;
-    private String faultAffect;
-    private String faultReasonCode;
-    private String faultReasonDetail;
-    private String faultActionCode;
-    private String faultActionDetail;
-    private String reportUserId;
-    private String reportUserName;
-    private String remark;
-    private String isFault;
-    private String dealerUnit;
-    private String dealerNum;
-    private FaultOperateType type;
-
 }
