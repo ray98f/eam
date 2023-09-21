@@ -15,6 +15,7 @@ import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.overhaul.OverhaulPlanService;
@@ -65,17 +66,33 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     @Autowired
     private BpmnService bpmnService;
 
+    @Autowired
+    private OrganizationMapper organizationMapper;
+
     @Override
     public Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO) {
         overhaulPlanListReqDTO.setTrialStatus("'20','10','30'");
         overhaulPlanListReqDTO.setObjectFlag("1");
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return overhaulPlanMapper.pageOverhaulPlan(pageReqDTO.of(), overhaulPlanListReqDTO);
+        Page<OverhaulPlanResDTO> page = overhaulPlanMapper.pageOverhaulPlan(pageReqDTO.of(), overhaulPlanListReqDTO);
+        List<OverhaulPlanResDTO> list = page.getRecords();
+        if (list != null && !list.isEmpty()) {
+            for (OverhaulPlanResDTO res : list) {
+                res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public OverhaulPlanResDTO getOverhaulPlanDetail(String id) {
-        return overhaulPlanMapper.getOverhaulPlanDetail(id, "1");
+        OverhaulPlanResDTO res = overhaulPlanMapper.getOverhaulPlanDetail(id, "1");
+        if (Objects.isNull(res)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
+        return res;
     }
 
     @Override
@@ -302,7 +319,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 map.put("系统", resDTO.getSystemName());
                 map.put("设备类别", resDTO.getEquipTypeName());
                 map.put("规则", resDTO.getRuleName());
-                map.put("作业工班", resDTO.getWorkGroupName());
+                map.put("作业工班", organizationMapper.getNamesById(resDTO.getWorkerGroupCode()));
                 map.put("启用状态", resDTO.getPlanStatus());
                 map.put("首次开始日期", resDTO.getFirstBeginTime());
                 map.put("是否关联", resDTO.getDeleteFlag());

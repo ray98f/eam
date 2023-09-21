@@ -75,12 +75,25 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     @Override
     public Page<OverhaulWeekPlanResDTO> pageOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return overhaulWeekPlanMapper.pageOverhaulWeekPlan(pageReqDTO.of(), overhaulWeekPlanListReqDTO);
+        Page<OverhaulWeekPlanResDTO> page = overhaulWeekPlanMapper.pageOverhaulWeekPlan(pageReqDTO.of(), overhaulWeekPlanListReqDTO);
+        List<OverhaulWeekPlanResDTO> list = page.getRecords();
+        if (list != null && !list.isEmpty()) {
+            for (OverhaulWeekPlanResDTO res : list) {
+                res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public OverhaulWeekPlanResDTO getOverhaulWeekPlanDetail(String id) {
-        return overhaulWeekPlanMapper.getOverhaulWeekPlanDetail(id);
+        OverhaulWeekPlanResDTO res = overhaulWeekPlanMapper.getOverhaulWeekPlanDetail(id);
+        if (Objects.isNull(res)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
+        return res;
     }
 
     @Override
@@ -252,7 +265,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 map.put("周末", resDTO.getFirstBeginTime());
                 map.put("线路", resDTO.getLineName());
                 map.put("专业", resDTO.getSubjectName());
-                map.put("作业工班", resDTO.getWorkGroupName());
+                map.put("作业工班", organizationMapper.getNamesById(resDTO.getWorkerGroupCode()));
                 map.put("工班长", resDTO.getWorkerName());
                 map.put("审批状态", resDTO.getTrialStatus());
                 list.add(map);
