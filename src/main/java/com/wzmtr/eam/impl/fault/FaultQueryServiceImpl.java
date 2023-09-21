@@ -934,8 +934,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         Set<String> faultNos = reqDTO.getFaultNos();
         faultNos.forEach(faultNo -> {
-            QueryWrapper<FaultOrderDO> wrapper = new QueryWrapper<>();
-            wrapper.eq("FAULT_NO", faultNo);
             FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo,null);
             faultOrderDO.setOrderStatus(OrderStatus.GUAN_BI.getCode());
             faultOrderDO.setCloseTime(DateUtil.getCurrentTime());
