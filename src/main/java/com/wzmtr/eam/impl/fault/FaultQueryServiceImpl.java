@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -23,10 +24,7 @@ import com.wzmtr.eam.enums.*;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.StationMapper;
-import com.wzmtr.eam.mapper.fault.AnalyzeMapper;
-import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
-import com.wzmtr.eam.mapper.fault.FaultReportMapper;
-import com.wzmtr.eam.mapper.fault.TrackMapper;
+import com.wzmtr.eam.mapper.fault.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
@@ -68,6 +66,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private BpmnService bpmnService;
     @Autowired
     private StationMapper stationMapper;
+    @Autowired
+    private FaultOrderMapper faultOrderMapper;
 
 
     private static final Map<String, String> processMap = new HashMap<>();
@@ -599,7 +599,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public void finishConfirm(FaultFinishConfirmReqDTO reqDTO) {
+    public void finishConfirm(FaultNoFaultWorkNoReqDTO reqDTO) {
         Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
         String itemEname = dictionaries.getItemEname();
         List<String> cos = Arrays.asList(itemEname.split(","));
@@ -627,7 +627,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String Toclose = faultInfo.getExt5();
         if (Toocc != null && !Toocc.trim().isEmpty() && "Y".equals(Toocc)) {
             overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_021", null,"故障设调确认", "DMFM0001", currentUser,null);
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_021", null, "故障设调确认", "DMFM0001", currentUser, null);
         } else if (Toclose != null && !Toclose.trim().isEmpty()) {
             FaultOrderDO faultOrderDO1 = new FaultOrderDO();
             faultOrderDO1.setOrderStatus(OrderStatus.GUAN_BI.getCode());
@@ -636,7 +636,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultOrderDO1.setCloseUserId(currentUser);
             faultOrderDO1.setFaultWorkNo(dmfm02.getFaultWorkNo());
             faultReportMapper.updateFaultOrder(faultOrderDO1);
-            overTodoService.overTodo(dmfm02.getRecId(),"故障关闭");
+            overTodoService.overTodo(dmfm02.getRecId(), "故障关闭");
         } else if (cos.contains(majorCode)) {
             overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
         } else if (ext2.equals("DM_013")) {
@@ -675,7 +675,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 if (stationCode != null && !"".equals(stationCode.trim())) {
                     List<StationBO> stationBOS = stationMapper.queryStation(null, stationCode);
                     for (StationBO bo : stationBOS) {
-                        overTodoService.insertTodo("【" + majorName + "】故障管理流程",dmfm02.getRecId(), faultWorkNo, bo.getUserId(), "故障关闭", "DMFM0001", currentUser);
+                        overTodoService.insertTodo("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, bo.getUserId(), "故障关闭", "DMFM0001", currentUser);
                         // if (map1.get("mobile") != null && !"".equals(map1.get("mobile"))) {
                         //     ISendMessage.messageCons(map1.get("mobile"), content);
                         //     continue;
@@ -925,6 +925,28 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //     message.setWorkClass((String) ((Map) workerGroupList.get(0)).get("orgName"));
         // }
         // todo sendContractOrder(message);
+    }
+
+    @Override
+    public void close(FaultNosFaultWorkNosReqDTO reqDTO) {
+        if (CollectionUtil.isEmpty(reqDTO.getFaultNos())) {
+            return;
+        }
+        Set<String> faultNos = reqDTO.getFaultNos();
+        faultNos.forEach(faultNo -> {
+            QueryWrapper<FaultOrderDO> wrapper = new QueryWrapper<>();
+            wrapper.eq("FAULT_NO", faultNo);
+            FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo,null);
+            faultOrderDO.setOrderStatus(OrderStatus.GUAN_BI.getCode());
+            faultOrderDO.setCloseTime(DateUtil.getCurrentTime());
+            faultReportMapper.updateFaultOrder(faultOrderDO);
+            FaultInfoDO faultInfoDO = new FaultInfoDO();
+            faultInfoDO.setFaultNo(faultNo);
+            faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
+            faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            faultReportMapper.updateFaultInfo(faultInfoDO);
+            overTodoService.overTodo(faultOrderDO.getRecId(), "故障关闭");
+        });
     }
 }
 

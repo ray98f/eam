@@ -41,11 +41,13 @@ public interface FaultQueryService {
     // 驳回
     void returns(FaultSubmitReqDTO reqDTO);
 
-    void finishConfirm(FaultFinishConfirmReqDTO reqDTO);
+    void finishConfirm(FaultNoFaultWorkNoReqDTO reqDTO);
 
     void faultListExport(FaultQueryReqDTO reqDTO);
 
     void sendWork(FaultSendWorkReqDTO reqDTO);
 
     void eqCheck(FaultEqCheckReqDTO reqDTO) throws Exception;
+
+    void close(FaultNosFaultWorkNosReqDTO reqDTO);
 }

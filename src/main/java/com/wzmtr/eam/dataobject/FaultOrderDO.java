@@ -1,5 +1,8 @@
 package com.wzmtr.eam.dataobject;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -7,7 +10,9 @@ import lombok.Data;
  * Date: 2023/8/17 10:15
  */
 @Data
+@TableName("T_FAULT_ORDER")
 public class FaultOrderDO {
+    @TableId(type = IdType.ASSIGN_UUID)
     private String recId;
     private String companyCode;
     private String companyName;

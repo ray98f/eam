@@ -1,8 +1,6 @@
 package com.wzmtr.eam.dto.req.fault;
 
-import com.wzmtr.eam.enums.FaultOperateType;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +17,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FaultFinishConfirmReqDTO {
-    private String faultNo;
-    private String faultWorkNo;
+public class FaultNosFaultWorkNosReqDTO {
+    private Set<String> faultNos;
+    private Set<String> faultWorkNos;
 }

@@ -71,7 +71,7 @@ public class FaultQueryController {
 
     @ApiOperation(value = "完工确认")
     @PostMapping("/finishConfirm")
-    public DataResponse<String> finishConfirm(@RequestBody FaultFinishConfirmReqDTO reqDTO) {
+    public DataResponse<String> finishConfirm(@RequestBody FaultNoFaultWorkNoReqDTO reqDTO) {
         // faultWorkNo
         faultQueryService.finishConfirm(reqDTO);
         return DataResponse.success();
@@ -129,5 +129,11 @@ public class FaultQueryController {
     //     return DataResponse.success();
     // }
 
-
+    @ApiOperation(value = "故障跟踪表单驳回")
+    @PostMapping("/fault/close")
+    public DataResponse<String> close(@RequestBody FaultNosFaultWorkNosReqDTO reqDTO) {
+        // faultWorkNo
+        faultQueryService.close(reqDTO);
+        return DataResponse.success();
+    }
 }
