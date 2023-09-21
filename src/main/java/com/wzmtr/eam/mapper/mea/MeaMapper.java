@@ -21,7 +21,7 @@ public interface MeaMapper {
 
     MeaResDTO getMeaDetail(String id);
 
-    void addMea(List<MeaReqDTO> list);
+    void importMea(List<MeaReqDTO> list);
 
     List<MeaResDTO> listMea(MeaListReqDTO meaListReqDTO);
 

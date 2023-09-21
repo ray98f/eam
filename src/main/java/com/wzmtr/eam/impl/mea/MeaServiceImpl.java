@@ -3,19 +3,36 @@ package com.wzmtr.eam.impl.mea;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
+import com.wzmtr.eam.dto.req.mea.MeaReqDTO;
+import com.wzmtr.eam.dto.req.specialEquip.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.mea.MeaResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.SysOffice;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.service.mea.MeaService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.FileUtils;
+import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.wzmtr.eam.constant.CommonConstants.XLS;
+import static com.wzmtr.eam.constant.CommonConstants.XLSX;
 
 /**
  * @author frp
@@ -40,7 +57,70 @@ public class MeaServiceImpl implements MeaService {
 
     @Override
     public void importMea(MultipartFile file) {
-        // todo excel导入
+        try {
+            Workbook workbook;
+            String fileName = file.getOriginalFilename();
+            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
+            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
+                workbook = new HSSFWorkbook(fileInputStream);
+            } else if (fileName.endsWith(XLSX)) {
+                workbook = new XSSFWorkbook(fileInputStream);
+            } else {
+                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
+            }
+            Sheet sheet = workbook.getSheetAt(0);
+            List<MeaReqDTO> temp = new ArrayList<>();
+            for (Row cells : sheet) {
+                if (cells.getRowNum() < 1) {
+                    continue;
+                }
+                MeaReqDTO reqDTO = new MeaReqDTO();
+                cells.getCell(0).setCellType(1);
+                reqDTO.setEquipCode(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
+                cells.getCell(1).setCellType(1);
+                reqDTO.setEquipName(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
+                cells.getCell(2).setCellType(1);
+                reqDTO.setMatSpecifi(cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue());
+                cells.getCell(3).setCellType(1);
+                reqDTO.setCertificateNo(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
+                cells.getCell(4).setCellType(1);
+                reqDTO.setTransferDate(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
+                cells.getCell(5).setCellType(1);
+                reqDTO.setManufacture(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
+                cells.getCell(6).setCellType(1);
+                reqDTO.setSource(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
+                cells.getCell(7).setCellType(1);
+                reqDTO.setVerifyPeriod((int) cells.getCell(7).getNumericCellValue());
+                cells.getCell(8).setCellType(1);
+                reqDTO.setUseDeptCode(cells.getCell(8) == null ? "" : cells.getCell(8).getStringCellValue());
+                cells.getCell(9).setCellType(1);
+                reqDTO.setUseDeptCname(cells.getCell(9) == null ? "" : cells.getCell(9).getStringCellValue());
+                cells.getCell(10).setCellType(1);
+                reqDTO.setUseBeginDate(cells.getCell(10) == null ? "" : cells.getCell(10).getStringCellValue());
+                cells.getCell(11).setCellType(1);
+                reqDTO.setLastVerifyDate(cells.getCell(11) == null ? "" : cells.getCell(11).getStringCellValue());
+                cells.getCell(12).setCellType(1);
+                reqDTO.setExpirationDate(cells.getCell(12) == null ? "" : cells.getCell(12).getStringCellValue());
+                cells.getCell(13).setCellType(1);
+                reqDTO.setManufactureNo(cells.getCell(13) == null ? "" : cells.getCell(13).getStringCellValue());
+                cells.getCell(14).setCellType(1);
+                reqDTO.setPhoneNo(cells.getCell(14) == null ? "" : cells.getCell(14).getStringCellValue());
+                cells.getCell(15).setCellType(1);
+                reqDTO.setUseName(cells.getCell(15) == null ? "" : cells.getCell(15).getStringCellValue());
+                cells.getCell(16).setCellType(1);
+                reqDTO.setLineNo(cells.getCell(16) == null ? "" : cells.getCell(16).getStringCellValue());
+                reqDTO.setRecId(TokenUtil.getUuId());
+                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(reqDTO);
+            }
+            fileInputStream.close();
+            if (temp.size() > 0) {
+                meaMapper.importMea(temp);
+            }
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        }
     }
 
     @Override

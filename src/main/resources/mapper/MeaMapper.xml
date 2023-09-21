@@ -122,100 +122,163 @@
         FROM T_MEA_INSTRUMENT WHERE REC_ID=#{id}
     </select>
 
-    <insert id="addMea">
-        INSERT INTO T_MEA_INSTRUMENT (REC_ID,  <!-- 记录编号 -->
-        EQUIP_KIND_CODE,  <!-- 计量器具分类代码 -->
-        EQUIP_CODE,  <!-- 计量器具代码 -->
-        EQUIP_NAME,  <!-- 计量器具名称 -->
-        MEASURE_RANGE,  <!-- 测量范围 -->
-        MEASURE_ACCURACY,  <!-- 准确度 -->
-        VERIFY_DEPT,  <!-- 检定校准单位 -->
-        MEASURE_BARCODE,  <!-- 送检条码号 -->
-        CERTIFICATE_NO,  <!-- 证书编号 -->
-        CERTIFICATE_TYPE,  <!-- 证书类型 0:检测证书;1:校准证书;2:检测结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
-        VERIFY_RESULT,  <!-- 检定结果 -->
-        VERIFY_PERIOD,  <!-- 检定周期(天) -->
-        USE_BEGIN_DATE,  <!-- 开始使用日期 -->
-        LAST_VERIFY_DATE,  <!-- 上次检定日期 -->
-        NEXT_VERIFY_DATE,  <!-- 下次检定日期 -->
-        SEND_VERIFY_DATE,  <!-- 送检日期 -->
-        MANAGE_CLASS,  <!-- 管理类型:10:A;20:B;30:C -->
-        VERIFY_PROOF,  <!-- 检定依据 -->
-        VERIFY_CONCLUSION,  <!-- 结论 -->
-        HANDLE_ORDER_NO,  <!-- 处理单号 -->
-        MANAGE_MODE,  <!-- 管理方式 -->
-        CONTRACT_PRICE,  <!-- 合同价 -->
-        PERIOD_MODE,  <!-- 周期方式 -->
-        PLAN_STATUS,  <!-- 计划完成状态 -->
-        ALARM,  <!-- 报警(天) -->
-        LINE_NO,  <!-- 线别代码 -->
-        LINE_SUB_NO,  <!-- 线段代码 -->
-        POSITION1_CODE,  <!-- 位置一 -->
-        POSITION1_NAME,  <!-- 位置一名称 -->
-        POSITION2_CODE,  <!-- 位置二 -->
-        POSITION2_NAME,  <!-- 位置二名称 -->
-        POSITION3,  <!-- 位置三 -->
-        POSITION_REMARK,  <!-- 位置补充说明 -->
-        EQUIPMENT_STATE,  <!-- 10:在用;20:限用;30:维修;40:损坏;50:未查;60:送检;70:封存;80:丢失;90:禁用; -->
-        MAT_SPECIFI,  <!-- 型号规格 -->
-        MANUFACTURE_NO,  <!-- 出厂编号 -->
-        MANUFACTURE,  <!-- 生产厂家 -->
-        MANUFACTURE_CODE,
-        COMPANY_CODE,  <!-- 公司编号 -->
-        SOURCE,  <!-- 来源10:设备自带;20:非设备自带 -->
-        CMD_FLG,  <!-- CMC标识 10:是;20:否 -->
-        CONFIRMATION,  <!--  10:是;20:否 -->
-        USE_NO,  <!-- 使用责任人工号 -->
-        USE_NAME,  <!-- 使用责任人 -->
-        USE_DEPT_CODE,  <!-- 使用单位代码 -->
-        USE_DEPT_CNAME,  <!-- 使用单位 -->
-        COMPULSORY_TEST,  <!-- 强制检定计量器具 -->
-        SEND_VERIFY_FLAG,  <!-- 送检10:否;20:是 -->
-        USE_PLACE,  <!-- 安装使用地点 -->
-        USE_AREA,  <!-- 应用领域  -->
-        REMARK,  <!-- 备注 -->
-        WORK_FLOW_INST_ID,  <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS,  <!-- 工作流实例状态 -->
-        COMPANY_NAME,  <!-- 公司名称 -->
-        REC_CREATOR,  <!-- 创建者 -->
-        REC_CREATOR_NAME,  <!-- 创建者姓名 -->
-        REC_CREATE_TIME,  <!-- 创建时间 -->
-        REC_REVISOR,  <!-- 修改者 -->
-        REC_REVISOR_NAME,  <!-- 修改者姓名 -->
-        REC_REVISE_TIME,  <!-- 修改时间 -->
-        REC_DELETOR,  <!-- 删除者 -->
-        REC_DELETOR_NAME,  <!-- 删除者姓名 -->
-        REC_DELETE_TIME,  <!-- 删除时间 -->
-        DELETE_FLAG,  <!-- 删除标志 -->
-        ARCHIVE_FLAG,  <!-- 归档标记 -->
-        REC_STATUS,  <!-- 记录状态 -->
-        EXT1,  <!-- 扩展字段1 -->
-        EXT2,  <!-- 扩展字段2 -->
-        EXT3,  <!-- 扩展字段3 -->
-        EXT4,  <!-- 扩展字段4 -->
-        EXT5,  <!-- 扩展字段5 -->
-        DOC_ID,
-        TRANSFER_DATE ,    <!-- 移交日期 -->
-        PHONE_NO,
-        EXPIRATION_DATE)
-        VALUES (
-        #{recId,jdbcType=VARCHAR}, #{equipKindCode,jdbcType=VARCHAR}, #{equipCode,jdbcType=VARCHAR}, #{equipName,jdbcType=VARCHAR},
-        #{measureRange,jdbcType=VARCHAR}, #{measureAccuracy,jdbcType=VARCHAR}, #{verifyDept,jdbcType=VARCHAR},
-        #{measureBarcode,jdbcType=VARCHAR}, #{certificateNo,jdbcType=VARCHAR}, #{certificateType,jdbcType=VARCHAR},
-        #{verifyResult,jdbcType=VARCHAR}, #{verifyPeriod,jdbcType=NUMERIC}, #{useBeginDate,jdbcType=VARCHAR}, #{lastVerifyDate,jdbcType=VARCHAR},
-        #{nextVerifyDate,jdbcType=VARCHAR}, #{sendVerifyDate,jdbcType=VARCHAR}, #{manageClass,jdbcType=VARCHAR}, #{verifyProof,jdbcType=VARCHAR},
-        #{verifyConclusion,jdbcType=VARCHAR}, #{handleOrderNo,jdbcType=VARCHAR}, #{manageMode,jdbcType=VARCHAR}, #{contractPrice,jdbcType=NUMERIC},
-        #{periodMode,jdbcType=VARCHAR}, #{planStatus,jdbcType=VARCHAR}, #{alarm,jdbcType=NUMERIC}, #{lineNo,jdbcType=VARCHAR}, #{lineSubNo,jdbcType=VARCHAR},
-        #{position1Code,jdbcType=VARCHAR}, #{position1Name,jdbcType=VARCHAR}, #{position2Code,jdbcType=VARCHAR}, #{position2Name,jdbcType=VARCHAR},
-        #{position3,jdbcType=VARCHAR}, #{positionRemark,jdbcType=VARCHAR}, #{equipmentState,jdbcType=VARCHAR}, #{matSpecifi,jdbcType=VARCHAR},
-        #{manufactureNo,jdbcType=VARCHAR}, #{manufacture,jdbcType=VARCHAR},#manufactureCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
-        #{source,jdbcType=VARCHAR}, #{cmdFlg,jdbcType=VARCHAR}, #{confirmation,jdbcType=VARCHAR}, #{useNo,jdbcType=VARCHAR}, #{useName,jdbcType=VARCHAR},
-        #{useDeptCode,jdbcType=VARCHAR}, #{useDeptCname,jdbcType=VARCHAR}, #{compulsoryTest,jdbcType=VARCHAR}, #{sendVerifyFlag,jdbcType=VARCHAR},
-        #{usePlace,jdbcType=VARCHAR}, #{useArea,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{workFlowInstId,jdbcType=VARCHAR}, #{workFlowInstStatus,jdbcType=VARCHAR},
-        #{companyName,jdbcType=VARCHAR}, #{recCreator,jdbcType=VARCHAR}, #{recCreatorName,jdbcType=VARCHAR}, #{recCreateTime,jdbcType=VARCHAR}, #{recRevisor,jdbcType=VARCHAR},
-        #{recRevisorName,jdbcType=VARCHAR}, #{recReviseTime,jdbcType=VARCHAR}, #{recDeletor,jdbcType=VARCHAR}, #{recDeletorName,jdbcType=VARCHAR}, #{recDeleteTime,jdbcType=VARCHAR},
-        #{deleteFlag,jdbcType=VARCHAR}, #{archiveFlag,jdbcType=VARCHAR}, #{recStatus,jdbcType=VARCHAR}, #{ext1,jdbcType=VARCHAR}, #{ext2,jdbcType=VARCHAR}, #{ext3,jdbcType=VARCHAR},
-        #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR}, #{docId,jdbcType=VARCHAR}, #{transferDate,jdbcType=VARCHAR}, #{phoneNo,jdbcType=VARCHAR}, #{expirationDate,jdbcType=VARCHAR})
+    <insert id="importMea">
+        insert ALL
+        <foreach collection="list" index="index" item="mea" separator=" ">
+            INTO T_MEA_INSTRUMENT (
+            REC_ID,  <!-- 记录编号 -->
+            EQUIP_KIND_CODE,  <!-- 计量器具分类代码 -->
+            EQUIP_CODE,  <!-- 计量器具代码 -->
+            EQUIP_NAME,  <!-- 计量器具名称 -->
+            MEASURE_RANGE,  <!-- 测量范围 -->
+            MEASURE_ACCURACY,  <!-- 准确度 -->
+            VERIFY_DEPT,  <!-- 检定校准单位 -->
+            MEASURE_BARCODE,  <!-- 送检条码号 -->
+            CERTIFICATE_NO,  <!-- 证书编号 -->
+            CERTIFICATE_TYPE,  <!-- 证书类型 0:检测证书;1:校准证书;2:检测结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
+            VERIFY_RESULT,  <!-- 检定结果 -->
+            VERIFY_PERIOD,  <!-- 检定周期(天) -->
+            USE_BEGIN_DATE,  <!-- 开始使用日期 -->
+            LAST_VERIFY_DATE,  <!-- 上次检定日期 -->
+            NEXT_VERIFY_DATE,  <!-- 下次检定日期 -->
+            SEND_VERIFY_DATE,  <!-- 送检日期 -->
+            MANAGE_CLASS,  <!-- 管理类型:10:A;20:B;30:C -->
+            VERIFY_PROOF,  <!-- 检定依据 -->
+            VERIFY_CONCLUSION,  <!-- 结论 -->
+            HANDLE_ORDER_NO,  <!-- 处理单号 -->
+            MANAGE_MODE,  <!-- 管理方式 -->
+            CONTRACT_PRICE,  <!-- 合同价 -->
+            PERIOD_MODE,  <!-- 周期方式 -->
+            PLAN_STATUS,  <!-- 计划完成状态 -->
+            ALARM,  <!-- 报警(天) -->
+            LINE_NO,  <!-- 线别代码 -->
+            LINE_SUB_NO,  <!-- 线段代码 -->
+            POSITION1_CODE,  <!-- 位置一 -->
+            POSITION1_NAME,  <!-- 位置一名称 -->
+            POSITION2_CODE,  <!-- 位置二 -->
+            POSITION2_NAME,  <!-- 位置二名称 -->
+            POSITION3,  <!-- 位置三 -->
+            POSITION_REMARK,  <!-- 位置补充说明 -->
+            EQUIPMENT_STATE,  <!-- 10:在用;20:限用;30:维修;40:损坏;50:未查;60:送检;70:封存;80:丢失;90:禁用; -->
+            MAT_SPECIFI,  <!-- 型号规格 -->
+            MANUFACTURE_NO,  <!-- 出厂编号 -->
+            MANUFACTURE,  <!-- 生产厂家 -->
+            MANUFACTURE_CODE,
+            COMPANY_CODE,  <!-- 公司编号 -->
+            SOURCE,  <!-- 来源10:设备自带;20:非设备自带 -->
+            CMD_FLG,  <!-- CMC标识 10:是;20:否 -->
+            CONFIRMATION,  <!--  10:是;20:否 -->
+            USE_NO,  <!-- 使用责任人工号 -->
+            USE_NAME,  <!-- 使用责任人 -->
+            USE_DEPT_CODE,  <!-- 使用单位代码 -->
+            USE_DEPT_CNAME,  <!-- 使用单位 -->
+            COMPULSORY_TEST,  <!-- 强制检定计量器具 -->
+            SEND_VERIFY_FLAG,  <!-- 送检10:否;20:是 -->
+            USE_PLACE,  <!-- 安装使用地点 -->
+            USE_AREA,  <!-- 应用领域  -->
+            REMARK,  <!-- 备注 -->
+            WORK_FLOW_INST_ID,  <!-- 工作流实例ID -->
+            WORK_FLOW_INST_STATUS,  <!-- 工作流实例状态 -->
+            COMPANY_NAME,  <!-- 公司名称 -->
+            REC_CREATOR,  <!-- 创建者 -->
+            REC_CREATOR_NAME,  <!-- 创建者姓名 -->
+            REC_CREATE_TIME,  <!-- 创建时间 -->
+            REC_REVISOR,  <!-- 修改者 -->
+            REC_REVISOR_NAME,  <!-- 修改者姓名 -->
+            REC_REVISE_TIME,  <!-- 修改时间 -->
+            REC_DELETOR,  <!-- 删除者 -->
+            REC_DELETOR_NAME,  <!-- 删除者姓名 -->
+            REC_DELETE_TIME,  <!-- 删除时间 -->
+            DELETE_FLAG,  <!-- 删除标志 -->
+            ARCHIVE_FLAG,  <!-- 归档标记 -->
+            REC_STATUS,  <!-- 记录状态 -->
+            EXT1,  <!-- 扩展字段1 -->
+            EXT2,  <!-- 扩展字段2 -->
+            EXT3,  <!-- 扩展字段3 -->
+            EXT4,  <!-- 扩展字段4 -->
+            EXT5,  <!-- 扩展字段5 -->
+            DOC_ID,
+            TRANSFER_DATE ,    <!-- 移交日期 -->
+            PHONE_NO,
+            EXPIRATION_DATE)
+            VALUES (
+            #{mea.recId,jdbcType=VARCHAR},
+            #{mea.equipKindCode,jdbcType=VARCHAR},
+            #{mea.equipCode,jdbcType=VARCHAR},
+            #{mea.equipName,jdbcType=VARCHAR},
+            #{mea.measureRange,jdbcType=VARCHAR},
+            #{mea.measureAccuracy,jdbcType=VARCHAR},
+            #{mea.verifyDept,jdbcType=VARCHAR},
+            #{mea.measureBarcode,jdbcType=VARCHAR},
+            #{mea.certificateNo,jdbcType=VARCHAR},
+            #{mea.certificateType,jdbcType=VARCHAR},
+            #{mea.verifyResult,jdbcType=VARCHAR},
+            #{mea.verifyPeriod,jdbcType=NUMERIC},
+            #{mea.useBeginDate,jdbcType=VARCHAR},
+            #{mea.lastVerifyDate,jdbcType=VARCHAR},
+            #{mea.nextVerifyDate,jdbcType=VARCHAR},
+            #{mea.sendVerifyDate,jdbcType=VARCHAR},
+            #{mea.manageClass,jdbcType=VARCHAR},
+            #{mea.verifyProof,jdbcType=VARCHAR},
+            #{mea.verifyConclusion,jdbcType=VARCHAR},
+            #{mea.handleOrderNo,jdbcType=VARCHAR},
+            #{mea.manageMode,jdbcType=VARCHAR},
+            #{mea.contractPrice,jdbcType=NUMERIC},
+            #{mea.periodMode,jdbcType=VARCHAR},
+            #{mea.planStatus,jdbcType=VARCHAR},
+            #{mea.alarm,jdbcType=NUMERIC},
+            #{mea.lineNo,jdbcType=VARCHAR},
+            #{mea.lineSubNo,jdbcType=VARCHAR},
+            #{mea.position1Code,jdbcType=VARCHAR},
+            #{mea.position1Name,jdbcType=VARCHAR},
+            #{mea.position2Code,jdbcType=VARCHAR},
+            #{mea.position2Name,jdbcType=VARCHAR},
+            #{mea.position3,jdbcType=VARCHAR},
+            #{mea.positionRemark,jdbcType=VARCHAR},
+            #{mea.equipmentState,jdbcType=VARCHAR},
+            #{mea.matSpecifi,jdbcType=VARCHAR},
+            #{mea.manufactureNo,jdbcType=VARCHAR},
+            #{mea.manufacture,jdbcType=VARCHAR},
+            #{mea.manufactureCode,jdbcType=VARCHAR},
+            #{mea.companyCode,jdbcType=VARCHAR},
+            #{mea.source,jdbcType=VARCHAR},
+            #{mea.cmdFlg,jdbcType=VARCHAR},
+            #{mea.confirmation,jdbcType=VARCHAR},
+            #{mea.useNo,jdbcType=VARCHAR},
+            #{mea.useName,jdbcType=VARCHAR},
+            #{mea.useDeptCode,jdbcType=VARCHAR},
+            #{mea.useDeptCname,jdbcType=VARCHAR},
+            #{mea.compulsoryTest,jdbcType=VARCHAR},
+            #{mea.sendVerifyFlag,jdbcType=VARCHAR},
+            #{mea.usePlace,jdbcType=VARCHAR},
+            #{mea.useArea,jdbcType=VARCHAR},
+            #{mea.remark,jdbcType=VARCHAR},
+            #{mea.workFlowInstId,jdbcType=VARCHAR},
+            #{mea.workFlowInstStatus,jdbcType=VARCHAR},
+            #{mea.companyName,jdbcType=VARCHAR},
+            #{mea.recCreator,jdbcType=VARCHAR},
+            #{mea.recCreatorName,jdbcType=VARCHAR},
+            #{mea.recCreateTime,jdbcType=VARCHAR},
+            #{mea.recRevisor,jdbcType=VARCHAR},
+            #{mea.recRevisorName,jdbcType=VARCHAR},
+            #{mea.recReviseTime,jdbcType=VARCHAR},
+            #{mea.recDeletor,jdbcType=VARCHAR},
+            #{mea.recDeletorName,jdbcType=VARCHAR},
+            #{mea.recDeleteTime,jdbcType=VARCHAR},
+            #{mea.deleteFlag,jdbcType=VARCHAR},
+            #{mea.archiveFlag,jdbcType=VARCHAR},
+            #{mea.recStatus,jdbcType=VARCHAR},
+            #{mea.ext1,jdbcType=VARCHAR},
+            #{mea.ext2,jdbcType=VARCHAR},
+            #{mea.ext3,jdbcType=VARCHAR},
+            #{mea.ext4,jdbcType=VARCHAR},
+            #{mea.ext5,jdbcType=VARCHAR},
+            #{mea.docId,jdbcType=VARCHAR},
+            #{mea.transferDate,jdbcType=VARCHAR},
+            #{mea.phoneNo,jdbcType=VARCHAR},
+            #{mea.expirationDate,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
     </insert>
 
     <select id="listMea" resultType="com.wzmtr.eam.dto.res.mea.MeaResDTO">
