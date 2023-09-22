@@ -187,6 +187,7 @@
         df.CLOSE_TIME AS "closeTime",
         ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME = df.CLOSE_USER_ID ) AS "closeUserName",
         df.DEALER_UNIT AS "dealerUnit",
+        df.FAULT_PROCESS_RESULT AS "faultProcessResult",
         df.DEALER_NUM AS "dealerNum",
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
@@ -638,8 +639,14 @@
             AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{fillinTimeEnd}, 'YYYY-MM-DD') + 1
         </if>
         <if test="faultNos != null and faultNos.size() > 0">
-            AND d.faultNos IN
+            AND d.FAULT_NO IN
             <foreach collection="faultNos" item="code" open="(" close=")" separator=",">
+                #{code}
+            </foreach>
+        </if>
+        <if test="faultWorkNos != null and faultWorkNos.size() > 0">
+            AND df.FAULT_WORK_NO IN
+            <foreach collection="faultWorkNos" item="code" open="(" close=")" separator=",">
                 #{code}
             </foreach>
         </if>

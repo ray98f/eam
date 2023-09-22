@@ -9,10 +9,12 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Set;
 
 /**
  * Author: Li.Wang
@@ -64,9 +66,11 @@ public class FaultQueryController {
 
     @ApiOperation(value = "导出")
     @GetMapping("/export")
-    public void export(@RequestParam FaultExportReqDTO reqDTO, HttpServletResponse response) {
+    public void export(@RequestParam(required = false) @ApiParam("故障编号s")Set<String> faultNos,
+            @RequestParam(required = false) @ApiParam("故障工单编号s")Set<String> faultWorkNos,
+                       HttpServletResponse response) {
         // faultWorkNo
-        faultQueryService.export(reqDTO, response);
+        faultQueryService.export(faultNos,faultWorkNos, response);
     }
 
     @ApiOperation(value = "完工确认")
@@ -121,6 +125,14 @@ public class FaultQueryController {
         faultQueryService.returns(reqDTO);
         return DataResponse.success();
     }
+
+    @ApiOperation(value = "故障工单驳回")
+    @PostMapping("/fault/work/reject")
+    public DataResponse<String> reject(@RequestBody FaultSubmitReqDTO reqDTO) {
+        // faultWorkNo
+        // faultQueryService.reject(reqDTO);
+        return DataResponse.success();
+    }
     // @ApiOperation(value = "故障对象确认")
     // @PostMapping("/fault/track/cancel")
     // public DataResponse<String> cancel(@RequestBody FaultSubmitReqDTO reqDTO) {
@@ -129,7 +141,7 @@ public class FaultQueryController {
     //     return DataResponse.success();
     // }
 
-    @ApiOperation(value = "故障跟踪表单驳回")
+    @ApiOperation(value = "故障单关闭")
     @PostMapping("/fault/close")
     public DataResponse<String> close(@RequestBody FaultNosFaultWorkNosReqDTO reqDTO) {
         // faultWorkNo

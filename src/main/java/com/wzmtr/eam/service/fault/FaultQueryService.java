@@ -24,8 +24,8 @@ public interface FaultQueryService {
 
     void issue(FaultDetailReqDTO reqDTO);
 
-    void export(FaultExportReqDTO reqDTO, HttpServletResponse response);
 
+    void export(Set<String> faultNos,Set<String> faultWorkNos, HttpServletResponse response);
     Page<ConstructionResDTO> construction(FaultQueryReqDTO reqDTO);
 
     Page<ConstructionResDTO> cancellation(FaultQueryReqDTO reqDTO);

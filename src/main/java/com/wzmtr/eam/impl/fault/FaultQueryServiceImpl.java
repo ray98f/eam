@@ -4,10 +4,10 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.wzmtr.eam.bizobject.PartBO;
 import com.wzmtr.eam.bizobject.StationBO;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
@@ -22,9 +22,13 @@ import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.*;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.basic.PartMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.StationMapper;
-import com.wzmtr.eam.mapper.fault.*;
+import com.wzmtr.eam.mapper.fault.AnalyzeMapper;
+import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
+import com.wzmtr.eam.mapper.fault.FaultReportMapper;
+import com.wzmtr.eam.mapper.fault.TrackMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
@@ -67,7 +71,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Autowired
     private StationMapper stationMapper;
     @Autowired
-    private FaultOrderMapper faultOrderMapper;
+    private PartMapper partMapper;
 
 
     private static final Map<String, String> processMap = new HashMap<>();
@@ -144,13 +148,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public void export(FaultExportReqDTO reqDTO, HttpServletResponse response) {
+    public void export(Set<String> faultNos, Set<String> faultWorkNos, HttpServletResponse response) {
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0001#export
         List<String> listName = Arrays.asList("故障编号", "故障现象", "故障详情", "对象名称", "部件名称", "故障工单编号", "对象编码", "故障状态", "维修部门", "提报部门", "提报人员", "联系电话", "提报时间", "发现人", "发现时间", "故障紧急程度", "故障影响", "线路", "车底号/车厢号", "位置一", "位置二", "专业", "系统", "设备分类", "模块", "更换部件", "旧配件编号", "新配件编号", "部件更换时间", "故障处理人员", "故障处理情况", "故障处理人数");
-        List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.export(reqDTO);
+        List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.export(FaultExportReqDTO.builder().faultNos(faultNos).faultWorkNos(faultWorkNos).build());
         List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
+                PartBO partBO = partMapper.queryPartListByFaultWorkNo(resDTO.getFaultWorkNo());
                 String repairDept = organizationMapper.getOrgById(resDTO.getRepairDeptCode());
                 String fillinDept = organizationMapper.getOrgById(resDTO.getFillinDeptCode());
                 Map<String, String> map = new HashMap<>();
@@ -182,6 +187,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 map.put("位置二", resDTO.getPosition2Name());
                 map.put("专业", resDTO.getMajorName());
                 map.put("系统", resDTO.getSystemName());
+                if (partBO != null) {
+                    map.put("更换配件名称", partBO.getReplacementName());
+                    map.put("旧配件编号", partBO.getOldRepNo());
+                    map.put("新配件编号", partBO.getNewRepNo());
+                    map.put("更换所用时间", partBO.getOperateCostTime());
+                }
                 map.put("设备分类", resDTO.getEquipTypeName());
                 map.put("模块", resDTO.getFaultModule());
                 map.put("故障处理人员", dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
@@ -756,9 +767,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String faultWorkNo = reqDTO.getFaultWorkNo();
         String currentUser = TokenUtil.getCurrentPersonId();
         String faultNo = reqDTO.getFaultNo();
-        String majorCode = reqDTO.getMajorCode();
-        String majorName = reqDTO.getMajorName();
         FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo);
+        String majorCode = faultInfoDO.getMajorCode();
+        String majorName = faultInfoDO.getMajorName();
         String stationCode = faultInfoDO.getExt1();
         String ext2 = faultInfoDO.getExt2();
         String fillinUserId = faultInfoDO.getFillinUserId();
@@ -934,7 +945,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         Set<String> faultNos = reqDTO.getFaultNos();
         faultNos.forEach(faultNo -> {
-            FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo,null);
+            FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, null);
             faultOrderDO.setOrderStatus(OrderStatus.GUAN_BI.getCode());
             faultOrderDO.setCloseTime(DateUtil.getCurrentTime());
             faultReportMapper.updateFaultOrder(faultOrderDO);
