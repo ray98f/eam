@@ -45,9 +45,9 @@ public interface FaultQueryMapper {
 
     List<FaultDetailResDTO> export(FaultExportReqDTO req);
 
-    Page<ConstructionResDTO> construction(Page<Object> of, FaultQueryReqDTO req);
+    Page<ConstructionResDTO> construction(Page<Object> of,@Param("faultWorkNo") String faultWorkNo);
 
-    Page<ConstructionResDTO> cancellation(Page<Object> of, FaultQueryReqDTO req);
+    Page<ConstructionResDTO> cancellation(Page<Object> of,@Param("faultWorkNo") String faultWorkNo);
 
     TrackQueryResDTO queryOneByFaultWorkNoAndFaultNo(String faultNo, String faultWorkNo);
 

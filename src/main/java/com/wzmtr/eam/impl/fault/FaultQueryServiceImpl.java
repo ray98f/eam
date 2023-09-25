@@ -213,7 +213,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public Page<ConstructionResDTO> construction(FaultQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<ConstructionResDTO> list = faultQueryMapper.construction(reqDTO.of(), reqDTO);
+        Page<ConstructionResDTO> list = faultQueryMapper.construction(reqDTO.of(), reqDTO.getFaultWorkNo());
         List<ConstructionResDTO> records = list.getRecords();
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
@@ -224,7 +224,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public Page<ConstructionResDTO> cancellation(FaultQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<ConstructionResDTO> list = faultQueryMapper.cancellation(reqDTO.of(), reqDTO);
+        Page<ConstructionResDTO> list = faultQueryMapper.cancellation(reqDTO.of(), reqDTO.getFaultWorkNo());
         List<ConstructionResDTO> records = list.getRecords();
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
@@ -616,11 +616,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public void faultListExport(FaultQueryReqDTO reqDTO) {
-
-    }
-
-    @Override
     public void sendWork(FaultSendWorkReqDTO reqDTO) {
         // 派工
         if (StringUtils.isEmpty(reqDTO.getWorkerGroupCode())) {
@@ -657,7 +652,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 String zcStepOrg = dictionaries.getItemEname();
                 if (!faultOrderDO.getWorkClass().contains(zcStepOrg)) {
                     // todo 调用施工调度接口
-                    sendContractFault(faultOrderDO);
+                    _sendContractFault(faultOrderDO);
                 }
             }
         });
@@ -803,7 +798,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         /*      */
     }
 
-    public void sendContractFault(FaultOrderDO dmfm02) {
+    public void _sendContractFault(FaultOrderDO dmfm02) {
         // /* 557 */
         // Map<Object, Object> map = new HashMap<>();
         // /* 558 */
@@ -1023,14 +1018,18 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     private void _check(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current, String stepOrg) {
         list.forEach(a -> {
-            FaultOrderDO faultOrderDO = __BeanUtil.convert(a, FaultOrderDO.class);
+            String faultNo = a.getFaultNo();
+            String faultWorkNo = a.getFaultWorkNo();
+            FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
             // 状态变更为验收
             faultOrderDO.setOrderStatus(OrderStatus.YAN_SHOU.getCode());
             faultOrderDO.setCheckUserId(currentUser);
             faultOrderDO.setCheckTime(current);
+            faultOrderDO.setRecReviseTime(current);
+            faultOrderDO.setRecRevisor(currentUser);
             faultReportMapper.updateFaultOrder(faultOrderDO);
             FaultInfoDO faultInfoDO = new FaultInfoDO();
-            faultInfoDO.setFaultNo(a.getFaultNo());
+            faultInfoDO.setFaultNo(faultNo);
             faultInfoDO.setRecReviseTime(current);
             faultInfoDO.setRecRevisor(currentUser);
             faultReportMapper.updateFaultInfo(faultInfoDO);

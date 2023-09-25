@@ -350,8 +350,8 @@
         EXT5 AS "ext5"  <!-- 扩展字段5 -->
         FROM T_WORK_PLAN
         WHERE 1=1
-        <if test="req.faultWorkNo != null">
-            AND WORKNO = #{req.faultWorkNo}
+        <if test="faultWorkNo != null">
+            AND WORKNO = #{faultWorkNo}
         </if>
         ORDER BY REC_ID ASC
     </select>
@@ -391,8 +391,8 @@
         EXT4 as "ext4",  <!-- 扩展字段4 -->
         EXT5 as "ext5" <!-- 扩展字段5 -->
         FROM T_REQUEST_POINTS WHERE 1=1
-        <if test="req.faultWorkNo != null">
-            AND WORKNO = #{req.faultWorkNo}
+        <if test="faultWorkNo != null">
+            AND WORKNO = #{faultWorkNo}
         </if>
         order by REC_ID asc
     </select>
