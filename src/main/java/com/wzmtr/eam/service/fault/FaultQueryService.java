@@ -24,8 +24,8 @@ public interface FaultQueryService {
 
     void issue(FaultDetailReqDTO reqDTO);
 
+    void export(Set<String> faultNos, Set<String> faultWorkNos, HttpServletResponse response);
 
-    void export(Set<String> faultNos,Set<String> faultWorkNos, HttpServletResponse response);
     Page<ConstructionResDTO> construction(FaultQueryReqDTO reqDTO);
 
     Page<ConstructionResDTO> cancellation(FaultQueryReqDTO reqDTO);
@@ -41,13 +41,11 @@ public interface FaultQueryService {
     // 驳回
     void returns(FaultSubmitReqDTO reqDTO);
 
-    void finishConfirm(FaultNoFaultWorkNoReqDTO reqDTO);
-
     void faultListExport(FaultQueryReqDTO reqDTO);
 
     void sendWork(FaultSendWorkReqDTO reqDTO);
 
     void eqCheck(FaultEqCheckReqDTO reqDTO) throws Exception;
 
-    void close(FaultNosFaultWorkNosReqDTO reqDTO);
+    void updateHandler(FaultNosFaultWorkNosReqDTO reqDTO);
 }

@@ -22,6 +22,10 @@ public interface FaultReportMapper {
 
     void addToFaultOrder(FaultOrderDO faultOrder);
 
+    /**
+     * update col by faultNo and faultWorkNo
+     * @param faultOrder
+     */
     void updateFaultOrder(FaultOrderDO faultOrder);
 
     void updateFaultInfo(FaultInfoDO faultInfo);

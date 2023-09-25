@@ -13,6 +13,7 @@ public interface FaultReportService {
 
     /**
      * 提报
+     *
      * @param reqDTO
      */
     void addToEquip(FaultReportReqDTO reqDTO);
@@ -24,6 +25,7 @@ public interface FaultReportService {
     FaultDetailResDTO detail(FaultDetailReqDTO reqDTO);
 
     void delete(FaultCancelReqDTO reqDTO);
+
     void cancel(FaultCancelReqDTO reqDTO);
 
     void update(FaultReportReqDTO reqDTO);

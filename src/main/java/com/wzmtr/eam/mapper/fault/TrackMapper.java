@@ -26,6 +26,7 @@ public interface TrackMapper {
     void report(TrackReportReqDTO reqDTO);
 
     void close(TrackCloseReqDTO reqDTO);
+
     TrackResDTO queryFault(@Param("id") String id);
 
     void repair(TrackRepairReqDTO reqDTO);
@@ -33,4 +34,6 @@ public interface TrackMapper {
     List<FaultTrackDO> queryOne(String faultNo, String faultWorkNo, String faultAnalysisNo, String faultTrackNo);
 
     void update(FaultTrackDO dmfm09);
+
+    void transmit(FaultTrackDO faultTrackDO);
 }

@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.fault;
 
+import com.wzmtr.eam.enums.OrderStatus;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +21,5 @@ import java.util.Set;
 public class FaultNosFaultWorkNosReqDTO {
     private Set<String> faultNos;
     private Set<String> faultWorkNos;
+    private OrderStatus type;
 }

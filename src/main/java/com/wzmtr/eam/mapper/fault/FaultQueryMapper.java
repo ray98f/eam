@@ -3,7 +3,6 @@ package com.wzmtr.eam.mapper.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
-import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
@@ -16,6 +15,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Author: Li.Wang
@@ -25,9 +25,19 @@ import java.util.List;
 @Repository
 public interface FaultQueryMapper {
     Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
+
     FaultDetailResDTO queryDetail(@Param("req") FaultQueryDetailReqDTO req);
+
+    List<FaultDetailResDTO> list(@Param("req") FaultQueryDetailReqDTO req);
+
     FaultInfoDO queryOneFaultInfo(String faultNo);
-    FaultOrderDO queryOneFaultOrder(String faultNo,String faultWorkNo);
+
+    FaultOrderDO queryOneFaultOrder(String faultNo, String faultWorkNo);
+
+
+    List<FaultInfoDO> querFaultInfoList(Set<String> faultNo);
+
+    List<FaultOrderDO> queryFaultOrderList(Set<String> faultNo,Set<String> faultWorkNo);
 
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
 
@@ -41,5 +51,4 @@ public interface FaultQueryMapper {
 
     TrackQueryResDTO queryOneByFaultWorkNoAndFaultNo(String faultNo, String faultWorkNo);
 
-    void transmit(FaultTrackDO bo);
 }
