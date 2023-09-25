@@ -14,37 +14,9 @@ import java.util.List;
  */
 public interface UserAccountService {
 
-    /**
-     * 用户账户信息列表
-     *
-     * @param searchKey
-     * @param pageReqDTO
-     * @return
-     */
     Page<UserAccountListResDTO> listUserAccount(String searchKey, PageReqDTO pageReqDTO);
 
-    /**
-     * 根据id获取信息
-     *
-     * @param ids
-     * @return
-     */
     List<UserAccountListResDTO> selectUserAccountById(List<String> ids);
-
-    /**
-     * 用户详情
-     *
-     * @param id
-     * @return
-     */
-    HashMap<String, Object> getUserAccountDetail(String id);
-
-    /**
-     * 用户账号锁定/解锁
-     *
-     * @param userStatusReqDTO
-     */
-    void ableUserRole(UserStatusReqDTO userStatusReqDTO);
 
     Page<SysUserAccount> listOutUserAccount(PageReqDTO pageReqDTO);
 

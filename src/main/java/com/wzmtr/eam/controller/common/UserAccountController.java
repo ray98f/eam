@@ -45,19 +45,6 @@ public class UserAccountController {
         return DataResponse.of(userAccountService.selectUserAccountById(baseIdsEntity.getIds()));
     }
 
-    @GetMapping("/detail")
-    @ApiOperation(value = "用户详情")
-    public DataResponse<HashMap<String, Object>> getUserAccountDetail(@RequestParam(required = false) @ApiParam("用户id") String id) {
-        return DataResponse.of(userAccountService.getUserAccountDetail(id));
-    }
-
-    @PostMapping("/accountStatus")
-    @ApiOperation(value = "用户账号锁定/解锁")
-    public DataResponse<T> ableUserRole(@Valid @RequestBody UserStatusReqDTO userStatusReqDTO) {
-        userAccountService.ableUserRole(userStatusReqDTO);
-        return DataResponse.success();
-    }
-
     @GetMapping("/listOut")
     @ApiOperation(value = "外部用户账户信息列表")
     public PageResponse<SysUserAccount> listOutUserAccount(@Valid PageReqDTO pageReqDTO) {

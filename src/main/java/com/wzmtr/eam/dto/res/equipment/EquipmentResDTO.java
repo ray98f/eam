@@ -211,10 +211,10 @@ public class EquipmentResDTO {
     @ApiModelProperty(value = "创建时间")
     private String recCreateTime;
 
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value = "修改人")
     private String recRevisor;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "修改时间")
     private String recReviseTime;
 
     @ApiModelProperty(value = "删除者")

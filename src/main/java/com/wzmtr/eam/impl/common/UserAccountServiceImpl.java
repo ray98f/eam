@@ -37,9 +37,6 @@ public class UserAccountServiceImpl implements UserAccountService {
     private UserAccountMapper userAccountMapper;
 
     @Autowired
-    private OrganizationMapper organizationMapper;
-
-    @Autowired
     private IPersonService personService;
 
     @Override
@@ -48,62 +45,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         return userAccountMapper.listUserAccount(pageReqDTO.of(), searchKey);
     }
 
-    /**
-     * 根据id获取信息
-     *
-     * @param ids
-     * @return
-     */
     @Override
     public List<UserAccountListResDTO> selectUserAccountById(List<String> ids) {
         return userAccountMapper.selectUserAccountById(ids);
-    }
-
-    /**
-     * 用户详情
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public HashMap<String, Object> getUserAccountDetail(String id) {
-        HashMap<String,Object> hashMap= new HashMap<>();
-        hashMap.put("id","123");
-        hashMap.put("no","123");
-        hashMap.put("name","测试账号");
-        hashMap.put("loginName","测试账号");
-        hashMap.put("phone","1565656565");
-        hashMap.put("disabled",0);
-        hashMap.put("orgPath","测试部门-测试组");
-        hashMap.put("email","123@qq.com");
-        hashMap.put("mobile","1565656565");
-        hashMap.put("room","铁投");
-        List<UserRoleResDTO> roleResDTOS = new ArrayList<>();
-        roleResDTOS.add(new UserRoleResDTO(){{
-            setId("123");
-            setRoleCode("123");
-            setRoleName("测试角色");
-        }});
-        hashMap.put("roles",roleResDTOS);
-        hashMap.put("eipRoles",roleResDTOS);
-        return hashMap;
-    }
-
-    /**
-     * 用户账号锁定/解锁
-     *
-     * @param userStatusReqDTO
-     */
-    @Override
-    public void ableUserRole(UserStatusReqDTO userStatusReqDTO) {
-        if (Objects.isNull(userStatusReqDTO)) {
-            throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
-        }
-        userStatusReqDTO.setCreatedBy("");
-        Integer result = userAccountMapper.ableUserRole(userStatusReqDTO);
-        if (result < 0) {
-            throw new CommonException(ErrorCode.UPDATE_ERROR);
-        }
     }
 
     @Override
@@ -145,8 +89,8 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserCenterInfoResDTO getUserDetail() {
         UserCenterInfoResDTO res = userAccountMapper.userCenterInfo(TokenUtil.getCurrentPersonId());
-        res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
-        res.setOperationManual("http://10.11.82.91:9000/rights/2022/09/21/温州市铁投集团公权力大数据监督应用平台用户手册.pdf");
+        // todo 获取登录用户角色权限
+//        res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
         return res;
     }
 }

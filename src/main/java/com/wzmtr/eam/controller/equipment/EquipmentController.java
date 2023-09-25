@@ -1,13 +1,18 @@
 package com.wzmtr.eam.controller.equipment;
 
+import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.EquipmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -82,28 +87,40 @@ public class EquipmentController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出设备台账")
-    public void exportEquipment(@RequestParam(required = false) @ApiParam("设备编码") String equipCode,
-                                @RequestParam(required = false) @ApiParam("设备名称") String equipName,
-                                @RequestParam(required = false) @ApiParam("线路编号") String useLineNo,
-                                @RequestParam(required = false) @ApiParam("线段编号") String useSegNo,
-                                @RequestParam(required = false) @ApiParam("位置一") String position1Code,
-                                @RequestParam(required = false) @ApiParam("专业编号") String majorCode,
-                                @RequestParam(required = false) @ApiParam("系统编号") String systemCode,
-                                @RequestParam(required = false) @ApiParam("设备分类编号") String equipTypeCode,
-                                @RequestParam(required = false) @ApiParam("品牌") String brand,
-                                @RequestParam(required = false) @ApiParam("出产开始时间") String startTime,
-                                @RequestParam(required = false) @ApiParam("出产结束时间") String endTime,
-                                @RequestParam(required = false) @ApiParam("生产厂家") String manufacture,
+    public void exportEquipment(@RequestBody BaseIdsEntity baseIdsEntity,
                                 HttpServletResponse response) {
-        equipmentService.exportEquipment(equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
-                systemCode, equipTypeCode, brand, startTime, endTime, majorCode, response);
+        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+            throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
+        }
+        equipmentService.exportEquipment(baseIdsEntity.getIds(), response);
     }
 
     @PostMapping("/qr")
     @ApiOperation(value = "生成二维码")
     public DataResponse<List<EquipmentQrResDTO>> generateQr(@RequestBody BaseIdsEntity baseIdsEntity) throws ParseException {
         return DataResponse.of(equipmentService.generateQr(baseIdsEntity));
+    }
+
+    @GetMapping("/overhaul/list")
+    @ApiOperation(value = "检修列表")
+    public PageResponse<OverhaulOrderDetailResDTO> listOverhaul(@RequestParam @ApiParam("设备编码") String equipCode,
+                                                                @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(equipmentService.listOverhaul(equipCode, pageReqDTO));
+    }
+
+    @GetMapping("/fault/list")
+    @ApiOperation(value = "故障列表")
+    public PageResponse<FaultDetailResDTO> listFault(@RequestParam @ApiParam("设备编码") String equipCode,
+                                                     @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(equipmentService.listFault(equipCode, pageReqDTO));
+    }
+
+    @GetMapping("/partReplace/list")
+    @ApiOperation(value = "部件更换列表")
+    public PageResponse<PartFaultReqDTO> listPartReplace(@RequestParam @ApiParam("设备编码") String equipCode,
+                                                         @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(equipmentService.listPartReplace(equipCode, pageReqDTO));
     }
 }

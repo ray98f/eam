@@ -1,10 +1,13 @@
 package com.wzmtr.eam.service.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +29,13 @@ public interface EquipmentService {
 
     void importEquipment(MultipartFile file);
 
-    void exportEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
-                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, HttpServletResponse response);
+    void exportEquipment(List<String> ids, HttpServletResponse response);
 
     List<EquipmentQrResDTO> generateQr(BaseIdsEntity baseIdsEntity) throws ParseException;
+
+    Page<OverhaulOrderDetailResDTO> listOverhaul(String equipCode, PageReqDTO pageReqDTO);
+
+    Page<FaultDetailResDTO> listFault(String equipCode, PageReqDTO pageReqDTO);
+
+    Page<PartFaultReqDTO> listPartReplace(String equipCode, PageReqDTO pageReqDTO);
 }

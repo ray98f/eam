@@ -4,11 +4,14 @@ import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
+import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -199,16 +202,14 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    public void exportEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
-                                String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, HttpServletResponse response) {
+    public void exportEquipment(List<String> ids, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "公司代码", "公司名称", "部门代码", "部门名称", "设备编码", "设备名称", "专业代码", "专业名称",
                 "系统代码", "系统名称", "设备分类代码", "设备分类名称", "特种设备标识", "BOM类型", "生产厂家", "合同号", "合同名称", "型号规格", "品牌",
                 "出厂日期", "出厂编号", "开始使用日期", "数量", "进设备台帐时间", "设备状态", "来源单号", "来源明细号", "来源记录编号", "安装单位", "附件编号",
                 "来源线别代码", "来源线别名称", "来源线段代码", "来源线段名称", "应用线别代码", "应用线别", "应用线段代码", "应用线段", "位置一", "位置一名称",
                 "位置二", "位置二名称", "位置三", "位置补充说明", "走行里程", "备注", "审批状态", "特种设备检测日期", "特种设备检测有效期", "创建者", "创建时间",
                 "修改者", "修改时间", "删除者", "删除时间", "删除标志", "归档标记", "记录状态");
-        List<EquipmentResDTO> equipmentResDTOList = equipmentMapper.listEquipment(equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
-                systemCode, equipTypeCode, brand, startTime, endTime, manufacture);
+        List<EquipmentResDTO> equipmentResDTOList = equipmentMapper.listEquipment(ids);
         List<Map<String, String>> list = new ArrayList<>();
         if (equipmentResDTOList != null && !equipmentResDTOList.isEmpty()) {
             for (EquipmentResDTO equipmentResDTO : equipmentResDTOList) {
@@ -301,6 +302,24 @@ public class EquipmentServiceImpl implements EquipmentService {
             }
         }
         return list;
+    }
+
+    @Override
+    public Page<OverhaulOrderDetailResDTO> listOverhaul(String equipCode, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return equipmentMapper.listOverhaul(pageReqDTO.of(), equipCode);
+    }
+
+    @Override
+    public Page<FaultDetailResDTO> listFault(String equipCode, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return equipmentMapper.listFault(pageReqDTO.of(), equipCode);
+    }
+
+    @Override
+    public Page<PartFaultReqDTO> listPartReplace(String equipCode, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return equipmentMapper.listPartReplace(pageReqDTO.of(), equipCode);
     }
 
 }

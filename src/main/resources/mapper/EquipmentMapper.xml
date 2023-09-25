@@ -679,46 +679,12 @@
         EXT3	as "ext3",  <!-- 扩展字段3 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
-        FROM T_EQUIPMENT WHERE 1=1
-        <if test="equipCode!=null and equipCode!=''">
-            and EQUIP_CODE like '%' || #{equipCode} || '%'
-        </if>
-        <if test="equipName!=null and equipName!=''">
-            and EQUIP_NAME like '%' || #{equipName} || '%'
-        </if>
-        <if test="useLineNo!=null and useLineNo!=''">
-            and USE_LINE_NO=#{useLineNo}
-        </if>
-        <if test="useSegNo!=null and useSegNo!=''">
-            and USE_SEG_NO=#{useSegNo}
-        </if>
-        <if test="position1Code!=null and position1Code!=''">
-            and POSITION1_CODE=#{position1Code}
-        </if>
-        <if test="brand!=null and brand!=''">
-            and BRAND=#{brand}
-        </if>
-        <if test="manufacture!=null and manufacture!=''">
-            and MANUFACTURE=#{manufacture}
-        </if>
-        <if test="manufacture!=null and manufacture!=''">
-            and MANUFACTURE=#{manufacture}
-        </if>
-        <if test="startTime!=null and startTime!=''">
-            and MANUFACTURE_DATE=#{startTime}
-        </if>
-        <if test="endTime!=null and endTime!=''">
-            and MANUFACTURE_DATE=#{endTime}
-        </if>
-        <if test="majorCode!=null and majorCode!=''">
-            and MAJOR_CODE=#{majorCode}
-        </if>
-        <if test="systemCode!=null and systemCode!=''">
-            and SYSTEM_CODE=#{systemCode}
-        </if>
-        <if test="equipTypeCode!=null and equipTypeCode!=''">
-            and EQUIP_TYPE_CODE=#{equipTypeCode}
-        </if>
+        FROM T_EQUIPMENT WHERE
+        REC_ID IN (
+        <foreach collection="list" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         ORDER BY EQUIP_CODE ASC
     </select>
 
@@ -1076,5 +1042,45 @@
         REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
         WHERE REC_ID = #{recId}
     </update>
+
+    <select id="listOverhaul" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        REPAIR_STATUS	as "repairStatus",  <!-- 检修情况 -->
+        REPAIR_DETAIL	as "repairDetail",  <!-- 检修情况说明 -->
+        START_TIME	as "startTime",  <!-- 开始时间 -->
+        COMPLITE_TIME	as "compliteTime",  <!-- 结束时间 -->
+        ABNORMAL_NUMBER	as "abnormalNumber" <!-- 异常数量 -->
+        FROM T_OVERHAUL_ORDER_DETAIL WHERE 1=1 AND OBJECT_CODE=#{equipCode}
+        order by ORDER_CODE desc
+    </select>
+
+    <select id="listFault" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        SELECT
+        a.DISCOVERER_NAME as "discovererName",
+        a.DISCOVERY_TIME as "discoveryTime",
+        a.FAULT_DETAIL as "faultDisplayDetail",
+        b.FAULT_REASON_DETAIL as "faultReasonDetail",
+        b.FAULT_ACTION_DETAIL as "faultActionDetail",
+        b.REPAIR_END_TIME as "repairEndTime"
+        FROM WBPLAT.TDMFM01 a
+        LEFT JOIN WBPLAT.TDMFM02 b ON a.FAULT_NO=b.FAULT_NO
+        WHERE 1=1 AND a.OBJECT_CODE=#{equipCode}
+        order by a.FAULT_NO desc
+    </select>
+
+    <select id="listPartReplace" resultType="com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO">
+        SELECT
+        PART_CODE as "partCode",
+        PART_NAME as "partName",
+        OPERATE_TIME as "operateTime",
+        LOG_TYPE as "logType"
+        FROM WBPLAT.TDMDM03 a
+        WHERE 1=1 AND a.EQUIP_CODE=#{objectCode}
+        order by OPERATE_TIME desc
+    </select>
 
 </mapper>

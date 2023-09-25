@@ -3,10 +3,13 @@ package com.wzmtr.eam.mapper.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
+import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -42,8 +45,7 @@ public interface EquipmentMapper {
 
     void insertEquipment(EquipmentReqDTO equipmentReqDTO);
 
-    List<EquipmentResDTO> listEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
-                                        String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture);
+    List<EquipmentResDTO> listEquipment(List<String> list);
 
     List<EquipmentResDTO> siftEquipment(EquipmentSiftReqDTO equipmentSiftReqDTO);
 
@@ -52,4 +54,10 @@ public interface EquipmentMapper {
     List<EquipmentResDTO> selectByEquipName(String equipName);
 
     List<EquipmentResDTO> queryMajor(String equipName);
+
+    Page<OverhaulOrderDetailResDTO> listOverhaul(Page<OverhaulOrderDetailResDTO> page, String equipCode);
+
+    Page<FaultDetailResDTO> listFault(Page<FaultDetailResDTO> page, String equipCode);
+
+    Page<PartFaultReqDTO> listPartReplace(Page<PartFaultReqDTO> page, String equipCode);
 }

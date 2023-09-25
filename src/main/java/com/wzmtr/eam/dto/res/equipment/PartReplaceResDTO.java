@@ -14,55 +14,55 @@ import java.util.List;
 public class PartReplaceResDTO {
     
     @ApiModelProperty(value = "记录编号")
-    private String recId = " ";
+    private String recId;
     
     @ApiModelProperty(value = "故障工单编号")
-    private String faultWorkNo = " ";
+    private String faultWorkNo;
     
     @ApiModelProperty(value = "设备代码")
-    private String equipCode = " ";
+    private String equipCode;
     
     @ApiModelProperty(value = "设备名称")
-    private String equipName = " ";
+    private String equipName;
     
     @ApiModelProperty(value = "作业单位")
-    private String orgType = " ";
+    private String orgType;
     
     @ApiModelProperty(value = "作业人员")
-    private String operator = " ";
+    private String operator;
     
     @ApiModelProperty(value = "更换配件代码")
-    private String replacementNo = " ";
+    private String replacementNo;
     
     @ApiModelProperty(value = "更换配件名称")
-    private String replacementName = " ";
+    private String replacementName;
     
     @ApiModelProperty(value = "更换原因")
-    private String replaceReason = " ";
+    private String replaceReason;
     
     @ApiModelProperty(value = "旧配件编号")
-    private String oldRepNo = " ";
+    private String oldRepNo;
     
     @ApiModelProperty(value = "新配件编号")
-    private String newRepNo = " ";
+    private String newRepNo;
     
     @ApiModelProperty(value = "更换所用时间")
-    private String operateCostTime = " ";
+    private String operateCostTime;
     
     @ApiModelProperty(value = "处理日期")
-    private String replaceDate = " ";
+    private String replaceDate;
     
     @ApiModelProperty(value = "备注")
-    private String remark = " ";
+    private String remark;
     
     @ApiModelProperty(value = "附件编号")
-    private String docId = " ";
+    private String docId;
 
     @ApiModelProperty(value = "创建者")
-    private String recCreator = " ";
+    private String recCreator;
 
     @ApiModelProperty(value = "创建时间")
-    private String recCreateTime = " ";
+    private String recCreateTime;
 
     @ApiModelProperty(value = "修改者")
     private String recRevisor;

@@ -38,14 +38,6 @@ public interface UserAccountMapper {
      */
     List<UserAccountListResDTO> selectUserAccountById(List<String> ids);
 
-    /**
-     * 用户账号锁定/解锁
-     *
-     * @param userStatusReqDTO
-     * @return
-     */
-    Integer ableUserRole(UserStatusReqDTO userStatusReqDTO);
-
     Page<SysUserAccount> listOutUserAccount(Page<SysUserAccount> page);
 
     /**
