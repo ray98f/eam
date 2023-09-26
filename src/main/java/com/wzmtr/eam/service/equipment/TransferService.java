@@ -24,7 +24,9 @@ public interface TransferService {
 
     Page<EquipmentResDTO> pageSplitTransfer(String sourceRecId, PageReqDTO pageReqDTO);
 
-    void saveSplitTransfer(List<EquipmentResDTO> list);
+    EquipmentResDTO getSplitTransferDetail(String id);
+
+    void saveSplitTransfer(EquipmentResDTO equipmentResDTO);
 
     void submitSplitTransfer(TransferSplitReqDTO transferSplitReqDTO) throws Exception;
 

@@ -21,9 +21,9 @@
             and a.EQUIP_NAME like '%' || #{equipName} || '%'
         </if>
         <if test="originLineNo!=null and originLineNo!=''">
-            and a.ORIGIN_LINE_NO=#{originLineNo}
+            and (a.ORIGIN_LINE_NO=#{originLineNo} or a.USE_LINE_NO=#{originLineNo})
         </if>
-        order by a.ORIGIN_LINE_NO,a.EQUIP_NAME asc
+        order by a.ORIGIN_LINE_NO,a.USE_LINE_NO,a.EQUIP_NAME asc
     </select>
 
     <select id="getTrainMileDetail" resultType="com.wzmtr.eam.dto.res.equipment.TrainMileResDTO">

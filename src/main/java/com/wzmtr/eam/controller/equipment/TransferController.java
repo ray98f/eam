@@ -81,10 +81,16 @@ public class TransferController {
         return PageResponse.of(transferService.pageSplitTransfer(sourceRecId, pageReqDTO));
     }
 
+    @GetMapping("/split/detail")
+    @ApiOperation(value = "获取设备拆分详情")
+    public DataResponse<EquipmentResDTO> getSplitTransferDetail(@RequestParam @ApiParam("id") String id) {
+        return DataResponse.of(transferService.getSplitTransferDetail(id));
+    }
+
     @PostMapping("/split/save")
     @ApiOperation(value = "保存设备拆分")
-    public DataResponse<T> saveSplitTransfer(@RequestBody TransferSplitReqDTO transferSplitReqDTO) {
-        transferService.saveSplitTransfer(transferSplitReqDTO.getEquipmentList());
+    public DataResponse<T> saveSplitTransfer(@RequestBody EquipmentResDTO equipmentResDTO) {
+        transferService.saveSplitTransfer(equipmentResDTO);
         return DataResponse.success();
     }
 

@@ -268,22 +268,19 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public void saveSplitTransfer(List<EquipmentResDTO> list) {
-        if (list != null && !list.isEmpty()) {
-            for (EquipmentResDTO resDTO : list) {
-                if (Objects.isNull(resDTO)) {
-                    throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
-                }
-                if (!"10".equals(resDTO.getApprovalStatus())) {
-                    throw new CommonException(ErrorCode.TRANSFER_SPLIT_ERROR);
-                }
-            }
-            for (EquipmentResDTO resDTO : list) {
-                updateTransfer(resDTO);
-            }
-        } else {
-            throw new CommonException(ErrorCode.SELECT_NOTHING);
+    public EquipmentResDTO getSplitTransferDetail(String id) {
+        return equipmentMapper.getSplitTransferDetail(id);
+    }
+
+    @Override
+    public void saveSplitTransfer(EquipmentResDTO equipmentResDTO) {
+        if (Objects.isNull(equipmentResDTO)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
+        if (!"10".equals(equipmentResDTO.getApprovalStatus())) {
+            throw new CommonException(ErrorCode.TRANSFER_SPLIT_ERROR);
+        }
+        updateTransfer(equipmentResDTO);
     }
 
     @Override

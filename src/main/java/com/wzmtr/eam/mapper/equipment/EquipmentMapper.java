@@ -49,6 +49,8 @@ public interface EquipmentMapper {
 
     List<EquipmentResDTO> siftEquipment(EquipmentSiftReqDTO equipmentSiftReqDTO);
 
+    EquipmentResDTO getSplitTransferDetail(String id);
+
     void updateEquipment(EquipmentReqDTO equipmentReqDTO);
 
     List<EquipmentResDTO> selectByEquipName(String equipName);
