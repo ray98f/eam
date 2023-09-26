@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -61,5 +62,5 @@ public interface EquipmentMapper {
 
     Page<FaultDetailResDTO> listFault(Page<FaultDetailResDTO> page, String equipCode);
 
-    Page<PartFaultReqDTO> listPartReplace(Page<PartFaultReqDTO> page, String equipCode);
+    Page<PartReplaceResDTO> listPartReplace(Page<PartReplaceResDTO> page, String equipCode);
 }

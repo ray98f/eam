@@ -47,7 +47,7 @@
             and FAULT_WORK_NO like '%' || #{faultWorkNo} || '%'
         </if>
         <if test="orgType!=null and orgType!=''">
-            and orgType=#{orgType}
+            and ORG_TYPE=#{orgType}
         </if>
         <if test="replaceReason!=null and replaceReason!=''">
             and REPLACE_REASON like '%' || #{replaceReason} || '%'
@@ -304,7 +304,7 @@
             and FAULT_WORK_NO like '%' || #{faultWorkNo} || '%'
         </if>
         <if test="orgType!=null and orgType!=''">
-            and orgType=#{orgType}
+            and ORG_TYPE=#{orgType}
         </if>
         <if test="replaceReason!=null and replaceReason!=''">
             and REPLACE_REASON like '%' || #{replaceReason} || '%'

@@ -68,55 +68,49 @@ public class TrainMileServiceImpl implements TrainMileService {
     }
 
     @Override
-    public void modifyTrainMile(List<TrainMileReqDTO> list) {
-        if (list != null && !list.isEmpty()) {
-            for (TrainMileReqDTO resDTO : list) {
-                TrainMileResDTO oldRes = trainMileMapper.getTrainMileDetail(resDTO.getRecId());
-                if (Objects.isNull(oldRes)) {
-                    throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
-                }
-                BigDecimal oldMile = oldRes.getTotalMiles();
-                BigDecimal newMile = new BigDecimal(resDTO.getTotalMiles().trim());
-                BigDecimal oldTraction = oldRes.getTotalTractionEnergy();
-                BigDecimal newTraction = new BigDecimal(resDTO.getTotalTractionEnergy().trim());
-                BigDecimal oldAuxiliary = oldRes.getTotalAuxiliaryEnergy();
-                BigDecimal newAuxiliary = new BigDecimal(resDTO.getTotalAuxiliaryEnergy().trim());
-                BigDecimal oldRegenrat = oldRes.getTotalRegenratedElectricity();
-                BigDecimal newRegenrat = new BigDecimal(resDTO.getTotalRegenratedElectricity().trim());
-                trainMileMapper.updateTrainMile(resDTO);
-                BigDecimal milesIncrement;
-                BigDecimal tractionIncrement;
-                BigDecimal auxiliaryIncrement;
-                BigDecimal regenratedIncrement;
-                if (oldMile != null && oldTraction != null && oldAuxiliary != null && oldRegenrat != null) {
-                    milesIncrement = newMile.subtract(oldMile);
-                    tractionIncrement = newTraction.subtract(oldTraction);
-                    auxiliaryIncrement = newAuxiliary.subtract(oldAuxiliary);
-                    regenratedIncrement = newRegenrat.subtract(oldRegenrat);
-                } else {
-                    milesIncrement = newMile;
-                    tractionIncrement = newTraction;
-                    auxiliaryIncrement = newAuxiliary;
-                    regenratedIncrement = newRegenrat;
-                }
-                TrainMileageReqDTO trainMileageReqDTO = new TrainMileageReqDTO();
-                BeanUtils.copyProperties(resDTO, trainMileageReqDTO);
-                trainMileageReqDTO.setMilesIncrement(milesIncrement);
-                trainMileageReqDTO.setTractionIncrement(tractionIncrement);
-                trainMileageReqDTO.setAuxiliaryIncrement(auxiliaryIncrement);
-                trainMileageReqDTO.setRegenratedIncrement(regenratedIncrement);
-                trainMileageReqDTO.setRecId(TokenUtil.getUuId());
-                trainMileageReqDTO.setEquipName(resDTO.getEquipName());
-                trainMileageReqDTO.setFillinUserId(TokenUtil.getCurrentPersonId());
-                trainMileageReqDTO.setFillinTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                trainMileageReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                trainMileageReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                trainMileageReqDTO.setRecStatus("0");
-                trainMileageReqDTO.setRemark(resDTO.getRemark());
-                trainMileMapper.insertTrainMileage(trainMileageReqDTO);
-            }
-
+    public void modifyTrainMile(TrainMileReqDTO trainMileReqDTO) {
+        TrainMileResDTO oldRes = trainMileMapper.getTrainMileDetail(trainMileReqDTO.getRecId());
+        if (Objects.isNull(oldRes)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
+        BigDecimal oldMile = oldRes.getTotalMiles();
+        BigDecimal newMile = new BigDecimal(trainMileReqDTO.getTotalMiles().trim());
+        BigDecimal oldTraction = oldRes.getTotalTractionEnergy();
+        BigDecimal newTraction = new BigDecimal(trainMileReqDTO.getTotalTractionEnergy().trim());
+        BigDecimal oldAuxiliary = oldRes.getTotalAuxiliaryEnergy();
+        BigDecimal newAuxiliary = new BigDecimal(trainMileReqDTO.getTotalAuxiliaryEnergy().trim());
+        BigDecimal oldRegenrat = oldRes.getTotalRegenratedElectricity();
+        BigDecimal newRegenrat = new BigDecimal(trainMileReqDTO.getTotalRegenratedElectricity().trim());
+        trainMileMapper.updateTrainMile(trainMileReqDTO);
+        BigDecimal milesIncrement;
+        BigDecimal tractionIncrement;
+        BigDecimal auxiliaryIncrement;
+        BigDecimal regenratedIncrement;
+        if (oldMile != null && oldTraction != null && oldAuxiliary != null && oldRegenrat != null) {
+            milesIncrement = newMile.subtract(oldMile);
+            tractionIncrement = newTraction.subtract(oldTraction);
+            auxiliaryIncrement = newAuxiliary.subtract(oldAuxiliary);
+            regenratedIncrement = newRegenrat.subtract(oldRegenrat);
+        } else {
+            milesIncrement = newMile;
+            tractionIncrement = newTraction;
+            auxiliaryIncrement = newAuxiliary;
+            regenratedIncrement = newRegenrat;
+        }
+        TrainMileageReqDTO trainMileageReqDTO = new TrainMileageReqDTO();
+        BeanUtils.copyProperties(trainMileReqDTO, trainMileageReqDTO);
+        trainMileageReqDTO.setTotalMiles(new BigDecimal(trainMileReqDTO.getTotalMiles()));
+        trainMileageReqDTO.setMilesIncrement(milesIncrement);
+        trainMileageReqDTO.setTractionIncrement(tractionIncrement);
+        trainMileageReqDTO.setAuxiliaryIncrement(auxiliaryIncrement);
+        trainMileageReqDTO.setRegenratedIncrement(regenratedIncrement);
+        trainMileageReqDTO.setRecId(TokenUtil.getUuId());
+        trainMileageReqDTO.setFillinUserId(TokenUtil.getCurrentPersonId());
+        trainMileageReqDTO.setFillinTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        trainMileageReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        trainMileageReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        trainMileageReqDTO.setRecStatus("0");
+        trainMileMapper.insertTrainMileage(trainMileageReqDTO);
     }
 
     @Override

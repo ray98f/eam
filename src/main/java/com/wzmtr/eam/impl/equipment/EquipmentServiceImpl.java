@@ -10,6 +10,7 @@ import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -317,7 +318,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    public Page<PartFaultReqDTO> listPartReplace(String equipCode, PageReqDTO pageReqDTO) {
+    public Page<PartReplaceResDTO> listPartReplace(String equipCode, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentMapper.listPartReplace(pageReqDTO.of(), equipCode);
     }

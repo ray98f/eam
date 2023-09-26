@@ -5,6 +5,7 @@ import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -119,8 +120,8 @@ public class EquipmentController {
 
     @GetMapping("/partReplace/list")
     @ApiOperation(value = "部件更换列表")
-    public PageResponse<PartFaultReqDTO> listPartReplace(@RequestParam @ApiParam("设备编码") String equipCode,
-                                                         @Valid PageReqDTO pageReqDTO) {
+    public PageResponse<PartReplaceResDTO> listPartReplace(@RequestParam @ApiParam("设备编码") String equipCode,
+                                                           @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(equipmentService.listPartReplace(equipCode, pageReqDTO));
     }
 }

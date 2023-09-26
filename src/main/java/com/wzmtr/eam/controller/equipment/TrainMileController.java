@@ -56,8 +56,8 @@ public class TrainMileController {
 
     @PostMapping("/mile/modify")
     @ApiOperation(value = "更新车辆行走里程台账")
-    public DataResponse<T> modifyTrainMile(@RequestBody List<TrainMileReqDTO> list) {
-        trainMileService.modifyTrainMile(list);
+    public DataResponse<T> modifyTrainMile(@RequestBody TrainMileReqDTO trainMileReqDTO) {
+        trainMileService.modifyTrainMile(trainMileReqDTO);
         return DataResponse.success();
     }
 

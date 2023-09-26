@@ -56,15 +56,15 @@ public class TrainMileageReqDTO {
 
     private String ext5;
 
-    private BigDecimal totalTractionEnergy = new BigDecimal("0");
+    private BigDecimal totalTractionEnergy;
 
-    private BigDecimal totalAuxiliaryEnergy = new BigDecimal("0");
+    private BigDecimal totalAuxiliaryEnergy;
 
-    private BigDecimal totalRegenratedElectricity = new BigDecimal("0");
+    private BigDecimal totalRegenratedElectricity;
 
-    private BigDecimal tractionIncrement = new BigDecimal("0");
+    private BigDecimal tractionIncrement;
 
-    private BigDecimal auxiliaryIncrement = new BigDecimal("0");
+    private BigDecimal auxiliaryIncrement;
 
-    private BigDecimal regenratedIncrement = new BigDecimal("0");
+    private BigDecimal regenratedIncrement;
 }

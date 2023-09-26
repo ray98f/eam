@@ -17,7 +17,7 @@ public interface TrainMileService {
 
     void exportTrainMile(String equipCode, String equipName, String originLineNo, HttpServletResponse response);
 
-    void modifyTrainMile(List<TrainMileReqDTO> list);
+    void modifyTrainMile(TrainMileReqDTO trainMileReqDTO);
 
     Page<TrainMileageResDTO> pageTrainMileage(String startTime, String endTime, String equipCode, PageReqDTO pageReqDTO);
 
