@@ -140,7 +140,8 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
 
     @Override
     public void exportWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "列车号", "车厢号", "镟修轮对车轴", "镟修详情", "开始日期", "完成日期", "负责人", "备注", "附件编号", "创建者", "创建时间");
+        List<String> listName = Arrays.asList("记录编号", "列车号", "车厢号", "镟修轮对车轴", "镟修轮对号", "轮高", "轮厚", "轮径",
+                "镟修详情", "开始日期", "完成日期", "负责人", "备注", "附件编号", "创建者", "创建时间");
         List<WheelsetLathingResDTO> wheelsetLathingResDTOList = wheelsetLathingMapper.listWheelsetLathing(trainNo, carriageNo, axleNo, wheelNo);
         List<Map<String, String>> list = new ArrayList<>();
         if (wheelsetLathingResDTOList != null && !wheelsetLathingResDTOList.isEmpty()) {
@@ -149,7 +150,11 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                 map.put("记录编号", resDTO.getRecId());
                 map.put("列车号", resDTO.getTrainNo());
                 map.put("车厢号", resDTO.getCarriageNo());
-                map.put("镟修轮对车轴", resDTO.getAxleNo());
+                map.put("镟修轮对车轴", "01".equals(resDTO.getAxleNo()) ? "一轴" : "02".equals(resDTO.getAxleNo()) ? "二轴" : "03".equals(resDTO.getAxleNo()) ? "三轴" : "四轴");
+                map.put("镟修轮对号", resDTO.getWheelNo());
+                map.put("轮高", resDTO.getWheelHeight());
+                map.put("轮厚", resDTO.getWheelThick());
+                map.put("轮径", resDTO.getWheelDiameter());
                 map.put("镟修详情", resDTO.getRepairDetail());
                 map.put("开始日期", resDTO.getStartDate());
                 map.put("完成日期", resDTO.getCompleteDate());

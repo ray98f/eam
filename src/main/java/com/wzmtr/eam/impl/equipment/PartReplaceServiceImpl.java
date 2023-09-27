@@ -162,7 +162,7 @@ public class PartReplaceServiceImpl implements PartReplaceService {
                 map.put("故障工单编号", resDTO.getFaultWorkNo());
                 map.put("设备编码", resDTO.getEquipCode());
                 map.put("设备名称", resDTO.getEquipName());
-                map.put("作业单位", resDTO.getOrgType());
+                map.put("作业单位", "10".equals(resDTO.getOrgType()) ? "维保" : "20".equals(resDTO.getOrgType()) ? "一级修工班" : "30".equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
                 map.put("作业人员", resDTO.getOperator());
                 map.put("更换配件代码", resDTO.getReplacementNo());
                 map.put("更换配件名称", resDTO.getReplacementName());

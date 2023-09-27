@@ -171,7 +171,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
                 map.put("技术通知单编号", resDTO.getRecNotifyNo());
                 map.put("项目内容", resDTO.getRecDetail());
                 map.put("完成时间", resDTO.getCompleteDate());
-                map.put("作业单位", resDTO.getOrgType());
+                map.put("作业单位", "10".equals(resDTO.getOrgType()) ? "维保" : "20".equals(resDTO.getOrgType()) ? "一级修工班" : "30".equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
                 map.put("备注", resDTO.getRemark());
                 map.put("附件编号", resDTO.getDocId());
                 map.put("创建者", resDTO.getRecCreator());
