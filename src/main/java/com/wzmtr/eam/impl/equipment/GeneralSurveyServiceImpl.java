@@ -123,6 +123,8 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
             }
             Sheet sheet = workbook.getSheetAt(0);
             List<GeneralSurveyReqDTO> temp = new ArrayList<>();
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             for (Row cells : sheet) {
                 if (cells.getRowNum() < 1) {
                     continue;
@@ -138,6 +140,9 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
                 reqDTO.setRecDetail(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
                 cells.getCell(4).setCellType(1);
                 reqDTO.setCompleteDate(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
+                if (!"".equals(reqDTO.getCompleteDate()) && !reqDTO.getCompleteDate().contains("-")) {
+                    reqDTO.setCompleteDate(sdf2.format(sdf1.parse(reqDTO.getCompleteDate())));
+                }
                 cells.getCell(5).setCellType(1);
                 reqDTO.setOrgType(cells.getCell(5) == null ? "" : "维保".equals(cells.getCell(5).getStringCellValue()) ? "10" : "20");
                 cells.getCell(6).setCellType(1);

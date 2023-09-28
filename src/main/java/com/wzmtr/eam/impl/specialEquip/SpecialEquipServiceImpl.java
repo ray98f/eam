@@ -55,8 +55,12 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
         List<SpecialEquipResDTO> list = page.getRecords();
         if (list != null && !list.isEmpty()) {
             for (SpecialEquipResDTO resDTO : list) {
-                resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
-                resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+                if (resDTO.getManageOrg() != null && !"".equals(resDTO.getManageOrg())) {
+                    resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
+                }
+                if (resDTO.getSecOrg() != null && !"".equals(resDTO.getSecOrg())) {
+                    resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+                }
             }
         }
         page.setRecords(list);
@@ -69,8 +73,12 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
-        resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+        if (resDTO.getManageOrg() != null && !"".equals(resDTO.getManageOrg())) {
+            resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
+        }
+        if (resDTO.getSecOrg() != null && !"".equals(resDTO.getSecOrg())) {
+            resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+        }
         return resDTO;
     }
 

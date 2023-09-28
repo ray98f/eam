@@ -198,7 +198,7 @@
             #{generalSurvey.orgType,jdbcType=VARCHAR},
             #{generalSurvey.remark,jdbcType=VARCHAR},
             #{generalSurvey.docId,jdbcType=VARCHAR},
-            #{generalSurvey。recordId,jdbcType=VARCHAR},
+            #{generalSurvey.recordId,jdbcType=VARCHAR},
             #{generalSurvey.recCreator,jdbcType=VARCHAR},
             #{generalSurvey.recCreateTime,jdbcType=VARCHAR},
             #{generalSurvey.recRevisor,jdbcType=VARCHAR},

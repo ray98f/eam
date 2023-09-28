@@ -87,7 +87,7 @@
     </delete>
 
     <delete id="cleanSupplier">
-        delete from SYS_OFFICE where PARENT_IDS like '%,W%' or PARENT_ID = 'W'
+        delete from SYS_OFFICE where PARENT_IDS like '%,W%' or PARENT_ID='W'
     </delete>
 
     <delete id="cleanExtra">
@@ -149,8 +149,8 @@
 
     <select id="downRecursion" resultType="java.lang.String">
         SELECT ID FROM SYS_OFFICE
-        START WITH ID = #{id}
-        CONNECT BY PRIOR ID = PARENT_ID
+        START WITH ID=#{id}
+        CONNECT BY PRIOR ID=PARENT_ID
     </select>
 
     <select id="selectCompanyIdByOfficeId" resultType="java.lang.String">
@@ -160,15 +160,15 @@
     <select id="getExtraOrgByAreaId" resultType="java.lang.String">
         select listagg(to_char(NAME), '-') WITHIN GROUP (ORDER BY AREA_ID) NAME
         from SYS_OFFICE WHERE ID!='root'
-        start with AREA_ID = #{areaId}
-        connect by prior PARENT_ID = ID
+        start with AREA_ID=#{areaId}
+        connect by prior PARENT_ID=ID
     </select>
 
     <select id="getOrgById" resultType="java.lang.String">
         select listagg(to_char(NAME), '-') WITHIN GROUP (ORDER BY ID) NAME
         from SYS_OFFICE WHERE ID!='root'
-        start with ID = #{id}
-        connect by prior PARENT_ID = ID
+        start with ID=#{id}
+        connect by prior PARENT_ID=ID
     </select>
 
     <select id="getByNames" resultType="com.wzmtr.eam.entity.SysOffice">
