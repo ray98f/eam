@@ -21,6 +21,8 @@ public interface SpecialEquipMapper {
 
     SpecialEquipResDTO getSpecialEquipDetail(String id);
 
+    void updateEquip(SpecialEquipReqDTO specialEquipReqDTO);
+
     void importSpecialEquip(List<SpecialEquipReqDTO> list);
 
     void modifySpecialEquip(SpecialEquipReqDTO specialEquipReqDTO);

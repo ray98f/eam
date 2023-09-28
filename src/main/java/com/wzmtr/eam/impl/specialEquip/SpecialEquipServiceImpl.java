@@ -5,11 +5,13 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.specialEquip.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.SpecialEquipHistoryResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.SpecialEquipResDTO;
+import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.specialEquip.SpecialEquipMapper;
 import com.wzmtr.eam.service.specialEquip.SpecialEquipService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
@@ -45,6 +47,9 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private DictionariesMapper dictionariesMapper;
 
     @Override
     public Page<SpecialEquipResDTO> pageSpecialEquip(String equipCode, String equipName, String specialEquipCode, String factNo,
@@ -150,7 +155,8 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                     continue;
                 }
                 reqDTO.setManageOrg(manageOrg.getId());
-                reqDTO.setManageOrg(secOrg.getId());
+                reqDTO.setSecOrg(secOrg.getId());
+                specialEquipMapper.updateEquip(reqDTO);
                 temp.add(reqDTO);
             }
             fileInputStream.close();
@@ -185,8 +191,13 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                 map.put("设备编码", resDTO.getEquipCode());
                 map.put("特种设备代码", resDTO.getSpecialEquipCode());
                 map.put("设备名称", resDTO.getEquipName());
-                map.put("特种设备类别", resDTO.getSpecialEquipType());
-                map.put("应用线别代码", resDTO.getUseLineNo());
+                List<Dictionaries> dicList = dictionariesMapper.list("dm.specialequiptype", resDTO.getSpecialEquipType() == null ? " " : resDTO.getSpecialEquipType(), null);
+                if (dicList != null && !dicList.isEmpty()) {
+                    map.put("特种设备类别", dicList.get(0).getItemCname());
+                } else {
+                    map.put("特种设备类别", "");
+                }
+                map.put("应用线别代码", "01".equals(resDTO.getUseLineNo()) ? "S1线" : "S2线");
                 map.put("位置一编号", resDTO.getPosition1Code());
                 map.put("位置一名称", resDTO.getPosition1Name());
                 map.put("特种设备检测日期", resDTO.getVerifyDate());
