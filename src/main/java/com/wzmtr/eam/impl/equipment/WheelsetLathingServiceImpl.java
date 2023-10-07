@@ -15,6 +15,7 @@ import com.wzmtr.eam.utils.FileUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -94,34 +95,34 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                     continue;
                 }
                 WheelsetLathingReqDTO reqDTO = new WheelsetLathingReqDTO();
-                cells.getCell(0).setCellType(1);
+                cells.getCell(0).setCellType(CellType.STRING);
                 reqDTO.setTrainNo(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
-                cells.getCell(1).setCellType(1);
+                cells.getCell(1).setCellType(CellType.STRING);
                 reqDTO.setCarriageNo(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
-                cells.getCell(2).setCellType(1);
+                cells.getCell(2).setCellType(CellType.STRING);
                 String axleNo = cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue();
                 if (!"".equals(axleNo)) {
                     reqDTO.setAxleNo("一轴".equals(axleNo) ? "01" : "二轴".equals(axleNo) ? "02" : "三轴".equals(axleNo) ? "03" : "04");
                 } else {
                     reqDTO.setAxleNo(axleNo);
                 }
-                cells.getCell(3).setCellType(1);
+                cells.getCell(3).setCellType(CellType.STRING);
                 reqDTO.setWheelNo(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
-                cells.getCell(4).setCellType(1);
+                cells.getCell(4).setCellType(CellType.STRING);
                 reqDTO.setWheelHeight(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
-                cells.getCell(5).setCellType(1);
+                cells.getCell(5).setCellType(CellType.STRING);
                 reqDTO.setWheelThick(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
-                cells.getCell(6).setCellType(1);
+                cells.getCell(6).setCellType(CellType.STRING);
                 reqDTO.setWheelDiameter(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
-                cells.getCell(7).setCellType(1);
+                cells.getCell(7).setCellType(CellType.STRING);
                 reqDTO.setRepairDetail(cells.getCell(7) == null ? "" : cells.getCell(7).getStringCellValue());
-                cells.getCell(8).setCellType(1);
+                cells.getCell(8).setCellType(CellType.STRING);
                 reqDTO.setStartDate(cells.getCell(8) == null ? "" : cells.getCell(8).getStringCellValue());
-                cells.getCell(9).setCellType(1);
+                cells.getCell(9).setCellType(CellType.STRING);
                 reqDTO.setCompleteDate(cells.getCell(9) == null ? "" : cells.getCell(9).getStringCellValue());
-                cells.getCell(10).setCellType(1);
+                cells.getCell(10).setCellType(CellType.STRING);
                 reqDTO.setRespPeople(cells.getCell(10) == null ? "" : cells.getCell(10).getStringCellValue());
-                cells.getCell(11).setCellType(1);
+                cells.getCell(11).setCellType(CellType.STRING);
                 reqDTO.setRemark(cells.getCell(11) == null ? "" : cells.getCell(11).getStringCellValue());
                 reqDTO.setRecId(TokenUtil.getUuId());
                 reqDTO.setDeleteFlag("0");

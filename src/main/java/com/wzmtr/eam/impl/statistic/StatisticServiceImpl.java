@@ -7,6 +7,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -61,6 +63,8 @@ public class StatisticServiceImpl implements StatisticService {
     private GeneralSurveyMapper generalSurveyMapper;
     @Autowired
     private RAMSMapper ramsMapper;
+    @Autowired
+    private FaultExportComponent exportComponent;
     private static final List<String> ignore = Arrays.asList("NOYF", "SC", "moduleName", "contractZB", "ZB");
 
     @Override
@@ -552,6 +556,11 @@ public class StatisticServiceImpl implements StatisticService {
             }
         }
         ExcelPortUtil.excelPort("轮对镟修记录", listName, list, null, response);
+    }
+
+    @Override
+    public void faultListExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response) {
+        exportComponent.exportByTemplate(reqDTO,response);
     }
 
     /**

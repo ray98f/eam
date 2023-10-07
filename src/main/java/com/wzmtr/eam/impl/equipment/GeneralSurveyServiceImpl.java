@@ -16,6 +16,7 @@ import com.wzmtr.eam.utils.FileUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -130,22 +131,22 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
                     continue;
                 }
                 GeneralSurveyReqDTO reqDTO = new GeneralSurveyReqDTO();
-                cells.getCell(0).setCellType(1);
+                cells.getCell(0).setCellType(CellType.STRING);
                 reqDTO.setTrainNo(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
-                cells.getCell(1).setCellType(1);
+                cells.getCell(1).setCellType(CellType.STRING);
                 reqDTO.setRecType(cells.getCell(1) == null ? "" : "普查".equals(cells.getCell(1).getStringCellValue()) ? "10" : "20");
-                cells.getCell(2).setCellType(1);
+                cells.getCell(2).setCellType(CellType.STRING);
                 reqDTO.setRecNotifyNo(cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue());
-                cells.getCell(3).setCellType(1);
+                cells.getCell(3).setCellType(CellType.STRING);
                 reqDTO.setRecDetail(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
-                cells.getCell(4).setCellType(1);
+                cells.getCell(4).setCellType(CellType.STRING);
                 reqDTO.setCompleteDate(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
                 if (!"".equals(reqDTO.getCompleteDate()) && !reqDTO.getCompleteDate().contains("-")) {
                     reqDTO.setCompleteDate(sdf2.format(sdf1.parse(reqDTO.getCompleteDate())));
                 }
-                cells.getCell(5).setCellType(1);
+                cells.getCell(5).setCellType(CellType.STRING);
                 reqDTO.setOrgType(cells.getCell(5) == null ? "" : "维保".equals(cells.getCell(5).getStringCellValue()) ? "10" : "20");
-                cells.getCell(6).setCellType(1);
+                cells.getCell(6).setCellType(CellType.STRING);
                 reqDTO.setRemark(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
                 reqDTO.setRecId(TokenUtil.getUuId());
                 reqDTO.setDeleteFlag("0");

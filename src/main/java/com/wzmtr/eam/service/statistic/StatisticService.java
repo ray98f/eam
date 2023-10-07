@@ -1,6 +1,8 @@
 package com.wzmtr.eam.service.statistic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -18,6 +20,7 @@ import java.util.List;
  * Date: 2023/8/18 10:48
  */
 public interface StatisticService {
+
 
     FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO);
 
@@ -109,4 +112,6 @@ public interface StatisticService {
     void queryER1Export(String startTime, String endTime, String equipName, HttpServletResponse response);
 
     void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response);
+
+    void faultListExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response);
 }
