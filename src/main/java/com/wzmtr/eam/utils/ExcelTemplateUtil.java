@@ -34,7 +34,7 @@ public class ExcelTemplateUtil {
         for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
             XSSFSheet sheetAt = workbook.getSheetAt(i);
             handleSheet(sheetAt, staticSource, dynamicSourceList);
-            _handleFormula(i, sheetAt);
+            // _handleFormula(i, sheetAt);
             sheetAt.setForceFormulaRecalculation(true);
         }
         // 使用evaluateFormulaCell对函数单元格进行强行更新计算
@@ -42,12 +42,12 @@ public class ExcelTemplateUtil {
         return workbook;
     }
 
-    private static void _handleFormula(int i, XSSFSheet sheetAt) {
-        // 为第一个sheet设置公式
-        if (i == 0) {
-            sheetAt.getRow(2).getCell(2).setCellFormula("C10-D10");
-        }
-    }
+    // private static void _handleFormula(int i, XSSFSheet sheetAt) {
+    //     // 为第一个sheet设置公式
+    //     if (i == 0) {
+    //         sheetAt.getRow(2).getCell(2).setCellFormula("C10-D10");
+    //     }
+    // }
 
     public static void save(Workbook workbook, String excelFilePath) throws IOException {
         FileOutputStream outputStream = new FileOutputStream(excelFilePath);
