@@ -42,10 +42,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     private BpmnService bpmnService;
 
     @Override
-    public Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
+    public Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineCode, String position1Code,
                                                    String majorCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return overhaulTplMapper.pageOverhaulTpl(pageReqDTO.of(), templateId, templateName, lineNo, position1Code, majorCode, systemCode, equipTypeCode, null);
+        return overhaulTplMapper.pageOverhaulTpl(pageReqDTO.of(), templateId, templateName, lineCode, position1Code, majorCode, systemCode, equipTypeCode, null);
     }
 
     @Override
@@ -234,6 +234,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
+        if (!pattern.matcher(overhaulTplDetailReqDTO.getMaxValue()).matches() || !pattern.matcher(overhaulTplDetailReqDTO.getMinValue()).matches()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限、上限必须填数字！");
+        }
         if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
         }
@@ -260,6 +263,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
+        }
+        if (!pattern.matcher(overhaulTplDetailReqDTO.getMaxValue()).matches() || !pattern.matcher(overhaulTplDetailReqDTO.getMinValue()).matches()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限、上限必须填数字！");
         }
         if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");

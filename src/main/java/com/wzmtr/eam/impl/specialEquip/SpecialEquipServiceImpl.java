@@ -101,7 +101,6 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                 throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
             }
             Sheet sheet = workbook.getSheetAt(0);
-            List<SpecialEquipReqDTO> temp = new ArrayList<>();
             for (Row cells : sheet) {
                 if (cells.getRowNum() < 1) {
                     continue;
@@ -157,12 +156,9 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                 reqDTO.setManageOrg(manageOrg.getId());
                 reqDTO.setSecOrg(secOrg.getId());
                 specialEquipMapper.updateEquip(reqDTO);
-                temp.add(reqDTO);
+                specialEquipMapper.modifySpecialEquip(reqDTO);
             }
             fileInputStream.close();
-            if (temp.size() > 0) {
-                specialEquipMapper.importSpecialEquip(temp);
-            }
         } catch (Exception e) {
             throw new CommonException(ErrorCode.IMPORT_ERROR);
         }

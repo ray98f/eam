@@ -43,8 +43,8 @@
         <if test="templateName!=null and templateName!=''">
             and TEMPLATE_NAME like '%' || #{templateName} || '%'
         </if>
-        <if test="lineNo!=null and lineNo!=''">
-            and LINE_NO=#{lineNo}
+        <if test="lineCode!=null and lineCode!=''">
+            and LINE_NO=#{lineCode}
         </if>
         <if test="position1Code!=null and position1Code!=''">
             and POSITION1_CODE=#{position1Code}
@@ -155,8 +155,8 @@
         #{templateName,jdbcType=VARCHAR},
         #{lineNo,jdbcType=VARCHAR},
         #{lineName,jdbcType=VARCHAR},
-        #{position1Name,jdbcType=VARCHAR},
-        #{position1Code,jdbcType=VARCHAR},
+        ' ',
+        ' ',
         #{subjectCode,jdbcType=VARCHAR},
         #{subjectName,jdbcType=VARCHAR},
         #{systemCode,jdbcType=VARCHAR},

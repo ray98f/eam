@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface OverhaulTplService {
 
-    Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
+    Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineCode, String position1Code,
                                             String majorCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO);
 
     OverhaulTplResDTO getOverhaulTplDetail(String id);

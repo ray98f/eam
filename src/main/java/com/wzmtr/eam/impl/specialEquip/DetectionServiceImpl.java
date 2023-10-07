@@ -176,11 +176,11 @@ public class DetectionServiceImpl implements DetectionService {
             for (DetectionResDTO resDTO : detectionResDTOList) {
                 Map<String, String> map = new HashMap<>();
                 map.put("检测单号", resDTO.getCheckNo());
-                map.put("特种设备分类", resDTO.getAssetKindCode());
+                map.put("特种设备分类", "10".equals(resDTO.getAssetKindCode()) ? "电梯" : "20".equals(resDTO.getAssetKindCode()) ? "起重机" : "30".equals(resDTO.getAssetKindCode()) ? "场（厂）内专用机动车辆" : "压力容器");
                 map.put("管理部门", organizationMapper.getOrgById(resDTO.getManageOrg()));
                 map.put("维管部门", organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
                 map.put("编制部门", organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
-                map.put("检测单状态", resDTO.getVerifyDept());
+                map.put("检测单状态", "10".equals(resDTO.getRecStatus()) ? "编辑" : "20".equals(resDTO.getRecStatus()) ? "审核中" : "审核通过");
                 map.put("备注", resDTO.getVerifyNote());
                 list.add(map);
             }

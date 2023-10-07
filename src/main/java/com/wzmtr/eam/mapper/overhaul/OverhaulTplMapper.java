@@ -19,7 +19,7 @@ import java.util.List;
 @Repository
 public interface OverhaulTplMapper {
 
-    Page<OverhaulTplResDTO> pageOverhaulTpl(Page<OverhaulTplResDTO> page, String templateId, String templateName, String lineNo, String position1Code,
+    Page<OverhaulTplResDTO> pageOverhaulTpl(Page<OverhaulTplResDTO> page, String templateId, String templateName, String lineCode, String position1Code,
                                             String majorCode, String systemCode, String equipTypeCode, String trialStatus);
 
     OverhaulTplResDTO getOverhaulTplDetail(String id);

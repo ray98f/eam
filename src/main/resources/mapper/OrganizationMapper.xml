@@ -157,11 +157,16 @@
         select PARENT_IDS from SYS_OFFICE where ID=#{officeId}
     </select>
 
+<!--    <select id="getExtraOrgByAreaId" resultType="java.lang.String">-->
+<!--        select listagg(to_char(NAME), '-') WITHIN GROUP (ORDER BY AREA_ID) NAME-->
+<!--        from SYS_OFFICE WHERE ID!='root'-->
+<!--        start with AREA_ID=#{areaId}-->
+<!--        connect by prior PARENT_ID=ID-->
+<!--    </select>-->
+
     <select id="getExtraOrgByAreaId" resultType="java.lang.String">
-        select listagg(to_char(NAME), '-') WITHIN GROUP (ORDER BY AREA_ID) NAME
-        from SYS_OFFICE WHERE ID!='root'
-        start with AREA_ID=#{areaId}
-        connect by prior PARENT_ID=ID
+        select NAMES
+        from SYS_OFFICE WHERE AREA_ID=#{areaId}
     </select>
 
     <select id="getOrgById" resultType="java.lang.String">

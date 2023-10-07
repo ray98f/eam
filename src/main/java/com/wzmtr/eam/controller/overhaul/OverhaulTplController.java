@@ -38,13 +38,13 @@ public class OverhaulTplController {
     @ApiOperation(value = "获取检修模板列表")
     public PageResponse<OverhaulTplResDTO> pageOverhaulTpl(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
                                                            @RequestParam(required = false) @ApiParam("模版名称") String templateName,
-                                                           @RequestParam(required = false) @ApiParam("线路编号") String lineNo,
+                                                           @RequestParam(required = false) @ApiParam("线路编号") String lineCode,
                                                            @RequestParam(required = false) @ApiParam("位置一") String position1Code,
                                                            @RequestParam(required = false) @ApiParam("专业编号") String majorCode,
                                                            @RequestParam(required = false) @ApiParam("系统编号") String systemCode,
                                                            @RequestParam(required = false) @ApiParam("设备分类编号") String equipTypeCode,
                                                            @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(overhaulTplService.pageOverhaulTpl(templateId, templateName, lineNo, position1Code, majorCode, systemCode, equipTypeCode, pageReqDTO));
+        return PageResponse.of(overhaulTplService.pageOverhaulTpl(templateId, templateName, lineCode, position1Code, majorCode, systemCode, equipTypeCode, pageReqDTO));
     }
 
     @GetMapping("/detail")

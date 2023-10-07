@@ -292,7 +292,7 @@
         </if>
         REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
         REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
-        WHERE REC_ID = #{recId}
+        WHERE REC_ID=#{recId}
     </update>
 
     <delete id="deleteDetectionPlanDetail">
@@ -416,9 +416,9 @@
         d.VERIFY_VALIDITY_DATE as "verifyValidityDate"
         FROM T_DETECTION_PLAN_DETAIL a
         LEFT JOIN T_DETECTION_DETAIL b ON a.REC_ID=b.TESTLIST_DETAIL_REC_ID
-        LEFT JOIN T_DETECTION e ON b.TEST_REC_ID = e.REC_ID
+        LEFT JOIN T_DETECTION e ON b.TEST_REC_ID=e.REC_ID
         LEFT JOIN T_EQUIPMENT d ON a.EQUIP_CODE=d.EQUIP_CODE
-        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
+        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE
         WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="instrmPlanNo!=null and instrmPlanNo!=''">
             and a.INSTRM_PLAN_NO=#{instrmPlanNo}
@@ -473,9 +473,9 @@
         d.VERIFY_VALIDITY_DATE as "verifyValidityDate"
         FROM T_DETECTION_PLAN_DETAIL a
         LEFT JOIN T_DETECTION_DETAIL b ON a.REC_ID=b.TESTLIST_DETAIL_REC_ID
-        LEFT JOIN T_DETECTION e ON b.TEST_REC_ID = e.REC_ID
+        LEFT JOIN T_DETECTION e ON b.TEST_REC_ID=e.REC_ID
         LEFT JOIN T_EQUIPMENT d ON a.EQUIP_CODE=d.EQUIP_CODE
-        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
+        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE
         WHERE 1=1 and a.REC_ID=#{id}
         order by a.EQUIP_CODE asc
     </select>
@@ -655,7 +655,7 @@
         </if>
         REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
         REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
-        WHERE REC_ID = #{recId}
+        WHERE REC_ID=#{recId}
     </update>
 
     <select id="listDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionPlanDetailResDTO">
@@ -705,9 +705,9 @@
         d.VERIFY_VALIDITY_DATE as "verifyValidityDate"
         FROM T_DETECTION_PLAN_DETAIL a
         LEFT JOIN T_DETECTION_DETAIL b ON a.REC_ID=b.TESTLIST_DETAIL_REC_ID
-        LEFT JOIN T_DETECTION e ON b.TEST_REC_ID = e.REC_ID
+        LEFT JOIN T_DETECTION e ON b.TEST_REC_ID=e.REC_ID
         LEFT JOIN T_EQUIPMENT d ON a.EQUIP_CODE=d.EQUIP_CODE
-        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
+        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE
         WHERE 1=1 and a.INSTRM_PLAN_NO=#{instrmPlanNo} and a.DELETE_FLAG='0'
         order by a.EQUIP_CODE asc
     </select>
