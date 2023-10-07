@@ -1,10 +1,12 @@
 package com.wzmtr.eam.utils;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.DynamicSource;
-import org.apache.poi.ss.usermodel.CellCopyPolicy;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -32,11 +34,19 @@ public class ExcelTemplateUtil {
         for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
             XSSFSheet sheetAt = workbook.getSheetAt(i);
             handleSheet(sheetAt, staticSource, dynamicSourceList);
+            _handleFormula(i, sheetAt);
             sheetAt.setForceFormulaRecalculation(true);
         }
         // 使用evaluateFormulaCell对函数单元格进行强行更新计算
         workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
         return workbook;
+    }
+
+    private static void _handleFormula(int i, XSSFSheet sheetAt) {
+        // 为第一个sheet设置公式
+        if (i == 0) {
+            sheetAt.getRow(2).getCell(2).setCellFormula("C10-D10");
+        }
     }
 
     public static void save(Workbook workbook, String excelFilePath) throws IOException {
@@ -81,7 +91,9 @@ public class ExcelTemplateUtil {
         for (int i = row.getFirstCellNum(); i < row.getLastCellNum(); i++) {
             XSSFCell cell = row.getCell(i);
             if (cell != null) {
-
+                if (cell.getCellType() == CellType.FORMULA){
+                    continue;
+                }
                 cell.setCellType(CellType.STRING);
                 String value = cell.getStringCellValue();
                 if (value != null) {
@@ -142,7 +154,13 @@ public class ExcelTemplateUtil {
         if (cell == null) {
             return;
         }
-        String cellValue = cell.getStringCellValue();
+        String cellValue ;
+        // 如单元格为公式，则保留该公式
+        if (cell.getCellType() == CellType.FORMULA) {
+            cellValue = cell.getCellFormula();
+        }else {
+            cellValue = cell.getStringCellValue();
+        }
         if (StringUtils.isEmpty(cellValue)) {
             return;
         }
