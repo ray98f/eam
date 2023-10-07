@@ -57,8 +57,8 @@ public class FaultExportComponent {
             // 遍历所有的sheet
             Workbook workbook = ExcelTemplateUtil.buildByTemplate(resourceAsStream, staticSource, dynamicSourceList);
             // 2.保存到本地
-            // ExcelTemplateUtil.save(workbook, "fault", response);
-            ExcelTemplateUtil.save(workbook, "C:/PoiExcel/" + System.currentTimeMillis() + "dynamic-poi-excel-template.xlsx");
+            ExcelTemplateUtil.save(workbook, "故障列表", response);
+            // ExcelTemplateUtil.save(workbook, "C:/PoiExcel/" + System.currentTimeMillis() + "dynamic-poi-excel-template.xlsx");
             log.info("导出成功!");
         } catch (Exception e) {
             log.error("导出失败", e);
