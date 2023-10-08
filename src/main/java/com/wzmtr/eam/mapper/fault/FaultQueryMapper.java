@@ -34,7 +34,6 @@ public interface FaultQueryMapper {
 
     FaultOrderDO queryOneFaultOrder(String faultNo, String faultWorkNo);
 
-
     List<FaultInfoDO> querFaultInfoList(Set<String> faultNo);
 
     List<FaultOrderDO> queryFaultOrderList(Set<String> faultNo,Set<String> faultWorkNo);

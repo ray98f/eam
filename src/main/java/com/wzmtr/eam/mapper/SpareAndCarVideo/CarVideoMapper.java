@@ -21,6 +21,8 @@ public interface CarVideoMapper {
 
     Page<CarVideoResDTO> query(Page<Object> of, String recId, String startApplyTime, String endApplyTime, String recStatus);
 
+    List<CarVideoResDTO> list(String recId, String startApplyTime, String endApplyTime, String recStatus);
+
     CarVideoResDTO detail(@Param("recId") String recId);
 
     void deleteByIds(@Param("ids") List<String> ids, @Param("userId") String userId, @Param("time") String time);

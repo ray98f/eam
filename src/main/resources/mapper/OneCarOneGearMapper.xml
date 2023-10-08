@@ -322,9 +322,11 @@
         d3.FAULT_ANALYSIS_NO as "faultAnalysisNo"  <!-- 故障分析编号 -->
         FROM T_FAULT_INFO d left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO left join T_FAULT_DETAIL d3 on d3.FAULT_NO=df.FAULT_NO
         WHERE 1=1 and d.MAJOR_CODE='07' and nvl(df.IS_FAULT,'10')='10'
-        and d.OBJECT_NAME = #{equipName}
         <if test="startTime!=null">
            and to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+        </if>
+        <if test="equipName!=null and equipName != ''">
+            and d.OBJECT_NAME = #{equipName}
         </if>
         <if test="endTime!=null">
             AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')

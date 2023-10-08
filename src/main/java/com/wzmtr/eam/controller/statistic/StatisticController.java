@@ -1,6 +1,6 @@
 package com.wzmtr.eam.controller.statistic;
 
-import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -47,14 +47,15 @@ public class StatisticController {
 
     @ApiOperation(value = "故障统计报表")
     @PostMapping("fault/list")
-    public DataResponse<List<FaultDetailResDTO>> list(@RequestBody FaultQueryReqDTO reqDTO) {
+    public DataResponse<List<FaultDetailResDTO>> list(@RequestBody FaultQueryDetailReqDTO reqDTO) {
         return DataResponse.of(faultQueryService.statisticList(reqDTO));
     }
-    // @ApiOperation(value = "故障统计报表导出")
-    // @GetMapping("fault/list/export")
-    // public void faultListExport(@RequestParam FaultQueryReqDTO reqDTO) {
-    //     return faultQueryService.faultListExport(reqDTO);
-    // }
+
+    @ApiOperation(value = "故障统计报表导出")
+    @PostMapping("fault/list/export")
+    public void faultListExport(@RequestBody FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
+        statisticService.faultListExport(reqDTO, response);
+    }
 
     @PostMapping("material/query")
     @ApiOperation(value = "物料统计")
@@ -79,6 +80,7 @@ public class StatisticController {
     public DataResponse<ReliabilityListResDTO> reliabilityQuery(@RequestBody FailreRateQueryReqDTO reqDTO) {
         return DataResponse.of(statisticService.reliabilityQuery(reqDTO));
     }
+
     /********************************************一车一档*************************************************************/
 
     @PostMapping("one/car/one/gear/query")
@@ -159,7 +161,7 @@ public class StatisticController {
     @GetMapping("one/car/one/gear/job/queryFMHistoryExport")
     @ApiOperation(value = "一车一档故障列表导出")
     public void queryFMHistoryExport(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) {
-        statisticService.queryFMHistoryExport(startTime,endTime,equipName,response);
+        statisticService.queryFMHistoryExport(startTime, endTime, equipName, response);
     }
 
     @PostMapping("one/car/one/gear/job/pageGearboxChangeOil")
@@ -183,7 +185,7 @@ public class StatisticController {
     @GetMapping("one/car/one/gear/job/pageWheelsetLathingExport")
     @ApiOperation(value = "一车一档轮对镟修记录导出")
     public void pageWheelsetLathingExport(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) {
-        statisticService.pageWheelsetLathingExport(startTime,endTime,equipName,response);
+        statisticService.pageWheelsetLathingExport(startTime, endTime, equipName, response);
     }
 
     @PostMapping("one/car/one/gear/job/pageGeneralSurvey")
@@ -214,7 +216,7 @@ public class StatisticController {
     @GetMapping("one/car/one/gear/job/queryER1Export")
     @ApiOperation(value = "一车一档(1级修)导出")
     public void queryER1Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) {
-        statisticService.queryER1Export(startTime,endTime,equipName,response);
+        statisticService.queryER1Export(startTime, endTime, equipName, response);
     }
 
     /*********************************************      RAMS      *****************************************************/

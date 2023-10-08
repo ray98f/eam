@@ -68,7 +68,10 @@ public class CarVideoController {
     @ApiOperation(value = "导出")
     @GetMapping("/export")
     public void export(@RequestParam(required = false) @ApiParam("检查问题单号") String recId,
+                       @RequestParam(required = false) @ApiParam("申请时间开始") String startApplyTime,
+                       @RequestParam(required = false) @ApiParam("申请时间结束") String endApplyTime,
+                       @RequestParam(required = false) @ApiParam("状态") String recStatus,
                        HttpServletResponse response) {
-        carVideoService.export(recId, response);
+        carVideoService.export(recId,startApplyTime,endApplyTime,recStatus, response);
     }
 }

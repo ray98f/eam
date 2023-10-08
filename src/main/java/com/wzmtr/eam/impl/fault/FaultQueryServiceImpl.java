@@ -42,7 +42,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -107,8 +106,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         return list;
     }
 
+
     @Override
-    public List<FaultDetailResDTO> statisticList(FaultQueryReqDTO reqDTO) {
+    public List<FaultDetailResDTO> statisticList(FaultQueryDetailReqDTO reqDTO) {
         return faultQueryMapper.list(reqDTO);
     }
 
@@ -207,7 +207,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 list.add(map);
             }
         }
-        ExcelPortUtil.excelPort("xxxx", listName, list, null, response);
+        ExcelPortUtil.excelPort("故障信息", listName, list, null, response);
     }
 
     @Override
@@ -864,7 +864,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 _close(list);
                 break;
             case ZUO_FEI:
-                _cancel(list,currentUser,current);
+                _cancel(list, currentUser, current);
                 break;
             default:
                 break;
@@ -872,11 +872,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     }
 
-    private void _cancel(List<FaultDetailResDTO> list,String currentUser,String current) {
-        list.forEach(a->{
+    private void _cancel(List<FaultDetailResDTO> list, String currentUser, String current) {
+        list.forEach(a -> {
             String faultNo = a.getFaultNo();
             String faultWorkNo = a.getFaultWorkNo();
-            //更新order表
+            // 更新order表
             FaultOrderDO faultOrderDO = new FaultOrderDO();
             faultOrderDO.setFaultWorkNo(faultWorkNo);
             faultOrderDO.setFaultNo(faultNo);
@@ -884,13 +884,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultOrderDO.setRecRevisor(currentUser);
             faultOrderDO.setRecReviseTime(current);
             faultReportMapper.updateFaultOrder(faultOrderDO);
-            //更新info表
+            // 更新info表
             FaultInfoDO faultInfoDO = new FaultInfoDO();
             faultInfoDO.setRecRevisor(currentUser);
             faultInfoDO.setFaultNo(faultNo);
             faultInfoDO.setRecReviseTime(current);
             faultReportMapper.updateFaultInfo(faultInfoDO);
-            //取消代办
+            // 取消代办
             overTodoService.cancelTODO(faultOrderDO.getRecId());
         });
     }
