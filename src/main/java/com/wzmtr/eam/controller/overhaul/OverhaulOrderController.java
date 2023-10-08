@@ -5,9 +5,12 @@ import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulUpStateReqDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,10 +47,13 @@ public class OverhaulOrderController {
         return DataResponse.of(overhaulOrderService.getOverhaulOrderDetail(id));
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出检修工单")
-    public void exportOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, HttpServletResponse response) {
-        overhaulOrderService.exportOverhaulOrder(overhaulOrderListReqDTO, response);
+    public void exportOverhaulOrder(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) {
+        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        overhaulOrderService.exportOverhaulOrder(baseIdsEntity.getIds(), response);
     }
 
     @PostMapping("/dispatchWorkers")

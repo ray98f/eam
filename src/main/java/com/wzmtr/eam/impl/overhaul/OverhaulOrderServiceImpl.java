@@ -79,11 +79,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void exportOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, HttpServletResponse response) {
+    public void exportOverhaulOrder(List<String> ids, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "工单编号", "计划名称", "计划编号", "对象名称", "工单状态", "检修情况",
                 "异常数量", "工器具", "计划开始时间", "计划完成时间", "作业工班", "作业人员", "实际开始时间", "实际完成时间",
                 "线路", "位置", "专业", "系统", "派工人", "确认人", "施工计划号", "最后修改人", "备注");
-        List<OverhaulOrderResDTO> overhaulOrderResDTOList = overhaulOrderMapper.listOrder(overhaulOrderListReqDTO);
+        List<OverhaulOrderResDTO> overhaulOrderResDTOList = overhaulOrderMapper.getOrderByIds(ids, "1");
         List<Map<String, String>> list = new ArrayList<>();
         if (overhaulOrderResDTOList != null && !overhaulOrderResDTOList.isEmpty()) {
             for (OverhaulOrderResDTO resDTO : overhaulOrderResDTOList) {

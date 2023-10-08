@@ -538,7 +538,7 @@
         REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
         ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
         REMARK	as "remark",  <!-- 说明 -->
-        <if test="objectFlag!=null and robjectFlag!=''">
+        <if test="objectFlag!=null and objectFlag!=''">
             <!-- RELATION_CODE	as "relationCode",  关联编码 -->
             (CASE WHEN TRIM(RELATION_CODE) IS NULL THEN '不关联' ELSE '关联' END) as "deleteFlag",  <!-- 关联编码 -->
             (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE = T_OVERHAUL_PLAN.PLAN_CODE) as "ext1", <!-- 设备对象拼接 -->

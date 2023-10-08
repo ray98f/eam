@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
+import java.util.List;
 
 public interface OverhaulWeekPlanService {
 
@@ -28,7 +29,7 @@ public interface OverhaulWeekPlanService {
 
     void submitOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception;
 
-    void exportOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO, HttpServletResponse response);
+    void exportOverhaulWeekPlan(List<String> ids, HttpServletResponse response);
 
     Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO);
 

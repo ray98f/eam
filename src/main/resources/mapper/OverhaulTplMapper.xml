@@ -49,8 +49,8 @@
         <if test="position1Code!=null and position1Code!=''">
             and POSITION1_CODE=#{position1Code}
         </if>
-        <if test="majorCode!=null and majorCode!=''">
-            and SUBJECT_CODE=#{majorCode}
+        <if test="subjectCode!=null and subjectCode!=''">
+            and SUBJECT_CODE=#{subjectCode}
         </if>
         <if test="systemCode!=null and systemCode!=''">
             and SYSTEM_CODE=#{systemCode}

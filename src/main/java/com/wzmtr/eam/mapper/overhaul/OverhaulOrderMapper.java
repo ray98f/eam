@@ -38,6 +38,8 @@ public interface OverhaulOrderMapper {
 
     List<OverhaulOrderResDTO> listOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO);
 
+    List<OverhaulOrderResDTO> getOrderByIds(List<String> list, String objectFlag);
+
     List<String> getSubjectByUserId(String userId);
 
     List<String> queryObjMiles(String planCode);

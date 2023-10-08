@@ -8,6 +8,8 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.overhaul.OverhaulWeekPlanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -81,11 +83,13 @@ public class ZTTOverhaulWeekPlanController {
         return DataResponse.success();
     }
 
-    @GetMapping("/weekPlan/export")
+    @PostMapping("/weekPlan/export")
     @ApiOperation(value = "导出检修周计划（中铁通）")
-    public void exportOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO,
-                                       HttpServletResponse response) {
-        overhaulWeekPlanService.exportOverhaulWeekPlan(overhaulWeekPlanListReqDTO, response);
+    public void exportOverhaulWeekPlan(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) {
+        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        overhaulWeekPlanService.exportOverhaulWeekPlan(baseIdsEntity.getIds(), response);
     }
 
     @GetMapping("/plan/page")

@@ -56,11 +56,11 @@
         REMARK	as "remark",  <!-- 说明 -->
         LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
         <if test="req.objectFlag!=null and req.objectFlag!=''">
-            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
-            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
-            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
             <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
-            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
         </if>
         <if test="req.objectFlag==null or req.objectFlag==''">
             REC_DELETOR 	as "recDeletor",
@@ -181,11 +181,11 @@
         REMARK	as "remark",  <!-- 说明 -->
         LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
         <if test="objectFlag!=null and objectFlag!=''">
-            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
-            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
-            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
             <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
-            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
         </if>
         <if test="objectFlag==null or objectFlag==''">
             REC_DELETOR 	as "recDeletor",
@@ -538,11 +538,11 @@
         REMARK	as "remark",  <!-- 说明 -->
         LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
         <if test="objectFlag!=null and objectFlag!=''">
-            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
-            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
-            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
             <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
-            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
         </if>
         <if test="objectFlag==null or objectFlag==''">
             REC_DELETOR 	as "recDeletor",
@@ -780,11 +780,11 @@
         REMARK	as "remark",  <!-- 说明 -->
         LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
         <if test="req.objectFlag!=null and req.objectFlag!=''">
-            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
-            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
-            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
             <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
-            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
         </if>
         <if test="req.objectFlag==null or req.objectFlag==''">
             REC_DELETOR 	as "recDeletor",
@@ -795,7 +795,7 @@
         EXT2	as "ext2",  <!-- 扩展字段2 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5", <!-- 扩展字段5 -->
-        (select t.WORKPN from  WBPLAT.TDMER62 t where t.WORKNO= ORDER_CODE) as "workPn",
+        (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
         (
         case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
         when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
@@ -907,11 +907,11 @@
         REMARK	as "remark",  <!-- 说明 -->
         LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
         <if test="objectFlag!=null and objectFlag!=''">
-            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
-            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
-            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
             <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
-            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
         </if>
         <if test="objectFlag==null or objectFlag==''">
             REC_DELETOR 	as "recDeletor",
@@ -922,7 +922,7 @@
         EXT2	as "ext2",  <!-- 扩展字段2 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5", <!-- 扩展字段5 -->
-        (select t.WORKPN from  WBPLAT.TDMER62 t where t.WORKNO= ORDER_CODE) as "workPn",
+        (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
         (
         case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
         when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
@@ -988,11 +988,11 @@
         REMARK	as "remark",  <!-- 说明 -->
         LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
         <if test="objectFlag!=null and objectFlag!=''">
-            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
-            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE = T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
-            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
             <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
-            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE = T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
         </if>
         <if test="objectFlag==null or objectFlag==''">
             REC_DELETOR 	as "recDeletor",
@@ -1003,7 +1003,7 @@
         EXT2	as "ext2",  <!-- 扩展字段2 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5", <!-- 扩展字段5 -->
-        (select t.WORKPN from  WBPLAT.TDMER62 t where t.WORKNO= ORDER_CODE) as "workPn",
+        (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
         (
         case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
         when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
@@ -1060,12 +1060,98 @@
         ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
     </select>
 
+    <select id="getOrderByIds" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        (select tog.ORG_NAME  from RPLAT60.T_WW_ORG tog WHERE  tog.ORG_CODE=WORKER_GROUP_CODE) as "workerOrgName",
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        SEND_PERSON_ID	as "sendPersonId",  <!-- 派工人工号 -->
+        SEND_PERSON_NAME	as "sendPersonName",  <!-- 派工人姓名 -->
+        SEND_TIME	as "sendTime",  <!-- 派工时间 -->
+        ACK_TIME	as "ackTime",  <!-- 完工时间 -->
+        ACK_PERSON_ID	as "ackPersonId",  <!-- 确认人工号 -->
+        ACK_PERSON_NAME	as "ackPersonName",  <!-- 确认人姓名 -->
+        CONFIR_TIME	as "confirTime",  <!-- 确认时间 -->
+        PLAN_START_TIME	as "planStartTime",  <!-- 计划开始时间 -->
+        PLAN_END_TIME	as "planEndTime",  <!-- 计划完成时间 -->
+        REAL_START_TIME	as "realStartTime",  <!-- 实际开始时间 -->
+        REAL_END_TIME	as "realEndTime",  <!-- 实际完成时间 -->
+        WORK_STATUS	as "workStatus",  <!-- 工单当前状态 -->
+        WORK_FINISH_STATUS	as "workFinishStatus",  <!-- 检修结果 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        WORK_DETAIL	as "workDetail",  <!-- 检修描述 -->
+        STARTWORK_TIME	as "startworkTime",  <!-- 开工时间 -->
+        CANCEL_PERSON_ID	as "cancelPersonId",  <!-- 作废人工号 -->
+        CANCEL_PERSON_NAME	as "cancelPersonName",  <!-- 作废人姓名 -->
+        CANCEL_TIME	as "cancelTime",  <!-- 作废时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
+        <if test="objectFlag!=null and objectFlag!=''">
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+        </if>
+        <if test="objectFlag==null or objectFlag==''">
+            REC_DELETOR 	as "recDeletor",
+            EXT1	as "ext1",  <!-- 扩展字段1 -->
+            EXT3	as "ext3",  <!-- 扩展字段3 -->
+        </if>
+        <!-- EXT1	as "ext1",  扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5", <!-- 扩展字段5 -->
+        (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
+        (
+        case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
+        and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
+        else 9
+        end
+        ) as sort
+        FROM T_OVERHAUL_ORDER WHERE DELETE_FLAG='0' and REC_ID IN (
+        <foreach collection="list" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
+    </select>
+
     <select id="getSubjectByUserId" resultType="java.lang.String">
         SELECT NODE_CODE as "nodeCode"
         FROM T_EQUIPMENT_CATEGORY where 1=1 AND NODE_CODE IN (
         SELECT MAJOR_CODE as "majorCode"
-        FROM SYS_ORG_MAJOR where 1=1 AND REC_STATUS = '10' AND
-        ORG_CODE = (SELECT CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END
+        FROM SYS_ORG_MAJOR where 1=1 AND REC_STATUS='10' AND
+        ORG_CODE=(SELECT CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END
         FROM SYS_OFFICE WHERE ID=(SELECT OFFICE_ID from SYS_USER where ID=#{userId} AND ROWNUM=1)
         AND ROWNUM=1))
     </select>
@@ -1073,9 +1159,9 @@
     <select id="queryObjMiles" resultType="java.lang.String">
         SELECT TOTAL_MILES as "totalMiles"
         FROM T_EQUIPMENT
-        WHERE EQUIP_CODE = (SELECT OBJECT_CODE
+        WHERE EQUIP_CODE=(SELECT OBJECT_CODE
         FROM T_OVERHAUL_OBJECT
-        WHERE PLAN_CODE = #{planCode})
+        WHERE PLAN_CODE=#{planCode})
     </select>
 
     <select id="pageOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
@@ -1137,7 +1223,7 @@
         EXT3	as "ext3",  <!-- 扩展字段3 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
-        FROM T_OVERHAUL_ORDER_DETAIL WHERE 1=1 AND ORDER_CODE = #{orderCode}
+        FROM T_OVERHAUL_ORDER_DETAIL WHERE 1=1 AND ORDER_CODE=#{orderCode}
         <if test="planCode!=null and planCode!=''">
             and PLAN_CODE=#{planCode}
         </if>
@@ -1271,7 +1357,7 @@
         EXT3	as "ext3",  <!-- 扩展字段3 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
-        FROM T_OVERHAUL_ORDER_DETAIL WHERE 1=1 AND ORDER_CODE = #{orderCode}
+        FROM T_OVERHAUL_ORDER_DETAIL WHERE 1=1 AND ORDER_CODE=#{orderCode}
         <if test="planCode!=null and planCode!=''">
             and PLAN_CODE=#{planCode}
         </if>
@@ -1286,9 +1372,9 @@
 
     <update id="updateone">
         UPDATE T_OVERHAUL_STATE SET
-        FAULT_CODE	= #{faultCode},   <!-- 故障单号 -->
-        FAULT_STATUS	= #{faultStatus} <!-- 故障单号状态 -->
-        WHERE REC_ID = #{recId}
+        FAULT_CODE=#{faultCode},   <!-- 故障单号 -->
+        FAULT_STATUS=#{faultStatus} <!-- 故障单号状态 -->
+        WHERE REC_ID=#{recId}
     </update>
 
 </mapper>

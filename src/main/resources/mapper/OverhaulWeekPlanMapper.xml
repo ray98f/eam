@@ -303,4 +303,14 @@
         ORDER BY WEEK_PLAN_CODE desc
     </select>
 
+    <select id="getOverhaulWeekPlanByIds" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulWeekPlanResDTO">
+        <include refid="weekPlan-cols"/>
+        FROM T_WEEKLY_PLAN WHERE DELETE_FLAG='0' and REC_ID IN (
+        <foreach collection="list" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY WEEK_PLAN_CODE desc
+    </select>
+
 </mapper>

@@ -43,9 +43,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineCode, String position1Code,
-                                                   String majorCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO) {
+                                                   String subjectCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return overhaulTplMapper.pageOverhaulTpl(pageReqDTO.of(), templateId, templateName, lineCode, position1Code, majorCode, systemCode, equipTypeCode, null);
+        return overhaulTplMapper.pageOverhaulTpl(pageReqDTO.of(), templateId, templateName, lineCode, position1Code, subjectCode, systemCode, equipTypeCode, null);
     }
 
     @Override
@@ -202,7 +202,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 map.put("专业", resDTO.getSubjectName());
                 map.put("系统", resDTO.getSystemName());
                 map.put("设备类别", resDTO.getEquipTypeName());
-                map.put("审批状态", resDTO.getTrialStatus());
+                map.put("审批状态", "10".equals(resDTO.getTrialStatus()) ? "编辑" : "20".equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
                 list.add(map);
             }
         }

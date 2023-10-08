@@ -35,4 +35,6 @@ public interface OverhaulWeekPlanMapper {
     void deleteOverhaulObject(String weekPlanCode, String userId, String time);
 
     List<OverhaulWeekPlanResDTO> listOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO);
+
+    List<OverhaulWeekPlanResDTO> getOverhaulWeekPlanByIds(List<String> list);
 }

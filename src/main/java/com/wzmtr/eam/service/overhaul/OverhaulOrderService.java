@@ -10,6 +10,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
+import java.util.List;
 
 public interface OverhaulOrderService {
 
@@ -17,7 +18,7 @@ public interface OverhaulOrderService {
 
     OverhaulOrderResDTO getOverhaulOrderDetail(String id);
 
-    void exportOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, HttpServletResponse response);
+    void exportOverhaulOrder(List<String> ids, HttpServletResponse response);
 
     void dispatchWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 

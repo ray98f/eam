@@ -93,7 +93,7 @@ public class EquipmentController {
     public void exportEquipment(@RequestBody BaseIdsEntity baseIdsEntity,
                                 HttpServletResponse response) {
         if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
-            throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
         }
         equipmentService.exportEquipment(baseIdsEntity.getIds(), response);
     }

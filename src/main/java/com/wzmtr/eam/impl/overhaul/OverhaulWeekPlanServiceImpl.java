@@ -252,9 +252,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     }
 
     @Override
-    public void exportOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO, HttpServletResponse response) {
+    public void exportOverhaulWeekPlan(List<String> ids, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "周计划编号", "周计划名称", "周末", "线路", "专业", "作业工班", "工班长", "审批状态");
-        List<OverhaulWeekPlanResDTO> overhaulWeekPlan = overhaulWeekPlanMapper.listOverhaulWeekPlan(overhaulWeekPlanListReqDTO);
+        List<OverhaulWeekPlanResDTO> overhaulWeekPlan = overhaulWeekPlanMapper.getOverhaulWeekPlanByIds(ids);
         List<Map<String, String>> list = new ArrayList<>();
         if (overhaulWeekPlan != null && !overhaulWeekPlan.isEmpty()) {
             for (OverhaulWeekPlanResDTO resDTO : overhaulWeekPlan) {
