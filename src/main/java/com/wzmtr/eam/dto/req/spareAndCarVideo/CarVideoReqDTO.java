@@ -21,6 +21,4 @@ public class CarVideoReqDTO extends PageReqDTO {
     private String endApplyTime;
     @ApiModelProperty(value = "状态")
     private String recStatus;
-
-
 }

@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoOperateReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoReqDTO;
 import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
+import com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -18,6 +19,7 @@ import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.carVideoCall.CarVideoService;
 import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Author: Li.Wang
@@ -186,7 +187,25 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     }
 
     @Override
-    public void export(String recId, HttpServletResponse response) {
-        // TODO
+    public void export(String recId, String startApplyTime, String endApplyTime, String recStatus, HttpServletResponse response) {
+        // 2级修180天
+        List<CarVideoResDTO> resList = carVideoMapper.list(recId, startApplyTime, endApplyTime, recStatus);
+        List<String> listName = Arrays.asList("调阅记录号", "车组号","调阅性质","申请部门","视频起始时间","视频截止时间","申请调阅原因","状态");
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(resList)) {
+            for (CarVideoResDTO res : resList) {
+                Map<String, String> map = new HashMap<>();
+                map.put("调阅记录号", res.getApplyNo());
+                map.put("车组号", res.getTrainNo());
+                map.put("调阅性质", res.getApplyType());
+                map.put("申请部门", res.getApplyDeptName());
+                map.put("视频起始时间", res.getVideoStartTime());
+                map.put("视频截止时间", res.getVideoEndTime());
+                map.put("申请调阅原因", res.getApplyReason());
+                map.put("状态", res.getRecStatus());
+            }
+        }
+        ExcelPortUtil.excelPort("检调视频调阅", listName, list, null, response);
     }
+
 }
