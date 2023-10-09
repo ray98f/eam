@@ -23,6 +23,7 @@ import com.wzmtr.eam.utils.__BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -135,6 +136,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(FaultCancelReqDTO reqDTO) {
         // 已提报故障单撤销 逻辑删 涉及faultinfo和faultorder两张表
         faultReportMapper.cancelOrder(reqDTO);
@@ -142,6 +144,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void cancel(FaultCancelReqDTO reqDTO) {
         // faultWorkNo的recId
         String faultWorkNo = reqDTO.getFaultWorkNo();
