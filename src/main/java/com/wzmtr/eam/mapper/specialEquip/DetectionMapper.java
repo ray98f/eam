@@ -29,7 +29,7 @@ public interface DetectionMapper {
 
     void modifyDetection(DetectionReqDTO detectionReqDTO);
 
-    void deleteDetectionDetail(String testRecId, String userId, String time);
+    void deleteDetectionDetail(String testRecId, String recId, String userId, String time);
 
     void deleteDetection(String id, String userId, String time);
 

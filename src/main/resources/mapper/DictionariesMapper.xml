@@ -40,6 +40,7 @@
         LEFT JOIN SYS_USER u ON f.REC_CREATOR=u.ID
         WHERE STATUS='1' and f.ITEM_CODE=#{itemCode}
     </select>
+
     <select id="queryOneByItemCodeAndCodesetCode" resultType="com.wzmtr.eam.entity.Dictionaries">
         SELECT f.CODESET_CODE,
                f.ITEM_CODE,
@@ -49,10 +50,11 @@
                f.SORT_ID,
                f.PROJECT_NAME
         FROM SYS_DICT f
-        WHERE STATUS = '1'
-          and f.CODESET_CODE = #{codesetCode}
-          and f.ITEM_CODE = #{itemCode}
+        WHERE STATUS='1'
+        and f.CODESET_CODE=#{codesetCode}
+        and f.ITEM_CODE=#{itemCode}
     </select>
+
     <insert id="add">
         INSERT INTO SYS_DICT (CODESET_CODE, ITEM_CODE, ITEM_CNAME, STATUS,
         <if test="itemEname!=null and itemEname!=''">

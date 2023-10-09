@@ -8,10 +8,13 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public interface OrgMajorService {
 
     Page<OrgMajorResDTO> listOrgMajor(String orgCode, String majorCode, PageReqDTO pageReqDTO);
+
+    List<OrgMajorResDTO> listUseOrgMajor(String majorCode);
 
     OrgMajorResDTO getOrgMajorDetail(String id);
 

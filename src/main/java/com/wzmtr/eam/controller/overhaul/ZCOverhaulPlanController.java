@@ -107,8 +107,7 @@ public class ZCOverhaulPlanController {
 
     @GetMapping("/plan/export")
     @ApiOperation(value = "导出检修计划（中车）")
-    public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO,
-                                   HttpServletResponse response) {
+    public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) {
         overhaulPlanService.exportOverhaulPlan(overhaulPlanListReqDTO, response);
     }
 

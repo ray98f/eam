@@ -126,7 +126,7 @@ public class DetectionServiceImpl implements DetectionService {
                 if (!"10".equals(resDTO.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                detectionMapper.deleteDetectionDetail(resDTO.getRecId(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                detectionMapper.deleteDetectionDetail(resDTO.getRecId(), null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 detectionMapper.deleteDetection(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
@@ -264,7 +264,7 @@ public class DetectionServiceImpl implements DetectionService {
                 if (!"10".equals(resDTO.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                detectionMapper.deleteDetectionDetail(resDTO.getRecId(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                detectionMapper.deleteDetectionDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

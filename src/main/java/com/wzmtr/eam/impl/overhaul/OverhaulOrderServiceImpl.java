@@ -9,11 +9,13 @@ import com.wzmtr.eam.dto.req.fault.FaultOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
+import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
+import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulItemMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
@@ -67,6 +69,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Autowired
     private OverTodoService overTodoService;
 
+    @Autowired
+    private DictionariesMapper dictionariesMapper;
+
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
@@ -93,7 +98,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 map.put("计划名称", resDTO.getPlanName());
                 map.put("计划编号", resDTO.getPlanCode());
                 map.put("对象名称", resDTO.getExt1());
-                map.put("工单状态", resDTO.getWorkStatus());
+                map.put("工单状态", dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.er.recStatus", resDTO.getWorkStatus()).getItemEname());
                 map.put("检修情况", resDTO.getWorkFinishStatus());
                 map.put("异常数量", resDTO.getAbnormalNumber());
                 map.put("工器具", resDTO.getRecDeletor());

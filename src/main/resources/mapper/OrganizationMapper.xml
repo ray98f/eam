@@ -29,7 +29,7 @@
         order by SORT
     </select>
 
-    <select id="listMember" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+    <select id="pageMember" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
         select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
         listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
         su.EMAIL, su.ROOM from SYS_USER su
@@ -52,7 +52,11 @@
         su.ORDER_NUM ASC
     </select>
 
-    <select id="listMembers" parameterType="string" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+    <select id="getIdByAreaId" resultType="java.lang.String">
+        select ID from SYS_OFFICE where AREA_ID=#{id} and DEL_FLAG='0'
+    </select>
+
+    <select id="listMember" parameterType="string" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
         select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
         listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
         su.EMAIL, su.ROOM from SYS_USER su
@@ -99,32 +103,34 @@
         (ID,
         <if test="parentId!=null and parentId!=''">PARENT_ID,</if>
         <if test="parentIds!=null and parentIds!=''">PARENT_IDS,</if>
-        <if test="name !=null and name!=''">NAME,</if>
-        <if test="type !=null and type!=''">TYPE,</if>
-        <if test="grade !=null and grade!=''">GRADE,</if>
-        <if test="sort !=null ">SORT,</if>
-        <if test="remarks !=null and remarks!=''">REMARKS,</if>
-        <if test="useable !=null and useable!=''">USEABLE,</if>
-        <if test="areaId !=null and areaId!=''">AREA_ID,</if>
-        <if test="createBy !=null and createBy!=''">CREATE_BY,</if>
+        <if test="name!=null and name!=''">NAME,</if>
+        <if test="type!=null and type!=''">TYPE,</if>
+        <if test="grade!=null and grade!=''">GRADE,</if>
+        <if test="sort!=null ">SORT,</if>
+        <if test="remarks!=null and remarks!=''">REMARKS,</if>
+        <if test="useable!=null and useable!=''">USEABLE,</if>
+        <if test="areaId!=null and areaId!=''">AREA_ID,</if>
+        <if test="areaId==null or areaId==''">AREA_ID,</if>
+        <if test="createBy!=null and createBy!=''">CREATE_BY,</if>
         CREATE_DATE,
-        <if test="updateBy !=null and updateBy!=''">UPDATE_BY,</if>
+        <if test="updateBy!=null and updateBy!=''">UPDATE_BY,</if>
         UPDATE_DATE,
         DEL_FLAG)
         values
         (#{id},
         <if test="parentId!=null and parentId!=''">#{parentId},</if>
         <if test="parentIds!=null and parentIds!=''">#{parentIds},</if>
-        <if test="name !=null and name!=''">#{name},</if>
-        <if test="type !=null and type!=''">#{type},</if>
-        <if test="grade !=null and grade!=''">#{grade},</if>
-        <if test="sort !=null ">#{sort},</if>
-        <if test="remarks !=null and remarks!=''">#{remarks},</if>
-        <if test="useable !=null and useable!=''">#{useable},</if>
-        <if test="areaId !=null and areaId!=''">#{areaId},</if>
-        <if test="createBy !=null and createBy!=''">#{createBy},</if>
+        <if test="name!=null and name!=''">#{name},</if>
+        <if test="type!=null and type!=''">#{type},</if>
+        <if test="grade!=null and grade!=''">#{grade},</if>
+        <if test="sort!=null ">#{sort},</if>
+        <if test="remarks!=null and remarks!=''">#{remarks},</if>
+        <if test="useable!=null and useable!=''">#{useable},</if>
+        <if test="areaId!=null and areaId!=''">#{areaId},</if>
+        <if test="areaId==null or areaId==''">#{id},</if>
+        <if test="createBy!=null and createBy!=''">#{createBy},</if>
         SYSDATE,
-        <if test="updateBy !=null and updateBy!=''">#{updateBy},</if>
+        <if test="updateBy!=null and updateBy!=''">#{updateBy},</if>
         SYSDATE,
         0)
     </insert>

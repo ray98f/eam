@@ -14,9 +14,9 @@ public interface OrganizationService {
 
     List<CompanyStructureTreeDTO> listCompanyList();
 
-    Page<MemberResDTO> listMember(String id, String name, PageReqDTO pageReqDTO);
+    Page<MemberResDTO> pageMember(String id, String name, PageReqDTO pageReqDTO);
 
-    List<MemberResDTO> listMembers(String id);
+    List<MemberResDTO> listMember(String id);
 
     List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(String equipName);
 }

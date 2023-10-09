@@ -38,20 +38,18 @@ public class OrganizationController {
         return DataResponse.of(organizationService.listCompanyList());
     }
 
-    @GetMapping("/memberList")
-    @ApiOperation(value = "组织成员信息")
-    public PageResponse<MemberResDTO> listMember(@RequestParam @ApiParam("组织id") String id,
+    @GetMapping("/pageMember")
+    @ApiOperation(value = "分页获取组织成员信息")
+    public PageResponse<MemberResDTO> pageMember(@RequestParam @ApiParam("组织id") String id,
                                                  @RequestParam(required = false) @ApiParam("名称模糊查询") String name,
                                                  @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(organizationService.listMember(id, name, pageReqDTO));
+        return PageResponse.of(organizationService.pageMember(id, name, pageReqDTO));
     }
 
-    @ApiOperation(value = "组织成员信息")
-    @GetMapping("/membersList")
-    public DataResponse<List<MemberResDTO>> listMember(@RequestParam String id) {
-        return DataResponse.of(organizationService.listMembers(id));
+    @ApiOperation(value = "获取所有组织成员信息")
+    @GetMapping("/listMember")
+    public DataResponse<List<MemberResDTO>> listMember(@RequestParam @ApiParam("组织id") String id) {
+        return DataResponse.of(organizationService.listMember(id));
     }
-
-
 
 }

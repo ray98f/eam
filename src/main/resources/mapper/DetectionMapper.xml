@@ -175,75 +175,80 @@
     <update id="modifyDetection">
         UPDATE T_DETECTION SET
         <if test="sendVerifyNo!=null">
-            SEND_VERIFY_NO	= #{sendVerifyNo},   <!-- 检测单号 -->
+            SEND_VERIFY_NO=#{sendVerifyNo},   <!-- 检测单号 -->
         </if>
         <if test="checkNo!=null">
             CHECK_NO  =#{checkNo},
         </if>
         <if test="instrmPlanNo!=null">
-            INSTRM_PLAN_NO	= #{instrmPlanNo},   <!-- 特种设备检验计划号 -->
+            INSTRM_PLAN_NO=#{instrmPlanNo},   <!-- 特种设备检验计划号 -->
         </if>
         <if test="editDeptCode!=null">
-            EDIT_DEPT_CODE	= #{editDeptCode},   <!-- 特种设备检测计划明细表REC_ID -->
+            EDIT_DEPT_CODE=#{editDeptCode},   <!-- 特种设备检测计划明细表REC_ID -->
         </if>
         <if test="verifyDept!=null">
-            VERIFY_DEPT	= #{verifyDept},   <!-- 检测校准单位 -->
+            VERIFY_DEPT=#{verifyDept},   <!-- 检测校准单位 -->
         </if>
         <if test="verifyNote!=null">
-            VERIFY_NOTE	= #{verifyNote},   <!-- 备注 -->
+            VERIFY_NOTE=#{verifyNote},   <!-- 备注 -->
         </if>
         <if test="workFlowInstId!=null">
-            WORK_FLOW_INST_ID	= #{workFlowInstId},   <!-- 工作流实例ID -->
+            WORK_FLOW_INST_ID=#{workFlowInstId},   <!-- 工作流实例ID -->
         </if>
         <if test="workFlowInstStatus!=null">
-            WORK_FLOW_INST_STATUS	= #{workFlowInstStatus},   <!-- 工作流实例状态 -->
+            WORK_FLOW_INST_STATUS=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
         </if>
         <if test="companyCode!=null">
-            COMPANY_CODE	= #{companyCode},   <!-- 公司代码 -->
+            COMPANY_CODE=#{companyCode},   <!-- 公司代码 -->
         </if>
         <if test="companyName!=null">
-            COMPANY_NAME	= #{companyName},   <!-- 公司名称 -->
+            COMPANY_NAME=#{companyName},   <!-- 公司名称 -->
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
         </if>
         <if test="recStatus!=null">
-            REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
+            REC_STATUS=#{recStatus},   <!-- 记录状态 -->
         </if>
         <if test="ext1!=null">
-            EXT1	= #{ext1},   <!-- 扩展字段1 -->
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
         </if>
         <if test="ext2!=null">
-            EXT2	= #{ext2},   <!-- 扩展字段2 -->
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
         </if>
         <if test="ext3!=null">
-            EXT3	= #{ext3},   <!-- 扩展字段3 -->
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
         </if>
         <if test="manageOrg!=null">
-            MANAGE_ORG	= #{manageOrg},   <!-- 管理部门 -->
+            MANAGE_ORG=#{manageOrg},   <!-- 管理部门 -->
         </if>
         <if test="secOrg!=null">
-            SEC_ORG	= #{secOrg},   <!-- 维管部门 -->
+            SEC_ORG=#{secOrg},   <!-- 维管部门 -->
         </if>
         <if test="ext4!=null">
-            EXT4	= #{ext4},   <!-- 扩展字段4 -->
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
         </if>
         <if test="ext5!=null">
-            EXT5	= #{ext5},  <!-- 扩展字段5 -->
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
         </if>
         <if test="assetKindCode!=null">
-            ASSET_KIND_CODE = #{assetKindCode},
+            ASSET_KIND_CODE=#{assetKindCode},
         </if>
-        REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
-        REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
+        REC_REVISOR=#{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 修改时间 -->
         <!--VERIFY_TYPE=#verifyType#-->
-        WHERE REC_ID = #{recId}
+        WHERE REC_ID=#{recId}
     </update>
 
     <delete id="deleteDetectionDetail">
         UPDATE T_DETECTION_DETAIL SET
         DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
-        WHERE TEST_REC_ID=#{testRecId}
+        <if test="testRecId!=null and testRecId!=''">
+            WHERE TEST_REC_ID=#{testRecId}
+        </if>
+        <if test="recId!=null and recId!=''">
+            WHERE REC_ID=#{recId}
+        </if>
     </delete>
 
     <update id="deleteDetection">
@@ -368,10 +373,10 @@
         <!--d.PLAN_STATUS as "planStatus"-->
         FROM T_DETECTION_DETAIL a
         LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
-        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
-        WHERE 1=1 and a.TEST_REC_ID = #{testRecId} and a.DELETE_FLAG='0'
+        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE
+        WHERE 1=1 and a.TEST_REC_ID=#{testRecId} and a.DELETE_FLAG='0'
         <!--<isNotEmpty prepend=" AND " property="testRecId">-->
-        <!--a.TEST_REC_ID = #{testRecId#-->
+        <!--a.TEST_REC_ID=#{testRecId#-->
         <!--</isNotEmpty>-->
         order by a.EQUIP_CODE asc
     </select>
@@ -433,10 +438,10 @@
         <!--d.PLAN_STATUS as "planStatus"-->
         FROM T_DETECTION_DETAIL a
         LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
-        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
-        WHERE 1=1 and a.REC_ID = #{recId}
+        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE
+        WHERE 1=1 and a.REC_ID=#{recId}
         <!--<isNotEmpty prepend=" AND " property="testRecId">-->
-        <!--a.TEST_REC_ID = #{testRecId#-->
+        <!--a.TEST_REC_ID=#{testRecId#-->
         <!--</isNotEmpty>-->
     </select>
 
@@ -539,135 +544,135 @@
         #{ext3,jdbcType=VARCHAR},
         #{ext4,jdbcType=VARCHAR},
         #{ext5,jdbcType=VARCHAR},
-        #{docId,jdbcType=VARCHAR},
+        ' ',
         #{verifyValidityDate,jdbcType=VARCHAR})
     </insert>
 
     <update id="modifyDetectionDetail">
         UPDATE T_DETECTION_DETAIL SET
         <if test="testRecId!=null">
-            TEST_REC_ID	= #{testRecId},   <!-- 检测记录表REC_ID -->
+            TEST_REC_ID=#{testRecId},   <!-- 检测记录表REC_ID -->
         </if>
         <if test="testlistDetailRecId!=null">
-            TESTLIST_DETAIL_REC_ID	= #{testlistDetailRecId},   <!-- 检测单明细表REC_ID -->
+            TESTLIST_DETAIL_REC_ID=#{testlistDetailRecId},   <!-- 检测单明细表REC_ID -->
         </if>
         <if test="equipCode!=null">
-            EQUIP_CODE	= #{equipCode},   <!-- 设备代码 -->
+            EQUIP_CODE=#{equipCode},   <!-- 设备代码 -->
         </if>
         <if test="equipName!=null">
-            EQUIP_NAME	= #{equipName},   <!-- 设备名称 -->
+            EQUIP_NAME=#{equipName},   <!-- 设备名称 -->
         </if>
         <if test="verifyValidityDate!=null">
             VERIFY_VALIDITY_DATE=#{verifyValidityDate},
         </if>
         <if test="matSpecifi!=null">
-            MAT_SPECIFI	= #{matSpecifi},   <!-- 型号规格 -->
+            MAT_SPECIFI=#{matSpecifi},   <!-- 型号规格 -->
         </if>
         <if test="manufactureNo!=null">
-            MANUFACTURE_NO	= #{manufactureNo},   <!-- 出厂编号 -->
+            MANUFACTURE_NO=#{manufactureNo},   <!-- 出厂编号 -->
         </if>
         <if test="manufacture!=null">
-            MANUFACTURE	= #{manufacture},   <!-- 生产厂家 -->
+            MANUFACTURE=#{manufacture},   <!-- 生产厂家 -->
         </if>
         <if test="installationUnit!=null">
-            INSTALLATION_UNIT	= #{installationUnit},   <!-- 安装单位 -->
+            INSTALLATION_UNIT=#{installationUnit},   <!-- 安装单位 -->
         </if>
         <if test="verifyDate!=null">
-            VERIFY_DATE	= #{verifyDate},   <!-- 检测日期 -->
+            VERIFY_DATE=#{verifyDate},   <!-- 检测日期 -->
         </if>
         <if test="verificationNo!=null">
-            VERIFICATION_NO	= #{verificationNo},   <!-- 证书编号 -->
+            VERIFICATION_NO=#{verificationNo},   <!-- 证书编号 -->
         </if>
         <if test="verificationType!=null">
-            VERIFICATION_TYPE	= #{verificationType},   <!-- 证书类型 -->
+            VERIFICATION_TYPE=#{verificationType},   <!-- 证书类型 -->
         </if>
         <if test="verifyProof!=null">
-            VERIFY_PROOF	= #{verifyProof},   <!-- 检测依据 -->
+            VERIFY_PROOF=#{verifyProof},   <!-- 检测依据 -->
         </if>
         <if test="verifyReportNo!=null">
-            VERIFY_REPORT_NO	= #{verifyReportNo},   <!-- 检测报告编号 -->
+            VERIFY_REPORT_NO=#{verifyReportNo},   <!-- 检测报告编号 -->
         </if>
         <if test="verifyReportType!=null">
-            VERIFY_REPORT_TYPE	= #{verifyReportType},   <!-- 检测报告类型 0:检测证书;1:校准证书;2:检测结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
+            VERIFY_REPORT_TYPE=#{verifyReportType},   <!-- 检测报告类型 0:检测证书;1:校准证书;2:检测结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
         </if>
         <if test="verifyReportName!=null">
-            VERIFY_REPORT_NAME	= #{verifyReportName},   <!-- 检测报告名称 -->
+            VERIFY_REPORT_NAME=#{verifyReportName},   <!-- 检测报告名称 -->
         </if>
         <if test="verifyReportDate!=null">
-            VERIFY_REPORT_DATE	= #{verifyReportDate},   <!-- 检测报告日期 -->
+            VERIFY_REPORT_DATE=#{verifyReportDate},   <!-- 检测报告日期 -->
         </if>
         <if test="verifyFee!=null">
-            VERIFY_FEE	= #{verifyFee:NUMERIC},   <!-- 检测费用 -->
+            VERIFY_FEE=#{verifyFee:NUMERIC},   <!-- 检测费用 -->
         </if>
         <if test="verifyResult!=null">
-            VERIFY_RESULT	= #{verifyResult},   <!-- 检测结果（0：合格；1：不合格） -->
+            VERIFY_RESULT=#{verifyResult},   <!-- 检测结果（0：合格；1：不合格） -->
         </if>
         <if test="verifyConclusion!=null">
-            VERIFY_CONCLUSION	= #{verifyConclusion},   <!-- 检测结果说明 -->
+            VERIFY_CONCLUSION=#{verifyConclusion},   <!-- 检测结果说明 -->
         </if>
         <if test="verifyReportAtt!=null">
-            VERIFY_REPORT_ATT	= #{verifyReportAtt},   <!-- 检测报告附件 -->
+            VERIFY_REPORT_ATT=#{verifyReportAtt},   <!-- 检测报告附件 -->
         </if>
         <if test="lastVerifyDate!=null">
-            LAST_VERIFY_DATE	= #{lastVerifyDate},   <!-- 上次检测日期 -->
+            LAST_VERIFY_DATE=#{lastVerifyDate},   <!-- 上次检测日期 -->
         </if>
         <if test="nextVerifyDate!=null">
-            NEXT_VERIFY_DATE	= #{nextVerifyDate},   <!-- 下次检测日期 -->
+            NEXT_VERIFY_DATE=#{nextVerifyDate},   <!-- 下次检测日期 -->
         </if>
         <if test="position1Code!=null">
-            POSITION1_CODE	= #{position1Code},   <!-- 位置一 -->
+            POSITION1_CODE=#{position1Code},   <!-- 位置一 -->
         </if>
         <if test="position1Name!=null">
-            POSITION1_NAME	= #{position1Name},   <!-- 位置一名称 -->
+            POSITION1_NAME=#{position1Name},   <!-- 位置一名称 -->
         </if>
         <if test="position2Code!=null">
-            POSITION2_CODE	= #{position2Code},   <!-- 位置二 -->
+            POSITION2_CODE=#{position2Code},   <!-- 位置二 -->
         </if>
         <if test="position2Name!=null">
-            POSITION2_NAME	= #{position2Name},   <!-- 位置二名称 -->
+            POSITION2_NAME=#{position2Name},   <!-- 位置二名称 -->
         </if>
         <if test="position3!=null">
-            POSITION3	= #{position3},   <!-- 位置三 -->
+            POSITION3=#{position3},   <!-- 位置三 -->
         </if>
         <if test="positionRemark!=null">
-            POSITION_REMARK	= #{positionRemark},   <!-- 位置补充说明 -->
+            POSITION_REMARK=#{positionRemark},   <!-- 位置补充说明 -->
         </if>
         <if test="faultNo!=null">
-            FAULT_NO	= #{faultNo},   <!-- 故障编号 -->
+            FAULT_NO=#{faultNo},   <!-- 故障编号 -->
         </if>
         <if test="verifyNote!=null">
-            VERIFY_NOTE	= #{verifyNote},   <!-- 备注 -->
+            VERIFY_NOTE=#{verifyNote},   <!-- 备注 -->
         </if>
         <if test="companyCode!=null">
-            COMPANY_CODE	= #{companyCode},   <!-- 公司代码 -->
+            COMPANY_CODE=#{companyCode},   <!-- 公司代码 -->
         </if>
         <if test="companyName!=null">
-            COMPANY_NAME	= #{companyName},   <!-- 公司名称 -->
+            COMPANY_NAME=#{companyName},   <!-- 公司名称 -->
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
         </if>
         <if test="recStatus!=null">
-            REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
+            REC_STATUS=#{recStatus},   <!-- 记录状态 -->
         </if>
         <if test="ext1!=null">
-            EXT1	= #{ext1},   <!-- 扩展字段1 -->
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
         </if>
         <if test="ext2!=null">
-            EXT2	= #{ext2},   <!-- 扩展字段2 -->
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
         </if>
         <if test="ext3!=null">
-            EXT3	= #{ext3},   <!-- 扩展字段3 -->
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
         </if>
         <if test="ext4!=null">
-            EXT4	= #{ext4},   <!-- 扩展字段4 -->
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
         </if>
         <if test="ext5!=null">
-            EXT5	= #{ext5},  <!-- 扩展字段5 -->
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
         </if>
-        REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
-        REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
-        WHERE REC_ID = #{recId}
+        REC_REVISOR=#{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 修改时间 -->
+        WHERE REC_ID=#{recId}
     </update>
 
     <select id="listDetectionDetail" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO">
@@ -727,10 +732,10 @@
         <!--d.PLAN_STATUS as "planStatus"-->
         FROM T_DETECTION_DETAIL a
         LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
-        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE = a.EQUIP_CODE
-        WHERE 1=1 and a.TEST_REC_ID = #{testRecId} and a.DELETE_FLAG='0'
+        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE
+        WHERE 1=1 and a.TEST_REC_ID=#{testRecId} and a.DELETE_FLAG='0'
         <!--<isNotEmpty prepend=" AND " property="testRecId">-->
-        <!--a.TEST_REC_ID = #{testRecId#-->
+        <!--a.TEST_REC_ID=#{testRecId#-->
         <!--</isNotEmpty>-->
         order by a.EQUIP_CODE asc
     </select>

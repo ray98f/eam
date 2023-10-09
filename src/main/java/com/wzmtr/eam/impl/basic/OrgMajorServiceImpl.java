@@ -73,6 +73,11 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     }
 
     @Override
+    public List<OrgMajorResDTO> listUseOrgMajor(String majorCode) {
+        return orgMajorMapper.listUseOrgMajor(majorCode);
+    }
+
+    @Override
     public OrgMajorResDTO getOrgMajorDetail(String id) {
         return orgMajorMapper.getOrgMajorDetail(id);
     }

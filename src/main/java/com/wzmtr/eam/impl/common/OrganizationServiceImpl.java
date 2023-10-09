@@ -55,13 +55,17 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public Page<MemberResDTO> listMember(String id, String name, PageReqDTO pageReqDTO) {
+    public Page<MemberResDTO> pageMember(String id, String name, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<MemberResDTO> page;
+        String newId = organizationMapper.getIdByAreaId(id);
+        if (!Objects.isNull(newId)) {
+            id = newId;
+        }
         if ("root".equals(id)) {
-            page = organizationMapper.listMember(pageReqDTO.of(), id, name);
+            page = organizationMapper.pageMember(pageReqDTO.of(), id, name);
         } else {
-            page = organizationMapper.listMember(pageReqDTO.of(), "," + id, name);
+            page = organizationMapper.pageMember(pageReqDTO.of(), "," + id, name);
         }
         List<MemberResDTO> list = page.getRecords();
         if (null != list && !list.isEmpty()) {
@@ -88,12 +92,16 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public List<MemberResDTO> listMembers(String id) {
+    public List<MemberResDTO> listMember(String id) {
+        String newId = organizationMapper.getIdByAreaId(id);
+        if (!Objects.isNull(newId)) {
+            id = newId;
+        }
         List<MemberResDTO> list;
         if ("root".equals(id)) {
-            list = organizationMapper.listMembers(id);
+            list = organizationMapper.listMember(id);
         } else {
-            list = organizationMapper.listMembers("," + id);
+            list = organizationMapper.listMember("," + id);
         }
         if (null != list && !list.isEmpty()) {
             for (MemberResDTO memberResDTO : list) {

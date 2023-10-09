@@ -23,9 +23,11 @@ public interface OrganizationMapper {
 
     List<CompanyStructureTreeDTO> listCompanyList();
 
-    Page<MemberResDTO> listMember(Page<MemberResDTO> page, @Param("id") String id, @Param("name") String name);
+    Page<MemberResDTO> pageMember(Page<MemberResDTO> page, @Param("id") String id, @Param("name") String name);
 
-    List<MemberResDTO> listMembers(@Param("id") String id);
+    String getIdByAreaId(@Param("id") String id);
+
+    List<MemberResDTO> listMember(@Param("id") String id);
 
     String selectOfficeNameById(String id);
 

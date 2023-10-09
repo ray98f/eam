@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -35,6 +36,12 @@ public class OrgMajorController {
                                                      @RequestParam(required = false) @ApiParam("专业 1-15 17 70") String majorCode,
                                                      @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(orgMajorService.listOrgMajor(orgCode, majorCode, pageReqDTO));
+    }
+
+    @GetMapping("/listUse")
+    @ApiOperation(value = "根据专业获取启用的组织机构列表")
+    public DataResponse<List<OrgMajorResDTO>> listUseOrgMajor(@RequestParam @ApiParam("专业 1-15 17 70") String majorCode) {
+        return DataResponse.of(orgMajorService.listUseOrgMajor(majorCode));
     }
 
     @GetMapping("/detail")

@@ -25,7 +25,7 @@ import java.util.Objects;
 @Api(tags = "文件上传")
 public class MinioController {
 
-    private static final long NUM = 100 * 1024 * 1024;
+    private static final long NUM = 50 * 1024 * 1024;
 
     @Autowired
     private MinioService minioService;

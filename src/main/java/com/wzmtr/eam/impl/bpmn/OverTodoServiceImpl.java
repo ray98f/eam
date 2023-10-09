@@ -68,11 +68,11 @@ public class OverTodoServiceImpl implements OverTodoService {
             throw new CommonException(ErrorCode.PARAM_NULL);
         }
         try {
-            List<Dictionaries> dictionaries = dictionariesMapper.list("dm.contextPath", "01", "1");
-            if (dictionaries == null || dictionaries.isEmpty()) {
+            Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.contextPath", "01");
+            if (Objects.isNull(dictionaries)) {
                 throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
             }
-            String contextPath = dictionaries.get(0).getItemEname();
+            String contextPath = dictionaries.getItemEname();
             String fullPath = contextPath + taskUrl + "?inqu_status-0-workFlowInstId=" + businessRecId;
             EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
             eipMsgPushReq.add();

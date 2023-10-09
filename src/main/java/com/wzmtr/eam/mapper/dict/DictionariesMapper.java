@@ -22,5 +22,6 @@ public interface DictionariesMapper {
     void modify(Dictionaries dictionaries);
 
     void delete(List<String> ids, String userId, String time);
+
     Dictionaries queryOneByItemCodeAndCodesetCode(String codesetCode,String itemCode);
 }

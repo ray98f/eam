@@ -406,11 +406,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     public String sendContractOrder(Message json) throws Exception {
         // IorderRecordCreator sendContractOrder
-        List<Dictionaries> dictionaries = dictionariesMapper.list("dm.contextPath", "01", "1");
-        if (dictionaries == null || dictionaries.isEmpty()) {
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.contextPath", "01");
+        if (Objects.isNull(dictionaries)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        String url = dictionaries.get(0).getItemEname();
+        String url = dictionaries.getItemEname();
         com.wzmtr.eam.soft.csm.planWork.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.csm.planWork.vo.RequestMessage();
         requestMessage.setMessage(json);
         requestMessage.setVerb("Get");
