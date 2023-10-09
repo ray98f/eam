@@ -57,7 +57,6 @@ public class FaultReportController {
         return DataResponse.success();
     }
 
-
     @ApiOperation(value = "已提报故障单撤销")
     @PostMapping("/fault/delete")
     public DataResponse<String> delete(@RequestBody FaultCancelReqDTO reqDTO) {

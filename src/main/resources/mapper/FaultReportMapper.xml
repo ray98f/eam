@@ -530,8 +530,6 @@
         d.OBJECT_CODE as "objectCode_textField",  <!-- 对象编码 -->
         d.OBJECT_NAME as "objectName",  <!-- 对象名称 -->
         d.TRAIN_TRUNK as "trainTrunk",  <!-- 车底号/车厢号 -->
-        (Select ec.ITEM_CNAME from iplat60.tedcm01 ec where ec.ITEM_CODE = d.LINE_CODE and ec.CODESET_CODE='line') as
-        "lineName",
         d.LINE_CODE as "lineCode",  <!-- 线路编码 -->
         d.POSITION_CODE as "positionCode",  <!-- 位置编码 -->
         d.POSITION2_CODE as "position2Code",

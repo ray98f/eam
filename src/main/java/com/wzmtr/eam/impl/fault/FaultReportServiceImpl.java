@@ -8,13 +8,12 @@ import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
+import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
-import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
-import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.CodeUtils;
@@ -27,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +46,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     private FaultQueryMapper faultQueryMapper;
     @Autowired
     private OverTodoService overTodoService;
+
     @Override
     // @Transactional(rollbackFor = Exception.class)
     public void addToEquip(FaultReportReqDTO reqDTO) {
@@ -95,15 +96,17 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     public Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        // and d.MAJOR_CODE NOT IN('07','06')
+        // and d.MAJOR_CODE NOT IN('07','06');
+        long startTime = System.nanoTime();
         Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd());
+        log.info("查询耗时-{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
-        List<FaultReportResDTO> filter = list.getRecords().stream()
-                .filter(a -> !a.getMajorCode().equals("07") && !a.getMajorCode().equals("06"))
-                .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed()).collect(Collectors.toList());
+        List<FaultReportResDTO> filter = list.getRecords().stream().filter(a -> !a.getMajorCode().equals("07") && !a.getMajorCode().equals("06")).sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed()).collect(Collectors.toList());
         filter.forEach(a -> {
+            LineCode line = LineCode.getByCode(a.getLineCode());
+            a.setLineName(line == null ? a.getLineCode() : line.getDesc());
             a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
             a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
         });
@@ -140,21 +143,21 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public void cancel(FaultCancelReqDTO reqDTO) {
-        //faultWorkNo的recId
+        // faultWorkNo的recId
         String faultWorkNo = reqDTO.getFaultWorkNo();
-        FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(null,faultWorkNo);
+        FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
         faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtil.getCurrentTime());
-        //order表作废状态
+        // order表作废状态
         faultOrderDO.setOrderStatus(OrderStatus.ZUO_FEI.getCode());
         faultReportMapper.updateFaultOrder(faultOrderDO);
         String faultNo = reqDTO.getFaultNo();
-        //info表更新
+        // info表更新
         FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo);
         faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
         faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultReportMapper.updateFaultInfo(faultInfoDO);
-        //取消待办
+        // 取消待办
         overTodoService.cancelTODO(reqDTO.getOrderRecId());
     }
 
@@ -170,7 +173,6 @@ public class FaultReportServiceImpl implements FaultReportService {
         orderUpdate.setRecReviseTime(DateUtil.getCurrentTime());
         faultReportMapper.updateFaultOrder(orderUpdate);
     }
-
 
 
     public static void main(String[] args) {
