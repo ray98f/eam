@@ -57,7 +57,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
         _insertToFaultInfo(faultInfoDO, nextFaultNo);
         FaultOrderDO faultOrderDO = reqDTO.toFaultOrderInsertDO(reqDTO);
-        _insertToFaultOrder(faultOrderDO, nextFaultNo, maxFaultWorkNo);
+        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+        _insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
         // TODO: 2023/8/24 知会OCC调度
         // if ("Y".equals(maintenance)) {
         //     /* 1756 */             String groupName = "DM_021";
@@ -72,13 +73,22 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     private void _insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {
         faultInfoDO.setFaultNo(nextFaultNo);
+        faultInfoDO.setRecId(TokenUtil.getUuId());
+        faultInfoDO.setDeleteFlag("0");
+        faultInfoDO.setFillinTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        faultInfoDO.setFillinUserId(TokenUtil.getCurrentPerson().getPersonId());
+        faultInfoDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
+        faultInfoDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         faultReportMapper.addToFaultInfo(faultInfoDO);
     }
 
-    private void _insertToFaultOrder(FaultOrderDO faultOrderDO, String nextFaultNo, String maxFaultWorkNo) {
-        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+    private void _insertToFaultOrder(FaultOrderDO faultOrderDO, String nextFaultNo, String nextFaultWorkNo) {
         faultOrderDO.setFaultWorkNo(nextFaultWorkNo);
         faultOrderDO.setFaultNo(nextFaultNo);
+        faultOrderDO.setDeleteFlag("0");
+        faultOrderDO.setRecId(TokenUtil.getUuId());
+        faultOrderDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
+        faultOrderDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         faultReportMapper.addToFaultOrder(faultOrderDO);
     }
 
@@ -106,18 +116,14 @@ public class FaultReportServiceImpl implements FaultReportService {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         FaultInfoDO faultInfoDO = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
-        faultInfoDO.setRecId(TokenUtil.getUuId());
-        faultInfoDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        faultInfoDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        _insertToFaultInfo(faultInfoDO, maxFaultNo);
+        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+        _insertToFaultInfo(faultInfoDO, nextFaultNo);
         FaultOrderDO faultOrderDO = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
-        faultOrderDO.setRecId(TokenUtil.getUuId());
         if (reqDTO.getRepairDeptCode() != null) {
             faultOrderDO.setWorkClass(reqDTO.getRepairDeptCode());
         }
-        faultOrderDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        faultOrderDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        _insertToFaultOrder(faultOrderDO, maxFaultNo, maxFaultWorkNo);
+        _insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
     }
 
     @Override

@@ -108,21 +108,11 @@ public class FaultReportReqDTO {
             convert.setWorkClass(req.getRepairDeptCode());
         }
         convert.setDeleteFlag("0");
-        convert.setRecId(TokenUtil.getUuId());
         convert.setOrderStatus("30");
-        convert.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        convert.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         return convert;
     }
 
     public FaultInfoDO toFaultInfoInsertDO(FaultReportReqDTO req) {
-        FaultInfoDO convert = __BeanUtil.convert(req, FaultInfoDO.class);
-        convert.setRecId(TokenUtil.getUuId());
-        convert.setDeleteFlag("0");
-        convert.setFillinTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        convert.setFillinUserId(TokenUtil.getCurrentPerson().getPersonId());
-        convert.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        convert.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        return convert;
+        return __BeanUtil.convert(req, FaultInfoDO.class);
     }
 }

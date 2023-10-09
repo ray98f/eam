@@ -24,5 +24,6 @@ public class FaultNosFaultWorkNosReqDTO {
     private Set<String> faultNos;
     @ApiModelProperty(value = "故障工单编号s")
     private Set<String> faultWorkNos;
+    @ApiModelProperty(value = "工单状态")
     private OrderStatus type;
 }
