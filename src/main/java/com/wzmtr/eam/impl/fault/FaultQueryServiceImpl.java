@@ -170,6 +170,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 FaultLevel faultLevel = FaultLevel.getByCode(resDTO.getOrderStatus());
                 DealerUnit dealerUnit = DealerUnit.getByCode(resDTO.getDealerUnit());
                 LineCode lineCode = LineCode.getByCode(resDTO.getLineCode());
+                FaultType faultType = FaultType.getByCode(resDTO.getFaultType());
                 map.put("故障编号", resDTO.getFaultNo());
                 map.put("故障现象", resDTO.getFaultDisplayDetail());
                 map.put("故障详情", resDTO.getFaultDetail());
@@ -185,6 +186,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 map.put("提报时间", resDTO.getFillinTime());
                 map.put("发现人", resDTO.getDiscovererName());
                 map.put("发现时间", resDTO.getDiscoveryTime());
+                map.put("故障分类", faultType == null ? resDTO.getFaultType() : faultType.getDesc());
                 map.put("故障紧急程度", faultLevel == null ? resDTO.getFaultLevel() : faultLevel.getDesc());
                 map.put("故障影响", faultAffect != null ? faultAffect.getDesc() : resDTO.getFaultAffect());
                 map.put("线路", lineCode != null ? lineCode.getDesc() : resDTO.getLineCode());

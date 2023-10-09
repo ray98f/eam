@@ -58,4 +58,6 @@ public class FaultQueryReqDTO extends PageReqDTO {
     private String levelfault;
     @ApiModelProperty(value = "故障编号集合")
     private Set<String> faultNos;
+    @ApiModelProperty(value = "是否包含作废")
+    private Boolean invalid;
 }

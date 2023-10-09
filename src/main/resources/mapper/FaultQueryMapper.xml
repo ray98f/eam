@@ -119,8 +119,8 @@
             <if test="req.orderStatus != null and req.orderStatus != ''">
                 AND df.ORDER_STATUS = #{req.orderStatus}
             </if>
-            <if test="req.recStatus != null and req.recStatus != ''">
-                AND df.ORDER_STATUS <![CDATA[!=]]> #{req.recStatus}
+            <if test="req.lineCode != null and req.lineCode != ''">
+                AND d.LINE_CODE  = #{req.lineCode}
             </if>
             <if test="req.objectCode != null">
                 AND d.OBJECT_CODE = #{req.objectCode}
@@ -406,6 +406,7 @@
         d.PART_NAME AS partName,
         (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE) AS positionName_textField,
         (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE) AS positionName,
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION2_CODE ) AS "position2Name",
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.MAJOR_CODE) AS majorName,
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.SYSTEM_CODE) AS systemName,
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.EQUIP_TYPE_CODE) AS equipTypeName,
