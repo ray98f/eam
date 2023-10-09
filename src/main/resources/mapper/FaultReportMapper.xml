@@ -498,7 +498,7 @@
             EXT5 = #{ext5},
         </if>
         <if test="traintag != null and traintag != ''">
-            TRAIN_TAG = #{traintag}
+            TRAIN_TAG = #{traintag},
         </if>
         REC_REVISOR = #{recRevisor},
         REC_REVISE_TIME = #{recReviseTime}
