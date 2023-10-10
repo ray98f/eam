@@ -13,6 +13,7 @@ import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
+import com.wzmtr.eam.mapper.user.UserHelperMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
@@ -25,8 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -99,8 +102,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         // and d.MAJOR_CODE NOT IN('07','06');
         long startTime = System.nanoTime();
-        Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd(),reqDTO.getPositionCode());
-        log.info("查询耗时-{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
+        Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode());
+        log.info("已提报故障查询耗时{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
@@ -111,6 +114,7 @@ public class FaultReportServiceImpl implements FaultReportService {
             a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
             a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
         });
+        list.setRecords(filter);
         return list;
     }
 
