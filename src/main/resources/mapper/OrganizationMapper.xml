@@ -76,6 +76,20 @@
         su.ORDER_NUM ASC
     </select>
 
+    <select id="pageUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+        select su.ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
+        from SYS_USER su
+        where su.OFFICE_ID=#{id} and su.EXPIRED=0 and su.DEL_FLAG=0
+        ORDER BY su.ORDER_NUM ASC
+    </select>
+
+    <select id="listUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+        select su.ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
+        from SYS_USER su
+        where su.OFFICE_ID=#{id} and su.EXPIRED=0 and su.DEL_FLAG=0
+        ORDER BY su.ORDER_NUM ASC
+    </select>
+
     <select id="selectOfficeNameById" resultType="java.lang.String">
         select name from SYS_OFFICE where ID=#{id} and USEABLE=1 and DEL_FLAG=0
     </select>

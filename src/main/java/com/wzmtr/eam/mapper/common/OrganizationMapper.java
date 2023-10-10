@@ -29,6 +29,10 @@ public interface OrganizationMapper {
 
     List<MemberResDTO> listMember(@Param("id") String id);
 
+    Page<MemberResDTO> pageUserByOffice(Page<MemberResDTO> page, @Param("id") String id);
+
+    List<MemberResDTO> listUserByOffice(@Param("id") String id);
+
     String selectOfficeNameById(String id);
 
     String getOrgNameByOrgCode(String id);

@@ -60,7 +60,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         Page<MemberResDTO> page;
         String newId = organizationMapper.getIdByAreaId(id);
         if (!Objects.isNull(newId)) {
-            id = newId;
+            return organizationMapper.pageUserByOffice(pageReqDTO.of(), newId);
         }
         if ("root".equals(id)) {
             page = organizationMapper.pageMember(pageReqDTO.of(), id, name);
@@ -93,11 +93,11 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public List<MemberResDTO> listMember(String id) {
+        List<MemberResDTO> list;
         String newId = organizationMapper.getIdByAreaId(id);
         if (!Objects.isNull(newId)) {
-            id = newId;
+            return organizationMapper.listUserByOffice(newId);
         }
-        List<MemberResDTO> list;
         if ("root".equals(id)) {
             list = organizationMapper.listMember(id);
         } else {
