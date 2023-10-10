@@ -46,5 +46,4 @@ public class FaultCarReportController {
         return DataResponse.of(reportService.detail(reqDTO));
     }
 
-
 }

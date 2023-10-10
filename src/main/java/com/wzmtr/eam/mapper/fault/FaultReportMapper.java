@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FaultReportMapper {
 
-    Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId, String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart, String fillinTimeEnd);
+    Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId, String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart, String fillinTimeEnd,String positionCode);
 
     void addToFaultInfo(FaultInfoDO faultInfo);
 

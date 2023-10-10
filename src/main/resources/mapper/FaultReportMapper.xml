@@ -605,6 +605,9 @@
         <if test="equipTypeCode != null  and equipTypeCode != ''">
             AND d.EQUIP_TYPE_CODE = #{equipTypeCode}
         </if>
+        <if test="positionCode != null  and positionCode != ''">
+            AND d.POSITION_CODE = #{positionCode}
+        </if>
         <if test="fillinTimeStart != null">
             AND TO_DATE(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{fillinTimeStart}, 'YYYY-MM-DD')
         </if>

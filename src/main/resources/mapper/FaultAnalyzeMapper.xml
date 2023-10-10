@@ -180,7 +180,7 @@
                 and d3.REC_STATUS =#{recStatus}
             </if>
             <if test="frequency!=null and frequency!=''">
-                and d3.REC_STATUS =#{frequency}
+                and d3.FREQUENCY =#{frequency}
             </if>
             <if test="majorCode!=null and majorCode!=''">
                 and d3.MAJOR_CODE =#{majorCode}
