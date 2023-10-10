@@ -256,7 +256,7 @@
     </update>
 
     <update id="deleteOverhaulWeekPlan">
-        UPDATE T_OVERHAUL_PLAN SET
+        UPDATE T_WEEKLY_PLAN SET
         DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
         WHERE REC_ID=#{id}
     </update>

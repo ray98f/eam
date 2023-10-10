@@ -46,8 +46,8 @@ public class OrganizationController {
         return PageResponse.of(organizationService.pageMember(id, name, pageReqDTO));
     }
 
-    @ApiOperation(value = "获取所有组织成员信息")
     @GetMapping("/listMember")
+    @ApiOperation(value = "获取所有组织成员信息")
     public DataResponse<List<MemberResDTO>> listMember(@RequestParam @ApiParam("组织id") String id) {
         return DataResponse.of(organizationService.listMember(id));
     }
