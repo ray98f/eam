@@ -6,6 +6,7 @@ import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
@@ -34,15 +35,14 @@ public interface FaultQueryMapper {
 
     FaultOrderDO queryOneFaultOrder(String faultNo, String faultWorkNo);
 
-    List<FaultInfoDO> querFaultInfoList(Set<String> faultNo);
 
-    List<FaultOrderDO> queryFaultOrderList(Set<String> faultNo,Set<String> faultWorkNo);
 
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
 
     List<FaultDetailResDTO> list(@Param("req") FaultQueryReqDTO req);
 
     List<FaultDetailResDTO> export(FaultExportReqDTO req);
+    List<FaultRepairDeptResDTO> queryDeptCode(String lineCode,String majorCode,String orgType);
 
     Page<ConstructionResDTO> construction(Page<Object> of,@Param("faultWorkNo") String faultWorkNo);
 

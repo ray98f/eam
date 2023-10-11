@@ -3,8 +3,10 @@ package com.wzmtr.eam.service.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.PersonResDTO;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 
 import javax.servlet.http.HttpServletResponse;
@@ -46,4 +48,8 @@ public interface FaultQueryService {
     void eqCheck(FaultEqCheckReqDTO reqDTO) throws Exception;
 
     void updateHandler(FaultNosFaultWorkNosReqDTO reqDTO);
+
+    List<FaultRepairDeptResDTO> querydept(String faultNo);
+
+    List<OrganMajorLineType> queryWorker(String workerGroupCode);
 }

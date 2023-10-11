@@ -21,4 +21,9 @@ public class UserGroupMemberServiceImpl implements UserGroupMemberService {
         //DM_012 是故障跟踪这边写死的 原来的逻辑 我也看不懂
         return orgMajorMapper.getDepartmentUserByGroupName(groupCode,"DM_012");
     }
+
+    @Override
+    public List<OrganMajorLineType> getDepartmentUserByGroupName(String dptCode, String groupCode) {
+        return orgMajorMapper.getDepartmentUserByGroupName(dptCode,groupCode);
+    }
 }

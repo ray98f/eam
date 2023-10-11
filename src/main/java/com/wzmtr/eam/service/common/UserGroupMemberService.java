@@ -11,4 +11,5 @@ import java.util.List;
 public interface UserGroupMemberService {
 
     List<OrganMajorLineType> getDepartmentUserByGroupName(String groupCode);
+    List<OrganMajorLineType> getDepartmentUserByGroupName(String groupCode,String dptCode);
 }

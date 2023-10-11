@@ -829,6 +829,21 @@
             </trim>
             ORDER BY sort,df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
         </select>
-    <select id="querFaultInfoList" resultType="com.wzmtr.eam.dataobject.FaultInfoDO"></select>
-    <select id="queryFaultOrderList" resultType="com.wzmtr.eam.dataobject.FaultOrderDO"></select>
+    <select id="queryDeptCode" resultType="com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO">
+        SELECT d5.ORG_CODE as "orgCode", d5.ORG_NAME as "orgName"
+        FROM SYS_ORG_MAJOR d5,
+             SYS_ORG_LINE d6,
+             SYS_ORG_TYPE d7
+        where d5.ORG_CODE = d6.ORG_CODE
+          AND d6.ORG_CODE = d7.ORG_CODE
+        <if test="majorCode != null and majorCode != ''">
+            AND d5.MAJOR_CODE = #{majorCode}
+        </if>
+        <if test="lineCode != null and lineCode!=''">
+            AND d6.LINE_CODE = #{lineCode}
+        </if>
+        <if test="orgType != null and orgType!=''">
+            AND d7.ORG_TYPE = #{orgType}
+        </if>
+    </select>
 </mapper>

@@ -14,11 +14,13 @@ import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.PersonResDTO;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
+import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.*;
 import com.wzmtr.eam.exception.CommonException;
@@ -32,6 +34,7 @@ import com.wzmtr.eam.mapper.fault.TrackMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.service.common.UserGroupMemberService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.utils.*;
@@ -74,6 +77,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private PartMapper partMapper;
     @Autowired
     private FileMapper fileMapper;
+    @Autowired
+    private UserGroupMemberService userGroupMemberService;
 
 
     private static final Map<String, String> processMap = new HashMap<>();
@@ -872,6 +877,16 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 break;
         }
 
+    }
+
+    @Override
+    public List<FaultRepairDeptResDTO> querydept(String faultNo) {
+        FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo);
+        return faultQueryMapper.queryDeptCode(faultInfoDO.getLineCode(), faultInfoDO.getMajorCode(), "20");
+    }
+    @Override
+    public List<OrganMajorLineType> queryWorker(String workerGroupCode) {
+        return userGroupMemberService.getDepartmentUserByGroupName(workerGroupCode,"DM_012");
     }
 
     private void _cancel(List<FaultDetailResDTO> list, String currentUser, String current) {

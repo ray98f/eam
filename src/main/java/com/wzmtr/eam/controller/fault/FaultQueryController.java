@@ -1,8 +1,10 @@
 package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -166,5 +169,14 @@ public class FaultQueryController {
     //     faultQueryService.returns(reqDTO);
     //     return DataResponse.success();
     // }
-
+    @ApiOperation(value = "获取维修部门")
+    @GetMapping("querydept")
+    public DataResponse<List<FaultRepairDeptResDTO>> querydept(@RequestParam String faultNo) {
+        return DataResponse.of(faultQueryService.querydept(faultNo));
+    }
+    @ApiOperation(value = "获取维修部门下的人")
+    @GetMapping("queryWorker")
+    public DataResponse<List<OrganMajorLineType>> queryWorker(@RequestParam String workerGroupCode) {
+        return DataResponse.of(faultQueryService.queryWorker(workerGroupCode));
+    }
 }
