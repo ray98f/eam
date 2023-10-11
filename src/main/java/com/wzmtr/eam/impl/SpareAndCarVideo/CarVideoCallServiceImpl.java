@@ -9,11 +9,13 @@ import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoOperateReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoReqDTO;
 import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
+import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.SpareAndCarVideo.CarVideoMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.carVideoCall.CarVideoService;
@@ -42,6 +44,8 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     EquipmentMapper equipmentMapper;
     @Autowired
     OverTodoService overTodoService;
+    @Autowired
+    DictionariesMapper dictionariesMapper;
 
     @Override
     public Page<CarVideoResDTO> list(CarVideoReqDTO reqDTO) {
@@ -198,17 +202,19 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             return;
         }
         for (CarVideoResDTO res : resList) {
+            String applyDeptName = organizationMapper.getOrgById(res.getApplyDeptCode());
+            Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.videoApplyType", res.getApplyType());
             Map<String, String> map = new HashMap<>();
             map.put("调阅记录号", res.getApplyNo());
             map.put("车组号", res.getTrainNo());
-            map.put("调阅性质", res.getApplyType());
-            map.put("申请部门", res.getApplyDeptName());
+            map.put("调阅性质", dictionaries.getItemCname());
+            map.put("申请部门", applyDeptName);
             map.put("视频起始时间", res.getVideoStartTime());
             map.put("视频截止时间", res.getVideoEndTime());
             map.put("申请调阅原因", res.getApplyReason());
             map.put("状态", res.getRecStatus());
             list.add(map);
-            ExcelPortUtil.excelPort("检调视频调阅", listName, list, null, response);
         }
+        ExcelPortUtil.excelPort("检调视频调阅", listName, list, null, response);
     }
 }

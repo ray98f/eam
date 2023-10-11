@@ -149,45 +149,45 @@
     </update>
     <select id="query" resultType="com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO">
         SELECT
-        REC_ID	as "recId",
-        COMPANY_CODE	as "companyCode",
-        COMPANY_NAME	as "companyName",
-        APPLY_NO	as "applyNo",
-        TRAIN_NO	as "trainNo",
-        APPLY_REASON	as "applyReason",
-        APPLY_TYPE	as "applyType",
-        APPLIER_ID	as "applierId",
-        APPLIER_MOB_PHONE	as "applierMobPhone",
-        APPLY_DEPT_CODE	as "applyDeptCode",
-        APPLY_DEPT_LEADER	as "applyDeptLeader",
-        APPLY_TIME	as "applyTime",
-        VIDEO_START_TIME	as "videoStartTime",
-        VIDEO_END_TIME	as "videoEndTime",
-        ENGINEER_ID	as "engineerId",
-        REPAIR_MANAGER_ID	as "repairManagerId",
-        DISPATCH_USER_ID	as "dispatchUserId",
-        DISPATCH_TIME	as "dispatchTime",
-        WORKER_ID	as "workerId",
-        WORK_TIME	as "workTime",
-        CLOSER_ID	as "closerId",
-        CLOSE_TIME	as "closeTime",
-        WORK_FLOW_INST_ID	as "workFlowInstId",
-        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",
-        REMARK	as "remark",
-        REC_CREATOR	as "recCreator",
-        REC_CREATE_TIME	as "recCreateTime",
-        REC_REVISOR	as "recRevisor",
-        REC_REVISE_TIME	as "recReviseTime",
-        REC_DELETOR	as "recDeletor",
-        REC_DELETE_TIME	as "recDeleteTime",
-        DELETE_FLAG	as "deleteFlag",
-        ARCHIVE_FLAG	as "archiveFlag",
-        REC_STATUS	as "recStatus",
-        EXT1	as "ext1",
-        EXT2	as "ext2",
-        EXT3	as "ext3",
-        EXT4	as "ext4",
-        EXT5	as "ext5",
+        REC_ID as "recId",
+        COMPANY_CODE as "companyCode",
+        COMPANY_NAME as "companyName",
+        APPLY_NO as "applyNo",
+        TRAIN_NO as "trainNo",
+        APPLY_REASON as "applyReason",
+        APPLY_TYPE as "applyType",
+        APPLIER_ID as "applierId",
+        APPLIER_MOB_PHONE as "applierMobPhone",
+        APPLY_DEPT_CODE as "applyDeptCode",
+        APPLY_DEPT_LEADER as "applyDeptLeader",
+        APPLY_TIME as "applyTime",
+        VIDEO_START_TIME as "videoStartTime",
+        VIDEO_END_TIME as "videoEndTime",
+        ENGINEER_ID as "engineerId",
+        REPAIR_MANAGER_ID as "repairManagerId",
+        DISPATCH_USER_ID as "dispatchUserId",
+        DISPATCH_TIME as "dispatchTime",
+        WORKER_ID as "workerId",
+        WORK_TIME as "workTime",
+        CLOSER_ID as "closerId",
+        CLOSE_TIME as "closeTime",
+        WORK_FLOW_INST_ID as "workFlowInstId",
+        WORK_FLOW_INST_STATUS as "workFlowInstStatus",
+        REMARK as "remark",
+        REC_CREATOR as "recCreator",
+        REC_CREATE_TIME as "recCreateTime",
+        REC_REVISOR as "recRevisor",
+        REC_REVISE_TIME as "recReviseTime",
+        REC_DELETOR as "recDeletor",
+        REC_DELETE_TIME as "recDeleteTime",
+        DELETE_FLAG as "deleteFlag",
+        ARCHIVE_FLAG as "archiveFlag",
+        REC_STATUS as "recStatus",
+        EXT1 as "ext1",
+        EXT2 as "ext2",
+        EXT3 as "ext3",
+        EXT4 as "ext4",
+        EXT5 as "ext5",
         WORK_CLASS as "workClass"
         FROM T_VIDEO_ACCESS
         <trim prefix="WHERE" prefixOverrides="AND">
@@ -203,6 +203,7 @@
             <if test="endApplyTime!=null and endApplyTime!=''">
                 and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{endApplyTime},'YYYY-MM-DD')
             </if>
+            and DELETE_FLAG = '0'
         </trim>
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO">
@@ -310,6 +311,7 @@
             <if test="endApplyTime!=null and endApplyTime!=''">
                 and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{endApplyTime},'YYYY-MM-DD')
             </if>
+            and d.DELETE_FLAG = '0'
         </trim>
     </select>
     <select id="selectMaxCode" resultType="java.lang.String">
