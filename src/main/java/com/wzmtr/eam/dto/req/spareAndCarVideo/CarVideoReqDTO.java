@@ -14,7 +14,7 @@ import lombok.*;
 @ApiModel
 public class CarVideoReqDTO extends PageReqDTO {
     @ApiModelProperty(value = "调阅记录号")
-    private String recId;
+    private String applyNo;
     @ApiModelProperty(value = "申请调阅时间开始")
     private String startApplyTime;
     @ApiModelProperty(value = "申请调阅时间结束")

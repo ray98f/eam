@@ -19,9 +19,9 @@ import java.util.List;
 public interface CarVideoMapper {
 
 
-    Page<CarVideoResDTO> query(Page<Object> of, String recId, String startApplyTime, String endApplyTime, String recStatus);
+    Page<CarVideoResDTO> query(Page<Object> of, String applyNo, String startApplyTime, String endApplyTime, String recStatus);
 
-    List<CarVideoResDTO> list(String recId, String startApplyTime, String endApplyTime, String recStatus);
+    List<CarVideoResDTO> list(String applyNo, String startApplyTime, String endApplyTime, String recStatus);
 
     CarVideoResDTO detail(@Param("recId") String recId);
 

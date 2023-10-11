@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class TrackRepairReqDTO {
 
-    @ApiModelProperty(value = "faultTrackWorkNo")
+    @ApiModelProperty(value = "跟踪工单号")
     private String faultTrackWorkNo;
     @ApiModelProperty(value = "recId")
     private String recId;
@@ -24,4 +24,6 @@ public class TrackRepairReqDTO {
     private String dispatchUserId;
     @ApiModelProperty(value = "派工时间")
     private String dispatchTime;
+    @ApiModelProperty(value = "跟踪号")
+    private String faultTrackNo;
 }

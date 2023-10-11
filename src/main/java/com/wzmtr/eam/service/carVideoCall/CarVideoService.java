@@ -28,5 +28,5 @@ public interface CarVideoService {
 
     void operate(CarVideoOperateReqDTO reqDTO);
 
-    void export(String recId, String startApplyTime, String endApplyTime, String recStatus, HttpServletResponse response);
+    void export(String applyNo, String startApplyTime, String endApplyTime, String recStatus, HttpServletResponse response);
 }

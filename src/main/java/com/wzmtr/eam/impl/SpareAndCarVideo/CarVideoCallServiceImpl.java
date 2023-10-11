@@ -8,7 +8,6 @@ import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoOperateReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoReqDTO;
 import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
-import com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -50,7 +49,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     public Page<CarVideoResDTO> list(CarVideoReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<CarVideoResDTO> list = carVideoMapper.query(reqDTO.of(), reqDTO.getRecId(), reqDTO.getStartApplyTime(), reqDTO.getEndApplyTime(), reqDTO.getRecStatus());
+        Page<CarVideoResDTO> list = carVideoMapper.query(reqDTO.of(), reqDTO.getApplyNo(), reqDTO.getStartApplyTime(), reqDTO.getEndApplyTime(), reqDTO.getRecStatus());
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<CarVideoResDTO> records = list.getRecords();
             records.forEach(a -> a.setApplyDeptName(organizationMapper.getOrgById(a.getApplyDeptCode())));
@@ -176,7 +175,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         }
         if ("50".equals(reqDTO.getRecStatus())) {
             if (!"40".equals(detail.getRecStatus())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR,"失败,非完工状态下不可关闭\"");
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非完工状态下不可关闭\"");
             }
             overTodoService.overTodo(reqDTO.getRecId(), "");
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
@@ -187,25 +186,27 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     }
 
     @Override
-    public void export(String recId, String startApplyTime, String endApplyTime, String recStatus, HttpServletResponse response) {
+    public void export(String applyNo, String startApplyTime, String endApplyTime, String recStatus, HttpServletResponse response) {
         // 2级修180天
-        List<CarVideoResDTO> resList = carVideoMapper.list(recId, startApplyTime, endApplyTime, recStatus);
-        List<String> listName = Arrays.asList("调阅记录号", "车组号","调阅性质","申请部门","视频起始时间","视频截止时间","申请调阅原因","状态");
+        List<CarVideoResDTO> resList = carVideoMapper.list(applyNo, startApplyTime, endApplyTime, recStatus);
+        List<String> listName = Arrays.asList("调阅记录号", "车组号", "调阅性质", "申请部门", "视频起始时间", "视频截止时间", "申请调阅原因", "状态");
         List<Map<String, String>> list = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(resList)) {
-            for (CarVideoResDTO res : resList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("调阅记录号", res.getApplyNo());
-                map.put("车组号", res.getTrainNo());
-                map.put("调阅性质", res.getApplyType());
-                map.put("申请部门", res.getApplyDeptName());
-                map.put("视频起始时间", res.getVideoStartTime());
-                map.put("视频截止时间", res.getVideoEndTime());
-                map.put("申请调阅原因", res.getApplyReason());
-                map.put("状态", res.getRecStatus());
-            }
+        if (CollectionUtil.isEmpty(resList)) {
+            log.error("数据为空，无导出数据");
+            return;
         }
-        ExcelPortUtil.excelPort("检调视频调阅", listName, list, null, response);
+        for (CarVideoResDTO res : resList) {
+            Map<String, String> map = new HashMap<>();
+            map.put("调阅记录号", res.getApplyNo());
+            map.put("车组号", res.getTrainNo());
+            map.put("调阅性质", res.getApplyType());
+            map.put("申请部门", res.getApplyDeptName());
+            map.put("视频起始时间", res.getVideoStartTime());
+            map.put("视频截止时间", res.getVideoEndTime());
+            map.put("申请调阅原因", res.getApplyReason());
+            map.put("状态", res.getRecStatus());
+            list.add(map);
+            ExcelPortUtil.excelPort("检调视频调阅", listName, list, null, response);
+        }
     }
-
 }

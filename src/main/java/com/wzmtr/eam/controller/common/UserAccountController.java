@@ -7,6 +7,7 @@ import com.wzmtr.eam.dto.res.UserAccountListResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.common.UserAccountService;
+import com.wzmtr.eam.utils.TokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -55,6 +56,11 @@ public class UserAccountController {
     @ApiOperation(value = "获取用户token")
     public DataResponse<String> getToken(@RequestParam String userId) {
         return DataResponse.of(userAccountService.getToken(userId));
+    }
+    @GetMapping("/getCurrentUser")
+    @ApiOperation(value = "获取当前登录人信息")
+    public DataResponse<CurrentLoginUser> getCurrentUser() {
+        return DataResponse.of(TokenUtil.getCurrentPerson());
     }
 
     @GetMapping("/userInfo")

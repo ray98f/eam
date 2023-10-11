@@ -48,7 +48,7 @@
         TRACK_REPORTER_ID = #{trackReporterId},
         DISPATCH_USER_ID = #{dispatchUserId},
         DISPATCH_TIME = #{dispatchTime},
-        REC_STATUS = #recStatus#
+        REC_STATUS = #{recStatus}
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultTrackNo!=null and faultTrackNo!=''">
                 and FAULT_TRACK_NO = #{faultTrackNo}

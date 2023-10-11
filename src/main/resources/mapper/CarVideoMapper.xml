@@ -157,8 +157,8 @@
         WORK_CLASS as "workClass"
         FROM T_VIDEO_ACCESS
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="recId!=null and recId!=''">
-                and REC_ID = #{recId}
+            <if test="applyNo!=null and applyNo!=''">
+                and APPLY_NO = #{applyNo}
             </if>
             <if test="recStatus!=null and recStatus!=''">
                 and REC_STATUS = #{recStatus}
@@ -264,8 +264,8 @@
         WORK_CLASS as "workClass"
         FROM T_VIDEO_ACCESS
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="recId!=null and recId!=''">
-                and REC_ID = #{recId}
+            <if test="applyNo!=null and applyNo!=''">
+                and APPLY_NO = #{applyNo}
             </if>
             <if test="recStatus!=null and recStatus!=''">
                 and REC_STATUS = #{recStatus}
