@@ -879,7 +879,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             String faultNo = a.getFaultNo();
             String faultWorkNo = a.getFaultWorkNo();
             // 更新order表
-            FaultOrderDO faultOrderDO = new FaultOrderDO();
+            FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(a.getFaultNo(), a.getFaultWorkNo());
             faultOrderDO.setFaultWorkNo(faultWorkNo);
             faultOrderDO.setFaultNo(faultNo);
             faultOrderDO.setOrderStatus(OrderStatus.ZUO_FEI.getCode());
@@ -887,9 +887,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultOrderDO.setRecReviseTime(current);
             faultReportMapper.updateFaultOrder(faultOrderDO);
             // 更新info表
-            FaultInfoDO faultInfoDO = new FaultInfoDO();
+            FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(a.getFaultNo());
             faultInfoDO.setRecRevisor(currentUser);
-            faultInfoDO.setFaultNo(faultNo);
             faultInfoDO.setRecReviseTime(current);
             faultReportMapper.updateFaultInfo(faultInfoDO);
             // 取消代办
@@ -1009,7 +1008,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultOrderDO.setOrderStatus(OrderStatus.GUAN_BI.getCode());
             faultOrderDO.setCloseTime(DateUtil.getCurrentTime());
             faultReportMapper.updateFaultOrder(faultOrderDO);
-            FaultInfoDO faultInfoDO = new FaultInfoDO();
+            FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(a.getFaultNo());
             faultInfoDO.setFaultNo(a.getFaultNo());
             faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
             faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -1030,7 +1029,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultOrderDO.setRecReviseTime(current);
             faultOrderDO.setRecRevisor(currentUser);
             faultReportMapper.updateFaultOrder(faultOrderDO);
-            FaultInfoDO faultInfoDO = new FaultInfoDO();
+            FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo);
             faultInfoDO.setFaultNo(faultNo);
             faultInfoDO.setRecReviseTime(current);
             faultInfoDO.setRecRevisor(currentUser);

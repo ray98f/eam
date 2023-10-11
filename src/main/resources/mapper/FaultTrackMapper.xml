@@ -43,7 +43,7 @@
     </update>
     <update id="repair">
         UPDATE T_FAULT_TRACK_DETAIL
-        SET FAULT_TRACK_WORK_NO = #{faultTrackWorkNo},
+        SET
         WORKER_GROUP_CODE = #{workerGroupCode},
         TRACK_REPORTER_ID = #{trackReporterId},
         DISPATCH_USER_ID = #{dispatchUserId},

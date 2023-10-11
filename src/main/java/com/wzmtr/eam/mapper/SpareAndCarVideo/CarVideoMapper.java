@@ -32,4 +32,6 @@ public interface CarVideoMapper {
     void update(CarVideoAddReqDTO reqDTO);
 
     void operate(CarVideoDO reqDTO);
+
+    String selectMaxCode();
 }

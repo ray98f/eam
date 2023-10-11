@@ -287,7 +287,7 @@
             </if>
             <if test="req.faultNos != null and req.faultNos.size() > 0">
                 AND d.FAULT_NO IN
-                <foreach collection="faultNos" item="code" open="(" close=")" separator=",">
+                <foreach collection="req.faultNos" item="code" open="(" close=")" separator=",">
                     #{code}
                 </foreach>
             </if>

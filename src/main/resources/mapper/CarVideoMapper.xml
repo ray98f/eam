@@ -58,23 +58,57 @@
     </insert>
     <update id="update">
         UPDATE T_VIDEO_ACCESS
-        SET TRAIN_NO          = #{trainNo},
-            EQUIP_CODE        = #{equipCode},
-            APPLY_REASON      = #{applyReason},
-            APPLY_TYPE        = #{applyType},
-            APPLIER_ID        = #{applierId},
-            APPLIER_MOB_PHONE = #{applierMobPhone},
-            APPLY_DEPT_CODE   = #{applyDeptCode},
-            APPLY_DEPT_LEADER = #{applyDeptLeader},
-            APPLY_TIME        = #{applyTime},
-            VIDEO_START_TIME  = #{videoStartTime},
-            VIDEO_END_TIME    = #{videoEndTime},
-            ENGINEER_ID       = #{engineerId},
-            REPAIR_MANAGER_ID = #{repairManagerId},
-            REMARK            = #{remark},
-            REC_REVISOR       = #{recRevisor},
-            REC_REVISE_TIME   = #{recReviseTime},
-            DISPATCH_USER_ID=#{dispatchUserI}
+        SET
+        REC_REVISE_TIME = #{recReviseTime}
+        , REC_REVISOR = #{recRevisor}
+        <if test="trainNo != null and trainNo != ''">
+           , TRAIN_NO = #{trainNo}
+        </if>
+        <if test="equipCode != null and equipCode != ''">
+          , EQUIP_CODE = #{equipCode}
+        </if>
+        <if test="applyReason != null and applyReason != ''">
+           , APPLY_REASON = #{applyReason}
+        </if>
+        <if test="applyType != null and applyType != ''">
+           , APPLY_TYPE = #{applyType}
+        </if>
+        <if test="applierId != null and applierId != ''">
+           , APPLIER_ID = #{applierId}
+        </if>
+        <if test="applierMobPhone != null and applierMobPhone != ''">
+           , APPLIER_MOB_PHONE = #{applierMobPhone}
+        </if>
+        <if test="applyDeptCode != null and applyDeptCode != ''">
+          ,  APPLY_DEPT_CODE = #{applyDeptCode}
+        </if>
+        <if test="applyDeptLeader != null and applyDeptLeader != ''">
+           , APPLY_DEPT_LEADER = #{applyDeptLeader}
+        </if>
+        <if test="applyTime != null and applyTime != ''">
+           , APPLY_TIME = #{applyTime}
+        </if>
+        <if test="videoStartTime != null and videoStartTime != ''">
+           , VIDEO_START_TIME = #{videoStartTime}
+        </if>
+        <if test="videoEndTime != null and videoEndTime != ''">
+           , VIDEO_END_TIME = #{videoEndTime}
+        </if>
+        <if test="equipCode != null and equipCode != ''">
+           , EQUIP_CODE = #{equipCode}
+        </if>
+        <if test="engineerId != null and engineerId != ''">
+            ,ENGINEER_ID = #{engineerId}
+        </if>
+        <if test="repairManagerId != null and repairManagerId != ''">
+           , REPAIR_MANAGER_ID = #{repairManagerId}
+        </if>
+        <if test="remark != null and remark != ''">
+            ,REMARK = #{remark}
+        </if>
+        <if test="dispatchUserId != null and dispatchUserId != ''">
+           , DISPATCH_USER_ID = #{dispatchUserId}
+        </if>
         WHERE REC_ID = #{recId}
     </update>
     <update id="deleteByIds">
@@ -277,6 +311,10 @@
                 and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{endApplyTime},'YYYY-MM-DD')
             </if>
         </trim>
+    </select>
+    <select id="selectMaxCode" resultType="java.lang.String">
+            SELECT max(APPLY_NO)
+            FROM T_VIDEO_ACCESS
     </select>
 
 </mapper>

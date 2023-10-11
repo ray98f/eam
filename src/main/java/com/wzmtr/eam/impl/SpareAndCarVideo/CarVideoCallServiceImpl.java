@@ -17,10 +17,7 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.carVideoCall.CarVideoService;
-import com.wzmtr.eam.utils.DateUtil;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,6 +90,8 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         reqDTO.setArchiveFlag("0");
         reqDTO.setDeleteFlag("0");
+        String maxCode = carVideoMapper.selectMaxCode();
+        reqDTO.setApplyNo(CodeUtils.getNextCode(maxCode, "VA"));
         reqDTO.setRecStatus("10");
         if (StringUtils.isNotEmpty(reqDTO.getTrainNo())) {
             reqDTO.setEquipCode(equipmentMapper.selectByEquipName(reqDTO.getTrainNo()).get(0).getEquipCode());
@@ -114,6 +113,9 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         }
         assert !Objects.equals(res.getRecStatus(), "10") : "非编辑状态不可修改";
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        if (StringUtils.isNotEmpty(reqDTO.getTrainNo())) {
+            reqDTO.setEquipCode(equipmentMapper.selectByEquipName(reqDTO.getTrainNo()).get(0).getEquipCode());
+        }
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         carVideoMapper.update(reqDTO);
     }
