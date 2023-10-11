@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
+import com.wzmtr.eam.dto.req.mea.MeaInfoQueryReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaInfoReqDTO;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.mea.CheckPlanResDTO;
@@ -199,7 +200,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 map.put("年月", resDTO.getPlanPeriodMark());
                 map.put("编制部门", organizationMapper.getNamesById(resDTO.getEditDeptCode()));
                 map.put("计划人", resDTO.getPlanCreaterName());
-                map.put("计划状态", resDTO.getPlanStatus());
+                map.put("计划状态", "10".equals(resDTO.getPlanStatus()) ? "编辑" : "20".equals(resDTO.getPlanStatus()) ? "审核中" : "审核通过");
                 map.put("备注", resDTO.getPlanNote());
                 list.add(map);
             }
@@ -302,6 +303,12 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             }
         }
         ExcelPortUtil.excelPort("定检计划明细信息", listName, list, null, response);
+    }
+
+    @Override
+    public Page<MeaInfoResDTO> queryCheckPlanInfo(MeaInfoQueryReqDTO meaInfoQueryReqDTO, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return checkPlanMapper.queryDetail(pageReqDTO.of(), meaInfoQueryReqDTO);
     }
 
 }

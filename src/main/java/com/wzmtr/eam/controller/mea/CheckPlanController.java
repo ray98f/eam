@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.mea;
 
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
+import com.wzmtr.eam.dto.req.mea.MeaInfoQueryReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaInfoReqDTO;
 import com.wzmtr.eam.dto.res.mea.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.mea.MeaInfoResDTO;
@@ -119,5 +120,11 @@ public class CheckPlanController {
                                     @RequestParam(required = false) @ApiParam("计量器具检定计划号") String instrmPlanNo,
                                     HttpServletResponse response) {
         checkPlanService.exportCheckPlanInfo(equipCode, instrmPlanNo, response);
+    }
+
+    @GetMapping("/info/query")
+    @ApiOperation(value = "筛选查询定检计划明细列表")
+    public PageResponse<MeaInfoResDTO> queryCheckPlanInfo(MeaInfoQueryReqDTO meaInfoQueryReqDTO, @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(checkPlanService.queryCheckPlanInfo(meaInfoQueryReqDTO, pageReqDTO));
     }
 }

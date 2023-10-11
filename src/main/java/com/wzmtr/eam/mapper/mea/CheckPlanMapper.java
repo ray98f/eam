@@ -3,6 +3,7 @@ package com.wzmtr.eam.mapper.mea;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
+import com.wzmtr.eam.dto.req.mea.MeaInfoQueryReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaInfoReqDTO;
 import com.wzmtr.eam.dto.res.mea.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.mea.MeaInfoResDTO;
@@ -43,4 +44,6 @@ public interface CheckPlanMapper {
     void modifyInfo(MeaInfoReqDTO meaInfoReqDTO);
 
     List<MeaInfoResDTO> listInfo(String equipCode, String instrmPlanNo);
+
+    Page<MeaInfoResDTO> queryDetail(Page<MeaInfoResDTO> page, MeaInfoQueryReqDTO req);
 }

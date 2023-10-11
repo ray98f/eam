@@ -545,4 +545,99 @@
         order by a.REC_CREATE_TIME desc
     </select>
 
+    <select id="queryDetail" resultType="com.wzmtr.eam.dto.res.mea.MeaInfoResDTO">
+        SELECT
+        a.REC_ID                as "recId",
+        a.INSTRM_PLAN_NO        as "instrmPlanNo",
+        a.EQUIP_CODE            as "equipCode",
+        a.EQUIP_NAME            as "equipName",
+        a.INSTALLATION_UNIT     as "installationUnit",
+        a.PLAN_BEGIN_DATE       as "planBeginDate",
+        a.PLAN_END_DATE         as "planEndDate",
+        a.EQUIPMENT_STATE       as "equipmentState",
+        a.USE_DEPT_PLACE        as "useDeptPlace",
+        a.EQUIPMENT_REG_CODE    as "equipmentRegCode",
+        a.SECURITY_MANAGER      as "securityManager",
+        a.SECURITY_CONTACT      as "securityContact",
+        a.POSITION1_CODE        as "position1Code",
+        a.POSITION1_NAME        as "position1Name",
+        a.POSITION2_CODE        as "position2Code",
+        a.POSITION2_NAME        as "position2Name",
+        a.POSITION3             as "position3",
+        a.POSITION_REMARK       as "positionRemark",
+        a.VERIFY_NOTE           as "verifyNote",
+        a.REC_CREATOR           as "recCreator",
+        a.REC_CREATE_TIME       as "recCreateTime",
+        a.REC_REVISOR           as "recRevisor",
+        a.REC_REVISE_TIME       as "recReviseTime",
+        a.REC_DELETOR           as "recDeletor",
+        a.REC_DELETE_TIME       as "recDeleteTime",
+        a.DELETE_FLAG           as "deleteFlag",
+        a.ARCHIVE_FLAG          as "archiveFlag",
+        a.REC_STATUS            as "recStatus",
+        e.MEASURE_RANGE         as "measureRange",
+        e.MEASURE_ACCURACY      as "measureAccuracy",
+        e.VERIFY_DEPT           as "verifyDept",
+        e.MEASURE_BARCODE       as "measureBarcode",
+        e.CERTIFICATE_NO        as "certificateNo",
+        e.CERTIFICATE_TYPE      as "certificateType",
+        e.VERIFY_RESULT         as "verifyResult",
+        e.VERIFY_PERIOD         as "verifyPeriod",
+        e.USE_BEGIN_DATE        as "useBeginDate",
+        e.LAST_VERIFY_DATE      as "lastVerifyDate",
+        e.NEXT_VERIFY_DATE      as "nextVerifyDate",
+        e.SEND_VERIFY_DATE      as "sendVerifyDate",
+        e.MAT_SPECIFI           as "matSpecifi",
+        e.MANUFACTURE_NO        as "manufactureNo",
+        e.MANUFACTURE           as "manufacture",
+        e.COMPANY_CODE          as "companyCode",
+        e.SOURCE                as "source",
+        e.TRANSFER_DATE         as "transferDate",
+        e.EXPIRATION_DATE       as "expirationDate"
+        FROM T_MEA_INFO a left join T_MEA_INSTRUMENT e on e.EQUIP_CODE=a.EQUIP_CODE
+        WHERE 1=1 <!--and a.INSTRM_PLAN_NO=#instrmPlanNo#-->
+        and a.EQUIP_CODE NOT IN (SELECT b.EQUIP_CODE FROM T_MEA_SUBMISSION_DETAIL b
+        LEFT JOIN T_MEA_SUBMISSION d ON b.SEND_VERIFY_NO=d.SEND_VERIFY_NO
+        WHERE b.EQUIP_CODE is NOT NUll)
+        <!--NOT EXISTS 写法-->
+        <!--and NOT EXISTS-->
+        <!--(-->
+        <!--SELECT 1 FROM WBPLAT.TDMAM32 b-->
+        <!--LEFT JOIN WBPLAT.TDMAM31 d ON b.SEND_VERIFY_NO=d.SEND_VERIFY_NO-->
+        <!--WHERE d.INSTRM_PLAN_NO=#instrmPlanNo# and a.EQUIP_CODE=b.EQUIP_CODE-->
+        <!--)-->
+        <!--and a.EQUIP_CODE NOT IN (select b.EQUIP_CODE from WBPLAT.TDMAM31 a, WBPLAT.TDMAM32 b where a.SEND_VERIFY_NO=b.SEND_VERIFY_NO and b.EQUIP_CODE is not NULL and to_date(a.SEND_VERIFY_DATE, 'yyyy-mm-dd') >= TRUNC(SYSDATE, 'MM') and to_date(a.SEND_VERIFY_DATE, 'yyyy-mm-dd') <![CDATA[<=]]> last_day(SYSDATE))
+        and a.EQUIP_CODE  IN (select a.EQUIP_CODE from WBPLAT.TDMAM22 a, WBPLAT.TDMAM21 b where a.INSTRM_PLAN_NO=b.INSTRM_PLAN_NO and b.PLAN_STATUS ='30')
+        -->
+        <if test="req.equipCodeList!=null and req.equipCodeList.size()>0">
+            and a.EQUIP_CODE NOT IN (
+            <foreach collection="req.equipCodeList" index="index" item="x" separator=",">
+                #{x}
+            </foreach>
+            )
+        </if>
+        <if test="req.equipCode!=null and req.equipCode!=''">
+            and a.EQUIP_CODE like like '%' || #{req.equipCode} || '%'
+        </if>
+        <if test="req.equipName!=null and req.equipName!=''">
+            and a.EQUIP_NAME like like '%' || #{req.equipName} || '%'
+        </if>
+        <if test="req.matSpecifi!=null and req.matSpecifi!=''">
+            and a.MAT_SPECIFI like like '%' || #{req.matSpecifi} || '%'
+        </if>
+        <if test="req.planBeginBeginDate!=null and req.planBeginBeginDate!=''">
+            and a.PLAN_BEGIN_DATE >= #{req.planBeginBeginDate}
+        </if>
+        <if test="req.planBeginEndDate!=null and req.planBeginEndDate!=''">
+            and #{req.planBeginEndDate} >= a.PLAN_BEGIN_DATE
+        </if>
+        <if test="req.planEndBeginDate!=null and req.planEndBeginDate!=''">
+            and a.PLAN_END_DATE >= #{req.planEndBeginDate}
+        </if>
+        <if test="req.planEndEndDate!=null and req.planEndEndDate!=''">
+            and #{req.planEndEndDate} >= a.PLAN_END_DATE
+        </if>
+        order by a.REC_CREATE_TIME desc
+    </select>
+
 </mapper>

@@ -151,7 +151,7 @@ public class MeaServiceImpl implements MeaService {
                 map.put("出厂编号", resDTO.getManufactureNo());
                 map.put("使用保管人手机号", resDTO.getPhoneNo());
                 map.put("使用保管人姓名", resDTO.getUseName());
-                map.put("线别", resDTO.getLineNo());
+                map.put("线别", "01".equals(resDTO.getLineNo()) ? "S1线" : "S2线");
                 list.add(map);
             }
         }

@@ -88,7 +88,7 @@
             and EQUIP_NAME like '%' || #{req.equipName} || '%'
         </if>
         <if test="req.equipCode!=null and req.equipCode!=''">
-            and EQUIP_CODE like '%' || #{equipCode} || '%'
+            and EQUIP_CODE like '%' || #{req.equipCode} || '%'
         </if>
         <if test="req.matSpecifi!=null and req.matSpecifi!=''">
             and MAT_SPECIFI like '%' || #{req.matSpecifi} || '%'
