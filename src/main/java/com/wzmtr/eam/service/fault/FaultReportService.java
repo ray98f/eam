@@ -16,7 +16,7 @@ public interface FaultReportService {
      *
      * @param reqDTO
      */
-    void addToEquip(FaultReportReqDTO reqDTO);
+    String addToEquip(FaultReportReqDTO reqDTO);
 
     Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO);
 

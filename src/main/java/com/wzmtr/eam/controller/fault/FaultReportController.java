@@ -31,9 +31,8 @@ public class FaultReportController {
 
     @ApiOperation(value = "故障提报（到设备）")
     @PostMapping("/insert/epuip")
-    public DataResponse<FaultReportResDTO> add(@RequestBody @Valid FaultReportReqDTO reqDTO) {
-        reportService.addToEquip(reqDTO);
-        return DataResponse.success();
+    public DataResponse<String> add(@RequestBody @Valid FaultReportReqDTO reqDTO) {
+        return DataResponse.of(reportService.addToEquip(reqDTO));
     }
 
     @ApiOperation(value = "故障提报（到专业）")
@@ -67,7 +66,6 @@ public class FaultReportController {
     @ApiOperation(value = "已提报故障单修改")
     @PostMapping("/fault/update")
     public DataResponse<String> update(@RequestBody FaultReportReqDTO reqDTO) {
-        // faultWorkNo
         reportService.update(reqDTO);
         return DataResponse.success();
     }

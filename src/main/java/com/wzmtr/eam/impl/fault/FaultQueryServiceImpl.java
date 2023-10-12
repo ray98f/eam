@@ -101,8 +101,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
+        // 不包含作废
+        if (!reqDTO.getInvalid()) {
+            records = records.stream().filter(a -> !a.getOrderStatus().equals("99")).collect(Collectors.toList());
+        }
         records.forEach(a -> {
-            if (a.getDocId() != null && !"".equals(a.getDocId())) {
+            if (a.getDocId() != null && !a.getDocId().isEmpty()) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
             }
             String repair = organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode());
@@ -880,12 +884,19 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public List<FaultRepairDeptResDTO> querydept(String faultNo) {
+        if (StringUtils.isEmpty(faultNo)) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
         FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo);
         return faultQueryMapper.queryDeptCode(faultInfoDO.getLineCode(), faultInfoDO.getMajorCode(), "20");
     }
+
     @Override
     public List<OrganMajorLineType> queryWorker(String workerGroupCode) {
-        return userGroupMemberService.getDepartmentUserByGroupName(workerGroupCode,"DM_012");
+        if (StringUtils.isEmpty(workerGroupCode)) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        return userGroupMemberService.getDepartmentUserByGroupName(workerGroupCode, "DM_012");
     }
 
     private void _cancel(List<FaultDetailResDTO> list, String currentUser, String current) {

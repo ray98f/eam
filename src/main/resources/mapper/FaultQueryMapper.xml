@@ -604,7 +604,6 @@
                    and d.FAULT_NO LIKE '%' || #{faultNo} || '%'
                 </if>
             </trim>
-            ORDER BY d.FAULT_NO desc
     </select>
     <select id="queryOneFaultOrder" resultType="com.wzmtr.eam.dataobject.FaultOrderDO">
         SELECT

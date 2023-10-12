@@ -13,7 +13,6 @@ import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
-import com.wzmtr.eam.mapper.user.UserHelperMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
@@ -26,10 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -53,7 +50,7 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     // @Transactional(rollbackFor = Exception.class)
-    public void addToEquip(FaultReportReqDTO reqDTO) {
+    public String addToEquip(FaultReportReqDTO reqDTO) {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         // 获取AOP代理对象
@@ -64,6 +61,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         FaultOrderDO faultOrderDO = reqDTO.toFaultOrderInsertDO(reqDTO);
         String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
         _insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
+        return nextFaultNo;
         // TODO: 2023/8/24 知会OCC调度
         // if ("Y".equals(maintenance)) {
         //     /* 1756 */             String groupName = "DM_021";
@@ -107,7 +105,10 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
-        List<FaultReportResDTO> filter = list.getRecords().stream().filter(a -> !a.getMajorCode().equals("07") && !a.getMajorCode().equals("06")).sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed()).collect(Collectors.toList());
+        List<FaultReportResDTO> filter = list.getRecords().stream()
+                .filter(a -> !a.getMajorCode().equals("07") && !a.getMajorCode().equals("06"))
+                .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
+                .collect(Collectors.toList());
         filter.forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());

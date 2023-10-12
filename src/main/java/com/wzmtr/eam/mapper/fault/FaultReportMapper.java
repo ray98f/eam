@@ -28,6 +28,10 @@ public interface FaultReportMapper {
      */
     void updateFaultOrder(FaultOrderDO faultOrder);
 
+    /**
+     * 更新faultInfo表，忽略null值
+     * @param faultInfo
+     */
     void updateFaultInfo(FaultInfoDO faultInfo);
 
     String getFaultInfoFaultNoMaxCode();
