@@ -84,7 +84,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
 
     @Override
     public void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "节点编号", "节点名称", "父节点记录编号", "记录状态", "备注", "创建者", "创建时间");
+        List<String> listName = Arrays.asList("记录编号", "节点编号", "节点名称", "记录状态", "备注", "创建者", "创建时间");
         List<EquipmentCategoryResDTO> categoryResDTOList = equipmentCategoryMapper.listEquipmentCategory(name, no, parentId);
         List<Map<String, String>> list = new ArrayList<>();
         if (categoryResDTOList != null && !categoryResDTOList.isEmpty()) {
@@ -93,7 +93,6 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
                 map.put("记录编号", categoryResDTO.getRecId());
                 map.put("节点编号", categoryResDTO.getNodeCode());
                 map.put("节点名称", categoryResDTO.getNodeName());
-                map.put("父节点记录编号", categoryResDTO.getParentNodeRecId());
                 map.put("记录状态", "10".equals(categoryResDTO.getRecStatus()) ? "启用" : "禁用");
                 map.put("备注", categoryResDTO.getRemark());
                 map.put("创建者", categoryResDTO.getRecCreator());

@@ -214,7 +214,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
-        submissionDetailReqDTO.setRecRevisor(TokenUtil.getUuId());
+        submissionDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         submissionDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionMapper.modifySubmissionDetail(submissionDetailReqDTO);
     }

@@ -168,7 +168,7 @@
     </update>
 
     <select id="downRecursion" resultType="java.lang.String">
-        SELECT ID FROM SYS_OFFICE
+        SELECT AREA_ID FROM SYS_OFFICE
         START WITH ID=#{id}
         CONNECT BY PRIOR ID=PARENT_ID
     </select>

@@ -10,7 +10,7 @@
         where om.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
             and
-            <foreach collection="orgCodes" item="orgCode" separator="or">
+            <foreach collection="orgCodes" index="index" item="orgCode">
                 om.ORG_CODE in
                 <foreach collection="orgCode" item="x" separator="," open="(" close=")">
                     #{x}

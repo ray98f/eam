@@ -617,13 +617,13 @@
             )
         </if>
         <if test="req.equipCode!=null and req.equipCode!=''">
-            and a.EQUIP_CODE like like '%' || #{req.equipCode} || '%'
+            and a.EQUIP_CODE like '%' || #{req.equipCode} || '%'
         </if>
         <if test="req.equipName!=null and req.equipName!=''">
-            and a.EQUIP_NAME like like '%' || #{req.equipName} || '%'
+            and a.EQUIP_NAME like '%' || #{req.equipName} || '%'
         </if>
         <if test="req.matSpecifi!=null and req.matSpecifi!=''">
-            and a.MAT_SPECIFI like like '%' || #{req.matSpecifi} || '%'
+            and a.MAT_SPECIFI like '%' || #{req.matSpecifi} || '%'
         </if>
         <if test="req.planBeginBeginDate!=null and req.planBeginBeginDate!=''">
             and a.PLAN_BEGIN_DATE >= #{req.planBeginBeginDate}
