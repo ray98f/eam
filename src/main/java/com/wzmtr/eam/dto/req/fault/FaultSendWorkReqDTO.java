@@ -27,6 +27,8 @@ public class FaultSendWorkReqDTO {
     private String repairRespUserName;
     @ApiModelProperty(value = "派工时间")
     private String dispatchTime;
+    @ApiModelProperty(value = "派工人")
+    private String dispatchName;
     @ApiModelProperty(value = "工作区域")
     private String workArea;
     @ApiModelProperty(value = "预计恢复时间")

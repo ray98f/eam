@@ -623,43 +623,42 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void sendWork(FaultSendWorkReqDTO reqDTO) {
-        // 派工
+        // 派工 com.baosight.wzplat.dm.fm.service.ServiceDMFM0002#update
         if (StringUtils.isEmpty(reqDTO.getWorkerGroupCode())) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
         List<String> faultWorkNos = Arrays.asList(reqDTO.getFaultWorkNo().split(","));
         faultWorkNos.forEach(a -> {
             String workerGroupCode = reqDTO.getWorkerGroupCode();
-            FaultDetailResDTO faultDetailResDTO = faultQueryMapper.queryDetail(FaultQueryDetailReqDTO.builder().faultWorkNo(reqDTO.getFaultWorkNo()).build());
-            if (faultDetailResDTO != null) {
-                String majorName = faultDetailResDTO.getMajorName();
-                FaultOrderDO faultOrderDO = new FaultOrderDO();
+            FaultOrderDO faultOrderDO1 = faultQueryMapper.queryOneFaultOrder(null, a);
+            if (faultOrderDO1 != null) {
                 if (StringUtils.isNotEmpty(reqDTO.getLevelFault())) {
-                    faultOrderDO.setExt1(reqDTO.getLevelFault());
+                    faultOrderDO1.setExt1(reqDTO.getLevelFault());
                 }
-                faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
-                faultOrderDO.setRecReviseTime(DateUtil.getCurrentTime());
-                faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
-                faultReportMapper.updateFaultOrder(faultOrderDO);
-                FaultInfoDO faultInfoDO = new FaultInfoDO();
+                faultOrderDO1.setRecRevisor(TokenUtil.getCurrentPersonId());
+                faultOrderDO1.setRecReviseTime(DateUtil.getCurrentTime());
+                faultOrderDO1.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                faultReportMapper.updateFaultOrder(faultOrderDO1);
+                FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultOrderDO1.getFaultNo());
                 faultInfoDO.setRepairDeptCode(workerGroupCode);
                 if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) & reqDTO.getIsTiKai().equals("08")) {
                     faultInfoDO.setExt3("08");
                 }
                 faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
                 faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
-                faultInfoDO.setFaultNo(faultDetailResDTO.getFaultNo());
+                faultInfoDO.setFaultNo(faultOrderDO1.getFaultNo());
                 faultReportMapper.updateFaultInfo(faultInfoDO);
-                overTodoService.overTodo(faultDetailResDTO.getFaultOrderRecId(), "故障维修");
+                overTodoService.overTodo(faultOrderDO1.getRecId(), "故障维修");
                 // todo 发短信
                 // String content = "【市铁投集团】" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "向您指派了一条故障工单，故障位置：" + positionName + "," + position2Name + "，设备名称：" + objectName + ",故障现象：" + faultDisplayDetail + "请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
-                overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", faultDetailResDTO.getFaultOrderRecId(), faultDetailResDTO.getFaultWorkNo(), "DM_013", reqDTO.getWorkClass(), "故障维修", "DMFM0001", TokenUtil.getCurrentPersonId(), null);
+                overTodoService.insertTodoWithUserGroupAndOrg("【" + reqDTO.getMajorCode() + "】故障管理流程", faultOrderDO1.getRecId(), faultOrderDO1.getFaultWorkNo(), "DM_013", reqDTO.getWorkClass(), "故障维修", "DMFM0001", TokenUtil.getCurrentPersonId(), null);
                 Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "01");
                 String zcStepOrg = dictionaries.getItemEname();
-                if (!faultOrderDO.getWorkClass().contains(zcStepOrg)) {
+                if (!faultOrderDO1.getWorkClass().contains(zcStepOrg)) {
                     // todo 调用施工调度接口
-                    _sendContractFault(faultOrderDO);
+                    _sendContractFault(faultOrderDO1);
                 }
             }
         });
