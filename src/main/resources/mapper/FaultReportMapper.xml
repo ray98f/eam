@@ -630,8 +630,8 @@
     </select>
     <select id="carFaultReportList" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         SELECT
-        d.REC_ID	as "recId",  <!-- 记录编号 -->
-        df.REC_ID as "workId",
+        d.REC_ID as "infoRecId",
+        df.REC_ID AS "orderRecId",
         d.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
         d.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
         d.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
