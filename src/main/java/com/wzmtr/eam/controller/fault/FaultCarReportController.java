@@ -37,7 +37,7 @@ public class FaultCarReportController {
     @ApiOperation(value = "已提报故障")
     @PostMapping("/list")
     public PageResponse<FaultReportResDTO> list(@RequestBody FaultReportPageReqDTO reqDTO) {
-        return PageResponse.of(reportService.list(reqDTO));
+        return PageResponse.of(reportService.carReportList(reqDTO));
     }
     @ApiOperation(value = "故障编号详情")
     @PostMapping("/detail")

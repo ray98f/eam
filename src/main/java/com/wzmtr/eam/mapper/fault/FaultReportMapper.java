@@ -15,8 +15,10 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface FaultReportMapper {
-
-    Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId, String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart, String fillinTimeEnd,String positionCode);
+    /**
+     * queryNoCar 已提报故障不包含车辆专业
+     */
+    Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId, String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart, String fillinTimeEnd, String positionCode);
 
     void addToFaultInfo(FaultInfoDO faultInfo);
 
@@ -24,12 +26,14 @@ public interface FaultReportMapper {
 
     /**
      * update col by faultNo and faultWorkNo
+     *
      * @param faultOrder
      */
     void updateFaultOrder(FaultOrderDO faultOrder);
 
     /**
      * 更新faultInfo表，忽略null值
+     *
      * @param faultInfo
      */
     void updateFaultInfo(FaultInfoDO faultInfo);
@@ -41,4 +45,6 @@ public interface FaultReportMapper {
     void cancelOrder(FaultCancelReqDTO reqDTO);
 
     void cancelInfo(FaultCancelReqDTO reqDTO);
+
+    Page<FaultReportResDTO> carFaultReportList(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId, String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart, String fillinTimeEnd, String positionCode);
 }

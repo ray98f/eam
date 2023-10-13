@@ -593,7 +593,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if ((((list != null) ? 1 : 0) & ((list.size() > 1) ? 1 : 0)) != 0) {
             Set<String> majorCodelist = list.stream().map(FaultInfoDO::getMajorCode).collect(Collectors.toSet());
             Set<String> lineCodelist = list.stream().map(FaultInfoDO::getLineCode).collect(Collectors.toSet());
-            // 检查majorCodelist和lineCodelist的大小是否都为1则为相同的major和lineCode 如果满足这些条件
+            // 检查majorCodelist和lineCodelist的大小是否都为1则为相同的major和lineCode
             return majorCodelist.size() != 1 || lineCodelist.size() != 1;
             // if (s.size() == 1 && hs.size() == 1 && hhs.isEmpty()) {
         } else {

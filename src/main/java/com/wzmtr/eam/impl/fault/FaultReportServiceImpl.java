@@ -105,17 +105,31 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
-        List<FaultReportResDTO> filter = list.getRecords().stream()
-                .filter(a -> !a.getMajorCode().equals("07") && !a.getMajorCode().equals("06"))
-                .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
-                .collect(Collectors.toList());
-        filter.forEach(a -> {
+        list.getRecords().forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());
             a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
             a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
         });
-        list.setRecords(filter);
+        return list;
+    }
+
+    @Override
+    public Page<FaultReportResDTO> carReportList(FaultReportPageReqDTO reqDTO) {
+        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        // and d.MAJOR_CODE  IN('07','06');
+        long startTime = System.nanoTime();
+        Page<FaultReportResDTO> list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode());
+        log.info("车辆故障查询耗时{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
+        if (CollectionUtil.isEmpty(list.getRecords())) {
+            return new Page<>();
+        }
+        list.getRecords().forEach(a -> {
+            LineCode line = LineCode.getByCode(a.getLineCode());
+            a.setLineName(line == null ? a.getLineCode() : line.getDesc());
+            a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
+            a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
+        });
         return list;
     }
 

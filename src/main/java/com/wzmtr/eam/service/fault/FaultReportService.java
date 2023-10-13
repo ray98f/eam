@@ -18,7 +18,14 @@ public interface FaultReportService {
      */
     String addToEquip(FaultReportReqDTO reqDTO);
 
+    /**
+     * 已提报故障
+     * @param reqDTO
+     * @return
+     */
+
     Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO);
+    Page<FaultReportResDTO> carReportList(FaultReportPageReqDTO reqDTO);
 
     void addToMajor(FaultReportToMajorReqDTO reqDTO);
 

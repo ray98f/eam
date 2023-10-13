@@ -49,7 +49,13 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             records.forEach(a -> {
                 String orgById = organizationMapper.getOrgById(a.getInspectDeptCode());
                 String extraOrgByAreaId = organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode());
-                a.setInspectDeptName(orgById == null ? a.getInspectorCode() : orgById);
+                if (StringUtils.isEmpty(orgById)) {
+                    orgById = organizationMapper.getExtraOrgByAreaId(a.getInspectDeptCode());
+                }
+                if (StringUtils.isEmpty(extraOrgByAreaId)) {
+                    extraOrgByAreaId = organizationMapper.getOrgById(a.getRestoreDeptCode());
+                }
+                a.setInspectDeptName(orgById == null ? a.getInspectDeptCode() : orgById);
                 a.setRestoreDeptName(extraOrgByAreaId == null ? a.getRestoreDeptCode() : extraOrgByAreaId);
                 a.setIsRestoredName("整改中");
                 if ("10".equals(a.getIsRestored())) {
@@ -92,7 +98,13 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         List<Map<String, String>> exportList = new ArrayList<>();
         for (SecureCheckRecordListResDTO res : list) {
             String inspectDept = organizationMapper.getOrgById(res.getInspectDeptCode());
-            String restoreDept = organizationMapper.getOrgById(res.getInspectDeptCode());
+            String restoreDept = organizationMapper.getExtraOrgByAreaId(res.getRestoreDeptCode());
+            if (StringUtils.isEmpty(inspectDept)) {
+                inspectDept = organizationMapper.getExtraOrgByAreaId(res.getInspectDeptCode());
+            }
+            if (StringUtils.isEmpty(restoreDept)) {
+                restoreDept = organizationMapper.getOrgById(res.getRestoreDeptCode());
+            }
             String desc = null;
             SecureRecStatus secureRecStatus = SecureRecStatus.getByCode(res.getIsRestored());
             if (null != secureRecStatus) {
@@ -127,7 +139,6 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SecureCheckAddReqDTO reqDTO) {
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         reqDTO.setRecId(TokenUtil.getUuId());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         String secRiskId = CodeUtils.getNextCode(secureMapper.getMaxCode(), "AQ");
@@ -135,14 +146,20 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         // 默认初始为0
         reqDTO.setDeleteFlag("0");
         reqDTO.setSecRiskId(secRiskId);
+        reqDTO.setRecStatus("10");
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        if (reqDTO.getRestoreDeptCode().trim().equals("0103705")) {
+            reqDTO.setExt5("0103705");
+        } else {
+            reqDTO.setExt5(reqDTO.getRestoreDeptCode());
+        }
         secureMapper.add(reqDTO);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SecureCheckAddReqDTO reqDTO) {
-        reqDTO.setRecReviseTime(DateUtil.getCurrentTime());
+        reqDTO.setRecReviseTime(DateUtil.dateTimeNow("yyyyMMddHHmmss"));
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         secureMapper.update(reqDTO);
     }

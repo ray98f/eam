@@ -9,7 +9,9 @@ import com.wzmtr.eam.dto.req.secure.SecureHazardDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureHazardResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
+import com.wzmtr.eam.enums.RiskRank;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.secure.SecureHazardMapper;
 import com.wzmtr.eam.service.secure.SecureHazardService;
 import com.wzmtr.eam.utils.CodeUtils;
@@ -39,6 +41,8 @@ public class SecureHazardServiceImpl implements SecureHazardService {
     private SecureHazardMapper hazardMapper;
     @Autowired
     private OrganizationMapper organizationMapper;
+    @Autowired
+    private DictionariesMapper dictionariesMapper;
 
     @Override
     public Page<SecureHazardResDTO> list(SecureHazardReqDTO reqDTO) {
@@ -86,10 +90,11 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         }
         List<Map<String, String>> list = new ArrayList<>();
         for (SecureHazardResDTO resDTO : resList) {
+            RiskRank rank = RiskRank.getByCode(resDTO.getRiskRank());
             Map<String, String> map = new HashMap<>();
             map.put("安全隐患排查单号", resDTO.getRiskId());
             map.put("发现日期", resDTO.getInspectDate());
-            map.put("安全隐患等级", resDTO.getRiskRank());
+            map.put("安全隐患等级", rank == null ? resDTO.getRiskRank() : rank.getDesc());
             map.put("安全隐患内容", resDTO.getRiskDetail());
             map.put("检查部门", organizationMapper.getExtraOrgByAreaId(resDTO.getInspectDeptCode()));
             map.put("检查人", resDTO.getInspectorCode());

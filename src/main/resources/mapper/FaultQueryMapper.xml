@@ -83,22 +83,7 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
-        df.EXT1 AS "levelfault",
-        (
-        case
-        when to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss')  <![CDATA[<]]> to_date(SYSDATE - 20) and
-        (df.ORDER_STATUS = '10' or df.ORDER_STATUS = '20' or df.ORDER_STATUS = '30') and
-        df.ORDER_STATUS != '99' and df.ORDER_STATUS != '60' and df.ORDER_STATUS != '70' then 1
-        when to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') >= to_date(SYSDATE - 20) and
-        to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss')  <![CDATA[<=]]> to_date(SYSDATE - 10) and
-        (df.ORDER_STATUS = '10' or df.ORDER_STATUS = '20' or df.ORDER_STATUS = '30') and
-        df.ORDER_STATUS != '99' and df.ORDER_STATUS != '60' and df.ORDER_STATUS != '70' then 2
-        when to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') >= to_date(SYSDATE - 10) and
-        (df.ORDER_STATUS = '10' or df.ORDER_STATUS = '20' or df.ORDER_STATUS = '30') and
-        df.ORDER_STATUS != '99' and df.ORDER_STATUS != '60' and df.ORDER_STATUS != '70' then 3
-        else 9
-        end
-        ) as sort
+        df.EXT1 AS "levelfault"
         FROM
         T_FAULT_INFO d,
         IPLAT60.XS_USER u,
@@ -151,7 +136,7 @@
             AND d.FAULT_NO = df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
         </trim>
-        ORDER BY sort,df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
     <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT

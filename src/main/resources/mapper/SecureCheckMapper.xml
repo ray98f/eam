@@ -108,7 +108,6 @@
     <update id="update">
         UPDATE T_SEC_RISK
         SET
-        REC_REVISOR = #{recRevisor},
         <if test="recReviseTime !=null and recReviseTime!=''">
             REC_REVISE_TIME = #{recReviseTime},
         </if>
@@ -224,8 +223,9 @@
             EXT4 = #{ext4},
         </if>
         <if test="ext5 !=null and ext5!=''">
-            EXT5 = #{ext5}
+            EXT5 = #{ext5},
         </if>
+        REC_REVISOR = #{recRevisor}
         WHERE SEC_RISK_ID = #{secRiskId}
     </update>
 
@@ -242,7 +242,7 @@
             </if>
             <if test="inspectDateEnd!=null and inspectDateEnd!=''">
                 and TO_DATE(INSPECT_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{inspectDateEnd},'YYYY-MM-DD')
-            </if>d
+            </if>
             <if test="restoreDesc!=null and restoreDesc!=''">
                 and IS_RESTORED = #{restoreDesc}
             </if>
