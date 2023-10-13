@@ -18,7 +18,7 @@ public class CheckPlanListReqDTO {
     private String instrmPlanNo;
 
     @ApiModelProperty(value = "计划人")
-    private Integer planCreaterName;
+    private String planCreaterName;
 
     @ApiModelProperty(value = "计划状态10:提交;20:检测中;30:完成检测")
     private String planStatus;
