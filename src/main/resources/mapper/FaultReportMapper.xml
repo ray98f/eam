@@ -516,8 +516,8 @@
 
     <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         SELECT
-        d.REC_ID	as "recId",  <!-- 记录编号 -->
-        df.REC_ID as "workId",
+        d.REC_ID as "infoRecId",
+        df.REC_ID AS "orderRecId",
         d.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
         d.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
         d.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
@@ -526,7 +526,6 @@
         d.OBJECT_CODE	as "objectCode_textField",  <!-- 对象编码 -->
         d.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
         d.TRAIN_TRUNK	as "trainTrunk",  <!-- 车底号/车厢号 -->
-        (Select ec.ITEM_CNAME from iplat60.tedcm01 ec where ec.ITEM_CODE = d.LINE_CODE and ec.CODESET_CODE='line') as "lineName",
         d.LINE_CODE	as "lineCode",  <!-- 线路编码 -->
         d.POSITION_CODE	as "positionCode",  <!-- 位置编码 -->
         d.POSITION2_CODE as "position2Code",
@@ -641,7 +640,6 @@
         d.OBJECT_CODE	as "objectCode_textField",  <!-- 对象编码 -->
         d.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
         d.TRAIN_TRUNK	as "trainTrunk",  <!-- 车底号/车厢号 -->
-        (Select ec.ITEM_CNAME from iplat60.tedcm01 ec where ec.ITEM_CODE = d.LINE_CODE and ec.CODESET_CODE='line') as "lineName",
         d.LINE_CODE	as "lineCode",  <!-- 线路编码 -->
         d.POSITION_CODE	as "positionCode",  <!-- 位置编码 -->
         d.POSITION2_CODE as "position2Code",
