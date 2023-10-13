@@ -24,7 +24,7 @@ import java.util.Set;
  */
 @Mapper
 @Repository
-public interface FaultQueryMapper {
+public interface FaultQueryMapper{
     Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
 
     FaultDetailResDTO queryDetail(@Param("req") FaultQueryDetailReqDTO req);
@@ -35,8 +35,7 @@ public interface FaultQueryMapper {
 
     FaultOrderDO queryOneFaultOrder(String faultNo, String faultWorkNo);
 
-
-
+    List<FaultOrderDO> faultOrderList(Set<String> faultNos,Set<String> faultWorkNos);
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
 
     List<FaultDetailResDTO> list(@Param("req") FaultQueryReqDTO req);

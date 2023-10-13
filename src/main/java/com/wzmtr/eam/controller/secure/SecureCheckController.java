@@ -49,7 +49,7 @@ public class SecureCheckController {
         return DataResponse.success();
     }
 
-    @ApiOperation(value = "安全/质量/消防/-检查问题单删除")
+    @ApiOperation(value = "安全/质量/消防/-检查问题单编辑")
     @PostMapping("/record/update")
     public DataResponse<SecureCheckRecordListResDTO> update(@RequestBody SecureCheckAddReqDTO reqDTO) {
         secureService.update(reqDTO);

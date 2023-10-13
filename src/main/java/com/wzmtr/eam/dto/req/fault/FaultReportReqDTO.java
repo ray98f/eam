@@ -108,7 +108,7 @@ public class FaultReportReqDTO {
             convert.setWorkClass(req.getRepairDeptCode());
         }
         convert.setDeleteFlag("0");
-        convert.setOrderStatus("30");
+        convert.setOrderStatus("10");
         return convert;
     }
 

@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dataobject;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,7 +13,7 @@ import lombok.Data;
 @Data
 @TableName(value = "T_FAULT_INFO")
 public class FaultInfoDO {
-    @TableId(value = "recId")
+    @TableId(value = "REC_ID")
     private String recId;
     @ApiModelProperty(value = "公司代码")
     private String companyCode = " ";
@@ -32,6 +33,7 @@ public class FaultInfoDO {
     private String lineCode = " ";
     @ApiModelProperty(value = "位置编码")
     private String positionCode = " ";
+    @TableField(exist = false)
     @ApiModelProperty(value = "位置")
     private String positionName;
     @ApiModelProperty(value = "位置2编码")
@@ -40,10 +42,13 @@ public class FaultInfoDO {
     private String partCode;
     @ApiModelProperty(value = "部件名称")
     private String partName;
+    @TableField(exist = false)
     @ApiModelProperty(value = "专业")
     private String majorName = " ";
+    @TableField(exist = false)
     @ApiModelProperty(value = "系统")
     private String systemName;
+    @TableField(exist = false)
     @ApiModelProperty(value = "设备分类")
     private String equipTypeName;
     @ApiModelProperty(value = "专业代码")
@@ -129,7 +134,7 @@ public class FaultInfoDO {
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
     @ApiModelProperty(value = "检修车/运营车标识")
-    private String traintag;
+    private String trainTag;
     @ApiModelProperty(value = "故障模块")
     private String faultModuleId;
 }

@@ -14,10 +14,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.secure.SecureCheckMapper;
 import com.wzmtr.eam.service.secure.SecureCheckService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -133,9 +130,9 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         reqDTO.setRecId(TokenUtil.getUuId());
         reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        String secRiskId = CodeUtils.getNextCode(secureMapper.getMaxCode(),"AQ");
+        String secRiskId = CodeUtils.getNextCode(secureMapper.getMaxCode(), "AQ");
         reqDTO.setSecRiskId(secRiskId);
-        //默认初始为0
+        // 默认初始为0
         reqDTO.setDeleteFlag("0");
         reqDTO.setSecRiskId(secRiskId);
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -145,7 +142,9 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SecureCheckAddReqDTO reqDTO) {
-
+        reqDTO.setRecReviseTime(DateUtil.getCurrentTime());
+        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        secureMapper.update(reqDTO);
     }
 
 }

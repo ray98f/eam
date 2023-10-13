@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -27,10 +28,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.PartMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.StationMapper;
-import com.wzmtr.eam.mapper.fault.AnalyzeMapper;
-import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
-import com.wzmtr.eam.mapper.fault.FaultReportMapper;
-import com.wzmtr.eam.mapper.fault.TrackMapper;
+import com.wzmtr.eam.mapper.fault.*;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
@@ -78,6 +76,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Autowired
     private FileMapper fileMapper;
     @Autowired
+    private FaultInfoMapper faultInfoMapper;
+    @Autowired
     private UserGroupMemberService userGroupMemberService;
 
 
@@ -102,7 +102,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             return new Page<>();
         }
         // 不包含作废
-        if (!reqDTO.getInvalid()) {
+        if (reqDTO.getInvalid() != null && !reqDTO.getInvalid()) {
             records = records.stream().filter(a -> !a.getOrderStatus().equals("99")).collect(Collectors.toList());
         }
         records.forEach(a -> {
@@ -583,27 +583,21 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public Boolean compareRows(CompareRowsReqDTO req) {
-        // 返回true 则代表不能进行操作
+        // 只选中一条直接返回T
+        if (req.getFaultNos().size() == 1) {
+            return true;
+        }
         Set<String> faultNos = req.getFaultNos();
-        List<FaultDetailResDTO> list = faultQueryMapper.export(FaultExportReqDTO.builder().faultNos(faultNos).build());
+        List<FaultInfoDO> list = faultInfoMapper.selectList(new QueryWrapper<FaultInfoDO>().in("FAULT_NO", faultNos));
+        // 不为null且长度大于1。如果满足条件，则返回1，表示为真；否则返回0，表示为假
         if ((((list != null) ? 1 : 0) & ((list.size() > 1) ? 1 : 0)) != 0) {
-            List<String> majorCodelist = list.stream().map(FaultDetailResDTO::getMajorCode).collect(Collectors.toList());
-            List<String> orderStatuslist = list.stream().map(FaultDetailResDTO::getOrderStatus).collect(Collectors.toList());
-            List<String> lineCodelist = list.stream().map(FaultDetailResDTO::getLineCode).collect(Collectors.toList());
-            Set<String> s = new HashSet<>(majorCodelist);
-            Set<String> hs = new HashSet<>(lineCodelist);
-            Set<String> hhs = new HashSet<>(orderStatuslist);
-            List<String> str = Collections.singletonList("10");
-            if (orderStatuslist.contains("10")) {
-                hhs.removeAll(str);
-                // 检查s集合和hs集合的大小是否都为1则为相同的major和lineCode，并且hhs为空。如果满足这些条件，则返回false.
-                return s.size() != 1 || hs.size() != 1 || !hhs.isEmpty();
-                // if (s.size() == 1 && hs.size() == 1 && hhs.isEmpty()) {
-            } else {
-                return true;
-            }
+            Set<String> majorCodelist = list.stream().map(FaultInfoDO::getMajorCode).collect(Collectors.toSet());
+            Set<String> lineCodelist = list.stream().map(FaultInfoDO::getLineCode).collect(Collectors.toSet());
+            // 检查majorCodelist和lineCodelist的大小是否都为1则为相同的major和lineCode 如果满足这些条件
+            return majorCodelist.size() != 1 || lineCodelist.size() != 1;
+            // if (s.size() == 1 && hs.size() == 1 && hhs.isEmpty()) {
         } else {
-            return false;
+            return true;
         }
     }
 
@@ -647,7 +641,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultReportMapper.updateFaultOrder(faultOrderDO1);
                 FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultOrderDO1.getFaultNo());
                 faultInfoDO.setRepairDeptCode(workerGroupCode);
-                if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) & reqDTO.getIsTiKai().equals("08")) {
+                if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) && reqDTO.getIsTiKai().equals("08")) {
                     faultInfoDO.setExt3("08");
                 }
                 faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -657,7 +651,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 overTodoService.overTodo(faultOrderDO1.getRecId(), "故障维修");
                 // todo 发短信
                 // String content = "【市铁投集团】" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "向您指派了一条故障工单，故障位置：" + positionName + "," + position2Name + "，设备名称：" + objectName + ",故障现象：" + faultDisplayDetail + "请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
-                overTodoService.insertTodoWithUserGroupAndOrg("【" + reqDTO.getMajorCode() + "】故障管理流程", faultOrderDO1.getRecId(), faultOrderDO1.getFaultWorkNo(), "DM_013", reqDTO.getWorkClass(), "故障维修", "DMFM0001", TokenUtil.getCurrentPersonId(), null);
+                overTodoService.insertTodoWithUserGroupAndOrg("【" + reqDTO.getMajorCode() + "】故障管理流程", faultOrderDO1.getRecId(), faultOrderDO1.getFaultWorkNo(), "DM_013", workerGroupCode, "故障维修", "DMFM0001", TokenUtil.getCurrentPersonId(), null);
                 Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "01");
                 String zcStepOrg = dictionaries.getItemEname();
                 if (!faultOrderDO1.getWorkClass().contains(zcStepOrg)) {
