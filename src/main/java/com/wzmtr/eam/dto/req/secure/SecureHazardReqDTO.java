@@ -23,7 +23,7 @@ public class SecureHazardReqDTO extends PageReqDTO {
     @ApiModelProperty(value = "隐患等级")
     private String riskRank ;
     @ApiModelProperty(value = "整改情况")
-    private String restoreDesc ;
+    private String isRestored ;
     @ApiModelProperty(value = "记录状态")
     private String recStatus ;
 }

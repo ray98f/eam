@@ -142,8 +142,17 @@
             <if test="riskRank!=null and riskRank!=''">
                 and RISK_RANK = #{riskRank}
             </if>
-            <if test="restoreDesc!=null and restoreDesc!=''">
-                and RESTORE_DESC = #{restoreDesc}
+            <if test="isRestored!=null and isRestored!=''">
+                and IS_RESTORED = #{isRestored}
+            </if>
+            <if test="inspectDateBegin!=null and inspectDateBegin!=''">
+                and to_date(INSPECT_DATE, 'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{inspectDateBegin}, 'YYYY-MM-DD')
+            </if>
+            <if test="inspectDateEnd!=null and inspectDateEnd!=''">
+                and to_date(INSPECT_DATE, 'YYYY-MM-DD')<![CDATA[<=]]>to_date(#{inspectDateEnd}, 'YYYY-MM-DD')
+            </if>
+            <if test="recStatus!=null and recStatus!=''">
+                and REC_STATUS = #{recStatus}
             </if>
             and DELETE_FLAG='0'
         </trim>

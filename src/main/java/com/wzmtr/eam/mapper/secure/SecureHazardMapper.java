@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 public interface SecureHazardMapper {
 
-    Page<SecureHazardResDTO> query(Page<SecureHazardResDTO> of, String riskId, String riskRank, String inspectDateBegin, String inspectDateEnd, String restoreDesc, String recStatus);
+    Page<SecureHazardResDTO> query(Page<SecureHazardResDTO> of, String riskId, String riskRank, String inspectDateBegin, String inspectDateEnd, String isRestored, String recStatus);
 
     SecureHazardResDTO detail(String riskId);
 

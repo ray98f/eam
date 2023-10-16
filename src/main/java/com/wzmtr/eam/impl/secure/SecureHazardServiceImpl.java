@@ -47,7 +47,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
     @Override
     public Page<SecureHazardResDTO> list(SecureHazardReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<SecureHazardResDTO> query = hazardMapper.query(reqDTO.of(), reqDTO.getRiskId(), reqDTO.getRiskRank(), reqDTO.getInspectDateBegin(), reqDTO.getInspectDateEnd(), reqDTO.getRestoreDesc(), reqDTO.getRecStatus());
+        Page<SecureHazardResDTO> query = hazardMapper.query(reqDTO.of(), reqDTO.getRiskId(), reqDTO.getRiskRank(), reqDTO.getInspectDateBegin(), reqDTO.getInspectDateEnd(), reqDTO.getIsRestored(), reqDTO.getRecStatus());
         List<SecureHazardResDTO> records = query.getRecords();
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
