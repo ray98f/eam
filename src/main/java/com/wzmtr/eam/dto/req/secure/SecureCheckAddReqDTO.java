@@ -40,7 +40,7 @@ public class SecureCheckAddReqDTO {
     private String secRiskPic;
     @ApiModelProperty(value = "整改措施")
     private String restoreDetail;
-    @NotEmpty(message = "发现日期不能为空！")
+    @NotEmpty(message = "计划完成日期不能为空！")
     @ApiModelProperty(value = "计划完成日期")
     private String planDate;
     @ApiModelProperty(value = "整改部门")

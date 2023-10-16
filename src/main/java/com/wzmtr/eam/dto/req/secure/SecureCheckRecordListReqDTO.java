@@ -21,9 +21,9 @@ public class SecureCheckRecordListReqDTO extends PageReqDTO {
     @ApiModelProperty(value = "发现日期结束")
     private String inspectDateEnd;
     @ApiModelProperty(value = "整改情况")
-    private String restoreDesc;
+    private String isRestoredCode;
     @ApiModelProperty(value = "流程状态")
-    private String workFlowInstStatus;
+    private String recStatus;
     @ApiModelProperty(value = "安全隐患等级")
     private String riskRank;
 }

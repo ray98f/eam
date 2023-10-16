@@ -27,7 +27,7 @@ public interface SecureCheckMapper {
 
     void update(SecureCheckAddReqDTO reqDTO);
 
-    Page<SecureCheckRecordListResDTO> query(Page<Object> of, String secRiskId, String inspectDateStart, String inspectDateEnd, String restoreDesc, String workFlowInstStatus);
+    Page<SecureCheckRecordListResDTO> query(Page<Object> of, String secRiskId, String inspectDateStart, String inspectDateEnd, String isRestoredCode, String recStatus);
 
     String getMaxCode();
 }

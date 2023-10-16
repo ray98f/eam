@@ -243,11 +243,11 @@
             <if test="inspectDateEnd!=null and inspectDateEnd!=''">
                 and TO_DATE(INSPECT_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{inspectDateEnd},'YYYY-MM-DD')
             </if>
-            <if test="restoreDesc!=null and restoreDesc!=''">
-                and IS_RESTORED = #{restoreDesc}
+            <if test="isRestoredCode!=null and isRestoredCode!=''">
+                and IS_RESTORED = #{isRestoredCode}
             </if>
-            <if test="workFlowInstStatus!=null and workFlowInstStatus!=''">
-                and REC_STATUS = #{workFlowInstStatus}
+            <if test="recStatus!=null and recStatus!=''">
+                and REC_STATUS = #{recStatus}
             </if>
             and DELETE_FLAG='0'
         </trim>

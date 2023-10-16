@@ -64,9 +64,6 @@
         <if test="trainNo != null and trainNo != ''">
            , TRAIN_NO = #{trainNo}
         </if>
-        <if test="equipCode != null and equipCode != ''">
-          , EQUIP_CODE = #{equipCode}
-        </if>
         <if test="applyReason != null and applyReason != ''">
            , APPLY_REASON = #{applyReason}
         </if>
