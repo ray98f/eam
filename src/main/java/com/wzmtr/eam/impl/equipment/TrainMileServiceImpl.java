@@ -139,7 +139,7 @@ public class TrainMileServiceImpl implements TrainMileService {
                 map.put("里程(公里)", String.valueOf(trainMileageResDTO.getTotalMiles()));
                 map.put("增加里程(公里)", String.valueOf(trainMileageResDTO.getMilesIncrement()));
                 map.put("填报时间", trainMileageResDTO.getFillinTime());
-                map.put("填报人", trainMileageResDTO.getFillinUserName());
+                map.put("填报人", trainMileageResDTO.getFillinUserId());
                 map.put("牵引总能耗(kW·h)", String.valueOf(trainMileageResDTO.getTotalTractionEnergy()));
                 map.put("牵引能耗增量", String.valueOf(trainMileageResDTO.getTractionIncrement()));
                 map.put("辅助总能耗(kW·h)", String.valueOf(trainMileageResDTO.getTotalAuxiliaryEnergy()));

@@ -38,6 +38,9 @@ public class SubmissionRecordReqDTO {
     @ApiModelProperty(value = "工作流实例状态")
     private String workFlowInstStatus;
 
+    @ApiModelProperty(value = "附件id")
+    private String docId;
+
     @ApiModelProperty(value = "公司代码")
     private String companyCode;
 

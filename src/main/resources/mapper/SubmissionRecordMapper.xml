@@ -13,6 +13,7 @@
         a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
         a.WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
         a.WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        a.DOC_ID	as "docId",  <!-- 附件id -->
         a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
         a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
         a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
@@ -157,6 +158,9 @@
         </if>
         <if test="workFlowInstStatus!=null">
             WORK_FLOW_INST_STATUS=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
+        </if>
+        <if test="docId!=null">
+            DOC_ID=#{docId},
         </if>
         <if test="companyCode!=null">
             COMPANY_CODE=#{companyCode},   <!-- 公司代码 -->
