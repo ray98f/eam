@@ -31,9 +31,9 @@ public class FaultServiceImpl implements FaultService {
     private FaultMapper faultMapper;
 
     @Override
-    public Page<FaultResDTO> listFault(String code, Integer type, String lineCode, String equipmentCategoryCode, PageReqDTO pageReqDTO) {
+    public Page<FaultResDTO> listFault(String code, Integer type, String lineCode, String equipmentCategoryCode, String equipmentTypeName, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return faultMapper.pageFault(pageReqDTO.of(), code, type, lineCode, equipmentCategoryCode);
+        return faultMapper.pageFault(pageReqDTO.of(), code, type, lineCode, equipmentCategoryCode, equipmentTypeName);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionRecordMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
@@ -47,15 +48,35 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     @Autowired
     private BpmnService bpmnService;
 
+    @Autowired
+    private FileMapper fileMapper;
+
     @Override
     public Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return submissionRecordMapper.pageSubmissionRecord(pageReqDTO.of(), checkNo, instrmPlanNo, recStatus, workFlowInstId);
+        Page<SubmissionRecordResDTO> page = submissionRecordMapper.pageSubmissionRecord(pageReqDTO.of(), checkNo, instrmPlanNo, recStatus, workFlowInstId);
+        List<SubmissionRecordResDTO> list = page.getRecords();
+        if (!Objects.isNull(list) && !list.isEmpty()) {
+            for (SubmissionRecordResDTO res : list) {
+                if (res.getDocId() != null && !"".equals(res.getDocId())) {
+                    res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public SubmissionRecordResDTO getSubmissionRecordDetail(String id) {
-        return submissionRecordMapper.getSubmissionRecordDetail(id);
+        SubmissionRecordResDTO res = submissionRecordMapper.getSubmissionRecordDetail(id);
+        if (Objects.isNull(res)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        if (res.getDocId() != null && !"".equals(res.getDocId())) {
+            res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+        }
+        return res;
     }
 
     @Override

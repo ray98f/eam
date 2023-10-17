@@ -1,8 +1,11 @@
 package com.wzmtr.eam.dto.res.mea;
 
+import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author frp
@@ -40,6 +43,9 @@ public class SubmissionRecordResDTO {
 
     @ApiModelProperty(value = "附件id")
     private String docId;
+
+    @ApiModelProperty(value = "附件id")
+    private List<File> docFile;
 
     @ApiModelProperty(value = "公司代码")
     private String companyCode;

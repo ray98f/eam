@@ -34,9 +34,10 @@ public class FaultController {
     public PageResponse<FaultResDTO> listFault(@RequestParam(required = false) @ApiParam("码值编号") String code,
                                                @RequestParam(required = false) @ApiParam("码值类型") Integer type,
                                                @RequestParam(required = false) @ApiParam("线路") String lineCode,
-                                               @RequestParam(required = false) @ApiParam("设备分类编号") String equipmentCategoryCode,
+                                               @RequestParam(required = false) @ApiParam("对象编码") String equipmentCategoryCode,
+                                               @RequestParam(required = false) @ApiParam("对象名称") String equipmentTypeName,
                                                @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(faultService.listFault(code, type, lineCode, equipmentCategoryCode, pageReqDTO));
+        return PageResponse.of(faultService.listFault(code, type, lineCode, equipmentCategoryCode, equipmentTypeName, pageReqDTO));
     }
 
     @GetMapping("/detail")

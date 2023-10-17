@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface FaultService {
 
-    Page<FaultResDTO> listFault(String code, Integer type, String lineCode, String equipmentCategoryCode, PageReqDTO pageReqDTO);
+    Page<FaultResDTO> listFault(String code, Integer type, String lineCode, String equipmentCategoryCode, String equipmentTypeName, PageReqDTO pageReqDTO);
 
     FaultResDTO getFaultDetail(String id);
 

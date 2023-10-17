@@ -23,9 +23,10 @@ public interface FaultMapper {
      * @param type
      * @param lineCode
      * @param equipmentCategoryCode
+     * @param equipmentTypeName
      * @return
      */
-    Page<FaultResDTO> pageFault(Page<FaultResDTO> page, String code, Integer type, String lineCode, String equipmentCategoryCode);
+    Page<FaultResDTO> pageFault(Page<FaultResDTO> page, String code, Integer type, String lineCode, String equipmentCategoryCode, String equipmentTypeName);
 
     /**
      * 获取故障库详情

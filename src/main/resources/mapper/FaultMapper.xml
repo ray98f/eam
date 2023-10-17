@@ -21,6 +21,9 @@
         <if test="equipmentCategoryCode!=null and equipmentCategoryCode!=''">
             and f.EQUIPMENT_TYPE_CODE=#{equipmentCategoryCode}
         </if>
+        <if test="equipmentTypeName!=null and equipmentTypeName!=''">
+            and ec.NODE_NAME=#{equipmentTypeName}
+        </if>
         ORDER BY f.FAULT_CODE ASC
     </select>
 
