@@ -6,6 +6,7 @@ import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
 import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
+import com.wzmtr.eam.dto.res.basic.LineResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
@@ -61,6 +62,8 @@ public interface EquipmentMapper {
     Page<OverhaulOrderDetailResDTO> listOverhaul(Page<OverhaulOrderDetailResDTO> page, String equipCode);
 
     Page<FaultDetailResDTO> listFault(Page<FaultDetailResDTO> page, String equipCode);
+    LineResDTO queryLine(String recId);
+    LineResDTO queryCarLine(String lineCode);
 
     Page<PartReplaceResDTO> listPartReplace(Page<PartReplaceResDTO> page, String equipCode);
 }

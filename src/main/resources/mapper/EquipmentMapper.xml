@@ -1187,5 +1187,27 @@
         WHERE 1=1 and DELETE_FLAG='0' AND EQUIP_CODE=#{equipCode}
         ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
     </select>
+    <select id="queryLine" resultType="com.wzmtr.eam.dto.res.basic.LineResDTO">
+        SELECT
+        db.LINE_CODE as "lineCode",
+        ec.ITEM_CNAME as "lineName"
+        FROM SYS_REGION db,iplat60.tedcm01 ec
+        where db.LINE_CODE = ec.ITEM_CODE and ec.CODESET_CODE='line'
+        <if test="recId!=null">
+           and db.REC_ID = #{recId}
+        </if>
+        order by db.NODE_CODE asc
+    </select>
+    <select id="queryCarLine" resultType="com.wzmtr.eam.dto.res.basic.LineResDTO">
+        SELECT
+        ITEM_CODE as "lineCode",
+        ITEM_CNAME as "lineName"
+        FROM iplat60.tedcm01
+        where CODESET_CODE='line'
+        <if test="lineCode!=null">
+            and ITEM_CODE=#{lineCode}
+        </if>
+    </select>
+
 
 </mapper>

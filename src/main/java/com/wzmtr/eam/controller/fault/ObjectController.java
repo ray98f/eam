@@ -1,7 +1,10 @@
 package com.wzmtr.eam.controller.fault;
 
+import com.wzmtr.eam.dto.req.fault.CarObjectReqDTO;
 import com.wzmtr.eam.dto.req.fault.ObjectReqDTO;
 import com.wzmtr.eam.dto.res.fault.ObjectResDTO;
+import com.wzmtr.eam.dto.res.fault.car.CarObjResDTO;
+import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.ObjectService;
 import io.swagger.annotations.Api;
@@ -28,4 +31,16 @@ public class ObjectController {
     public PageResponse<ObjectResDTO> queryObject(@RequestBody ObjectReqDTO reqDTO) {
         return PageResponse.of(objectService.queryObject(reqDTO));
     }
+    @ApiOperation(value = "车辆对象树")
+    @PostMapping("car/getQuery")
+    public DataResponse<CarObjResDTO> getQuery(@RequestBody CarObjectReqDTO reqDTO) {
+        return DataResponse.of(objectService.getQuery(reqDTO));
+    }
+    @ApiOperation(value = "车辆对象树列表")
+    @PostMapping("car/query")
+    public DataResponse<CarObjResDTO> query(@RequestBody CarObjectReqDTO reqDTO) {
+        return DataResponse.of(objectService.query(reqDTO));
+    }
+
+
 }
