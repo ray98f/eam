@@ -62,7 +62,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String startInstance(StartInstanceVO startInstanceVO) {
         String data = JSONObject.toJSONString(startInstanceVO);
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_START, data, httpServletRequest.getHeader("Authorization")));
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_START, data, httpServletRequest.getHeader("Authorization-Flow")));
         if ("0".equals(jsonObject.getString("code"))) {
             return jsonObject.getString("procId");
         } else {
@@ -72,7 +72,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public ResultEntity agreeInstance(BpmnExamineDTO bpmnExamineDTO) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(bpmnExamineDTO);
         return JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_AGREE + data, null, authorization), ResultEntity.class);
     }
@@ -88,33 +88,35 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public List<ExamineOpinionRes> examineOpinion(String instId) {
         List<ExamineOpinionRes> list = new ArrayList<>();
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.EXAMINE_OPINION + "?instId=" + instId, authorization));
-        JSONArray data = jsonObject.getJSONArray("data");
-        for (int i = 0; i < data.size(); i++) {
-            JSONObject jsonObject1 = data.getJSONObject(i);
-            ExamineOpinionRes res = new ExamineOpinionRes();
-            res.setNodeName(jsonObject1.getString("nodeName"));
-            res.setCreateTime(jsonObject1.getString("createTime"));
-            res.setCompleteTime(jsonObject1.getString("completeTime"));
-            res.setAuditor(jsonObject1.getString("auditor"));
-            res.setOpinion(jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity") == null ? "" : jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity").getString("opinion"));
-            res.setStatus(res.getAuditor() == null ? "待办" : "已办");
-            list.add(res);
+        if (jsonObject != null) {
+            JSONArray data = jsonObject.getJSONArray("data");
+            for (int i = 0; i < data.size(); i++) {
+                JSONObject jsonObject1 = data.getJSONObject(i);
+                ExamineOpinionRes res = new ExamineOpinionRes();
+                res.setNodeName(jsonObject1.getString("nodeName"));
+                res.setCreateTime(jsonObject1.getString("createTime"));
+                res.setCompleteTime(jsonObject1.getString("completeTime"));
+                res.setAuditor(jsonObject1.getString("auditor"));
+                res.setOpinion(jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity") == null ? "" : jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity").getString("opinion"));
+                res.setStatus(res.getAuditor() == null ? "待办" : "已办");
+                list.add(res);
+            }
         }
         return list;
     }
 
     @Override
     public String taskProgress(String instId) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.EXAMINE_OPINION + "?instId=" + instId, authorization));
         return jsonObject.getString("XML");
     }
 
     @Override
     public String nextTaskKey(String procId) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.NEXT_TASK_KEY + procId, authorization));
         JSONArray running = jsonObject.getJSONArray("runing");
         return running.size() == 0 ? null : running.getString(0);
@@ -122,14 +124,14 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public String queryTaskIdByProcId(String procId) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         ResultEntity result = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_TASKID_BY_PROCID + "?procId=" + procId, authorization), ResultEntity.class);
         return String.valueOf(result.getData());
     }
 
     @Override
     public List<FlowRes> queryFlowList(String name, String modelKey) throws Exception {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.FLOW_LIST + "?name=" + URLEncoder.encode(name, "UTF-8") + "&modelkey=" + modelKey + "&page=1&limit=100000&pageSize=100000&type=2", authorization), ResultEntity.class);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
         List<FlowRes> list = new ArrayList<>();
@@ -154,7 +156,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public String queryFirstTaskKeyByModelId(String modelId) throws Exception {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
         if (!"0".equals(jsonObject.getString("code"))) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, jsonObject.getString("msg"));
@@ -174,7 +176,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public String queryTaskNameByModelIdAndTaskKey(String modelId, String taskKey) throws Exception {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
         if (!"0".equals(jsonObject.getString("code"))) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, jsonObject.getString("msg"));
@@ -200,7 +202,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public List<ExamineListRes> examineList(ExamineListReq req) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         req.setPageNo(1);
         req.setPageSize(10000);
         String data = JSONObject.toJSONString(req);
@@ -211,7 +213,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public Page<ExaminedListRes> examinedList(ExamineListReq req) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.EXAMINED_LIST + data, null, authorization), ResultEntity.class);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
@@ -234,7 +236,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public Page<RunningListRes> runningList(ExamineListReq req) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_RUNNING_LIST + data, null, authorization), ResultEntity.class);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
@@ -264,7 +266,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public Page<HisListRes> hisList(ExamineListReq req) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_ENDING_LIST + data, null, authorization), ResultEntity.class);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
@@ -289,7 +291,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public String getSelfId(String procId) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.RENDER_HIS_FORM + procId, authorization));
         JSONObject editData = jsonObject.getJSONObject("editData");
         return editData.getString("id");

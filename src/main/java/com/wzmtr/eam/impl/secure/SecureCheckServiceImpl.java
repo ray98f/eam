@@ -99,6 +99,13 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         for (SecureCheckRecordListResDTO res : list) {
             String inspectDept = organizationMapper.getOrgById(res.getInspectDeptCode());
             String restoreDept = organizationMapper.getExtraOrgByAreaId(res.getRestoreDeptCode());
+            res.setIsRestoredName("整改中");
+            if ("10".equals(res.getIsRestored())) {
+                res.setIsRestoredName("已完成整改");
+            }
+            if ("1".equals(res.getIsRestored())) {
+                res.setIsRestoredName("未完成整改");
+            }
             if (StringUtils.isEmpty(inspectDept)) {
                 inspectDept = organizationMapper.getExtraOrgByAreaId(res.getInspectDeptCode());
             }
@@ -114,14 +121,14 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             map.put("检查问题单号", res.getSecRiskId());
             map.put("发现日期", res.getInspectDate());
             map.put("检查问题", res.getSecRiskDetail());
-            map.put("检查部门", StringUtils.isEmpty(inspectDept) ? res.getInspectDeptCode() : inspectDate);
+            map.put("检查部门", StringUtils.isEmpty(inspectDept) ? res.getInspectDeptCode() : inspectDept);
             map.put("检查人", res.getInspectorCode());
             map.put("地点", res.getPositionDesc());
             map.put("整改措施", res.getRestoreDetail());
             map.put("计划完成日期", res.getPlanDate());
             map.put("整改部门", StringUtils.isEmpty(restoreDept) ? res.getRestoreDeptCode() : restoreDept);
-            map.put("整改情况", StringUtils.isEmpty(desc) ? res.getIsRestored() : desc);
-            map.put("记录状态", res.getRecStatus());
+            map.put("整改情况", res.getIsRestoredName() == null ? res.getIsRestored() : res.getIsRestoredName());
+            map.put("记录状态", StringUtils.isEmpty(desc) ? res.getRecStatus() : desc);
             exportList.add(map);
         }
         ExcelPortUtil.excelPort("整改信息", listName, exportList, null, response);

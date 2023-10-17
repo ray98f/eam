@@ -57,5 +57,6 @@ public class SecureCheckRecordListResDTO {
     private String isRestored;
     @ApiModelProperty(value = "整改状态名称")
     private String isRestoredName;
-
+    @ApiModelProperty(value = "流程ID")
+    private String workFlowInstId;
 }
