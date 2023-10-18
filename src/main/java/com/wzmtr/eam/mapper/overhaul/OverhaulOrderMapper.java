@@ -34,7 +34,7 @@ public interface OverhaulOrderMapper {
 
     Page<OverhaulOrderResDTO> pageOrder(Page<OverhaulOrderResDTO> page, OverhaulOrderListReqDTO req);
 
-    OverhaulOrderResDTO getOrder(String id, String objectFlag);
+    OverhaulOrderResDTO getOrder(String recId, String objectFlag);
 
     List<OverhaulOrderResDTO> listOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO);
 

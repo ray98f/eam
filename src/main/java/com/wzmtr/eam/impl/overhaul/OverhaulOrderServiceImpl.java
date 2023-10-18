@@ -174,6 +174,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             overhaulOrderReqDTO.setSendTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             overhaulOrderReqDTO.setWorkStatus(TokenUtil.getCurrentPersonId());
         }
+        overhaulOrderReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulWorkRecordService.insertRepair(overhaulOrderReqDTO);
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
     }
@@ -223,7 +225,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (!overhaulOrderReqDTO.getPlanName().contains("二级修")) {
             checkOrderState(overhaulOrderReqDTO, "4", "完工");
         } else {
-            checkOrderState(overhaulOrderReqDTO, "6", "完工审核");
+            checkOrderState(overhaulOrderReqDTO, "6", "验收");
         }
         if (StringUtils.isBlank(overhaulOrderReqDTO.getRealEndTime())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该工单没有实际完成时间，无法完工确认！");
@@ -272,6 +274,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                     overhaulPlanReqDTO.setRecId(plans.get(0).getRecId());
                     overhaulPlanReqDTO.setTrigerTime(realEndTimeStr);
                     overhaulPlanReqDTO.setLastActionTime(String.valueOf(trigerMiles));
+                    overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+                    overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                     overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
                 }
             }
