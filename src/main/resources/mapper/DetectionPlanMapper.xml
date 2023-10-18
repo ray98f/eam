@@ -204,94 +204,94 @@
     <update id="modifyDetectionPlan">
         UPDATE T_DETECTION_PLAN SET
         <if test="instrmPlanNo!=null">
-            INSTRM_PLAN_NO	= #{instrmPlanNo},   <!-- 特种设备定检计划号 -->
+            INSTRM_PLAN_NO=#{instrmPlanNo},   <!-- 特种设备定检计划号 -->
         </if>
         <if test="instrmPlanType!=null">
-            INSTRM_PLAN_TYPE	= #{instrmPlanType},   <!-- 定抽检标识 -->
+            INSTRM_PLAN_TYPE=#{instrmPlanType},   <!-- 定抽检标识 -->
         </if>
         <if test="assetKindCode!=null">
-            ASSET_KIND_CODE	= #{assetKindCode},   <!-- 特种设备分类代码 -->
+            ASSET_KIND_CODE=#{assetKindCode},   <!-- 特种设备分类代码 -->
         </if>
         <if test="planPeriodMark!=null">
-            PLAN_PERIOD_MARK	= #{planPeriodMark},   <!-- 定检计划时期 -->
+            PLAN_PERIOD_MARK=#{planPeriodMark},   <!-- 定检计划时期 -->
         </if>
         <if test="planBeginDate!=null">
-            PLAN_BEGIN_DATE	= #{planBeginDate},   <!-- 定检开始日期 -->
+            PLAN_BEGIN_DATE=#{planBeginDate},   <!-- 定检开始日期 -->
         </if>
         <if test="planEndDate!=null">
-            PLAN_END_DATE	= #{planEndDate},   <!-- 定检结束日期 -->
+            PLAN_END_DATE=#{planEndDate},   <!-- 定检结束日期 -->
         </if>
         <if test="useDeptCode!=null">
-            USE_DEPT_CODE	= #{useDeptCode},   <!-- 使用单位代码 -->
+            USE_DEPT_CODE=#{useDeptCode},   <!-- 使用单位代码 -->
         </if>
         <if test="useDeptCname!=null">
-            USE_DEPT_CNAME	= #{useDeptCname},   <!-- 使用单位 -->
+            USE_DEPT_CNAME=#{useDeptCname},   <!-- 使用单位 -->
         </if>
         <if test="planCreaterNo!=null">
-            PLAN_CREATER_NO	= #{planCreaterNo},   <!-- 计划人工号 -->
+            PLAN_CREATER_NO=#{planCreaterNo},   <!-- 计划人工号 -->
         </if>
         <if test="planCreaterName!=null">
-            PLAN_CREATER_NAME	= #{planCreaterName},   <!-- 计划人 -->
+            PLAN_CREATER_NAME=#{planCreaterName},   <!-- 计划人 -->
         </if>
         <if test="planCreateTime!=null">
-            PLAN_CREATE_TIME	= #{planCreateTime},   <!-- 计划提醒时间 -->
+            PLAN_CREATE_TIME=#{planCreateTime},   <!-- 计划提醒时间 -->
         </if>
         <if test="planStatus!=null">
-            PLAN_STATUS	= #{planStatus},   <!-- 计划状态10:提交;20:检测中;30:完成检测 -->
+            PLAN_STATUS=#{planStatus},   <!-- 计划状态10:提交;20:检测中;30:完成检测 -->
         </if>
         <if test="planNote!=null">
-            PLAN_NOTE	= #{planNote},   <!-- 备注 -->
+            PLAN_NOTE=#{planNote},   <!-- 备注 -->
         </if>
         <if test="workFlowInstId!=null">
-            WORK_FLOW_INST_ID	= #{workFlowInstId},   <!-- 工作流实例ID -->
+            WORK_FLOW_INST_ID=#{workFlowInstId},   <!-- 工作流实例ID -->
         </if>
         <if test="workFlowInstStatus!=null">
-            WORK_FLOW_INST_STATUS	= #{workFlowInstStatus},   <!-- 工作流实例状态 -->
+            WORK_FLOW_INST_STATUS=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
         </if>
         <if test="companyCode!=null">
-            COMPANY_CODE	= #{companyCode},   <!-- 公司代码 -->
+            COMPANY_CODE=#{companyCode},   <!-- 公司代码 -->
         </if>
         <if test="companyName!=null">
-            COMPANY_NAME	= #{companyName},   <!-- 公司名称 -->
+            COMPANY_NAME=#{companyName},   <!-- 公司名称 -->
         </if>
         <if test="sendConsignerName!=null">
-            SEND_CONSIGNER_NAME	= #{sendConsignerName},   <!-- 检测委托人 -->
+            SEND_CONSIGNER_NAME=#{sendConsignerName},   <!-- 检测委托人 -->
         </if>
         <if test="sendConsignerTele!=null">
-            SEND_CONSIGNER_TELE	= #{sendConsignerTele},   <!-- 检测委托人电话 -->
+            SEND_CONSIGNER_TELE=#{sendConsignerTele},   <!-- 检测委托人电话 -->
         </if>
         <if test="manageOrg!=null">
-            MANAGE_ORG	= #{manageOrg},   <!-- 管理部门 -->
+            MANAGE_ORG=#{manageOrg},   <!-- 管理部门 -->
         </if>
         <if test="secOrg!=null">
-            SEC_ORG	= #{secOrg},   <!-- 维管部门 -->
+            SEC_ORG=#{secOrg},   <!-- 维管部门 -->
         </if>
         <if test="verifyDept!=null">
-            VERIFY_DEPT	= #{verifyDept},   <!-- 检测校准单位 -->
+            VERIFY_DEPT=#{verifyDept},   <!-- 检测校准单位 -->
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
         </if>
         <if test="recStatus!=null">
-            REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
+            REC_STATUS=#{recStatus},   <!-- 记录状态 -->
         </if>
         <if test="ext1!=null">
-            EXT1	= #{ext1},   <!-- 扩展字段1 -->
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
         </if>
         <if test="ext2!=null">
-            EXT2	= #{ext2},   <!-- 扩展字段2 -->
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
         </if>
         <if test="ext3!=null">
-            EXT3	= #{ext3},   <!-- 扩展字段3 -->
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
         </if>
         <if test="ext4!=null">
-            EXT4	= #{ext4},   <!-- 扩展字段4 -->
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
         </if>
         <if test="ext5!=null">
-            EXT5	= #{ext5}, <!-- 扩展字段5 -->
+            EXT5=#{ext5}, <!-- 扩展字段5 -->
         </if>
-        REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
-        REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
+        REC_REVISOR=#{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 修改时间 -->
         WHERE REC_ID=#{recId}
     </update>
 
@@ -564,97 +564,97 @@
     <update id="modifyDetectionPlanDetail">
         UPDATE T_DETECTION_PLAN_DETAIL SET
         <if test="instrmPlanNo!=null">
-            INSTRM_PLAN_NO	= #{instrmPlanNo},   <!-- 特种设备检测计划号 -->
+            INSTRM_PLAN_NO=#{instrmPlanNo},   <!-- 特种设备检测计划号 -->
         </if>
         <if test="equipCode!=null">
-            EQUIP_CODE	= #{equipCode},   <!-- 设备代码 -->
+            EQUIP_CODE=#{equipCode},   <!-- 设备代码 -->
         </if>
         <if test="equipName!=null">
-            EQUIP_NAME	= #{equipName},   <!-- 设备名称 -->
+            EQUIP_NAME=#{equipName},   <!-- 设备名称 -->
         </if>
         <if test="matSpecifi!=null">
-            MAT_SPECIFI	= #{matSpecifi},   <!-- 型号规格 -->
+            MAT_SPECIFI=#{matSpecifi},   <!-- 型号规格 -->
         </if>
         <if test="manufactureNo!=null">
-            MANUFACTURE_NO	= #{manufactureNo},   <!-- 出厂编号 -->
+            MANUFACTURE_NO=#{manufactureNo},   <!-- 出厂编号 -->
         </if>
         <if test="manufacture!=null">
-            MANUFACTURE	= #{manufacture},   <!-- 生产厂家 -->
+            MANUFACTURE=#{manufacture},   <!-- 生产厂家 -->
         </if>
         <if test="installationUnit!=null">
-            INSTALLATION_UNIT	= #{installationUnit},   <!-- 安装单位 -->
+            INSTALLATION_UNIT=#{installationUnit},   <!-- 安装单位 -->
         </if>
         <if test="verifyDept!=null">
-            VERIFY_DEPT	= #{verifyDept},   <!-- 检测校准单位 -->
+            VERIFY_DEPT=#{verifyDept},   <!-- 检测校准单位 -->
         </if>
         <if test="verifyPeriod!=null">
-            VERIFY_PERIOD	= #{verifyPeriod:NUMERIC},   <!-- 检测周期(天) -->
+            VERIFY_PERIOD=#{verifyPeriod:NUMERIC},   <!-- 检测周期(天) -->
         </if>
         <if test="planBeginDate!=null">
-            PLAN_BEGIN_DATE	= #{planBeginDate},   <!-- 计划开始时间 -->
+            PLAN_BEGIN_DATE=#{planBeginDate},   <!-- 计划开始时间 -->
         </if>
         <if test="planEndDate!=null">
-            PLAN_END_DATE	= #{planEndDate},   <!-- 计划完成时间 -->
+            PLAN_END_DATE=#{planEndDate},   <!-- 计划完成时间 -->
         </if>
         <if test="equipmentState!=null">
-            EQUIPMENT_STATE	= #{equipmentState},   <!-- 设备状态（封存、停用、报废和注销） -->
+            EQUIPMENT_STATE=#{equipmentState},   <!-- 设备状态（封存、停用、报废和注销） -->
         </if>
         <if test="useDeptPlace!=null">
-            USE_DEPT_PLACE	= #{useDeptPlace},   <!-- 设备使用地点 -->
+            USE_DEPT_PLACE=#{useDeptPlace},   <!-- 设备使用地点 -->
         </if>
         <if test="equipmentRegCode!=null">
-            EQUIPMENT_REG_CODE	= #{equipmentRegCode},   <!-- 设备注册登记代码 -->
+            EQUIPMENT_REG_CODE=#{equipmentRegCode},   <!-- 设备注册登记代码 -->
         </if>
         <if test="securityManager!=null">
-            SECURITY_MANAGER	= #{securityManager},   <!-- 安全管理人员 -->
+            SECURITY_MANAGER=#{securityManager},   <!-- 安全管理人员 -->
         </if>
         <if test="securityContact!=null">
-            SECURITY_CONTACT	= #{securityContact},   <!-- 安全管理人员联系方式 -->
+            SECURITY_CONTACT=#{securityContact},   <!-- 安全管理人员联系方式 -->
         </if>
         <if test="position1Code!=null">
-            POSITION1_CODE	= #{position1Code},   <!-- 位置一 -->
+            POSITION1_CODE=#{position1Code},   <!-- 位置一 -->
         </if>
         <if test="position1Name!=null">
-            POSITION1_NAME	= #{position1Name},   <!-- 位置一名称 -->
+            POSITION1_NAME=#{position1Name},   <!-- 位置一名称 -->
         </if>
         <if test="position2Code!=null">
-            POSITION2_CODE	= #{position2Code},   <!-- 位置二 -->
+            POSITION2_CODE=#{position2Code},   <!-- 位置二 -->
         </if>
         <if test="position2Name!=null">
-            POSITION2_NAME	= #{position2Name},   <!-- 位置二名称 -->
+            POSITION2_NAME=#{position2Name},   <!-- 位置二名称 -->
         </if>
         <if test="position3!=null">
-            POSITION3	= #{position3},   <!-- 位置三 -->
+            POSITION3=#{position3},   <!-- 位置三 -->
         </if>
         <if test="positionRemark!=null">
-            POSITION_REMARK	= #{positionRemark},   <!-- 位置补充说明 -->
+            POSITION_REMARK=#{positionRemark},   <!-- 位置补充说明 -->
         </if>
         <if test="verifyNote!=null">
-            VERIFY_NOTE	= #{verifyNote},   <!-- 备注 -->
+            VERIFY_NOTE=#{verifyNote},   <!-- 备注 -->
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
         </if>
         <if test="recStatus!=null">
-            REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
+            REC_STATUS=#{recStatus},   <!-- 记录状态 -->
         </if>
         <if test="ext1!=null">
-            EXT1	= #{ext1},   <!-- 扩展字段1 -->
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
         </if>
         <if test="ext2!=null">
-            EXT2	= #{ext2},   <!-- 扩展字段2 -->
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
         </if>
         <if test="ext3!=null">
-            EXT3	= #{ext3},   <!-- 扩展字段3 -->
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
         </if>
         <if test="ext4!=null">
-            EXT4	= #{ext4},   <!-- 扩展字段4 -->
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
         </if>
         <if test="ext5!=null">
-            EXT5	= #{ext5},  <!-- 扩展字段5 -->
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
         </if>
-        REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
-        REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
+        REC_REVISOR=#{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 修改时间 -->
         WHERE REC_ID=#{recId}
     </update>
 

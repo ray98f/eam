@@ -71,8 +71,9 @@ public class DetectionPlanController {
 
     @GetMapping("/submit")
     @ApiOperation(value = "提交检测计划")
-    public DataResponse<T> submitDetectionPlan(@RequestParam @ApiParam("id") String id) throws Exception {
-        detectionPlanService.submitDetectionPlan(id);
+    public DataResponse<T> submitDetectionPlan(@RequestParam @ApiParam("id") String id,
+                                               @RequestParam(required = false) @ApiParam("意见") String comment) throws Exception {
+        detectionPlanService.submitDetectionPlan(id, comment);
         return DataResponse.success();
     }
 
