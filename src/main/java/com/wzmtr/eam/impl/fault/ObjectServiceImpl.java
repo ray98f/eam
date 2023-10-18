@@ -1,12 +1,16 @@
 package com.wzmtr.eam.impl.fault;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.wzmtr.eam.dataobject.BomDO;
 import com.wzmtr.eam.dto.req.fault.CarObjectReqDTO;
 import com.wzmtr.eam.dto.req.fault.ObjectReqDTO;
 import com.wzmtr.eam.dto.res.basic.LineResDTO;
 import com.wzmtr.eam.dto.res.fault.ObjectResDTO;
 import com.wzmtr.eam.dto.res.fault.car.CarObjResDTO;
+import com.wzmtr.eam.dto.res.fault.car.CarTreeListObjResDTO;
 import com.wzmtr.eam.mapper.bom.BomMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.fault.ObjectMapper;
@@ -19,6 +23,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Author: Li.Wang
@@ -60,14 +66,20 @@ public class ObjectServiceImpl implements ObjectService {
     }
 
     @Override
-    public CarObjResDTO query(CarObjectReqDTO reqDTO) {
-        // todo
-        // String node = inInfo.getCellStr(EiConstant.queryBlock, 0, "node");
-        // String type = (String) inInfo.get("type");
-        // EiInfo outInfo = new EiInfo();
+    public List<CarTreeListObjResDTO> query(CarObjectReqDTO reqDTO) {
+        // com.baosight.wzplat.dm.fm.service.ServiceDMFM0021Tree#query
+        String node = reqDTO.getNodeCode();
+        String type = reqDTO.getType();
+        if (node.equals("0")) {
+            // todo 接口暂时没有 先写死
+            List<CarTreeListObjResDTO> list = Lists.newArrayList();
+            list.add(CarTreeListObjResDTO.toS1ResDTO());
+            list.add(CarTreeListObjResDTO.toS2ResDTO());
+            return list;
+        }
+        // 这是原来的代码
         // if (node.equals("0")) {
         //     List<Map<String, String>> list = new ArrayList();
-        //     EiInfo info = new EiInfo();
         //     info.set(EiConstant.serviceId, "S_ED_11");
         //     info.set("tableName", "tedcm01");
         //     info.set("valueColumnName", "ITEM_CODE");
@@ -93,66 +105,28 @@ public class ObjectServiceImpl implements ObjectService {
         //     eiBlockMeta.addMetas((new EEDM05()).eiMetadata);
         //     outInfo.addBlock(node).setBlockMeta(eiBlockMeta);
         //     outInfo.getBlock(node).addRows(list);
-        // } else if (type.equals("xl")) {
-        //     HashMap<Object, Object> params = new HashMap<>();
-        //     params.put("lineCode", node);
-        //     List<Map<String, String>> list = this.dao.query("DMDM01.queryForLine", params, 0, -999999);
-        //     List<Map<Object, Object>> carList = new ArrayList();
-        //     Map<String, String> map = list.get(0);
-        //     Map<Object, Object> carMap = new HashMap<>();
-        //     String nodeCode = ((String) map.get("nodeCode")).substring(1, 3);
-        //     for (String key : map.keySet()) {
-        //         if (key.equals("text")) {
-        //             carMap.put("text", "E" + nodeCode + " " + nodeCode + "车辆");
-        //             continue;
-        //         }
-        //         if (key.equals("nodeCode")) {
-        //             carMap.put("nodeCode", "E" + nodeCode);
-        //             continue;
-        //         }
-        //         if (key.equals("label")) {
-        //             carMap.put("label", UUID.randomUUID().toString());
-        //             continue;
-        //         }
-        //         carMap.put(key, map.get(key));
-        //     }
-        //     carList.add(carMap);
-        //     EiBlockMeta eiBlockMeta = new EiBlockMeta("result");
-        //     eiBlockMeta.addMetas((new EEDM05()).eiMetadata);
-        //     outInfo.addBlock(node).setBlockMeta(eiBlockMeta);
-        //     outInfo.getBlock(node).addRows(carList);
-        // } else if (type.equals("wz")) {
-        //     HashMap<Object, Object> params = new HashMap<>();
-        //     params.put("realNode", node);
-        //     params.put("useLineNo", inInfo.get("line"));
-        //     List list = this.dao.query("DMDM01.queryForCar", params, 0, -999999);
-        //     EiBlockMeta eiBlockMeta = new EiBlockMeta("result");
-        //     eiBlockMeta.addMetas((new EEDM05()).eiMetadata);
-        //     outInfo.addBlock(node).setBlockMeta(eiBlockMeta);
-        //     outInfo.getBlock(node).addRows(list);
-        // } else if (type.equals("tz")) {
-        //     Map<Object, Object> map = new HashMap<>();
-        //     map.put("realNode", node);
-        //     map.put("useLineNo", inInfo.get("line"));
-        //     List list = this.dao.query("DMDM01.queryForCarEquip", map, 0, -999999);
-        //     EiBlockMeta eiBlockMeta = new EiBlockMeta("result");
-        //     eiBlockMeta.addMetas((new EEDM05()).eiMetadata);
-        //     outInfo.addBlock(node).setBlockMeta(eiBlockMeta);
-        //     outInfo.getBlock(node).addRows(list);
-        // } else if (type.equals("cc")) {
-        //     Map<Object, Object> map = new HashMap<>();
-        //     map.put("node", node);
-        //     map.put("line", inInfo.get("line"));
-        //     map.put("carEquipCode", inInfo.get("carEquipCode"));
-        //     map.put("carEquipName", inInfo.get("carEquipName"));
-        //     List child = this.dao.query("DMDM04.queryForCarChild", map, 0, -999999);
-        //     EiBlockMeta eiBlockMeta = new EiBlockMeta("result");
-        //     eiBlockMeta.addMetas((new EEDM05()).eiMetadata);
-        //     outInfo.addBlock(node).setBlockMeta(eiBlockMeta);
-        //     outInfo.getBlock(node).addRows(child);
         // }
-        // outInfo.setMsg("");
-        // return outInfo;
+        switch (type) {
+            case "xl":
+                List<CarTreeListObjResDTO> res = bomMapper.queryForLine(node);
+                List<CarTreeListObjResDTO> carList = Lists.newArrayList();
+                // 过滤脏数据
+                List<CarTreeListObjResDTO> filter = res.stream().filter(a -> a.getNodeCode().length() == 3).collect(Collectors.toList());
+                for (CarTreeListObjResDTO dto : filter) {
+                    String nodeCode = dto.getNodeCode().substring(1, 3);
+                    dto.setText("E" + nodeCode + " " + nodeCode + "车辆");
+                    dto.setNodeCode("E" + nodeCode);
+                    dto.setLabel(UUID.randomUUID().toString());
+                    carList.add(dto);
+                }
+                return carList;
+            case "wz":
+                return bomMapper.queryForCar(node, reqDTO.getLine());
+            case "tz":
+                return bomMapper.queryForCarEquip(node, reqDTO.getLine());
+            case "cc":
+                return bomMapper.queryForCarChild(node, reqDTO.getLine(), reqDTO.getCarEquipCode(), reqDTO.getCarEquipName());
+        }
         return null;
     }
 
@@ -191,6 +165,26 @@ public class ObjectServiceImpl implements ObjectService {
             }
         }
         return carObjResDTO;
+    }
+
+    @Override
+    public Page<ObjectResDTO> queryForObject(ObjectReqDTO reqDTO) {
+        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        String position1Code = (reqDTO.getPosition1Code() == null) ? "" : reqDTO.getPosition1Code();
+        String car = reqDTO.getCar() == null ? "" : reqDTO.getCar();
+        if (position1Code.contains("ES") && car.trim().isEmpty()) {
+            return bomMapper.queryCarEquip(reqDTO.of(), reqDTO);
+        } else if (car.equals("car")) {
+            List<String> carChild = bomMapper.queryCarTree(reqDTO.getCarNode());
+            if (CollectionUtil.isNotEmpty(carChild)) {
+                return bomMapper.queryCarChild(reqDTO.of(), reqDTO);
+            } else {
+                return bomMapper.queryCarLastChild(reqDTO.of(), reqDTO);
+            }
+        } else if (car.equals("carpos")) {
+            return bomMapper.queryCar(reqDTO.of(), reqDTO);
+        }
+        return null;
     }
 
     private List<String> queryNodes(String label, List<String> rescv) {

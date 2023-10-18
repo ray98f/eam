@@ -4,6 +4,7 @@ import com.wzmtr.eam.dto.req.fault.CarObjectReqDTO;
 import com.wzmtr.eam.dto.req.fault.ObjectReqDTO;
 import com.wzmtr.eam.dto.res.fault.ObjectResDTO;
 import com.wzmtr.eam.dto.res.fault.car.CarObjResDTO;
+import com.wzmtr.eam.dto.res.fault.car.CarTreeListObjResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.ObjectService;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -38,9 +41,14 @@ public class ObjectController {
     }
     @ApiOperation(value = "车辆对象树列表")
     @PostMapping("car/query")
-    public DataResponse<CarObjResDTO> query(@RequestBody CarObjectReqDTO reqDTO) {
+    public DataResponse<List<CarTreeListObjResDTO>> query(@RequestBody CarObjectReqDTO reqDTO) {
         return DataResponse.of(objectService.query(reqDTO));
     }
 
+    @ApiOperation(value = "对象查询分页")
+    @PostMapping("car/queryForObject")
+    public PageResponse<ObjectResDTO> queryForObject(@RequestBody ObjectReqDTO reqDTO) {
+        return PageResponse.of(objectService.queryForObject(reqDTO));
+    }
 
 }

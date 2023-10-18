@@ -24,9 +24,11 @@ public class ObjectReqDTO extends PageReqDTO {
     private String equipTypeCode;
     @ApiModelProperty(value = "对象编码")
     private String objectCode;
+    @ApiModelProperty(value = "设备编码")
+    private String equipCode;
     @ApiModelProperty(value = "对象名称")
     private String objectName;
-    @ApiModelProperty(value = "位置")
+    @ApiModelProperty(value = "位置1")
     private String position1Code;
     @ApiModelProperty(value = "品牌")
     private String brand;
@@ -40,4 +42,8 @@ public class ObjectReqDTO extends PageReqDTO {
     private String useLineNo;
     @ApiModelProperty(value = "线段")
     private String useSegNo;
+    @ApiModelProperty(value = "car")
+    private String car;
+    @ApiModelProperty(value = "carNode")
+    private String carNode;
 }

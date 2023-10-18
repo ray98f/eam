@@ -5,6 +5,9 @@ import com.wzmtr.eam.dto.req.fault.CarObjectReqDTO;
 import com.wzmtr.eam.dto.req.fault.ObjectReqDTO;
 import com.wzmtr.eam.dto.res.fault.ObjectResDTO;
 import com.wzmtr.eam.dto.res.fault.car.CarObjResDTO;
+import com.wzmtr.eam.dto.res.fault.car.CarTreeListObjResDTO;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -15,5 +18,7 @@ public interface ObjectService {
 
     CarObjResDTO getQuery(CarObjectReqDTO reqDTO);
 
-    CarObjResDTO query(CarObjectReqDTO reqDTO);
+    List<CarTreeListObjResDTO> query(CarObjectReqDTO reqDTO);
+
+    Page<ObjectResDTO> queryForObject(ObjectReqDTO reqDTO);
 }
