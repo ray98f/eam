@@ -5,7 +5,9 @@ import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulUpStateReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
+import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +21,10 @@ public interface OverhaulOrderService {
     OverhaulOrderResDTO getOverhaulOrderDetail(String id);
 
     void exportOverhaulOrder(List<String> ids, HttpServletResponse response);
+
+    List<FaultRepairDeptResDTO> queryDept(String id);
+
+    List<OrganMajorLineType> queryWorker(String workerGroupCode);
 
     void dispatchWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 

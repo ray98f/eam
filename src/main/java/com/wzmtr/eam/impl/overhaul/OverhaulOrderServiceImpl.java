@@ -7,21 +7,25 @@ import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultInfoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.entity.Dictionaries;
+import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
+import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulItemMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulStateMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.service.common.UserGroupMemberService;
 import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
@@ -72,6 +76,12 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Autowired
     private DictionariesMapper dictionariesMapper;
 
+    @Autowired
+    private FaultQueryMapper faultQueryMapper;
+
+    @Autowired
+    private UserGroupMemberService userGroupMemberService;
+
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
@@ -121,6 +131,26 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             }
         }
         ExcelPortUtil.excelPort("检修工单信息", listName, list, null, response);
+    }
+
+    @Override
+    public List<FaultRepairDeptResDTO> queryDept(String id) {
+        if (StringUtils.isEmpty(id)) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        OverhaulOrderResDTO order = overhaulOrderMapper.getOrder(id, "1");
+        if (Objects.isNull(order)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        return faultQueryMapper.queryDeptCode(order.getLineNo(), order.getSubjectCode(), "20");
+    }
+
+    @Override
+    public List<OrganMajorLineType> queryWorker(String workerGroupCode) {
+        if (StringUtils.isEmpty(workerGroupCode)) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        return userGroupMemberService.getDepartmentUserByGroupName(workerGroupCode, "DM_012");
     }
 
     @Override

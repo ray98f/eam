@@ -16,7 +16,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE = d.LINE_CODE AND ec.CODESET_CODE = 'line' )
+        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
         AS
         "lineName",
         d.LINE_CODE AS "lineCode",
@@ -24,13 +24,13 @@
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName_textField",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION2_CODE ) AS "position2Name",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE = d.EXT1 ) AS "stationCode",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName_textField",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION2_CODE ) AS "position2Name",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
+        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -76,7 +76,7 @@
         d.TRAIN_TAG AS "traintag",
         u.USER_NAME AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
-        ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME = df.CLOSE_USER_ID ) AS "closeUserName",
+        ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID ) AS "closeUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.FAULT_PROCESS_RESULT AS "faultProcessResult",
         df.DEALER_NUM AS "dealerNum",
@@ -89,51 +89,51 @@
         IPLAT60.XS_USER u,
         T_FAULT_ORDER df
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="req.faultType != null">
-                AND d.FAULT_TYPE = #{req.faultType}
+            <if test="req.faultType!=null">
+                AND d.FAULT_TYPE=#{req.faultType}
             </if>
-            <if test="req.positionCode != null">
-                AND d.POSITION_CODE = #{req.positionCode}
+            <if test="req.positionCode!=null">
+                AND d.POSITION_CODE=#{req.positionCode}
             </if>
-            <if test="req.faultNo != null">
+            <if test="req.faultNo!=null">
                 AND d.FAULT_NO LIKE '%' || #{req.faultNo} || '%'
             </if>
-            <if test="req.faultWorkNo != null">
+            <if test="req.faultWorkNo!=null">
                 AND df.FAULT_WORK_NO LIKE '%' || #{req.faultWorkNo} || '%'
             </if>
-            <if test="req.orderStatus != null and req.orderStatus != ''">
-                AND df.ORDER_STATUS = #{req.orderStatus}
+            <if test="req.orderStatus!=null and req.orderStatus!=''">
+                AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
-            <if test="req.lineCode != null and req.lineCode != ''">
-                AND d.LINE_CODE = #{req.lineCode}
+            <if test="req.lineCode!=null and req.lineCode!=''">
+                AND d.LINE_CODE=#{req.lineCode}
             </if>
-            <if test="req.objectCode != null">
-                AND d.OBJECT_CODE = #{req.objectCode}
+            <if test="req.objectCode!=null">
+                AND d.OBJECT_CODE=#{req.objectCode}
             </if>
-            <if test="req.objectName != null">
-                AND d.OBJECT_NAME = #{req.objectName}
+            <if test="req.objectName!=null">
+                AND d.OBJECT_NAME=#{req.objectName}
             </if>
-            <if test="req.majorCode != null">
-                AND d.MAJOR_CODE = #{req.majorCode}
+            <if test="req.majorCode!=null">
+                AND d.MAJOR_CODE=#{req.majorCode}
             </if>
-            <if test="req.systemCode != null and req.systemCode != ''">
-                AND d.SYSTEM_CODE = #{req.systemCode}
+            <if test="req.systemCode!=null and req.systemCode!=''">
+                AND d.SYSTEM_CODE=#{req.systemCode}
             </if>
-            <if test="req.equipTypeCode != null and req.equipTypeCode != ''">
-                AND d.EQUIP_TYPE_CODE = #{req.equipTypeCode}
+            <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
+                AND d.EQUIP_TYPE_CODE=#{req.equipTypeCode}
             </if>
-            <if test="req.faultDetail != null">
+            <if test="req.faultDetail!=null">
                 AND d.FAULT_DETAIL LIKE '%' || #{req.faultDetail} || '%'
             </if>
-            <if test="req.fillinTimeStart != null">
+            <if test="req.fillinTimeStart!=null">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD')
             </if>
-            <if test="req.fillinTimeEnd != null">
+            <if test="req.fillinTimeEnd!=null">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD') +
                 1
             </if>
-            AND d.FILLIN_USER_ID = u.LOGIN_NAME
-            AND d.FAULT_NO = df.FAULT_NO
+            AND d.FILLIN_USER_ID=u.LOGIN_NAME
+            AND d.FAULT_NO=df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
@@ -151,7 +151,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE = d.LINE_CODE AND ec.CODESET_CODE = 'line' )
+        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
         AS
         "lineName",
         d.LINE_CODE AS "lineCode",
@@ -159,12 +159,12 @@
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName_textField",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE = d.EXT1 ) AS "stationCode",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName_textField",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
+        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -210,7 +210,7 @@
         d.TRAIN_TAG AS "traintag",
         u.USER_NAME AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
-        ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME = df.CLOSE_USER_ID ) AS "closeUserName",
+        ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID ) AS "closeUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.DEALER_NUM AS "dealerNum",
         df.FAULT_WORK_NO AS "faultWorkNo",
@@ -222,64 +222,64 @@
         IPLAT60.XS_USER u,
         T_FAULT_ORDER df
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="req.faultType != null">
-                AND d.FAULT_TYPE = #{req.faultType}
+            <if test="req.faultType!=null">
+                AND d.FAULT_TYPE=#{req.faultType}
             </if>
-            <if test="req.positionCode != null">
-                AND d.POSITION_CODE = #{req.positionCode}
+            <if test="req.positionCode!=null">
+                AND d.POSITION_CODE=#{req.positionCode}
             </if>
-            <if test="req.levelfault != null">
-                AND df.EXT1 = #{req.levelfault}
+            <if test="req.levelfault!=null">
+                AND df.EXT1=#{req.levelfault}
             </if>
-            <if test="req.faultNo != null">
+            <if test="req.faultNo!=null">
                 AND d.FAULT_NO LIKE '%' || #{req.faultNo} || '%'
             </if>
-            <if test="req.faultWorkNo != null">
+            <if test="req.faultWorkNo!=null">
                 AND df.FAULT_WORK_NO LIKE '%' || #{req.faultWorkNo} || '%'
             </if>
-            <if test="req.orderStatus != null and req.orderStatus != ''">
-                AND df.ORDER_STATUS = #{req.orderStatus}
+            <if test="req.orderStatus!=null and req.orderStatus!=''">
+                AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
-            <if test="req.recStatus != null and req.recStatus != ''">
+            <if test="req.recStatus!=null and req.recStatus!=''">
                 AND df.ORDER_STATUS <![CDATA[!=]]> #{req.recStatus}
             </if>
-            <if test="req.objectCode != null">
-                AND d.OBJECT_CODE = #{req.objectCode}
+            <if test="req.objectCode!=null">
+                AND d.OBJECT_CODE=#{req.objectCode}
             </if>
-            <if test="req.objectName != null">
-                AND d.OBJECT_NAME = #{req.objectName}
+            <if test="req.objectName!=null">
+                AND d.OBJECT_NAME=#{req.objectName}
             </if>
-            <if test="req.majorCode != null and req.majorCode != ''">
-                AND d.MAJOR_CODE = #{req.majorCode}
+            <if test="req.majorCode!=null and req.majorCode!=''">
+                AND d.MAJOR_CODE=#{req.majorCode}
             </if>
-            <if test="req.systemCode != null and req.systemCode != ''">
-                AND d.SYSTEM_CODE = #{req.systemCode}
+            <if test="req.systemCode!=null and req.systemCode!=''">
+                AND d.SYSTEM_CODE=#{req.systemCode}
             </if>
-            <if test="req.equipTypeCode != null and req.equipTypeCode != ''">
-                AND d.EQUIP_TYPE_CODE = #{req.equipTypeCode}
+            <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
+                AND d.EQUIP_TYPE_CODE=#{req.equipTypeCode}
             </if>
-            <if test="req.faultDetail != null">
+            <if test="req.faultDetail!=null">
                 AND d.FAULT_DETAIL LIKE '%' || #{req.faultDetail} || '%'
             </if>
-            <if test="req.fillinTimeStart != null">
+            <if test="req.fillinTimeStart!=null">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD
                 HH24:MI:SS')
             </if>
-            <if test="req.fillinTimeEnd != null">
+            <if test="req.fillinTimeEnd!=null">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD
                 HH24:MI:SS') + 1
             </if>
-            <if test="req.typeCode != null and req.typeCode != ''">
-                AND df.FAULT_PROCESS_RESULT = #{req.typeCode}
+            <if test="req.typeCode!=null and req.typeCode!=''">
+                AND df.FAULT_PROCESS_RESULT=#{req.typeCode}
             </if>
-            <if test="req.faultNos != null and req.faultNos.size() > 0">
+            <if test="req.faultNos!=null and req.faultNos.size() > 0">
                 AND d.FAULT_NO IN
                 <foreach collection="req.faultNos" item="code" open="(" close=")" separator=",">
                     #{code}
                 </foreach>
             </if>
-            AND d.FILLIN_USER_ID = u.LOGIN_NAME
-            AND d.FAULT_NO = df.FAULT_NO
+            AND d.FILLIN_USER_ID=u.LOGIN_NAME
+            AND d.FAULT_NO=df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
         </trim>
         ORDER BY df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
@@ -289,8 +289,8 @@
         df2.ORDER_STATUS
         from T_FAULT_INFO df1,T_FAULT_ORDER df2
         where 1=1 and df1.FAULT_NO=df2.FAULT_NO
-        <if test="reqDTO.id != null">
-            AND df2.FAULT_WORK_NO = #{reqDTO.id}
+        <if test="reqDTO.id!=null">
+            AND df2.FAULT_WORK_NO=#{reqDTO.id}
         </if>
     </select>
     <select id="construction" resultType="com.wzmtr.eam.dto.res.fault.ConstructionResDTO">
@@ -322,8 +322,8 @@
         EXT5 AS "ext5"  <!-- 扩展字段5 -->
         FROM T_WORK_PLAN
         WHERE 1=1
-        <if test="faultWorkNo != null">
-            AND WORKNO = #{faultWorkNo}
+        <if test="faultWorkNo!=null">
+            AND WORKNO=#{faultWorkNo}
         </if>
         ORDER BY REC_ID ASC
     </select>
@@ -363,8 +363,8 @@
         EXT4 as "ext4",  <!-- 扩展字段4 -->
         EXT5 as "ext5" <!-- 扩展字段5 -->
         FROM T_REQUEST_POINTS WHERE 1=1
-        <if test="faultWorkNo != null">
-            AND WORKNO = #{faultWorkNo}
+        <if test="faultWorkNo!=null">
+            AND WORKNO=#{faultWorkNo}
         </if>
         order by REC_ID asc
     </select>
@@ -384,20 +384,20 @@
         d.OBJECT_CODE AS objectCode_textField,
         d.OBJECT_NAME AS objectName,
         d.TRAIN_TRUNK AS trainTrunk,
-        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE = d.LINE_CODE AND ec.CODESET_CODE='line') AS
+        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line') AS
         lineName,
         d.LINE_CODE AS lineCode,
         d.POSITION_CODE AS positionCode,
         d.POSITION2_CODE AS position2Code,
         d.PART_CODE AS partCode,
         d.PART_NAME AS partName,
-        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE) AS positionName_textField,
-        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE) AS positionName,
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION2_CODE ) AS "position2Name",
-        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.MAJOR_CODE) AS majorName,
-        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.SYSTEM_CODE) AS systemName,
-        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.EQUIP_TYPE_CODE) AS equipTypeName,
-        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE = d.EXT1) AS stationCode,
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS positionName_textField,
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS positionName,
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION2_CODE ) AS "position2Name",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS majorName,
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS systemName,
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS equipTypeName,
+        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS stationCode,
         d.MAJOR_CODE AS majorCode,
         d.SYSTEM_CODE AS systemCode,
         d.EQUIP_TYPE_CODE AS equipTypeCode,
@@ -443,7 +443,7 @@
         d.TRAIN_TAG AS traintag,
         u.USER_NAME AS fillinUserName,
         df.CLOSE_TIME AS closeTime,
-        (SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME = df.CLOSE_USER_ID) AS closeUserName,
+        (SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS closeUserName,
         df.DEALER_UNIT AS dealerUnit,
         df.DEALER_NUM AS dealerNum,
         df.FAULT_WORK_NO AS faultWorkNo,
@@ -453,62 +453,62 @@
         (
         CASE
         WHEN TO_DATE(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') <![CDATA[<]]> TO_DATE(SYSDATE - 20) AND
-        (df.ORDER_STATUS = '10' OR df.ORDER_STATUS = '20' OR df.ORDER_STATUS = '30') AND
-        df.ORDER_STATUS != '99' AND df.ORDER_STATUS != '60' AND df.ORDER_STATUS != '70' THEN 1
+        (df.ORDER_STATUS='10' OR df.ORDER_STATUS='20' OR df.ORDER_STATUS='30') AND
+        df.ORDER_STATUS!='99' AND df.ORDER_STATUS!='60' AND df.ORDER_STATUS!='70' THEN 1
         WHEN TO_DATE(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') <![CDATA[>=]]> TO_DATE(SYSDATE - 20) AND
         TO_DATE(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') <![CDATA[<=]]> TO_DATE(SYSDATE - 10) AND
-        (df.ORDER_STATUS = '10' OR df.ORDER_STATUS = '20' OR df.ORDER_STATUS = '30') AND
-        df.ORDER_STATUS != '99' AND df.ORDER_STATUS != '60' AND df.ORDER_STATUS != '70' THEN 2
+        (df.ORDER_STATUS='10' OR df.ORDER_STATUS='20' OR df.ORDER_STATUS='30') AND
+        df.ORDER_STATUS!='99' AND df.ORDER_STATUS!='60' AND df.ORDER_STATUS!='70' THEN 2
         WHEN TO_DATE(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') <![CDATA[>=]]> TO_DATE(SYSDATE - 10) AND
-        (df.ORDER_STATUS = '10' OR df.ORDER_STATUS = '20' OR df.ORDER_STATUS = '30') AND
-        df.ORDER_STATUS != '99' AND df.ORDER_STATUS != '60' AND df.ORDER_STATUS != '70' THEN 3
+        (df.ORDER_STATUS='10' OR df.ORDER_STATUS='20' OR df.ORDER_STATUS='30') AND
+        df.ORDER_STATUS!='99' AND df.ORDER_STATUS!='60' AND df.ORDER_STATUS!='70' THEN 3
         ELSE 9
         END
         ) AS sort
         FROM T_FAULT_INFO d
-        INNER JOIN IPLAT60.XS_USER u ON d.FILLIN_USER_ID = u.LOGIN_NAME
-        INNER JOIN T_FAULT_ORDER df ON d.FAULT_NO = df.FAULT_NO AND d.FAULT_FLAG != '2'
+        INNER JOIN IPLAT60.XS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
+        INNER JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO AND d.FAULT_FLAG!='2'
         WHERE 1=1
-        <if test="faultType != null">
-            AND d.FAULT_TYPE = #{faultType}
+        <if test="faultType!=null">
+            AND d.FAULT_TYPE=#{faultType}
         </if>
-        <if test="positionCode != null">
-            AND d.POSITION_CODE = #{positionCode}
+        <if test="positionCode!=null">
+            AND d.POSITION_CODE=#{positionCode}
         </if>
-        <if test="orderStatus != null">
-            AND df.ORDER_STATUS = #{orderStatus}
+        <if test="orderStatus!=null">
+            AND df.ORDER_STATUS=#{orderStatus}
         </if>
-        <if test="objectCode != null">
-            AND d.OBJECT_CODE = #{objectCode}
+        <if test="objectCode!=null">
+            AND d.OBJECT_CODE=#{objectCode}
         </if>
-        <if test="objectName != null">
-            AND d.OBJECT_NAME = #{objectName}
+        <if test="objectName!=null">
+            AND d.OBJECT_NAME=#{objectName}
         </if>
-        <if test="majorCode != null">
-            AND d.MAJOR_CODE = #{majorCode}
+        <if test="majorCode!=null">
+            AND d.MAJOR_CODE=#{majorCode}
         </if>
-        <if test="systemCode != null">
-            AND d.SYSTEM_CODE = #{systemCode}
+        <if test="systemCode!=null">
+            AND d.SYSTEM_CODE=#{systemCode}
         </if>
-        <if test="equipTypeCode != null">
-            AND d.EQUIP_TYPE_CODE = #{equipTypeCode}
+        <if test="equipTypeCode!=null">
+            AND d.EQUIP_TYPE_CODE=#{equipTypeCode}
         </if>
-        <if test="faultDetail != null">
+        <if test="faultDetail!=null">
             AND d.FAULT_DETAIL LIKE '%' || #{faultDetail} || '%'
         </if>
-        <if test="fillinTimeStart != null">
+        <if test="fillinTimeStart!=null">
             AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{fillinTimeStart}, 'YYYY-MM-DD')
         </if>
-        <if test="fillinTimeEnd != null">
+        <if test="fillinTimeEnd!=null">
             AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{fillinTimeEnd}, 'YYYY-MM-DD') + 1
         </if>
-        <if test="faultNos != null and faultNos.size() > 0">
+        <if test="faultNos!=null and faultNos.size() > 0">
             AND d.FAULT_NO IN
             <foreach collection="faultNos" item="code" open="(" close=")" separator=",">
                 #{code}
             </foreach>
         </if>
-        <if test="faultWorkNos != null and faultWorkNos.size() > 0">
+        <if test="faultWorkNos!=null and faultWorkNos.size() > 0">
             AND df.FAULT_WORK_NO IN
             <foreach collection="faultWorkNos" item="code" open="(" close=")" separator=",">
                 #{code}
@@ -527,7 +527,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE = d.LINE_CODE AND ec.CODESET_CODE = 'line' )
+        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
         AS
         "lineName",
         d.LINE_CODE AS "lineCode",
@@ -535,12 +535,12 @@
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName_textField",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE = d.EXT1 ) AS "stationCode",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName_textField",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
+        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -587,7 +587,7 @@
         FROM
         T_FAULT_INFO d
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="faultNo != null">
+            <if test="faultNo!=null">
                 and d.FAULT_NO LIKE '%' || #{faultNo} || '%'
             </if>
         </trim>
@@ -632,15 +632,15 @@
         WORK_FLOW_INST_ID as "workFlowInstId",
         WORK_FLOW_INST_STATUS as "workFlowInstStatus",
         PLAN_RECOVERY_TIME as "planRecoveryTime",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(DISPATCH_USER_ID)) as "dispatchUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(REPAIR_RESP_USER_ID)) as
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(DISPATCH_USER_ID)) as "dispatchUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(REPAIR_RESP_USER_ID)) as
         "repairRespUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(CHECK_USER_ID)) as "checkUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(CLOSE_USER_ID)) as "closeUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(REPORT_FINISH_USER_ID)) as
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(CHECK_USER_ID)) as "checkUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(CLOSE_USER_ID)) as "closeUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_FINISH_USER_ID)) as
         "reportFinishUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(CONFIRM_USER_ID)) as "confirmUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(REPORT_USER_ID)) as "reportUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(CONFIRM_USER_ID)) as "confirmUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_USER_ID)) as "reportUserName",
         FAULT_AFFECT as "faultAffect",
         IS_DETAINING_REPAIR as "isDetainingRepair",
         DOC_ID as "docId",
@@ -661,11 +661,11 @@
         EXT5 as "ext5"
         FROM T_FAULT_ORDER
         WHERE 1=1
-        <if test="faultWorkNo != null and faultWorkNo != ''">
-            AND FAULT_WORK_NO = #{faultWorkNo}
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            AND FAULT_WORK_NO=#{faultWorkNo}
         </if>
-        <if test="faultNo != null and faultNo != ''">
-            AND FAULT_NO = #{faultNo}
+        <if test="faultNo!=null and faultNo!=''">
+            AND FAULT_NO=#{faultNo}
         </if>
         order by FAULT_WORK_NO DESC
     </select>
@@ -682,7 +682,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE = d.LINE_CODE AND ec.CODESET_CODE = 'line' )
+        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
         AS
         "lineName",
         d.LINE_CODE AS "lineCode",
@@ -690,12 +690,12 @@
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName_textField",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE = d.EXT1 ) AS "stationCode",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName_textField",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
+        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -741,7 +741,7 @@
         d.TRAIN_TAG AS "traintag",
         u.USER_NAME AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
-        ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME = df.CLOSE_USER_ID ) AS "closeUserName",
+        ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID ) AS "closeUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.DEALER_NUM AS "dealerNum",
         df.FAULT_WORK_NO AS "faultWorkNo",
@@ -751,15 +751,15 @@
         (
         case
         when to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss')  <![CDATA[<]]> to_date(SYSDATE - 20) and
-        (df.ORDER_STATUS = '10' or df.ORDER_STATUS = '20' or df.ORDER_STATUS = '30') and
-        df.ORDER_STATUS != '99' and df.ORDER_STATUS != '60' and df.ORDER_STATUS != '70' then 1
+        (df.ORDER_STATUS='10' or df.ORDER_STATUS='20' or df.ORDER_STATUS='30') and
+        df.ORDER_STATUS!='99' and df.ORDER_STATUS!='60' and df.ORDER_STATUS!='70' then 1
         when to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') >= to_date(SYSDATE - 20) and
         to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss')  <![CDATA[<=]]> to_date(SYSDATE - 10) and
-        (df.ORDER_STATUS = '10' or df.ORDER_STATUS = '20' or df.ORDER_STATUS = '30') and
-        df.ORDER_STATUS != '99' and df.ORDER_STATUS != '60' and df.ORDER_STATUS != '70' then 2
+        (df.ORDER_STATUS='10' or df.ORDER_STATUS='20' or df.ORDER_STATUS='30') and
+        df.ORDER_STATUS!='99' and df.ORDER_STATUS!='60' and df.ORDER_STATUS!='70' then 2
         when to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') >= to_date(SYSDATE - 10) and
-        (df.ORDER_STATUS = '10' or df.ORDER_STATUS = '20' or df.ORDER_STATUS = '30') and
-        df.ORDER_STATUS != '99' and df.ORDER_STATUS != '60' and df.ORDER_STATUS != '70' then 3
+        (df.ORDER_STATUS='10' or df.ORDER_STATUS='20' or df.ORDER_STATUS='30') and
+        df.ORDER_STATUS!='99' and df.ORDER_STATUS!='60' and df.ORDER_STATUS!='70' then 3
         else 9
         end
         ) as sort
@@ -768,51 +768,51 @@
         IPLAT60.XS_USER u,
         T_FAULT_ORDER df
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="req.faultType != null">
-                AND d.FAULT_TYPE = #{req.faultType}
+            <if test="req.faultType!=null">
+                AND d.FAULT_TYPE=#{req.faultType}
             </if>
-            <if test="req.positionCode != null">
-                AND d.POSITION_CODE = #{req.positionCode}
+            <if test="req.positionCode!=null">
+                AND d.POSITION_CODE=#{req.positionCode}
             </if>
-            <if test="req.faultNo != null">
+            <if test="req.faultNo!=null">
                 AND d.FAULT_NO LIKE '%' || #{req.faultNo} || '%'
             </if>
-            <if test="req.faultWorkNo != null">
+            <if test="req.faultWorkNo!=null">
                 AND df.FAULT_WORK_NO LIKE '%' || #{req.faultWorkNo} || '%'
             </if>
-            <if test="req.orderStatus != null and req.orderStatus != ''">
-                AND df.ORDER_STATUS = #{req.orderStatus}
+            <if test="req.orderStatus!=null and req.orderStatus!=''">
+                AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
-            <if test="req.recStatus != null and req.recStatus != ''">
+            <if test="req.recStatus!=null and req.recStatus!=''">
                 AND df.ORDER_STATUS <![CDATA[!=]]> #{req.recStatus}
             </if>
-            <if test="req.objectCode != null">
-                AND d.OBJECT_CODE = #{req.objectCode}
+            <if test="req.objectCode!=null">
+                AND d.OBJECT_CODE=#{req.objectCode}
             </if>
-            <if test="req.objectName != null">
-                AND d.OBJECT_NAME = #{req.objectName}
+            <if test="req.objectName!=null">
+                AND d.OBJECT_NAME=#{req.objectName}
             </if>
-            <if test="req.majorCode != null">
-                AND d.MAJOR_CODE = #{req.majorCode}
+            <if test="req.majorCode!=null">
+                AND d.MAJOR_CODE=#{req.majorCode}
             </if>
-            <if test="req.systemCode != null and req.systemCode != ''">
-                AND d.SYSTEM_CODE = #{req.systemCode}
+            <if test="req.systemCode!=null and req.systemCode!=''">
+                AND d.SYSTEM_CODE=#{req.systemCode}
             </if>
-            <if test="req.equipTypeCode != null and req.equipTypeCode != ''">
-                AND d.EQUIP_TYPE_CODE = #{req.equipTypeCode}
+            <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
+                AND d.EQUIP_TYPE_CODE=#{req.equipTypeCode}
             </if>
-            <if test="req.faultDetail != null">
+            <if test="req.faultDetail!=null">
                 AND d.FAULT_DETAIL LIKE '%' || #{req.faultDetail} || '%'
             </if>
-            <if test="req.fillinTimeStart != null">
+            <if test="req.fillinTimeStart!=null">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD')
             </if>
-            <if test="req.fillinTimeEnd != null">
+            <if test="req.fillinTimeEnd!=null">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD') +
                 1
             </if>
-            AND d.FILLIN_USER_ID = u.LOGIN_NAME
-            AND d.FAULT_NO = df.FAULT_NO
+            AND d.FILLIN_USER_ID=u.LOGIN_NAME
+            AND d.FAULT_NO=df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
         </trim>
         ORDER BY sort,df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
@@ -822,16 +822,16 @@
         FROM SYS_ORG_MAJOR d5,
         SYS_ORG_LINE d6,
         SYS_ORG_TYPE d7
-        where d5.ORG_CODE = d6.ORG_CODE
-        AND d6.ORG_CODE = d7.ORG_CODE
-        <if test="majorCode != null and majorCode != ''">
-            AND d5.MAJOR_CODE = #{majorCode}
+        where d5.ORG_CODE=d6.ORG_CODE
+        AND d6.ORG_CODE=d7.ORG_CODE
+        <if test="majorCode!=null and majorCode!=''">
+            AND d5.MAJOR_CODE=#{majorCode}
         </if>
-        <if test="lineCode != null and lineCode!=''">
-            AND d6.LINE_CODE = #{lineCode}
+        <if test="lineCode!=null and lineCode!=''">
+            AND d6.LINE_CODE=#{lineCode}
         </if>
-        <if test="orgType != null and orgType!=''">
-            AND d7.ORG_TYPE = #{orgType}
+        <if test="orgType!=null and orgType!=''">
+            AND d7.ORG_TYPE=#{orgType}
         </if>
     </select>
     <select id="faultOrderList" resultType="com.wzmtr.eam.dataobject.FaultOrderDO">
@@ -874,15 +874,15 @@
         WORK_FLOW_INST_ID as "workFlowInstId",
         WORK_FLOW_INST_STATUS as "workFlowInstStatus",
         PLAN_RECOVERY_TIME as "planRecoveryTime",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(DISPATCH_USER_ID)) as "dispatchUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(REPAIR_RESP_USER_ID)) as
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(DISPATCH_USER_ID)) as "dispatchUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(REPAIR_RESP_USER_ID)) as
         "repairRespUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(CHECK_USER_ID)) as "checkUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(CLOSE_USER_ID)) as "closeUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(REPORT_FINISH_USER_ID)) as
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(CHECK_USER_ID)) as "checkUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(CLOSE_USER_ID)) as "closeUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_FINISH_USER_ID)) as
         "reportFinishUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(CONFIRM_USER_ID)) as "confirmUserName",
-        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME = TRIM(REPORT_USER_ID)) as "reportUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(CONFIRM_USER_ID)) as "confirmUserName",
+        (SELECT u.USER_NAME FROM IPLAT60.XS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_USER_ID)) as "reportUserName",
         FAULT_AFFECT as "faultAffect",
         IS_DETAINING_REPAIR as "isDetainingRepair",
         DOC_ID as "docId",

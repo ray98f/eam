@@ -137,7 +137,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
     }
 
     @Override
-    public void submitDetectionPlan(String id) throws Exception {
+    public void submitDetectionPlan(String id, String comment) throws Exception {
         // ServiceDMSE0001 submit
         DetectionPlanResDTO res = detectionPlanMapper.getDetectionPlanDetail(id);
         if (Objects.isNull(res)) {

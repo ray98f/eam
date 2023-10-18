@@ -23,7 +23,7 @@ public interface DetectionPlanService {
 
     void deleteDetectionPlan(BaseIdsEntity baseIdsEntity);
 
-    void submitDetectionPlan(String id) throws Exception;
+    void submitDetectionPlan(String id, String comment) throws Exception;
 
     void exportDetectionPlan(String instrmPlanNo, String  planStatus, String  editDeptCode,
                              String assetKindCode, String  planPeriodMark, HttpServletResponse response);
