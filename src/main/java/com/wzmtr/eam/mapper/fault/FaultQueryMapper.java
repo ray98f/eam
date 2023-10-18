@@ -24,7 +24,8 @@ import java.util.Set;
  */
 @Mapper
 @Repository
-public interface FaultQueryMapper{
+public interface FaultQueryMapper {
+
     Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
 
     FaultDetailResDTO queryDetail(@Param("req") FaultQueryDetailReqDTO req);
@@ -35,17 +36,19 @@ public interface FaultQueryMapper{
 
     FaultOrderDO queryOneFaultOrder(String faultNo, String faultWorkNo);
 
-    List<FaultOrderDO> faultOrderList(Set<String> faultNos,Set<String> faultWorkNos);
+    List<FaultOrderDO> faultOrderList(Set<String> faultNos, Set<String> faultWorkNos);
+
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
 
     List<FaultDetailResDTO> list(@Param("req") FaultQueryReqDTO req);
 
     List<FaultDetailResDTO> export(FaultExportReqDTO req);
-    List<FaultRepairDeptResDTO> queryDeptCode(String lineCode,String majorCode,String orgType);
 
-    Page<ConstructionResDTO> construction(Page<Object> of,@Param("faultWorkNo") String faultWorkNo);
+    List<FaultRepairDeptResDTO> queryDeptCode(String lineCode, String majorCode, String orgType);
 
-    Page<ConstructionResDTO> cancellation(Page<Object> of,@Param("faultWorkNo") String faultWorkNo);
+    Page<ConstructionResDTO> construction(Page<Object> of, @Param("faultWorkNo") String faultWorkNo);
+
+    Page<ConstructionResDTO> cancellation(Page<Object> of, @Param("faultWorkNo") String faultWorkNo);
 
     TrackQueryResDTO queryOneByFaultWorkNoAndFaultNo(String faultNo, String faultWorkNo);
 

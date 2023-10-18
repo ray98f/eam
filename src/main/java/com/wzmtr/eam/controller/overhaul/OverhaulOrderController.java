@@ -4,8 +4,10 @@ import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulUpStateReqDTO;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.entity.BaseIdsEntity;
+import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -24,6 +26,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -54,6 +57,18 @@ public class OverhaulOrderController {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
         }
         overhaulOrderService.exportOverhaulOrder(baseIdsEntity.getIds(), response);
+    }
+
+    @GetMapping("/queryDept")
+    @ApiOperation(value = "获取作业工班")
+    public DataResponse<List<FaultRepairDeptResDTO>> queryDept(@RequestParam String id) {
+        return DataResponse.of(overhaulOrderService.queryDept(id));
+    }
+
+    @GetMapping("/queryWorker")
+    @ApiOperation(value = "获取作业人员")
+    public DataResponse<List<OrganMajorLineType>> queryWorker(@RequestParam String workerGroupCode) {
+        return DataResponse.of(overhaulOrderService.queryWorker(workerGroupCode));
     }
 
     @PostMapping("/dispatchWorkers")
