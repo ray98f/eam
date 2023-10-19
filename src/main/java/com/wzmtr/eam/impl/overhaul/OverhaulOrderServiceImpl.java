@@ -1,14 +1,17 @@
 package com.wzmtr.eam.impl.overhaul;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultInfoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultOrderReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
+import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.OrganMajorLineType;
@@ -35,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -307,6 +311,33 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         } else {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "在数据库未查询到该工单，请刷新后重试。");
         }
+    }
+
+    @Override
+    public void pageMaterial() {
+        // todo 材料列表
+    }
+
+    @Override
+    public void receiveMaterial(HttpServletResponse response) throws IOException {
+        response.sendRedirect(dictionariesMapper.queryOneByItemCodeAndCodesetCode("DM_ER_ADDRESS", "11").getItemCname());
+    }
+
+    @Override
+    public void returnMaterial() {
+        // todo 退回材料
+    }
+
+    @Override
+    public Page<ConstructionResDTO> construction(String orderCode, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return faultQueryMapper.construction(pageReqDTO.of(), orderCode);
+    }
+
+    @Override
+    public Page<ConstructionResDTO> cancellation(String orderCode, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return faultQueryMapper.cancellation(pageReqDTO.of(), orderCode);
     }
 
     @Override

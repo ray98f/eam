@@ -46,9 +46,9 @@ public interface FaultQueryMapper {
 
     List<FaultRepairDeptResDTO> queryDeptCode(String lineCode, String majorCode, String orgType);
 
-    Page<ConstructionResDTO> construction(Page<Object> of, @Param("faultWorkNo") String faultWorkNo);
+    Page<ConstructionResDTO> construction(Page<ConstructionResDTO> of, @Param("faultWorkNo") String faultWorkNo);
 
-    Page<ConstructionResDTO> cancellation(Page<Object> of, @Param("faultWorkNo") String faultWorkNo);
+    Page<ConstructionResDTO> cancellation(Page<ConstructionResDTO> of, @Param("faultWorkNo") String faultWorkNo);
 
     TrackQueryResDTO queryOneByFaultWorkNoAndFaultNo(String faultNo, String faultWorkNo);
 

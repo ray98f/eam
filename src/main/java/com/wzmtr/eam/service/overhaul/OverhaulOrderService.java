@@ -1,16 +1,20 @@
 package com.wzmtr.eam.service.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulUpStateReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
+import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -33,6 +37,16 @@ public interface OverhaulOrderService {
     void confirmWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException;
 
     void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
+
+    void pageMaterial();
+
+    void receiveMaterial(HttpServletResponse response) throws IOException;
+
+    void returnMaterial();
+
+    Page<ConstructionResDTO> construction(String orderCode, PageReqDTO pageReqDTO);
+
+    Page<ConstructionResDTO> cancellation(String orderCode, PageReqDTO pageReqDTO);
 
     Page<OverhaulOrderDetailResDTO> pageOverhaulObject(String orderCode, String planCode, String planName, String objectCode, PageReqDTO pageReqDTO);
 

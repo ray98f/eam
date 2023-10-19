@@ -1,10 +1,12 @@
 package com.wzmtr.eam.controller.overhaul;
 
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulUpStateReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
+import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.OrganMajorLineType;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -97,6 +100,40 @@ public class OverhaulOrderController {
     public DataResponse<T> cancellWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
         overhaulOrderService.cancellWorkers(overhaulOrderReqDTO);
         return DataResponse.success();
+    }
+
+    @GetMapping("/material/page")
+    @ApiOperation(value = "材料列表")
+    public DataResponse<T> pageMaterial() {
+        overhaulOrderService.pageMaterial();
+        return DataResponse.success();
+    }
+
+    @PostMapping("/material/receive")
+    @ApiOperation(value = "领用材料")
+    public void receiveMaterial(HttpServletResponse response) throws IOException {
+        overhaulOrderService.receiveMaterial(response);
+    }
+
+    @PostMapping("/material/return")
+    @ApiOperation(value = "退回材料")
+    public DataResponse<T> returnMaterial() {
+        overhaulOrderService.returnMaterial();
+        return DataResponse.success();
+    }
+
+    @GetMapping("/construction")
+    @ApiOperation(value = "施工计划")
+    public PageResponse<ConstructionResDTO> construction(@RequestParam @ApiParam("工单编号") String orderCode,
+                                                         @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(overhaulOrderService.construction(orderCode, pageReqDTO));
+    }
+
+    @GetMapping("/cancellation")
+    @ApiOperation(value = "请销点")
+    public PageResponse<ConstructionResDTO> cancellation(@RequestParam @ApiParam("工单编号") String orderCode,
+                                                         @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(overhaulOrderService.cancellation(orderCode, pageReqDTO));
     }
 
     @GetMapping("/object/page")
