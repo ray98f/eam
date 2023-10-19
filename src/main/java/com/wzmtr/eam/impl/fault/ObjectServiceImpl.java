@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -112,20 +111,19 @@ public class ObjectServiceImpl implements ObjectService {
                 List<CarTreeListObjResDTO> carList = Lists.newArrayList();
                 // 过滤脏数据
                 List<CarTreeListObjResDTO> filter = res.stream().filter(a -> a.getNodeCode().length() == 3).collect(Collectors.toList());
-                for (CarTreeListObjResDTO dto : filter) {
-                    String nodeCode = dto.getNodeCode().substring(1, 3);
-                    dto.setText("E" + nodeCode + " " + nodeCode + "车辆");
-                    dto.setNodeCode("E" + nodeCode);
-                    dto.setLabel(UUID.randomUUID().toString());
-                    carList.add(dto);
-                }
+                CarTreeListObjResDTO carTreeListObjResDTO = filter.get(0);
+                String nodeCode = carTreeListObjResDTO.getNodeCode().substring(1, 3);
+                carTreeListObjResDTO.setText("E" + nodeCode + " " + nodeCode + "车辆");
+                carTreeListObjResDTO.setNodeCode("E" + nodeCode);
+                carTreeListObjResDTO.setLabel(carTreeListObjResDTO.getLabel());
+                carList.add(carTreeListObjResDTO);
                 return carList;
             case "wz":
-                return bomMapper.queryForCar(node, reqDTO.getLine());
+                return bomMapper.queryForCar(reqDTO.getNode(), reqDTO.getLine());
             case "tz":
-                return bomMapper.queryForCarEquip(node, reqDTO.getLine());
+                return bomMapper.queryForCarEquip(reqDTO.getNode(), reqDTO.getLine());
             case "cc":
-                return bomMapper.queryForCarChild(node, reqDTO.getLine(), reqDTO.getCarEquipCode(), reqDTO.getCarEquipName());
+                return bomMapper.queryForCarChild(reqDTO.getNode(), reqDTO.getLine(), reqDTO.getCarEquipCode(), reqDTO.getCarEquipName());
         }
         return null;
     }
@@ -170,21 +168,22 @@ public class ObjectServiceImpl implements ObjectService {
     @Override
     public Page<ObjectResDTO> queryForObject(ObjectReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        String position1Code = (reqDTO.getPosition1Code() == null) ? "" : reqDTO.getPosition1Code();
+        String nodeCode = (reqDTO.getNodeCode() == null) ? "" : reqDTO.getNodeCode();
         String car = reqDTO.getCar() == null ? "" : reqDTO.getCar();
-        if (position1Code.contains("ES") && car.trim().isEmpty()) {
+        if (nodeCode.contains("ES") && car.trim().isEmpty()) {
             return bomMapper.queryCarEquip(reqDTO.of(), reqDTO);
         } else if (car.equals("car")) {
             List<String> carChild = bomMapper.queryCarTree(reqDTO.getCarNode());
             if (CollectionUtil.isNotEmpty(carChild)) {
-                return bomMapper.queryCarChild(reqDTO.of(), reqDTO);
+                Page<ObjectResDTO> page = bomMapper.queryCarChild(reqDTO.of(), reqDTO);
+                ObjectResDTO objectResDTO = page.getRecords().stream().findFirst().orElse(null);
             } else {
                 return bomMapper.queryCarLastChild(reqDTO.of(), reqDTO);
             }
         } else if (car.equals("carpos")) {
             return bomMapper.queryCar(reqDTO.of(), reqDTO);
         }
-        return null;
+        return new Page<>();
     }
 
     private List<String> queryNodes(String label, List<String> rescv) {

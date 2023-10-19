@@ -3,7 +3,6 @@ package com.wzmtr.eam.dto.req.fault;
 import com.wzmtr.eam.entity.PageReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -46,4 +45,6 @@ public class ObjectReqDTO extends PageReqDTO {
     private String car;
     @ApiModelProperty(value = "carNode")
     private String carNode;
+    @ApiModelProperty(value = "nodeCode")
+    private String nodeCode;
 }

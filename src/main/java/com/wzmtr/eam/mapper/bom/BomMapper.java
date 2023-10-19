@@ -19,17 +19,17 @@ import java.util.List;
 @Mapper
 @Repository
 public interface BomMapper extends BaseMapper<BomDO> {
-    List<CarTreeListObjResDTO> queryForLine(String node);
+    List<CarTreeListObjResDTO> queryForLine(@Param("lineCode") String node);
 
-    List<CarTreeListObjResDTO> queryForCar(String node, String line);
+    List<CarTreeListObjResDTO> queryForCar(@Param("realNode") String node,@Param("useLineNo") String line);
 
-    List<CarTreeListObjResDTO> queryForCarEquip(String node, String line);
+    List<CarTreeListObjResDTO> queryForCarEquip(@Param("realNode") String node,@Param("useLineNo") String line);
 
-    List<CarTreeListObjResDTO> queryForCarChild(String node, String line, String carEquipCode, String carEquipName);
+    List<CarTreeListObjResDTO> queryForCarChild(@Param("node") String node,@Param("line") String line,@Param("carEquipCode") String carEquipCode,@Param("carEquipName") String carEquipName);
 
-    Page<ObjectResDTO> queryCarEquip(Page<Object> of,@Param("req")  ObjectReqDTO reqDTO);
+    Page<ObjectResDTO> queryCarEquip(Page<Object> of,@Param("req")ObjectReqDTO reqDTO);
 
-    List<String> queryCarTree(String carNode);
+    List<String> queryCarTree(@Param("carNode") String carNode);
 
     Page<ObjectResDTO> queryCarChild(Page<Object> of, @Param("req") ObjectReqDTO reqDTO);
 

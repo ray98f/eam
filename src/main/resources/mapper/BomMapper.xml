@@ -91,15 +91,8 @@
         FROM T_BOM dd4, T_EQUIPMENT dd1
         <where>
             1 = 1
-            <if test="dd1.MAJOR_CODE != null and dd1.MAJOR_CODE != ''">
-                AND dd1.MAJOR_CODE = #{dd1.MAJOR_CODE}
-            </if>
-            <if test="dd1.BOM_TYPE != null and dd1.BOM_TYPE != ''">
-                AND dd1.BOM_TYPE = (SELECT ENAME FROM T_BOM WHERE dd4.PARENT_ID = REC_ID)
-            </if>
-            <if test="dd1.APPROVAL_STATUS != null and dd1.APPROVAL_STATUS != ''">
-                AND dd1.APPROVAL_STATUS = #{dd1.APPROVAL_STATUS}
-            </if>
+            and dd1.MAJOR_CODE='07' and dd1.BOM_TYPE = (select ENAME FROM T_BOM where dd4.PARENT_ID = REC_ID )
+            and dd1.APPROVAL_STATUS='30'
             <if test="useLineNo != null and useLineNo != ''">
                 AND dd1.USE_LINE_NO = #{useLineNo}
             </if>

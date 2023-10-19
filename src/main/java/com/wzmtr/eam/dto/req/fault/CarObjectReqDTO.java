@@ -15,7 +15,7 @@ public class CarObjectReqDTO {
     private String text;
     private String nodeCode;
     private String line;
-
+    private String node;
     private String sort;
     private String nodeName;
     private String position;
