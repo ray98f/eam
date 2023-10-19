@@ -32,9 +32,6 @@ public interface FaultQueryService {
 
     Page<ConstructionResDTO> cancellation(FaultQueryReqDTO reqDTO);
 
-    void transmit(FaultQueryReqDTO reqDTO);
-
-    void submit(FaultSubmitReqDTO reqDTO);
 
     List<PersonResDTO> queryUserList(Set<String> userCode, String organCode);
 

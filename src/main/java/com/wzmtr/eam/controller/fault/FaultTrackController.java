@@ -1,9 +1,6 @@
 package com.wzmtr.eam.controller.fault;
 
-import com.wzmtr.eam.dto.req.fault.TrackCloseReqDTO;
-import com.wzmtr.eam.dto.req.fault.TrackRepairReqDTO;
-import com.wzmtr.eam.dto.req.fault.TrackReportReqDTO;
-import com.wzmtr.eam.dto.req.fault.TrackReqDTO;
+import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -53,6 +50,31 @@ public class FaultTrackController {
     @PostMapping("/repair")
     public DataResponse<TrackResDTO> repair(@RequestBody TrackRepairReqDTO reqDTO) {
         trackService.repair(reqDTO);
+        return DataResponse.success();
+    }
+
+
+    @ApiOperation(value = "故障跟踪表单驳回")
+    @PostMapping("/cancel")
+    public DataResponse<String> cancel(@RequestBody FaultSubmitReqDTO reqDTO) {
+        // faultWorkNo
+        trackService.returns(reqDTO);
+        return DataResponse.success();
+    }
+
+    @ApiOperation(value = "故障跟踪下达")
+    @PostMapping("/fault/track/transmit")
+    public DataResponse<String> transmit(@RequestBody FaultQueryReqDTO reqDTO) {
+        // faultWorkNo
+        trackService.transmit(reqDTO);
+        return DataResponse.success();
+    }
+
+    @ApiOperation(value = "故障跟踪表单提交")
+    @PostMapping("/fault/track/submit")
+    public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
+        // faultWorkNo
+        trackService.submit(reqDTO);
         return DataResponse.success();
     }
 }

@@ -124,21 +124,6 @@ public class FaultQueryController {
         return PageResponse.of(faultQueryService.cancellation(reqDTO));
     }
 
-    @ApiOperation(value = "故障跟踪下达")
-    @PostMapping("/fault/track/transmit")
-    public DataResponse<String> transmit(@RequestBody FaultQueryReqDTO reqDTO) {
-        // faultWorkNo
-        faultQueryService.transmit(reqDTO);
-        return DataResponse.success();
-    }
-
-    @ApiOperation(value = "故障跟踪表单提交")
-    @PostMapping("/fault/track/submit")
-    public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
-        // faultWorkNo
-        faultQueryService.submit(reqDTO);
-        return DataResponse.success();
-    }
 
     @ApiOperation(value = "操作前对选中的作前置校验")
     @PostMapping("/fault/track/compareRows")
@@ -147,13 +132,6 @@ public class FaultQueryController {
         return DataResponse.of(faultQueryService.compareRows(reqDTO));
     }
 
-    @ApiOperation(value = "故障跟踪表单驳回")
-    @PostMapping("/fault/track/cancel")
-    public DataResponse<String> cancel(@RequestBody FaultSubmitReqDTO reqDTO) {
-        // faultWorkNo
-        faultQueryService.returns(reqDTO);
-        return DataResponse.success();
-    }
 
     @ApiOperation(value = "故障工单驳回")
     @PostMapping("/fault/work/reject")
