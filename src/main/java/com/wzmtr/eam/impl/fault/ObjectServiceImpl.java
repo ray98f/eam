@@ -116,14 +116,27 @@ public class ObjectServiceImpl implements ObjectService {
                 carTreeListObjResDTO.setText("E" + nodeCode + " " + nodeCode + "车辆");
                 carTreeListObjResDTO.setNodeCode("E" + nodeCode);
                 carTreeListObjResDTO.setLabel(carTreeListObjResDTO.getLabel());
+                carTreeListObjResDTO.setParent(reqDTO.getText());
                 carList.add(carTreeListObjResDTO);
                 return carList;
             case "wz":
-                return bomMapper.queryForCar(reqDTO.getNode(), reqDTO.getLine());
+                List<CarTreeListObjResDTO> carTreeListObjResDTOS = bomMapper.queryForCar(reqDTO.getNode(), reqDTO.getLine());
+                carTreeListObjResDTOS.forEach(a -> {
+                    a.setParent(reqDTO.getText());
+                });
+                return carTreeListObjResDTOS;
             case "tz":
-                return bomMapper.queryForCarEquip(reqDTO.getNode(), reqDTO.getLine());
+                List<CarTreeListObjResDTO> carTreeListObjResDTOS1 = bomMapper.queryForCarEquip(reqDTO.getNode(), reqDTO.getLine());
+                carTreeListObjResDTOS1.forEach(a -> {
+                    a.setParent(reqDTO.getText());
+                });
+                return carTreeListObjResDTOS1;
             case "cc":
-                return bomMapper.queryForCarChild(reqDTO.getNode(), reqDTO.getLine(), reqDTO.getCarEquipCode(), reqDTO.getCarEquipName());
+                List<CarTreeListObjResDTO> carTreeListObjResDTOS2 = bomMapper.queryForCarChild(reqDTO.getNode(), reqDTO.getLine(), reqDTO.getCarEquipCode(), reqDTO.getCarEquipName());
+                carTreeListObjResDTOS2.forEach(a -> {
+                    a.setParent(reqDTO.getText());
+                });
+                return carTreeListObjResDTOS2;
         }
         return null;
     }
@@ -131,7 +144,7 @@ public class ObjectServiceImpl implements ObjectService {
     private CarObjResDTO getCarObjResDTO(CarObjectReqDTO reqDTO, String pathName) {
         CarObjResDTO carObjResDTO = new CarObjResDTO();
         carObjResDTO.setPathName(pathName);
-        if (reqDTO.getType() != null && reqDTO.getType().trim() != "") {
+        if (StringUtils.isNotEmpty(reqDTO.getType())) {
             if (reqDTO.getType().equals("xl")) {
                 carObjResDTO.setUseLineName(reqDTO.getText());
                 carObjResDTO.setUseLineNo(reqDTO.getNodeCode());
