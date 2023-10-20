@@ -35,6 +35,9 @@
         <if test="req.equipTypeCode != null and req.equipTypeCode != ''">
             AND dd1.EQUIP_TYPE_CODE = #{req.equipTypeCode}
         </if>
+        <if test="req.equipTypeCode != null and req.equipTypeCode != ''">
+            AND dd2.BOM_ENAME =#{carNode}
+        </if>
     </sql>
     <select id="queryForLine" resultType="com.wzmtr.eam.dto.res.fault.car.CarTreeListObjResDTO">
         SELECT
@@ -191,9 +194,10 @@
         dd1.EXT5 AS "ext5"  <!-- 扩展字段5 -->
         FROM T_EQUIPMENT dd1
         <where>
-            1 = 1
+            dd1.MAJOR_CODE='07' and dd1.APPROVAL_STATUS='30'
             <include refid="baseQuery"/>
         </where>
+        order by dd1.EQUIP_CODE asc
     </select>
     <select id="queryCarTree" resultType="java.lang.String">
         SELECT
@@ -272,13 +276,41 @@
         dd1.EXT5 AS "ext5", <!-- 扩展字段5 -->
         dd4.CNAME AS "model",
         dd4.ENAME AS "modelId",
-        dd2.PART_CODE AS "partCode",
-        dd2.PART_NAME AS "partName"
+        dd2.PART_CODE as "partCode",
+        dd2.PART_NAME as "partName"
         FROM T_EQUIPMENT dd1, T_BOM dd4, T_EQUIPMENT_PART dd2
-        WHERE 1 = 1
+        WHERE
+        dd1.EQUIP_CODE = dd2.EQUIP_CODE
         AND dd1.MAJOR_CODE = '07'
         AND dd1.APPROVAL_STATUS = '30'
-        <include refid="baseQuery"/>
+        <if test="req.carNode != null and req.carNode != ''">
+            AND dd4.REC_ID = #{req.carNode}
+            AND dd2.BOM_ENAME =#{req.carNode}
+        </if>
+        <if test="req.useLineNo != null and req.useLineNo != ''">
+            AND dd1.USE_LINE_NO = #{req.useLineNo}
+        </if>
+        <if test="req.manufacture != null and req.manufacture != ''">
+            AND dd1.MANUFACTURE like '%' ||#{req.manufacture}|| '%'
+        </if>
+        <if test="req.equipCode != null and req.equipCode != ''">
+            AND dd1.EQUIP_CODE = #{req.equipCode}
+        </if>
+        <if test="req.manufactureDateStart != null">
+            AND dd1.MANUFACTURE_DATE  <![CDATA[>=]]>  #{req.manufactureDateStart}
+        </if>
+        <if test="req.manufactureDateEnd != null">
+            AND dd1.MANUFACTURE_DATE <![CDATA[<]]> #{req.manufactureDateEnd}
+        </if>
+        <if test="req.majorCode != null and req.majorCode != ''">
+            AND dd1.MAJOR_CODE = #{req.majorCode}
+        </if>
+        <if test="req.systemCode != null and req.systemCode != ''">
+            AND dd1.SYSTEM_CODE = #{req.systemCode}
+        </if>
+        <if test="req.equipTypeCode != null and req.equipTypeCode != ''">
+            AND dd1.EQUIP_TYPE_CODE = #{req.equipTypeCode}
+        </if>
         ORDER BY dd4.ENAME
     </select>
     <select id="queryCarLastChild" resultType="com.wzmtr.eam.dto.res.fault.ObjectResDTO">
@@ -347,104 +379,137 @@
         dd1.EXT3	as "ext3",  <!-- 扩展字段3 -->
         dd1.EXT4	as "ext4",  <!-- 扩展字段4 -->
         dd1.EXT5	as "ext5", <!-- 扩展字段5 -->
-        (SELECT CNAME FROM T_BOM where REC_ID= #{carNode}) as "model",
-        (SELECT ENAME FROM T_BOM where REC_ID= #{carNode}) as "modelId",
+        (SELECT CNAME FROM T_BOM where REC_ID= #{req.carNode}) as "model",
+        (SELECT ENAME FROM T_BOM where REC_ID= #{req.carNode}) as "modelId",
         dd2.PART_CODE as "partCode",
         dd2.PART_NAME as "partName"
-        FROM T_EQUIPMENT dd1,T_EQUIPMENT_PART dd2 WHERE 1=1 and dd1.MAJOR_CODE='07' and dd2.EQUIP_CODE =dd1.EQUIP_CODE and dd2.BOM_ENAME = (Select ENAME from T_BOM where REC_ID = #{carNode})
+        FROM T_EQUIPMENT dd1,T_EQUIPMENT_PART dd2 WHERE 1=1 and dd1.MAJOR_CODE='07' and dd2.EQUIP_CODE =dd1.EQUIP_CODE and dd2.BOM_ENAME = (Select ENAME from T_BOM where REC_ID = #{req.carNode})
         and dd1.APPROVAL_STATUS='30'
-        <where>
-            1 = 1
-            <!--<if test="parentId != null">
-              AND dd4.PARENT_ID IN
-              <foreach item="item" index="index" collection="parentId" open="(" separator="," close=")">
-                #{item}
-              </foreach>
-            </if>-->
-            <include refid="baseQuery"/>
-        </where>
+        <if test="req.useLineNo != null and req.useLineNo != ''">
+            AND dd1.USE_LINE_NO = #{req.useLineNo}
+        </if>
+        <if test="req.manufacture != null and req.manufacture != ''">
+            AND dd1.MANUFACTURE like CONCAT('%', #{req.manufacture}, '%')
+        </if>
+        <if test="req.equipCode != null and req.equipCode != ''">
+            AND dd1.EQUIP_CODE = #{req.equipCode}
+        </if>
+        <if test="req.manufactureDateStart != null">
+            AND dd1.MANUFACTURE_DATE  <![CDATA[>=]]>  #{req.manufactureDateStart}
+        </if>
+        <if test="req.manufactureDateEnd != null">
+            AND dd1.MANUFACTURE_DATE <![CDATA[<]]> #{req.manufactureDateEnd}
+        </if>
+        <if test="req.majorCode != null and req.majorCode != ''">
+            AND dd1.MAJOR_CODE = #{req.majorCode}
+        </if>
+        <if test="req.systemCode != null and req.systemCode != ''">
+            AND dd1.SYSTEM_CODE = #{req.systemCode}
+        </if>
+        <if test="req.equipTypeCode != null and req.equipTypeCode != ''">
+            AND dd1.EQUIP_TYPE_CODE = #{req.equipTypeCode}
+        </if>
+        order by dd1.EQUIP_CODE asc
     </select>
     <select id="queryCar" resultType="com.wzmtr.eam.dto.res.fault.ObjectResDTO">
         SELECT
-        dd1.REC_ID	as "recId",  <!-- 记录编号 -->
+        dd1.REC_ID as "recId",  <!-- 记录编号 -->
         dd1.TOTAL_MILES as "totalMiles",
-        dd1.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
-        dd1.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
-        dd1.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        dd1.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
-        dd1.MAJOR_CODE	as "majorCode",  <!-- 专业代码 -->
-        dd1.MAJOR_NAME	as "majorName",  <!-- 专业名称 -->
-        dd1.SYSTEM_CODE	as "systemCode",  <!-- 系统代码 -->
-        dd1.SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
-        dd1.EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
-        dd1.EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
-        dd1.SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 10:否;20:是 -->
-        dd1.SOURCE_KIND	as "sourceKind",  <!-- 资产来源（标段、运营、筹备） -->
-        dd1.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
-        dd1.ORDER_NO	as "orderNo",  <!-- 合同号 -->
-        dd1.ORDER_NAME	as "orderName",  <!-- 合同名称 -->
-        dd1.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
-        dd1.BRAND	as "brand",  <!-- 品牌 -->
-        dd1.MANUFACTURE_DATE	as "manufactureDate",  <!-- 出厂日期 -->
-        dd1.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
-        dd1.START_USE_DATE	as "startUseDate",  <!-- 开始使用日期 -->
-        dd1.END_USE_TIME	as "endUseTime",  <!-- 停止使用日期 -->
-        dd1.OTHER_FEATURE	as "otherFeature",  <!-- 其它特征参数 -->
-        dd1.MEASURE_UNIT	as "measureUnit",  <!-- 计量单位 -->
-        dd1.QUANTITY	as "quantity",  <!-- 数量 -->
-        dd1.IN_ACCOUNT_TIME	as "inAccountTime",  <!-- 进设备台帐时间 -->
-        dd1.PICK_NO	as "pickNo",  <!-- 领用人工号 -->
-        dd1.PICK_NAME	as "pickName",  <!-- 领用人姓名 -->
-        dd1.EQUIP_STATUS	as "equipStatus",  <!-- 设备状态 -->
-        dd1.SOURCE_APP_NO	as "sourceAppNo",  <!-- 来源单号 -->
-        dd1.SOURCE_SUB_NO	as "sourceSubNo",  <!-- 来源明细号 -->
-        dd1.SOURCE_REC_ID   as "sourceRecId",
-        dd1.INSTALL_DEALER	as "installDealer",  <!-- 安装单位 -->
-        dd1.DOC_ID	as "docId",  <!-- 附件编号 -->
-        dd1.ORIGIN_LINE_NO	as "originLineNo",  <!-- 来源线别代码 -->
-        dd1.ORIGIN_LINE_NAME	as "originLineName",  <!-- 来源线别名称 -->
-        dd1.ORIGIN_SEG_NO	as "originSegNo",  <!-- 来源线段代码 -->
-        dd1.ORIGIN_SEG_NAME	as "originSegName",  <!-- 来源线段名称 -->
-        dd1.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
-        dd1.USE_LINE_NAME	as "useLineName",  <!-- 应用线别 -->
-        dd1.USE_SEG_NO	as "useSegNo",  <!-- 应用线段代码 -->
-        dd1.USE_SEG_NAME	as "useSegName",  <!-- 应用线段 -->
-        dd1.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
-        dd1.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
-        dd1.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
-        dd1.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
-        dd1.POSITION3	as "position3",  <!-- 位置三 -->
-        dd1.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
-        dd1.REMARK	as "remark",  <!-- 备注 -->
-        dd1.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
-        dd1.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        dd1.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
-        dd1.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
-        dd1.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
-        dd1.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
-        dd1.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
-        dd1.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        dd1.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
-        dd1.EXT1	as "ext1",  <!-- 扩展字段1 -->
-        dd1.EXT2	as "ext2",  <!-- 扩展字段2 -->
-        dd1.EXT3	as "ext3",  <!-- 扩展字段3 -->
-        dd1.EXT4	as "ext4",  <!-- 扩展字段4 -->
-        dd1.EXT5	as "ext5", <!-- 扩展字段5 -->
+        dd1.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
+        dd1.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
+        dd1.EQUIP_CODE as "equipCode",  <!-- 设备编码 -->
+        dd1.EQUIP_NAME as "equipName",  <!-- 设备名称 -->
+        dd1.MAJOR_CODE as "majorCode",  <!-- 专业代码 -->
+        dd1.MAJOR_NAME as "majorName",  <!-- 专业名称 -->
+        dd1.SYSTEM_CODE as "systemCode",  <!-- 系统代码 -->
+        dd1.SYSTEM_NAME as "systemName",  <!-- 系统名称 -->
+        dd1.EQUIP_TYPE_CODE as "equipTypeCode",  <!-- 设备分类代码 -->
+        dd1.EQUIP_TYPE_NAME as "equipTypeName",  <!-- 设备分类名称 -->
+        dd1.SPECIAL_EQUIP_FLAG as "specialEquipFlag",  <!-- 10:否;20:是 -->
+        dd1.SOURCE_KIND as "sourceKind",  <!-- 资产来源（标段、运营、筹备） -->
+        dd1.MANUFACTURE as "manufacture",  <!-- 生产厂家 -->
+        dd1.ORDER_NO as "orderNo",  <!-- 合同号 -->
+        dd1.ORDER_NAME as "orderName",  <!-- 合同名称 -->
+        dd1.MAT_SPECIFI as "matSpecifi",  <!-- 型号规格 -->
+        dd1.BRAND as "brand",  <!-- 品牌 -->
+        dd1.MANUFACTURE_DATE as "manufactureDate",  <!-- 出厂日期 -->
+        dd1.MANUFACTURE_NO as "manufactureNo",  <!-- 出厂编号 -->
+        dd1.START_USE_DATE as "startUseDate",  <!-- 开始使用日期 -->
+        dd1.END_USE_TIME as "endUseTime",  <!-- 停止使用日期 -->
+        dd1.OTHER_FEATURE as "otherFeature",  <!-- 其它特征参数 -->
+        dd1.MEASURE_UNIT as "measureUnit",  <!-- 计量单位 -->
+        dd1.QUANTITY as "quantity",  <!-- 数量 -->
+        dd1.IN_ACCOUNT_TIME as "inAccountTime",  <!-- 进设备台帐时间 -->
+        dd1.PICK_NO as "pickNo",  <!-- 领用人工号 -->
+        dd1.PICK_NAME as "pickName",  <!-- 领用人姓名 -->
+        dd1.EQUIP_STATUS as "equipStatus",  <!-- 设备状态 -->
+        dd1.SOURCE_APP_NO as "sourceAppNo",  <!-- 来源单号 -->
+        dd1.SOURCE_SUB_NO as "sourceSubNo",  <!-- 来源明细号 -->
+        dd1.SOURCE_REC_ID as "sourceRecId",
+        dd1.INSTALL_DEALER as "installDealer",  <!-- 安装单位 -->
+        dd1.DOC_ID as "docId",  <!-- 附件编号 -->
+        dd1.ORIGIN_LINE_NO as "originLineNo",  <!-- 来源线别代码 -->
+        dd1.ORIGIN_LINE_NAME as "originLineName",  <!-- 来源线别名称 -->
+        dd1.ORIGIN_SEG_NO as "originSegNo",  <!-- 来源线段代码 -->
+        dd1.ORIGIN_SEG_NAME as "originSegName",  <!-- 来源线段名称 -->
+        dd1.USE_LINE_NO as "useLineNo",  <!-- 应用线别代码 -->
+        dd1.USE_LINE_NAME as "useLineName",  <!-- 应用线别 -->
+        dd1.USE_SEG_NO as "useSegNo",  <!-- 应用线段代码 -->
+        dd1.USE_SEG_NAME as "useSegName",  <!-- 应用线段 -->
+        dd1.POSITION1_CODE as "position1Code",  <!-- 位置一 -->
+        dd1.POSITION1_NAME as "position1Name",  <!-- 位置一名称 -->
+        dd1.POSITION2_CODE as "position2Code",  <!-- 位置二 -->
+        dd1.POSITION2_NAME as "position2Name",  <!-- 位置二名称 -->
+        dd1.POSITION3 as "position3",  <!-- 位置三 -->
+        dd1.POSITION_REMARK as "positionRemark",  <!-- 位置补充说明 -->
+        dd1.REMARK as "remark",  <!-- 备注 -->
+        dd1.REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        dd1.REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        dd1.REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        dd1.REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        dd1.REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        dd1.REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        dd1.DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        dd1.ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        dd1.REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        dd1.EXT1 as "ext1",  <!-- 扩展字段1 -->
+        dd1.EXT2 as "ext2",  <!-- 扩展字段2 -->
+        dd1.EXT3 as "ext3",  <!-- 扩展字段3 -->
+        dd1.EXT4 as "ext4",  <!-- 扩展字段4 -->
+        dd1.EXT5 as "ext5", <!-- 扩展字段5 -->
         dd4.CNAME as "model",
         dd4.ENAME as "modelId",
         dd2.PART_CODE as "partCode",
         dd2.PART_NAME as "partName"
-        FROM T_EQUIPMENT dd1,T_BOM dd4,T_EQUIPMENT_PART dd2 WHERE 1=1 and dd1.MAJOR_CODE='07' and dd2.BOM_ENAME = dd4.ENAME and dd2.EQUIP_CODE = dd1.EQUIP_CODE
+        FROM T_EQUIPMENT dd1,T_BOM dd4,T_EQUIPMENT_PART dd2 WHERE  dd1.MAJOR_CODE='07' and
+        dd2.BOM_ENAME = dd4.ENAME and dd2.EQUIP_CODE = dd1.EQUIP_CODE
         and dd1.APPROVAL_STATUS='30'
-        <where>
-            1 = 1
-            <!--<if test="parentId != null">
-              AND dd4.PARENT_ID IN
-              <foreach item="item" index="index" collection="parentId" open="(" separator="," close=")">
-                #{item}
-              </foreach>
-            </if>-->
-            <include refid="baseQuery"/>
-        </where>
+        <if test="req.equipCode != null and req.equipCode != ''">
+            AND dd1.EQUIP_CODE = #{req.equipCode} AND dd1.BOM_TYPE in (select ENAME FROM T_BOM where dd4.PARENT_ID = REC_ID)
+        </if>
+        <if test="req.manufacture != null and req.manufacture != ''">
+            AND dd1.MANUFACTURE LIKE '%' || #{req.manufacture} || '%'
+        </if>
+        <if test="req.useLineNo != null and req.useLineNo != ''">
+            AND dd1.USE_LINE_NO = #{req.useLineNo}
+        </if>
+        <if test="req.useSegNo != null and req.useSegNo != ''">
+            AND dd1.USE_SEG_NO = #{req.useSegNo}
+        </if>
+        <if test="req.manufactureDateStart != null">
+            AND dd1.MANUFACTURE_DATE  <![CDATA[>=]]>  #{req.manufactureDateStart}
+        </if>
+        <if test="req.manufactureDateEnd != null">
+            AND dd1.MANUFACTURE_DATE <![CDATA[<]]> #{req.manufactureDateEnd}
+        </if>
+        <if test="req.majorCode != null and req.majorCode != ''">
+            AND dd1.MAJOR_CODE = #{req.majorCode}
+        </if>
+        <if test="req.systemCode != null and req.systemCode != ''">
+            AND dd1.SYSTEM_CODE = #{req.systemCode}
+        </if>
+        <if test="req.equipTypeCode != null and req.equipTypeCode != ''">
+            AND dd1.EQUIP_TYPE_CODE = #{req.equipTypeCode}
+        </if>
     </select>
 </mapper>

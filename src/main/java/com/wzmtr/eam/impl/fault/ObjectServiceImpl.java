@@ -168,15 +168,14 @@ public class ObjectServiceImpl implements ObjectService {
     @Override
     public Page<ObjectResDTO> queryForObject(ObjectReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        String nodeCode = (reqDTO.getNodeCode() == null) ? "" : reqDTO.getNodeCode();
+        String positionCode = (reqDTO.getPosition1Code() == null) ? "" : reqDTO.getPosition1Code();
         String car = reqDTO.getCar() == null ? "" : reqDTO.getCar();
-        if (nodeCode.contains("ES") && car.trim().isEmpty()) {
+        if (positionCode.contains("ES") && car.trim().isEmpty()) {
             return bomMapper.queryCarEquip(reqDTO.of(), reqDTO);
         } else if (car.equals("car")) {
             List<String> carChild = bomMapper.queryCarTree(reqDTO.getCarNode());
             if (CollectionUtil.isNotEmpty(carChild)) {
-                Page<ObjectResDTO> page = bomMapper.queryCarChild(reqDTO.of(), reqDTO);
-                ObjectResDTO objectResDTO = page.getRecords().stream().findFirst().orElse(null);
+                return bomMapper.queryCarChild(reqDTO.of(), reqDTO);
             } else {
                 return bomMapper.queryCarLastChild(reqDTO.of(), reqDTO);
             }

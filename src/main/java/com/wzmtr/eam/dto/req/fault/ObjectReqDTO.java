@@ -45,6 +45,4 @@ public class ObjectReqDTO extends PageReqDTO {
     private String car;
     @ApiModelProperty(value = "carNode")
     private String carNode;
-    @ApiModelProperty(value = "nodeCode")
-    private String nodeCode;
 }
