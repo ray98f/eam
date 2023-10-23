@@ -3,15 +3,17 @@ package com.wzmtr.eam.impl.fault;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
-import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.fault.FaultOrderMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -19,6 +21,7 @@ import com.wzmtr.eam.utils.__BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -31,6 +34,10 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     private TrackQueryMapper trackQueryMapper;
     @Autowired
     private OrganizationMapper organizationMapper;
+    @Autowired
+    private FaultOrderMapper faultOrderMapper;
+    @Autowired
+    private OverTodoService overTodoService;
 
     @Override
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
@@ -75,6 +82,12 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             });
         }
         // faultTrackNo
+    }
+
+    @Override
+    public void export(TrackQueryReqDTO reqDTO, HttpServletResponse response) {
+        // List<String> listName = Arrays.asList("跟踪单号","故障编号","跟踪单号","故障编号",);
+        List<TrackQueryResDTO> list = trackQueryMapper.query(reqDTO);
     }
 
     @Override

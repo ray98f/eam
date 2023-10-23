@@ -50,6 +50,7 @@ public class FaultAnalyzeController {
     @ApiOperation(value = "故障分析流程提交")
     @PostMapping("/submit")
     public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
+        //com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
         analyzeService.submit(reqDTO);
         return DataResponse.success();
     }

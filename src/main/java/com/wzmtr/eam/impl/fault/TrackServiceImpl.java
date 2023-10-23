@@ -87,6 +87,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void report(TrackReportReqDTO reqDTO) {
+        //EAM/service/DMFM0011/ReportRow
         reqDTO.setTrackReportTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
         reqDTO.setTrackReporterId(TokenUtil.getCurrentPersonId());
         reqDTO.setRecStatus("30");
@@ -130,7 +131,7 @@ public class TrackServiceImpl implements TrackService {
         }
     }
     @Override
-    public void transmit(FaultQueryReqDTO reqDTO) {
+    public void transmit(TrackTransmitReqDTO reqDTO) {
         TrackQueryResDTO res = faultQueryMapper.queryOneByFaultWorkNoAndFaultNo(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (res == null) {
             return;
@@ -159,7 +160,7 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public void submit(FaultSubmitReqDTO reqDTO) {
-        // dmfm09.query
+        // dmfm09.query  com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#submit
         List<FaultTrackDO> dmfm9List = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
         if (CollectionUtil.isEmpty(dmfm9List)) {
             return;
@@ -446,6 +447,11 @@ public class TrackServiceImpl implements TrackService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当前流程处于开始阶段，无法直接审核通过");
         }
         trackMapper.update(dmfm09);
+    }
+
+    @Override
+    public void export(TrackExportReqDTO reqDTO) {
+
     }
 
 

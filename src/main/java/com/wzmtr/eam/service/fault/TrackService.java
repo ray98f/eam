@@ -22,7 +22,9 @@ public interface TrackService {
     void repair(TrackRepairReqDTO reqDTO);
     void returns(FaultSubmitReqDTO reqDTO);
 
-    void transmit(FaultQueryReqDTO reqDTO);
+    void transmit(TrackTransmitReqDTO reqDTO);
 
     void submit(FaultSubmitReqDTO reqDTO);
+
+    void export(TrackExportReqDTO reqDTO);
 }

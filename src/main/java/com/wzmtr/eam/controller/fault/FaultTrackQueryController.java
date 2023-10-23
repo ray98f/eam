@@ -13,7 +13,12 @@ import com.wzmtr.eam.service.fault.TrackQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Author: Li.Wang
@@ -31,6 +36,7 @@ public class FaultTrackQueryController {
     public PageResponse<TrackQueryResDTO> list(@RequestBody TrackQueryReqDTO reqDTO) {
         return PageResponse.of(trackQueryService.list(reqDTO));
     }
+
     @ApiOperation(value = "故障编号详情")
     @PostMapping("/fault/detail")
     public DataResponse<FaultDetailResDTO> faultDetail(@RequestBody FaultDetailReqDTO reqDTO) {
@@ -39,14 +45,25 @@ public class FaultTrackQueryController {
 
     @ApiOperation(value = "跟踪单详情")
     @PostMapping("/track/detail")
-    public DataResponse<TrackQueryResDTO> detail(@RequestBody SidEntity reqDTO ) {
+    public DataResponse<TrackQueryResDTO> detail(@RequestBody SidEntity reqDTO) {
         return DataResponse.of(trackQueryService.trackDetail(reqDTO));
     }
+
     @ApiOperation(value = "作废")
     @PostMapping("/cancellGenZ")
     public DataResponse<AnalyzeResDTO> cancellGenZ(@RequestBody BaseIdsEntity reqDTO) {
-        // 		FAULT_TRACK_NO = #faultTrackNo#
+        // 		FAULT_TRACK_NO = #faultTrackNo# 故障跟踪查询 作废
         trackQueryService.cancellGenZ(reqDTO);
         return DataResponse.success();
     }
+
+    @ApiOperation(value = "导出")
+    @PostMapping("/record/export")
+    public void export(@RequestBody TrackQueryReqDTO reqDTO,
+                       HttpServletResponse response) {
+        // 		FAULT_TRACK_NO = #faultTrackNo#
+        trackQueryService.export(reqDTO, response);
+    }
+
+
 }

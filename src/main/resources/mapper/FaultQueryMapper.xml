@@ -104,6 +104,9 @@
             <if test="req.orderStatus!=null and req.orderStatus!=''">
                 AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
+            <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
+                AND df.ORDER_STATUS = '99'
+            </if>
             <if test="req.lineCode!=null and req.lineCode!=''">
                 AND d.LINE_CODE=#{req.lineCode}
             </if>

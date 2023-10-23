@@ -88,10 +88,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-        // 不包含作废
-        if (reqDTO.getInvalid() != null && !reqDTO.getInvalid()) {
-            records = records.stream().filter(a -> !a.getOrderStatus().equals("99")).collect(Collectors.toList());
-        }
         records.forEach(a -> {
             if (a.getDocId() != null && !a.getDocId().isEmpty()) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));

@@ -64,8 +64,8 @@ public class FaultTrackController {
 
     @ApiOperation(value = "故障跟踪下达")
     @PostMapping("/fault/track/transmit")
-    public DataResponse<String> transmit(@RequestBody FaultQueryReqDTO reqDTO) {
-        // faultWorkNo
+    public DataResponse<String> transmit(@RequestBody TrackTransmitReqDTO reqDTO) {
+        // faultWorkNo EAM/service/DMFM0010/transmit
         trackService.transmit(reqDTO);
         return DataResponse.success();
     }
@@ -75,6 +75,13 @@ public class FaultTrackController {
     public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
         // faultWorkNo
         trackService.submit(reqDTO);
+        return DataResponse.success();
+    }
+    @ApiOperation(value = "故障跟踪导出")
+    @PostMapping("/fault/track/export")
+    public DataResponse<String> export(@RequestBody TrackExportReqDTO reqDTO) {
+        // faultWorkNo
+        trackService.export(reqDTO);
         return DataResponse.success();
     }
 }

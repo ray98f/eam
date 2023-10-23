@@ -48,7 +48,7 @@ public class FaultQueryReqDTO extends PageReqDTO {
     private String fillinTimeEnd;
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
-    @ApiModelProperty(value = "是否包含作废 作废(-99) 包含不传，不包含则传-99")
+    @ApiModelProperty(value = "")
     private String recStatus;
     @ApiModelProperty(value = "故障状态")
     private String orderStatus;

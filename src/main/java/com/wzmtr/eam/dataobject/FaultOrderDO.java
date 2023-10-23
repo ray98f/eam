@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @TableName("T_FAULT_ORDER")
 public class FaultOrderDO {
-    @TableId(type = IdType.ASSIGN_UUID)
+    @TableId(value = "REC_ID")
     private String recId;
     private String companyCode;
     private String companyName;

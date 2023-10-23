@@ -19,6 +19,7 @@ public class FaultSubmitReqDTO {
     @ApiModelProperty(value = "故障工单编号")
     private String faultWorkNo;
     private String faultTrackNo;
+    @ApiModelProperty(value = "COMMIT 送审，PASS 审核通过")
     private SubmitType type;
     private String faultAnalysisNo;
     private String isCommit;
