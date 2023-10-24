@@ -146,6 +146,8 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                 reqDTO.setRecId(TokenUtil.getUuId());
                 reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
                 reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+                reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (!"".equals(reqDTO.getSpecialEquipType())) {
                     reqDTO.setSpecialEquipType("电梯".equals(reqDTO.getSpecialEquipType()) ? "10" : "起重机".equals(reqDTO.getSpecialEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getSpecialEquipType()) ? "30" : "40");
                 }

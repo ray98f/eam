@@ -171,6 +171,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             reqDTO.setWorkFlowInstId(processId);
             reqDTO.setWorkFlowInstStatus("已提交");
             reqDTO.setRecStatus("20");
+            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             submissionRecordMapper.modifySubmissionRecord(reqDTO);
         }
     }

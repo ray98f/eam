@@ -178,6 +178,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             overhaulTplReqDTO.setWorkFlowInstId(processId);
             overhaulTplReqDTO.setTrialStatus("20");
         }
+        overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
     }
 

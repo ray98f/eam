@@ -366,6 +366,7 @@ public class BpmnServiceImpl implements BpmnService {
         // 获取流程引擎该表单第一个taskKey
         String nodeId = queryFirstTaskKeyByModelId(startInstanceVO.getModelId());
         List<String> bpmnExaminePersonId = new ArrayList<>();
+        bpmnExaminePersonId.add("00001518");
         // todo 如果传入角色id 则不需要查询
         if (roleId != null) {
 //            SysUserRoleExample example = new SysUserRoleExample();

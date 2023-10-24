@@ -62,7 +62,9 @@ public interface EquipmentMapper {
     Page<OverhaulOrderDetailResDTO> listOverhaul(Page<OverhaulOrderDetailResDTO> page, String equipCode);
 
     Page<FaultDetailResDTO> listFault(Page<FaultDetailResDTO> page, String equipCode);
+
     LineResDTO queryLine(String recId);
+
     LineResDTO queryCarLine(String lineCode);
 
     Page<PartReplaceResDTO> listPartReplace(Page<PartReplaceResDTO> page, String equipCode);

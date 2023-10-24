@@ -52,9 +52,6 @@ public class TransferServiceImpl implements TransferService {
     private PartFaultMapper partFaultMapper;
 
     @Autowired
-    private BpmnService bpmnService;
-
-    @Autowired
     private OverTodoService overTodoService;
 
     @Override
@@ -212,6 +209,10 @@ public class TransferServiceImpl implements TransferService {
                     equipmentMapper.insertUnitCode(unitCodeReqDTO);
                     EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
                     BeanUtils.copyProperties(transferResDTO, equipmentReqDTO);
+                    equipmentReqDTO.setSystemCode("");
+                    equipmentReqDTO.setSystemName("");
+                    equipmentReqDTO.setEquipTypeCode("");
+                    equipmentReqDTO.setEquipTypeName("");
                     equipmentReqDTO.setUseLineNo(transferResDTO.getLineNo());
                     equipmentReqDTO.setUseLineName(transferResDTO.getLineName());
                     equipmentReqDTO.setUseSegNo(transferResDTO.getLineSubNo());

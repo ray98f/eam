@@ -133,7 +133,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
                 map.put("记录编号", resDTO.getRecId());
                 map.put("列车号", resDTO.getTrainNo());
                 map.put("完成日期", resDTO.getCompleteDate());
-                map.put("作业单位", "10".equals(resDTO.getOrgType()) ? "维保" : "20".equals(resDTO.getOrgType()) ? "一级修工班" : "30".equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
+                map.put("作业单位", "10".equals(resDTO.getOrgType()) ? "维保" : "20".equals(resDTO.getOrgType()) ? "售后服务站" : "30".equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
                 map.put("作业人员", resDTO.getOperator());
                 map.put("确认人员", resDTO.getConfirmor());
                 map.put("备注", resDTO.getRemark());

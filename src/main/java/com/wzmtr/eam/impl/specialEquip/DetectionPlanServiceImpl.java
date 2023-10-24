@@ -159,6 +159,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             reqDTO.setWorkFlowInstId(processId);
             reqDTO.setWorkFlowInstStatus("已提交");
             reqDTO.setPlanStatus("20");
+            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             detectionPlanMapper.modifyDetectionPlan(reqDTO);
         }
     }

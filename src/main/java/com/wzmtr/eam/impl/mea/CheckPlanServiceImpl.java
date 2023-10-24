@@ -183,6 +183,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             reqDTO.setWorkFlowInstId(processId);
             reqDTO.setWorkFlowInstStatus("已提交");
             reqDTO.setPlanStatus("20");
+            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             checkPlanMapper.modifyCheckPlan(reqDTO);
         }
     }
