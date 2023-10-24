@@ -9,20 +9,23 @@ import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
+import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultOrderMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.__BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.*;
 
 /**
  * Author: Li.Wang
@@ -38,6 +41,8 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     private FaultOrderMapper faultOrderMapper;
     @Autowired
     private OverTodoService overTodoService;
+    @Autowired
+    private IDictionariesService dictService;
 
     @Override
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
@@ -86,8 +91,30 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public void export(TrackQueryReqDTO reqDTO, HttpServletResponse response) {
-        // List<String> listName = Arrays.asList("跟踪单号","故障编号","跟踪单号","故障编号",);
-        List<TrackQueryResDTO> list = trackQueryMapper.query(reqDTO);
+        List<String> listName = Arrays.asList("跟踪单号", "故障编号", "对象名称", "故障现象", "故障原因", "故障处理", "转跟踪人员", "转跟踪时间", "跟踪期限", "跟踪周期", "跟踪结果", "跟踪状态");
+        List<TrackQueryResDTO> res = trackQueryMapper.query(reqDTO);
+        List<Map<String, String>> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(res)) {
+            for (TrackQueryResDTO resDTO : res) {
+                Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackStatus", resDTO.getRecStatus());
+                Map<String, String> map = new HashMap<>();
+                map.put("跟踪单号", resDTO.getFaultTrackNo());
+                map.put("故障编号", resDTO.getFaultNo());
+                map.put("对象名称", resDTO.getObjectName());
+                map.put("线路编码", resDTO.getLineCode());
+                map.put("故障现象", resDTO.getFaultDisplayDetail());
+                map.put("故障原因", resDTO.getFaultReasonDetail());
+                map.put("故障处理", resDTO.getFaultActionDetail());
+                map.put("转跟踪人员", resDTO.getFaultActionDetail());
+                map.put("转跟踪时间", resDTO.getTrackTime());
+                map.put("跟踪期限", resDTO.getTrackPeriod().toString());
+                map.put("跟踪周期", resDTO.getTrackCycle().toString());
+                map.put("跟踪结果", resDTO.getTrackResult());
+                map.put("跟踪状态", dictionaries.getItemCname());
+                list.add(map);
+            }
+        }
+        ExcelPortUtil.excelPort("跟踪查询信息", listName, list, null, response);
     }
 
     @Override

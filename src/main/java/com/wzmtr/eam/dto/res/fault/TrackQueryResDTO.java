@@ -17,7 +17,7 @@ public class TrackQueryResDTO {
     private String companyCode;
     @ApiModelProperty(value = "公司名称")
     private String companyName;
-    @ApiModelProperty(value = "故障跟踪编号")
+    @ApiModelProperty(value = "故障跟踪单号")
     private String faultTrackNo;
     @ApiModelProperty(value = "故障分析编号")
     private String faultAnalysisNo;
@@ -81,7 +81,6 @@ public class TrackQueryResDTO {
     private String majorCode;
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
-
     @ApiModelProperty(value = "创建者")
     private String recCreator;
     @ApiModelProperty(value = "创建时间")
@@ -102,16 +101,12 @@ public class TrackQueryResDTO {
     private String recStatus;
     @ApiModelProperty(value = "扩展字段1")
     private String ext1;
-
     @ApiModelProperty(value = "扩展字段2")
     private String ext2;
-
     @ApiModelProperty(value = "扩展字段3")
     private String ext3;
-
     @ApiModelProperty(value = "扩展字段4")
     private String ext4;
-
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
     @ApiModelProperty(value = "故障处理")
