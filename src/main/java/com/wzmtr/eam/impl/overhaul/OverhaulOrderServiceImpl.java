@@ -101,7 +101,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     public void exportOverhaulOrder(List<String> ids, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "工单编号", "计划名称", "计划编号", "对象名称", "工单状态", "检修情况",
                 "异常数量", "工器具", "计划开始时间", "计划完成时间", "作业工班", "作业人员", "实际开始时间", "实际完成时间",
-                "线路", "位置", "专业", "系统", "派工人", "确认人", "施工计划号", "最后修改人", "备注");
+                "线路", "位置", "专业", "系统", "设备类别", "派工人", "确认人", "施工计划号", "最后修改人", "备注");
         List<OverhaulOrderResDTO> overhaulOrderResDTOList = overhaulOrderMapper.getOrderByIds(ids, "1");
         List<Map<String, String>> list = new ArrayList<>();
         if (overhaulOrderResDTOList != null && !overhaulOrderResDTOList.isEmpty()) {
@@ -112,7 +112,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 map.put("计划名称", resDTO.getPlanName());
                 map.put("计划编号", resDTO.getPlanCode());
                 map.put("对象名称", resDTO.getExt1());
-                map.put("工单状态", dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.er.recStatus", resDTO.getWorkStatus()).getItemEname());
+                map.put("工单状态", dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.er.recStatus", resDTO.getWorkStatus()).getItemCname());
                 map.put("检修情况", resDTO.getWorkFinishStatus());
                 map.put("异常数量", resDTO.getAbnormalNumber());
                 map.put("工器具", resDTO.getRecDeletor());
@@ -122,10 +122,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 map.put("作业人员", resDTO.getWorkerName());
                 map.put("实际开始时间", resDTO.getRealStartTime());
                 map.put("实际完成时间", resDTO.getRealEndTime());
-                map.put("线路", resDTO.getLineName());
+                map.put("线路", "01".equals(resDTO.getLineNo()) ? "S1线" : "S2线");
                 map.put("位置", resDTO.getPosition1Name());
                 map.put("专业", resDTO.getSubjectName());
                 map.put("系统", resDTO.getSystemName());
+                map.put("设备类别", resDTO.getEquipTypeName());
                 map.put("派工人", resDTO.getSendPersonName());
                 map.put("确认人", resDTO.getAckPersonName());
                 map.put("施工计划号", resDTO.getSystemName());

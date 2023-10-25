@@ -300,7 +300,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "计划编号", "计划名称", "对象名称", "线路", "审批状态", "位置一", "专业", "系统", "设备类别", "规则", "作业工班", "启用状态", "首次开始日期", "是否关联", "预警里程");
+        List<String> listName = Arrays.asList("记录编号", "计划编号", "计划名称", "对象名称", "线路", "审批状态", "位置一",
+                "专业", "系统", "设备类别", "规则", "作业工班", "启用状态", "首次开始日期", "是否关联", "预警里程");
         overhaulPlanListReqDTO.setTrialStatus("'20','10','30'");
         overhaulPlanListReqDTO.setObjectFlag("1");
         List<OverhaulPlanResDTO> overhaulTplResDTOList = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
@@ -312,18 +313,18 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 map.put("计划编号", resDTO.getPlanCode());
                 map.put("计划名称", resDTO.getPlanName());
                 map.put("对象名称", resDTO.getExt1());
-                map.put("线路", resDTO.getLineName());
-                map.put("审批状态", resDTO.getTrialStatus());
+                map.put("线路", "01".equals(resDTO.getLineNo()) ? "S1线" : "S2线");
+                map.put("审批状态", "10".equals(resDTO.getTrialStatus()) ? "编辑" : "20".equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
                 map.put("位置一", resDTO.getPosition1Name());
                 map.put("专业", resDTO.getSubjectName());
                 map.put("系统", resDTO.getSystemName());
                 map.put("设备类别", resDTO.getEquipTypeName());
                 map.put("规则", resDTO.getRuleName());
                 map.put("作业工班", organizationMapper.getNamesById(resDTO.getWorkerGroupCode()));
-                map.put("启用状态", resDTO.getPlanStatus());
+                map.put("启用状态", "10".equals(resDTO.getPlanStatus()) ? "启用" : "禁用");
                 map.put("首次开始日期", resDTO.getFirstBeginTime());
                 map.put("是否关联", resDTO.getDeleteFlag());
-                map.put("预警里程", resDTO.getKilometerScale());
+                map.put("预警里程", resDTO.getExt2());
                 list.add(map);
             }
         }

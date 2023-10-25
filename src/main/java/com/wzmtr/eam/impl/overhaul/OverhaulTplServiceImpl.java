@@ -306,10 +306,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 map.put("模块顺序", resDTO.getModelSequence());
                 map.put("检修模块", resDTO.getModelName());
                 map.put("检修项顺序", resDTO.getSequenceId());
-                map.put("车组号", resDTO.getTrainNumber());
+                map.put("车组号", resDTO.getTrainNumber() + "车");
                 map.put("检修项", resDTO.getItemName());
                 map.put("技术要求", resDTO.getExt1());
-                map.put("检修项类型", resDTO.getItemType());
+                map.put("检修项类型", "10".equals(resDTO.getItemType()) ? "列表" : "20".equals(resDTO.getItemType()) ? "数值" : "文本");
                 map.put("可选值", resDTO.getInspectItemValue());
                 map.put("默认值", resDTO.getDefaultValue());
                 map.put("上限", resDTO.getMaxValue());

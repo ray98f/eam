@@ -499,11 +499,11 @@
         POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
         POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
         SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
-        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        (SELECT t1.NODE_NAME FROM T_EQUIPMENT_CATEGORY t1 WHERE t1.NODE_CODE=SUBJECT_CODE AND t1.DELETE_FLAG='0' AND t1.REC_STATUS='10') as "subjectName",  <!-- 设备专业名称 -->
         SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
-        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        (SELECT t2.NODE_NAME FROM T_EQUIPMENT_CATEGORY t2 WHERE t2.NODE_CODE=SYSTEM_CODE AND t2.DELETE_FLAG='0' AND t2.REC_STATUS='10')	as "systemName",  <!-- 系统名称 -->
         EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
-        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        (SELECT t3.NODE_NAME FROM T_EQUIPMENT_CATEGORY t3 WHERE t3.NODE_CODE=EQUIP_TYPE_CODE AND t3.DELETE_FLAG='0' AND t3.REC_STATUS='10')	as "equipTypeName",  <!-- 设备类别名称 -->
         WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
         WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
         WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
