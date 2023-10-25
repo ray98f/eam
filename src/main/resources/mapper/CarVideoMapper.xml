@@ -308,7 +308,7 @@
             <if test="endApplyTime!=null and endApplyTime!=''">
                 and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{endApplyTime},'YYYY-MM-DD')
             </if>
-            and d.DELETE_FLAG = '0'
+            and DELETE_FLAG = '0'
         </trim>
     </select>
     <select id="selectMaxCode" resultType="java.lang.String">
