@@ -25,4 +25,10 @@ public class TPerson implements Serializable {
 
     private String officeAreaId;
 
+    private String mobile;
+
+    private String phone;
+
+    private String email;
+
 }

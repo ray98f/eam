@@ -59,20 +59,23 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public String getToken(String userId) {
         CurrentLoginUser person = new CurrentLoginUser();
-        if ("admin".equals(userId)) {
-            person.setPersonId("admin");
-            person.setPersonNo("admin");
-            person.setPersonName("系统管理员");
-            person.setCompanyId("A");
-            person.setCompanyName("集团本级");
-            person.setOfficeId("A02");
-            person.setOfficeName("办公室");
-        } else {
+        // if ("admin".equals(userId)) {
+        //     person.setPersonId("admin");
+        //     person.setPersonNo("admin");
+        //     person.setPersonName("系统管理员");
+        //     person.setCompanyId("A");
+        //     person.setCompanyName("集团本级");
+        //     person.setOfficeId("A02");
+        //     person.setOfficeName("办公室");
+        // } else {
             TPerson p = personService.searchPersonByNo(userId);
             if (p != null) {
                 person.setPersonId(p.getId());
                 person.setPersonNo(p.getNo());
                 person.setPersonName(p.getName());
+                person.setMobile(p.getMobile());
+                person.setPhone(p.getPhone());
+                person.setEmail(p.getEmail());
                 person.setCompanyId(p.getCompanyId());
                 person.setCompanyName(p.getCompanyName());
                 person.setCompanyAreaId(p.getCompanyAreaId());
@@ -82,7 +85,6 @@ public class UserAccountServiceImpl implements UserAccountService {
             } else {
                 throw new CommonException(ErrorCode.USER_NOT_EXIST);
             }
-        }
         return TokenUtil.createSimpleToken(person);
     }
 
