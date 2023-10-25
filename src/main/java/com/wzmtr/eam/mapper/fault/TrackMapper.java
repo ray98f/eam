@@ -1,8 +1,10 @@
 package com.wzmtr.eam.mapper.fault;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.TrackCloseReqDTO;
+import com.wzmtr.eam.dto.req.fault.TrackExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackRepairReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackReportReqDTO;
 import com.wzmtr.eam.dto.res.fault.TrackResDTO;
@@ -18,8 +20,10 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface TrackMapper {
+public interface TrackMapper extends BaseMapper<FaultTrackDO>{
     Page<TrackResDTO> query(Page<Object> of, String faultTrackNo, String faultTrackWorkNo, String recStatus, String equipTypeCode, String majorCode, String objectName, String objectCode, String systemCode);
+
+    List<TrackResDTO> query(TrackExportReqDTO reqDTO);
 
     TrackResDTO detail(@Param("id") String id);
 

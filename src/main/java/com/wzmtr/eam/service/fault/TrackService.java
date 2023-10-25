@@ -5,6 +5,8 @@ import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/9 14:47
@@ -26,5 +28,5 @@ public interface TrackService {
 
     void submit(FaultSubmitReqDTO reqDTO);
 
-    void export(TrackExportReqDTO reqDTO);
+    void export(TrackExportReqDTO reqDTO, HttpServletResponse response);
 }

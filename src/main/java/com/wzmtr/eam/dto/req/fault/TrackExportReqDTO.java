@@ -1,10 +1,8 @@
 package com.wzmtr.eam.dto.req.fault;
 
-import com.wzmtr.eam.entity.PageReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * Author: Li.Wang
@@ -13,7 +11,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @ApiModel
 public class TrackExportReqDTO {
-
     @ApiModelProperty(value = "专业")
     private String majorCode;
     @ApiModelProperty(value = "系统")

@@ -27,15 +27,13 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.fault.TrackService;
-import com.wzmtr.eam.utils.DateUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__BeanUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -87,7 +85,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void report(TrackReportReqDTO reqDTO) {
-        //EAM/service/DMFM0011/ReportRow
+        // EAM/service/DMFM0011/ReportRow
         reqDTO.setTrackReportTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
         reqDTO.setTrackReporterId(TokenUtil.getCurrentPersonId());
         reqDTO.setRecStatus("30");
@@ -130,6 +128,7 @@ public class TrackServiceImpl implements TrackService {
             trackMapper.update(dmfm09);
         }
     }
+
     @Override
     public void transmit(TrackTransmitReqDTO reqDTO) {
         TrackQueryResDTO res = faultQueryMapper.queryOneByFaultWorkNoAndFaultNo(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
@@ -450,9 +449,30 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    public void export(TrackExportReqDTO reqDTO) {
-
+    public void export(TrackExportReqDTO reqDTO, HttpServletResponse response) {
+        List<String> listName = Arrays.asList("跟踪单工单号", "跟踪单号", "对象编码", "对象名称", "跟踪状态", "派工人", "跟踪报告人", "派工时间", "跟踪结果", "备注", "跟踪报告时间", "跟踪关闭人", "跟踪关闭时间");
+        List<TrackResDTO> resList = trackMapper.query(reqDTO);
+        if (CollectionUtil.isEmpty(resList)) {
+            return;
+        }
+        List<Map<String, String>> list = new ArrayList<>();
+        for (TrackResDTO resDTO : resList) {
+            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackWorkStatus", resDTO.getRecStatus());
+            Map<String, String> map = new HashMap<>();
+            map.put("跟踪单工单号", resDTO.getFaultTrackWorkNo());
+            map.put("跟踪单号", resDTO.getFaultTrackNo());
+            map.put("对象名称", resDTO.getObjectName());
+            map.put("跟踪状态", dictionaries.getItemCname());
+            map.put("派工人", resDTO.getDispatchUserName());
+            map.put("跟踪报告人", resDTO.getTrackReportName());
+            map.put("派工时间", resDTO.getDispatchTime());
+            map.put("跟踪结果", resDTO.getTrackResult());
+            map.put("备注", resDTO.getRemark());
+            map.put("跟踪报告时间", resDTO.getTrackReportTime());
+            map.put("跟踪关闭人", resDTO.getTrackCloserName());
+            map.put("跟踪关闭时间", resDTO.getTrackCloseTime());
+            list.add(map);
+        }
+        ExcelPortUtil.excelPort("故障跟踪工单信息", listName, list, null, response);
     }
-
-
 }

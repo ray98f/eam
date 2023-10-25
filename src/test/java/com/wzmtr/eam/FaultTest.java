@@ -1,6 +1,9 @@
 package com.wzmtr.eam;
 
 import com.wzmtr.eam.dto.req.fault.CompareRowsReqDTO;
+import com.wzmtr.eam.dto.req.fault.TrackExportReqDTO;
+import com.wzmtr.eam.dto.res.fault.TrackResDTO;
+import com.wzmtr.eam.mapper.fault.TrackMapper;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -19,6 +23,8 @@ import java.util.HashSet;
 public class FaultTest {
     @Autowired
     private FaultQueryService faultQueryService;
+    @Autowired
+    private TrackMapper trackMapper;
     @Test
     public void Test() {
         CompareRowsReqDTO compareRowsReqDTO = new CompareRowsReqDTO();
@@ -27,5 +33,14 @@ public class FaultTest {
         strings.add("GZ2310120003");
         compareRowsReqDTO.setFaultNos(strings);
         System.out.println(faultQueryService.compareRows(compareRowsReqDTO));
+    }
+
+
+    @Test
+    public void test1() {
+        TrackExportReqDTO trackExportReqDTO = new TrackExportReqDTO();
+        trackExportReqDTO.setFaultTrackWorkNo("GTW1908030001");
+        List<TrackResDTO> query = trackMapper.query(trackExportReqDTO);
+        System.out.println(query);
     }
 }

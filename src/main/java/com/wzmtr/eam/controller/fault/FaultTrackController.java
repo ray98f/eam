@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/fault/track")
 @Api(tags = "故障管理-故障跟踪工单")
@@ -79,9 +81,8 @@ public class FaultTrackController {
     }
     @ApiOperation(value = "故障跟踪导出")
     @PostMapping("/fault/track/export")
-    public DataResponse<String> export(@RequestBody TrackExportReqDTO reqDTO) {
+    public void export(@RequestBody TrackExportReqDTO reqDTO, HttpServletResponse response) {
         // faultWorkNo
-        trackService.export(reqDTO);
-        return DataResponse.success();
+        trackService.export(reqDTO,response);
     }
 }
