@@ -16,19 +16,13 @@ import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.DateUtil;
-import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__BeanUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * Author: Li.Wang
@@ -108,7 +102,9 @@ public class FaultReportServiceImpl implements FaultReportService {
         list.getRecords().forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());
-            a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
+            if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
+                a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
+            }
             a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
         });
         return list;
