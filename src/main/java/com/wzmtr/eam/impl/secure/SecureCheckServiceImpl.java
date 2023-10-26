@@ -47,16 +47,18 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
             records.forEach(a -> {
-                String orgById = organizationMapper.getOrgById(a.getInspectDeptCode());
-                String extraOrgByAreaId = organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode());
-                if (StringUtils.isEmpty(orgById)) {
-                    orgById = organizationMapper.getExtraOrgByAreaId(a.getInspectDeptCode());
+                String inspectDeptName = organizationMapper.getOrgById(a.getInspectDeptCode());
+                String restoreDeptName = organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode());
+                if (StringUtils.isEmpty(inspectDeptName)) {
+                    inspectDeptName = organizationMapper.getExtraOrgByAreaId(a.getInspectDeptCode());
                 }
-                if (StringUtils.isEmpty(extraOrgByAreaId)) {
-                    extraOrgByAreaId = organizationMapper.getOrgById(a.getRestoreDeptCode());
+                if (StringUtils.isEmpty(restoreDeptName)) {
+                    restoreDeptName = organizationMapper.getOrgById(a.getRestoreDeptCode());
                 }
-                a.setInspectDeptName(orgById == null ? a.getInspectDeptCode() : orgById);
-                a.setRestoreDeptName(extraOrgByAreaId == null ? a.getRestoreDeptCode() : extraOrgByAreaId);
+                //检查部门
+                a.setInspectDeptName(inspectDeptName == null ? a.getInspectDeptCode() : inspectDeptName);
+                //整改部门
+                a.setRestoreDeptName(restoreDeptName == null ? a.getRestoreDeptCode() : restoreDeptName);
                 a.setIsRestoredName("整改中");
                 if ("10".equals(a.getIsRestored())) {
                     a.setIsRestoredName("已完成整改");
@@ -131,7 +133,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             map.put("记录状态", StringUtils.isEmpty(desc) ? res.getRecStatus() : desc);
             exportList.add(map);
         }
-        ExcelPortUtil.excelPort("整改信息", listName, exportList, null, response);
+        ExcelPortUtil.excelPort("安全/质量/消防检查记录", listName, exportList, null, response);
     }
 
     @Override

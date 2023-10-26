@@ -265,7 +265,7 @@
         FROM T_SEC_RISK
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="secRiskId!=null and secRiskId!=''">
-                and secRiskId = #{secRiskId}
+                and SEC_RISK_ID = #{secRiskId}
             </if>
             <if test="inspectDate!=null and inspectDate!=''">
                 and INSPECT_DATE = #{inspectDate}
