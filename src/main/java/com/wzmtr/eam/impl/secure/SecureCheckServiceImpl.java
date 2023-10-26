@@ -133,7 +133,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             map.put("记录状态", StringUtils.isEmpty(desc) ? res.getRecStatus() : desc);
             exportList.add(map);
         }
-        ExcelPortUtil.excelPort("安全/质量/消防检查记录", listName, exportList, null, response);
+        ExcelPortUtil.excelPort("安全、质量、消防检查记录", listName, exportList, null, response);
     }
 
     @Override
