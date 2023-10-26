@@ -89,6 +89,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             }
             String repair = organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode());
             a.setRepairDeptName(StringUtils.isEmpty(repair) ? a.getRepairDeptCode() : repair);
+            a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
         });
         return list;
     }
@@ -149,7 +150,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
                 PartBO partBO = partMapper.queryPartByFaultWorkNo(resDTO.getFaultWorkNo());
-                String repairDept = organizationMapper.getOrgById(resDTO.getRepairDeptCode());
+                String repairDept = organizationMapper.getExtraOrgByAreaId(resDTO.getRepairDeptCode());
                 String fillinDept = organizationMapper.getOrgById(resDTO.getFillinDeptCode());
                 Dictionaries position2 = dictService.queryOneByItemCodeAndCodesetCode("dm.station2", resDTO.getPosition2Code());
                 Map<String, String> map = new HashMap<>();
