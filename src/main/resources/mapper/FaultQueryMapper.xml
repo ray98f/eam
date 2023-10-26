@@ -26,7 +26,6 @@
         d.PART_NAME AS "partName",
         ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName_textField",
         ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION2_CODE ) AS "position2Name",
         ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
         ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
         ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
@@ -371,9 +370,6 @@
         </if>
         order by REC_ID asc
     </select>
-    <select id="queryOneByFaultWorkNoAndFaultNo" resultType="com.wzmtr.eam.dto.res.fault.TrackQueryResDTO">
-
-    </select>
     <select id="export" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
         d.REC_ID AS recId,
@@ -396,7 +392,6 @@
         d.PART_NAME AS partName,
         (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS positionName_textField,
         (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS positionName,
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION2_CODE ) AS "position2Name",
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS majorName,
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS systemName,
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS equipTypeName,

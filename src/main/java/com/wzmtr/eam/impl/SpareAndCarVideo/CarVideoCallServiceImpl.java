@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dataobject.CarVideoDO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
+import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoExportReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoOperateReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoReqDTO;
 import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
@@ -192,9 +193,10 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     }
 
     @Override
-    public void export(String applyNo, String startApplyTime, String endApplyTime, String recStatus, HttpServletResponse response) {
+    public void export(CarVideoExportReqDTO reqDTO,
+                       HttpServletResponse response) {
         // 2级修180天
-        List<CarVideoResDTO> resList = carVideoMapper.list(applyNo, startApplyTime, endApplyTime, recStatus);
+        List<CarVideoResDTO> resList = carVideoMapper.list(reqDTO);
         List<String> listName = Arrays.asList("调阅记录号", "车组号", "调阅性质", "申请部门", "视频起始时间", "视频截止时间", "申请调阅原因", "状态");
         List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isEmpty(resList)) {

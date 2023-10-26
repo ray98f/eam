@@ -1,25 +1,20 @@
 package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.google.common.collect.Lists;
 import com.wzmtr.eam.bizobject.PartBO;
 import com.wzmtr.eam.bizobject.StationBO;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.PersonResDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
-import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
-import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
@@ -146,16 +141,17 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public void export(Set<String> faultNos, Set<String> faultWorkNos, HttpServletResponse response) {
+    public void export(FaultExportReqDTO reqDTO, HttpServletResponse response) {
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0001#export
-        List<String> listName = Arrays.asList("故障编号", "故障现象", "故障详情", "对象名称", "部件名称", "故障工单编号", "对象编码", "故障状态", "维修部门", "提报部门", "提报人员", "联系电话", "提报时间", "发现人", "发现时间", "故障紧急程度", "故障影响", "线路", "车底号/车厢号", "位置一", "位置二", "专业", "系统", "设备分类", "模块", "更换部件", "旧配件编号", "新配件编号", "部件更换时间", "故障处理人员", "故障处理情况", "故障处理人数");
-        List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.export(FaultExportReqDTO.builder().faultNos(faultNos).faultWorkNos(faultWorkNos).build());
+        List<String> listName = Arrays.asList("故障编号", "故障现象", "故障详情", "对象名称", "部件名称", "故障工单编号", "对象编码", "故障状态", "维修部门", "提报部门", "提报人员", "联系电话", "提报时间", "发现人", "发现时间", "故障分类", "故障紧急程度", "故障影响", "线路", "车底号/车厢号", "位置一", "位置二", "专业", "系统", "设备分类", "模块", "更换部件", "旧配件编号", "新配件编号", "部件更换时间", "故障处理人员", "故障处理情况", "故障处理人数");
+        List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.export(reqDTO);
         List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
-                PartBO partBO = partMapper.queryPartListByFaultWorkNo(resDTO.getFaultWorkNo());
+                PartBO partBO = partMapper.queryPartByFaultWorkNo(resDTO.getFaultWorkNo());
                 String repairDept = organizationMapper.getOrgById(resDTO.getRepairDeptCode());
                 String fillinDept = organizationMapper.getOrgById(resDTO.getFillinDeptCode());
+                Dictionaries position2 = dictService.queryOneByItemCodeAndCodesetCode("dm.station2", resDTO.getPosition2Code());
                 Map<String, String> map = new HashMap<>();
                 OrderStatus orderStatus = OrderStatus.getByCode(resDTO.getOrderStatus());
                 FaultAffect faultAffect = FaultAffect.getByCode(resDTO.getFaultAffect());
@@ -184,7 +180,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 map.put("线路", lineCode != null ? lineCode.getDesc() : resDTO.getLineCode());
                 map.put("车底号/车厢号", resDTO.getTrainTrunk());
                 map.put("位置一", resDTO.getPositionName());
-                map.put("位置二", resDTO.getPosition2Name());
+                map.put("位置二", Optional.ofNullable(position2.getItemCname()).orElse(CommonConstants.EMPTY));
                 map.put("专业", resDTO.getMajorName());
                 map.put("系统", resDTO.getSystemName());
                 if (partBO != null) {
@@ -225,8 +221,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         return list;
     }
-
-
 
 
     @Override

@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.PersonResDTO;
@@ -131,8 +132,9 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public void transmit(TrackTransmitReqDTO reqDTO) {
-        TrackQueryResDTO res = faultQueryMapper.queryOneByFaultWorkNoAndFaultNo(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        FaultOrderDO res = faultQueryMapper.queryOneFaultOrder(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (res == null) {
+            log.error("未查询到相关数据!");
             return;
         }
         String workFlowInstId;
@@ -143,6 +145,7 @@ public class TrackServiceImpl implements TrackService {
         }
         overTodoService.overTodo(workFlowInstId, "跟踪工单");
         FaultTrackDO bo = __BeanUtil.convert(res, FaultTrackDO.class);
+        bo.setFaultTrackNo(reqDTO.getFaultTrackNo());
         bo.setRecStatus("20");
         bo.setExt1(workFlowInstId);
         // todo 发短信
@@ -154,6 +157,7 @@ public class TrackServiceImpl implements TrackService {
         // /*  602 */       conditionInfo1.set("orgCode", dmfm02.getWorkClass());
         // /*  603 */       conditionInfo1.set("faultWorkNo", faultWorkNo);
         // /*  604 */       ISendMessage.senMessageByGroupAndOrgCode(conditionInfo1);
+        //更新故障跟踪表
         trackMapper.transmit(bo);
     }
 

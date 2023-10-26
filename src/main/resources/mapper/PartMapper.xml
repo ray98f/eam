@@ -3,14 +3,14 @@
 <mapper namespace="com.wzmtr.eam.mapper.basic.PartMapper">
 
 
-    <select id="queryPartListByFaultWorkNo" resultType="com.wzmtr.eam.bizobject.PartBO">
+    <select id="queryPartByFaultWorkNo" resultType="com.wzmtr.eam.bizobject.PartBO">
         SELECT
             nvl(listagg(to_char(dm20.REPLACEMENT_NAME), '; ' ) within group(order by dm20.REPLACEMENT_NAME),' ') AS "replacementName",
             nvl(listagg(to_char(dm20.OLD_REP_NO), '; ') within group(order by dm20.OLD_REP_NO),' ') AS "oldRepNo",
             nvl(listagg(to_char(dm20.NEW_REP_NO), '; ') within group(order by dm20.NEW_REP_NO),' ') AS "newRepNo",
             nvl(listagg(to_char(dm20.OPERATE_COST_TIME), '; ') within group(order by dm20.OPERATE_COST_TIME),' ') AS "operateCostTime"
-        FROM wbplat.tdmdm20 dm20
-                 LEFT JOIN WBPLAT.TDMFM02 fm02 ON fm02.FAULT_WORK_NO = dm20.FAULT_WORK_NO
+        FROM T_PART_REPLACEMENT dm20
+                 LEFT JOIN T_FAULT_ORDER fm02 ON fm02.FAULT_WORK_NO = dm20.FAULT_WORK_NO
         WHERE fm02.FAULT_WORK_NO = #{faultWorkNo}
     </select>
 </mapper>

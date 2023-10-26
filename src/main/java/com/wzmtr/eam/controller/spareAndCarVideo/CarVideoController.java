@@ -1,6 +1,7 @@
 package com.wzmtr.eam.controller.spareAndCarVideo;
 
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
+import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoExportReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoOperateReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoReqDTO;
 import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
@@ -11,9 +12,11 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.carVideoCall.CarVideoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -66,12 +69,9 @@ public class CarVideoController {
     }
 
     @ApiOperation(value = "导出")
-    @GetMapping("/export")
-    public void export(@RequestParam(required = false) @ApiParam("检查问题单号") String applyNo,
-                       @RequestParam(required = false) @ApiParam("申请时间开始") String startApplyTime,
-                       @RequestParam(required = false) @ApiParam("申请时间结束") String endApplyTime,
-                       @RequestParam(required = false) @ApiParam("状态") String recStatus,
+    @PostMapping("/export")
+    public void export(@RequestBody CarVideoExportReqDTO reqDTO,
                        HttpServletResponse response) {
-        carVideoService.export(applyNo,startApplyTime,endApplyTime,recStatus, response);
+        carVideoService.export(reqDTO, response);
     }
 }

@@ -2,6 +2,7 @@ package com.wzmtr.eam.service.carVideoCall;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
+import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoExportReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoOperateReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoReqDTO;
 import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
@@ -28,5 +29,6 @@ public interface CarVideoService {
 
     void operate(CarVideoOperateReqDTO reqDTO);
 
-    void export(String applyNo, String startApplyTime, String endApplyTime, String recStatus, HttpServletResponse response);
+    void export(CarVideoExportReqDTO reqDTO,
+                HttpServletResponse response);
 }

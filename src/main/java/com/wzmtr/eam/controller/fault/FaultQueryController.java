@@ -101,12 +101,11 @@ public class FaultQueryController {
     }
 
     @ApiOperation(value = "导出")
-    @GetMapping("/export")
-    public void export(@RequestParam(required = false) @ApiParam("故障编号s")Set<String> faultNos,
-                       @RequestParam(required = false) @ApiParam("故障工单编号s")Set<String> faultWorkNos,
+    @PostMapping("/export")
+    public void export(@RequestBody FaultExportReqDTO reqDTO,
                        HttpServletResponse response) {
         // faultWorkNo
-        faultQueryService.export(faultNos,faultWorkNos, response);
+        faultQueryService.export(reqDTO, response);
     }
 
 

@@ -50,6 +50,5 @@ public interface FaultQueryMapper {
 
     Page<ConstructionResDTO> cancellation(Page<ConstructionResDTO> of, @Param("faultWorkNo") String faultWorkNo);
 
-    TrackQueryResDTO queryOneByFaultWorkNoAndFaultNo(String faultNo, String faultWorkNo);
 
 }
