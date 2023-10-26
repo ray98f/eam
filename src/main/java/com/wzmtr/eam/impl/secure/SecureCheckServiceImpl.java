@@ -115,7 +115,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
                 restoreDept = organizationMapper.getOrgById(res.getRestoreDeptCode());
             }
             String desc = null;
-            SecureRecStatus secureRecStatus = SecureRecStatus.getByCode(res.getIsRestored());
+            SecureRecStatus secureRecStatus = SecureRecStatus.getByCode(res.getRecStatus());
             if (null != secureRecStatus) {
                 desc = secureRecStatus.getDesc();
             }
