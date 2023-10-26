@@ -86,41 +86,41 @@ public class SubmissionRecordController {
     }
 
     @GetMapping("/detail/page")
-    @ApiOperation(value = "获取检定记录列表")
+    @ApiOperation(value = "获取检定记录明细列表")
     public PageResponse<SubmissionRecordDetailResDTO> pageSubmissionRecordDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
                                                                                  @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(submissionRecordService.pageSubmissionRecordDetail(testRecId, pageReqDTO));
     }
 
     @GetMapping("/detail/detail")
-    @ApiOperation(value = "获取检定记录详情")
+    @ApiOperation(value = "获取检定记录明细详情")
     public DataResponse<SubmissionRecordDetailResDTO> getSubmissionRecordDetailDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(submissionRecordService.getSubmissionRecordDetailDetail(id));
     }
 
     @PostMapping("/detail/add")
-    @ApiOperation(value = "新增检定记录")
+    @ApiOperation(value = "新增检定记录明细")
     public DataResponse<T> addSubmissionRecordDetail(@RequestBody SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
         submissionRecordService.addSubmissionRecordDetail(submissionRecordDetailReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/detail/modify")
-    @ApiOperation(value = "编辑检定记录")
+    @ApiOperation(value = "编辑检定记录明细")
     public DataResponse<T> modifySubmissionRecordDetail(@RequestBody SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
         submissionRecordService.modifySubmissionRecordDetail(submissionRecordDetailReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/detail/delete")
-    @ApiOperation(value = "删除检定记录")
+    @ApiOperation(value = "删除检定记录明细")
     public DataResponse<T> deleteSubmissionRecordDetail(@RequestBody BaseIdsEntity baseIdsEntity) {
         submissionRecordService.deleteSubmissionRecordDetail(baseIdsEntity);
         return DataResponse.success();
     }
 
     @GetMapping("/detail/export")
-    @ApiOperation(value = "导出检定记录")
+    @ApiOperation(value = "导出检定记录明细")
     public void exportSubmissionRecordDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
                                              HttpServletResponse response) {
         submissionRecordService.exportSubmissionRecordDetail(testRecId, response);

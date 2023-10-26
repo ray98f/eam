@@ -100,6 +100,9 @@ public class TrainMileServiceImpl implements TrainMileService {
         TrainMileageReqDTO trainMileageReqDTO = new TrainMileageReqDTO();
         BeanUtils.copyProperties(trainMileReqDTO, trainMileageReqDTO);
         trainMileageReqDTO.setTotalMiles(new BigDecimal(trainMileReqDTO.getTotalMiles()));
+        trainMileageReqDTO.setTotalTractionEnergy(new BigDecimal(trainMileReqDTO.getTotalTractionEnergy()));
+        trainMileageReqDTO.setTotalAuxiliaryEnergy(new BigDecimal(trainMileReqDTO.getTotalAuxiliaryEnergy()));
+        trainMileageReqDTO.setTotalRegenratedElectricity(new BigDecimal(trainMileReqDTO.getTotalRegenratedElectricity()));
         trainMileageReqDTO.setMilesIncrement(milesIncrement);
         trainMileageReqDTO.setTractionIncrement(tractionIncrement);
         trainMileageReqDTO.setAuxiliaryIncrement(auxiliaryIncrement);
