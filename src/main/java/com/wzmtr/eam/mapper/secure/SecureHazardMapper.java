@@ -1,6 +1,8 @@
 package com.wzmtr.eam.mapper.secure;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dataobject.SecureHazardDO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardAddReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureHazardResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,15 +17,13 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface SecureHazardMapper {
+public interface SecureHazardMapper extends BaseMapper<SecureHazardDO> {
 
     Page<SecureHazardResDTO> query(Page<SecureHazardResDTO> of, String riskId, String riskRank, String inspectDateBegin, String inspectDateEnd, String isRestored, String recStatus);
 
     SecureHazardResDTO detail(String riskId);
 
     void add(SecureHazardAddReqDTO reqDTO);
-
-    void update(SecureHazardAddReqDTO reqDTO);
 
     List<SecureHazardResDTO> list(String riskId, String begin, String end, String riskRank, String restoreDesc, String workFlowInstStatus);
 

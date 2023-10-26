@@ -63,21 +63,6 @@
         #{ext1,jdbcType=VARCHAR}, #{ext2,jdbcType=VARCHAR}, #{ext3,jdbcType=VARCHAR}, #{ext4,jdbcType=VARCHAR},
         #{ext5,jdbcType=VARCHAR})
     </insert>
-    <update id="update">
-        update T_RISK_RECORD
-        set RESTORE_DEPT_CODE = #{restoreDeptCode},
-            POSITION_DESC     = #{positionDesc},
-            NOTIFY_DEPT_CODE  = #{notifyDeptCode},
-            INSPECTOR_CODE    = #{inspectorCode},
-            INSPECT_DEPT_CODE = #{inspectDeptCode},
-            REC_REVISOR       = #{recRevisor},
-            REC_REVISE_TIME   = #{recReviseTime},
-            INSPECT_DATE      = #{inspectDate},
-            RISK_RANK         = #{riskRank},
-            PLAN_DATE         = #{planDate},
-            RISK_DETAIL       = #{riskDetail}
-        where RISK_ID = #{riskId}
-    </update>
     <update id="deleteByIds">
         update
         T_RISK_RECORD
