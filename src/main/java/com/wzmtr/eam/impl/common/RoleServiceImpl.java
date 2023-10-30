@@ -1,4 +1,4 @@
-package com.wzmtr.eam.impl;
+package com.wzmtr.eam.impl.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;

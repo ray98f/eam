@@ -1,4 +1,4 @@
-package com.wzmtr.eam.impl;
+package com.wzmtr.eam.impl.common;
 
 import com.wzmtr.eam.dto.req.common.MenuAddReqDTO;
 import com.wzmtr.eam.dto.req.common.MenuModifyReqDTO;
