@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.common.RoleMapper">
+
+    <select id="listRole" resultType="com.wzmtr.eam.entity.Role">
+        select * from SYS_ROLE where DEL_FLAG=0
+        <if test="roleName!=null and roleName!=''">
+            and ROLE_NAME like '%' || #{roleName} || '%'
+        </if>
+        ORDER BY SORT ASC
+    </select>
+
+    <update id="deleteRole">
+        update SYS_ROLE set DEL_FLAG=1 where ID=#{id} and DEL_FLAG=0
+    </update>
+
+    <delete id="deleteRoleMenu">
+        delete from SYS_ROLE_PERMISSION where ROLE_ID=#{id}
+    </delete>
+
+    <insert id="insertRole" useGeneratedKeys="true" keyProperty="id" parameterType="com.wzmtr.eam.dto.req.common.RoleReqDTO">
+        insert into SYS_ROLE
+        <trim prefix="(" suffix=")">
+            <if test="id!=null and id!=''">
+                ID,
+            </if>
+            <if test="roleName!=null and roleName!=''">
+                ROLE_NAME,
+            </if>
+            <if test="roleCode!=null and roleCode!=''">
+                ROLE_CODE,
+            </if>
+            <if test="sort!=null">
+                SORT,
+            </if>
+            <if test="status!=null and status!=''">
+                STATUS,
+            </if>
+            <if test="remarks!=null and remarks!=''">
+                REMARKS,
+            </if>
+            CREATE_BY
+        </trim>
+        values
+        <trim prefix="(" suffix=")">
+            <if test="id!=null and id!=''" >
+                #{id},
+            </if>
+            <if test="roleName!=null and roleName!=''" >
+                #{roleName},
+            </if>
+            <if test="roleCode!=null and roleCode!=''" >
+                #{roleCode},
+            </if>
+            <if test="sort!=null" >
+                to_char(#{sort}),
+            </if>
+            <if test="status!=null and status!=''" >
+                to_char(#{status}),
+            </if>
+            <if test="remarks!=null and remarks!=''" >
+                #{remarks},
+            </if>
+            #{createdBy}
+        </trim>
+    </insert>
+
+    <insert id="insertRoleMenu">
+        insert ALL
+        <foreach collection="menuIds" index="index" item="menuId" separator=" ">
+            into SYS_ROLE_PERMISSION(ID, ROLE_ID, PERMISSION_ID) values (sys_guid(), #{id}, #{menuId})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <update id="updateRole" parameterType="com.wzmtr.eam.dto.req.common.RoleReqDTO">
+        update SYS_ROLE set
+        <if test="roleName!=null and roleName!=''" >
+            ROLE_NAME=#{roleName},
+        </if>
+        <if test="roleCode!=null" >
+            ROLE_CODE=#{roleCode},
+        </if>
+        <if test="sort!=null" >
+            SORT=#{sort},
+        </if>
+        <if test="status!=null" >
+            STATUS=#{status},
+        </if>
+        <if test="remarks!=null" >
+            REMARKS=#{remarks},
+        </if>
+        UPDATE_BY=#{createdBy},
+        UPDATE_DATE=sysdate
+        WHERE ID=#{id} AND DEL_FLAG=0
+    </update>
+
+    <select id="getRolePerms" resultType="java.lang.String">
+        select PERMISSION_ID from SYS_ROLE_PERMISSION where ROLE_ID=#{id}
+    </select>
+
+    <delete id="deleteUserRole">
+        delete from SYS_USER_ROLE
+        where ROLE_ID=#{roleId}
+<!--        <if test="userIds!=null and userIds.size()>0 and 900>=userIds.size()">-->
+<!--            or USER_ID in (-->
+<!--            <foreach collection="userIds" index="index" item="userId" separator=",">-->
+<!--                #{userId}-->
+<!--            </foreach>-->
+<!--            )-->
+<!--        </if>-->
+<!--        <if test="userIds!=null and userIds.size()>900">-->
+<!--            <foreach collection="userIds" index="index" item="userId" separator=" ">-->
+<!--                or USER_ID=#{userId}-->
+<!--            </foreach>-->
+<!--        </if>-->
+    </delete>
+
+    <insert id="addUserRole">
+        insert ALL
+        <foreach collection="userIds" index="index" item="userId" separator=" ">
+            into SYS_USER_ROLE(ID, USER_ID, ROLE_ID) values (sys_guid(), #{userId}, #{roleId})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <select id="listRoleUsers" resultType="com.wzmtr.eam.dto.res.common.PersonListResDTO">
+        select t1.USER_ID as id, t2.NAME as userName
+        from SYS_USER_ROLE t1
+        left join SYS_USER t2 on t1.USER_ID=t2.ID
+        where ROLE_ID=#{roleId}
+    </select>
+</mapper>

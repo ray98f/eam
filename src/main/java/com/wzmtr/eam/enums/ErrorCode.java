@@ -120,7 +120,9 @@ public enum ErrorCode {
     PLAN_HAS_DETAIL(32000041, "plan.has.detail"),
     VERIFY_DATE_ERROR(32000042, "verify.date.error"),
     ONLY_OWN_SUBJECT(32000043, "only.own.subject"),
-    NO_DETAIL(32000044, "no.detail"),;
+    NO_DETAIL(32000044, "no.detail"),
+    ROOT_ERROR(32000045,"root.error"),
+    RESOURCE_USE(32000046, "resource.use"),;
 
     private Integer code;
 

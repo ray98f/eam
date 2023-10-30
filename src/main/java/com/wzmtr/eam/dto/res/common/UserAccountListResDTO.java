@@ -1,4 +1,4 @@
-package com.wzmtr.eam.dto.res;
+package com.wzmtr.eam.dto.res.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;

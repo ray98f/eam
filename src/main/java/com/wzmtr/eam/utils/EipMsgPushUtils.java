@@ -1,12 +1,7 @@
 package com.wzmtr.eam.utils;
 
-import com.alibaba.fastjson.JSONObject;
-import com.wzmtr.eam.dto.res.overTodo.QueryNotWorkFlowResDTO;
-import com.wzmtr.eam.dto.req.EipMsgPushReq;
+import com.wzmtr.eam.dto.req.common.EipMsgPushReq;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-
-import java.util.Date;
 
 @Slf4j
 public class EipMsgPushUtils {

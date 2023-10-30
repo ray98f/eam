@@ -1,9 +1,8 @@
 package com.wzmtr.eam.controller.common;
 
-import com.wzmtr.eam.dto.res.UserCenterInfoResDTO;
+import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.entity.*;
-import com.wzmtr.eam.dto.req.UserStatusReqDTO;
-import com.wzmtr.eam.dto.res.UserAccountListResDTO;
+import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.common.UserAccountService;
@@ -12,13 +11,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
 
 @Slf4j

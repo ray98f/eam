@@ -1,7 +1,7 @@
 package com.wzmtr.eam.mapper.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.res.MemberResDTO;
+import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.entity.CompanyStructureTreeDTO;
 import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.dto.res.basic.OrgParentResDTO;

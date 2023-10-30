@@ -1,9 +1,8 @@
 package com.wzmtr.eam.mapper.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.UserStatusReqDTO;
-import com.wzmtr.eam.dto.res.UserAccountListResDTO;
-import com.wzmtr.eam.dto.res.UserCenterInfoResDTO;
+import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
+import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.entity.SysOrgUser;
 import com.wzmtr.eam.entity.SysUser;
 import com.wzmtr.eam.entity.SysUserAccount;

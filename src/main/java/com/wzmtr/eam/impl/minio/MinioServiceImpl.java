@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.minio;
 
 import com.wzmtr.eam.config.MinioConfig;
-import com.wzmtr.eam.dto.req.FileReqDTO;
+import com.wzmtr.eam.dto.req.common.FileReqDTO;
 import com.wzmtr.eam.entity.File;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;

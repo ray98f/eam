@@ -319,7 +319,7 @@
         </if>
         order by d1.FAULT_NO asc
     </select>
-    <select id="getOrgUsers" resultType="com.wzmtr.eam.dto.res.PersonResDTO">
+    <select id="getOrgUsers" resultType="com.wzmtr.eam.dto.res.common.PersonResDTO">
         SELECT USER_CODE as "userId", USER_NAME as "userName", ORG_CODE as "orgCode" FROM RPLAT60.V_CO_ORG_USER
         WHERE 1=1
         <if test="userCode != null and userCode.size() > 0">
@@ -332,7 +332,7 @@
             AND ORG_CODE = #{orgCode}
         </if>
     </select>
-    <select id="queryCoParent" resultType="com.wzmtr.eam.dto.res.PersonResDTO">
+    <select id="queryCoParent" resultType="com.wzmtr.eam.dto.res.common.PersonResDTO">
         SELECT PARENT_CODE as "orgCode" FROM RPLAT60.T_WW_ORG
         WHERE 1=1
         <if test="orgCode != null">

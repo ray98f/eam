@@ -7,24 +7,18 @@ import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.shiro.model.TPerson;
 import com.wzmtr.eam.shiro.service.IPersonService;
-import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysUserAccount;
-import com.wzmtr.eam.dto.req.UserStatusReqDTO;
-import com.wzmtr.eam.dto.res.UserAccountListResDTO;
-import com.wzmtr.eam.dto.res.UserCenterInfoResDTO;
-import com.wzmtr.eam.dto.res.UserRoleResDTO;
+import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
+import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author frp

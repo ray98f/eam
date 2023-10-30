@@ -3,7 +3,7 @@
 <mapper namespace="com.wzmtr.eam.mapper.user.UserHelperMapper">
 
 
-    <select id="getUserByGroup" resultType="com.wzmtr.eam.dto.res.PersonResDTO">
+    <select id="getUserByGroup" resultType="com.wzmtr.eam.dto.res.common.PersonResDTO">
         SELECT t.LOGIN_NAME as "userId",
                t.LOGIN_NAME as "loginName",
                t.USER_NAME  as "userName",
@@ -22,7 +22,7 @@
              iplat60.XS_USER t
         where t.USER_ID = TEMP.MEMBER_ID
     </select>
-    <select id="getUserByGroupNameAndOrg" resultType="com.wzmtr.eam.dto.res.PersonResDTO">
+    <select id="getUserByGroupNameAndOrg" resultType="com.wzmtr.eam.dto.res.common.PersonResDTO">
 
     </select>
 </mapper>

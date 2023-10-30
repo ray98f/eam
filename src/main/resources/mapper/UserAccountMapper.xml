@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.common.UserAccountMapper">
 
-    <select id="listUserAccount" resultType="com.wzmtr.eam.dto.res.UserAccountListResDTO">
+    <select id="listUserAccount" resultType="com.wzmtr.eam.dto.res.common.UserAccountListResDTO">
         select ID, LOGIN_NAME, NO, NAME, EMAIL, PHONE, MOBILE, HIRE_DATE, ROOM, DISABLED from SYS_USER
         where DEL_FLAG=0 and EXPIRED=0
         <if test="searchKey!=null and searchKey!=''">
@@ -11,7 +11,7 @@
         order by ORDER_NUM asc
     </select>
 
-    <select id="selectUserAccountById" resultType="com.wzmtr.eam.dto.res.UserAccountListResDTO">
+    <select id="selectUserAccountById" resultType="com.wzmtr.eam.dto.res.common.UserAccountListResDTO">
         select distinct ID, LOGIN_NAME, NO, NAME, EMAIL, PHONE, MOBILE, HIRE_DATE, ROOM, DISABLED from SYS_USER
         where DEL_FLAG=0 and EXPIRED=0 and DISABLED=0 and
         ID in (
@@ -171,7 +171,7 @@
         where id =#{id}
     </update>
 
-    <select id="userCenterInfo" resultType="com.wzmtr.eam.dto.res.UserCenterInfoResDTO">
+    <select id="userCenterInfo" resultType="com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO">
         SELECT * FROM (
         SELECT
         t1.ID,

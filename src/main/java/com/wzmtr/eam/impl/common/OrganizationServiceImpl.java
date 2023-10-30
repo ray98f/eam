@@ -12,7 +12,7 @@ import com.wzmtr.eam.entity.CompanyStructureTreeDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.utils.tree.CompanyTreeUtils;
-import com.wzmtr.eam.dto.res.MemberResDTO;
+import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.service.common.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

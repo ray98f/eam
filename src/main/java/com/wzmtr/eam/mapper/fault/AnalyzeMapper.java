@@ -3,7 +3,7 @@ package com.wzmtr.eam.mapper.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
-import com.wzmtr.eam.dto.res.PersonResDTO;
+import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;

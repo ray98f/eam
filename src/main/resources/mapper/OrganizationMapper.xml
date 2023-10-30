@@ -29,7 +29,7 @@
         order by SORT
     </select>
 
-    <select id="pageMember" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+    <select id="pageMember" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
         select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
         listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
         su.EMAIL, su.ROOM from SYS_USER su
@@ -56,7 +56,7 @@
         select ID from SYS_OFFICE where AREA_ID=#{id} and DEL_FLAG='0'
     </select>
 
-    <select id="listMember" parameterType="string" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+    <select id="listMember" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
         select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
         listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
         su.EMAIL, su.ROOM from SYS_USER su
@@ -76,14 +76,14 @@
         su.ORDER_NUM ASC
     </select>
 
-    <select id="pageUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+    <select id="pageUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
         select su.ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
         from SYS_USER su
         where su.OFFICE_ID=#{id} and su.EXPIRED=0 and su.DEL_FLAG=0
         ORDER BY su.ORDER_NUM ASC
     </select>
 
-    <select id="listUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.MemberResDTO">
+    <select id="listUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
         select su.ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
         from SYS_USER su
         where su.OFFICE_ID=#{id} and su.EXPIRED=0 and su.DEL_FLAG=0

@@ -1,4 +1,4 @@
-package com.wzmtr.eam.dto.req;
+package com.wzmtr.eam.dto.req.common;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

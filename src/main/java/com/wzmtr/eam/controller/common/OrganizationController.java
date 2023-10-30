@@ -1,7 +1,7 @@
 package com.wzmtr.eam.controller.common;
 
 import com.wzmtr.eam.entity.*;
-import com.wzmtr.eam.dto.res.MemberResDTO;
+import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.common.OrganizationService;

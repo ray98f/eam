@@ -1,4 +1,4 @@
-package com.wzmtr.eam.dto.req;
+package com.wzmtr.eam.dto.req.common;
 
 import lombok.Data;
 

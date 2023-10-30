@@ -1,6 +1,6 @@
 package com.wzmtr.eam.mapper.user;
 
-import com.wzmtr.eam.dto.res.PersonResDTO;
+import com.wzmtr.eam.dto.res.common.PersonResDTO;
 
 import java.util.List;
 

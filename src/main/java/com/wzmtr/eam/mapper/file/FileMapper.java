@@ -1,6 +1,6 @@
 package com.wzmtr.eam.mapper.file;
 
-import com.wzmtr.eam.dto.req.FileReqDTO;
+import com.wzmtr.eam.dto.req.common.FileReqDTO;
 import com.wzmtr.eam.entity.File;
 
 import java.util.List;
