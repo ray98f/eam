@@ -170,7 +170,7 @@ public class TrackServiceImpl implements TrackService {
         }
         FaultTrackDO dmfm09 = dmfm9List.get(0);
         // dmfm01.query
-        List<FaultDetailResDTO> dmfm01List = faultQueryMapper.list(FaultQueryReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
+        List<FaultDetailResDTO> dmfm01List = faultQueryMapper.list(FaultQueryDetailReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
         FaultDetailResDTO faultDetailResDTO = dmfm01List.get(0);
         SubmitType type = reqDTO.getType();
         String majorCode = faultDetailResDTO.getMajorCode();

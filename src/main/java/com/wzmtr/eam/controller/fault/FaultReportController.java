@@ -42,7 +42,7 @@ public class FaultReportController {
         return DataResponse.success();
     }
 
-    @ApiOperation(value = "车辆已提报故障")
+    @ApiOperation(value = "已提报故障")
     @PostMapping("/list")
     public PageResponse<FaultReportResDTO> list(@RequestBody FaultReportPageReqDTO reqDTO) {
         return PageResponse.of(reportService.list(reqDTO));
