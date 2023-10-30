@@ -118,14 +118,17 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultOrderDO.setReportStartUserId(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setReportStartTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
+            //完工
             case "50":
                 faultOrderDO.setReportFinishUserId(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setReportFinishTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
+            //完工确认
             case "60":
                 faultOrderDO.setConfirmUserId(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setConfirmTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
+            //验收
             case "55":
                 faultOrderDO.setCheckUserId(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setCheckTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));

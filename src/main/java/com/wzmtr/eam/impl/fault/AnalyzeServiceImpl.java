@@ -7,9 +7,9 @@ import com.google.common.collect.Lists;
 import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
 import com.wzmtr.eam.dto.res.common.PersonResDTO;
+import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
@@ -116,7 +116,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (CollectionUtil.isEmpty(list)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        List<FaultDetailResDTO> dmfm01List = faultQueryMapper.list(FaultQueryReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
+        List<FaultDetailResDTO> dmfm01List = faultQueryMapper.list(FaultQueryDetailReqDTO.builder().faultNo(reqDTO.getFaultNo()).faultWorkNo(reqDTO.getFaultWorkNo()).build());
         if (CollectionUtil.isEmpty(dmfm01List)) {
             log.info("dmfm01List is empty!");
             return;
