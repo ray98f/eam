@@ -318,7 +318,7 @@
     </select>
 
     <update id="updateone">
-        UPDATE WBPLAT.TDMAM01 SET
+        UPDATE T_MEA_INSTRUMENT SET
         EQUIP_CODE=#{equipCode},   <!-- 计量器具代码 -->
         EQUIP_NAME=#{equipName},   <!-- 计量器具名称 -->
         VERIFY_DEPT=#{verifyDept},   <!-- 检定校准单位 -->

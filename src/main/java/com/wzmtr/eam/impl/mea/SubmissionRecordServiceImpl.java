@@ -220,7 +220,9 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         meaResDTO.setEquipName(submissionRecordDetailReqDTO.getEquipName());
         meaResDTO.setCertificateNo(submissionRecordDetailReqDTO.getVerificationNo());
         meaResDTO.setMeasureBarcode(submissionRecordDetailReqDTO.getMeasureBarcode());
-        meaResDTO.setVerifyPeriod(Integer.valueOf(submissionRecordDetailReqDTO.getVerifyPeriod()));
+        if (submissionRecordDetailReqDTO.getVerifyPeriod() != null) {
+            meaResDTO.setVerifyPeriod(Integer.valueOf(submissionRecordDetailReqDTO.getVerifyPeriod()));
+        }
         meaResDTO.setVerifyDept(submissionRecordDetailReqDTO.getVerifyDept());
         meaResDTO.setEquipCode(submissionRecordDetailReqDTO.getEquipCode());
         meaResDTO.setRecCreateTime(submissionRecordDetailReqDTO.getRecCreateTime());
