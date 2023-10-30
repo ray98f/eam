@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulWeekPlanResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -44,6 +45,8 @@ public interface OverhaulWeekPlanService {
     void importOverhaulPlan(MultipartFile file);
 
     void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response);
+
+    List<OverhaulTplDetailResDTO> getTemplates(String planCode);
 
     Page<OverhaulObjectResDTO> pageOverhaulObject(String planCode, String planName, String objectCode, String objectName, PageReqDTO pageReqDTO);
 

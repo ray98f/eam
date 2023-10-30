@@ -3,6 +3,7 @@ package com.wzmtr.eam.controller.overhaul;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulWeekPlanResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -24,6 +25,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -137,6 +139,12 @@ public class ZTTOverhaulWeekPlanController {
     @ApiOperation(value = "导出检修计划（中铁通）")
     public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) {
         overhaulWeekPlanService.exportOverhaulPlan(overhaulPlanListReqDTO, response);
+    }
+
+    @GetMapping("/object/getTemplates")
+    @ApiOperation(value = "获取检修对象（中铁通）模板")
+    public DataResponse<List<OverhaulTplDetailResDTO>> getTemplates(@RequestParam @ApiParam("计划编号") String planCode) {
+        return DataResponse.of(overhaulWeekPlanService.getTemplates(planCode));
     }
 
     @GetMapping("/object/page")

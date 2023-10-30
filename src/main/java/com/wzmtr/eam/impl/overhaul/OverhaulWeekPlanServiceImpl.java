@@ -619,6 +619,19 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         ExcelPortUtil.excelPort("检修计划（中车）信息", listName, list, null, response);
     }
 
+    @Override
+    public List<OverhaulTplDetailResDTO> getTemplates(String planCode) {
+        List<OverhaulTplDetailResDTO> resList = new ArrayList<>();
+        OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
+        overhaulPlanListReqDTO.setPlanCode(planCode);
+        List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
+        if (list != null && !list.isEmpty()) {
+            resList = overhaulTplMapper.queryTemplate(list.get(0).getLineNo(), list.get(0).getSubjectCode(),
+                    list.get(0).getSystemCode(), list.get(0).getEquipTypeCode(), "30");
+        }
+        return resList;
+    }
+
     public void checkTrialStatus(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO) {
         List<OverhaulWeekPlanResDTO> queryCount = overhaulWeekPlanMapper.listOverhaulWeekPlan(overhaulWeekPlanListReqDTO);
         if (queryCount != null && queryCount.size() <= 0) {
