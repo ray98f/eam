@@ -296,8 +296,11 @@
         WORK_CLASS as "workClass"
         FROM T_VIDEO_ACCESS
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="applyNo!=null and applyNo!=''">
-                and APPLY_NO = #{applyNo}
+            <if test="applyNo!=null and applyNo.size() > 0">
+                AND APPLY_NO IN
+                <foreach collection="applyNo" item="code" open="(" close=")" separator=",">
+                    #{code}
+                </foreach>
             </if>
             <if test="recStatus!=null and recStatus!=''">
                 and REC_STATUS = #{recStatus}
