@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordReqDTO;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
@@ -148,10 +149,10 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         }
     }
 
+    // ServiceDMAM0301
     @Override
-    public void submitSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO) throws Exception {
-        // ServiceDMAM0301 submit
-        SubmissionRecordResDTO res = submissionRecordMapper.getSubmissionRecordDetail(submissionRecordReqDTO.getRecId());
+    public void submitSubmissionRecord(ExamineReqDTO examineReqDTO) throws Exception {
+        SubmissionRecordResDTO res = submissionRecordMapper.getSubmissionRecordDetail(examineReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -162,7 +163,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             if (result.size() == 0) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "此定检记录不存在计划明细，无法提交");
             }
-            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.value(), null, null, null);
+            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.value(), null, null, examineReqDTO.getUserIds());
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
@@ -175,6 +176,35 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             submissionRecordMapper.modifySubmissionRecord(reqDTO);
         }
+    }
+
+    @Override
+    public void examineSubmissionRecord(ExamineReqDTO examineReqDTO) {
+        SubmissionRecordResDTO res = submissionRecordMapper.getSubmissionRecordDetail(examineReqDTO.getRecId());
+        String processId = res.getWorkFlowInstId();
+        String taskId = bpmnService.queryTaskIdByProcId(processId);
+        SubmissionRecordReqDTO reqDTO = new SubmissionRecordReqDTO();
+        BeanUtils.copyProperties(res, reqDTO);
+        if (examineReqDTO.getExamineStatus() == 0) {
+            if ("30".equals(res.getRecStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_DONE);
+            } else {
+                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, null);
+                reqDTO.setWorkFlowInstStatus("已完成");
+                reqDTO.setRecStatus("30");
+            }
+        } else {
+            if (!"20".equals(res.getRecStatus())) {
+                throw new CommonException(ErrorCode.REJECT_ERROR);
+            } else {
+                bpmnService.reject(taskId, examineReqDTO.getOpinion());
+                reqDTO.setWorkFlowInstStatus("待提交");
+                reqDTO.setRecStatus("10");
+            }
+        }
+        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionRecordMapper.modifySubmissionRecord(reqDTO);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionListReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionReqDTO;
@@ -23,7 +24,9 @@ public interface SubmissionService {
 
     void deleteSubmission(BaseIdsEntity baseIdsEntity);
 
-    void submitSubmission(SubmissionReqDTO submissionReqDTO) throws Exception;
+    void submitSubmission(ExamineReqDTO examineReqDTO) throws Exception;
+
+    void examineSubmission(ExamineReqDTO examineReqDTO);
 
     void exportSubmission(SubmissionListReqDTO submissionListReqDTO, HttpServletResponse response);
 

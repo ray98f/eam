@@ -26,9 +26,9 @@ public interface CheckPlanService {
 
     void deleteCheckPlan(BaseIdsEntity baseIdsEntity);
 
-    void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO) throws Exception;
+    void submitCheckPlan(ExamineReqDTO examineReqDTO) throws Exception;
 
-    void examineCheckPlan(ExamineReqDTO examineReqDTO) throws Exception;
+    void examineCheckPlan(ExamineReqDTO examineReqDTO);
 
     void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response);
 

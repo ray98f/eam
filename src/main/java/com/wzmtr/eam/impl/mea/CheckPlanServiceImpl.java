@@ -160,8 +160,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     // ServiceDMAM0201
     @Override
-    public void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO) throws Exception {
-        CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(checkPlanReqDTO.getRecId());
+    public void submitCheckPlan(ExamineReqDTO examineReqDTO) throws Exception {
+        CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(examineReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -175,7 +175,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         if (!"10".equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         } else {
-            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.CHECK_PLAN_SUBMIT.value(), null, null, null);
+            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.CHECK_PLAN_SUBMIT.value(), null, null, examineReqDTO.getUserIds());
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
@@ -207,8 +207,6 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, null);
             reqDTO.setWorkFlowInstStatus("已完成");
             reqDTO.setPlanStatus("30");
-            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-            reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             if (!"20".equals(res.getPlanStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
@@ -216,10 +214,10 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 bpmnService.reject(taskId, examineReqDTO.getOpinion());
                 reqDTO.setWorkFlowInstStatus("待提交");
                 reqDTO.setPlanStatus("10");
-                reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-                reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         }
+        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         checkPlanMapper.modifyCheckPlan(reqDTO);
     }
 

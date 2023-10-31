@@ -69,14 +69,14 @@ public class CheckPlanController {
 
     @PostMapping("/submit")
     @ApiOperation(value = "提交定检计划")
-    public DataResponse<T> submitCheckPlan(@RequestBody CheckPlanReqDTO checkPlanReqDTO) throws Exception {
-        checkPlanService.submitCheckPlan(checkPlanReqDTO);
+    public DataResponse<T> submitCheckPlan(@RequestBody ExamineReqDTO examineReqDTO) throws Exception {
+        checkPlanService.submitCheckPlan(examineReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/examine")
     @ApiOperation(value = "审核定检计划")
-    public DataResponse<T> examineCheckPlan(@RequestBody ExamineReqDTO examineReqDTO) throws Exception {
+    public DataResponse<T> examineCheckPlan(@RequestBody ExamineReqDTO examineReqDTO) {
         checkPlanService.examineCheckPlan(examineReqDTO);
         return DataResponse.success();
     }
