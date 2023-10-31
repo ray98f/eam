@@ -56,15 +56,14 @@ public class SecureHazardController {
 
     @ApiOperation(value = "安全隐患单export")
     @GetMapping("/export")
-    public DataResponse<SecureHazardResDTO> export(@RequestParam(required = false) @ApiParam("安全隐患排查单号") String riskId,
-                                                   @RequestParam(required = false) @ApiParam("发现日期开始") String begin,
-                                                   @RequestParam(required = false) @ApiParam("发现日期结束") String end,
+    public void export(@RequestParam(required = false) @ApiParam("安全隐患排查单号") String riskId,
+                                                   @RequestParam(required = false) @ApiParam("发现日期开始") String inspectDateBegin,
+                                                   @RequestParam(required = false) @ApiParam("发现日期结束") String inspectDateEnd,
                                                    @RequestParam(required = false) @ApiParam("安全隐患等级") String riskRank,
                                                    @RequestParam(required = false) @ApiParam("整改情况") String restoreDesc,
                                                    @RequestParam(required = false) @ApiParam("流程状态") String workFlowInstStatus,
                                                    HttpServletResponse response) {
-        secureHazardService.export(riskId, begin, end, riskRank, restoreDesc, workFlowInstStatus, response);
-        return DataResponse.success();
+        secureHazardService.export(riskId, inspectDateBegin, inspectDateEnd, riskRank, restoreDesc, workFlowInstStatus, response);
     }
 
     @ApiOperation(value = "delete")
