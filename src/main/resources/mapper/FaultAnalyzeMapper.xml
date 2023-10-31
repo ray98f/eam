@@ -200,7 +200,7 @@
                 TO_DATE(#{discoveryEndTime},'YYYY-MM-DD')
             </if>
             <if test="respDeptCode!=null and respDeptCode!=''">
-                and d1.RESP_DEPT_CODE =#{respDeptCode}
+                and d1.RESP_DEPT_CODE = #{respDeptCode}
             </if>
             <if test="affectCodes!=null and affectCodes!=''">
                 and d3.AFFECT_CODES =#{affectCodes}

@@ -7,10 +7,10 @@ import com.google.common.collect.Lists;
 import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
-import com.wzmtr.eam.dto.res.common.PersonResDTO;
-import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.bpmn.FlowRes;
+import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -21,11 +21,11 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.AnalyzeMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
-import com.wzmtr.eam.mapper.user.UserHelperMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
+import com.wzmtr.eam.service.user.UserHelperService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +53,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Autowired
     private BpmnService bpmnService;
     @Autowired
-    private UserHelperMapper userHelperMapper;
+    private UserHelperService userHelperService;
     @Autowired
     private FaultQueryMapper faultQueryMapper;
 
@@ -112,6 +112,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public void submit(FaultSubmitReqDTO reqDTO) {
+        // com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
         List<FaultAnalyzeDO> list = mapper.getFaultAnalysisList(reqDTO.getFaultAnalysisNo(), reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (CollectionUtil.isEmpty(list)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
@@ -163,7 +164,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
             // }
             List<PersonResDTO> nextUser = new ArrayList<>();
             if ("ZC".equals(variables.get("CO_CODE"))) {
-                nextUser = userHelperMapper.getUserByGroup("DM_010");
+                nextUser = userHelperService.getUserByGroup("DM_010");
                 for (PersonResDTO user : nextUser) {
                     user.setUserId(user.getLoginName());
                 }
@@ -212,7 +213,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                     orgMap.put("userCode", userCode.toArray());
                     if ("A30".equals(taskDefKey)) {
                         String groupName = "DM_005";
-                        List<PersonResDTO> nextUser = userHelperMapper.getUserByGroup(groupName);
+                        List<PersonResDTO> nextUser = userHelperService.getUserByGroup(groupName);
                         for (PersonResDTO user : nextUser) {
                             user.setUserId(user.getLoginName());
                         }
@@ -228,7 +229,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                         List<String> group = Arrays.asList(ates);
                         List<PersonResDTO> nextUser = null;
                         for (int j = 0; j < group.size(); j++) {
-                            nextUser = userHelperMapper.getUserByGroupNameAndOrg(group.get(j), orgCode);
+                            nextUser = userHelperService.getUserByGroupNameAndOrg(group.get(j), orgCode);
                             if (nextUser != null) {
                                 break;
                             }
@@ -242,7 +243,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                     } else if ("A60".equals(taskDefKey)) {
                         String orgCode = dmfm03.getWorkClass();
                         String groupName = "DM_026";
-                        List<PersonResDTO> nextUser = userHelperMapper.getUserByGroupNameAndOrg(groupName, orgCode);
+                        List<PersonResDTO> nextUser = userHelperService.getUserByGroupNameAndOrg(groupName, orgCode);
                         if (CollectionUtil.isEmpty(nextUser)) {
                             log.error("下一步参与者不存在");
                         }
@@ -253,7 +254,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                         Dictionaries orgCode = dictionaryService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "06");
                         String itemEname1 = orgCode.getItemEname();
                         String groupName = "DM_028";
-                        List<PersonResDTO> nextUser = userHelperMapper.getUserByGroupNameAndOrg(groupName, itemEname1);
+                        List<PersonResDTO> nextUser = userHelperService.getUserByGroupNameAndOrg(groupName, itemEname1);
                         if (CollectionUtil.isEmpty(nextUser)) {
                             throw new CommonException(ErrorCode.NORMAL_ERROR, "下一步参与者不存在");
                         }
@@ -266,7 +267,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                         List<String> group = Arrays.asList(ates);
                         List nextUser = null;
                         for (int j = 0; j < group.size(); j++) {
-                            nextUser = userHelperMapper.getUserByGroupNameAndOrg(group.get(j), orgCode);
+                            nextUser = userHelperService.getUserByGroupNameAndOrg(group.get(j), orgCode);
                             if (nextUser != null) {
                                 break;
                             }
@@ -347,7 +348,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
             Set<String> userSet = new HashSet<>(userCode);
             List<PersonResDTO> nextUser = new ArrayList<>();
             if ("ZC".equals(variables.get("CO_CODE"))) {
-                nextUser = userHelperMapper.getUserByGroup("DM_010");
+                nextUser = userHelperService.getUserByGroup("DM_010");
                 for (PersonResDTO user : nextUser) {
                     user.setUserId(user.getLoginName());
                 }

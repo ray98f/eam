@@ -10,8 +10,8 @@ import com.google.common.collect.Lists;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.*;
-import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.bpmn.FlowRes;
+import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -27,6 +27,7 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.fault.TrackService;
+import com.wzmtr.eam.service.user.UserHelperService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,8 @@ public class TrackServiceImpl implements TrackService {
     private IDictionariesService dictService;
     @Autowired
     private FaultQueryService faultQueryService;
+    @Autowired
+    private UserHelperService userHelperService;
     private static final Map<String, String> processMap = new HashMap<>();
 
     static {
@@ -107,6 +110,7 @@ public class TrackServiceImpl implements TrackService {
         // /* 107 */     dmfm22.setWorkerGroupCode(repairDeptCode);
         reqDTO.setDispatchUserId(TokenUtil.getCurrentPersonId());
         reqDTO.setDispatchTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
+        overTodoService.overTodo(reqDTO.getRecId(), "派工完毕");
         reqDTO.setRecStatus("20");
         trackMapper.repair(reqDTO);
     }
@@ -156,7 +160,7 @@ public class TrackServiceImpl implements TrackService {
         // /*  602 */       conditionInfo1.set("orgCode", dmfm02.getWorkClass());
         // /*  603 */       conditionInfo1.set("faultWorkNo", faultWorkNo);
         // /*  604 */       ISendMessage.senMessageByGroupAndOrgCode(conditionInfo1);
-        //更新故障跟踪表
+        // 更新故障跟踪表
         trackMapper.transmit(bo);
     }
 
@@ -214,8 +218,7 @@ public class TrackServiceImpl implements TrackService {
             Set<String> userCodeSet = new HashSet<>(userCode);
             List<PersonResDTO> nextUser = new ArrayList<>();
             if ("ZC".equals(variables.get("CO_CODE"))) {
-                // TODO 根据group获取用户
-                // nextUser = InterfaceHelper.getUserHelpe().getUserByGroup("DM_010");
+                nextUser = userHelperService.getUserByGroup("DM_010");
                 for (PersonResDTO res : nextUser) {
                     res.setUserId(res.getLoginName());
                 }
@@ -256,14 +259,13 @@ public class TrackServiceImpl implements TrackService {
                     JSONArray userJson = null;
                     Map<String, String> map = processList.get(0);
                     String userList = map.get("userList");
-                    List<Object> userCode = new ArrayList();
+                    List<Object> userCode = new ArrayList<>();
                     for (int i = 0; i < userJson.size(); i++) {
                         userCode.add(((JSONObject) userJson.get(i)).get("userId"));
                     }
                     if ("A40".equals(taskDefKey)) {
                         String groupName = "DM_005";
-                        List<Object> nextUser = Lists.newArrayList();
-                        // List<Map<String, String>> nextUser = InterfaceHelper.getUserHelpe().getUserByGroup(groupName);
+                        List<PersonResDTO> nextUser = userHelperService.getUserByGroup(groupName);
                         // for (Map<String, String> user : nextUser) {
                         //     user.put("userId", user.get("loginName"));
                         // }
