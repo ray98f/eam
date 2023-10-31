@@ -25,5 +25,5 @@ public interface RoleService {
 
     void bindUser(UserRoleReqDTO userRoleReqDTO);
 
-    List<PersonListResDTO> selectBindUser(String roleId);
+    List<PersonListResDTO> listRoleUsers(String roleId, String roleCode);
 }

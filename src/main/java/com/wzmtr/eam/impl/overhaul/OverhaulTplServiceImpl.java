@@ -170,7 +170,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 //            if (nextUser == null || nextUser.size() <= 0) {
 //                throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（运营）角色中没有人员，不能进行送审操作");
 //            }
-            String processId = bpmnService.commit(overhaulTplReqDTO.getTemplateId(), BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null);
+            String processId = bpmnService.commit(overhaulTplReqDTO.getTemplateId(), BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null, null);
             overhaulTplReqDTO.setWorkFlowInstStatus("已提交");
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败！");
@@ -306,7 +306,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 map.put("模块顺序", resDTO.getModelSequence());
                 map.put("检修模块", resDTO.getModelName());
                 map.put("检修项顺序", resDTO.getSequenceId());
-                map.put("车组号", resDTO.getTrainNumber() + "车");
+                map.put("车组号", resDTO.getTrainNumber() != null ? resDTO.getTrainNumber() + "车" : "");
                 map.put("检修项", resDTO.getItemName());
                 map.put("技术要求", resDTO.getExt1());
                 map.put("检修项类型", "10".equals(resDTO.getItemType()) ? "列表" : "20".equals(resDTO.getItemType()) ? "数值" : "文本");

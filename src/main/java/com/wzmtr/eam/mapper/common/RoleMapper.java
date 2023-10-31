@@ -33,5 +33,5 @@ public interface RoleMapper {
 
     Integer addUserRole(UserRoleReqDTO userRoleReqDTO);
 
-    List<PersonListResDTO> listRoleUsers(@Param("roleId") String roleId);
+    List<PersonListResDTO> listRoleUsers(@Param("roleId") String roleId, @Param("roleCode") String roleCode);
 }

@@ -79,9 +79,10 @@ public class RoleController {
         return DataResponse.success();
     }
 
-    @GetMapping("/selectBindUser")
+    @GetMapping("/listRoleUsers")
     @ApiOperation(value = "获取角色已绑定人员")
-    public DataResponse<List<PersonListResDTO>> selectBindUser(@RequestParam String roleId) {
-        return DataResponse.of(roleService.selectBindUser(roleId));
+    public DataResponse<List<PersonListResDTO>> listRoleUsers(@RequestParam(required = false) @ApiParam(value = "角色id") String roleId,
+                                                              @RequestParam(required = false) @ApiParam(value = "角色编码") String roleCode) {
+        return DataResponse.of(roleService.listRoleUsers(roleId, roleCode));
     }
 }

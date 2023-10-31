@@ -52,9 +52,9 @@ public interface BpmnService {
 
     String getSelfId(String procId);
 
-    void agree(String taskId, String opinion, String fromId);
+    void agree(String taskId, String opinion, String fromId, String formData);
 
     void reject(String id, String opinion, String fromId);
 
-    String commit(String id, String flow, String otherParam, String roleId) throws Exception;
+    String commit(String id, String flow, String otherParam, String roleId, List<String> userIds) throws Exception;
 }

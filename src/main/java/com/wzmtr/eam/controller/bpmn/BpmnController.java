@@ -142,7 +142,7 @@ public class BpmnController {
     public DataResponse<T> agree(@RequestParam("taskId") String taskId,
                                  @RequestParam(value = "opinion", required = false) String opinion,
                                  @RequestParam("fromId") String fromId) {
-        bpmnService.agree(taskId, opinion, fromId);
+        bpmnService.agree(taskId, opinion, fromId, null);
         return DataResponse.success();
     }
 

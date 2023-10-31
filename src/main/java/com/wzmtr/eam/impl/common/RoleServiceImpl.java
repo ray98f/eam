@@ -107,7 +107,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<PersonListResDTO> selectBindUser(String roleId) {
-        return roleMapper.listRoleUsers(roleId);
+    public List<PersonListResDTO> listRoleUsers(String roleId, String roleCode) {
+        return roleMapper.listRoleUsers(roleId, roleCode);
     }
 }

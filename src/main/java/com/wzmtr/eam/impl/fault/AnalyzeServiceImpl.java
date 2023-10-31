@@ -363,7 +363,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "\"当前流程处于开始阶段，无法直接审核通过\"");
         }
         try {
-            bpmnService.commit(dmfm03.getFaultAnalysisNo(), BpmnFlowEnum.FAULT_ANALIZE.value(), null, null);
+            bpmnService.commit(dmfm03.getFaultAnalysisNo(), BpmnFlowEnum.FAULT_ANALIZE.value(), null, null, null);
         } catch (Exception e) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
         }

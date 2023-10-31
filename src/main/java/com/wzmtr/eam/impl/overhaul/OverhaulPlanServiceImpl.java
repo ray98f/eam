@@ -566,7 +566,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             }
             throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（车辆部）角色中没有人员，不能进行送审操作");
         }
-        String processId = bpmnService.commit(overhaulPlanReqDTO.getPlanCode(), BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(), null, null);
+        String processId = bpmnService.commit(overhaulPlanReqDTO.getPlanCode(), BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(), null, null, null);
         if (processId == null || "-1".equals(processId)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
         }

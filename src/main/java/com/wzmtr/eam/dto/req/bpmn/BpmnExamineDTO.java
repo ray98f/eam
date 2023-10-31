@@ -20,10 +20,10 @@ public class BpmnExamineDTO {
     private String chooseNode;
     //标题
     private String taskTitle;
+    private String formData;
     //下面好像都不重要
 
     /*
-
     private String chooseNode="EndEvent_0xonpfg";
 
     private String formData;

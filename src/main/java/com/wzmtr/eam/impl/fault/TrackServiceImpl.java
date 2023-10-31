@@ -227,7 +227,7 @@ public class TrackServiceImpl implements TrackService {
             }
             String stuts = null;
             try {
-                String processId = bpmnService.commit(dmfm09.getWorkFlowInstId(), BpmnFlowEnum.FAULT_TRACK.value(), null, null);
+                String processId = bpmnService.commit(dmfm09.getWorkFlowInstId(), BpmnFlowEnum.FAULT_TRACK.value(), null, null, null);
                 stuts = bpmnService.nextTaskKey(processId);
             } catch (Exception e) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
@@ -272,7 +272,7 @@ public class TrackServiceImpl implements TrackService {
                         }
                         // submit
                         try {
-                            bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null);
+                            bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null, null);
                         } catch (Exception e) {
                             log.error("commit error", e);
                         }
@@ -289,7 +289,7 @@ public class TrackServiceImpl implements TrackService {
                         }
                         // submtStatus = WorkflowHelper.submit(taskId, userId, comment, "", nextUser, null);
                         try {
-                            bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null);
+                            bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null, null);
                         } catch (Exception e) {
                             log.error("commit error", e);
                         }
@@ -310,7 +310,7 @@ public class TrackServiceImpl implements TrackService {
                             throw new CommonException(ErrorCode.NORMAL_ERROR, "下一步参与者不存在");
                         }
                         try {
-                            bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null);
+                            bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null, null);
                         } catch (Exception e) {
                             log.error("commit error", e);
                         }
@@ -331,7 +331,7 @@ public class TrackServiceImpl implements TrackService {
                         //     throw new CommonException(ErrorCode.NORMAL_ERROR, "下一步参与者不存在");
                         // }
                         try {
-                            bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null);
+                            bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null, null);
                         } catch (Exception e) {
                             log.error("commit error", e);
                         }
@@ -368,7 +368,7 @@ public class TrackServiceImpl implements TrackService {
                     //     variables.put("isCommit", "true");
                     //     // submtStatus = WorkflowHelper.submit(taskId, userId, comment, "", nextUser, variables);
                     //     try {
-                    //         bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null);
+                    //         bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null, null);
                     //     } catch (Exception e) {
                     //         log.error("commit error", e);
                     //     }
@@ -378,7 +378,7 @@ public class TrackServiceImpl implements TrackService {
                     variables.put("isCommit", "false");
                     // submtStatus = WorkflowHelper.submit(taskId, userId,  comment, "", nextUser, variables);
                     try {
-                        bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null);
+                        bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null, null);
                     } catch (Exception e) {
                         log.error("commit error", e);
                     }
@@ -437,7 +437,7 @@ public class TrackServiceImpl implements TrackService {
                 }
                 // submtStatus = WorkflowHelper.submit(taskId, userId, comment, "", nextUser, variables);
                 try {
-                    bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null);
+                    bpmnService.commit(taskId, BpmnFlowEnum.FAULT_TRACK.value(), null, null, null);
                 } catch (Exception e) {
                     log.error("commit error", e);
                 }

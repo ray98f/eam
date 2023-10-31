@@ -125,9 +125,15 @@
     </insert>
 
     <select id="listRoleUsers" resultType="com.wzmtr.eam.dto.res.common.PersonListResDTO">
-        select t1.USER_ID as id, t2.NAME as userName
-        from SYS_USER_ROLE t1
-        left join SYS_USER t2 on t1.USER_ID=t2.ID
-        where ROLE_ID=#{roleId}
+        SELECT t1.USER_ID as id, t2.NAME as userName
+        FROM SYS_USER_ROLE t1
+        LEFT JOIN SYS_USER t2 on t1.USER_ID=t2.ID
+        WHERE 1=1
+        <if test="roleId!=null and roleId!=''">
+            AND ROLE_ID=#{roleId}
+        </if>
+        <if test="roleCode!=null and roleCode!=''">
+            AND ROLE_CODE=#{roleCode}
+        </if>
     </select>
 </mapper>
