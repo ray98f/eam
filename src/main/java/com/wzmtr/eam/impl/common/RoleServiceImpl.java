@@ -3,8 +3,10 @@ package com.wzmtr.eam.impl.common;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wzmtr.eam.dto.req.bpmn.BpmnExaminePersonIdReq;
 import com.wzmtr.eam.dto.req.common.RoleReqDTO;
 import com.wzmtr.eam.dto.req.common.UserRoleReqDTO;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
@@ -109,5 +111,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<PersonListResDTO> listRoleUsers(String roleId, String roleCode) {
         return roleMapper.listRoleUsers(roleId, roleCode);
+    }
+
+    @Override
+    public List<BpmnExaminePersonRes> listFlowUsers(String flowId, String nodeId) {
+        BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
+        req.setFlowId(flowId);
+        req.setNodeId(nodeId);
+        return roleMapper.getBpmnExaminePerson(req);
     }
 }

@@ -8,6 +8,8 @@ import lombok.Data;
  */
 @Data
 public class BpmnExaminePersonIdReq {
+
     private String nodeId;
+
     private String flowId;
 }

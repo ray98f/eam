@@ -37,7 +37,6 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -320,32 +319,31 @@ public class BpmnServiceImpl implements BpmnService {
         String flowId = getDefKeyByTaskId(taskId);
         req.setFlowId(flowId);
         req.setNodeId(nodeId);
-//        List<BpmnExaminePersonIdRes> bpmnExaminePersonId = sysService.getBpmnExaminePersonId(req);
         if (StringUtils.isEmpty(fromId)) {
             //如果没有审核人则走默认的下一步流程与审核人
-//            if (null != bpmnExaminePersonId && bpmnExaminePersonId.size() > 0) {
-//                String chooseNodeUser = "";
-//                String currentUserDepartCode = sysService.getCurrentUserDepartCode();
-//
-//                for (BpmnExaminePersonIdRes res : bpmnExaminePersonId) {
-//                    if (null != res.getIsOwnerDepart() && "1".equals(res.getIsOwnerDepart())) {
-//                        //找出为自己部门的
-//                        if (currentUserDepartCode.equals(res.getDepartCode())) {
-//                            String s = "csm" + res.getUserId();
-//                            chooseNodeUser = chooseNodeUser + s + ",";
-//                        }
-//                    } else {
-//                        String s = "csm" + res.getUserId();
-//                        chooseNodeUser = chooseNodeUser + s + ",";
-//                    }
-//                    //获取审核人是谁填入,这个是逗号隔开
-//                    bpmnExamineDTO.setChooseNodeUser(chooseNodeUser.substring(0, chooseNodeUser.length() - 1));
-//                    bpmnExamineDTO.setChooseNode(nodeId);
-//                }
-//            } else {
-//                //没有审核人证明为最后一步则状态改为通过
-////            updateFromStatus(flowId,PowerSupplyStatusEnum.approved.value(),fromId);
-//            }
+            List<BpmnExaminePersonRes> bpmnExaminePersonId = roleMapper.getBpmnExaminePerson(req);
+            if (null != bpmnExaminePersonId && bpmnExaminePersonId.size() > 0) {
+                StringBuilder chooseNodeUser = new StringBuilder();
+                String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
+                for (BpmnExaminePersonRes res : bpmnExaminePersonId) {
+                    if (null != res.getIsOwnerOrg() && "1".equals(res.getIsOwnerOrg())) {
+                        //找出为自己部门的
+                        if (currentUserDepartCode.equals(res.getOfficeId())) {
+                            String s = "eam" + res.getUserId();
+                            chooseNodeUser.append(s).append(",");
+                        }
+                    } else {
+                        String s = "eam" + res.getUserId();
+                        chooseNodeUser.append(s).append(",");
+                    }
+                    //获取审核人是谁填入,这个是逗号隔开
+                    bpmnExamineDTO.setChooseNodeUser(chooseNodeUser.substring(0, chooseNodeUser.length() - 1));
+                    bpmnExamineDTO.setChooseNode(nodeId);
+                }
+            } else {
+                //没有审核人证明为最后一步则状态改为通过
+//            updateFromStatus(flowId,PowerSupplyStatusEnum.approved.value(),fromId);
+            }
         } else {
             StringBuilder chooseNodeUser = new StringBuilder();
             String[] list = fromId.split(",");
@@ -367,7 +365,7 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     @Override
-    public void reject(String id, String opinion, String fromId) {
+    public void reject(String id, String opinion) {
         BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
         // 根据procId获取最新的taskId
         bpmnExamineDTO.setTaskId(id);
@@ -404,26 +402,26 @@ public class BpmnServiceImpl implements BpmnService {
             bpmnExaminePersonId = roleMapper.listRoleUsers(null, roleCode).stream().map(PersonListResDTO::getId).collect(Collectors.toList());
         } else {
             // 获取审核人是谁填入
-//            BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
-//            req.setFlowId(flow);
-//            req.setNodeId(nodeId);
-//            List<BpmnExaminePersonIdRes> resList = sysService.getBpmnExaminePersonId(req);
-//            String currentUserDepartCode = sysService.getCurrentUserDepartCode();
-//            for (BpmnExaminePersonIdRes res : resList) {
-//                if (null != res.getIsOwnerDepart() && "1".equals(res.getIsOwnerDepart())) {
-//                    //找出为自己部门的
-//                    if (currentUserDepartCode.equals(res.getDepartCode())) {
-//                        bpmnExaminePersonId.add(res.getUserId());
-//                    }
-//                } else {
-//                    //全部
-//                    bpmnExaminePersonId.add(res.getUserId());
-//                }
-//            }
+            BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
+            req.setFlowId(flow);
+            req.setNodeId(nodeId);
+            List<BpmnExaminePersonRes> resList = roleMapper.getBpmnExaminePerson(req);
+            String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
+            for (BpmnExaminePersonRes res : resList) {
+                if (null != res.getIsOwnerOrg() && "1".equals(res.getIsOwnerOrg())) {
+                    //找出为自己部门的
+                    if (currentUserDepartCode.equals(res.getOfficeId())) {
+                        bpmnExaminePersonId.add(res.getUserId());
+                    }
+                } else {
+                    //全部
+                    bpmnExaminePersonId.add(res.getUserId());
+                }
+            }
         }
         NodeInfos nodeInfos = new NodeInfos();
         List<NodeInfo> arrayList = new ArrayList<>();
-        if (bpmnExaminePersonId != null && bpmnExaminePersonId.size() > 0) {
+        if (bpmnExaminePersonId.size() > 0) {
             for (String s : bpmnExaminePersonId) {
                 NodeInfo nodeInfo = new NodeInfo();
                 nodeInfo.setNodeId(nodeId);

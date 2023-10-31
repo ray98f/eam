@@ -112,4 +112,7 @@ public class CheckPlanReqDTO {
 
     @ApiModelProperty(value = "编制部门")
     private String editDeptCode;
+
+    @ApiModelProperty(value = "审核意见")
+    private String opinion;
 }

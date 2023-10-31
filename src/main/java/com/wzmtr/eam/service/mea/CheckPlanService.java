@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaInfoQueryReqDTO;
@@ -26,6 +27,8 @@ public interface CheckPlanService {
     void deleteCheckPlan(BaseIdsEntity baseIdsEntity);
 
     void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO) throws Exception;
+
+    void examineCheckPlan(ExamineReqDTO examineReqDTO) throws Exception;
 
     void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response);
 

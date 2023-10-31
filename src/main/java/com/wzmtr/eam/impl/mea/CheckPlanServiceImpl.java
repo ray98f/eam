@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaInfoQueryReqDTO;
@@ -157,9 +158,9 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         }
     }
 
+    // ServiceDMAM0201
     @Override
     public void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO) throws Exception {
-        // ServiceDMAM0201 submit
         CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(checkPlanReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
@@ -187,6 +188,39 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             checkPlanMapper.modifyCheckPlan(reqDTO);
         }
+    }
+
+    @Override
+    public void examineCheckPlan(ExamineReqDTO examineReqDTO) {
+        CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(examineReqDTO.getRecId());
+        String processId = res.getWorkFlowInstId();
+        String taskId = bpmnService.queryTaskIdByProcId(processId);
+        CheckPlanReqDTO reqDTO = new CheckPlanReqDTO();
+        BeanUtils.copyProperties(res, reqDTO);
+        if (examineReqDTO.getExamineStatus() == 0) {
+            if ("30".equals(res.getPlanStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_DONE);
+            }
+            if ("10".equals(res.getPlanStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
+            }
+            bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, null);
+            reqDTO.setWorkFlowInstStatus("已完成");
+            reqDTO.setPlanStatus("30");
+            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        } else {
+            if (!"20".equals(res.getPlanStatus())) {
+                throw new CommonException(ErrorCode.REJECT_ERROR);
+            } else {
+                bpmnService.reject(taskId, examineReqDTO.getOpinion());
+                reqDTO.setWorkFlowInstStatus("待提交");
+                reqDTO.setPlanStatus("10");
+                reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+                reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            }
+        }
+        checkPlanMapper.modifyCheckPlan(reqDTO);
     }
 
     @Override

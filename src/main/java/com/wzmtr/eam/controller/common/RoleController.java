@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.common;
 
 import com.wzmtr.eam.dto.req.common.RoleReqDTO;
 import com.wzmtr.eam.dto.req.common.UserRoleReqDTO;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.entity.BaseIdEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -84,5 +85,12 @@ public class RoleController {
     public DataResponse<List<PersonListResDTO>> listRoleUsers(@RequestParam(required = false) @ApiParam(value = "角色id") String roleId,
                                                               @RequestParam(required = false) @ApiParam(value = "角色编码") String roleCode) {
         return DataResponse.of(roleService.listRoleUsers(roleId, roleCode));
+    }
+
+    @GetMapping("/listFlowUsers")
+    @ApiOperation(value = "获取流程节点人员")
+    public DataResponse<List<BpmnExaminePersonRes>> listFlowUsers(@RequestParam @ApiParam(value = "流程id") String flowId,
+                                                                  @RequestParam @ApiParam(value = "节点id") String nodeId) {
+        return DataResponse.of(roleService.listFlowUsers(flowId, nodeId));
     }
 }

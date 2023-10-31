@@ -1,8 +1,10 @@
 package com.wzmtr.eam.mapper.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.bpmn.BpmnExaminePersonIdReq;
 import com.wzmtr.eam.dto.req.common.RoleReqDTO;
 import com.wzmtr.eam.dto.req.common.UserRoleReqDTO;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.entity.Role;
 import org.apache.ibatis.annotations.Mapper;
@@ -34,4 +36,6 @@ public interface RoleMapper {
     Integer addUserRole(UserRoleReqDTO userRoleReqDTO);
 
     List<PersonListResDTO> listRoleUsers(@Param("roleId") String roleId, @Param("roleCode") String roleCode);
+
+    List<BpmnExaminePersonRes> getBpmnExaminePerson(BpmnExaminePersonIdReq req);
 }

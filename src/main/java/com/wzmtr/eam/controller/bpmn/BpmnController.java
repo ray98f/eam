@@ -149,9 +149,8 @@ public class BpmnController {
     @ApiOperation(value = "通用审核驳回")
     @GetMapping("/reject")
     public DataResponse<T> reject(@RequestParam("taskId") String taskId,
-                                  @RequestParam(value = "opinion", required = false) String opinion,
-                                  @RequestParam("fromId") String fromId) {
-        bpmnService.reject(taskId, opinion, fromId);
+                                  @RequestParam(value = "opinion", required = false) String opinion) {
+        bpmnService.reject(taskId, opinion);
         return DataResponse.success();
     }
 }

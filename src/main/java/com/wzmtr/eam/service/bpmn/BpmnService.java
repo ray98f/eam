@@ -54,7 +54,7 @@ public interface BpmnService {
 
     void agree(String taskId, String opinion, String fromId, String formData);
 
-    void reject(String id, String opinion, String fromId);
+    void reject(String id, String opinion);
 
     String commit(String id, String flow, String otherParam, String roleId, List<String> userIds) throws Exception;
 }

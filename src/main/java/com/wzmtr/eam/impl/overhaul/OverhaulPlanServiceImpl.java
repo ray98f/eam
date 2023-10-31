@@ -552,8 +552,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if ("07".equals(overhaulPlanReqDTO.getSubjectCode())) {
             roleEname = "DM_005";
 //            nextUser.addAll(InterfaceHelper.getUserHelpe().getUserBySubjectAndLineAndGroup(overhaulPlanReqDTO.getSubjectCode(), overhaulPlanReqDTO.getLineNo(), roleEname));
-        }
-        else if ("06".equals(overhaulPlanReqDTO.getSubjectCode())) {
+        } else if ("06".equals(overhaulPlanReqDTO.getSubjectCode())) {
             roleEname = "DM_004";
 //            nextUser.addAll(InterfaceHelper.getUserHelpe().getUserByGroupAndOrg(roleEname, "D0901"));
         } else {

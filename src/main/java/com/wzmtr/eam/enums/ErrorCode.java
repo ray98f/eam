@@ -122,7 +122,10 @@ public enum ErrorCode {
     ONLY_OWN_SUBJECT(32000043, "only.own.subject"),
     NO_DETAIL(32000044, "no.detail"),
     ROOT_ERROR(32000045,"root.error"),
-    RESOURCE_USE(32000046, "resource.use"),;
+    RESOURCE_USE(32000046, "resource.use"),
+    EXAMINE_DONE(32000047, "examine.done"),
+    EXAMINE_NOT_DONE(32000048, "examine.not.done"),
+    REJECT_ERROR(32000049, "reject.error"),;
 
     private Integer code;
 

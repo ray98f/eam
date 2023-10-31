@@ -277,7 +277,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isEmpty(task)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权审核");
         } else {
-            bpmnService.reject(task, reqDTO.getBackOpinion(), null);
+            bpmnService.reject(task, reqDTO.getBackOpinion());
             dmfm09.setRecStatus("30");
             dmfm09.setWorkFlowInstStatus("驳回成功");
             trackMapper.update(dmfm09);

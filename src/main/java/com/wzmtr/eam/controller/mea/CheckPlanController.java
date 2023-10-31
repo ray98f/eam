@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.mea;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaInfoQueryReqDTO;
@@ -70,6 +71,13 @@ public class CheckPlanController {
     @ApiOperation(value = "提交定检计划")
     public DataResponse<T> submitCheckPlan(@RequestBody CheckPlanReqDTO checkPlanReqDTO) throws Exception {
         checkPlanService.submitCheckPlan(checkPlanReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/examine")
+    @ApiOperation(value = "审核定检计划")
+    public DataResponse<T> examineCheckPlan(@RequestBody ExamineReqDTO examineReqDTO) throws Exception {
+        checkPlanService.examineCheckPlan(examineReqDTO);
         return DataResponse.success();
     }
 

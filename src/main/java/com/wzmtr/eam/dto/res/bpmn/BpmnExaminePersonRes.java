@@ -7,8 +7,11 @@ import lombok.Data;
  * @Date 2023/9/6
  */
 @Data
-public class BpmnExaminePersonIdRes {
+public class BpmnExaminePersonRes {
+
     private String userId;
-    private String departCode;
-    private String isOwnerDepart;
+
+    private String officeId;
+
+    private String isOwnerOrg;
 }
