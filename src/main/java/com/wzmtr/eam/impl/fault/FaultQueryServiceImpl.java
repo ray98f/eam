@@ -11,8 +11,8 @@ import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.*;
-import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
+import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -87,9 +87,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             if (a.getDocId() != null && !a.getDocId().isEmpty()) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
             }
-            String repair = organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode());
-            a.setRepairDeptName(StringUtils.isEmpty(repair) ? a.getRepairDeptCode() : repair);
-            a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
+            a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
+            a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
         });
         return list;
     }
@@ -118,17 +117,17 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultOrderDO.setReportStartUserId(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setReportStartTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
-            //完工
+            // 完工
             case "50":
                 faultOrderDO.setReportFinishUserId(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setReportFinishTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
-            //完工确认
+            // 完工确认
             case "60":
                 faultOrderDO.setConfirmUserId(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setConfirmTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
-            //验收
+            // 验收
             case "55":
                 faultOrderDO.setCheckUserId(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setCheckTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));

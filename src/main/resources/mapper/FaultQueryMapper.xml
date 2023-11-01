@@ -95,10 +95,10 @@
                 AND d.POSITION_CODE=#{req.positionCode}
             </if>
             <if test="req.faultNo!=null">
-                AND d.FAULT_NO LIKE '%' || #{req.faultNo} || '%'
+                AND d.FAULT_NO = #{req.faultNo}
             </if>
             <if test="req.faultWorkNo!=null">
-                AND df.FAULT_WORK_NO LIKE '%' || #{req.faultWorkNo} || '%'
+                AND df.FAULT_WORK_NO =#{req.faultWorkNo}
             </if>
             <if test="req.orderStatus!=null and req.orderStatus!=''">
                 AND df.ORDER_STATUS=#{req.orderStatus}
