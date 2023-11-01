@@ -103,9 +103,9 @@ public class FaultReportServiceImpl implements FaultReportService {
             LineCode line = LineCode.getByCode(a.getLineCode());
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());
             if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
-                a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
+                a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
             }
-            a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
+            a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
         });
         return list;
     }
@@ -116,15 +116,15 @@ public class FaultReportServiceImpl implements FaultReportService {
         // and d.MAJOR_CODE  IN('07','06');
         long startTime = System.nanoTime();
         Page<FaultReportResDTO> list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode());
-        log.info("车辆故障查询耗时{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
+        log.info("车辆故障查询耗时-------{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
         list.getRecords().forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());
-            a.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(a.getRepairDeptCode()));
-            a.setFillinDeptName(organizationMapper.getOrgById(a.getFillinDeptCode()));
+            a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
+            a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
         });
         return list;
     }
