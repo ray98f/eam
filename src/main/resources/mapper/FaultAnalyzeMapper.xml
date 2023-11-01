@@ -173,6 +173,7 @@
         left join T_FAULT_INFO d1 on d3.FAULT_NO = d1.FAULT_NO
         left join T_FAULT_DETAIL d2 on d2.FAULT_WORK_NO = d3.FAULT_WORK_NO
         <trim prefix="WHERE" prefixOverrides="AND">
+            and d3.DELETE_FLAG ='0'
             <if test="faultNo!=null and faultNo!=''">
                 and d3.FAULT_NO =#{faultNo}
             </if>
@@ -205,7 +206,6 @@
             <if test="affectCodes!=null and affectCodes!=''">
                 and d3.AFFECT_CODES =#{affectCodes}
             </if>
-            and d3.DELETE_FLAG ='0'
         </trim>
     </select>
     <select id="list" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">

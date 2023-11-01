@@ -87,8 +87,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             if (a.getDocId() != null && !a.getDocId().isEmpty()) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
             }
-            a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
-            a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
+            if (StringUtils.isNotEmpty(a.getRepairDeptCode())){
+                a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
+            }
+            if (StringUtils.isNotEmpty(a.getFillinDeptCode())){
+                a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
+            }
         });
         return list;
     }

@@ -64,7 +64,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-        records.forEach(a -> a.setRespDeptName(organizationMapper.getOrgById(a.getRespDeptCode())));
+        records.forEach(a -> a.setRespDeptName(organizationMapper.getNamesById(a.getRespDeptCode())));
         return query;
     }
 

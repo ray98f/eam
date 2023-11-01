@@ -237,6 +237,8 @@ public class FaultDetailResDTO {
     private String ext4;
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
+    @ApiModelProperty(value = "是否知会OCC")
+    private Boolean maintenance;
 
     @ApiModelProperty(value = "附件文件")
     private List<File> docFile;

@@ -17,10 +17,8 @@ import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
-import com.wzmtr.eam.utils.DateUtil;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__BeanUtil;
+import com.wzmtr.eam.utils.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,11 +62,25 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         if (faultInfo == null) {
             return faultOrder;
         }
+        return assemblyResDTO(faultInfo, faultOrder);
+    }
+    private FaultDetailResDTO assemblyResDTO(FaultInfoDO faultInfo, FaultDetailResDTO faultOrder) {
         FaultDetailResDTO res = __BeanUtil.copy(faultInfo, faultOrder);
-        String respDeptCode = res.getRespDeptCode();
-        res.setRespDeptName(organizationMapper.getOrgById(respDeptCode));
-        res.setFillinDeptName(organizationMapper.getOrgById(res.getFillinDeptCode()));
-        res.setRepairDeptName(organizationMapper.getExtraOrgByAreaId(res.getRepairDeptCode()));
+        if (StringUtils.isNotEmpty(faultInfo.getTrainTag())) {
+            res.setTraintag(faultInfo.getTrainTag());
+        }
+        if (StringUtils.isNotEmpty(faultInfo.getExt4())) {
+            res.setMaintenance(faultInfo.getExt4().equals("true") ? Boolean.TRUE : Boolean.FALSE);
+        }
+        if (StringUtils.isNotEmpty(res.getRespDeptCode())) {
+            res.setRespDeptName(organizationMapper.getNamesById(res.getRespDeptCode()));
+        }
+        if (StringUtils.isNotEmpty(res.getRepairDeptCode())) {
+            res.setRepairDeptName(organizationMapper.getNamesById(res.getRepairDeptCode()));
+        }
+        if (StringUtils.isNotEmpty(res.getFillinDeptCode())) {
+            res.setFillinDeptName(organizationMapper.getNamesById(res.getFillinDeptCode()));
+        }
         return res;
     }
 

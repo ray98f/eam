@@ -101,7 +101,10 @@ public class FaultReportReqDTO {
     private String traintag;
     @ApiModelProperty(value = "记录状态")
     private String recStatus = " ";
-
+    @ApiModelProperty(value = "部件编码")
+    private String partCode;
+    @ApiModelProperty(value = "部件名称")
+    private String partName;
     public FaultOrderDO toFaultOrderInsertDO(FaultReportReqDTO req) {
         FaultOrderDO convert = __BeanUtil.convert(req, FaultOrderDO.class);
         if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
@@ -113,6 +116,11 @@ public class FaultReportReqDTO {
     }
 
     public FaultInfoDO toFaultInfoInsertDO(FaultReportReqDTO req) {
-        return __BeanUtil.convert(req, FaultInfoDO.class);
+        FaultInfoDO convert = __BeanUtil.convert(req, FaultInfoDO.class);
+        //String Toocc = (String)((Map)faultinfo.get(0)).get("ext4");
+        convert.setExt4(req.getMaintenance().toString());
+        convert.setTrainTag(req.getTraintag());
+        return convert;
     }
+
 }
