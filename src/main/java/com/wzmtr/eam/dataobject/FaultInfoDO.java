@@ -83,6 +83,8 @@ public class FaultInfoDO {
     private String fillinDeptCode = " ";
     @ApiModelProperty(value = "提报时间")
     private String fillinTime = " ";
+    @TableField(exist = false)
+    private String fillinUserName = " ";
     @ApiModelProperty(value = "主责部门")
     private String respDeptCode;
     @ApiModelProperty(value = "配合部门")

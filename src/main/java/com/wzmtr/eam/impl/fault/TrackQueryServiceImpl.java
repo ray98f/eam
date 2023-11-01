@@ -11,6 +11,7 @@ import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
+import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultOrderMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
@@ -18,7 +19,6 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.*;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,10 +45,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<TrackQueryResDTO> list = trackQueryMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(),
-                reqDTO.getFaultTrackWorkNo(), reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(),
-                reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(),
-                reqDTO.getEquipTypeCode());
+        Page<TrackQueryResDTO> list = trackQueryMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(), reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode());
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
@@ -64,8 +61,18 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         }
         return assemblyResDTO(faultInfo, faultOrder);
     }
+
     private FaultDetailResDTO assemblyResDTO(FaultInfoDO faultInfo, FaultDetailResDTO faultOrder) {
         FaultDetailResDTO res = __BeanUtil.copy(faultInfo, faultOrder);
+        if (StringUtils.isNotEmpty(res.getLineCode())) {
+            LineCode name = LineCode.getByCode(res.getLineCode());
+            if (null != name) {
+                res.setLineName(name.getDesc());
+            }
+        }
+        if (StringUtils.isNotEmpty(res.getOrderStatus())) {
+            res.setFaultStatus(res.getOrderStatus());
+        }
         if (StringUtils.isNotEmpty(faultInfo.getTrainTag())) {
             res.setTraintag(faultInfo.getTrainTag());
         }

@@ -322,6 +322,7 @@
         u.USER_NAME AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
         ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME = df.CLOSE_USER_ID ) AS "closeUserName",
+        ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME = d.FILLIN_USER_ID ) AS "fillinUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.DEALER_NUM AS "dealerNum",
         df.FAULT_WORK_NO AS "faultWorkNo",

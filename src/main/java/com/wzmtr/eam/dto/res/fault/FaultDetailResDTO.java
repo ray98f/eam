@@ -127,6 +127,8 @@ public class FaultDetailResDTO {
     private String trainTrunk;
     @ApiModelProperty(value = "线路编码")
     private String lineCode;
+    @ApiModelProperty(value = "线路编码")
+    private String lineName;
     @ApiModelProperty(value = "位置编码")
     private String positionCode;
     @ApiModelProperty(value = "位置1")
