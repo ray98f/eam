@@ -1,11 +1,11 @@
 package com.wzmtr.eam.dto.req.fault;
 
-import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.SubmitType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -25,4 +25,6 @@ public class FaultSubmitReqDTO {
     private String isCommit;
     private String comment;
     private String backOpinion;
+    @ApiModelProperty(value = "userIds")
+    private List<String> userIds;
 }

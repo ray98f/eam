@@ -11,6 +11,7 @@ import com.wzmtr.eam.dto.req.secure.SecureHazardReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureHazardResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.enums.RiskRank;
+import com.wzmtr.eam.enums.SecureRecStatus;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.secure.SecureHazardMapper;
@@ -88,6 +89,14 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         }
         List<Map<String, String>> list = new ArrayList<>();
         for (SecureHazardResDTO resDTO : resList) {
+            resDTO.setRestoreDesc("整改中");
+            if ("10".equals(resDTO.getIsRestored())) {
+                resDTO.setRestoreDesc("已完成整改");
+            }
+            if ("1".equals(resDTO.getIsRestored())) {
+                resDTO.setRestoreDesc("未完成整改");
+            }
+            SecureRecStatus secureRecStatus = SecureRecStatus.getByCode(resDTO.getRecStatus());
             RiskRank rank = RiskRank.getByCode(resDTO.getRiskRank());
             Map<String, String> map = new HashMap<>();
             map.put("安全隐患排查单号", resDTO.getRiskId());
@@ -100,7 +109,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             map.put("计划完成日期", resDTO.getPlanDate());
             map.put("整改部门", organizationMapper.getNamesById(resDTO.getRestoreDeptCode()));
             map.put("整改情况", resDTO.getRestoreDesc());
-            map.put("记录状态", resDTO.getRecStatus());
+            map.put("记录状态", secureRecStatus == null ? resDTO.getRecStatus() : secureRecStatus.getDesc());
             map.put("备注", resDTO.getPlanNote());
             list.add(map);
         }
