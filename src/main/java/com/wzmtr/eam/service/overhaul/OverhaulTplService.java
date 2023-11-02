@@ -30,6 +30,8 @@ public interface OverhaulTplService {
 
     void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) throws Exception;
 
+    void examineOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO);
+
     void importOverhaulTpl(MultipartFile file);
 
     void exportOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,

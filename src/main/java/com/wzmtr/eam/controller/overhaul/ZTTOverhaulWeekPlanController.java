@@ -85,6 +85,13 @@ public class ZTTOverhaulWeekPlanController {
         return DataResponse.success();
     }
 
+    @PostMapping("/weekPlan/examine")
+    @ApiOperation(value = "审核检修周计划（中铁通）")
+    public DataResponse<T> examineOverhaulWeekPlan(@RequestBody OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
+        overhaulWeekPlanService.examineOverhaulWeekPlan(overhaulWeekPlanReqDTO);
+        return DataResponse.success();
+    }
+
     @PostMapping("/weekPlan/export")
     @ApiOperation(value = "导出检修周计划（中铁通）")
     public void exportOverhaulWeekPlan(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) {

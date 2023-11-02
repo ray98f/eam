@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.specialEquip;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
@@ -69,10 +70,17 @@ public class DetectionController {
         return DataResponse.success();
     }
 
-    @GetMapping("/submit")
+    @PostMapping("/submit")
     @ApiOperation(value = "提交检测记录")
-    public DataResponse<T> submitDetection(@RequestParam @ApiParam("id") String id) throws Exception {
-        detectionService.submitDetection(id);
+    public DataResponse<T> submitDetection(@RequestBody ExamineReqDTO examineReqDTO) throws Exception {
+        detectionService.submitDetection(examineReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/examine")
+    @ApiOperation(value = "审核检测记录")
+    public DataResponse<T> examineDetection(@RequestBody ExamineReqDTO examineReqDTO) {
+        detectionService.examineDetection(examineReqDTO);
         return DataResponse.success();
     }
 

@@ -32,10 +32,10 @@ public interface OrgMajorMapper {
     void deleteOrgMajor(List<String> ids, String userId, String time);
 
     List<OrgMajorResDTO> listOrgMajor(List<List<String>> orgCodes, String majorCode);
-    List<OrgMajorResDTO> queryTypeAndDeptCode(String organType, String majorCode,String lineCode);
+
+    List<OrgMajorResDTO> queryTypeAndDeptCode(String organType, String majorCode, String lineCode);
 
     List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(@Param("subjectCode") String subjectCode, @Param("line") String line, @Param("orgType") String orgType);
 
-
-    List<OrganMajorLineType> getDepartmentUserByGroupName(@Param("dptCode")String dptCode,@Param("groupCname") String groupCname);
+    List<OrganMajorLineType> getDepartmentUserByGroupName(@Param("dptCode") String dptCode, @Param("groupCname") String groupCname);
 }

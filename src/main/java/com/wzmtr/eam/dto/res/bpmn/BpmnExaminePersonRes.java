@@ -11,6 +11,8 @@ public class BpmnExaminePersonRes {
 
     private String userId;
 
+    private String userName;
+
     private String officeId;
 
     private String isOwnerOrg;

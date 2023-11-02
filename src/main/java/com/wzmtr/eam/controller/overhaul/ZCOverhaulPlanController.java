@@ -84,6 +84,13 @@ public class ZCOverhaulPlanController {
         return DataResponse.success();
     }
 
+    @PostMapping("/plan/examine")
+    @ApiOperation(value = "审核检修计划（中车）")
+    public DataResponse<T> examineOverhaulPlan(@RequestBody OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
+        overhaulPlanService.examineOverhaulPlan(overhaulPlanReqDTO);
+        return DataResponse.success();
+    }
+
     @PostMapping("/plan/relation")
     @ApiOperation(value = "检修计划（中车）关联计划")
     public DataResponse<T> relationOverhaulPlan(@RequestBody List<OverhaulPlanReqDTO> list) {

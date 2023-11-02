@@ -1,5 +1,6 @@
 package com.wzmtr.eam.service.common;
 
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface UserGroupMemberService {
     List<OrganMajorLineType> getDepartmentUserByGroupName(String groupCode);
 
     List<OrganMajorLineType> getDepartmentUserByGroupName(String groupCode, String dptCode);
+
+    List<BpmnExaminePersonRes> getZcOverhaulPlanExamineUser(String subjectCode, String lineCode);
 }

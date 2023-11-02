@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.overhaul;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -109,4 +110,7 @@ public class OverhaulTplReqDTO {
 
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
+
+    @ApiModelProperty(value = "审核参数")
+    private ExamineReqDTO examineReqDTO;
 }

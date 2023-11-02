@@ -113,6 +113,7 @@
         </if>
         ORDER BY om.REC_CREATE_TIME ASC
     </select>
+
     <select id="getWorkerGroupBySubjectAndLine" resultType="com.wzmtr.eam.entity.OrganMajorLineType">
         SELECT T05.ORG_CODE AS orgCode,
         T05.ORG_NAME AS orgName,
@@ -132,6 +133,7 @@
             AND T07.ORG_TYPE = #{orgType}
         </if>
     </select>
+
     <select id="getDepartmentUserByGroupName" resultType="com.wzmtr.eam.entity.OrganMajorLineType">
         SELECT LOGIN_NAME AS "loginName", USER_NAME AS "userName"
         FROM (SELECT U.LOGIN_NAME, U.USER_NAME
@@ -145,6 +147,7 @@
                              FROM rplat60.V_CO_ORG_USER
                              WHERE V_CO_ORG_USER.ORG_CODE = #{dptCode})
     </select>
+
     <select id="queryTypeAndDeptCode" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
         SELECT d5.ORG_CODE, d5.ORG_NAME
         FROM SYS_ORG_MAJOR d5,

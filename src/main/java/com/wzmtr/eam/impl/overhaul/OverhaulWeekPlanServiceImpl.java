@@ -199,6 +199,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
     }
 
+    // ServiceDMER0111
     @Override
     public void submitOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
         if (StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName()) || StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime()) ||
@@ -233,8 +234,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             if (StringUtils.isBlank(TokenUtil.getCurrentPerson().getOfficeId())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您的组织机构为空，请确认。");
             }
-            // ServiceDMER0111 submit
-            String processId = bpmnService.commit(overhaulWeekPlanReqDTO.getWeekPlanCode(), BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value(), null, null, null);
+            String processId = bpmnService.commit(overhaulWeekPlanReqDTO.getWeekPlanCode(), BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value(), null, null, overhaulWeekPlanReqDTO.getExamineReqDTO().getUserIds());
             overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已提交");
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
@@ -245,6 +245,25 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         } else {
             overhaulWeekPlanReqDTO.setTrialStatus("30");
             triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
+        }
+        overhaulWeekPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        overhaulWeekPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulWeekPlanMapper.modifyOverhaulWeekPlan(overhaulWeekPlanReqDTO);
+    }
+
+    @Override
+    public void examineOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
+        String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
+        String taskId = bpmnService.queryTaskIdByProcId(processId);
+        if (overhaulWeekPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
+            overhaulWeekPlanReqDTO.setTrialStatus("30");
+            triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
+            bpmnService.agree(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion(), null, null);
+            overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已完成");
+        } else {
+            bpmnService.reject(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion());
+            overhaulWeekPlanReqDTO.setWorkFlowInstStatus("待提交");
+            overhaulWeekPlanReqDTO.setPlanStatus("10");
         }
         overhaulWeekPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulWeekPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -263,7 +282,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 map.put("周计划编号", resDTO.getWeekPlanCode());
                 map.put("周计划名称", resDTO.getPlanName());
                 map.put("周末", resDTO.getFirstBeginTime());
-                map.put("线路", resDTO.getLineName());
+                map.put("线路", "01".equals(resDTO.getLineNo()) ? "S1线" : "S2线");
                 map.put("专业", resDTO.getSubjectName());
                 map.put("作业工班", organizationMapper.getNamesById(resDTO.getWorkerGroupCode()));
                 map.put("工班长", resDTO.getWorkerName());

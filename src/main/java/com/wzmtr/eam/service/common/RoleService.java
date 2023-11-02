@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface RoleService {
 
+    List<Role> getLoginRole();
+
     Page<Role> listRole(String roleName, PageReqDTO pageReqDTO);
 
     void deleteRole(String id);

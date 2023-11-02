@@ -30,6 +30,8 @@ public interface OverhaulWeekPlanService {
 
     void submitOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception;
 
+    void examineOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception;
+
     void exportOverhaulWeekPlan(List<String> ids, HttpServletResponse response);
 
     Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO);

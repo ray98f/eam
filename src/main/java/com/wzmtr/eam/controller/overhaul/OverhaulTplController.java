@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.overhaul;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulMaterialReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulTplDetailReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulTplReqDTO;
@@ -85,6 +86,13 @@ public class OverhaulTplController {
     @ApiOperation(value = "提交检修模板")
     public DataResponse<T> submitOverhaulTpl(@RequestBody OverhaulTplReqDTO overhaulTplReqDTO) throws Exception {
         overhaulTplService.submitOverhaulTpl(overhaulTplReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/examine")
+    @ApiOperation(value = "审核检修模板")
+    public DataResponse<T> examineOverhaulTpl(@RequestBody OverhaulTplReqDTO overhaulTplReqDTO) {
+        overhaulTplService.examineOverhaulTpl(overhaulTplReqDTO);
         return DataResponse.success();
     }
 

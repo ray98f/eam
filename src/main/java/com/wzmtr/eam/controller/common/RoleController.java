@@ -32,6 +32,12 @@ public class RoleController {
     @Resource
     private RoleService roleService;
 
+    @GetMapping("/getLoginRole")
+    @ApiOperation(value = "获取登录用户的角色")
+    public DataResponse<List<Role>> getLoginRole() {
+        return DataResponse.of(roleService.getLoginRole());
+    }
+
     @GetMapping("/page")
     @ApiOperation(value = "分页获取角色信息")
     public PageResponse<Role> listRole(@RequestParam(required = false) @ApiParam("名称模糊查询") String roleName,

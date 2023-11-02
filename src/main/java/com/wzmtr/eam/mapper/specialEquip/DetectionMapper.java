@@ -45,4 +45,8 @@ public interface DetectionMapper {
 
     List<DetectionDetailResDTO> listDetectionDetail(String testRecId);
 
+    List<DetectionDetailResDTO> queryMsg(String testRecId);
+
+    void updateEquip(DetectionDetailResDTO detectionDetailResDTO);
+
 }

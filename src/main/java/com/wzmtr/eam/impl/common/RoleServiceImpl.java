@@ -30,6 +30,11 @@ public class RoleServiceImpl implements RoleService {
     private RoleMapper roleMapper;
 
     @Override
+    public List<Role> getLoginRole() {
+        return roleMapper.getLoginRole(TokenUtil.getCurrentPersonId());
+    }
+
+    @Override
     public Page<Role> listRole(String roleName, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return roleMapper.listRole(pageReqDTO.of(), roleName);

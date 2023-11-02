@@ -31,6 +31,8 @@ public interface OverhaulPlanService {
 
     void submitOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception;
 
+    void examineOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO);
+
     void relationOverhaulPlan(List<OverhaulPlanReqDTO> list);
 
     void switchsOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO);

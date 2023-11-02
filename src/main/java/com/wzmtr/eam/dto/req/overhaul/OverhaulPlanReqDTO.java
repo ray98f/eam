@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.overhaul;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -181,6 +182,9 @@ public class OverhaulPlanReqDTO {
 
     @ApiModelProperty(value = "施工类型")
     private String constructionType;
+
+    @ApiModelProperty(value = "审核参数")
+    private ExamineReqDTO examineReqDTO;
 
     @ApiModelProperty(value = "送审时传值")
     private String opinion;

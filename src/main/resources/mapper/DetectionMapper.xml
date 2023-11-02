@@ -740,4 +740,18 @@
         order by a.EQUIP_CODE asc
     </select>
 
+    <select id="queryMsg" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO">
+        SELECT EQUIP_CODE as "equipCode",
+        VERIFY_VALIDITY_DATE as "verifyValidityDate",
+        VERIFY_DATE as "verifyDate"
+        FROM T_DETECTION_DETAIL WHERE TEST_REC_ID=#{testRecId}
+    </select>
+
+    <update id="updateEquip">
+        UPDATE T_EQUIPMENT SET
+        VERIFY_DATE=#{verifyDate},
+        VERIFY_VALIDITY_DATE=#{verifyValidityDate}
+        where EQUIP_CODE=#{equipCode}
+    </update>
+
 </mapper>

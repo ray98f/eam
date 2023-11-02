@@ -5,14 +5,17 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulMaterialReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulTplDetailReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulTplReqDTO;
+import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulTplResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.Role;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulTplMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.overhaul.OverhaulTplService;
@@ -27,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author frp
@@ -40,6 +44,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Autowired
     private BpmnService bpmnService;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Override
     public Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineCode, String position1Code,
@@ -139,6 +146,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         overhaulTplMapper.changeOverhaulTpl(overhaulTplReqDTO);
     }
 
+    // ServiceDMER0003
     @Override
     public void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) throws Exception {
         if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
@@ -157,26 +165,40 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (list == null || list.size() <= 0) {
             throw new CommonException(ErrorCode.NO_DETAIL, "勾选模板中没有检修项！");
         }
-        // ServiceDMER0003 submit
-        // todo 获取用户角色
-        String roleCode = "";
-//        String roleCode = InterfaceHelper.getUserHelpe().getRoleTypeNameByLoginId(TokenUtil.getCurrentPersonId());
-        if (roleCode.contains("5") || roleCode.contains("6")) {
+        List<Role> roles = roleMapper.getLoginRole(TokenUtil.getCurrentPersonId());
+        List<String> roleCode = new ArrayList<>();
+        if (!roles.isEmpty()) {
+            roleCode = roles.stream().map(Role::getRoleCode).collect(Collectors.toList());
+        }
+        if (!roleCode.isEmpty() && (roleCode.contains("5") || roleCode.contains("6"))) {
             overhaulTplReqDTO.setWorkFlowInstStatus("运营-车辆专工：" + TokenUtil.getCurrentPersonId());
             overhaulTplReqDTO.setTrialStatus("30");
         } else {
-//            List<Map<String, String>> nextUser = new ArrayList<>();
-//            nextUser.addAll(inInfo.getBlock("uult").getRows());
-//            if (nextUser == null || nextUser.size() <= 0) {
-//                throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（运营）角色中没有人员，不能进行送审操作");
-//            }
-            String processId = bpmnService.commit(overhaulTplReqDTO.getTemplateId(), BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null, null);
+            String processId = bpmnService.commit(overhaulTplReqDTO.getTemplateId(), BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null, overhaulTplReqDTO.getExamineReqDTO().getUserIds());
             overhaulTplReqDTO.setWorkFlowInstStatus("已提交");
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败！");
             }
             overhaulTplReqDTO.setWorkFlowInstId(processId);
             overhaulTplReqDTO.setTrialStatus("20");
+        }
+        overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
+    }
+
+    @Override
+    public void examineOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
+        String processId = overhaulTplReqDTO.getWorkFlowInstId();
+        String taskId = bpmnService.queryTaskIdByProcId(processId);
+        if (overhaulTplReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
+            bpmnService.agree(taskId, overhaulTplReqDTO.getExamineReqDTO().getOpinion(), null, null);
+            overhaulTplReqDTO.setWorkFlowInstStatus("已完成");
+            overhaulTplReqDTO.setTrialStatus("30");
+        } else {
+            bpmnService.reject(taskId, overhaulTplReqDTO.getExamineReqDTO().getOpinion());
+            overhaulTplReqDTO.setWorkFlowInstStatus("待提交");
+            overhaulTplReqDTO.setTrialStatus("10");
         }
         overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -306,7 +328,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 map.put("模块顺序", resDTO.getModelSequence());
                 map.put("检修模块", resDTO.getModelName());
                 map.put("检修项顺序", resDTO.getSequenceId());
-                map.put("车组号", resDTO.getTrainNumber() != null ? resDTO.getTrainNumber() + "车" : "");
+                map.put("车组号", (!"".equals(resDTO.getTrainNumber()) && !" ".equals(resDTO.getTrainNumber())) ? resDTO.getTrainNumber() + "车" : "");
                 map.put("检修项", resDTO.getItemName());
                 map.put("技术要求", resDTO.getExt1());
                 map.put("检修项类型", "10".equals(resDTO.getItemType()) ? "列表" : "20".equals(resDTO.getItemType()) ? "数值" : "文本");

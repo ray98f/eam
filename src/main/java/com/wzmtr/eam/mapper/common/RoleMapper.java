@@ -17,6 +17,8 @@ import java.util.List;
 @Repository
 public interface RoleMapper {
 
+    List<Role> getLoginRole(@Param("userId") String userId);
+
     Page<Role> listRole(Page<Role> page, @Param("roleName") String roleName);
 
     Integer deleteRole(@Param("id") String id);
@@ -38,4 +40,11 @@ public interface RoleMapper {
     List<PersonListResDTO> listRoleUsers(@Param("roleId") String roleId, @Param("roleCode") String roleCode);
 
     List<BpmnExaminePersonRes> getBpmnExaminePerson(BpmnExaminePersonIdReq req);
+
+    List<BpmnExaminePersonRes> getUserBySubjectAndLineAndRole(@Param("subjectCode") String subjectCode,
+                                                              @Param("lineCode") String lineCode,
+                                                              @Param("roleCode") String roleCode);
+
+    List<BpmnExaminePersonRes> getUserByOrgAndRole(@Param("orgId") String orgId,
+                                                   @Param("roleCode") String roleCode);
 }

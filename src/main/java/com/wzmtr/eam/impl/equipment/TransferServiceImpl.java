@@ -22,6 +22,8 @@ import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -171,6 +173,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void encodingTransfer(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             for (String id : baseIdsEntity.getIds()) {
@@ -196,23 +199,23 @@ public class TransferServiceImpl implements TransferService {
                     unitCodeReqDTO.setRecCreator(user.getPersonId());
                     unitCodeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                     unitCodeReqDTO.setDevNo(equipCode);
-                    unitCodeReqDTO.setBatchNo("");
-                    unitCodeReqDTO.setAssetNo("");
+                    unitCodeReqDTO.setBatchNo(" ");
+                    unitCodeReqDTO.setAssetNo(" ");
                     unitCodeReqDTO.setSupplierId(user.getOfficeId());
                     unitCodeReqDTO.setSupplierName(user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId());
                     unitCodeReqDTO.setOrderNo(transferResDTO.getOrderNo());
                     unitCodeReqDTO.setOrderName(transferResDTO.getOrderName());
-                    unitCodeReqDTO.setProCode("");
-                    unitCodeReqDTO.setProName("");
+                    unitCodeReqDTO.setProCode(" ");
+                    unitCodeReqDTO.setProName(" ");
                     unitCodeReqDTO.setMatSpecifi(transferResDTO.getMatSpecifi());
                     unitCodeReqDTO.setBrand(transferResDTO.getBrand());
                     equipmentMapper.insertUnitCode(unitCodeReqDTO);
                     EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
                     BeanUtils.copyProperties(transferResDTO, equipmentReqDTO);
-                    equipmentReqDTO.setSystemCode("");
-                    equipmentReqDTO.setSystemName("");
-                    equipmentReqDTO.setEquipTypeCode("");
-                    equipmentReqDTO.setEquipTypeName("");
+                    equipmentReqDTO.setSystemCode(" ");
+                    equipmentReqDTO.setSystemName(" ");
+                    equipmentReqDTO.setEquipTypeCode(" ");
+                    equipmentReqDTO.setEquipTypeName(" ");
                     equipmentReqDTO.setUseLineNo(transferResDTO.getLineNo());
                     equipmentReqDTO.setUseLineName(transferResDTO.getLineName());
                     equipmentReqDTO.setUseSegNo(transferResDTO.getLineSubNo());
@@ -246,6 +249,17 @@ public class TransferServiceImpl implements TransferService {
                         equipmentReqDTO.setBomType(transferResDTO.getItemCode());
                     }
                     equipmentReqDTO.setExt5(transferResDTO.getVendorCode());
+                    equipmentReqDTO.setEquipStatus(" ");
+                    equipmentReqDTO.setSourceKind(" ");
+                    equipmentReqDTO.setStartUseDate(" ");
+                    equipmentReqDTO.setInAccountTime(" ");
+                    equipmentReqDTO.setInstallDealer(" ");
+                    equipmentReqDTO.setDocId(" ");
+                    equipmentReqDTO.setOriginLineNo(" ");
+                    equipmentReqDTO.setOriginLineName(" ");
+                    equipmentReqDTO.setOriginSegNo(" ");
+                    equipmentReqDTO.setOriginSegName(" ");
+                    equipmentReqDTO.setRecStatus(" ");
                     equipmentMapper.insertEquipment(equipmentReqDTO);
                     transferResDTO.setEamProcessStatus("20");
                     transferMapper.updateTransfer(transferResDTO);

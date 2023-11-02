@@ -304,7 +304,43 @@
     </select>
 
     <select id="getOverhaulWeekPlanByIds" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulWeekPlanResDTO">
-        <include refid="weekPlan-cols"/>
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        WEEK_PLAN_CODE	as "weekPlanCode",  <!-- 周计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        (SELECT t1.NODE_NAME FROM T_EQUIPMENT_CATEGORY t1 WHERE t1.NODE_CODE=SUBJECT_CODE AND t1.DELETE_FLAG='0' AND t1.REC_STATUS='10') as "subjectName",  <!-- 设备专业名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        FIRST_BEGIN_TIME	as "firstBeginTime",  <!-- 开始时间 -->
+        PLAN_FINISH_TIME	as "planFinishTime",  <!-- 结束时间 -->
+        PLAN_STATUS	as "planStatus",  <!-- 计划状态 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATOR_NAME	as "recCreatorName",  <!-- 记录创建者姓名 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
         FROM T_WEEKLY_PLAN WHERE DELETE_FLAG='0' and REC_ID IN (
         <foreach collection="list" index="index" item="id" separator=",">
             #{id}

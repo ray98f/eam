@@ -2,7 +2,9 @@ package com.wzmtr.eam.impl.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
+import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionResDTO;
@@ -35,6 +37,14 @@ import java.util.*;
 @Service
 @Slf4j
 public class DetectionServiceImpl implements DetectionService {
+
+    private static final Map<String, String> EXAMINE_DETECTION_STEP = new HashMap<>();
+
+    static {
+        EXAMINE_DETECTION_STEP.put("A15", "A20");
+        EXAMINE_DETECTION_STEP.put("A20", "A25");
+        EXAMINE_DETECTION_STEP.put("A25", "A30");
+    }
 
     @Autowired
     private DetectionMapper detectionMapper;
@@ -134,10 +144,10 @@ public class DetectionServiceImpl implements DetectionService {
         }
     }
 
+    // ServiceDMSE0301
     @Override
-    public void submitDetection(String id) throws Exception {
-        // ServiceDMSE0301 submit
-        DetectionResDTO res = detectionMapper.getDetectionDetail(id);
+    public void submitDetection(ExamineReqDTO examineReqDTO) throws Exception {
+        DetectionResDTO res = detectionMapper.getDetectionDetail(examineReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -154,7 +164,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (!"10".equals(res.getRecStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可提交");
         } else {
-            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null, null, null);
+            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null, null, examineReqDTO.getUserIds());
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
@@ -167,6 +177,49 @@ public class DetectionServiceImpl implements DetectionService {
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             detectionMapper.modifyDetection(reqDTO);
         }
+    }
+
+    @Override
+    public void examineDetection(ExamineReqDTO examineReqDTO) {
+        DetectionResDTO res = detectionMapper.getDetectionDetail(examineReqDTO.getRecId());
+        if (Objects.isNull(res)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        String processId = res.getWorkFlowInstId();
+        String taskId = bpmnService.queryTaskIdByProcId(processId);
+        DetectionReqDTO reqDTO = new DetectionReqDTO();
+        BeanUtils.copyProperties(res, reqDTO);
+        if (examineReqDTO.getExamineStatus() == 0) {
+            if ("30".equals(reqDTO.getRecStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_DONE);
+            }
+            if ("A15".equals(reqDTO.getWorkFlowInstStatus()) || "A20".equals(reqDTO.getWorkFlowInstStatus()) || "A25".equals(reqDTO.getWorkFlowInstStatus())) {
+                bpmnService.agree(taskId, examineReqDTO.getOpinion(), String.join(",", examineReqDTO.getUserIds()), null);
+                reqDTO.setWorkFlowInstStatus(EXAMINE_DETECTION_STEP.get(reqDTO.getWorkFlowInstStatus()));
+                reqDTO.setRecStatus("20");
+            } else {
+                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, null);
+                reqDTO.setWorkFlowInstStatus("已完成");
+                reqDTO.setRecStatus("30");
+                List<DetectionDetailResDTO> list = detectionMapper.queryMsg(reqDTO.getRecId());
+                if (list != null && !list.isEmpty()) {
+                    for (DetectionDetailResDTO detectionDetail : list) {
+                        detectionMapper.updateEquip(detectionDetail);
+                    }
+                }
+            }
+        } else {
+            if (!"20".equals(reqDTO.getRecStatus())) {
+                throw new CommonException(ErrorCode.REJECT_ERROR);
+            } else {
+                bpmnService.reject(taskId, examineReqDTO.getOpinion());
+                reqDTO.setWorkFlowInstStatus("待提交");
+                reqDTO.setRecStatus("10");
+            }
+        }
+        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        detectionMapper.modifyDetection(reqDTO);
     }
 
     @Override
