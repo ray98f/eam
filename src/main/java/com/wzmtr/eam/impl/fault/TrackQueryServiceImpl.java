@@ -121,7 +121,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
                 map.put("故障编号", resDTO.getFaultNo());
                 map.put("对象名称", resDTO.getObjectName());
                 map.put("线路编码", resDTO.getLineCode());
-                map.put("故障现象", resDTO.getFaultDisplayDetail());
+                map.put("故障现象", resDTO.getFaultDetail());
                 map.put("故障原因", resDTO.getFaultReasonDetail());
                 map.put("故障处理", resDTO.getFaultActionDetail());
                 map.put("转跟踪人员", resDTO.getTrackUserName());

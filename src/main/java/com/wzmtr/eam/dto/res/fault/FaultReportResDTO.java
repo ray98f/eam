@@ -1,7 +1,10 @@
 package com.wzmtr.eam.dto.res.fault;
 
+import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -101,4 +104,7 @@ public class FaultReportResDTO {
     private String faultLevel;
     @ApiModelProperty(value = "故障影响")
     private String faultAffect;
+
+    @ApiModelProperty(value = "附件文件")
+    private List<File> docFile;
 }

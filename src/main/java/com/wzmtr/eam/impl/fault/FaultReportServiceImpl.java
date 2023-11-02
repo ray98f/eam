@@ -13,6 +13,7 @@ import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,6 +43,8 @@ public class FaultReportServiceImpl implements FaultReportService {
     private FaultQueryMapper faultQueryMapper;
     @Autowired
     private OverTodoService overTodoService;
+    @Autowired
+    private FileMapper fileMapper;
 
     @Override
     // @Transactional(rollbackFor = Exception.class)
@@ -101,6 +105,9 @@ public class FaultReportServiceImpl implements FaultReportService {
             return new Page<>();
         }
         list.getRecords().forEach(a -> {
+            if (a.getDocId() != null && !a.getDocId().isEmpty()) {
+                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
+            }
             LineCode line = LineCode.getByCode(a.getLineCode());
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());
             if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
@@ -123,6 +130,9 @@ public class FaultReportServiceImpl implements FaultReportService {
         }
         list.getRecords().forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
+            if (a.getDocId() != null && !a.getDocId().isEmpty()) {
+                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
+            }
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());
             a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
             a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));

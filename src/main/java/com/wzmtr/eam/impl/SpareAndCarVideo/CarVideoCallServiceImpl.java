@@ -55,9 +55,13 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<CarVideoResDTO> records = list.getRecords();
             records.forEach(a -> {
-                a.setApplyDeptName(organizationMapper.getNamesById(a.getApplyDeptCode()));
-            }); return list;
-        } return new Page<>();
+                if (StringUtils.isNotEmpty(a.getApplyDeptCode())) {
+                    a.setApplyDeptName(organizationMapper.getNamesById(a.getApplyDeptCode()));
+                }
+            });
+            return list;
+        }
+        return new Page<>();
     }
 
     @Override
@@ -69,7 +73,9 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         if (detail == null) {
             return null;
         }
-        detail.setApplyDeptName(organizationMapper.getOrgById(detail.getApplyDeptCode()));
+        if (StringUtils.isNotEmpty(detail.getApplyDeptCode())) {
+            detail.setApplyDeptName(organizationMapper.getOrgById(detail.getApplyDeptCode()));
+        }
         return detail;
     }
 
@@ -203,7 +209,10 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             return;
         }
         for (CarVideoResDTO res : resList) {
-            String applyDeptName = organizationMapper.getOrgById(res.getApplyDeptCode());
+            String applyDeptName = " ";
+            if (StringUtils.isNotEmpty(res.getApplyDeptCode())) {
+                applyDeptName = organizationMapper.getOrgById(res.getApplyDeptCode());
+            }
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.videoApplyType", res.getApplyType());
             Map<String, String> map = new HashMap<>();
             map.put("调阅记录号", res.getApplyNo());

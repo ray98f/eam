@@ -122,7 +122,7 @@ public class TrackServiceImpl implements TrackService {
         FaultTrackDO dmfm09 = list.get(0);
         // String userId = UserUtil.getLoginId();
         String processId = dmfm09.getWorkFlowInstId();
-        String task = bpmnService.nextTaskKey(processId);
+        String task = bpmnService.queryTaskIdByProcId(processId);
         if (StringUtils.isEmpty(task)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权审核");
         } else {

@@ -94,13 +94,13 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             map.put("发现日期", resDTO.getInspectDate());
             map.put("安全隐患等级", rank == null ? resDTO.getRiskRank() : rank.getDesc());
             map.put("安全隐患内容", resDTO.getRiskDetail());
-            map.put("检查部门", organizationMapper.getExtraOrgByAreaId(resDTO.getInspectDeptCode()));
+            map.put("检查部门", organizationMapper.getNamesById(resDTO.getInspectDeptCode()));
             map.put("检查人", resDTO.getInspectorCode());
             map.put("地点", resDTO.getPositionDesc());
             map.put("计划完成日期", resDTO.getPlanDate());
-            map.put("整改部门", organizationMapper.getExtraOrgByAreaId(resDTO.getRestoreDeptCode()));
+            map.put("整改部门", organizationMapper.getNamesById(resDTO.getRestoreDeptCode()));
             map.put("整改情况", resDTO.getRestoreDesc());
-            map.put("记录状态", resDTO.getRestoreDesc());
+            map.put("记录状态", resDTO.getRecStatus());
             map.put("备注", resDTO.getPlanNote());
             list.add(map);
         }
