@@ -87,10 +87,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             if (a.getDocId() != null && !a.getDocId().isEmpty()) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
             }
-            if (StringUtils.isNotEmpty(a.getRepairDeptCode())){
+            if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
                 a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
             }
-            if (StringUtils.isNotEmpty(a.getFillinDeptCode())){
+            if (StringUtils.isNotEmpty(a.getFillinDeptCode())) {
                 a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
             }
         });
@@ -559,6 +559,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         return userGroupMemberService.getDepartmentUserByGroupName(workerGroupCode, "DM_012");
     }
+
 
     private void _cancel(List<FaultDetailResDTO> list, String currentUser, String current) {
         list.forEach(a -> {

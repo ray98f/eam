@@ -52,13 +52,13 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         }
         records.forEach(a -> {
             if (StringUtils.isNotEmpty(a.getRestoreDeptCode())) {
-                a.setRestoreDeptName(organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode()));
+                a.setRestoreDeptName(organizationMapper.getNamesById(a.getRestoreDeptCode()));
             }
             if (StringUtils.isNotEmpty(a.getInspectDeptCode())) {
-                a.setInspectDeptName(organizationMapper.getExtraOrgByAreaId(a.getInspectDeptCode()));
+                a.setInspectDeptName(organizationMapper.getNamesById(a.getInspectDeptCode()));
             }
             if (StringUtils.isNotEmpty(a.getNotifyDeptCode())) {
-                a.setNotifyDeptName(organizationMapper.getExtraOrgByAreaId(a.getNotifyDeptCode()));
+                a.setNotifyDeptName(organizationMapper.getNamesById(a.getNotifyDeptCode()));
             }
         });
         return query;
@@ -101,7 +101,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             map.put("整改部门", organizationMapper.getExtraOrgByAreaId(resDTO.getRestoreDeptCode()));
             map.put("整改情况", resDTO.getRestoreDesc());
             map.put("记录状态", resDTO.getRestoreDesc());
-            map.put("备注", resDTO.getPlanDate());
+            map.put("备注", resDTO.getPlanNote());
             list.add(map);
         }
         ExcelPortUtil.excelPort("安全隐患整改信息", listName, list, null, response);

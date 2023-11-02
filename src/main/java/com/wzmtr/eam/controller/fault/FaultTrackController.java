@@ -28,11 +28,6 @@ public class FaultTrackController {
     public PageResponse<TrackResDTO> list(@RequestBody TrackReqDTO reqDTO) {
         return PageResponse.of(trackService.list(reqDTO));
     }
-    // @ApiOperation(value = "详情")
-    // @PostMapping("/detail")
-    // public DataResponse<TrackResDTO> detail(@RequestBody SidEntity reqDTO ) {
-    //     return DataResponse.of(trackService.detail(reqDTO));
-    // }
 
     @ApiOperation(value = "报告")
     @PostMapping("/report")

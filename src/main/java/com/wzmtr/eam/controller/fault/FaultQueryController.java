@@ -12,13 +12,11 @@ import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Author: Li.Wang
@@ -66,6 +64,7 @@ public class FaultQueryController {
         faultQueryService.eqCheck(reqDTO);
         return DataResponse.success();
     }
+
     @ApiOperation(value = "完工确认")
     @PostMapping("/finishConfirm")
     public DataResponse<String> finishConfirm(@RequestBody FaultNosFaultWorkNosReqDTO reqDTO) {
@@ -74,6 +73,7 @@ public class FaultQueryController {
         faultQueryService.updateHandler(reqDTO);
         return DataResponse.success();
     }
+
     @ApiOperation(value = "作废")
     @PostMapping("/cancel")
     public DataResponse<String> cancel(@RequestBody FaultNosFaultWorkNosReqDTO reqDTO) {
@@ -131,14 +131,6 @@ public class FaultQueryController {
         return DataResponse.of(faultQueryService.compareRows(reqDTO));
     }
 
-
-    @ApiOperation(value = "故障工单驳回")
-    @PostMapping("/fault/work/reject")
-    public DataResponse<String> reject(@RequestBody FaultSubmitReqDTO reqDTO) {
-        // faultWorkNo
-        // faultQueryService.reject(reqDTO);
-        return DataResponse.success();
-    }
     // @ApiOperation(value = "故障对象确认")
     // @PostMapping("/fault/track/cancel")
     // public DataResponse<String> cancel(@RequestBody FaultSubmitReqDTO reqDTO) {
@@ -151,6 +143,7 @@ public class FaultQueryController {
     public DataResponse<List<FaultRepairDeptResDTO>> querydept(@RequestParam String faultNo) {
         return DataResponse.of(faultQueryService.querydept(faultNo));
     }
+
     @ApiOperation(value = "获取维修部门下的人")
     @GetMapping("queryWorker")
     public DataResponse<List<OrganMajorLineType>> queryWorker(@RequestParam String workerGroupCode) {

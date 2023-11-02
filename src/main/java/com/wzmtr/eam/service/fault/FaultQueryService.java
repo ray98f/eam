@@ -2,8 +2,8 @@ package com.wzmtr.eam.service.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.*;
-import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
+import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
@@ -26,7 +26,7 @@ public interface FaultQueryService {
 
     void issue(FaultDetailReqDTO reqDTO);
 
-    void export(FaultExportReqDTO reqDTO,HttpServletResponse response);
+    void export(FaultExportReqDTO reqDTO, HttpServletResponse response);
 
     Page<ConstructionResDTO> construction(FaultQueryReqDTO reqDTO);
 

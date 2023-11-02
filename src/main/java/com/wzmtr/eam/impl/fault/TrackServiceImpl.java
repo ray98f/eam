@@ -466,6 +466,7 @@ public class TrackServiceImpl implements TrackService {
             Map<String, String> map = new HashMap<>();
             map.put("跟踪单工单号", resDTO.getFaultTrackWorkNo());
             map.put("跟踪单号", resDTO.getFaultTrackNo());
+            map.put("对象编码", resDTO.getObjectCode());
             map.put("对象名称", resDTO.getObjectName());
             map.put("跟踪状态", dictionaries.getItemCname());
             map.put("派工人", resDTO.getDispatchUserName());
