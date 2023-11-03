@@ -2,125 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.common.MenuMapper">
 
-    <select id="listSuperCatalog" resultType="com.wzmtr.eam.dto.res.common.SuperMenuResDTO">
-        <if test="type==1">
-            SELECT DISTINCT '根目录' AS name FROM SYS_PERMISSION
-        </if>
-        <if test="type!=1">
-            SELECT ID, NAME FROM SYS_PERMISSION WHERE DEL_FLAG=0 AND STATUS=0 AND IS_SHOW=1 AND TYPE=#{type}-1
-            ORDER BY SORT ASC
-        </if>
-    </select>
-
-    <select id="listSuperMenu" resultType="com.wzmtr.eam.dto.res.common.SuperMenuResDTO$MenuInfo">
-        SELECT ID, NAME FROM SYS_PERMISSION WHERE DEL_FLAG=0 AND STATUS=0 AND IS_SHOW=1 AND PARENT_ID=#{id} ORDER BY SORT ASC
-    </select>
-
-    <select id="listLoginCatalog" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO">
+    <select id="listLoginMenuRootList" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO">
         SELECT DISTINCT sp.*
         FROM SYS_USER_ROLE sur left join SYS_ROLE_PERMISSION srp on srp.ROLE_ID=sur.ROLE_ID
         left join SYS_PERMISSION sp on sp.ID=srp.PERMISSION_ID and sp.DEL_FLAG=0 and sp.STATUS=0 AND sp.IS_SHOW=1
-        WHERE sp.TYPE=1 AND sp.PARENT_ID IS NULL and sur.USER_ID=#{personId}
+        WHERE sp.TYPE=0 AND sp.PARENT_ID IS NULL and sur.USER_ID=#{personId}
         ORDER BY sp.SORT
     </select>
 
-    <select id="listLoginMenu" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO$MenuInfo">
+    <select id="listLoginMenuBodyList" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO">
         SELECT DISTINCT sp.*
         FROM SYS_USER_ROLE sur left join SYS_ROLE_PERMISSION srp on srp.ROLE_ID=sur.ROLE_ID
         left join SYS_PERMISSION sp on sp.ID=srp.PERMISSION_ID and sp.DEL_FLAG=0 and sp.STATUS=0 AND sp.IS_SHOW=1
-        WHERE sp.TYPE=2 AND sp.PARENT_ID IS NOT NULL and sur.USER_ID=#{personId}
-        <if test="catalogId!=null">
-            AND sp.PARENT_ID=#{catalogId}
-        </if>
+        WHERE sp.TYPE=!0 AND sp.PARENT_ID IS NOT NULL and sur.USER_ID=#{personId}
         ORDER BY sp.SORT
     </select>
 
-    <select id="listLoginButton" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO$MenuInfo$ButtonInfo">
-        SELECT DISTINCT sp.*
-        FROM SYS_USER_ROLE sur left join SYS_ROLE_PERMISSION srp on srp.ROLE_ID=sur.ROLE_ID
-        left join SYS_PERMISSION sp on sp.ID=srp.PERMISSION_ID and sp.DEL_FLAG=0 and sp.STATUS=0 AND sp.IS_SHOW=1
-        WHERE sp.TYPE=3 AND sp.PARENT_ID IS NOT NULL and sur.USER_ID=#{personId}
-        <if test="menuId!=null">
-            AND sp.PARENT_ID=#{menuId}
-        </if>
-        ORDER BY sp.SORT
-    </select>
-
-    <select id="listUseCatalog" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO">
+    <select id="listUseMenuRootList" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO">
         SELECT *
-        FROM SYS_PERMISSION WHERE TYPE=1 AND DEL_FLAG=0 AND PARENT_ID IS NULL AND STATUS=0 AND IS_SHOW=1
+        FROM SYS_PERMISSION WHERE TYPE=0 AND DEL_FLAG=0 AND PARENT_ID IS NULL
+        AND STATUS=0 AND IS_SHOW=1
         ORDER BY SORT
     </select>
 
-    <select id="listUseMenu" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO$MenuInfo">
+    <select id="listUseMenuBodyList" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO">
         SELECT *
-        FROM SYS_PERMISSION WHERE TYPE=2 AND DEL_FLAG=0 AND PARENT_ID IS NOT NULL AND STATUS=0 AND IS_SHOW=1
-        <if test="catalogId!=null">
-            AND PARENT_ID=#{catalogId}
-        </if>
+        FROM SYS_PERMISSION WHERE TYPE=!0 AND DEL_FLAG=0 AND PARENT_ID IS NOT NULL
+        AND STATUS=0 AND IS_SHOW=1
         ORDER BY SORT
     </select>
 
-    <select id="listUseButton" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO$MenuInfo$ButtonInfo">
-        SELECT *
-        FROM SYS_PERMISSION WHERE TYPE=3 AND DEL_FLAG=0 AND PARENT_ID IS NOT NULL AND STATUS=0 AND IS_SHOW=1
-        <if test="menuId!=null">
-            AND PARENT_ID=#{menuId}
-        </if>
-        ORDER BY SORT
-    </select>
-
-    <select id="listCatalog" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO">
+    <select id="listMenuRootList" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO">
         SELECT
-            ID as id,NAME as name,PARENT_ID as parentId,PERM_CODE as permCode,
-            TYPE as type ,URL as url,SORT as sort,COMPONENT as component,
-            IS_SHOW as isShow,STATUS as status,ICON as icon
-        FROM SYS_PERMISSION WHERE TYPE=1 AND DEL_FLAG=0 AND PARENT_ID IS NULL
-        <if test="menuIds!=null">
-            AND ID IN (
-            <foreach collection="menuIds" index="index" item="menuId" separator=",">
-                #{menuIds.menuId}
-            </foreach>
-            )
-        </if>
+        ID as id,NAME as name,PARENT_ID as parentId,PERM_CODE as permCode,
+        TYPE as type ,URL as url,SORT as sort,COMPONENT as component,
+        IS_SHOW as isShow,STATUS as status,ICON as icon
+        FROM SYS_PERMISSION WHERE TYPE=0 AND DEL_FLAG=0 AND PARENT_ID IS NULL
         ORDER BY SORT
     </select>
 
-    <select id="listMenu" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO$MenuInfo">
+    <select id="listMenuBodyList" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO">
         SELECT
-            ID as id,NAME as name,PARENT_ID as parentId,PERM_CODE as permCode,
-            TYPE as type ,URL as url,SORT as sort,COMPONENT as component,
-            IS_SHOW as isShow,STATUS as status,ICON as icon
-        FROM SYS_PERMISSION WHERE TYPE=2 AND DEL_FLAG=0 AND PARENT_ID IS NOT NULL
-        <if test="catalogId!=null">
-            AND PARENT_ID=#{catalogId}
-        </if>
-        <if test="menuIds!=null">
-            AND ID IN (
-            <foreach collection="menuIds" index="index" item="menuId" separator=",">
-                #{menuId}
-            </foreach>
-            )
-        </if>
-        ORDER BY SORT
-    </select>
-
-    <select id="listButton" resultType="com.wzmtr.eam.dto.res.common.MenuListResDTO$MenuInfo$ButtonInfo">
-        SELECT
-            ID as id,NAME as name,PARENT_ID as parentId,PERM_CODE as permCode,
-            TYPE as type ,URL as url,SORT as sort,COMPONENT as component,
-            IS_SHOW as isShow,STATUS as status,ICON as icon
-        FROM SYS_PERMISSION WHERE TYPE=3 AND DEL_FLAG=0 AND PARENT_ID IS NOT NULL
-        <if test="menuId!=null">
-            AND PARENT_ID=#{menuId}
-        </if>
-        <if test="menuIds!=null">
-            AND ID IN (
-            <foreach collection="menuIds" index="index" item="id" separator=",">
-                #{id}
-            </foreach>
-            )
-        </if>
+        ID as id,NAME as name,PARENT_ID as parentId,PERM_CODE as permCode,
+        TYPE as type ,URL as url,SORT as sort,COMPONENT as component,
+        IS_SHOW as isShow,STATUS as status,ICON as icon
+        FROM SYS_PERMISSION WHERE TYPE!=0 AND DEL_FLAG=0 AND PARENT_ID IS NOT NULL
         ORDER BY SORT
     </select>
 

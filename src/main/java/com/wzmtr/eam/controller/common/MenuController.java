@@ -77,10 +77,4 @@ public class MenuController {
         return DataResponse.success();
     }
 
-    @GetMapping("/super")
-    @ApiOperation(value = "获取上级菜单列表")
-    public DataResponse<List<SuperMenuResDTO>> listSuper(@Valid @NotNull(message = "32000006") @RequestParam @ApiParam(value = "权限类型 1目录、2菜单、3按钮") Integer type) {
-        return DataResponse.of(menuService.listSuper(type));
-    }
-
 }

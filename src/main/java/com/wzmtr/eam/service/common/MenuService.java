@@ -23,6 +23,4 @@ public interface MenuService {
     void deleteMenu(String id);
 
     void modifyMenu(MenuModifyReqDTO menuModifyReqDTO);
-
-    List<SuperMenuResDTO> listSuper(Integer type);
 }

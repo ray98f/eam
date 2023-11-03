@@ -15,23 +15,17 @@ import java.util.List;
 @Repository
 public interface MenuMapper {
 
-    List<MenuListResDTO> listLoginCatalog(@Param("personId") String personId);
+    List<MenuListResDTO> listLoginMenuRootList(@Param("personId") String personId);
 
-    List<MenuListResDTO.MenuInfo> listLoginMenu(@Param("personId")String personId, @Param("catalogId")String catalogId);
+    List<MenuListResDTO> listLoginMenuBodyList(@Param("personId") String personId);
 
-    List<MenuListResDTO.MenuInfo.ButtonInfo> listLoginButton(@Param("personId")String personId, @Param("menuId")String menuId);
+    List<MenuListResDTO> listUseMenuRootList();
 
-    List<MenuListResDTO> listUseCatalog();
+    List<MenuListResDTO> listUseMenuBodyList();
 
-    List<MenuListResDTO.MenuInfo> listUseMenu(@Param("catalogId") String catalogId);
+    List<MenuListResDTO> listMenuRootList();
 
-    List<MenuListResDTO.MenuInfo.ButtonInfo> listUseButton(@Param("menuId") String menuId);
-
-    List<MenuListResDTO> listCatalog(@Param("menuIds") List<String> menuIds);
-
-    List<MenuListResDTO.MenuInfo> listMenu(@Param("catalogId") String catalogId, @Param("menuIds") List<String> menuIds);
-
-    List<MenuListResDTO.MenuInfo.ButtonInfo> listButton(@Param("menuId") String menuId, @Param("menuIds") List<String> menuIds);
+    List<MenuListResDTO> listMenuBodyList();
 
     MenuDetailResDTO getMenuDetail(@Param("id") String id);
 
@@ -46,9 +40,5 @@ public interface MenuMapper {
     Integer deleteMenu(@Param("userId") String userId, @Param("id") String id);
 
     Integer modifyMenu(MenuModifyReqDTO menuModifyReqDTO);
-
-    List<SuperMenuResDTO> listSuperCatalog(@Param("type") Integer type);
-
-    List<SuperMenuResDTO.MenuInfo> listSuperMenu(@Param("id") String id);
 
 }

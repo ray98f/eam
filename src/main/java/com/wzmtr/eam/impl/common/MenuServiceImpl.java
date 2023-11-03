@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.common;
 
 import com.wzmtr.eam.dto.req.common.MenuAddReqDTO;
 import com.wzmtr.eam.dto.req.common.MenuModifyReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.common.MenuDetailResDTO;
 import com.wzmtr.eam.dto.res.common.MenuListResDTO;
 import com.wzmtr.eam.dto.res.common.SuperMenuResDTO;
@@ -11,6 +12,8 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.MenuMapper;
 import com.wzmtr.eam.service.common.MenuService;
 import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.tree.MenuTreeUtils;
+import com.wzmtr.eam.utils.tree.RegionTreeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,68 +37,26 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuListResDTO> listLoginMenu() {
-        List<MenuListResDTO> list;
-        List<MenuListResDTO.MenuInfo> menuInfoList;
-        List<MenuListResDTO.MenuInfo.ButtonInfo> buttonInfoList;
-        list = menuMapper.listLoginCatalog(TokenUtil.getCurrentPersonId());
-        list = list.stream().filter(distinctByKey(MenuListResDTO::getId)).collect(Collectors.toList());
-        if (!list.isEmpty()) {
-            for (MenuListResDTO menuListResDTO : list) {
-                menuInfoList = menuMapper.listLoginMenu(TokenUtil.getCurrentPersonId(), menuListResDTO.getId());
-                menuInfoList = menuInfoList.stream().filter(distinctByKey(MenuListResDTO.MenuInfo::getId)).collect(Collectors.toList());
-                if (!menuInfoList.isEmpty()) {
-                    for (MenuListResDTO.MenuInfo menuInfo : menuInfoList) {
-                        buttonInfoList = menuMapper.listLoginButton(TokenUtil.getCurrentPersonId(), menuInfo.getId());
-                        buttonInfoList = buttonInfoList.stream().filter(distinctByKey(MenuListResDTO.MenuInfo.ButtonInfo::getId)).collect(Collectors.toList());
-                        menuInfo.setChildren(buttonInfoList);
-                    }
-                }
-                menuListResDTO.setChildren(menuInfoList);
-            }
-        }
-        return list;
+        List<MenuListResDTO> extraRootList = menuMapper.listLoginMenuRootList(TokenUtil.getCurrentPersonId());
+        List<MenuListResDTO> extraBodyList = menuMapper.listLoginMenuBodyList(TokenUtil.getCurrentPersonId());
+        MenuTreeUtils extraTree = new MenuTreeUtils(extraRootList, extraBodyList);
+        return extraTree.getTree();
     }
 
     @Override
     public List<MenuListResDTO> listUseMenu() {
-        List<MenuListResDTO> list;
-        List<MenuListResDTO.MenuInfo> menuInfoList;
-        List<MenuListResDTO.MenuInfo.ButtonInfo> buttonInfoList;
-        list = menuMapper.listUseCatalog();
-        if (!list.isEmpty()) {
-            for (MenuListResDTO menuListResDTO : list) {
-                menuInfoList = menuMapper.listUseMenu(menuListResDTO.getId());
-                if (!menuInfoList.isEmpty()) {
-                    for (MenuListResDTO.MenuInfo menuInfo : menuInfoList) {
-                        buttonInfoList = menuMapper.listUseButton(menuInfo.getId());
-                        menuInfo.setChildren(buttonInfoList);
-                    }
-                }
-                menuListResDTO.setChildren(menuInfoList);
-            }
-        }
-        return list;
+        List<MenuListResDTO> extraRootList = menuMapper.listUseMenuRootList();
+        List<MenuListResDTO> extraBodyList = menuMapper.listUseMenuBodyList();
+        MenuTreeUtils extraTree = new MenuTreeUtils(extraRootList, extraBodyList);
+        return extraTree.getTree();
     }
 
     @Override
     public List<MenuListResDTO> listMenu() {
-        List<MenuListResDTO> list;
-        List<MenuListResDTO.MenuInfo> menuInfoList;
-        List<MenuListResDTO.MenuInfo.ButtonInfo> buttonInfoList;
-        list = menuMapper.listCatalog(null);
-        if (!list.isEmpty()) {
-            for (MenuListResDTO menuListResDTO : list) {
-                menuInfoList = menuMapper.listMenu(menuListResDTO.getId(), null);
-                if (!menuInfoList.isEmpty()) {
-                    for (MenuListResDTO.MenuInfo menuInfo : menuInfoList) {
-                        buttonInfoList = menuMapper.listButton(menuInfo.getId(), null);
-                        menuInfo.setChildren(buttonInfoList);
-                    }
-                }
-                menuListResDTO.setChildren(menuInfoList);
-            }
-        }
-        return list;
+        List<MenuListResDTO> extraRootList = menuMapper.listMenuRootList();
+        List<MenuListResDTO> extraBodyList = menuMapper.listMenuBodyList();
+        MenuTreeUtils extraTree = new MenuTreeUtils(extraRootList, extraBodyList);
+        return extraTree.getTree();
     }
 
     @Override
@@ -174,25 +135,5 @@ public class MenuServiceImpl implements MenuService {
                 throw new CommonException(ErrorCode.UPDATE_ERROR);
             }
         }
-    }
-
-    @Override
-    public List<SuperMenuResDTO> listSuper(Integer type) {
-        List<SuperMenuResDTO> superMenuResDTOList = menuMapper.listSuperCatalog(type);
-        if (null == superMenuResDTOList || superMenuResDTOList.isEmpty()) {
-            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
-        }
-        if (type == INT_BUTTON) {
-            for (SuperMenuResDTO superMenuResDTO : superMenuResDTOList) {
-                List<SuperMenuResDTO.MenuInfo> menuInfoList = menuMapper.listSuperMenu(superMenuResDTO.getId());
-                superMenuResDTO.setMenuInfo(menuInfoList);
-            }
-        }
-        return superMenuResDTOList;
-    }
-
-    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }
