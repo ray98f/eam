@@ -22,11 +22,14 @@ public interface TrackService {
     void close(TrackCloseReqDTO reqDTO);
 
     void repair(TrackRepairReqDTO reqDTO);
-    void returns(FaultSubmitReqDTO reqDTO);
+    void returns(FaultExamineReqDTO reqDTO);
 
     void transmit(TrackTransmitReqDTO reqDTO);
 
-    void submit(FaultSubmitReqDTO reqDTO);
 
     void export(TrackExportReqDTO reqDTO, HttpServletResponse response);
+
+    void pass(FaultExamineReqDTO reqDTO);
+
+    void commit(FaultExamineReqDTO reqDTO);
 }

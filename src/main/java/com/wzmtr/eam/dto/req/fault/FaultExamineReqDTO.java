@@ -13,18 +13,17 @@ import java.util.List;
  */
 @Data
 @ApiModel
-public class FaultSubmitReqDTO {
+public class FaultExamineReqDTO {
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
     @ApiModelProperty(value = "故障工单编号")
     private String faultWorkNo;
     private String faultTrackNo;
-    @ApiModelProperty(value = "COMMIT 送审，PASS 审核通过")
-    private SubmitType type;
     private String faultAnalysisNo;
     private String isCommit;
     private String comment;
-    private String backOpinion;
+    @ApiModelProperty(value = "意见")
+    private String opinion;
     @ApiModelProperty(value = "userIds")
     private List<String> userIds;
 }

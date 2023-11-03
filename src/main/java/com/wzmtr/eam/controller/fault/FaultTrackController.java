@@ -50,15 +50,6 @@ public class FaultTrackController {
         return DataResponse.success();
     }
 
-
-    @ApiOperation(value = "故障跟踪表单驳回")
-    @PostMapping("/cancel")
-    public DataResponse<String> cancel(@RequestBody FaultSubmitReqDTO reqDTO) {
-        // faultWorkNo
-        trackService.returns(reqDTO);
-        return DataResponse.success();
-    }
-
     @ApiOperation(value = "故障跟踪下达")
     @PostMapping("/fault/track/transmit")
     public DataResponse<String> transmit(@RequestBody TrackTransmitReqDTO reqDTO) {
@@ -67,13 +58,30 @@ public class FaultTrackController {
         return DataResponse.success();
     }
 
-    @ApiOperation(value = "故障跟踪表单提交")
-    @PostMapping("/fault/track/submit")
-    public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
+    @ApiOperation(value = "故障跟踪送审")
+    @PostMapping("/fault/track/commit")
+    public DataResponse<String> commit(@RequestBody FaultExamineReqDTO reqDTO) {
         // faultWorkNo
-        trackService.submit(reqDTO);
+        trackService.commit(reqDTO);
         return DataResponse.success();
     }
+
+
+    @ApiOperation(value = "审核通过")
+    @PostMapping("/fault/track/pass")
+    public DataResponse<String> pass(@RequestBody FaultExamineReqDTO reqDTO) {
+        trackService.pass(reqDTO);
+        return DataResponse.success();
+    }
+
+    @ApiOperation(value = "故障跟踪驳回")
+    @PostMapping("/cancel")
+    public DataResponse<String> cancel(@RequestBody FaultExamineReqDTO reqDTO) {
+        // faultWorkNo
+        trackService.returns(reqDTO);
+        return DataResponse.success();
+    }
+
     @ApiOperation(value = "故障跟踪导出")
     @PostMapping("/fault/track/export")
     public void export(@RequestBody TrackExportReqDTO reqDTO, HttpServletResponse response) {

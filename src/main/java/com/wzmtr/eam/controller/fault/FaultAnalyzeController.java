@@ -2,7 +2,7 @@ package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultSubmitReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultExamineReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -46,12 +46,28 @@ public class FaultAnalyzeController {
         return DataResponse.success();
     }
 
-    // fault_analize
-    @ApiOperation(value = "故障分析流程提交")
+    // fault_analize9
+    @ApiOperation(value = "故障分析流程提交送审")
     @PostMapping("/submit")
-    public DataResponse<String> submit(@RequestBody FaultSubmitReqDTO reqDTO) {
+    public DataResponse<String> submit(@RequestBody FaultExamineReqDTO reqDTO) {
         //com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
         analyzeService.submit(reqDTO);
+        return DataResponse.success();
+    }
+
+    @ApiOperation(value = "故障分析流程审核")
+    @PostMapping("/pass")
+    public DataResponse<String> pass(@RequestBody FaultExamineReqDTO reqDTO) {
+        //com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
+        analyzeService.pass(reqDTO);
+        return DataResponse.success();
+    }
+    @ApiOperation(value = "故障分析流程驳回")
+    @PostMapping("/return")
+    public DataResponse<String> re(@RequestBody FaultExamineReqDTO reqDTO) {
+        //com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
+        //TODO
+        // analyzeService.submit(reqDTO);
         return DataResponse.success();
     }
 }

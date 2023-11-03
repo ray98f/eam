@@ -38,7 +38,7 @@ public interface FaultQueryService {
     Boolean compareRows(CompareRowsReqDTO req);
 
     // 驳回
-    void returns(FaultSubmitReqDTO reqDTO);
+    void returns(FaultExamineReqDTO reqDTO);
 
     void sendWork(FaultSendWorkReqDTO reqDTO);
 

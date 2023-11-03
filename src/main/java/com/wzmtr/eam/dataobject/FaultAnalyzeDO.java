@@ -1,64 +1,83 @@
 package com.wzmtr.eam.dataobject;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
 
 /**
  * Author: Li.Wang
- * Date: 2023/9/5 15:49
+ * String: 2023/9/5 15:49
  */
 @Data
 @Builder
+@TableName("T_FAULT_DETAIL")
 public class FaultAnalyzeDO {
-    /*  18 */   private String recId;
-    /*  19 */   private String companyCode;
-    /*  20 */   private String companyName;
-    /*  21 */   private String faultAnalysisNo;
-    /*  22 */   private String faultNo;
-    /*  23 */   private String faultWorkNo;
-    /*  24 */   private String mainEquipCode;
-    /*  25 */   private String mainEquipName;
-    /*  26 */   private String majorCode;
-    /*  27 */   private String majorName;
-    /*  28 */   private String lineCode;
-    /*  29 */   private String workClass;
-    /*  30 */   private String discoveryTime;
-    /*  31 */   private String faultDisplayCode;
-    /*  32 */   private String faultDisplayDetail;
-    /*  33 */   private String recoveryTime;
-    /*     */
-    /*  35 */   private String systemName;
-    /*  36 */   private String positionName;
-    /*  37 */   private String respDeptCode;
-    /*  38 */   private String faultReasonCode;
-    /*  39 */   private String faultLevel;
-    /*  40 */   private String positionCode;
-    /*  41 */   private String systemCode;
-    /*     */
-    /*  43 */   private String affectCodes;
-    /*  44 */   private String frequency;
-    /*  45 */   private String manufacture;
-    /*  46 */   private String faultDetail;
-    /*  47 */   private String faultProcessDetail;
-    /*  48 */   private String faultReasonDetail;
-    /*  49 */   private String problemDescr;
-    /*  50 */   private String improveDetail;
-    /*  51 */   private String workFlowInstId;
-    /*  52 */   private String workFlowInstStatus;
-    /*  53 */   private String docId;
-    /*  54 */   private String remark;
-    /*  55 */   private String recStatus;
-    /*  56 */   private String recCreator;
-    /*  57 */   private String recCreateTime;
-    /*  58 */   private String recRevisor;
-    /*  59 */   private String recReviseTime;
-    /*  60 */   private String recDeletor;
-    /*  61 */   private String recDeleteTime;
-    /*  62 */   private String deleteFlag;
-    /*  63 */   private String archiveFlag;
-    /*  64 */   private String ext1;
-    /*  65 */   private String ext2;
-    /*  66 */   private String ext3;
-    /*  67 */   private String ext4;
-    /*  68 */   private String ext5;
+    @TableId(value = "REC_ID")
+    private String recId;
+    private String companyCode;
+    private String companyName;
+    private String faultAnalysisNo;
+    private String faultNo;
+    private String faultWorkNo;
+    private String mainEquipCode;
+    private String mainEquipName;
+    private String majorCode;
+    private String recoveryTime;
+    private String affectCodes;
+    private String frequency;
+    private String manufacture;
+    private String faultDetail;
+    private String faultProcessDetail;
+    private String faultReasonDetail;
+    private String problemDescr;
+    private String improveDetail;
+    private String workFlowInstId;
+    private String workFlowInstStatus;
+    private String docId;
+    private String remark;
+    private String recCreator;
+    private String recCreateTime;
+    private String recRevisor;
+    private String recReviseTime;
+    private String recDeletor;
+    private String recDeleteTime;
+    private String deleteFlag;
+    private String archiveFlag;
+    private String recStatus;
+    private String ext1;
+    private String ext2;
+    private String ext3;
+    private String ext4;
+    private String ext5;
+
+
+    @TableField(exist = false)
+    /*  27 */ private String majorName;
+    @TableField(exist = false)
+    /*  28 */ private String lineCode;
+    @TableField(exist = false)
+    /*  29 */ private String workClass;
+    @TableField(exist = false)
+    /*  30 */ private String discoveryTime;
+    @TableField(exist = false)
+    /*  31 */ private String faultDisplayCode;
+    @TableField(exist = false)
+    /*  32 */ private String faultDisplayDetail;
+    @TableField(exist = false)
+    /*  35 */ private String systemName;
+    @TableField(exist = false)
+    /*  36 */ private String positionName;
+    @TableField(exist = false)
+    /*  37 */ private String respDeptCode;
+    @TableField(exist = false)
+    /*  38 */ private String faultReasonCode;
+    @TableField(exist = false)
+    /*  39 */ private String faultLevel;
+    @TableField(exist = false)
+    /*  40 */ private String positionCode;
+    @TableField(exist = false)
+    /*  41 */ private String systemCode;
+
 }

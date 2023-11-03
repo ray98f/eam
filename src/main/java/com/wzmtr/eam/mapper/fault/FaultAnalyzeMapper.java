@@ -1,5 +1,6 @@
 package com.wzmtr.eam.mapper.fault;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
@@ -17,7 +18,7 @@ import java.util.Set;
  */
 @Mapper
 @Repository
-public interface AnalyzeMapper {
+public interface FaultAnalyzeMapper extends BaseMapper<FaultAnalyzeDO> {
 
 
     Page<AnalyzeResDTO> query(Page<Object> of, String faultNo, String majorCode, String recStatus, String lineCode, String frequency, String positionCode, String discoveryStartTime, String discoveryEndTime, String respDeptCode, String affectCodes);

@@ -3,8 +3,6 @@ package com.wzmtr.eam.service.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
-import com.wzmtr.eam.dto.res.fault.TrackResDTO;
-import com.wzmtr.eam.entity.SidEntity;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,5 +18,7 @@ public interface AnalyzeService {
 
     AnalyzeResDTO detail(FaultAnalyzeDetailReqDTO reqDTO);
 
-    void submit(FaultSubmitReqDTO reqDTO);
+    void submit(FaultExamineReqDTO reqDTO);
+
+    void pass(FaultExamineReqDTO reqDTO);
 }

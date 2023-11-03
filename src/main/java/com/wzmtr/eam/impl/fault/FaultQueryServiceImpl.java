@@ -57,11 +57,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Autowired
     private OverTodoService overTodoService;
     @Autowired
-    private TrackMapper trackMapper;
+    private FaultTrackMapper faultTrackMapper;
     @Autowired
     private IDictionariesService dictService;
     @Autowired
-    private AnalyzeMapper analyzeMapper;
+    private FaultAnalyzeMapper faultAnalyzeMapper;
     @Autowired
     private BpmnService bpmnService;
     @Autowired
@@ -232,9 +232,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public List<PersonResDTO> queryUserList(Set<String> userCode, String organCode) {
-        List<PersonResDTO> orgUsers = analyzeMapper.getOrgUsers(userCode, organCode);
+        List<PersonResDTO> orgUsers = faultAnalyzeMapper.getOrgUsers(userCode, organCode);
         if (CollectionUtil.isEmpty(orgUsers)) {
-            List<PersonResDTO> parentList = analyzeMapper.queryCoParent(organCode);
+            List<PersonResDTO> parentList = faultAnalyzeMapper.queryCoParent(organCode);
             if (CollectionUtil.isEmpty(parentList)) {
                 return orgUsers;
             }
@@ -271,8 +271,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     // 驳回
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void returns(FaultSubmitReqDTO reqDTO) {
-        List<FaultTrackDO> list = trackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
+    public void returns(FaultExamineReqDTO reqDTO) {
+        List<FaultTrackDO> list = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
         FaultTrackDO dmfm09 = list.get(0);
         // String userId = UserUtil.getLoginId();
         String processId = dmfm09.getWorkFlowInstId();
@@ -280,10 +280,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isEmpty(task)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权审核");
         } else {
-            bpmnService.reject(task, reqDTO.getBackOpinion());
+            bpmnService.reject(task, reqDTO.getOpinion());
             dmfm09.setRecStatus("30");
             dmfm09.setWorkFlowInstStatus("驳回成功");
-            trackMapper.update(dmfm09);
+            faultTrackMapper.update(dmfm09);
         }
     }
 

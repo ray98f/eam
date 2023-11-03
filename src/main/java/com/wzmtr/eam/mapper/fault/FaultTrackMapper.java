@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface TrackMapper extends BaseMapper<FaultTrackDO>{
+public interface FaultTrackMapper extends BaseMapper<FaultTrackDO>{
     Page<TrackResDTO> query(Page<Object> of, String faultTrackNo, String faultTrackWorkNo, String recStatus, String equipTypeCode, String majorCode, String objectName, String objectCode, String systemCode);
 
     List<TrackResDTO> query(TrackExportReqDTO reqDTO);
