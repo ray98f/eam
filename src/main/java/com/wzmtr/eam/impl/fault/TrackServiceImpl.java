@@ -158,6 +158,7 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void commit(FaultExamineReqDTO reqDTO) {
         // dmfm09.query  com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#submit
         List<FaultTrackDO> dmfm9List = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
@@ -220,6 +221,7 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void pass(FaultExamineReqDTO reqDTO) {
         String faultTrackNo = reqDTO.getFaultTrackNo();
         FaultTrackDO dmfm09 = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq("FAULT_TRACK_NO", faultTrackNo));

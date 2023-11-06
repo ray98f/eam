@@ -6,13 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultExamineReqDTO;
-import com.wzmtr.eam.dto.res.bpmn.FlowRes;
-import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
-import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
-import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -34,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -49,15 +43,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Autowired
     private OrganizationMapper organizationMapper;
     @Autowired
-    private IDictionariesService dictionaryService;
-    @Autowired
-    private FaultQueryService faultQueryService;
-    @Autowired
     private BpmnService bpmnService;
-    @Autowired
-    private UserHelperService userHelperService;
-    @Autowired
-    private FaultQueryMapper faultQueryMapper;
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
@@ -128,7 +114,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 dmfm03.setWorkFlowInstId(processId);
                 dmfm03.setRecStatus("20");
             } catch (Exception e) {
-                log.error("开始流程错误",e);
+                log.error("开始流程错误", e);
             }
         }
         // 送审

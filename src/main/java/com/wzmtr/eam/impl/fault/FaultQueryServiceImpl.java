@@ -57,13 +57,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Autowired
     private OverTodoService overTodoService;
     @Autowired
-    private FaultTrackMapper faultTrackMapper;
-    @Autowired
     private IDictionariesService dictService;
     @Autowired
     private FaultAnalyzeMapper faultAnalyzeMapper;
-    @Autowired
-    private BpmnService bpmnService;
     @Autowired
     private StationMapper stationMapper;
     @Autowired
@@ -268,24 +264,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
     }
 
-    // 驳回
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void returns(FaultExamineReqDTO reqDTO) {
-        List<FaultTrackDO> list = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
-        FaultTrackDO dmfm09 = list.get(0);
-        // String userId = UserUtil.getLoginId();
-        String processId = dmfm09.getWorkFlowInstId();
-        String task = bpmnService.nextTaskKey(processId);
-        if (StringUtils.isEmpty(task)) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权审核");
-        } else {
-            bpmnService.reject(task, reqDTO.getOpinion());
-            dmfm09.setRecStatus("30");
-            dmfm09.setWorkFlowInstStatus("驳回成功");
-            faultTrackMapper.update(dmfm09);
-        }
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -394,24 +372,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         // }
         /* 1393 */
         // else if (ext2.equals("DM_007")) {
-        //     /* 1394 */
-        //     DMUtil.overTODO(dmfm02.getRecId(), "故障完工确认并关闭");
-        //     /* 1395 */
-        //     DMUtil.overTODO(dmfm02.getRecId(), "故障完工确认并关闭");
-        //     /* 1396 */
-        //     Map<Object, Object> OSmap = new HashMap<>();
-        //     /* 1397 */
-        //     OSmap.put("faultNo", ((Map) faultinfo.get(0)).get("faultNo"));
-        //     /* 1398 */
-        //     OSmap.put("faultWorkNo", ((Map) faultinfo.get(0)).get("faultWorkNo"));
-        //     /* 1399 */
-        //     OSmap.put("orderStatus", "70");
-        //     /* 1400 */
-        //     OSmap.put("closeUserId", currentUser);
-        //     /* 1401 */
-        //     OSmap.put("closeTime", dateTimeFormat.format(new Date()));
-        //     /* 1402 */
-        //     status = this.dao.update("DMFM02.update", OSmap);
+        //  _close
         //     /*      */
         // }
         /* 1405 */
@@ -665,7 +626,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                             //     ISendMessage.messageCons(map1.get("mobile"), content);
                             //     continue;
                             // }
-                            throw new CommonException(ErrorCode.NORMAL_ERROR, "该人员无电话信息");
+                            // throw new CommonException(ErrorCode.NORMAL_ERROR, "该人员无电话信息");
                         }
                     }
                 }
