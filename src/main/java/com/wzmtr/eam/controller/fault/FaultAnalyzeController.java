@@ -63,11 +63,10 @@ public class FaultAnalyzeController {
         return DataResponse.success();
     }
     @ApiOperation(value = "故障分析流程驳回")
-    @PostMapping("/return")
-    public DataResponse<String> re(@RequestBody FaultExamineReqDTO reqDTO) {
+    @PostMapping("/reject")
+    public DataResponse<String> reject(@RequestBody FaultExamineReqDTO reqDTO) {
         //com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
-        //TODO
-        // analyzeService.submit(reqDTO);
+        analyzeService.reject(reqDTO);
         return DataResponse.success();
     }
 }

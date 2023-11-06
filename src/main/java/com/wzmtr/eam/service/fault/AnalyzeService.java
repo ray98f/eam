@@ -21,4 +21,6 @@ public interface AnalyzeService {
     void submit(FaultExamineReqDTO reqDTO);
 
     void pass(FaultExamineReqDTO reqDTO);
+
+    void reject(FaultExamineReqDTO reqDTO);
 }

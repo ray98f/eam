@@ -13,12 +13,8 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
-import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
-import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.AnalyzeService;
-import com.wzmtr.eam.service.fault.FaultQueryService;
-import com.wzmtr.eam.service.user.UserHelperService;
 import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.StringUtils;
@@ -142,5 +138,27 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         faultAnalyzeDO.setWorkFlowInstStatus("End");
         faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultAnalyzeMapper.update(faultAnalyzeDO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void reject(FaultExamineReqDTO reqDTO) {
+        String faultNo = reqDTO.getFaultNo();
+        String faultWorkNo = reqDTO.getFaultWorkNo();
+        String checkFaultAnalysisNo = reqDTO.getFaultAnalysisNo();
+        String backOpinion = reqDTO.getOpinion();
+        FaultAnalyzeDO dmfm03 = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq("FAULT_NO", faultNo).eq("FAULT_WORK_NO", faultWorkNo).eq("FAULT_ANALYSIS_NO", checkFaultAnalysisNo));
+        String processId = dmfm03.getWorkFlowInstId();
+        String taskId = bpmnService.queryTaskIdByProcId(processId);
+        // List<Map> taskList = WorkflowHelper.getTasks(processId, userId);
+        // if (taskList.size() == 0) {
+        //     inInfo.setStatus(-2);
+        //     inInfo.setMsg("您无权审核");
+        //     inInfo.set("recStatus", dmfm03.getRecStatus());
+        // } else {
+        bpmnService.reject(taskId, backOpinion);
+        dmfm03.setRecStatus("10");
+        dmfm03.setWorkFlowInstStatus("驳回成功");
+        faultAnalyzeMapper.update(dmfm03);
     }
 }
