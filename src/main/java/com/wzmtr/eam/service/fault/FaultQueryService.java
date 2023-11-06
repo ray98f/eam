@@ -37,9 +37,6 @@ public interface FaultQueryService {
 
     Boolean compareRows(CompareRowsReqDTO req);
 
-    // 驳回
-    void returns(FaultExamineReqDTO reqDTO);
-
     void sendWork(FaultSendWorkReqDTO reqDTO);
 
     void eqCheck(FaultEqCheckReqDTO reqDTO) throws Exception;
