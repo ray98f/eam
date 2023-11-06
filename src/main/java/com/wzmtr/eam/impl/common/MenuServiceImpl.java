@@ -2,35 +2,24 @@ package com.wzmtr.eam.impl.common;
 
 import com.wzmtr.eam.dto.req.common.MenuAddReqDTO;
 import com.wzmtr.eam.dto.req.common.MenuModifyReqDTO;
-import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.common.MenuDetailResDTO;
 import com.wzmtr.eam.dto.res.common.MenuListResDTO;
-import com.wzmtr.eam.dto.res.common.SuperMenuResDTO;
-import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.MenuMapper;
 import com.wzmtr.eam.service.common.MenuService;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.tree.MenuTreeUtils;
-import com.wzmtr.eam.utils.tree.RegionTreeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class MenuServiceImpl implements MenuService {
-
-    public static final int INT_BUTTON = 3;
 
     @Autowired
     private MenuMapper menuMapper;
@@ -74,24 +63,9 @@ public class MenuServiceImpl implements MenuService {
         }
         menuAddReqDTO.setId(TokenUtil.getUuId());
         menuAddReqDTO.setUserId(TokenUtil.getCurrentPersonId());
-        if (menuAddReqDTO.getType() == 1) {
-            if ("".equals(menuAddReqDTO.getParentId()) || menuAddReqDTO.getParentId() == null) {
-                Integer result = menuMapper.insertMenu(menuAddReqDTO);
-                if (result < 0) {
-                    throw new CommonException(ErrorCode.INSERT_ERROR);
-                }
-            } else {
-                throw new CommonException(ErrorCode.ROOT_ERROR);
-            }
-        } else {
-            Integer result = menuMapper.selectRootRight(menuAddReqDTO.getType() - 1, menuAddReqDTO.getParentId());
-            if (result <= 0) {
-                throw new CommonException(ErrorCode.ROOT_ERROR);
-            }
-            result = menuMapper.insertMenu(menuAddReqDTO);
-            if (result < 0) {
-                throw new CommonException(ErrorCode.INSERT_ERROR);
-            }
+        Integer result = menuMapper.insertMenu(menuAddReqDTO);
+        if (result < 0) {
+            throw new CommonException(ErrorCode.INSERT_ERROR);
         }
     }
 
@@ -116,24 +90,9 @@ public class MenuServiceImpl implements MenuService {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
         menuModifyReqDTO.setUserId(TokenUtil.getCurrentPersonId());
-        if (menuModifyReqDTO.getType() == 1) {
-            if ("".equals(menuModifyReqDTO.getParentId()) || menuModifyReqDTO.getParentId() == null) {
-                Integer result = menuMapper.modifyMenu(menuModifyReqDTO);
-                if (result < 0) {
-                    throw new CommonException(ErrorCode.UPDATE_ERROR);
-                }
-            } else {
-                throw new CommonException(ErrorCode.ROOT_ERROR);
-            }
-        } else {
-            Integer result = menuMapper.selectRootRight(menuModifyReqDTO.getType() - 1, menuModifyReqDTO.getParentId());
-            if (result <= 0) {
-                throw new CommonException(ErrorCode.ROOT_ERROR);
-            }
-            result = menuMapper.modifyMenu(menuModifyReqDTO);
-            if (result < 0) {
-                throw new CommonException(ErrorCode.UPDATE_ERROR);
-            }
+        Integer result = menuMapper.modifyMenu(menuModifyReqDTO);
+        if (result < 0) {
+            throw new CommonException(ErrorCode.UPDATE_ERROR);
         }
     }
 }

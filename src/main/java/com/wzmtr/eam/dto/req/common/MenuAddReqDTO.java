@@ -24,7 +24,7 @@ public class MenuAddReqDTO {
     @NotBlank(message = "32000006")
     private String name;
 
-    @ApiModelProperty(value = "权限类型 0根目录 1目录 2菜单 3按钮")
+    @ApiModelProperty(value = "权限类型 1目录 2菜单 3按钮")
     @NotNull(message = "32000006")
     private Integer type;
 

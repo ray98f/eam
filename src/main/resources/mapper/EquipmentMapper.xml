@@ -150,10 +150,10 @@
             and MANUFACTURE=#{manufacture}
         </if>
         <if test="startTime!=null and startTime!=''">
-            and MANUFACTURE_DATE=#{startTime}
+            and MANUFACTURE_DATE>=#{startTime}
         </if>
         <if test="endTime!=null and endTime!=''">
-            and MANUFACTURE_DATE=#{endTime}
+            and #{endTime}>=MANUFACTURE_DATE
         </if>
         <if test="majorCode!=null and majorCode!=''">
             and MAJOR_CODE=#{majorCode}
