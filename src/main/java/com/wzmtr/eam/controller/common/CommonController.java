@@ -20,7 +20,7 @@ import java.io.IOException;
 @CrossOrigin
 @Slf4j
 @RestController
-@Api(tags = "公共分类")
+@Api(tags = "基础管理-公共分类")
 @Validated
 public class CommonController {
 

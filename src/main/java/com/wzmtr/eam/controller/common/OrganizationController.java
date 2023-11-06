@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/iam/org")
-@Api(tags = "组织机构管理")
+@Api(tags = "基础管理-组织机构管理")
 @Validated
 public class OrganizationController {
 

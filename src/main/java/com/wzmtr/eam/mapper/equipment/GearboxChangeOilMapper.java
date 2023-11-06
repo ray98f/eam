@@ -19,6 +19,8 @@ public interface GearboxChangeOilMapper {
 
     GearboxChangeOilResDTO getGearboxChangeOilDetail(String id);
 
+    String getRecCreator(String id);
+
     void addGearboxChangeOil(GearboxChangeOilReqDTO gearboxChangeOilReqDTO);
 
     void deleteGearboxChangeOil(List<String> ids, String userId, String time);

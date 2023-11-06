@@ -70,6 +70,13 @@
         WHERE a.REC_ID=#{id}
     </select>
 
+    <select id="getRecCreator" resultType="java.lang.String">
+        SELECT
+        REC_CREATOR	as "recCreator"
+        FROM T_GEARBOX_CHANGE_OIL
+        WHERE REC_ID=#{id}
+    </select>
+
     <insert id="addGearboxChangeOil">
         INSERT INTO T_GEARBOX_CHANGE_OIL (
         REC_ID,  <!-- 记录编号 -->

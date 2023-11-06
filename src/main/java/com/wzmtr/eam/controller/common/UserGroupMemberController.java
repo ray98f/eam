@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/iam/org")
-@Api(tags = "用户与用户组对应信息")
+@Api(tags = "基础管理-用户与用户组对应信息")
 @Validated
 public class UserGroupMemberController {
 

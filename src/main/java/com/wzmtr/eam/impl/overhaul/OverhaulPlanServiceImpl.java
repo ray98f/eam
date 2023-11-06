@@ -206,7 +206,6 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         } else {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "选择触发的检修计划中存在未做完的工单，请优先做完工单后再进行触发。");
         }
-
     }
 
     @Override

@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/iam/menu")
-@Api(tags = "权限管理-菜单权限管理")
+@Api(tags = "基础管理-菜单权限管理")
 @Validated
 public class MenuController {
 

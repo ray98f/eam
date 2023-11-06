@@ -65,7 +65,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
     public void deleteGearboxChangeOil(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             for (String id : baseIdsEntity.getIds()) {
-                if (!gearboxChangeOilMapper.getGearboxChangeOilDetail(id).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!gearboxChangeOilMapper.getRecCreator(id).equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
             }
@@ -124,7 +124,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
 
     @Override
     public void exportGearboxChangeOil(String trainNo, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "列车号", "完成日期", "作业单位", "作业人员", "确认人员", "备注", "附件编号", "创建者", "创建时间");
+        List<String> listName = Arrays.asList("记录编号", "列车号", "列车公里数", "完成日期", "作业单位", "作业人员", "确认人员", "备注", "附件编号", "创建者", "创建时间");
         List<GearboxChangeOilResDTO> gearboxChangeOilResDTOList = gearboxChangeOilMapper.listGearboxChangeOil(trainNo);
         List<Map<String, String>> list = new ArrayList<>();
         if (gearboxChangeOilResDTOList != null && !gearboxChangeOilResDTOList.isEmpty()) {
@@ -132,6 +132,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
                 Map<String, String> map = new HashMap<>();
                 map.put("记录编号", resDTO.getRecId());
                 map.put("列车号", resDTO.getTrainNo());
+                map.put("列车公里数", String.valueOf(resDTO.getTotalMiles()));
                 map.put("完成日期", resDTO.getCompleteDate());
                 map.put("作业单位", "10".equals(resDTO.getOrgType()) ? "维保" : "20".equals(resDTO.getOrgType()) ? "售后服务站" : "30".equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
                 map.put("作业人员", resDTO.getOperator());

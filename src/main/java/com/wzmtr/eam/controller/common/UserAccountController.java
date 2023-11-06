@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/iam/user")
-@Api(tags = "用户账号管理")
+@Api(tags = "基础管理-用户账号管理")
 @Validated
 @CrossOrigin
 
