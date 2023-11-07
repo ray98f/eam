@@ -80,7 +80,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             return new Page<>();
         }
         records.forEach(a -> {
-            if (a.getDocId() != null && !a.getDocId().isEmpty()) {
+            if (StringUtils.isNotEmpty(a.getDocId())) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
             }
             if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
@@ -92,7 +92,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         });
         return list;
     }
-
 
     @Override
     public List<FaultDetailResDTO> statisticList(FaultQueryDetailReqDTO reqDTO) {

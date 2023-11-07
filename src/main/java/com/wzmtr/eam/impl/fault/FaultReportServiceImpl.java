@@ -72,7 +72,22 @@ public class FaultReportServiceImpl implements FaultReportService {
         //     /*      */           }
     }
 
-    private void _insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {
+    @Override
+    public void addToMajor(FaultReportToMajorReqDTO reqDTO) {
+        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
+        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+        FaultInfoDO faultInfoDO = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
+        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+        _insertToFaultInfo(faultInfoDO, nextFaultNo);
+        FaultOrderDO faultOrderDO = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
+        if (reqDTO.getRepairDeptCode() != null) {
+            faultOrderDO.setWorkClass(reqDTO.getRepairDeptCode());
+        }
+        _insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
+    }
+
+    public void _insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {
         faultInfoDO.setFaultNo(nextFaultNo);
         faultInfoDO.setRecId(TokenUtil.getUuId());
         faultInfoDO.setDeleteFlag("0");
@@ -84,7 +99,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultReportMapper.addToFaultInfo(faultInfoDO);
     }
 
-    private void _insertToFaultOrder(FaultOrderDO faultOrderDO, String nextFaultNo, String nextFaultWorkNo) {
+    public void _insertToFaultOrder(FaultOrderDO faultOrderDO, String nextFaultNo, String nextFaultWorkNo) {
         faultOrderDO.setFaultWorkNo(nextFaultWorkNo);
         faultOrderDO.setFaultNo(nextFaultNo);
         faultOrderDO.setDeleteFlag("0");
@@ -105,7 +120,7 @@ public class FaultReportServiceImpl implements FaultReportService {
             return new Page<>();
         }
         list.getRecords().forEach(a -> {
-            if (a.getDocId() != null && !a.getDocId().isEmpty()) {
+            if (StringUtils.isNotEmpty(a.getDocId())) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
             }
             LineCode line = LineCode.getByCode(a.getLineCode());
@@ -130,7 +145,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         }
         list.getRecords().forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
-            if (a.getDocId() != null && !a.getDocId().isEmpty()) {
+            if (StringUtils.isNotEmpty(a.getDocId())) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
             }
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());
@@ -140,21 +155,6 @@ public class FaultReportServiceImpl implements FaultReportService {
         return list;
     }
 
-
-    @Override
-    public void addToMajor(FaultReportToMajorReqDTO reqDTO) {
-        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-        FaultInfoDO faultInfoDO = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
-        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
-        _insertToFaultInfo(faultInfoDO, nextFaultNo);
-        FaultOrderDO faultOrderDO = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
-        if (reqDTO.getRepairDeptCode() != null) {
-            faultOrderDO.setWorkClass(reqDTO.getRepairDeptCode());
-        }
-        _insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
-    }
 
     @Override
     public FaultDetailResDTO detail(FaultDetailReqDTO reqDTO) {
@@ -196,16 +196,16 @@ public class FaultReportServiceImpl implements FaultReportService {
         FaultInfoDO infoUpdate = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
         infoUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
         infoUpdate.setRecReviseTime(DateUtil.getCurrentTime());
-        faultReportMapper.updateFaultInfo(infoUpdate);
         FaultOrderDO orderUpdate = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
         orderUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
         orderUpdate.setRecReviseTime(DateUtil.getCurrentTime());
+        if (StringUtils.isEmpty(reqDTO.getDocId())){
+            //前端传的是个空值，特殊处理下
+            infoUpdate.setDocId(" ");
+            orderUpdate.setDocId(" ");
+        }
+        faultReportMapper.updateFaultInfo(infoUpdate);
         faultReportMapper.updateFaultOrder(orderUpdate);
-    }
-
-
-    public static void main(String[] args) {
-        System.out.println(DateUtil.getCurrentTime());
     }
 }
 

@@ -16,20 +16,20 @@ public class FaultOrderDO {
     @TableId(value = "REC_ID")
     private String recId = " ";
     // notnull
-    private String companyCode = " ";
+    private String companyCode;
     // notnull
-    private String companyName = " ";
+    private String companyName;
     // notnull
-    private String faultNo = " ";
+    private String faultNo;
     // notnull
-    private String faultWorkNo = " ";
+    private String faultWorkNo;
     private String dispatchUserId;
     private String dispatchTime;
     private String workClass;
     private String repairRespUserId;
     private String workArea;
     // notnull 如果为空则默认提报状态
-    private String orderStatus = "10";
+    private String orderStatus;
     private String planRecoveryTime;
     private String faultAffect;
     private String repairDispatchNo;
@@ -61,12 +61,12 @@ public class FaultOrderDO {
     private String workFlowInstId;
     private String workFlowInstStatus;
     // notnull
-    private String docId = " ";
+    private String docId;
     private String remark;
     // notnull
-    private String recCreator = " ";
+    private String recCreator;
     // notnull
-    private String recCreateTime = " ";
+    private String recCreateTime;
     private String recRevisor;
     private String recReviseTime;
     private String recDeletor;
@@ -74,7 +74,7 @@ public class FaultOrderDO {
     private String deleteFlag;
     private String archiveFlag;
     // notnull
-    private String recStatus = " ";
+    private String recStatus;
     private String ext1;
     private String ext2;
     private String ext3;

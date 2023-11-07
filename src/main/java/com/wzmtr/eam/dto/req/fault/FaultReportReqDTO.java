@@ -2,9 +2,7 @@ package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
-import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.__BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,13 +18,13 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
     @ApiModelProperty(value = "对象编码")
-    private String objectCode = " ";
+    private String objectCode;
     @ApiModelProperty(value = "公司code")
     private String companyCode;
     @ApiModelProperty(value = "公司Name")
     private String companyName;
     @ApiModelProperty(value = "对象名称")
-    private String objectName = " ";
+    private String objectName;
     @ApiModelProperty(value = "车底号/车厢号")
     private String trainTrunk;
     @ApiModelProperty(value = "位置1")
@@ -36,7 +34,7 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "线别姓名")
     private String lineName;
     @ApiModelProperty(value = "线别")
-    private String lineCode = " ";
+    private String lineCode;
     @ApiModelProperty(value = "位置2")
     private String position2Name;
     @ApiModelProperty(value = "位置2编码")
@@ -60,7 +58,7 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "故障分类（10-运营故障；20-自检故障；30-新线调试；40-正线故障；50-出库故障）")
     private String faultType;
     @ApiModelProperty(value = "来源编号")
-    private String sourceCode = " ";
+    private String sourceCode;
     @ApiModelProperty(value = "发现时间")
     private String discoveryTime;
     @ApiModelProperty(value = "发现人")
@@ -72,17 +70,17 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "知会OCC调度")
     private Boolean maintenance;
     @ApiModelProperty(value = "故障现象")
-    private String faultDisplayDetail = " ";
+    private String faultDisplayDetail;
     @ApiModelProperty(value = "提报时间")
     private String fillinTime;
     @ApiModelProperty(value = "提报人工号")
     private String fillinUserId;
     @ApiModelProperty(value = "提报人")
-    private String fillinUserName = " ";
+    private String fillinUserName;
     @ApiModelProperty(value = "提报部门Code")
-    private String fillinDeptCode = " ";
+    private String fillinDeptCode;
     @ApiModelProperty(value = "提报部门")
-    private String fillinDeptName = " ";
+    private String fillinDeptName;
     @ApiModelProperty(value = "故障状态")
     private String orderStatus;
     @ApiModelProperty(value = "牵头部门")
@@ -100,15 +98,19 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "检修车/运营车标识")
     private String traintag;
     @ApiModelProperty(value = "记录状态")
-    private String recStatus = " ";
+    private String recStatus;
     @ApiModelProperty(value = "部件编码")
     private String partCode;
     @ApiModelProperty(value = "部件名称")
     private String partName;
+
     public FaultOrderDO toFaultOrderInsertDO(FaultReportReqDTO req) {
         FaultOrderDO convert = __BeanUtil.convert(req, FaultOrderDO.class);
         if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
             convert.setWorkClass(req.getRepairDeptCode());
+        }
+        if (StringUtils.isEmpty(req.getRecStatus())) {
+            convert.setRecStatus(" ");
         }
         convert.setDeleteFlag("0");
         convert.setOrderStatus("10");
@@ -117,9 +119,40 @@ public class FaultReportReqDTO {
 
     public FaultInfoDO toFaultInfoInsertDO(FaultReportReqDTO req) {
         FaultInfoDO convert = __BeanUtil.convert(req, FaultInfoDO.class);
-        //String Toocc = (String)((Map)faultinfo.get(0)).get("ext4");
+        // String Toocc = (String)((Map)faultinfo.get(0)).get("ext4");
         convert.setExt4(req.getMaintenance().toString());
         convert.setTrainTag(req.getTraintag());
+        if (StringUtils.isEmpty(req.getFillinDeptCode())) {
+            convert.setFillinDeptCode(" ");
+        }
+        if (StringUtils.isEmpty(req.getFillinUserName())) {
+            convert.setFillinUserName(" ");
+        }
+        if (StringUtils.isEmpty(req.getFaultDisplayDetail())) {
+            convert.setFaultDisplayDetail(" ");
+        }
+        if (StringUtils.isEmpty(req.getSourceCode())) {
+            convert.setSourceCode(" ");
+        }
+        if (StringUtils.isEmpty(req.getLineCode())) {
+            convert.setLineCode(" ");
+        }
+        if (StringUtils.isEmpty(req.getObjectName())) {
+            convert.setObjectName(" ");
+        }
+        if (StringUtils.isEmpty(req.getObjectCode())) {
+            convert.setObjectCode(" ");
+        }
+        if (StringUtils.isEmpty(req.getDocId())) {
+            convert.setDocId(" ");
+        }
+        if (StringUtils.isEmpty(req.getFaultType())) {
+            convert.setFaultType(" ");
+        }
+        if (StringUtils.isEmpty(req.getPositionCode())){
+            convert.setPositionCode(" ");
+        }
+        convert.setDeleteFlag("0");
         return convert;
     }
 
