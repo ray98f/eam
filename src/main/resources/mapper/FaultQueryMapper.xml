@@ -137,6 +137,7 @@
             AND d.FILLIN_USER_ID=u.LOGIN_NAME
             AND d.FAULT_NO=df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
+            and d.DELETE_FLAG = '0'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>

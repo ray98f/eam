@@ -55,6 +55,15 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             if (StringUtils.isNotEmpty(a.getRestoreDeptCode())) {
                 a.setRestoreDeptName(organizationMapper.getNamesById(a.getRestoreDeptCode()));
             }
+            if (StringUtils.isNotEmpty(a.getIsRestored())) {
+                a.setRestoreDesc("整改中");
+                if ("10".equals(a.getIsRestored())) {
+                    a.setRestoreDesc("已完成整改");
+                }
+                if ("1".equals(a.getIsRestored())) {
+                    a.setRestoreDesc("未完成整改");
+                }
+            }
             if (StringUtils.isNotEmpty(a.getInspectDeptCode())) {
                 a.setInspectDeptName(organizationMapper.getNamesById(a.getInspectDeptCode()));
             }
