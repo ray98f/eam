@@ -27,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -124,7 +126,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
             }
             Sheet sheet = workbook.getSheetAt(0);
             List<GeneralSurveyReqDTO> temp = new ArrayList<>();
-            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd");
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             for (Row cells : sheet) {
                 if (cells.getRowNum() < 1) {
@@ -173,7 +175,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
                 Map<String, String> map = new HashMap<>();
                 map.put("记录编号", resDTO.getRecId());
                 map.put("列车号", resDTO.getTrainNo());
-                map.put("类别", resDTO.getRecType());
+                map.put("类别", "10".equals(resDTO.getRecType()) ? "普查" : "技改");
                 map.put("技术通知单编号", resDTO.getRecNotifyNo());
                 map.put("项目内容", resDTO.getRecDetail());
                 map.put("完成时间", resDTO.getCompleteDate());
