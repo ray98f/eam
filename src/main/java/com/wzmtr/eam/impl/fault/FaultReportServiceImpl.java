@@ -48,7 +48,7 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     // @Transactional(rollbackFor = Exception.class)
-    public String addToEquip(FaultReportReqDTO reqDTO) {
+    public String addToFault(FaultReportReqDTO reqDTO) {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         // 获取AOP代理对象
@@ -70,21 +70,6 @@ public class FaultReportServiceImpl implements FaultReportService {
         //     /* 1761 */             ISendMessage.sendMessageByGroup(eiInfo1);
         //     /* 1762 */             ISendMessage.sendMoblieMessageByGroup(eiInfo1);
         //     /*      */           }
-    }
-
-    @Override
-    public void addToMajor(FaultReportToMajorReqDTO reqDTO) {
-        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-        FaultInfoDO faultInfoDO = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
-        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
-        _insertToFaultInfo(faultInfoDO, nextFaultNo);
-        FaultOrderDO faultOrderDO = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
-        if (reqDTO.getRepairDeptCode() != null) {
-            faultOrderDO.setWorkClass(reqDTO.getRepairDeptCode());
-        }
-        _insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
     }
 
     public void _insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {

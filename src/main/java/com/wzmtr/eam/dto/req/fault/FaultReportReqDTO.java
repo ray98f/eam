@@ -2,6 +2,7 @@ package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
+import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.__BeanUtil;
 import io.swagger.annotations.ApiModel;
@@ -104,6 +105,9 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "部件名称")
     private String partName;
 
+    /**
+     * 数据库非空字段兜底赋值，初始化为空字符串
+     */
     public FaultOrderDO toFaultOrderInsertDO(FaultReportReqDTO req) {
         FaultOrderDO convert = __BeanUtil.convert(req, FaultOrderDO.class);
         if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
@@ -112,6 +116,19 @@ public class FaultReportReqDTO {
         if (StringUtils.isEmpty(req.getRecStatus())) {
             convert.setRecStatus(" ");
         }
+        if (StringUtils.isEmpty(req.getCompanyName())) {
+            convert.setCompanyName(" ");
+        }
+        if (StringUtils.isEmpty(req.getDocId())) {
+            convert.setDocId(" ");
+        }
+        if (StringUtils.isEmpty(req.getCompanyCode())) {
+            convert.setCompanyCode(" ");
+        }
+        convert.setRecCreator(" ");
+        convert.setFaultNo(" ");
+        convert.setFaultWorkNo(" ");
+        convert.setRecCreateTime(DateUtil.getCurrentTime());
         convert.setDeleteFlag("0");
         convert.setOrderStatus("10");
         return convert;

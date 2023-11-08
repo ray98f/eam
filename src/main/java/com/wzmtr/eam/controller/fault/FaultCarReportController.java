@@ -32,7 +32,7 @@ public class FaultCarReportController {
     @ApiOperation(value = "故障提报")
     @PostMapping("/add")
     public DataResponse<String> addToEquip(@RequestBody @Valid FaultReportReqDTO reqDTO) {
-        return DataResponse.of(reportService.addToEquip(reqDTO));
+        return DataResponse.of(reportService.addToFault(reqDTO));
     }
     @ApiOperation(value = "已提报故障")
     @PostMapping("/list")
