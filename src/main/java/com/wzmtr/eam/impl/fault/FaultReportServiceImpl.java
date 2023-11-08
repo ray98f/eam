@@ -134,8 +134,12 @@ public class FaultReportServiceImpl implements FaultReportService {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
             }
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());
-            a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
-            a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
+            if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
+                a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
+            }
+            if (StringUtils.isNotEmpty(a.getFillinDeptCode())) {
+                a.setFillinDeptCode(organizationMapper.getNamesById(a.getFillinDeptCode()));
+            }
         });
         return list;
     }
@@ -184,8 +188,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         FaultOrderDO orderUpdate = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
         orderUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
         orderUpdate.setRecReviseTime(DateUtil.getCurrentTime());
-        if (StringUtils.isEmpty(reqDTO.getDocId())){
-            //前端传的是个空值，特殊处理下
+        if (StringUtils.isEmpty(reqDTO.getDocId())) {
+            // 前端传的是个空值，特殊处理下
             infoUpdate.setDocId(" ");
             orderUpdate.setDocId(" ");
         }

@@ -169,6 +169,11 @@ public class FaultReportReqDTO {
         if (StringUtils.isEmpty(req.getPositionCode())){
             convert.setPositionCode(" ");
         }
+        convert.setFaultFlag(" ");
+        convert.setFaultLevel(" ");
+        convert.setRecStatus(" ");
+        convert.setFaultStatus(" ");
+        convert.setFaultDisplayCode(" ");
         convert.setDeleteFlag("0");
         return convert;
     }
