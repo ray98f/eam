@@ -9,7 +9,6 @@ import com.wzmtr.eam.bizobject.StationBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
-import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.common.PersonResDTO;
@@ -23,9 +22,11 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.PartMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.StationMapper;
-import com.wzmtr.eam.mapper.fault.*;
+import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
+import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
+import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
+import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
-import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.UserGroupMemberService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
@@ -151,8 +152,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
                 PartBO partBO = partMapper.queryPartByFaultWorkNo(resDTO.getFaultWorkNo());
-                String repairDept = organizationMapper.getExtraOrgByAreaId(resDTO.getRepairDeptCode());
-                String fillinDept = organizationMapper.getOrgById(resDTO.getFillinDeptCode());
+                String repairDept = " ";
+                String fillinDept = " ";
+                if (StringUtils.isNotEmpty(resDTO.getRepairDeptCode())) {
+                    repairDept = organizationMapper.getNamesById(resDTO.getRepairDeptCode());
+                }
+                if (StringUtils.isNotEmpty(resDTO.getFillinDeptCode())) {
+                    fillinDept = organizationMapper.getNamesById(resDTO.getFillinDeptCode());
+                }
                 Dictionaries position2 = dictService.queryOneByItemCodeAndCodesetCode("dm.station2", resDTO.getPosition2Code());
                 Map<String, String> map = new HashMap<>();
                 OrderStatus orderStatus = OrderStatus.getByCode(resDTO.getOrderStatus());
@@ -169,8 +176,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 map.put("故障工单编号", resDTO.getFaultWorkNo());
                 map.put("对象编码", resDTO.getObjectCode());
                 map.put("故障状态", orderStatus != null ? orderStatus.getDesc() : resDTO.getOrderStatus());
-                map.put("维修部门", StringUtils.isEmpty(repairDept) ? resDTO.getRepairDeptCode() : repairDept);
-                map.put("提报部门", StringUtils.isEmpty(fillinDept) ? resDTO.getFillinDeptCode() : fillinDept);
+                map.put("维修部门", repairDept);
+                map.put("提报部门", fillinDept);
                 map.put("提报人员", resDTO.getFillinUserName());
                 map.put("联系电话", resDTO.getDiscovererPhone());
                 map.put("提报时间", resDTO.getFillinTime());
