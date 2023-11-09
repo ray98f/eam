@@ -66,12 +66,14 @@
     </select>
 
     <insert id="addEquipmentCategory">
-        INSERT INTO T_EQUIPMENT_CATEGORY (REC_ID, NODE_NAME, NODE_CODE, REC_STATUS, NODE_LEVEL,
+        INSERT INTO T_EQUIPMENT_CATEGORY (REC_ID, NODE_NAME, NODE_CODE, REC_STATUS,
+        NODE_LEVEL,
         <if test="remark!=null and remark!=''">
             REMARK,
         </if>
         REC_CREATOR, REC_CREATE_TIME, PARENT_NODE_REC_ID)
-        VALUES (#{recId}, #{nodeName}, #{nodeCode}, #{recStatus}, #{nodeLevel},
+        VALUES (#{recId}, #{nodeName}, #{nodeCode}, #{recStatus},
+        (SELECT NODE_LEVEL+1 FROM T_EQUIPMENT_CATEGORY WHERE REC_ID=#{parentNodeRecId}),
         <if test="remark!=null and remark!=''">
             #{remark},
         </if>
@@ -94,9 +96,7 @@
         </if>
         <if test="parentNodeRecId!=null">
             PARENT_NODE_REC_ID=#{parentNodeRecId},
-        </if>
-        <if test="nodeLevel!=null">
-            NODE_LEVEL=#{nodeLevel},
+            NODE_LEVEL=(SELECT NODE_LEVEL+1 FROM T_EQUIPMENT_CATEGORY WHERE REC_ID=#{parentNodeRecId}),
         </if>
         REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
         WHERE REC_ID=#{recId}
