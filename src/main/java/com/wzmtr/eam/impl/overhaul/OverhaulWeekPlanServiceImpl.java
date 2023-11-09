@@ -253,17 +253,29 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void examineOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
-        String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
         if (overhaulWeekPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
+            if ("30".equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_DONE);
+            }
+            if ("10".equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
+            }
             overhaulWeekPlanReqDTO.setTrialStatus("30");
             triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
+            String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
+            String taskId = bpmnService.queryTaskIdByProcId(processId);
             bpmnService.agree(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion(), null, null);
             overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已完成");
         } else {
-            bpmnService.reject(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion());
-            overhaulWeekPlanReqDTO.setWorkFlowInstStatus("待提交");
-            overhaulWeekPlanReqDTO.setPlanStatus("10");
+            if (!"20".equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
+                throw new CommonException(ErrorCode.REJECT_ERROR);
+            } else {
+                String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
+                String taskId = bpmnService.queryTaskIdByProcId(processId);
+                bpmnService.reject(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion());
+                overhaulWeekPlanReqDTO.setWorkFlowInstStatus("待提交");
+                overhaulWeekPlanReqDTO.setPlanStatus("10");
+            }
         }
         overhaulWeekPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulWeekPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

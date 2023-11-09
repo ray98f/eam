@@ -189,16 +189,28 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void examineOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
-        String processId = overhaulTplReqDTO.getWorkFlowInstId();
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
         if (overhaulTplReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
+            if ("30".equals(overhaulTplReqDTO.getTrialStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_DONE);
+            }
+            if ("10".equals(overhaulTplReqDTO.getTrialStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
+            }
+            String processId = overhaulTplReqDTO.getWorkFlowInstId();
+            String taskId = bpmnService.queryTaskIdByProcId(processId);
             bpmnService.agree(taskId, overhaulTplReqDTO.getExamineReqDTO().getOpinion(), null, null);
             overhaulTplReqDTO.setWorkFlowInstStatus("已完成");
             overhaulTplReqDTO.setTrialStatus("30");
         } else {
-            bpmnService.reject(taskId, overhaulTplReqDTO.getExamineReqDTO().getOpinion());
-            overhaulTplReqDTO.setWorkFlowInstStatus("待提交");
-            overhaulTplReqDTO.setTrialStatus("10");
+            if (!"20".equals(overhaulTplReqDTO.getTrialStatus())) {
+                throw new CommonException(ErrorCode.REJECT_ERROR);
+            } else {
+                String processId = overhaulTplReqDTO.getWorkFlowInstId();
+                String taskId = bpmnService.queryTaskIdByProcId(processId);
+                bpmnService.reject(taskId, overhaulTplReqDTO.getExamineReqDTO().getOpinion());
+                overhaulTplReqDTO.setWorkFlowInstStatus("待提交");
+                overhaulTplReqDTO.setTrialStatus("10");
+            }
         }
         overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -234,18 +246,18 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public Page<OverhaulTplDetailResDTO> pageOverhaulDetailTpl(String templateId, PageReqDTO pageReqDTO){
+    public Page<OverhaulTplDetailResDTO> pageOverhaulDetailTpl(String templateId, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulTplMapper.pageOverhaulDetailTpl(pageReqDTO.of(), templateId);
     }
 
     @Override
-    public OverhaulTplDetailResDTO getOverhaulTplDetailDetail(String id){
+    public OverhaulTplDetailResDTO getOverhaulTplDetailDetail(String id) {
         return overhaulTplMapper.getOverhaulTplDetailDetail(id);
     }
 
     @Override
-    public void addOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO){
+    public void addOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
         Pattern pattern = Pattern.compile("[0-9]*");
         if ("10".equals(overhaulTplDetailReqDTO.getItemType())) {
             if (Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
@@ -275,7 +287,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public void modifyOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO){
+    public void modifyOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
         Pattern pattern = Pattern.compile("[0-9]*");
         if ("10".equals(overhaulTplDetailReqDTO.getItemType())) {
             if (Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
@@ -288,11 +300,13 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
-        if (!pattern.matcher(overhaulTplDetailReqDTO.getMaxValue()).matches() || !pattern.matcher(overhaulTplDetailReqDTO.getMinValue()).matches()) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限、上限必须填数字！");
-        }
-        if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
+        if (overhaulTplDetailReqDTO.getMaxValue() != null && overhaulTplDetailReqDTO.getMinValue() != null) {
+            if (!pattern.matcher(overhaulTplDetailReqDTO.getMaxValue()).matches() || !pattern.matcher(overhaulTplDetailReqDTO.getMinValue()).matches()) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限、上限必须填数字！");
+            }
+            if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
+            }
         }
         overhaulTplDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulTplDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -300,7 +314,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public void deleteOverhaulTplDetail(BaseIdsEntity baseIdsEntity){
+    public void deleteOverhaulTplDetail(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulTplDetailResDTO resDTO = overhaulTplMapper.getOverhaulTplDetailDetail(id);
@@ -317,7 +331,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public void exportOverhaulTplDetail(String templateId, HttpServletResponse response){
+    public void exportOverhaulTplDetail(String templateId, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "模块顺序", "检修模块", "检修项顺序", "车组号", "检修项", "技术要求", "检修项类型", "可选值", "默认值", "上限", "下限", "单位", "备注");
         List<OverhaulTplDetailResDTO> overhaulTplDetailResDTOList = overhaulTplMapper.listOverhaulTplDetail(templateId);
         List<Map<String, String>> list = new ArrayList<>();
@@ -345,18 +359,18 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public Page<OverhaulMaterialResDTO> pageOverhaulMaterial(String templateId, PageReqDTO pageReqDTO){
+    public Page<OverhaulMaterialResDTO> pageOverhaulMaterial(String templateId, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulTplMapper.pageOverhaulMaterial(pageReqDTO.of(), templateId);
     }
 
     @Override
-    public OverhaulMaterialResDTO getOverhaulMaterialDetail(String id){
+    public OverhaulMaterialResDTO getOverhaulMaterialDetail(String id) {
         return overhaulTplMapper.getOverhaulMaterialDetail(id);
     }
 
     @Override
-    public void addOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO){
+    public void addOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO) {
         List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulMaterialReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
@@ -372,21 +386,21 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public void modifyOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO){
+    public void modifyOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO) {
         overhaulMaterialReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulMaterialReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulTplMapper.modifyOverhaulMaterial(overhaulMaterialReqDTO);
     }
 
     @Override
-    public void deleteOverhaulMaterial(BaseIdsEntity baseIdsEntity){
+    public void deleteOverhaulMaterial(BaseIdsEntity baseIdsEntity) {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             overhaulTplMapper.deleteOverhaulMaterial(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         }
     }
 
     @Override
-    public void exportOverhaulMaterial(String templateId, HttpServletResponse response){
+    public void exportOverhaulMaterial(String templateId, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "模板编号", "模板名称", "物资编码", "物资名称", "物资名称", "规格型号", "计量单位", "数量", "备注");
         List<OverhaulMaterialResDTO> overhaulMaterialResDTOList = overhaulTplMapper.listOverhaulMaterial(templateId);
         List<Map<String, String>> list = new ArrayList<>();

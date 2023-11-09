@@ -149,14 +149,14 @@ public class SubmissionServiceImpl implements SubmissionService {
     @Override
     public void examineSubmission(ExamineReqDTO examineReqDTO) {
         SubmissionResDTO res = submissionMapper.getSubmissionDetail(examineReqDTO.getRecId());
-        String processId = res.getWorkFlowInstId();
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
         SubmissionReqDTO reqDTO = new SubmissionReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
         if (examineReqDTO.getExamineStatus() == 0) {
             if ("30".equals(res.getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             } else {
+                String processId = res.getWorkFlowInstId();
+                String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, null);
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setRecStatus("30");
@@ -165,6 +165,8 @@ public class SubmissionServiceImpl implements SubmissionService {
             if (!"20".equals(res.getRecStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
+                String processId = res.getWorkFlowInstId();
+                String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, examineReqDTO.getOpinion());
                 reqDTO.setWorkFlowInstStatus("待提交");
                 reqDTO.setRecStatus("10");

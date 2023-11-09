@@ -235,16 +235,28 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void examineOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
-        String processId = overhaulPlanReqDTO.getWorkFlowInstId();
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
         if (overhaulPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
+            if ("30".equals(overhaulPlanReqDTO.getTrialStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_DONE);
+            }
+            if ("10".equals(overhaulPlanReqDTO.getTrialStatus())) {
+                throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
+            }
+            String processId = overhaulPlanReqDTO.getWorkFlowInstId();
+            String taskId = bpmnService.queryTaskIdByProcId(processId);
             bpmnService.agree(taskId, overhaulPlanReqDTO.getExamineReqDTO().getOpinion(), null, null);
             overhaulPlanReqDTO.setWorkFlowInstStatus("已完成");
             overhaulPlanReqDTO.setTrialStatus("30");
         } else {
-            bpmnService.reject(taskId, overhaulPlanReqDTO.getExamineReqDTO().getOpinion());
-            overhaulPlanReqDTO.setWorkFlowInstStatus("待提交");
-            overhaulPlanReqDTO.setTrialStatus("10");
+            if (!"20".equals(overhaulPlanReqDTO.getTrialStatus())) {
+                throw new CommonException(ErrorCode.REJECT_ERROR);
+            } else {
+                String processId = overhaulPlanReqDTO.getWorkFlowInstId();
+                String taskId = bpmnService.queryTaskIdByProcId(processId);
+                bpmnService.reject(taskId, overhaulPlanReqDTO.getExamineReqDTO().getOpinion());
+                overhaulPlanReqDTO.setWorkFlowInstStatus("待提交");
+                overhaulPlanReqDTO.setTrialStatus("10");
+            }
         }
         overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

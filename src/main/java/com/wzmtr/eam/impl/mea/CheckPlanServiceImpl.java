@@ -193,8 +193,6 @@ public class CheckPlanServiceImpl implements CheckPlanService {
     @Override
     public void examineCheckPlan(ExamineReqDTO examineReqDTO) {
         CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(examineReqDTO.getRecId());
-        String processId = res.getWorkFlowInstId();
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
         CheckPlanReqDTO reqDTO = new CheckPlanReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
         if (examineReqDTO.getExamineStatus() == 0) {
@@ -204,6 +202,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             if ("10".equals(res.getPlanStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
             }
+            String processId = res.getWorkFlowInstId();
+            String taskId = bpmnService.queryTaskIdByProcId(processId);
             bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, null);
             reqDTO.setWorkFlowInstStatus("已完成");
             reqDTO.setPlanStatus("30");
@@ -211,6 +211,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             if (!"20".equals(res.getPlanStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
+                String processId = res.getWorkFlowInstId();
+                String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, examineReqDTO.getOpinion());
                 reqDTO.setWorkFlowInstStatus("待提交");
                 reqDTO.setPlanStatus("10");

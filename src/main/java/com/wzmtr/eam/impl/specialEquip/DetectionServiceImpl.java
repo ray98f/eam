@@ -185,14 +185,14 @@ public class DetectionServiceImpl implements DetectionService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        String processId = res.getWorkFlowInstId();
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
         DetectionReqDTO reqDTO = new DetectionReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
         if (examineReqDTO.getExamineStatus() == 0) {
             if ("30".equals(reqDTO.getRecStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
+            String processId = res.getWorkFlowInstId();
+            String taskId = bpmnService.queryTaskIdByProcId(processId);
             if ("A15".equals(reqDTO.getWorkFlowInstStatus()) || "A20".equals(reqDTO.getWorkFlowInstStatus()) || "A25".equals(reqDTO.getWorkFlowInstStatus())) {
                 bpmnService.agree(taskId, examineReqDTO.getOpinion(), String.join(",", examineReqDTO.getUserIds()), null);
                 reqDTO.setWorkFlowInstStatus(EXAMINE_DETECTION_STEP.get(reqDTO.getWorkFlowInstStatus()));
@@ -212,6 +212,8 @@ public class DetectionServiceImpl implements DetectionService {
             if (!"20".equals(reqDTO.getRecStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
+                String processId = res.getWorkFlowInstId();
+                String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, examineReqDTO.getOpinion());
                 reqDTO.setWorkFlowInstStatus("待提交");
                 reqDTO.setRecStatus("10");
