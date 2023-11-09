@@ -19,27 +19,27 @@ public class OneCarOneGearResDTO {
      * 统计数量
      ***/
     // 二级修(30天
-    private Integer er2 = 0;
+    private Long er2 =0L;
     //二级修(90天
-    private Integer er3 = 0;
+    private Long er3 =0L;
     //二级修(180天
-    private Integer er4 = 0;
+    private Long er4 =0L;
     //二级修(360天
-    private Integer er5 = 0;
+    private Long er5 =0L;
     //故障次数
-    private Integer fmCount = 0;
+    private Long fmCount =0L;
     //一级修
-    private Integer er1 = 0;
+    private Long er1 =0L;
     //总里程数
-    private Integer maxMile = 0;
+    private Long maxMile =0L;
     //牵引总能耗
-    private Integer maxkWh = 0;
+    private Long maxkWh =0L;
     //再生总电量
-    private Integer maxReEle = 0;
+    private Long maxReEle = 0L;
     //时间段里程数
-    private Integer minusMile = 0;
+    private Long minusMile =0L;
     //时间段牵引能耗
-    private Integer minuskWh = 0;
+    private Long minuskWh =0L;
     //时间段再生电量
-    private Integer minusReEle = 0;
+    private Long minusReEle =0L;
 }
