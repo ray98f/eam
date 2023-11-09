@@ -675,7 +675,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 map.put("记录编号", resDTO.getRecId());
                 map.put("对象编号", resDTO.getObjectCode());
                 map.put("对象名称/车号", resDTO.getObjectName());
-                map.put("检修项模板", resDTO.getTemplateId());
+                map.put("检修项模板", resDTO.getTemplateName());
                 map.put("作业内容", resDTO.getTaskContent());
                 map.put("作业需求", resDTO.getTaskRequest());
                 map.put("作业备注", resDTO.getTaskRemark());

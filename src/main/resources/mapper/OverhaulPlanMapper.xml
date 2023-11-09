@@ -596,50 +596,50 @@
 
     <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
         SELECT
-        REC_ID	as "recId",  <!-- 记录ID -->
-        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
-        PLAN_NAME	as "planName",  <!-- 计划名称 -->
-        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
-        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
-        TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
-        TASK_AREA	as "taskArea",  <!-- 作业区域 -->
-        TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
-        TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
-        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
-        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
-        TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
-        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
-        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
-        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
-        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
-        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
-        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
-        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
-        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        REMARK	as "remark",  <!-- 说明 -->
-        EXT1	as "ext1",  <!-- 扩展字段1 -->
-        EXT2	as "ext2",  <!-- 扩展字段2 -->
-        EXT3	as "ext3",  <!-- 扩展字段3 -->
-        EXT4	as "ext4",  <!-- 扩展字段4 -->
-        EXT5	as "ext5" <!-- 扩展字段5 -->
-        FROM T_OVERHAUL_OBJECT
-        WHERE 1=1 AND PLAN_CODE=#{planCode} and DELETE_FLAG='0'
+        t2.REC_ID	as "recId",  <!-- 记录ID -->
+        t2.PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        t2.PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        t2.OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        t2.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        t2.TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        t2.TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        t2.TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        t2.TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        t2.TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        (SELECT t1.TEMPLATE_NAME FROM T_OVERHAUL_TPL t1 WHERE t1.TEMPLATE_ID=t2.TEMPLATE_ID AND t1.DELETE_FLAG='0') as "templateName",  <!-- 模板名称 -->
+        t2.TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        t2.REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        t2.REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        t2.REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        t2.REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        t2.REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        t2.REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        t2.DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        t2.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        t2.REMARK	as "remark",  <!-- 说明 -->
+        t2.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        t2.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        t2.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        t2.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        t2.EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_OBJECT t2
+        WHERE t2.PLAN_CODE=#{planCode} and t2.DELETE_FLAG='0'
         <if test="recId!=null and recId!=''">
-            and REC_ID=#{recId}
+            and t2.REC_ID=#{recId}
         </if>
         <if test="planName!=null and planName!=''">
-            and PLAN_NAME=#{planName}
+            and t2.PLAN_NAME=#{planName}
         </if>
         <if test="objectCode!=null and objectCode!=''">
-            and OBJECT_CODE=#{objectCode}
+            and t2.OBJECT_CODE=#{objectCode}
         </if>
         <if test="objectName!=null and objectName!=''">
-            and OBJECT_NAME=#{objectName}
+            and t2.OBJECT_NAME=#{objectName}
         </if>
         <if test="templateId1!=null and templateId1!=''">
-            and TRIM(TEMPLATE_ID) IS NOT NULL
+            and TRIM(t2.TEMPLATE_ID) IS NOT NULL
         </if>
-        ORDER BY REC_ID desc
+        ORDER BY t2.REC_ID desc
     </select>
 
     <select id="queryObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
@@ -676,82 +676,82 @@
 
     <select id="pageOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
         SELECT
-        REC_ID	as "recId",  <!-- 记录ID -->
-        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
-        PLAN_NAME	as "planName",  <!-- 计划名称 -->
-        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
-        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
-        TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
-        TASK_AREA	as "taskArea",  <!-- 作业区域 -->
-        TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
-        TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
-        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
-        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
-        TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
-        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
-        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
-        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
-        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
-        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
-        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
-        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
-        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        REMARK	as "remark",  <!-- 说明 -->
-        EXT1	as "ext1",  <!-- 扩展字段1 -->
-        EXT2	as "ext2",  <!-- 扩展字段2 -->
-        EXT3	as "ext3",  <!-- 扩展字段3 -->
-        EXT4	as "ext4",  <!-- 扩展字段4 -->
-        EXT5	as "ext5" <!-- 扩展字段5 -->
-        FROM T_OVERHAUL_OBJECT
-        WHERE 1=1 AND PLAN_CODE=#{planCode} and DELETE_FLAG='0'
+        t2.REC_ID	as "recId",  <!-- 记录ID -->
+        t2.PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        t2.PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        t2.OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        t2.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        t2.TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        t2.TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        t2.TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        t2.TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        t2.TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        (SELECT t1.TEMPLATE_NAME FROM T_OVERHAUL_TPL t1 WHERE t1.TEMPLATE_ID=t2.TEMPLATE_ID AND t1.DELETE_FLAG='0') as "templateName",  <!-- 模板名称 -->
+        t2.TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        t2.REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        t2.REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        t2.REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        t2.REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        t2.REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        t2.REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        t2.DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        t2.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        t2.REMARK	as "remark",  <!-- 说明 -->
+        t2.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        t2.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        t2.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        t2.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        t2.EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_OBJECT t2
+        WHERE t2.PLAN_CODE=#{planCode} and t2.DELETE_FLAG='0'
         <if test="recId!=null and recId!=''">
-            and REC_ID=#{recId}
+            and t2.REC_ID=#{recId}
         </if>
         <if test="planName!=null and planName!=''">
-            and PLAN_NAME=#{planName}
+            and t2.PLAN_NAME=#{planName}
         </if>
         <if test="objectCode!=null and objectCode!=''">
-            and OBJECT_CODE=#{objectCode}
+            and t2.OBJECT_CODE=#{objectCode}
         </if>
         <if test="objectName!=null and objectName!=''">
-            and OBJECT_NAME=#{objectName}
+            and t2.OBJECT_NAME=#{objectName}
         </if>
         <if test="templateId1!=null and templateId1!=''">
-            and TRIM(TEMPLATE_ID) IS NOT NULL
+            and TRIM(t2.TEMPLATE_ID) IS NOT NULL
         </if>
-        ORDER BY REC_ID desc
+        ORDER BY t2.REC_ID desc
     </select>
 
     <select id="getOverhaulObjectDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
         SELECT
-        REC_ID	as "recId",  <!-- 记录ID -->
-        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
-        PLAN_NAME	as "planName",  <!-- 计划名称 -->
-        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
-        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
-        TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
-        TASK_AREA	as "taskArea",  <!-- 作业区域 -->
-        TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
-        TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
-        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
-        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
-        TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
-        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
-        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
-        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
-        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
-        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
-        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
-        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
-        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        REMARK	as "remark",  <!-- 说明 -->
-        EXT1	as "ext1",  <!-- 扩展字段1 -->
-        EXT2	as "ext2",  <!-- 扩展字段2 -->
-        EXT3	as "ext3",  <!-- 扩展字段3 -->
-        EXT4	as "ext4",  <!-- 扩展字段4 -->
-        EXT5	as "ext5" <!-- 扩展字段5 -->
-        FROM T_OVERHAUL_OBJECT
-        WHERE 1=1 AND REC_ID=#{id}
+        t2.REC_ID	as "recId",  <!-- 记录ID -->
+        t2.PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        t2.PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        t2.OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        t2.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        t2.TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        t2.TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        t2.TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        t2.TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        t2.TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        (SELECT t1.TEMPLATE_NAME FROM T_OVERHAUL_TPL t1 WHERE t1.TEMPLATE_ID=t2.TEMPLATE_ID AND t1.DELETE_FLAG='0') as "templateName",  <!-- 模板名称 -->
+        t2.TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        t2.REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        t2.REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        t2.REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        t2.REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        t2.REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        t2.REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        t2.DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        t2.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        t2.REMARK	as "remark",  <!-- 说明 -->
+        t2.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        t2.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        t2.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        t2.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        t2.EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_OBJECT t2
+        WHERE t2.REC_ID=#{id}
     </select>
 
     <insert id="addOverhaulObject">
