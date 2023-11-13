@@ -1,12 +1,14 @@
 package com.wzmtr.eam.impl.common;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.wzmtr.eam.dto.req.bpmn.BpmnExamineFlowRoleReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExaminePersonIdReq;
 import com.wzmtr.eam.dto.req.common.RoleReqDTO;
 import com.wzmtr.eam.dto.req.common.UserRoleReqDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
+import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
@@ -14,6 +16,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.service.common.RoleService;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,5 +127,26 @@ public class RoleServiceImpl implements RoleService {
         req.setFlowId(flowId);
         req.setNodeId(nodeId);
         return roleMapper.getBpmnExaminePerson(req);
+    }
+
+    @Override
+    public List<FlowRoleResDTO> nextFlowRole(String flowId, String nodeId) {
+        if (StringUtils.isEmpty(flowId) || StringUtils.isEmpty(nodeId)) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
+        req.setFlowId(flowId);
+        req.setNodeId(nodeId);
+        List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
+        if (CollectionUtil.isEmpty(flowRoleResDTO)) {
+            return null;
+        }
+        String step = flowRoleResDTO.get(0).getStep();
+        String nextStep = String.valueOf((Integer.parseInt(step) + 1));
+        BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
+        bpmnExamineFlowRoleReq.setStep(nextStep);
+        bpmnExamineFlowRoleReq.setFlowId(flowId);
+        // 如果没有下一步 直接反null
+        return roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
     }
 }

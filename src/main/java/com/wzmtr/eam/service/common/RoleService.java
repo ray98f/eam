@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.common.RoleReqDTO;
 import com.wzmtr.eam.dto.req.common.UserRoleReqDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
+import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
@@ -31,4 +32,6 @@ public interface RoleService {
     List<PersonListResDTO> listRoleUsers(String roleId, String roleCode);
 
     List<BpmnExaminePersonRes> listFlowUsers(String flowId, String nodeId);
+
+    List<FlowRoleResDTO> nextFlowRole(String flowId, String nodeId);
 }

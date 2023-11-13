@@ -183,4 +183,27 @@
             AND t2.OFFICE_ID=#{orgId}
         </if>
     </select>
+    <select id="nextFlowRole" resultType="com.wzmtr.eam.dto.res.common.FlowRoleResDTO">
+        select * from T_BPMN_EXAMINE
+        WHERE 1=1
+        <if test="nodeId!=null and nodeId!=''">
+            AND NODE_ID=#{nodeId}
+        </if>
+        <if test="flowId!=null and flowId!=''">
+            AND FLOW_ID=#{flowId}
+        </if>
+    </select>
+    <select id="queryBpmnExamine" resultType="com.wzmtr.eam.dto.res.common.FlowRoleResDTO">
+        select * from T_BPMN_EXAMINE
+        WHERE 1=1
+        <if test="nodeId!=null and nodeId!=''">
+            AND NODE_ID=#{nodeId}
+        </if>
+        <if test="flowId!=null and flowId!=''">
+            AND FLOW_ID=#{flowId}
+        </if>
+        <if test="step!=null and step!=''">
+            AND STEP=#{step}
+        </if>
+    </select>
 </mapper>
