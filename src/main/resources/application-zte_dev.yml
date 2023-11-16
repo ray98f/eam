@@ -1,9 +1,9 @@
 # 中兴测试环境
 spring:
   datasource:
-    url: jdbc:oracle:thin:@192.168.30.104:1521/ORCLCDB
-    username: C##EAM_ZTE
-    password: 123456
+    url: jdbc:oracle:thin:@192.168.30.41:1521/xe
+    username: eam
+    password: eam@123
     driver-class-name: oracle.jdbc.OracleDriver
     hikari:
       read-only: false
@@ -92,7 +92,7 @@ mdm:
     address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
 
 local:
-  base-url: http://192.168.30.58:8002/rights
+  base-url: http://192.168.30.153:8002/eam
 
 minio:
   url: http://zxgd.softether.net:9000
@@ -109,4 +109,4 @@ eip:
 bpmn:
   account: "eamadmin"
   password: "eamadmin"
-  url: "http://192.168.30.40:9998/fastflow-admin"
+  url: "http://36.139.239.105:9998/fastflow-admin"
