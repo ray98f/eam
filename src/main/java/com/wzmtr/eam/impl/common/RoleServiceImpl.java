@@ -131,8 +131,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<FlowRoleResDTO> nextFlowRole(String flowId, String nodeId) {
-        if (StringUtils.isEmpty(flowId) || StringUtils.isEmpty(nodeId)) {
+        if (StringUtils.isEmpty(flowId)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        if (StringUtils.isEmpty(nodeId)) {
+            BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
+            req.setFlowId(flowId);
+            req.setStep("2");
+            return roleMapper.queryBpmnExamine(req);
         }
         BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
         req.setFlowId(flowId);
