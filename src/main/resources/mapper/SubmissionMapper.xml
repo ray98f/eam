@@ -307,7 +307,11 @@
 
     <select id="pageSubmissionDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionDetailResDTO">
         <include refid="submission-detail-cols"/>
-        WHERE 1=1 and a.SEND_VERIFY_NO=#{sendVerifyNo} and a.DELETE_FLAG='0'
+        WHERE 1=1
+        <if test="sendVerifyNo != null and sendVerifyNo != ''">
+            and a.SEND_VERIFY_NO=#{sendVerifyNo}
+        </if>
+         and a.DELETE_FLAG='0'
         order by a.REC_CREATE_TIME asc
     </select>
 

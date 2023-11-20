@@ -582,7 +582,6 @@
         d.TRAIN_TAG as "traintag",
         u.USER_NAME as "fillinUserName",
         df.FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单号 -->
-        df.REC_ID	as "orderRecId",  <!-- 记录编号 -->
         df.ORDER_STATUS	as "orderStatus" , <!-- 工单状态 -->
         df.EXT1	as "levelfault"  <!-- 派工状态 -->
         FROM T_FAULT_INFO d,IPLAT60.XS_USER u,T_FAULT_ORDER df
@@ -697,7 +696,6 @@
         d.TRAIN_TAG as "traintag",
         u.USER_NAME as "fillinUserName",
         df.FAULT_WORK_NO as "faultWorkNo",  <!-- 故障工单号 -->
-        df.REC_ID as "orderRecId",  <!-- 记录编号 -->
         df.ORDER_STATUS as "orderStatus" , <!-- 工单状态 -->
         df.EXT1 as "levelfault"  <!-- 派工状态 -->
         FROM T_FAULT_INFO d,IPLAT60.XS_USER u,T_FAULT_ORDER df

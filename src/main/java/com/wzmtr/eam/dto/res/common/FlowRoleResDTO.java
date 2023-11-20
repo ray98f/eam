@@ -10,12 +10,19 @@ import lombok.Data;
 @Data
 @ApiModel
 public class FlowRoleResDTO {
+    //流程节点Id
     private String nodeId;
+    //流程节点名称
     private String nodeName;
+    //流程ID
     private String flowId;
+    //流程名称
     private String flowName;
+    //角色ID
     private String roleId;
+    //角色名称
     private String roleName;
     private String isOwnerOrg;
+    //第几步
     private String step;
 }
