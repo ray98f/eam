@@ -253,7 +253,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public Boolean compareRows(CompareRowsReqDTO req) {
         // 只选中一条直接返回T
-        if (req.getFaultNos().size() == 1) {
+        if (req.getFaultNos().size() == 1 || CollectionUtil.isEmpty(req.getFaultNos())) {
             return true;
         }
         Set<String> faultNos = req.getFaultNos();

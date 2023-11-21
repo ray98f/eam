@@ -106,6 +106,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
             String processId = null;
             try {
                 processId = bpmnService.commit(reqDTO.getFaultAnalysisNo(), BpmnFlowEnum.FAULT_ANALIZE.value(), null, null, reqDTO.getUserIds());
+                //todo 这里要存nodeId
                 dmfm03.setWorkFlowInstStatus("提交审核");
                 dmfm03.setWorkFlowInstId(processId);
                 dmfm03.setRecStatus("20");

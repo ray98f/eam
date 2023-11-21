@@ -3,6 +3,8 @@ package com.wzmtr.eam.dto.res.common;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/11/13 14:39
@@ -25,4 +27,7 @@ public class FlowRoleResDTO {
     private String isOwnerOrg;
     //第几步
     private String step;
+
+    private List<PersonListResDTO> person;
+
 }
