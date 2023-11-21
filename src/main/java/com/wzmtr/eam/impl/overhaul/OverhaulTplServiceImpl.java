@@ -161,7 +161,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (!"10".equals(overhaulTplReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "送审");
         }
-        List<OverhaulTplDetailResDTO> list = overhaulTplMapper.listOverhaulTplDetail(overhaulTplReqDTO.getRecId());
+        List<OverhaulTplDetailResDTO> list = overhaulTplMapper.listOverhaulTplDetail(overhaulTplReqDTO.getTemplateId());
         if (list == null || list.size() <= 0) {
             throw new CommonException(ErrorCode.NO_DETAIL, "勾选模板中没有检修项！");
         }
