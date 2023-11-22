@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
+import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -14,6 +17,8 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
+import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
+import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.overhaul.OverhaulWeekPlanService;
@@ -40,6 +45,12 @@ import java.util.*;
 @Service
 @Slf4j
 public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
+
+    @Autowired
+    private EquipmentMapper equipmentMapper;
+
+    @Autowired
+    private EquipmentRoomMapper equipmentRoomMapper;
 
     @Autowired
     private OverhaulWeekPlanMapper overhaulWeekPlanMapper;
@@ -694,9 +705,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulObjectReqDTO.setRecId(TokenUtil.getUuId());
         overhaulObjectReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         overhaulObjectReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        if ("".equals(overhaulObjectReqDTO.getObjectCode())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "在" + overhaulObjectReqDTO.getPlanName() + "计划中，有对象编号为空");
-        }
+        overhaulObjectReqDTO.setObjectName(detailJudge(overhaulObjectReqDTO));
         overhaulPlanMapper.addOverhaulObject(overhaulObjectReqDTO);
     }
 
@@ -749,6 +758,48 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             }
         }
         ExcelPortUtil.excelPort("检修对象（中车）信息", listName, list, null, response);
+    }
+
+    public String detailJudge(OverhaulObjectReqDTO overhaulObjectReqDTO) {
+        if ("".equals(overhaulObjectReqDTO.getObjectCode())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "在" + overhaulObjectReqDTO.getPlanName() + "计划中，有对象编号为空");
+        }
+        OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
+        overhaulPlanListReqDTO.setPlanCode(overhaulObjectReqDTO.getPlanCode());
+        List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
+        if ("07".equals(planList.get(0).getSubjectCode())) {
+            List<OverhaulObjectResDTO> objectList = overhaulPlanMapper.listOverhaulObject(overhaulObjectReqDTO.getPlanCode(), null, null, null, null, null);
+            if (objectList.size() > 0) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "车辆专业的计划只能有一条设备对象！");
+            }
+        }
+        String objectName = getEquipNameByCodeAndSubjcts(overhaulObjectReqDTO.getObjectCode(), planList.get(0).getSubjectCode().trim(), planList.get(0).getSystemCode().trim(), planList.get(0).getEquipTypeCode().trim());
+        if (StringUtils.isBlank(objectName)) {
+            List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(), null, null, null, null, null);
+            if (equipmentRoomList != null && equipmentRoomList.size() > 0) {
+                objectName = equipmentRoomList.get(0).getEquipRoomName();
+            }
+        }
+        if ("".equals(objectName.trim())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "在" + overhaulObjectReqDTO.getPlanName() + "计划中，对象编码" + overhaulObjectReqDTO.getObjectCode() + "错误");
+        }
+        return objectName;
+    }
+
+    public String getEquipNameByCodeAndSubjcts(String code, String majorCode, String systemCode, String equipTypeCode) {
+        if (StringUtils.isEmpty(code.trim())) {
+            return "";
+        }
+        EquipmentSiftReqDTO equipmentSiftReqDTO = new EquipmentSiftReqDTO();
+        equipmentSiftReqDTO.setEquipCode(code);
+        equipmentSiftReqDTO.setMajorCode(majorCode);
+        equipmentSiftReqDTO.setSystemCode(systemCode);
+        equipmentSiftReqDTO.setEquipTypeCode(equipTypeCode);
+        List<EquipmentResDTO> equipMsg = equipmentMapper.siftEquipment(equipmentSiftReqDTO);
+        if (equipMsg.size() <= 0) {
+            return " ";
+        }
+        return equipMsg.get(0).getEquipName();
     }
 
 }

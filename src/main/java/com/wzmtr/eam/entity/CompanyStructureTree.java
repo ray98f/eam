@@ -9,7 +9,7 @@ import java.util.List;
  * @author frp
  */
 @Data
-public class CompanyStructureTreeDTO {
+public class CompanyStructureTree {
 
     @ApiModelProperty(value = "组织编码")
     private String id;
@@ -30,5 +30,5 @@ public class CompanyStructureTreeDTO {
     private String areaId;
 
     @ApiModelProperty(value = "子集")
-    private List<CompanyStructureTreeDTO> children;
+    private List<CompanyStructureTree> children;
 }

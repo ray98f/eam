@@ -2,7 +2,9 @@ package com.wzmtr.eam.dto.result;
 
 import com.wzmtr.eam.enums.HttpCode;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class CodeException extends RuntimeException {
 
@@ -20,7 +22,7 @@ public class CodeException extends RuntimeException {
     }
 
     public CodeException(HttpCode httpStatus, String message) {
-        super(message.equals("") ? httpStatus.getMsg() : message);
+        super("".equals(message) ? httpStatus.getMsg() : message);
         this.code = httpStatus.getCode();
     }
 
