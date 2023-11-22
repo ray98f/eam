@@ -8,7 +8,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
-import com.wzmtr.eam.entity.CompanyStructureTreeDTO;
+import com.wzmtr.eam.entity.CompanyStructureTree;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.utils.tree.CompanyTreeUtils;
@@ -35,22 +35,22 @@ public class OrganizationServiceImpl implements OrganizationService {
     private EquipmentMapper equipmentMapper;
 
     @Override
-    public List<CompanyStructureTreeDTO> listCompanyStructure() {
-        CompanyStructureTreeDTO companyStructureTreeDTO = organizationMapper.getRoot();
-        if (Objects.isNull(companyStructureTreeDTO)) {
+    public List<CompanyStructureTree> listCompanyStructure() {
+        CompanyStructureTree companyStructureTree = organizationMapper.getRoot();
+        if (Objects.isNull(companyStructureTree)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        List<CompanyStructureTreeDTO> extraRootList = organizationMapper.listExtraRootList(companyStructureTreeDTO.getId());
-        List<CompanyStructureTreeDTO> extraBodyList = organizationMapper.listExtraBodyList(companyStructureTreeDTO.getId());
+        List<CompanyStructureTree> extraRootList = organizationMapper.listExtraRootList(companyStructureTree.getId());
+        List<CompanyStructureTree> extraBodyList = organizationMapper.listExtraBodyList(companyStructureTree.getId());
         CompanyTreeUtils extraTree = new CompanyTreeUtils(extraRootList, extraBodyList);
-        companyStructureTreeDTO.setChildren(extraTree.getTree());
-        List<CompanyStructureTreeDTO> list = new ArrayList<>();
-        list.add(companyStructureTreeDTO);
+        companyStructureTree.setChildren(extraTree.getTree());
+        List<CompanyStructureTree> list = new ArrayList<>();
+        list.add(companyStructureTree);
         return list;
     }
 
     @Override
-    public List<CompanyStructureTreeDTO> listCompanyList() {
+    public List<CompanyStructureTree> listCompanyList() {
         return organizationMapper.listCompanyList();
     }
 

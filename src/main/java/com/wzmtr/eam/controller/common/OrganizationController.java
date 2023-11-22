@@ -28,13 +28,13 @@ public class OrganizationController {
 
     @GetMapping("/listTree")
     @ApiOperation(value = "公司层级结构获取")
-    public DataResponse<List<CompanyStructureTreeDTO>> listCompanyStructure() {
+    public DataResponse<List<CompanyStructureTree>> listCompanyStructure() {
         return DataResponse.of(organizationService.listCompanyStructure());
     }
 
     @GetMapping("/companyList")
     @ApiOperation(value = "分公司列表")
-    public DataResponse<List<CompanyStructureTreeDTO>> listCompanyList() {
+    public DataResponse<List<CompanyStructureTree>> listCompanyList() {
         return DataResponse.of(organizationService.listCompanyList());
     }
 
