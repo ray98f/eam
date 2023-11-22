@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.bpmn;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -123,9 +124,11 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String nextTaskKey(String procId) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
+        log.info("流程引擎调用入参：[{}]", FastFlowPathUrl.NEXT_TASK_KEY + procId);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.NEXT_TASK_KEY + procId, authorization));
+        log.info("流程引擎调用结果：[{}]", JSONObject.toJSONString(jsonObject));
         JSONArray running = jsonObject.getJSONArray("runing");
-        return running.size() == 0 ? null : running.getString(0);
+        return CollectionUtil.isEmpty(running) ? null : running.getString(0);
     }
 
     @Override
@@ -307,27 +310,27 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public void agree(String taskId, String opinion, String fromId, String formData) {
         BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
-        if(StringUtils.isEmpty(formData)){
+        if (StringUtils.isEmpty(formData)) {
             bpmnExamineDTO.setFormData(formData);
         }
-        //根据procId获取最新的taskId
+        // 根据procId获取最新的taskId
         bpmnExamineDTO.setTaskId(taskId);
-        //获取流程引擎下一个流程节点key
+        // 获取流程引擎下一个流程节点key
         String nodeId = nextTaskKey(taskId);
-        //获取审核人是谁填入
+        // 获取审核人是谁填入
         BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
         String flowId = getDefKeyByTaskId(taskId);
         req.setFlowId(flowId);
         req.setNodeId(nodeId);
         if (StringUtils.isEmpty(fromId)) {
-            //如果没有审核人则走默认的下一步流程与审核人
+            // 如果没有审核人则走默认的下一步流程与审核人
             List<BpmnExaminePersonRes> bpmnExaminePersonId = roleMapper.getBpmnExaminePerson(req);
             if (null != bpmnExaminePersonId && bpmnExaminePersonId.size() > 0) {
                 StringBuilder chooseNodeUser = new StringBuilder();
                 String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
                 for (BpmnExaminePersonRes res : bpmnExaminePersonId) {
                     if (null != res.getIsOwnerOrg() && "1".equals(res.getIsOwnerOrg())) {
-                        //找出为自己部门的
+                        // 找出为自己部门的
                         if (currentUserDepartCode.equals(res.getOfficeId())) {
                             String s = "eam" + res.getUserId();
                             chooseNodeUser.append(s).append(",");
@@ -336,12 +339,12 @@ public class BpmnServiceImpl implements BpmnService {
                         String s = "eam" + res.getUserId();
                         chooseNodeUser.append(s).append(",");
                     }
-                    //获取审核人是谁填入,这个是逗号隔开
+                    // 获取审核人是谁填入,这个是逗号隔开
                     bpmnExamineDTO.setChooseNodeUser(chooseNodeUser.substring(0, chooseNodeUser.length() - 1));
                     bpmnExamineDTO.setChooseNode(nodeId);
                 }
             } else {
-                //没有审核人证明为最后一步则状态改为通过
+                // 没有审核人证明为最后一步则状态改为通过
 //            updateFromStatus(flowId,PowerSupplyStatusEnum.approved.value(),fromId);
             }
         } else {
@@ -354,9 +357,9 @@ public class BpmnServiceImpl implements BpmnService {
             bpmnExamineDTO.setChooseNode(nodeId);
         }
 
-        //这个是显示在流程引擎的标题
+        // 这个是显示在流程引擎的标题
         bpmnExamineDTO.setTaskTitle(BpmnFlowEnum.getLabelByValue(flowId));
-        //审核意见
+        // 审核意见
         bpmnExamineDTO.setOpinion(opinion);
         ResultEntity result = agreeInstance(bpmnExamineDTO);
         if (result.getCode() != 0) {
@@ -409,12 +412,12 @@ public class BpmnServiceImpl implements BpmnService {
             String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
             for (BpmnExaminePersonRes res : resList) {
                 if (null != res.getIsOwnerOrg() && "1".equals(res.getIsOwnerOrg())) {
-                    //找出为自己部门的
+                    // 找出为自己部门的
                     if (currentUserDepartCode.equals(res.getOfficeId())) {
                         bpmnExaminePersonId.add(res.getUserId());
                     }
                 } else {
-                    //全部
+                    // 全部
                     bpmnExaminePersonId.add(res.getUserId());
                 }
             }
