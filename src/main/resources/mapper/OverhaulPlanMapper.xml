@@ -591,7 +591,7 @@
         select PLAN_CODE	as "planCode"  <!-- 计划编号 -->
         from T_OVERHAUL_PLAN t
         where not exists(select 1 from T_OVERHAUL_OBJECT a where a.PLAN_CODE=t.PLAN_CODE)
-        AND t.WEEK_PLAN_CODE = #{weekPlanCode}
+        AND t.WEEK_PLAN_CODE = #{weekPlanCode} and t.DELETE_FLAG ='0'
     </select>
 
     <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">

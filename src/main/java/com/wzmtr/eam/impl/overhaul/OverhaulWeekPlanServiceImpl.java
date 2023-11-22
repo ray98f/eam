@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.overhaul;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
@@ -234,7 +235,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "送审");
         }
         List<OverhaulPlanResDTO> list11 = overhaulPlanMapper.queryWeekObj(overhaulWeekPlanReqDTO.getWeekPlanCode());
-        if (list11 != null && list11.size() > 0) {
+        if (CollectionUtil.isNotEmpty(list11)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选周计划中" + list11.get(0).getPlanCode() + "检修oo ,计划没有检修对象！");
         }
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
