@@ -65,9 +65,9 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String startInstance(StartInstanceVO startInstanceVO) {
         String data = JSONObject.toJSONString(startInstanceVO);
+        log.info("startInstance调用入参：[{}]",data);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_START, data, httpServletRequest.getHeader("Authorization-Flow")));
         if ("0".equals(jsonObject.getString("code"))) {
-            log.info("");
             return jsonObject.getString("procId");
         } else {
             return null;

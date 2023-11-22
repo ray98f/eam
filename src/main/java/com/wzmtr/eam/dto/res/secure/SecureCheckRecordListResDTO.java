@@ -1,8 +1,11 @@
 package com.wzmtr.eam.dto.res.secure;
 
+import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -37,6 +40,8 @@ public class SecureCheckRecordListResDTO {
     private String positionRemark;
     @ApiModelProperty(value = "隐患照片")
     private String secRiskPic;
+    @ApiModelProperty(value = "隐患照片副件")
+    private List<File> secRiskPicFile;
     @ApiModelProperty(value = "整改措施")
     private String restoreDetail;
     @ApiModelProperty(value = "计划完成日期")
@@ -47,6 +52,8 @@ public class SecureCheckRecordListResDTO {
     private String restoreDeptName;
     @ApiModelProperty(value = "整改照片")
     private String restorePic;
+    @ApiModelProperty(value = "整改照片")
+    private List<File> restorePicFile;
     @ApiModelProperty(value = "整改情况")
     private String restoreDesc;
     @ApiModelProperty(value = "复查人")

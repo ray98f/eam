@@ -1,6 +1,8 @@
 package com.wzmtr.eam.utils;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
 
 import java.util.*;
@@ -90,6 +92,19 @@ public class __StreamUtil {
         return stream
                 .max(comparator)
                 .orElse(obj);
+    }
+
+
+    public static <F, T> List<T> map(Collection<F> from, Function<? super F, T> mapper) {
+        return CollectionUtil.isEmpty(from) ? Lists.newArrayList() : from.stream().map(mapper).collect(Collectors.toList());
+    }
+
+    public static <F, T> List<T> map(Collection<F> from, Predicate<F> predicate, Function<? super F, T> mapper) {
+        return CollectionUtil.isEmpty(from) ? Lists.newArrayList() : from.stream().filter(predicate).map(mapper).collect(Collectors.toList());
+    }
+
+    public static <F, T> List<T> map(Stream<F> from, Function<? super F, T> mapper) {
+        return from.map(mapper).collect(Collectors.toList());
     }
 
 

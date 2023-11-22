@@ -10,6 +10,7 @@ import com.wzmtr.eam.dto.req.secure.SecureDangerSourceListReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.secure.SecureDangerSourceMapper;
 import com.wzmtr.eam.service.secure.SecureDangerSourceService;
 import com.wzmtr.eam.utils.CodeUtils;
@@ -38,9 +39,9 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Autowired
     SecureDangerSourceMapper secureDangerSourceMapper;
     @Autowired
-    private MinioClient minioClient;
-    @Autowired
     private OrganizationMapper organizationMapper;
+    @Autowired
+    private FileMapper fileMapper;
 
     @Override
     public Page<SecureDangerSourceResDTO> dangerSourceList(SecureDangerSourceListReqDTO reqDTO) {
@@ -48,16 +49,21 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
         Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDateStart(), reqDTO.getDiscDateEnd());
         List<SecureDangerSourceResDTO> records = query.getRecords();
         if (CollectionUtil.isNotEmpty(records)) {
-            records.forEach(a -> {
-                if (StrUtil.isNotEmpty(a.getRecDept())) {
-                    a.setRecDeptName(organizationMapper.getExtraOrgByAreaId(a.getRecDept()));
-                }
-                if (StrUtil.isNotEmpty(a.getRespDeptCode())) {
-                    a.setRespDeptName(organizationMapper.getExtraOrgByAreaId(a.getRespDeptCode()));
-                }
-            });
+            records.forEach(this::assemble);
         }
         return query;
+    }
+
+    private void assemble(SecureDangerSourceResDTO a) {
+        if (StrUtil.isNotEmpty(a.getRecDept())) {
+            a.setRecDeptName(organizationMapper.getExtraOrgByAreaId(a.getRecDept()));
+        }
+        if (StrUtil.isNotEmpty(a.getRespDeptCode())) {
+            a.setRespDeptName(organizationMapper.getExtraOrgByAreaId(a.getRespDeptCode()));
+        }
+        if (StrUtil.isNotEmpty(a.getDangerRiskPic())) {
+            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDangerRiskPic().split(","))));
+        }
     }
 
     @Override
