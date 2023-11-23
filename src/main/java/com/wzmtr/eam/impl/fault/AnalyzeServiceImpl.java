@@ -101,6 +101,9 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         }
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
         List<FaultAnalyzeDO> list = faultAnalyzeMapper.getFaultAnalysisList(reqDTO.getFaultAnalysisNo(), reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        if (CollectionUtil.isEmpty(list)) {
+            return;
+        }
         FaultAnalyzeDO dmfm03 = list.get(0);
         if (StringUtils.isEmpty(dmfm03.getWorkFlowInstId())) {
             String processId = null;

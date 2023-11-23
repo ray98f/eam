@@ -4,11 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.bpmn.BpmnExaminePersonIdReq;
-import com.wzmtr.eam.dto.req.bpmn.ExamineListReq;
-import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
-import com.wzmtr.eam.dto.req.bpmn.LoginDTO;
-import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
+import com.wzmtr.eam.dto.req.bpmn.*;
 import com.wzmtr.eam.dto.res.bpmn.*;
 import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.dto.result.ResultEntity;
@@ -71,6 +67,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String startInstance(StartInstanceVO startInstanceVO) {
         String data = JSONObject.toJSONString(startInstanceVO);
+        log.info("startInstance调用入参：[{}]",data);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_START, data, httpServletRequest.getHeader("Authorization-Flow")));
         if ("0".equals(jsonObject.getString("code"))) {
             return jsonObject.getString("procId");
@@ -83,6 +80,7 @@ public class BpmnServiceImpl implements BpmnService {
     public ResultEntity agreeInstance(BpmnExamineDTO bpmnExamineDTO) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(bpmnExamineDTO);
+        log.info("agreeInstance调用入参：[{}]",data);
         return JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_AGREE + data, null, authorization), ResultEntity.class);
     }
 
@@ -136,7 +134,9 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String queryTaskIdByProcId(String procId) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        ResultEntity result = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_TASKID_BY_PROCID + "?procId=" + procId, authorization), ResultEntity.class);
+        String param = FastFlowPathUrl.QUERY_TASKID_BY_PROCID + "?procId=" + procId;
+        log.info("流程引擎queryTaskIdByProcId调用入参：[{}]", param);
+        ResultEntity result = JSONObject.parseObject(HttpUtil.doGet(param, authorization), ResultEntity.class);
         return String.valueOf(result.getData());
     }
 
@@ -380,6 +380,7 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     public String getDefKeyByTaskId(String taskId) {
+        log.info("流程引擎调用入参getDefKeyByTaskId:[{}]",taskId);
         String processDefinitionId = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.GET_DEF_KEY + taskId, null)).getString("processDefinitionId");
         return processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
     }

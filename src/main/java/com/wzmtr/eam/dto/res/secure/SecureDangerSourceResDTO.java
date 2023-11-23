@@ -1,8 +1,11 @@
 package com.wzmtr.eam.dto.res.secure;
 
+import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -77,5 +80,7 @@ public class SecureDangerSourceResDTO {
     private String ext4;
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
+    @ApiModelProperty(value = "附件文件")
+    private List<File> docFile;
 
 }

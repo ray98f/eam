@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.secure;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dataobject.SecureHazardDO;
@@ -14,6 +15,7 @@ import com.wzmtr.eam.enums.RiskRank;
 import com.wzmtr.eam.enums.SecureRecStatus;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.secure.SecureHazardMapper;
 import com.wzmtr.eam.service.secure.SecureHazardService;
 import com.wzmtr.eam.utils.*;
@@ -41,7 +43,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
     @Autowired
     private OrganizationMapper organizationMapper;
     @Autowired
-    private DictionariesMapper dictionariesMapper;
+    private FileMapper fileMapper;
 
     @Override
     public Page<SecureHazardResDTO> list(SecureHazardReqDTO reqDTO) {
@@ -51,27 +53,32 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-        records.forEach(a -> {
-            if (StringUtils.isNotEmpty(a.getRestoreDeptCode())) {
-                a.setRestoreDeptName(organizationMapper.getNamesById(a.getRestoreDeptCode()));
-            }
-            if (StringUtils.isNotEmpty(a.getIsRestored())) {
-                a.setRestoreDesc("整改中");
-                if ("10".equals(a.getIsRestored())) {
-                    a.setRestoreDesc("已完成整改");
-                }
-                if ("1".equals(a.getIsRestored())) {
-                    a.setRestoreDesc("未完成整改");
-                }
-            }
-            if (StringUtils.isNotEmpty(a.getInspectDeptCode())) {
-                a.setInspectDeptName(organizationMapper.getNamesById(a.getInspectDeptCode()));
-            }
-            if (StringUtils.isNotEmpty(a.getNotifyDeptCode())) {
-                a.setNotifyDeptName(organizationMapper.getNamesById(a.getNotifyDeptCode()));
-            }
-        });
+        records.forEach(this::assembly);
         return query;
+    }
+
+    private void assembly(SecureHazardResDTO a) {
+        if (StringUtils.isNotEmpty(a.getRestoreDeptCode())) {
+            a.setRestoreDeptName(organizationMapper.getNamesById(a.getRestoreDeptCode()));
+        }
+        if (StringUtils.isNotEmpty(a.getIsRestored())) {
+            a.setRestoreDesc("整改中");
+            if ("10".equals(a.getIsRestored())) {
+                a.setRestoreDesc("已完成整改");
+            }
+            if ("1".equals(a.getIsRestored())) {
+                a.setRestoreDesc("未完成整改");
+            }
+        }
+        if (StringUtils.isNotEmpty(a.getInspectDeptCode())) {
+            a.setInspectDeptName(organizationMapper.getNamesById(a.getInspectDeptCode()));
+        }
+        if (StringUtils.isNotEmpty(a.getRiskPic())){
+            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getRiskPic().split(","))));
+        }
+        if (StringUtils.isNotEmpty(a.getNotifyDeptCode())) {
+            a.setNotifyDeptName(organizationMapper.getNamesById(a.getNotifyDeptCode()));
+        }
     }
 
     @Override
@@ -160,7 +167,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         SecureHazardDO convert = __BeanUtil.convert(reqDTO, SecureHazardDO.class);
-        hazardMapper.updateById(convert);
+        hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID",reqDTO.getRiskId()));
     }
 
     @Override

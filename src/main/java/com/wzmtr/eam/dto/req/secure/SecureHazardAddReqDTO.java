@@ -99,4 +99,5 @@ public class SecureHazardAddReqDTO {
     private String ext4 ;
     @ApiModelProperty(value = "扩展字段5")
     private String ext5 ;
+    private String docId;
 }

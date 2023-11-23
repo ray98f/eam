@@ -12,6 +12,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.SecureRecStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.secure.SecureCheckMapper;
 import com.wzmtr.eam.service.secure.SecureCheckService;
 import com.wzmtr.eam.utils.*;
@@ -37,6 +38,8 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     private SecureCheckMapper secureMapper;
 
     @Autowired
+    private FileMapper fileMapper;
+    @Autowired
     private OrganizationMapper organizationMapper;
 
 
@@ -46,30 +49,39 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO.getSecRiskId(), reqDTO.getInspectDateStart(), reqDTO.getInspectDateEnd(), reqDTO.getIsRestoredCode(), reqDTO.getRecStatus());
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
-            records.forEach(a -> {
-                String inspectDeptName = organizationMapper.getOrgById(a.getInspectDeptCode());
-                String restoreDeptName = organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode());
-                if (StringUtils.isEmpty(inspectDeptName)) {
-                    inspectDeptName = organizationMapper.getExtraOrgByAreaId(a.getInspectDeptCode());
-                }
-                if (StringUtils.isEmpty(restoreDeptName)) {
-                    restoreDeptName = organizationMapper.getOrgById(a.getRestoreDeptCode());
-                }
-                //检查部门
-                a.setInspectDeptName(inspectDeptName == null ? a.getInspectDeptCode() : inspectDeptName);
-                //整改部门
-                a.setRestoreDeptName(restoreDeptName == null ? a.getRestoreDeptCode() : restoreDeptName);
-                a.setIsRestoredName("整改中");
-                if ("10".equals(a.getIsRestored())) {
-                    a.setIsRestoredName("已完成整改");
-                }
-                if ("1".equals(a.getIsRestored())) {
-                    a.setIsRestoredName("未完成整改");
-                }
-            });
+            // __StreamUtil.map(records,SecureCheckRecordListResDTO::create);
+            records.forEach(this::assembly);
             return list;
         }
         return new Page<>();
+    }
+
+    private void assembly(SecureCheckRecordListResDTO a) {
+        String inspectDeptName = organizationMapper.getOrgById(a.getInspectDeptCode());
+        String restoreDeptName = organizationMapper.getExtraOrgByAreaId(a.getRestoreDeptCode());
+        if (StringUtils.isEmpty(inspectDeptName)) {
+            inspectDeptName = organizationMapper.getExtraOrgByAreaId(a.getInspectDeptCode());
+        }
+        if (StringUtils.isEmpty(restoreDeptName)) {
+            restoreDeptName = organizationMapper.getOrgById(a.getRestoreDeptCode());
+        }
+        if(StringUtils.isNotEmpty(a.getSecRiskPic())){
+            a.setSecRiskPicFile(fileMapper.selectFileInfo(Arrays.asList(a.getSecRiskPic().split(","))));
+        }
+        if(StringUtils.isNotEmpty(a.getRestorePic())){
+            a.setRestorePicFile(fileMapper.selectFileInfo(Arrays.asList(a.getRestorePic().split(","))));
+        }
+        //检查部门
+        a.setInspectDeptName(inspectDeptName == null ? a.getInspectDeptCode() : inspectDeptName);
+        //整改部门
+        a.setRestoreDeptName(restoreDeptName == null ? a.getRestoreDeptCode() : restoreDeptName);
+        a.setIsRestoredName("整改中");
+        if ("10".equals(a.getIsRestored())) {
+            a.setIsRestoredName("已完成整改");
+        }
+        if ("1".equals(a.getIsRestored())) {
+            a.setIsRestoredName("未完成整改");
+        }
     }
 
     @Override

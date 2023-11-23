@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dataobject;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -24,7 +25,8 @@ public class SecureHazardDO {
     private String position2Code;
     private String position3;
     private String positionRemark;
-    private String riskPic;
+    @TableField(value = "RISK_PIC")
+    private String docId;
     private String notifyDeptCode;
     private String restoreDetail;
     private String planDate;
