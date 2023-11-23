@@ -157,7 +157,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             } else {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
-                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, null);
+                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, "{\"id\":\"" + res.getSendVerifyNo() + "\"}");
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setRecStatus("30");
             }

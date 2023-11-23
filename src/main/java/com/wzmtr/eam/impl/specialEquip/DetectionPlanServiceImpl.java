@@ -190,11 +190,11 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if ("A15".equals(reqDTO.getWorkFlowInstStatus()) || "A20".equals(reqDTO.getWorkFlowInstStatus()) || "A25".equals(reqDTO.getWorkFlowInstStatus())) {
-                bpmnService.agree(taskId, examineReqDTO.getOpinion(), String.join(",", examineReqDTO.getUserIds()), null);
+                bpmnService.agree(taskId, examineReqDTO.getOpinion(), String.join(",", examineReqDTO.getUserIds()), "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
                 reqDTO.setWorkFlowInstStatus(EXAMINE_DETECTION_PLAN_STEP.get(reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setPlanStatus("20");
             } else {
-                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, null);
+                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setPlanStatus("30");
             }

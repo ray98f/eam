@@ -23,6 +23,7 @@ import com.wzmtr.eam.utils.bpmn.FastFlowPathUrl;
 import com.wzmtr.eam.utils.bpmn.HttpUtil;
 import com.wzmtr.eam.utils.bpmn.JointUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,8 +129,8 @@ public class BpmnServiceImpl implements BpmnService {
         log.info("流程引擎调用入参：[{}]", FastFlowPathUrl.NEXT_TASK_KEY + procId);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.NEXT_TASK_KEY + procId, authorization));
         log.info("流程引擎调用结果：[{}]", JSONObject.toJSONString(jsonObject));
-        JSONArray running = jsonObject.getJSONArray("runing");
-        return CollectionUtil.isEmpty(running) ? null : running.getString(0);
+        JSONArray data = jsonObject.getJSONArray("data");
+        return CollectionUtil.isEmpty(data) ? null : data.getJSONObject(0).getString("taskId");
     }
 
     @Override
@@ -310,25 +312,28 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public void agree(String taskId, String opinion, String fromId, String formData) {
         BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
-        if (StringUtils.isEmpty(formData)) {
+        if (StringUtils.isNotEmpty(formData)) {
             bpmnExamineDTO.setFormData(formData);
         }
         // 根据procId获取最新的taskId
         bpmnExamineDTO.setTaskId(taskId);
         // 获取流程引擎下一个流程节点key
         String nodeId = nextTaskKey(taskId);
-        // 获取审核人是谁填入
-        BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
         String flowId = getDefKeyByTaskId(taskId);
-        req.setFlowId(flowId);
-        req.setNodeId(nodeId);
+        // 获取审核人是谁填入
         if (StringUtils.isEmpty(fromId)) {
             // 如果没有审核人则走默认的下一步流程与审核人
+            BpmnExaminePersonIdReq req = new BpmnExaminePersonIdReq();
+            req.setFlowId(flowId);
+            req.setNodeId(nodeId);
             List<BpmnExaminePersonRes> bpmnExaminePersonId = roleMapper.getBpmnExaminePerson(req);
             if (null != bpmnExaminePersonId && bpmnExaminePersonId.size() > 0) {
                 StringBuilder chooseNodeUser = new StringBuilder();
                 String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
                 for (BpmnExaminePersonRes res : bpmnExaminePersonId) {
+                    if (res.getUserId() == null || "".equals(res.getUserId())) {
+                        continue;
+                    }
                     if (null != res.getIsOwnerOrg() && "1".equals(res.getIsOwnerOrg())) {
                         // 找出为自己部门的
                         if (currentUserDepartCode.equals(res.getOfficeId())) {
@@ -343,9 +348,6 @@ public class BpmnServiceImpl implements BpmnService {
                     bpmnExamineDTO.setChooseNodeUser(chooseNodeUser.substring(0, chooseNodeUser.length() - 1));
                     bpmnExamineDTO.setChooseNode(nodeId);
                 }
-            } else {
-                // 没有审核人证明为最后一步则状态改为通过
-//            updateFromStatus(flowId,PowerSupplyStatusEnum.approved.value(),fromId);
             }
         } else {
             StringBuilder chooseNodeUser = new StringBuilder();

@@ -33,3 +33,9 @@ build/
 
 ### VS Code ###
 .vscode/
+src/main/resources/templates/
+/log/*
+
+### IntelliJ IDEA ###
+.idea
+

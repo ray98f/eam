@@ -194,11 +194,11 @@ public class DetectionServiceImpl implements DetectionService {
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if ("A15".equals(reqDTO.getWorkFlowInstStatus()) || "A20".equals(reqDTO.getWorkFlowInstStatus()) || "A25".equals(reqDTO.getWorkFlowInstStatus())) {
-                bpmnService.agree(taskId, examineReqDTO.getOpinion(), String.join(",", examineReqDTO.getUserIds()), null);
+                bpmnService.agree(taskId, examineReqDTO.getOpinion(), String.join(",", examineReqDTO.getUserIds()), "{\"id\":\"" + res.getCheckNo() + "\"}");
                 reqDTO.setWorkFlowInstStatus(EXAMINE_DETECTION_STEP.get(reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setRecStatus("20");
             } else {
-                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, null);
+                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, "{\"id\":\"" + res.getCheckNo() + "\"}");
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setRecStatus("30");
                 List<DetectionDetailResDTO> list = detectionMapper.queryMsg(reqDTO.getRecId());

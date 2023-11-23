@@ -12,6 +12,7 @@ import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.utils.TokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,12 @@ public class BpmnController {
 
     @GetMapping("/login")
     @ApiOperation(value = "登录")
-    public DataResponse<String> login(@RequestParam("account") String account, @RequestParam("password") String password) {
+    public DataResponse<String> login(@RequestParam(value = "account", required = false) String account,
+                                      @RequestParam(value = "password", required = false) String password) {
+        if (account == null || "".equals(account)) {
+            account = "eam" + TokenUtil.getCurrentPersonId();
+            password = account;
+        }
         return DataResponse.of(bpmnService.login(account, password));
     }
 
@@ -141,8 +147,9 @@ public class BpmnController {
     @GetMapping("/agree")
     public DataResponse<T> agree(@RequestParam("taskId") String taskId,
                                  @RequestParam(value = "opinion", required = false) String opinion,
-                                 @RequestParam("fromId") String fromId) {
-        bpmnService.agree(taskId, opinion, fromId, null);
+                                 @RequestParam("fromId") String fromId,
+                                 @RequestParam("formData") String formData) {
+        bpmnService.agree(taskId, opinion, fromId, formData);
         return DataResponse.success();
     }
 
