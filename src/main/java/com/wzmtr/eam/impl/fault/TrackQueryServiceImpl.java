@@ -8,25 +8,25 @@ import com.wzmtr.eam.bizobject.FaultTrackBO;
 import com.wzmtr.eam.constant.FaultTrackCols;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
+import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultTrackAddReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
-import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.*;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -137,21 +137,29 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(FaultTrackBO bo) {
         FaultTrackDO faultTrackDO = __BeanUtil.convert(bo, FaultTrackDO.class);
-        if (StringUtils.isEmpty(bo.getFaultTrackNo())){
+        String faultNo = bo.getFaultNo();
+        if (StringUtils.isEmpty(faultNo)) {
+            return;
+        }
+        TrackQueryServiceImpl proxy = (TrackQueryServiceImpl) AopContext.currentProxy();
+        TrackQueryResDTO trackQueryResDTO = proxy.trackDetail(FaultBaseNoReqDTO.builder().faultNo(faultNo).build());
+        // 根据faultNo判断 不存在则插入，存在即更新
+        if (null == trackQueryResDTO) {
             String maxCode = trackQueryMapper.selectMaxCode();
-            bo.setFaultTrackNo(CodeUtils.getNextCode(maxCode,"GT"));
+            faultTrackDO.setFaultTrackNo(CodeUtils.getNextCode(maxCode, "GT"));
             trackQueryMapper.insert(faultTrackDO);
             return;
         }
-        trackQueryMapper.update(faultTrackDO,new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO,bo.getFaultTrackNo()));
+        trackQueryMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_NO, faultNo).eq(FaultTrackCols.FAULT_TRACK_NO,trackQueryResDTO.getFaultTrackNo()));
     }
 
     @Override
-    public TrackQueryResDTO trackDetail(SidEntity reqDTO) {
-        // faultTrackNo
-        return trackQueryMapper.detail(reqDTO.getId());
+    public TrackQueryResDTO trackDetail(FaultBaseNoReqDTO reqDTO) {
+        // faultTrackNo //faultNo
+        return trackQueryMapper.detail(reqDTO);
     }
 
 

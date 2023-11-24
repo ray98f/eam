@@ -15,7 +15,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FaultNoFaultWorkNoReqDTO {
+public class FaultBaseNoReqDTO {
     private String faultNo;
     private String faultWorkNo;
+    private String faultTrackNo;
+    private String faultAnalysisNo;
 }

@@ -2,13 +2,12 @@ package com.wzmtr.eam.service.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.bizobject.FaultTrackBO;
+import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultTrackAddReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
-import com.wzmtr.eam.entity.SidEntity;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +19,7 @@ public interface TrackQueryService {
 
     Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO);
 
-    TrackQueryResDTO trackDetail(SidEntity reqDTO);
+    TrackQueryResDTO trackDetail(FaultBaseNoReqDTO reqDTO);
 
     FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO);
 

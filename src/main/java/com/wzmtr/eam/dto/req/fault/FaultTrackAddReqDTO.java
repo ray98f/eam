@@ -29,9 +29,9 @@ public class FaultTrackAddReqDTO {
     @ApiModelProperty(value = "转跟踪时间")
     private String trackTime;
     @ApiModelProperty(value = "跟踪期限")
-    private Integer trackPeriod = 0;
+    private Integer trackPeriod =0;
     @ApiModelProperty(value = "跟踪周期")
-    private Integer trackCycle = 0;
+    private Integer trackCycle =0;
     @ApiModelProperty(value = "跟踪开始时间")
     private String trackStartDate;
     @ApiModelProperty(value = "跟踪截止时间")
@@ -48,6 +48,8 @@ public class FaultTrackAddReqDTO {
     private String trackCloseTime;
     @ApiModelProperty(value = "附件编号")
     private String docId;
+    private String companyCode;
+    private String companyName;
     /*  41 */   private String remark;
     /*  50 */   private String recStatus;
 
@@ -60,6 +62,12 @@ public class FaultTrackAddReqDTO {
         bo.setDeleteFlag("0");
         if (StringUtils.isEmpty(req.getDocId())){
             bo.setDocId(CommonConstants.BLANK);
+        }
+        if (StringUtils.isEmpty(req.getCompanyCode())){
+            bo.setCompanyCode(CommonConstants.BLANK);
+        }
+        if (StringUtils.isEmpty(req.getCompanyName())){
+            bo.setCompanyName(CommonConstants.BLANK);
         }
         return bo;
     }

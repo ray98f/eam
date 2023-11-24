@@ -25,7 +25,7 @@ public class FaultTrackDO {
     private String trackTime;
     private String trackStartDate;
     private String trackEndDate;
-    private String trackPeriod;
+    private Integer trackPeriod;
     private Integer trackCycle;
     private String trackReporterId;
     private String trackReportTime;

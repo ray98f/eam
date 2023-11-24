@@ -1,13 +1,13 @@
 package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultTrackAddReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
-import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.TrackQueryService;
@@ -46,14 +46,15 @@ public class FaultTrackQueryController {
 
     @ApiOperation(value = "跟踪单详情")
     @PostMapping("/track/detail")
-    public DataResponse<TrackQueryResDTO> detail(@RequestBody SidEntity reqDTO) {
+    public DataResponse<TrackQueryResDTO> detail(@RequestBody FaultBaseNoReqDTO reqDTO) {
         return DataResponse.of(trackQueryService.trackDetail(reqDTO));
     }
 
     @ApiOperation(value = "跟踪单保存")
     @PostMapping("/save")
-    public void save(@RequestBody FaultTrackAddReqDTO reqDTO) {
+    public DataResponse<Void> save(@RequestBody FaultTrackAddReqDTO reqDTO) {
        trackQueryService.save(reqDTO.toBO(reqDTO));
+       return DataResponse.success();
     }
 
     @ApiOperation(value = "作废")
