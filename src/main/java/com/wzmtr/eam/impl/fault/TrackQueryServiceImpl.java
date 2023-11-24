@@ -1,10 +1,15 @@
 package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.FaultTrackBO;
+import com.wzmtr.eam.constant.FaultTrackCols;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
+import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultTrackAddReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
@@ -13,9 +18,7 @@ import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
-import com.wzmtr.eam.mapper.fault.FaultOrderMapper;
 import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
-import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.*;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -35,10 +39,6 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     private TrackQueryMapper trackQueryMapper;
     @Autowired
     private OrganizationMapper organizationMapper;
-    @Autowired
-    private FaultOrderMapper faultOrderMapper;
-    @Autowired
-    private OverTodoService overTodoService;
     @Autowired
     private IDictionariesService dictService;
 
@@ -134,6 +134,18 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             }
         }
         ExcelPortUtil.excelPort("跟踪查询信息", listName, list, null, response);
+    }
+
+    @Override
+    public void save(FaultTrackBO bo) {
+        FaultTrackDO faultTrackDO = __BeanUtil.convert(bo, FaultTrackDO.class);
+        if (StringUtils.isEmpty(bo.getFaultTrackNo())){
+            String maxCode = trackQueryMapper.selectMaxCode();
+            bo.setFaultTrackNo(CodeUtils.getNextCode(maxCode,"GT"));
+            trackQueryMapper.insert(faultTrackDO);
+            return;
+        }
+        trackQueryMapper.update(faultTrackDO,new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO,bo.getFaultTrackNo()));
     }
 
     @Override

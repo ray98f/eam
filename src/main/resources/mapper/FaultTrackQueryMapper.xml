@@ -420,4 +420,8 @@
             </if>
         </trim>
     </select>
+    <select id="selectMaxCode" resultType="string">
+        select max(FAULT_TRACK_NO)
+        FROM T_FAULT_TRACK
+    </select>
 </mapper>

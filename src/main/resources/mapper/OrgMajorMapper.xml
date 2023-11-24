@@ -149,7 +149,7 @@
     </select>
 
     <select id="queryTypeAndDeptCode" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
-        SELECT d5.ORG_CODE, d5.ORG_NAME
+        SELECT Distinct d5.ORG_CODE, d5.ORG_NAME
         FROM SYS_ORG_MAJOR d5,
              SYS_ORG_LINE d6,
              SYS_ORG_TYPE d7

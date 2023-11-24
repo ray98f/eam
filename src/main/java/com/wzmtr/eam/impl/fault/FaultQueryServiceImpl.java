@@ -80,6 +80,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
+        Set<String> faultNos = __StreamUtil.mapToSet(records, FaultDetailResDTO::getFaultNo);
         records.forEach(a -> {
             if (StringUtils.isNotEmpty(a.getDocId())) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
@@ -489,14 +490,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String currentUser = TokenUtil.getCurrentPersonId();
         String current = DateUtil.getCurrentTime();
         // String stepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "04", "1");
-        Dictionaries vehicleSpecialty = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
-        String stepOrg = vehicleSpecialty.getItemEname();
         switch (reqDTO.getType()) {
             case WAN_GONG_QUE_REN:
                 _finishWorkConfirm(list, cos, currentUser, current);
                 break;
             case YAN_SHOU:
-                _check(list, cos, currentUser, current, stepOrg);
+                _check(list, cos, currentUser, current, itemEname);
                 break;
             case GUAN_BI:
                 _close(list);

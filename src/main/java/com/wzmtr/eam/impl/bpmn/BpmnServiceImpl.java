@@ -143,7 +143,9 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public List<FlowRes> queryFlowList(String name, String modelKey) throws Exception {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.FLOW_LIST + "?name=" + URLEncoder.encode(name, "UTF-8") + "&modelkey=" + modelKey + "&page=1&limit=100000&pageSize=100000&type=2", authorization), ResultEntity.class);
+        String param = FastFlowPathUrl.FLOW_LIST + "?name=" + URLEncoder.encode(name, "UTF-8") + "&modelkey=" + modelKey + "&page=1&limit=100000&pageSize=100000&type=2";
+        log.info("queryFlowList调用入参：[{}]",param);
+        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doGet(param, authorization), ResultEntity.class);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
         List<FlowRes> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.size(); i++) {
@@ -388,7 +390,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String commit(String id, String flow, String otherParam, String roleCode, List<String> userIds) throws Exception {
         List<FlowRes> list = queryFlowList(BpmnFlowEnum.getLabelByValue(flow), flow);
-        if (null == list || list.size() == 0) {
+            if (CollectionUtil.isEmpty(list)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
         }
         StartInstanceVO startInstanceVO = new StartInstanceVO();

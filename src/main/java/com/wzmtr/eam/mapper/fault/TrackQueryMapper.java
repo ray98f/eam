@@ -35,4 +35,6 @@ public interface TrackQueryMapper extends BaseMapper<FaultTrackDO> {
     Page<TrackQueryResDTO> query(Page<Object> of, String faultTrackNo, String faultNo, String faultTrackWorkNo, String faultWorkNo, String lineCode, String majorCode, String objectCode, String positionCode, String systemCode, String objectName, String recStatus, String equipTypeCode);
 
     List<TrackQueryResDTO> query(TrackQueryReqDTO req);
+
+    String selectMaxCode();
 }

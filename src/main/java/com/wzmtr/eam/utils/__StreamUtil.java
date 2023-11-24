@@ -108,6 +108,11 @@ public class __StreamUtil {
     }
 
 
+    public static <F, T> Set<T> mapToSet(Collection<F> from, Predicate<F> predicate, Function<? super F, T> mapper) {
+        return from.stream().filter(predicate).map(mapper).collect(Collectors.toSet());
+    }
+
+
     public static void main(String[] args) {
         List<SecureCheckAddReqDTO> list = new ArrayList<>();
         // list.add(SecureCheckAddReqDTO.builder().recId("1").build());

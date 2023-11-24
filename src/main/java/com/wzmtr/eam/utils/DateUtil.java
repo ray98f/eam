@@ -45,6 +45,10 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
         return dateTimeNow(YYYY_MM_DD);
     }
 
+    /**
+     * 返回当前时间的格式为YYYY_MM_DD_HH_MM_SS
+     * @return
+     */
     public static final String getCurrentTime() {
         return dateTimeNow(YYYY_MM_DD_HH_MM_SS);
     }

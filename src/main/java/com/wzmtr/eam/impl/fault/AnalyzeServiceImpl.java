@@ -96,7 +96,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public void submit(FaultExamineReqDTO reqDTO) {
-        if (CollectionUtil.isEmpty(reqDTO.getUserIds())) {
+        if (CollectionUtil.isEmpty(reqDTO.getExamineReqDTO().getUserIds())) {
             throw new CommonException(ErrorCode.PARAM_ERROR, "下一步参与者不存在");
         }
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
@@ -108,8 +108,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (StringUtils.isEmpty(dmfm03.getWorkFlowInstId())) {
             String processId = null;
             try {
-                processId = bpmnService.commit(reqDTO.getFaultAnalysisNo(), BpmnFlowEnum.FAULT_ANALIZE.value(), null, null, reqDTO.getUserIds());
-                //todo 这里要存nodeId
+                processId = bpmnService.commit(reqDTO.getFaultTrackNo(), BpmnFlowEnum.FAULT_ANALIZE.value(), null, null, reqDTO.getExamineReqDTO().getUserIds());
                 dmfm03.setWorkFlowInstStatus("提交审核");
                 dmfm03.setWorkFlowInstId(processId);
                 dmfm03.setRecStatus("20");
@@ -127,6 +126,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
         }
+        //流程日志记录
+
         faultAnalyzeMapper.update(dmfm03);
     }
 
@@ -136,7 +137,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         String faultAnalysisNo = reqDTO.getFaultAnalysisNo();
         FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq("FAULT_ANALYSIS_NO", faultAnalysisNo));
         String taskId = bpmnService.queryTaskIdByProcId(faultAnalyzeDO.getWorkFlowInstId());
-        bpmnService.agree(taskId, reqDTO.getOpinion(), null, null);
+        bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\"}");
         faultAnalyzeDO.setRecStatus("30");
         faultAnalyzeDO.setRecReviseTime(DateUtils.getTime());
         faultAnalyzeDO.setWorkFlowInstStatus("End");
@@ -150,7 +151,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         String faultNo = reqDTO.getFaultNo();
         String faultWorkNo = reqDTO.getFaultWorkNo();
         String checkFaultAnalysisNo = reqDTO.getFaultAnalysisNo();
-        String backOpinion = reqDTO.getOpinion();
+        String backOpinion = reqDTO.getExamineReqDTO().getOpinion();
         FaultAnalyzeDO dmfm03 = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq("FAULT_NO", faultNo).eq("FAULT_WORK_NO", faultWorkNo).eq("FAULT_ANALYSIS_NO", checkFaultAnalysisNo));
         String processId = dmfm03.getWorkFlowInstId();
         String taskId = bpmnService.queryTaskIdByProcId(processId);

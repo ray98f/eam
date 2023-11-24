@@ -2,8 +2,11 @@ package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.WorkFlowLogBO;
+import com.wzmtr.eam.constant.FaultTrackCols;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.*;
@@ -17,6 +20,7 @@ import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultTrackMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
@@ -49,11 +53,8 @@ public class TrackServiceImpl implements TrackService {
     @Autowired
     private IDictionariesService dictService;
     @Autowired
-    private FaultQueryService faultQueryService;
-    @Autowired
-    private UserHelperService userHelperService;
-    @Autowired
-    private FaultInfoMapper faultInfoMapper;
+    private IWorkFlowLogService workFlowLogService;
+
     private static final Map<String, String> processMap = new HashMap<>();
 
     static {
@@ -97,6 +98,7 @@ public class TrackServiceImpl implements TrackService {
         reqDTO.setTrackCloseTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
         reqDTO.setTrackCloserId(TokenUtil.getCurrentPersonId());
         reqDTO.setRecStatus("40");
+        // /* 136 */       DMUtil.overTODO((String)((Map)dm03List.get(0)).get("recId"), "关闭");
         faultTrackMapper.close(reqDTO);
     }
 
@@ -110,6 +112,7 @@ public class TrackServiceImpl implements TrackService {
         reqDTO.setRecStatus("20");
         faultTrackMapper.repair(reqDTO);
     }
+    // TODO com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#buildWork 看着像是生成一个跟踪工单，暂时还不知道在哪触发
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -119,10 +122,10 @@ public class TrackServiceImpl implements TrackService {
         // String userId = UserUtil.getLoginId();
         String processId = dmfm09.getWorkFlowInstId();
         String taskId = bpmnService.queryTaskIdByProcId(processId);
-        bpmnService.reject(taskId, reqDTO.getOpinion());
+        bpmnService.reject(taskId, reqDTO.getExamineReqDTO().getOpinion());
         dmfm09.setRecStatus("30");
         dmfm09.setWorkFlowInstStatus("驳回成功");
-        faultTrackMapper.update(dmfm09);
+        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
     }
 
 
@@ -166,10 +169,11 @@ public class TrackServiceImpl implements TrackService {
             return;
         }
         FaultTrackDO dmfm09 = dmfm9List.get(0);
+        String processId = null;
         // dmfm01.query
         if (StringUtils.isEmpty(dmfm09.getWorkFlowInstId())) {
             try {
-                String processId = bpmnService.commit(dmfm09.getWorkFlowInstId(), BpmnFlowEnum.FAULT_TRACK.value(), null, null, reqDTO.getUserIds());
+                processId = bpmnService.commit(dmfm09.getWorkFlowInstId(), BpmnFlowEnum.FAULT_TRACK.value(), null, null, reqDTO.getExamineReqDTO().getUserIds());
                 dmfm09.setWorkFlowInstStatus("提交审核");
                 dmfm09.setWorkFlowInstId(processId);
                 String workFlowIns = dmfm09.getWorkFlowInstId();
@@ -180,7 +184,7 @@ public class TrackServiceImpl implements TrackService {
             }
         } else {
             try {
-                bpmnService.commit(reqDTO.getFaultTrackNo(), BpmnFlowEnum.FAULT_TRACK.value(), null, null, reqDTO.getUserIds());
+                bpmnService.commit(reqDTO.getFaultTrackNo(), BpmnFlowEnum.FAULT_TRACK.value(), null, null, reqDTO.getExamineReqDTO().getUserIds());
                 dmfm09.setRecStatus("40");
                 dmfm09.setWorkFlowInstStatus("跟踪报告送审");
                 log.info("跟踪报告送审成功！");
@@ -188,7 +192,14 @@ public class TrackServiceImpl implements TrackService {
                 log.error("commit error", e);
             }
         }
-        faultTrackMapper.update(dmfm09);
+        // 记录日志
+        workFlowLogService.add(WorkFlowLogBO.builder()
+                .status("报告提交")
+                .userIds(reqDTO.getExamineReqDTO().getUserIds())
+                .workFlowInstId(processId)
+                .build());
+        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+
     }
 
     @Override
@@ -229,13 +240,13 @@ public class TrackServiceImpl implements TrackService {
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         // submit
         try {
-            bpmnService.agree(taskId, reqDTO.getOpinion(), null, null);
+            bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}");
         } catch (Exception e) {
             log.error("commit error", e);
         }
         // submtStatus = WorkflowHelper.submit(taskId, userId, comment, "", nextUser, null);
         dmfm09.setRecStatus("40");
         dmfm09.setWorkFlowInstStatus("审核通过");
-        faultTrackMapper.update(dmfm09);
+        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
     }
 }

@@ -37,7 +37,5 @@ public interface FaultTrackMapper extends BaseMapper<FaultTrackDO>{
 
     List<FaultTrackDO> queryOne(String faultNo, String faultWorkNo, String faultAnalysisNo, String faultTrackNo);
 
-    void update(FaultTrackDO dmfm09);
-
     void transmit(FaultTrackDO faultTrackDO);
 }

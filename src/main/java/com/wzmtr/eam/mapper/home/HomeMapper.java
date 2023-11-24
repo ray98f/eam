@@ -16,8 +16,10 @@ public interface HomeMapper {
     Integer count(HomeCountBO countBO);
 
     Integer queryForIndex(HomeCountBO countBO);
+
     List<ShowBCResDTO> queryC();
 
     List<ShowBCResDTO> queryB();
+
     List<ShowAResDTO> queryA();
 }

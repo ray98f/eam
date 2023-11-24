@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.fault;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.enums.SubmitType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,8 +23,5 @@ public class FaultExamineReqDTO {
     private String faultAnalysisNo;
     private String isCommit;
     private String comment;
-    @ApiModelProperty(value = "意见")
-    private String opinion;
-    @ApiModelProperty(value = "userIds")
-    private List<String> userIds;
+    private ExamineReqDTO examineReqDTO;
 }
