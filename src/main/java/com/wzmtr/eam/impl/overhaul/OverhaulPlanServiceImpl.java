@@ -585,7 +585,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
         overhaulPlanReqDTO.setWorkFlowInstId(processId);
         overhaulPlanReqDTO.setWorkFlowInstStatus("已提交");
-        overhaulPlanReqDTO.setPlanStatus("20");
+        overhaulPlanReqDTO.setTrialStatus("20");
         overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulPlanReqDTO.setExt1(" ");
