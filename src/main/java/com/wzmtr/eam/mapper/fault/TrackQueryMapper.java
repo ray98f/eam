@@ -2,11 +2,11 @@ package com.wzmtr.eam.mapper.fault;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
-import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -25,7 +25,6 @@ public interface TrackQueryMapper extends BaseMapper<FaultTrackDO> {
     TrackQueryResDTO detail(String id);
 
 
-    
     FaultInfoDO faultDetail(FaultDetailReqDTO reqDTO);
 
     FaultDetailResDTO faultOrderDetail(String faultNo, String faultWorkNo);

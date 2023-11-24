@@ -78,7 +78,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultInfoDO.setDeleteFlag("0");
         faultInfoDO.setFillinTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         faultInfoDO.setFillinUserId(TokenUtil.getCurrentPerson().getPersonId());
-        faultInfoDO.setFillinDeptCode(TokenUtil.getCurrentPerson().getOfficeAreaId());
+        faultInfoDO.setFillinDeptCode(TokenUtil.getCurrentPerson().getOfficeId());
         faultInfoDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
         faultInfoDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         faultReportMapper.addToFaultInfo(faultInfoDO);

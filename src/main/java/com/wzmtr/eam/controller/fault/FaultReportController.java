@@ -37,9 +37,8 @@ public class FaultReportController {
 
     @ApiOperation(value = "故障提报（到专业）")
     @PostMapping("/insert/major")
-    public DataResponse<FaultReportResDTO> addToMajor(@RequestBody @Valid FaultReportReqDTO reqDTO) {
-        reportService.addToFault(reqDTO);
-        return DataResponse.success();
+    public DataResponse<String> addToMajor(@RequestBody @Valid FaultReportReqDTO reqDTO) {
+        return DataResponse.of(reportService.addToFault(reqDTO));
     }
 
     @ApiOperation(value = "已提报故障")

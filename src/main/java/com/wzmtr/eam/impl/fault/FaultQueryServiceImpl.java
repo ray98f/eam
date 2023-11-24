@@ -80,19 +80,20 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-        Set<String> faultNos = __StreamUtil.mapToSet(records, FaultDetailResDTO::getFaultNo);
-        records.forEach(a -> {
-            if (StringUtils.isNotEmpty(a.getDocId())) {
-                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
-            }
-            if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
-                a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
-            }
-            if (StringUtils.isNotEmpty(a.getFillinDeptCode())) {
-                a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
-            }
-        });
+        records.forEach(this::buildRes);
         return list;
+    }
+
+    private void buildRes(FaultDetailResDTO a) {
+        if (StringUtils.isNotEmpty(a.getDocId())) {
+            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
+        }
+        if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
+            a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
+        }
+        if (StringUtils.isNotEmpty(a.getFillinDeptCode())) {
+            a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
+        }
     }
 
     @Override
