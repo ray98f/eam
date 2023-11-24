@@ -155,12 +155,13 @@ public class DetectionServiceImpl implements DetectionService {
         if (result.size() == 0) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "此检测单不存在检测明细，无法提交");
         }
-        for (DetectionDetailResDTO temp : result) {
-            if (StringUtil.isBlank(temp.getVerifyResult()) || StringUtil.isBlank(temp.getVerifyDate()) ||
-                    StringUtil.isBlank(temp.getVerifyValidityDate())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "存在检测记录明细检测结果或检测日期或检测有效期为空，无法提交");
-            }
-        }
+        // todo 源代码逻辑，存在无效字段判断。先注释了
+        // for (DetectionDetailResDTO temp : result) {
+        //     if (StringUtil.isBlank(temp.getVerifyResult()) || StringUtil.isBlank(temp.getVerifyDate()) ||
+        //             StringUtil.isBlank(temp.getVerifyValidityDate())) {
+        //         throw new CommonException(ErrorCode.NORMAL_ERROR, "存在检测记录明细检测结果或检测日期或检测有效期为空，无法提交");
+        //     }
+        // }
         if (!"10".equals(res.getRecStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可提交");
         } else {
