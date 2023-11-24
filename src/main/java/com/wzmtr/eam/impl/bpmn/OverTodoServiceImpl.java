@@ -86,6 +86,7 @@ public class OverTodoServiceImpl implements OverTodoService {
             sLog.setSyscode("DM");
             sLog.setLastStepUserId(TokenUtil.getCurrentPersonId());
             sLog.setTaskRcvTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            sLog.setExt1(" ");
             overTodoMapper.insert(sLog);
             EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
         } catch (Exception e) {

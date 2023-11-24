@@ -441,6 +441,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             dmer21.setPlanCode(planCode);
             dmer21.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
             dmer21.setWorkerCode(TokenUtil.getCurrentPersonId());
+            dmer21.setWorkerName(TokenUtil.getCurrentPerson().getPersonName());
             dmer21.setRecId(dmer21.getOrderCode());
             dmer21.setWorkStatus("1");
             dmer21.setSubjectCode(list11.get(0).getSubjectCode());

@@ -345,6 +345,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                     OverhaulPlanReqDTO t11map = new OverhaulPlanReqDTO();
                     t11map.setRecId(plan.getRecId());
                     t11map.setArchiveFlag("1");
+                    t11map.setRecRevisor(TokenUtil.getCurrentPersonId());
+                    t11map.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                     overhaulPlanMapper.modifyOverhaulPlan(t11map);
                     e.printStackTrace();
                 }
@@ -379,6 +381,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulOrderReqDTO.setPlanCode(planCode);
         overhaulOrderReqDTO.setWorkerGroupCode(orgCode);
         overhaulOrderReqDTO.setWorkerCode(userCode);
+        overhaulOrderReqDTO.setWorkerName(userName);
         overhaulOrderReqDTO.setRecId("qwert");
         overhaulOrderReqDTO.setWorkStatus("2");
         try {
@@ -440,10 +443,13 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             message.setObjectCodes(objectList.get(0).getObjectCode());
             message.setObjectNames(objectList.get(0).getObjectName());
         }
-        sendContractOrder(message);
+        // todo 暂时注释
+//        sendContractOrder(message);
         OverhaulPlanReqDTO t11map = new OverhaulPlanReqDTO();
         t11map.setRecId(dmer11.getRecId());
         t11map.setArchiveFlag("2");
+        t11map.setRecRevisor(TokenUtil.getCurrentPersonId());
+        t11map.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulPlanMapper.modifyOverhaulPlan(t11map);
     }
 
