@@ -788,7 +788,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         String objectName = getEquipNameByCodeAndSubjcts(overhaulObjectReqDTO.getObjectCode(), subjectCode, planList.get(0).getSystemCode().trim(), planList.get(0).getEquipTypeCode().trim());
         if (StringUtils.isBlank(objectName)) {
             List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(), null, null, null, null, null);
-            if (CollectionUtil.isEmpty(equipmentRoomList)) {
+            if (CollectionUtil.isNotEmpty(equipmentRoomList)) {
                 objectName = equipmentRoomList.get(0).getEquipRoomName();
             }
         }
