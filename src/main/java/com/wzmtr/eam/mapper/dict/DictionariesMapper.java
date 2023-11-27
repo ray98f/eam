@@ -3,6 +3,7 @@ package com.wzmtr.eam.mapper.dict;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.entity.Dictionaries;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface DictionariesMapper {
 
     Page<Dictionaries> page(Page<Dictionaries> page, String itemName, String itemCode);
 
-    List<Dictionaries> list(String codesetCode, String itemCode, String status);
+    List<Dictionaries> list(String codesetCode, @Param("itemCode") String itemCode,@Param("status") String status);
 
     Dictionaries detail(String itemCode);
 

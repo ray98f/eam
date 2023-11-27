@@ -1,10 +1,10 @@
 package com.wzmtr.eam.impl.specialEquip;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
-import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionResDTO;
@@ -20,7 +20,6 @@ import com.wzmtr.eam.service.specialEquip.DetectionService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.TokenUtil;
-import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,7 +151,7 @@ public class DetectionServiceImpl implements DetectionService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         List<DetectionDetailResDTO> result = detectionMapper.listDetectionDetail(res.getRecId());
-        if (result.size() == 0) {
+        if (CollectionUtil.isEmpty(result)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "此检测单不存在检测明细，无法提交");
         }
         // todo 源代码逻辑，存在无效字段判断。先注释了
