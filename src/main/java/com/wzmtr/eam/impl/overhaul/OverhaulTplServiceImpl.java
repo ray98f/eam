@@ -259,22 +259,28 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     @Override
     public void addOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
         Pattern pattern = Pattern.compile("[0-9]*");
-        if ("10".equals(overhaulTplDetailReqDTO.getItemType())) {
-            if (Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
+        if ("10".equals(overhaulTplDetailReqDTO.getItemType()) && Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
+        }
+        if ("20".equals(overhaulTplDetailReqDTO.getItemType())) {
+            if (StringUtils.isBlank(overhaulTplDetailReqDTO.getDefaultValue()) || !pattern.matcher(overhaulTplDetailReqDTO.getDefaultValue()).matches()) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
             }
-        } else if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && !pattern.matcher(overhaulTplDetailReqDTO.getDefaultValue()).matches()) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
         }
         List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
-        if (!pattern.matcher(overhaulTplDetailReqDTO.getMaxValue()).matches() || !pattern.matcher(overhaulTplDetailReqDTO.getMinValue()).matches()) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限、上限必须填数字！");
+        if (StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMinValue()) && !pattern.matcher(overhaulTplDetailReqDTO.getMinValue()).matches()) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限必须填数字！");
         }
-        if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
+        if (StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMaxValue()) && !pattern.matcher(overhaulTplDetailReqDTO.getMaxValue()).matches()) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "上限必须填数字！");
+        }
+        if (StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMinValue()) && StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMaxValue())) {
+            if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
+            }
         }
         list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, null);
         if (!Objects.isNull(list) && !list.isEmpty()) {
