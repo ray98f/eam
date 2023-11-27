@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
@@ -774,16 +775,20 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(overhaulObjectReqDTO.getPlanCode());
         List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
+        if (CollectionUtil.isEmpty(planList)){
+            return null;
+        }
         if ("07".equals(planList.get(0).getSubjectCode())) {
             List<OverhaulObjectResDTO> objectList = overhaulPlanMapper.listOverhaulObject(overhaulObjectReqDTO.getPlanCode(), null, null, null, null, null);
-            if (objectList.size() > 0) {
+            if (CollectionUtil.isNotEmpty(objectList)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "车辆专业的计划只能有一条设备对象！");
             }
         }
-        String objectName = getEquipNameByCodeAndSubjcts(overhaulObjectReqDTO.getObjectCode(), planList.get(0).getSubjectCode().trim(), planList.get(0).getSystemCode().trim(), planList.get(0).getEquipTypeCode().trim());
+        String subjectCode = Optional.ofNullable(planList.get(0).getSubjectCode()).orElse(CommonConstants.BLANK);
+        String objectName = getEquipNameByCodeAndSubjcts(overhaulObjectReqDTO.getObjectCode(), subjectCode, planList.get(0).getSystemCode().trim(), planList.get(0).getEquipTypeCode().trim());
         if (StringUtils.isBlank(objectName)) {
             List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(), null, null, null, null, null);
-            if (equipmentRoomList != null && equipmentRoomList.size() > 0) {
+            if (CollectionUtil.isEmpty(equipmentRoomList)) {
                 objectName = equipmentRoomList.get(0).getEquipRoomName();
             }
         }
