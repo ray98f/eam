@@ -2,8 +2,8 @@
 spring:
   datasource:
     url: jdbc:oracle:thin:@192.168.30.113:1521/xe
-    username: system
-    password: oracle
+    username: eam
+    password: eam@123
     driver-class-name: oracle.jdbc.OracleDriver
     hikari:
       read-only: false
@@ -16,8 +16,9 @@ spring:
       minimum-idle: 10
 
   redis:
-    cluster:
-      nodes: 192.168.30.108:7001, 192.168.30.109:7003, 192.168.30.110:7005, 192.168.30.108:7002, 192.168.30.109:7004, 192.168.30.110:7006
+    host: 192.168.30.113
+    port: 6379
+    password: 123456
     jedis:
       pool:
         max-active: 50
@@ -95,10 +96,10 @@ local:
   base-url: http://192.168.30.153:8002/eam
 
 minio:
-  url: http://zxgd.softether.net:9000
-  imgPath: http://zxgd.softether.net:9000
-  accessKey: minio
-  secretKey: minio123
+  url: http://192.168.30.113:9000
+  imgPath: http://192.168.30.113:9000
+  accessKey: miniominio
+  secretKey: miniominio
 
 pro:
   name: eam
