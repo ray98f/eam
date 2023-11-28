@@ -593,7 +593,16 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulPlanReqDTO.setParentNodeRecId(" ");
         overhaulPlanReqDTO.setCountFlag(0);
         overhaulPlanReqDTO.setCount(0);
+        if (Objects.isNull(overhaulPlanReqDTO.getPosition1Name())) {
+            overhaulPlanReqDTO.setPosition1Name(" ");
+        }
+        if (Objects.isNull(overhaulPlanReqDTO.getPosition1Code())) {
+            overhaulPlanReqDTO.setPosition1Code(" ");
+        }
         overhaulPlanReqDTO.setSubjectCode(weekPlanList.get(0).getSubjectCode());
+        overhaulPlanReqDTO.setWorkerGroupCode(weekPlanList.get(0).getWorkerGroupCode());
+        overhaulPlanReqDTO.setWorkerCode(weekPlanList.get(0).getWorkerCode());
+        overhaulPlanReqDTO.setWorkerName(weekPlanList.get(0).getWorkerName());
         overhaulPlanMapper.addOverhaulPlan(overhaulPlanReqDTO);
     }
 
@@ -602,10 +611,14 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO = new OverhaulWeekPlanListReqDTO();
         overhaulWeekPlanListReqDTO.setWeekPlanCode(overhaulPlanReqDTO.getWeekPlanCode());
         overhaulWeekPlanListReqDTO.setTrialStatus("10");
-        checkTrialStatus(overhaulWeekPlanListReqDTO);
+        List<OverhaulWeekPlanResDTO> weekPlanList = checkTrialStatus(overhaulWeekPlanListReqDTO);
         overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulPlanReqDTO.setExt1(" ");
+        overhaulPlanReqDTO.setSubjectCode(weekPlanList.get(0).getSubjectCode());
+        overhaulPlanReqDTO.setWorkerGroupCode(weekPlanList.get(0).getWorkerGroupCode());
+        overhaulPlanReqDTO.setWorkerCode(weekPlanList.get(0).getWorkerCode());
+        overhaulPlanReqDTO.setWorkerName(weekPlanList.get(0).getWorkerName());
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
     }
 
