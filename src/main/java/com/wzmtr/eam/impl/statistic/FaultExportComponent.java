@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.statistic;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
@@ -9,6 +10,7 @@ import com.wzmtr.eam.entity.DynamicSource;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
+import com.wzmtr.eam.utils.EasyExcelUtil;
 import com.wzmtr.eam.utils.ExcelTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -58,12 +60,41 @@ public class FaultExportComponent {
             Workbook workbook = ExcelTemplateUtil.buildByTemplate(resourceAsStream, staticSource, dynamicSourceList);
             // 2.保存到本地
             ExcelTemplateUtil.save(workbook, "故障列表", response);
-            // ExcelTemplateUtil.save(workbook, "C:/PoiExcel/" + System.currentTimeMillis() + "dynamic-poi-excel-template.xlsx");
+            // ExcelTemplateUtil.save(workbook, "C:/PoiExcel/" + System.currentTimeMillis() + "dynamic-poi-excel-template.xls");
             log.info("导出成功!");
         } catch (Exception e) {
             log.error("导出失败", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
+    }
+
+
+
+
+    public void faultExportWithTemplateUseEasyExcel(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response){
+        List<FaultDetailResDTO> data = faultQueryMapper.list(reqDTO);
+        InputStream resourceAsStream = getClass().getResourceAsStream("/excel_template/faulttemplate.xlsx");
+        Map<String, String> map = _buildSingleMap();
+        Map<String, List<?>> sheetAndDataMap = _buildSheetAndDataMap(data);
+        EasyExcelUtil.fillReportWithEasyExcel(response,sheetAndDataMap,map,"test.xls",resourceAsStream);
+    }
+
+    private Map<String, List<?>> _buildSheetAndDataMap(List<FaultDetailResDTO> data) {
+        Map<String, List<?>> dataMap = Maps.newHashMap();
+        dataMap.put("0",data);
+        return dataMap;
+    }
+
+    private Map<String,String> _buildSingleMap() {
+        Calendar calendar = Calendar.getInstance();
+        Map<String, String> map = Maps.newHashMap();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        // 获取当前时间为本年的第几周
+        int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+        map.put("week", String.valueOf(weekOfYear));
+        map.put("year", String.valueOf(calendar.get(Calendar.YEAR)));
+        return map;
     }
 
     @NotNull

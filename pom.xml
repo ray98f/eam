@@ -20,6 +20,7 @@
         <cxf-version>3.1.5</cxf-version>
         <shiro.version>1.4.2</shiro.version>
         <minio.version>8.0.3</minio.version>
+        <poi.version>4.1.2</poi.version>
         <cglib.version>3.3.0</cglib.version>
     </properties>
 
@@ -240,12 +241,12 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>4.1.2</version>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>4.1.2</version>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -304,6 +305,11 @@
             <artifactId>core</artifactId>
             <version>3.3.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.1.0</version>
+        </dependency>
         <!-- fileupload -->
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -352,6 +358,7 @@
                     <include>**/*.xml</include>
                     <include>**/*.yml</include>
                     <include>**/*.xlsx</include>
+                    <include>**/*.xls</include>
                     <include>**/*.properties</include>
                 </includes>
                 <filtering>false</filtering>

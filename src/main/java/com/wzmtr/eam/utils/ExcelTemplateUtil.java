@@ -10,12 +10,14 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -48,23 +50,24 @@ public class ExcelTemplateUtil {
     // }
 
     public static void save(Workbook workbook, String excelFilePath) throws IOException {
-        FileOutputStream outputStream = new FileOutputStream(excelFilePath);
+        OutputStream outputStream = Files.newOutputStream(Paths.get(excelFilePath));
         save(workbook, outputStream);
     }
 
     public static void save(Workbook workbook, String excelName, HttpServletResponse response) throws IOException {
-        String fileName = System.currentTimeMillis() + "_" + new String(excelName.trim().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8) + ".xlsx";
+        String fileName = new String(excelName.trim().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1) + ".xlsx";
         response.setHeader("Content-Disposition", "attachmentuan;filename=" + fileName);
-        response.setContentType("application/x-msdownload;charset=utf-8");
-        OutputStream outputStream = response.getOutputStream();// 不同类型的文件对应不同的MIME类型
+        // response.setContentType("application/x-msdownload;charset=utf-8");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        ServletOutputStream outputStream = response.getOutputStream();// 不同类型的文件对应不同的MIME类型
         save(workbook, outputStream);
     }
 
     public static void save(Workbook workbook, OutputStream outputStream) throws IOException {
         workbook.write(outputStream);
-        outputStream.flush();
-        outputStream.close();
         workbook.close();
+        // outputStream.flush();
+        // outputStream.close();
     }
 
     private static void handleSheet(XSSFSheet sheet, Map<String, String> staticSource, List<DynamicSource> dynamicSourceList) {
