@@ -575,7 +575,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO = new OverhaulWeekPlanListReqDTO();
         overhaulWeekPlanListReqDTO.setWeekPlanCode(overhaulPlanReqDTO.getWeekPlanCode());
         overhaulWeekPlanListReqDTO.setTrialStatus("10");
-        checkTrialStatus(overhaulWeekPlanListReqDTO);
+        List<OverhaulWeekPlanResDTO> weekPlanList = checkTrialStatus(overhaulWeekPlanListReqDTO);
         overhaulPlanReqDTO.setRecId(TokenUtil.getUuId());
         overhaulPlanReqDTO.setTrialStatus(" ");
         overhaulPlanReqDTO.setArchiveFlag("0");
@@ -593,6 +593,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulPlanReqDTO.setParentNodeRecId(" ");
         overhaulPlanReqDTO.setCountFlag(0);
         overhaulPlanReqDTO.setCount(0);
+        overhaulPlanReqDTO.setSubjectCode(weekPlanList.get(0).getSubjectCode());
         overhaulPlanMapper.addOverhaulPlan(overhaulPlanReqDTO);
     }
 
@@ -682,11 +683,12 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         return resList;
     }
 
-    public void checkTrialStatus(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO) {
+    public List<OverhaulWeekPlanResDTO> checkTrialStatus(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO) {
         List<OverhaulWeekPlanResDTO> queryCount = overhaulWeekPlanMapper.listOverhaulWeekPlan(overhaulWeekPlanListReqDTO);
         if (queryCount != null && queryCount.size() <= 0) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作！");
         }
+        return queryCount;
     }
 
     @Override
