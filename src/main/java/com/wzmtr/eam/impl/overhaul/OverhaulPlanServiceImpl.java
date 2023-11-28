@@ -80,7 +80,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         List<OverhaulPlanResDTO> list = page.getRecords();
         if (list != null && !list.isEmpty()) {
             for (OverhaulPlanResDTO res : list) {
-                res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
+                if (res.getWorkerGroupCode() != null) {
+                    res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
+                }
             }
         }
         page.setRecords(list);
