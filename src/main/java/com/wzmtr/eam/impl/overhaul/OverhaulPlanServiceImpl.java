@@ -3,10 +3,8 @@ package com.wzmtr.eam.impl.overhaul;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
-import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
-import com.wzmtr.eam.dto.res.mea.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
@@ -80,7 +78,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         List<OverhaulPlanResDTO> list = page.getRecords();
         if (list != null && !list.isEmpty()) {
             for (OverhaulPlanResDTO res : list) {
-                if (res.getWorkerGroupCode() != null) {
+                if (StringUtils.isNotEmpty(res.getWorkerGroupCode())) {
                     res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
                 }
             }

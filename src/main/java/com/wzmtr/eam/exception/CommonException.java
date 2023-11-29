@@ -30,4 +30,16 @@ public class CommonException extends RuntimeException {
         this.params = params;
     }
 
+    public CommonException(ErrorCode error, Throwable cause, String message) {
+        super(message, cause);
+        this.code = error.code();
+        this.message = message;
+    }
+
+    public CommonException(ErrorCode error, Throwable cause) {
+        super(error.message(), cause);
+        this.code = error.code();
+    }
+
+
 }
