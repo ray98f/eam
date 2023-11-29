@@ -529,12 +529,9 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             List<SysUser> uList = new ArrayList<>();
             Date now = new Date();
             for (SysOrgUser sysOrgUser : list) {
-                if (("1".equals(sysOrgUser.getLeavestatus())
-                        || "11".equals(sysOrgUser.getLeavestatus())
-                        || "12".equals(sysOrgUser.getLeavestatus()))
-                        && now.before(sysOrgUser.getLeavedate())
-                        && !StringUtils.isEmpty(sysOrgUser.getCompanyId())
-                        && !StringUtils.isEmpty(sysOrgUser.getOfficeId())) {
+                boolean bool = ("1".equals(sysOrgUser.getLeavestatus()) || "11".equals(sysOrgUser.getLeavestatus()) || "12".equals(sysOrgUser.getLeavestatus()))
+                        && now.before(sysOrgUser.getLeavedate()) && !StringUtils.isEmpty(sysOrgUser.getCompanyId()) && !StringUtils.isEmpty(sysOrgUser.getOfficeId());
+                if (bool) {
                     SysUser user = new SysUser();
                     user.setId(sysOrgUser.getUserId());
                     user.setCompanyId(sysOrgUser.getCompanyId());

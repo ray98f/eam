@@ -169,7 +169,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         reqDTO.setSecRiskId(secRiskId);
         reqDTO.setRecStatus("10");
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        if (reqDTO.getRestoreDeptCode().trim().equals("0103705")) {
+        if ("0103705".equals(reqDTO.getRestoreDeptCode().trim())) {
             reqDTO.setExt5("0103705");
         } else {
             reqDTO.setExt5(reqDTO.getRestoreDeptCode());

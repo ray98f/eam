@@ -17,8 +17,7 @@ import java.util.stream.Stream;
  * @version 1.0
  * @date 2021/7/5 9:24
  */
-public class StringUtils extends org.apache.commons.lang3.StringUtils
-{
+public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /** 空字符串 */
     private static final String NULLSTR = "";
 
@@ -175,24 +174,19 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
      * @param start 开始
      * @return 结果
      */
-    public static String substring(final String str, int start)
-    {
-        if (str == null)
-        {
+    public static String substring(final String str, int start) {
+        if (str == null) {
             return NULLSTR;
         }
 
-        if (start < 0)
-        {
+        if (start < 0) {
             start = str.length() + start;
         }
 
-        if (start < 0)
-        {
+        if (start < 0) {
             start = 0;
         }
-        if (start > str.length())
-        {
+        if (start > str.length()) {
             return NULLSTR;
         }
 
@@ -207,38 +201,30 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
      * @param end 结束
      * @return 结果
      */
-    public static String substring(final String str, int start, int end)
-    {
-        if (str == null)
-        {
+    public static String substring(final String str, int start, int end) {
+        if (str == null) {
             return NULLSTR;
         }
 
-        if (end < 0)
-        {
+        if (end < 0) {
             end = str.length() + end;
         }
-        if (start < 0)
-        {
+        if (start < 0) {
             start = str.length() + start;
         }
 
-        if (end > str.length())
-        {
+        if (end > str.length()) {
             end = str.length();
         }
 
-        if (start > end)
-        {
+        if (start > end) {
             return NULLSTR;
         }
 
-        if (start < 0)
-        {
+        if (start < 0) {
             start = 0;
         }
-        if (end < 0)
-        {
+        if (end < 0) {
             end = 0;
         }
 
@@ -263,31 +249,25 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
         boolean curreCharIsUpperCase = true;
         // 下一字符是否大写
         boolean nexteCharIsUpperCase = true;
-        for (int i = 0; i < str.length(); i++)
-        {
+        for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
-            if (i > 0)
-            {
+            if (i > 0) {
                 preCharIsUpperCase = Character.isUpperCase(str.charAt(i - 1));
             }
-            else
-            {
+            else {
                 preCharIsUpperCase = false;
             }
 
             curreCharIsUpperCase = Character.isUpperCase(c);
 
-            if (i < (str.length() - 1))
-            {
+            if (i < (str.length() - 1)) {
                 nexteCharIsUpperCase = Character.isUpperCase(str.charAt(i + 1));
             }
 
-            if (preCharIsUpperCase && curreCharIsUpperCase && !nexteCharIsUpperCase)
-            {
+            boolean bool = (i != 0 && !preCharIsUpperCase) && curreCharIsUpperCase;
+            if (preCharIsUpperCase && curreCharIsUpperCase && !nexteCharIsUpperCase) {
                 sb.append(SEPARATOR);
-            }
-            else if ((i != 0 && !preCharIsUpperCase) && curreCharIsUpperCase)
-            {
+            } else if (bool) {
                 sb.append(SEPARATOR);
             }
             sb.append(Character.toLowerCase(c));
@@ -303,14 +283,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
      * @param strs 字符串组
      * @return 包含返回true
      */
-    public static boolean inStringIgnoreCase(String str, String... strs)
-    {
-        if (str != null && strs != null)
-        {
-            for (String s : strs)
-            {
-                if (str.equalsIgnoreCase(trim(s)))
-                {
+    public static boolean inStringIgnoreCase(String str, String... strs) {
+        if (str != null && strs != null) {
+            for (String s : strs) {
+                if (str.equalsIgnoreCase(trim(s))) {
                     return true;
                 }
             }
@@ -324,27 +300,22 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
      * @param name 转换前的下划线大写方式命名的字符串
      * @return 转换后的驼峰式命名的字符串
      */
-    public static String convertToCamelCase(String name)
-    {
+    public static String convertToCamelCase(String name) {
         StringBuilder result = new StringBuilder();
         // 快速检查
-        if (name == null || name.isEmpty())
-        {
+        if (name == null || name.isEmpty()) {
             // 没必要转换
             return "";
         }
-        else if (!name.contains("_"))
-        {
+        else if (!name.contains("_")) {
             // 不含下划线，仅将首字母大写
             return name.substring(0, 1).toUpperCase() + name.substring(1);
         }
         // 用下划线将原始字符串分割
         String[] camels = name.split("_");
-        for (String camel : camels)
-        {
+        for (String camel : camels) {
             // 跳过原始字符串中开头、结尾的下换线或双重下划线
-            if (camel.isEmpty())
-            {
+            if (camel.isEmpty()) {
                 continue;
             }
             // 首字母大写
@@ -357,30 +328,24 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     /**
      * 驼峰式命名法 例如：user_name->userName
      */
-    public static String toCamelCase(String s)
-    {
-        if (s == null)
-        {
+    public static String toCamelCase(String s) {
+        if (s == null) {
             return null;
         }
         s = s.toLowerCase();
         StringBuilder sb = new StringBuilder(s.length());
         boolean upperCase = false;
-        for (int i = 0; i < s.length(); i++)
-        {
+        for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
 
-            if (c == SEPARATOR)
-            {
+            if (c == SEPARATOR) {
                 upperCase = true;
             }
-            else if (upperCase)
-            {
+            else if (upperCase) {
                 sb.append(Character.toUpperCase(c));
                 upperCase = false;
             }
-            else
-            {
+            else {
                 sb.append(c);
             }
         }
@@ -394,16 +359,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
      * @param strs 需要检查的字符串数组
      * @return 是否匹配
      */
-    public static boolean matches(String str, List<String> strs)
-    {
-        if (isEmpty(str) || isEmpty(strs))
-        {
+    public static boolean matches(String str, List<String> strs) {
+        if (isEmpty(str) || isEmpty(strs)) {
             return false;
         }
-        for (String pattern : strs)
-        {
-            if (isMatch(pattern, str))
-            {
+        for (String pattern : strs) {
+            if (isMatch(pattern, str)) {
                 return true;
             }
         }
@@ -420,8 +381,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
      * @param url 需要匹配的url
      * @return
      */
-    public static boolean isMatch(String pattern, String url)
-    {
+    public static boolean isMatch(String pattern, String url) {
         AntPathMatcher matcher = new AntPathMatcher();
         return matcher.match(pattern, url);
     }
@@ -435,7 +395,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     public static String getRandomString(Integer num) {
         String base = "abcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < num; i++) {
             int number = random.nextInt(base.length());
             sb.append(base.charAt(number));
@@ -446,7 +406,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     public static String getRandomNum(Integer num) {
         String base = "0123456789";
         Random random = new Random();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < num; i++) {
             int number = random.nextInt(base.length());
             sb.append(base.charAt(number));

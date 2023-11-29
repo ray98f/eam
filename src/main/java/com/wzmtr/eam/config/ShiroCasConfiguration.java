@@ -59,7 +59,7 @@ public class ShiroCasConfiguration {
     @Value("${cas.logoutUrlPattern}")
     public String logoutUrlPattern;
 
-    public static final String unauthorizedUrl = "/error/exthrow";
+    public static final String UNAUTHORIZED_URL = "/error/exthrow";
 
     @Bean
     public SecurityManager securityManager() {

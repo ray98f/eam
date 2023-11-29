@@ -7,9 +7,9 @@ import javax.xml.namespace.QName;
 
 @XmlRegistry
 public class ObjectFactory {
-    private static final QName _ServiceException_QNAME = new QName("http://impl.service.planwork.eam.soft.com/", "ServiceException");
-    private static final QName _SetEamplanwork_QNAME = new QName("http://impl.service.planwork.eam.soft.com/", "setEamplanwork");
-    private static final QName _SetEamplanworkResponse_QNAME = new QName("http://impl.service.planwork.eam.soft.com/", "setEamplanworkResponse");
+    private static final QName SERVICE_EXCEPTION_QNAME = new QName("http://impl.service.planwork.eam.soft.com/", "ServiceException");
+    private static final QName SET_EAM_PLAN_WORK_QNAME = new QName("http://impl.service.planwork.eam.soft.com/", "setEamplanwork");
+    private static final QName SET_EAM_PLAN_WORK_RESPONSE_QNAME = new QName("http://impl.service.planwork.eam.soft.com/", "setEamplanworkResponse");
 
     public ServiceException createServiceException() {
         return new ServiceException();
@@ -45,16 +45,16 @@ public class ObjectFactory {
 
     @XmlElementDecl(namespace = "http://impl.service.planwork.eam.soft.com/", name = "ServiceException")
     public JAXBElement<ServiceException> createServiceException(ServiceException value) {
-        return new JAXBElement<>(_ServiceException_QNAME, ServiceException.class, null, value);
+        return new JAXBElement<>(SERVICE_EXCEPTION_QNAME, ServiceException.class, null, value);
     }
 
     @XmlElementDecl(namespace = "http://impl.service.planwork.eam.soft.com/", name = "setEamplanwork")
     public JAXBElement<SetEamplanwork> createSetEamplanwork(SetEamplanwork value) {
-        return new JAXBElement<>(_SetEamplanwork_QNAME, SetEamplanwork.class, null, value);
+        return new JAXBElement<>(SET_EAM_PLAN_WORK_QNAME, SetEamplanwork.class, null, value);
     }
 
     @XmlElementDecl(namespace = "http://impl.service.planwork.eam.soft.com/", name = "setEamplanworkResponse")
     public JAXBElement<SetEamplanworkResponse> createSetEamplanworkResponse(SetEamplanworkResponse value) {
-        return new JAXBElement<>(_SetEamplanworkResponse_QNAME, SetEamplanworkResponse.class, null, value);
+        return new JAXBElement<>(SET_EAM_PLAN_WORK_RESPONSE_QNAME, SetEamplanworkResponse.class, null, value);
     }
 }

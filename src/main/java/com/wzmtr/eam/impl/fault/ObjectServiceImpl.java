@@ -69,7 +69,7 @@ public class ObjectServiceImpl implements ObjectService {
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0021Tree#query
         String node = reqDTO.getNodeCode();
         String type = reqDTO.getType();
-        if (node.equals("0")) {
+        if ("0".equals(node)) {
             // todo 接口暂时没有 先写死
             List<CarTreeListObjResDTO> list = Lists.newArrayList();
             list.add(CarTreeListObjResDTO.toS1ResDTO());
@@ -145,7 +145,7 @@ public class ObjectServiceImpl implements ObjectService {
         CarObjResDTO carObjResDTO = new CarObjResDTO();
         carObjResDTO.setPathName(pathName);
         if (StringUtils.isNotEmpty(reqDTO.getType())) {
-            if (reqDTO.getType().equals("xl")) {
+            if ("xl".equals(reqDTO.getType())) {
                 carObjResDTO.setUseLineName(reqDTO.getText());
                 carObjResDTO.setUseLineNo(reqDTO.getNodeCode());
                 carObjResDTO.setPosition1Name("");
@@ -156,7 +156,7 @@ public class ObjectServiceImpl implements ObjectService {
                 carObjResDTO.setSystemCode("");
                 carObjResDTO.setEquipTypeName("");
                 carObjResDTO.setEquipTypeCode("");
-            } else if (reqDTO.getType().equals("wz") && !reqDTO.getLabel().equals("0")) {
+            } else if ("wz".equals(reqDTO.getType()) && !"0".equals(reqDTO.getLabel())) {
                 LineResDTO lineResDTOS;
                 if (!reqDTO.getText().contains("ES")) {
                     lineResDTOS = equipmentMapper.queryLine(reqDTO.getLabel());
@@ -185,14 +185,14 @@ public class ObjectServiceImpl implements ObjectService {
         String car = reqDTO.getCar() == null ? "" : reqDTO.getCar();
         if (positionCode.contains("ES") && car.trim().isEmpty()) {
             return bomMapper.queryCarEquip(reqDTO.of(), reqDTO);
-        } else if (car.equals("car")) {
+        } else if ("car".equals(car)) {
             List<String> carChild = bomMapper.queryCarTree(reqDTO.getCarNode());
             if (CollectionUtil.isNotEmpty(carChild)) {
                 return bomMapper.queryCarChild(reqDTO.of(), reqDTO);
             } else {
                 return bomMapper.queryCarLastChild(reqDTO.of(), reqDTO);
             }
-        } else if (car.equals("carpos")) {
+        } else if ("carpos".equals(car)) {
             return bomMapper.queryCar(reqDTO.of(), reqDTO);
         }
         return new Page<>();
@@ -203,7 +203,7 @@ public class ObjectServiceImpl implements ObjectService {
         if (bomDO != null) {
             String parentId = bomDO.getParentId();
             String cname = bomDO.getCname();
-            if (parentId != null && !parentId.equals("1") && !parentId.equals("root")) {
+            if (parentId != null && !"1".equals(parentId) && !"root".equals(parentId)) {
                 rescv.add(cname + "-");
                 queryNodes(parentId, rescv);
             }

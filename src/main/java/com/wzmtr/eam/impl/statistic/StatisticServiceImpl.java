@@ -65,7 +65,7 @@ public class StatisticServiceImpl implements StatisticService {
     private RAMSMapper ramsMapper;
     @Autowired
     private FaultExportComponent exportComponent;
-    private static final List<String> ignore = Arrays.asList("NOYF", "SC", "moduleName", "contractZB", "ZB");
+    private static final List<String> IGNORE = Arrays.asList("NOYF", "SC", "moduleName", "contractZB", "ZB");
 
     @Override
     public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
@@ -725,6 +725,7 @@ public class StatisticServiceImpl implements StatisticService {
      * @param endDate
      * @return
      */
+    @Override
     public List<RAMSResult2ResDTO> queryresult2(String startDate, String endDate) {
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
@@ -934,10 +935,10 @@ public class StatisticServiceImpl implements StatisticService {
         return new ArrayList<>(map.values());
     }
 
-
     /**
      * RAMS 故障列表
      */
+    @Override
     public Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO) {
         Page<FaultRAMSResDTO> list = ramsMapper.queryRAMSFaultList(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime());
         if (CollectionUtil.isEmpty(list.getRecords())) {

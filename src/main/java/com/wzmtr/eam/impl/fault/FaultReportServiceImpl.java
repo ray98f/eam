@@ -176,7 +176,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultReportMapper.updateFaultInfo(faultInfoDO);
         // 取消待办
-        overTodoService.cancelTODO(reqDTO.getOrderRecId());
+        overTodoService.cancelTodo(reqDTO.getOrderRecId());
     }
 
     @Override

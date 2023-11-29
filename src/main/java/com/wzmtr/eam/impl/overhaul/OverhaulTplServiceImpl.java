@@ -170,7 +170,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (!roles.isEmpty()) {
             roleCode = roles.stream().map(Role::getRoleCode).collect(Collectors.toList());
         }
-        if (!roleCode.isEmpty() && (roleCode.contains("5") || roleCode.contains("6"))) {
+        boolean bool = !roleCode.isEmpty() && (roleCode.contains("5") || roleCode.contains("6"));
+        if (bool) {
             overhaulTplReqDTO.setWorkFlowInstStatus("运营-车辆专工：" + TokenUtil.getCurrentPersonId());
             overhaulTplReqDTO.setTrialStatus("30");
         } else {
@@ -258,7 +259,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void addOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
-        Pattern pattern = Pattern.compile("[0-9]*");
+        Pattern pattern = RegularUtils.getNumberPattern();
         if ("10".equals(overhaulTplDetailReqDTO.getItemType()) && Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
         }
@@ -294,7 +295,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void modifyOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
-        Pattern pattern = Pattern.compile("[0-9]*");
+        Pattern pattern = RegularUtils.getNumberPattern();
         if ("10".equals(overhaulTplDetailReqDTO.getItemType())) {
             if (Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");

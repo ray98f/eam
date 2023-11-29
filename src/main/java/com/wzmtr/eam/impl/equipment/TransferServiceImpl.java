@@ -181,7 +181,7 @@ public class TransferServiceImpl implements TransferService {
                 if (Objects.isNull(transferResDTO)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                Pattern pattern = Pattern.compile("[0-9]*");
+                Pattern pattern = RegularUtils.getNumberPattern();
                 boolean matches = pattern.matcher(transferResDTO.getQuantity().toString()).matches();
                 if (!matches) {
                     throw new CommonException(ErrorCode.TRANSFER_QUANTITY_ERROR, transferResDTO.getTransferNo());
@@ -354,11 +354,11 @@ public class TransferServiceImpl implements TransferService {
             }
             if (list.size() > 0) {
                 if (transferSplitReqDTO.getType() == 1) {
-                    getOSBsend(list);
+                    getOsbSend(list);
                 } else if (transferSplitReqDTO.getType() == 2) {
                     // todo ServiceDMDM0103 sendOSBbase
                     String url = "";
-                    sendOSBbase(list, "EAM-MT-01", url);
+                    sendOsbBase(list, "EAM-MT-01", url);
                 }
             }
         } else {
@@ -502,7 +502,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     // ServiceDMDM0103 getOSBsend
-    public void getOSBsend(List<Map<String, String>> list) throws Exception {
+    public void getOsbSend(List<Map<String, String>> list) throws Exception {
 //        String methodName = "setData";
 //        String method = "S_AT_09";
 //        String systemName = "DM";
@@ -518,7 +518,7 @@ public class TransferServiceImpl implements TransferService {
 //        }
     }
 
-    public void sendOSBbase(List<Map<String, String>> list, String method, String url) throws Exception {
+    public void sendOsbBase(List<Map<String, String>> list, String method, String url) throws Exception {
 //        String methodName = "setData";
 //        String systemName = "DM";
 //        String json = JSONArray.fromObject(list).toString();

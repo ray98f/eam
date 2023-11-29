@@ -67,7 +67,8 @@ public class EquipmentServiceImpl implements EquipmentService {
             res.setLine(equipmentMapper.listLine());
         } else {
             List<RegionResDTO> region = equipmentMapper.listRegion(lineCode, regionCode, recId);
-            if ((equipmentCategoryCode == null || "".equals(equipmentCategoryCode)) && region != null && !region.isEmpty()) {
+            boolean bool = (equipmentCategoryCode == null || "".equals(equipmentCategoryCode)) && region != null && !region.isEmpty();
+            if (bool) {
                 if (regionCode == null || "".equals(regionCode)) {
                     RegionResDTO regionResDTO = new RegionResDTO();
                     regionResDTO.setRecId("E" + ("01".equals(lineCode) ? "S1" : "S2"));

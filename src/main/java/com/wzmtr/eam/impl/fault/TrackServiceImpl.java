@@ -55,16 +55,16 @@ public class TrackServiceImpl implements TrackService {
     @Autowired
     private IWorkFlowLogService workFlowLogService;
 
-    private static final Map<String, String> processMap = new HashMap<>();
+    private static final Map<String, String> PROCESS_MAP = new HashMap<>();
 
     static {
-        processMap.put("A30", "跟踪报告编制");
-        processMap.put("A40", "技术主管审核");
-        processMap.put("A50", "维保经理审核");
-        processMap.put("A60", "运营公司专业工程师审核");
-        processMap.put("A70", "中铁通科长审核");
-        processMap.put("A80", "中铁通部长审核");
-        processMap.put("A90", "部长审核");
+        PROCESS_MAP.put("A30", "跟踪报告编制");
+        PROCESS_MAP.put("A40", "技术主管审核");
+        PROCESS_MAP.put("A50", "维保经理审核");
+        PROCESS_MAP.put("A60", "运营公司专业工程师审核");
+        PROCESS_MAP.put("A70", "中铁通科长审核");
+        PROCESS_MAP.put("A80", "中铁通部长审核");
+        PROCESS_MAP.put("A90", "部长审核");
     }
 
     @Override

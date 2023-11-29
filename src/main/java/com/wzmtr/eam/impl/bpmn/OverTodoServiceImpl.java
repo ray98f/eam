@@ -114,9 +114,9 @@ public class OverTodoServiceImpl implements OverTodoService {
     }
 
     @Override
-    public void cancelTODO(String businessRecId) {
-        List<QueryNotWorkFlowResDTO> queryNotWorkFlowResDTOS = overTodoMapper.queryNotWorkFlow(businessRecId);
-        for (QueryNotWorkFlowResDTO l : queryNotWorkFlowResDTOS) {
+    public void cancelTodo(String businessRecId) {
+        List<QueryNotWorkFlowResDTO> queryNotWorkFlowRes = overTodoMapper.queryNotWorkFlow(businessRecId);
+        for (QueryNotWorkFlowResDTO l : queryNotWorkFlowRes) {
             /* 476 */
             QueryNotWorkFlowBO queryNotWorkFlowBO = new QueryNotWorkFlowBO();
             /* 477 */

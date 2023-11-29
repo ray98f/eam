@@ -116,8 +116,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(String equipName) {
-        List<EquipmentResDTO> equipmentResDTOS = equipmentMapper.queryMajor(equipName);
-        EquipmentResDTO equipmentResDTO = equipmentResDTOS.get(0);
+        List<EquipmentResDTO> equipmentRes = equipmentMapper.queryMajor(equipName);
+        EquipmentResDTO equipmentResDTO = equipmentRes.get(0);
         return orgMajorMapper.getWorkerGroupBySubjectAndLine(equipmentResDTO.getMajorCode(),equipmentResDTO.getUseLineNo(),"10");
     }
 
