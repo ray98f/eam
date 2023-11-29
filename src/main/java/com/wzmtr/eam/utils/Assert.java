@@ -6,7 +6,6 @@ import com.wzmtr.eam.exception.CommonException;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * 断言类，为方便异常抛出并提高代码可读性，不满足条件则throw new CommonException
@@ -18,22 +17,23 @@ public class Assert {
     // ********************** 不为空值  **********************
 
     /**
-     *  String a =”notnull“;
-     *  String b = null;
-     *  //a不为null,条件为真，不抛出异常,并返回对象
-     *   Assert.notNull(a,ErrorCode.NORMAL_ERROR);
-     *  //由于b为null 条件为假，抛出ErrorCode.NORMAL_ERROR
-     *  Assert.notNull(b,ErrorCode.NORMAL_ERROR);
+     * String a =”notnull“;
+     * String b = null;
+     * //a不为null,条件为真，不抛出异常,并返回对象
+     * Assert.notNull(a,ErrorCode.NORMAL_ERROR);
+     * //由于b为null 条件为假，抛出ErrorCode.NORMAL_ERROR
+     * Assert.notNull(b,ErrorCode.NORMAL_ERROR);
+     *
      * @param obj
      * @param <T>
      * @return
      */
     public static final <T> T notNull(T obj) {
-        return notNull(obj);
+        return notNull(obj, ErrorCode.NORMAL_ERROR);
     }
 
     public static final <T> T notNull(T obj, String reason) {
-        return notNull(obj, reason);
+        return notNull(obj, ErrorCode.NORMAL_ERROR, reason);
     }
 
     public static final <T> T notNull(T obj, ErrorCode errcode) {
@@ -67,11 +67,11 @@ public class Assert {
     // ********************** 为空值  **********************
 
     public static final <T> void isNull(T obj) {
-        isNull(obj);
+        isNull(obj, ErrorCode.NORMAL_ERROR);
     }
 
     public static final <T> void isNull(T obj, String reason) {
-        isNull(obj, reason);
+        isNull(obj, ErrorCode.NORMAL_ERROR, reason);
     }
 
     public static final <T> void isNull(T obj, ErrorCode errcode) {
@@ -101,11 +101,11 @@ public class Assert {
     // ********************** 字符串不为空 **********************
 
     public static final String isNotEmpty(String text) {
-        return isNotEmpty(text);
+        return isNotEmpty(text, ErrorCode.NORMAL_ERROR);
     }
 
     public static final String isNotEmpty(String text, String reason) {
-        return isNotEmpty(text, reason);
+        return isNotEmpty(text, ErrorCode.NORMAL_ERROR, reason);
     }
 
     public static final String isNotEmpty(String text, ErrorCode errcode) {
@@ -139,11 +139,11 @@ public class Assert {
     // ********************** 字符串为空 **********************
 
     public static final String isEmpty(String text) {
-        return isEmpty(text);
+        return isEmpty(text, ErrorCode.NORMAL_ERROR);
     }
 
     public static final String isEmpty(String text, String reason) {
-        return isEmpty(text, reason);
+        return isEmpty(text, ErrorCode.NORMAL_ERROR, reason);
     }
 
     public static final String isEmpty(String text, ErrorCode errcode) {
@@ -177,11 +177,11 @@ public class Assert {
     // ********************** 为真  **********************
 
     public static final boolean isTrue(boolean expression) {
-        return isTrue(expression);
+        return isTrue(expression, ErrorCode.NORMAL_ERROR);
     }
 
     public static final boolean isTrue(boolean expression, String reason) {
-        return isTrue(expression, reason);
+        return isTrue(expression, ErrorCode.NORMAL_ERROR, reason);
     }
 
     public static final boolean isTrue(boolean expression, ErrorCode errcode) {
@@ -215,11 +215,11 @@ public class Assert {
     // ********************** 为假  **********************
 
     public static final boolean isFalse(boolean expression) {
-        return isFalse(expression);
+        return isFalse(expression, ErrorCode.NORMAL_ERROR);
     }
 
     public static final boolean isFalse(boolean expression, String reason) {
-        return isFalse(expression, reason);
+        return isFalse(expression, ErrorCode.NORMAL_ERROR, reason);
     }
 
     public static final boolean isFalse(boolean expression, ErrorCode errcode) {
@@ -253,11 +253,11 @@ public class Assert {
     // ********************** 列表不为空或者null  **********************
 
     public static final <T> Collection<T> notEmpty(Collection<T> collection) {
-        return notEmpty(collection);
+        return notEmpty(collection, ErrorCode.NORMAL_ERROR);
     }
 
     public static final <T> Collection<T> notEmpty(Collection<T> collection, String reason) {
-        return notEmpty(collection, reason);
+        return notEmpty(collection, ErrorCode.NORMAL_ERROR, reason);
     }
 
     public static final <T> Collection<T> notEmpty(Collection<T> collection, ErrorCode errcode) {
@@ -291,11 +291,11 @@ public class Assert {
     // ********************** 列表为空或者null  **********************
 
     public static final void isEmpty(Collection<?> collection) {
-        isEmpty(collection);
+        isEmpty(collection, ErrorCode.NORMAL_ERROR);
     }
 
     public static final void isEmpty(Collection<?> collection, String reason) {
-        isEmpty(collection, reason);
+        isEmpty(collection, ErrorCode.NORMAL_ERROR, reason);
     }
 
     public static final void isEmpty(Collection<?> collection, ErrorCode errcode) {
@@ -325,11 +325,11 @@ public class Assert {
     // ********************** map不为空或者null  **********************
 
     public static final <K, V> Map<K, V> notEmpty(Map<K, V> map) {
-        return notEmpty(map);
+        return notEmpty(map, ErrorCode.NORMAL_ERROR);
     }
 
     public static final <K, V> Map<K, V> notEmpty(Map<K, V> map, String reason) {
-        return notEmpty(map, reason);
+        return notEmpty(map, ErrorCode.NORMAL_ERROR, reason);
     }
 
     public static final <K, V> Map<K, V> notEmpty(Map<K, V> map, ErrorCode errcode) {
