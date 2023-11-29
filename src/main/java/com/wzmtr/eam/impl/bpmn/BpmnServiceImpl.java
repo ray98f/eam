@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.bpmn.*;
 import com.wzmtr.eam.dto.res.bpmn.*;
+import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.dto.result.ResultEntity;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
@@ -440,5 +441,28 @@ public class BpmnServiceImpl implements BpmnService {
         nodeInfos.setList(arrayList);
         startInstanceVO.setNodeInfos(nodeInfos.toString());
         return startInstance(startInstanceVO);
+    }
+
+    @Override
+    public String getNextNodeId(String flowId, String nodeId) {
+        if (StringUtils.isEmpty(flowId) || StringUtils.isEmpty(nodeId)) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
+        req.setFlowId(flowId);
+        req.setNodeId(nodeId);
+        List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
+        if (CollectionUtil.isNotEmpty(flowRoleResDTO)) {
+            String step = flowRoleResDTO.get(0).getStep();
+            String nextStep = String.valueOf((Integer.parseInt(step) + 1));
+            BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
+            bpmnExamineFlowRoleReq.setStep(nextStep);
+            bpmnExamineFlowRoleReq.setFlowId(flowId);
+            List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
+            if (CollectionUtil.isNotEmpty(flowRoleRes)) {
+                return flowRoleRes.get(0).getNodeId();
+            }
+        }
+        return null;
     }
 }

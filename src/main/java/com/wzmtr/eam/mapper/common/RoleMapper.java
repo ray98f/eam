@@ -51,4 +51,8 @@ public interface RoleMapper {
                                                    @Param("roleCode") String roleCode);
 
     List<FlowRoleResDTO> queryBpmnExamine(BpmnExamineFlowRoleReq req);
+
+    List<String> getNodeIdsByFlowId(@Param("flowId") String flowId);
+
+    String getSubmitNodeId(@Param("flowId") String flowId);
 }

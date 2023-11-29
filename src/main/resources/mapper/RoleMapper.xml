@@ -206,4 +206,12 @@
             AND STEP=#{step}
         </if>
     </select>
+
+    <select id="getNodeIdsByFlowId" resultType="java.lang.String">
+        SELECT DISTINCT NODE_ID from T_BPMN_EXAMINE where FLOW_ID=#{flowId} and STEP>2 AND ROLE_ID IS NOT NULL
+    </select>
+
+    <select id="getSubmitNodeId" resultType="java.lang.String">
+        SELECT DISTINCT NODE_ID from T_BPMN_EXAMINE where FLOW_ID=#{flowId} and STEP=2
+    </select>
 </mapper>

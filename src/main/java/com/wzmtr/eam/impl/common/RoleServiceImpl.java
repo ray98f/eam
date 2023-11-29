@@ -138,11 +138,11 @@ public class RoleServiceImpl implements RoleService {
             BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
             req.setFlowId(flowId);
             req.setStep("2");
-            List<FlowRoleResDTO> flowRoleResDTOS = roleMapper.queryBpmnExamine(req);
-            if (CollectionUtil.isNotEmpty(flowRoleResDTOS)){
-                flowRoleResDTOS.forEach(a-> a.setPerson(this.listRoleUsers(null,a.getRoleId())));
+            List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(req);
+            if (CollectionUtil.isNotEmpty(flowRoleRes)) {
+                flowRoleRes.forEach(a -> a.setPerson(this.listRoleUsers(null, a.getRoleId())));
             }
-            return flowRoleResDTOS;
+            return flowRoleRes;
         }
         BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
         req.setFlowId(flowId);
@@ -156,11 +156,10 @@ public class RoleServiceImpl implements RoleService {
         BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
         bpmnExamineFlowRoleReq.setStep(nextStep);
         bpmnExamineFlowRoleReq.setFlowId(flowId);
-        // 如果没有下一步 直接反null
-        List<FlowRoleResDTO> flowRoleResDTOS = roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
-        if (CollectionUtil.isNotEmpty(flowRoleResDTOS)){
-            flowRoleResDTOS.forEach(a-> a.setPerson(this.listRoleUsers(null,a.getRoleId())));
+        List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
+        if (CollectionUtil.isNotEmpty(flowRoleRes)) {
+            flowRoleRes.forEach(a -> a.setPerson(this.listRoleUsers(null, a.getRoleId())));
         }
-        return flowRoleResDTOS;
+        return flowRoleRes;
     }
 }

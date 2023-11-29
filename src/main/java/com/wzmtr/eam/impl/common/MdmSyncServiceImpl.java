@@ -83,7 +83,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     private String mdmEmpJobAddress;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void syncAllPerson() {
         com.wzmtr.eam.soft.mdm.personquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.personquery.vo.RequestMessage();
         com.wzmtr.eam.soft.mdm.personquery.vo.Message message = new com.wzmtr.eam.soft.mdm.personquery.vo.Message();
@@ -116,7 +116,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void syncAllSuppContact() {
         com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.RequestMessage();
         com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Message message = new com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Message();
@@ -185,7 +185,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void syncAllOrg() {
         com.wzmtr.eam.soft.mdm.orgquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.orgquery.vo.RequestMessage();
         com.wzmtr.eam.soft.mdm.orgquery.vo.Message message = new com.wzmtr.eam.soft.mdm.orgquery.vo.Message();
@@ -250,7 +250,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void syncAllExtraOrg() {
         com.wzmtr.eam.soft.mdm.extraorgquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.extraorgquery.vo.RequestMessage();
         com.wzmtr.eam.soft.mdm.extraorgquery.vo.Message message = new com.wzmtr.eam.soft.mdm.extraorgquery.vo.Message();
@@ -283,7 +283,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void syncAllEmpJob() {
         com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.RequestMessage();
         com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.Message message = new com.wzmtr.eam.soft.mdm.empjobinfoquery.vo.Message();

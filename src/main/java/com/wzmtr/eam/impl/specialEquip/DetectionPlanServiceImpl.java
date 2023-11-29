@@ -14,6 +14,7 @@ import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.specialEquip.DetectionPlanMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.specialEquip.DetectionPlanService;
@@ -36,19 +37,14 @@ import java.util.*;
 @Slf4j
 public class DetectionPlanServiceImpl implements DetectionPlanService {
 
-    private static final Map<String, String> EXAMINE_DETECTION_PLAN_STEP = new HashMap<>();
-
-    static {
-        EXAMINE_DETECTION_PLAN_STEP.put("A15", "A20");
-        EXAMINE_DETECTION_PLAN_STEP.put("A20", "A25");
-        EXAMINE_DETECTION_PLAN_STEP.put("A25", "A30");
-    }
-
     @Autowired
     private DetectionPlanMapper detectionPlanMapper;
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private BpmnService bpmnService;
@@ -167,7 +163,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             DetectionPlanReqDTO reqDTO = new DetectionPlanReqDTO();
             BeanUtils.copyProperties(res, reqDTO);
             reqDTO.setWorkFlowInstId(processId);
-            reqDTO.setWorkFlowInstStatus("已提交");
+            reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value()));
             reqDTO.setPlanStatus("20");
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -189,9 +185,9 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             }
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
-            if ("A15".equals(reqDTO.getWorkFlowInstStatus()) || "A20".equals(reqDTO.getWorkFlowInstStatus()) || "A25".equals(reqDTO.getWorkFlowInstStatus())) {
+            if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value()).contains(reqDTO.getWorkFlowInstStatus())) {
                 bpmnService.agree(taskId, examineReqDTO.getOpinion(), String.join(",", examineReqDTO.getUserIds()), "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
-                reqDTO.setWorkFlowInstStatus(EXAMINE_DETECTION_PLAN_STEP.get(reqDTO.getWorkFlowInstStatus()));
+                reqDTO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setPlanStatus("20");
             } else {
                 bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
@@ -205,7 +201,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, examineReqDTO.getOpinion());
-                reqDTO.setWorkFlowInstStatus("待提交");
+                reqDTO.setWorkFlowInstId("");
+                reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setPlanStatus("10");
             }
         }

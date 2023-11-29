@@ -100,10 +100,11 @@ public class RoleController {
                                                                   @RequestParam @ApiParam(value = "节点id") String nodeId) {
         return DataResponse.of(roleService.listFlowUsers(flowId, nodeId));
     }
+
     @GetMapping("/nextFlowRole")
     @ApiOperation(value = "获取流程下一步的角色")
     public DataResponse<List<FlowRoleResDTO>> nextFlowRole(@RequestParam @ApiParam(value = "流程id") String flowId,
-                                                     @RequestParam(required = false) @ApiParam(value = "节点id") String nodeId) {
+                                                           @RequestParam(required = false) @ApiParam(value = "节点id") String nodeId) {
         return DataResponse.of(roleService.nextFlowRole(flowId, nodeId));
     }
 }
