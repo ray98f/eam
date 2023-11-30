@@ -805,7 +805,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             }
         }
         String subjectCode = Optional.ofNullable(planList.get(0).getSubjectCode()).orElse(CommonConstants.BLANK);
-        String objectName = getEquipNameByCodeAndSubjcts(overhaulObjectReqDTO.getObjectCode(), subjectCode, planList.get(0).getSystemCode().trim(), planList.get(0).getEquipTypeCode().trim());
+        String objectName = getEquipNameByCodeAndSubjects(overhaulObjectReqDTO.getObjectCode(), subjectCode, planList.get(0).getSystemCode().trim(), planList.get(0).getEquipTypeCode().trim());
         if (StringUtils.isBlank(objectName)) {
             List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(), null, null, null, null, null);
             if (CollectionUtil.isNotEmpty(equipmentRoomList)) {
@@ -818,7 +818,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         return objectName;
     }
 
-    public String getEquipNameByCodeAndSubjcts(String code, String majorCode, String systemCode, String equipTypeCode) {
+    public String getEquipNameByCodeAndSubjects(String code, String majorCode, String systemCode, String equipTypeCode) {
         if (StringUtils.isEmpty(code.trim())) {
             return "";
         }

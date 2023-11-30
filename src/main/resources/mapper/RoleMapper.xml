@@ -208,7 +208,8 @@
     </select>
 
     <select id="getNodeIdsByFlowId" resultType="java.lang.String">
-        SELECT DISTINCT NODE_ID from T_BPMN_EXAMINE where FLOW_ID=#{flowId} and STEP>2 AND ROLE_ID IS NOT NULL
+        SELECT DISTINCT t1.NODE_ID from T_BPMN_EXAMINE t1 where t1.FLOW_ID=#{flowId} AND t1.STEP>1 AND t1.ROLE_ID IS NOT NULL
+        AND (SELECT MAX(t2.STEP) FROM T_BPMN_EXAMINE t2 WHERE t2.FLOW_ID=#{flowId})-1 > t1.STEP
     </select>
 
     <select id="getSubmitNodeId" resultType="java.lang.String">

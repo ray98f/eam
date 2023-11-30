@@ -1,7 +1,6 @@
 package com.wzmtr.eam.service.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaInfoQueryReqDTO;
@@ -12,7 +11,6 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 public interface CheckPlanService {
 
@@ -26,9 +24,9 @@ public interface CheckPlanService {
 
     void deleteCheckPlan(BaseIdsEntity baseIdsEntity);
 
-    void submitCheckPlan(ExamineReqDTO examineReqDTO) throws Exception;
+    void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO) throws Exception;
 
-    void examineCheckPlan(ExamineReqDTO examineReqDTO);
+    void examineCheckPlan(CheckPlanReqDTO checkPlanReqDTO);
 
     void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response);
 

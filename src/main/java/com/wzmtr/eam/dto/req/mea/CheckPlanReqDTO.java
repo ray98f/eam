@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.mea;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -115,4 +116,7 @@ public class CheckPlanReqDTO {
 
     @ApiModelProperty(value = "审核意见")
     private String opinion;
+
+    @ApiModelProperty(value = "提交、审核信息")
+    private ExamineReqDTO examineReqDTO;
 }

@@ -1,7 +1,6 @@
 package com.wzmtr.eam.service.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
@@ -24,9 +23,9 @@ public interface DetectionService {
 
     void deleteDetection(BaseIdsEntity baseIdsEntity);
 
-    void submitDetection(ExamineReqDTO examineReqDTO) throws Exception;
+    void submitDetection(DetectionReqDTO detectionReqDTO) throws Exception;
 
-    void examineDetection(ExamineReqDTO examineReqDTO);
+    void examineDetection(DetectionReqDTO detectionReqDTO);
 
     void exportDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, HttpServletResponse response);
 

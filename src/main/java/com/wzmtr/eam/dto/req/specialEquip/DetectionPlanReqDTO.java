@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.specialEquip;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -124,4 +125,7 @@ public class DetectionPlanReqDTO {
     
     @ApiModelProperty(value = "维管部门")
     private String secOrg;
+
+    @ApiModelProperty(value = "提交、审核信息")
+    private ExamineReqDTO examineReqDTO;
 }

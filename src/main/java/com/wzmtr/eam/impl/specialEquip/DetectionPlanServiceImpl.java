@@ -2,8 +2,6 @@ package com.wzmtr.eam.impl.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
-import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanDetailResDTO;
@@ -144,8 +142,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     // ServiceDMSE0001
     @Override
-    public void submitDetectionPlan(ExamineReqDTO examineReqDTO) throws Exception {
-        DetectionPlanResDTO res = detectionPlanMapper.getDetectionPlanDetail(examineReqDTO.getRecId());
+    public void submitDetectionPlan(DetectionPlanReqDTO detectionPlanReqDTO) throws Exception {
+        DetectionPlanResDTO res = detectionPlanMapper.getDetectionPlanDetail(detectionPlanReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -156,7 +154,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (!"10".equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态无法提交");
         } else {
-            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null, null, examineReqDTO.getUserIds());
+            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null, null, detectionPlanReqDTO.getExamineReqDTO().getUserIds());
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
@@ -172,25 +170,25 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
     }
 
     @Override
-    public void examineDetectionPlan(ExamineReqDTO examineReqDTO) {
-        DetectionPlanResDTO res = detectionPlanMapper.getDetectionPlanDetail(examineReqDTO.getRecId());
+    public void examineDetectionPlan(DetectionPlanReqDTO detectionPlanReqDTO) {
+        DetectionPlanResDTO res = detectionPlanMapper.getDetectionPlanDetail(detectionPlanReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         DetectionPlanReqDTO reqDTO = new DetectionPlanReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
-        if (examineReqDTO.getExamineStatus() == 0) {
+        if (detectionPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if ("30".equals(reqDTO.getPlanStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value()).contains(reqDTO.getWorkFlowInstStatus())) {
-                bpmnService.agree(taskId, examineReqDTO.getOpinion(), String.join(",", examineReqDTO.getUserIds()), "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
+                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(), String.join(",", detectionPlanReqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
                 reqDTO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setPlanStatus("20");
             } else {
-                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
+                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setPlanStatus("30");
             }
@@ -200,7 +198,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             } else {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
-                bpmnService.reject(taskId, examineReqDTO.getOpinion());
+                bpmnService.reject(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion());
                 reqDTO.setWorkFlowInstId("");
                 reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setPlanStatus("10");

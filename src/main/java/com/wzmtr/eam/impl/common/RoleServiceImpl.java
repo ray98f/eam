@@ -140,7 +140,11 @@ public class RoleServiceImpl implements RoleService {
             req.setStep("2");
             List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(req);
             if (CollectionUtil.isNotEmpty(flowRoleRes)) {
-                flowRoleRes.forEach(a -> a.setPerson(this.listRoleUsers(null, a.getRoleId())));
+                for (FlowRoleResDTO res : flowRoleRes) {
+                    if (res.getRoleId() != null) {
+                        res.setPerson(listRoleUsers(null, res.getRoleId()));
+                    }
+                }
             }
             return flowRoleRes;
         }
@@ -158,7 +162,11 @@ public class RoleServiceImpl implements RoleService {
         bpmnExamineFlowRoleReq.setFlowId(flowId);
         List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
         if (CollectionUtil.isNotEmpty(flowRoleRes)) {
-            flowRoleRes.forEach(a -> a.setPerson(this.listRoleUsers(null, a.getRoleId())));
+            for (FlowRoleResDTO res : flowRoleRes) {
+                if (res.getRoleId() != null) {
+                    res.setPerson(listRoleUsers(null, res.getRoleId()));
+                }
+            }
         }
         return flowRoleRes;
     }

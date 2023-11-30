@@ -2,7 +2,6 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaInfoQueryReqDTO;
@@ -164,8 +163,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     // ServiceDMAM0201
     @Override
-    public void submitCheckPlan(ExamineReqDTO examineReqDTO) throws Exception {
-        CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(examineReqDTO.getRecId());
+    public void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO) throws Exception {
+        CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(checkPlanReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -179,7 +178,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         if (!"10".equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         } else {
-            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.CHECK_PLAN_SUBMIT.value(), null, null, examineReqDTO.getUserIds());
+            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.CHECK_PLAN_SUBMIT.value(), null, null, checkPlanReqDTO.getExamineReqDTO().getUserIds());
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
@@ -195,11 +194,11 @@ public class CheckPlanServiceImpl implements CheckPlanService {
     }
 
     @Override
-    public void examineCheckPlan(ExamineReqDTO examineReqDTO) {
-        CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(examineReqDTO.getRecId());
+    public void examineCheckPlan(CheckPlanReqDTO checkPlanReqDTO) {
+        CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(checkPlanReqDTO.getRecId());
         CheckPlanReqDTO reqDTO = new CheckPlanReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
-        if (examineReqDTO.getExamineStatus() == 0) {
+        if (checkPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if ("30".equals(res.getPlanStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
@@ -208,7 +207,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             }
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
-            bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
+            bpmnService.agree(taskId, checkPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
             reqDTO.setWorkFlowInstStatus("已完成");
             reqDTO.setPlanStatus("30");
         } else {
@@ -217,7 +216,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             } else {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
-                bpmnService.reject(taskId, examineReqDTO.getOpinion());
+                bpmnService.reject(taskId, checkPlanReqDTO.getExamineReqDTO().getOpinion());
                 reqDTO.setWorkFlowInstId("");
                 reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setPlanStatus("10");
@@ -296,7 +295,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
-        meaInfoReqDTO.setRecRevisor(TokenUtil.getUuId());
+        meaInfoReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         meaInfoReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         checkPlanMapper.modifyInfo(meaInfoReqDTO);
     }

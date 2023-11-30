@@ -1,7 +1,6 @@
 package com.wzmtr.eam.service.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanDetailResDTO;
@@ -24,9 +23,9 @@ public interface DetectionPlanService {
 
     void deleteDetectionPlan(BaseIdsEntity baseIdsEntity);
 
-    void submitDetectionPlan(ExamineReqDTO examineReqDTO) throws Exception;
+    void submitDetectionPlan(DetectionPlanReqDTO detectionPlanReqDTO) throws Exception;
 
-    void examineDetectionPlan(ExamineReqDTO examineReqDTO);
+    void examineDetectionPlan(DetectionPlanReqDTO detectionPlanReqDTO);
 
     void exportDetectionPlan(String instrmPlanNo, String  planStatus, String  editDeptCode,
                              String assetKindCode, String  planPeriodMark, HttpServletResponse response);

@@ -3,7 +3,6 @@ package com.wzmtr.eam.impl.specialEquip;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
@@ -141,8 +140,8 @@ public class DetectionServiceImpl implements DetectionService {
 
     // ServiceDMSE0301
     @Override
-    public void submitDetection(ExamineReqDTO examineReqDTO) throws Exception {
-        DetectionResDTO res = detectionMapper.getDetectionDetail(examineReqDTO.getRecId());
+    public void submitDetection(DetectionReqDTO detectionReqDTO) throws Exception {
+        DetectionResDTO res = detectionMapper.getDetectionDetail(detectionReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -160,7 +159,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (!"10".equals(res.getRecStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可提交");
         } else {
-            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null, null, examineReqDTO.getUserIds());
+            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null, null, detectionReqDTO.getExamineReqDTO().getUserIds());
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
@@ -176,25 +175,25 @@ public class DetectionServiceImpl implements DetectionService {
     }
 
     @Override
-    public void examineDetection(ExamineReqDTO examineReqDTO) {
-        DetectionResDTO res = detectionMapper.getDetectionDetail(examineReqDTO.getRecId());
+    public void examineDetection(DetectionReqDTO detectionReqDTO) {
+        DetectionResDTO res = detectionMapper.getDetectionDetail(detectionReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         DetectionReqDTO reqDTO = new DetectionReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
-        if (examineReqDTO.getExamineStatus() == 0) {
+        if (detectionReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if ("30".equals(reqDTO.getRecStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.DETECTION_SUBMIT.value()).contains(reqDTO.getWorkFlowInstStatus())) {
-                bpmnService.agree(taskId, examineReqDTO.getOpinion(), String.join(",", examineReqDTO.getUserIds()), "{\"id\":\"" + res.getCheckNo() + "\"}");
+                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(), String.join(",", detectionReqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + res.getCheckNo() + "\"}");
                 reqDTO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.DETECTION_SUBMIT.value(), reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setRecStatus("20");
             } else {
-                bpmnService.agree(taskId, examineReqDTO.getOpinion(), null, "{\"id\":\"" + res.getCheckNo() + "\"}");
+                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getCheckNo() + "\"}");
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setRecStatus("30");
                 List<DetectionDetailResDTO> list = detectionMapper.queryMsg(reqDTO.getRecId());
@@ -210,7 +209,7 @@ public class DetectionServiceImpl implements DetectionService {
             } else {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
-                bpmnService.reject(taskId, examineReqDTO.getOpinion());
+                bpmnService.reject(taskId, detectionReqDTO.getExamineReqDTO().getOpinion());
                 reqDTO.setWorkFlowInstId("");
                 reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setRecStatus("10");
