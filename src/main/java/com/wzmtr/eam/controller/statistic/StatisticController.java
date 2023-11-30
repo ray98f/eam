@@ -1,6 +1,7 @@
 package com.wzmtr.eam.controller.statistic;
 
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -47,8 +48,8 @@ public class StatisticController {
 
     @ApiOperation(value = "故障统计报表")
     @PostMapping("fault/list")
-    public DataResponse<List<FaultDetailResDTO>> list(@RequestBody FaultQueryDetailReqDTO reqDTO) {
-        return DataResponse.of(faultQueryService.statisticList(reqDTO));
+    public PageResponse<FaultDetailResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
+        return PageResponse.of(faultQueryService.list(reqDTO));
     }
 
     @ApiOperation(value = "故障统计报表导出")

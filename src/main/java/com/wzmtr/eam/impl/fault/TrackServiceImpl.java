@@ -14,20 +14,21 @@ import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultTrackMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
-import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.fault.TrackService;
-import com.wzmtr.eam.service.user.UserHelperService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,8 @@ public class TrackServiceImpl implements TrackService {
     private IDictionariesService dictService;
     @Autowired
     private IWorkFlowLogService workFlowLogService;
+    @Autowired
+    private RoleMapper roleMapper;
 
     private static final Map<String, String> PROCESS_MAP = new HashMap<>();
 
@@ -114,20 +117,6 @@ public class TrackServiceImpl implements TrackService {
     }
     // TODO com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#buildWork 看着像是生成一个跟踪工单，暂时还不知道在哪触发
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void returns(FaultExamineReqDTO reqDTO) {
-        List<FaultTrackDO> list = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
-        FaultTrackDO dmfm09 = list.get(0);
-        // String userId = UserUtil.getLoginId();
-        String processId = dmfm09.getWorkFlowInstId();
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
-        bpmnService.reject(taskId, reqDTO.getExamineReqDTO().getOpinion());
-        dmfm09.setRecStatus("30");
-        dmfm09.setWorkFlowInstStatus("驳回成功");
-        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
-    }
-
 
     @Override
     public void transmit(TrackTransmitReqDTO reqDTO) {
@@ -161,48 +150,6 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void commit(FaultExamineReqDTO reqDTO) {
-        // dmfm09.query  com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#submit
-        List<FaultTrackDO> dmfm9List = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
-        if (CollectionUtil.isEmpty(dmfm9List)) {
-            return;
-        }
-        FaultTrackDO dmfm09 = dmfm9List.get(0);
-        String processId = null;
-        // dmfm01.query
-        if (StringUtils.isEmpty(dmfm09.getWorkFlowInstId())) {
-            try {
-                processId = bpmnService.commit(dmfm09.getWorkFlowInstId(), BpmnFlowEnum.FAULT_TRACK.value(), null, null, reqDTO.getExamineReqDTO().getUserIds());
-                dmfm09.setWorkFlowInstStatus("提交审核");
-                dmfm09.setWorkFlowInstId(processId);
-                String workFlowIns = dmfm09.getWorkFlowInstId();
-                overTodoService.overTodo(workFlowIns, "故障跟踪");
-                dmfm09.setRecStatus("40");
-            } catch (Exception e) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
-            }
-        } else {
-            try {
-                bpmnService.commit(reqDTO.getFaultTrackNo(), BpmnFlowEnum.FAULT_TRACK.value(), null, null, reqDTO.getExamineReqDTO().getUserIds());
-                dmfm09.setRecStatus("40");
-                dmfm09.setWorkFlowInstStatus("跟踪报告送审");
-                log.info("跟踪报告送审成功！");
-            } catch (Exception e) {
-                log.error("commit error", e);
-            }
-        }
-        // 记录日志
-        workFlowLogService.add(WorkFlowLogBO.builder()
-                .status("报告提交")
-                .userIds(reqDTO.getExamineReqDTO().getUserIds())
-                .workFlowInstId(processId)
-                .build());
-        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
-
-    }
-
-    @Override
     public void export(TrackExportReqDTO reqDTO, HttpServletResponse response) {
         List<String> listName = Arrays.asList("跟踪单工单号", "跟踪单号", "对象编码", "对象名称", "跟踪状态", "派工人", "跟踪报告人", "派工时间", "跟踪结果", "备注", "跟踪报告时间", "跟踪关闭人", "跟踪关闭时间");
         List<TrackResDTO> resList = faultTrackMapper.query(reqDTO);
@@ -233,20 +180,83 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public void commit(FaultExamineReqDTO reqDTO) {
+        List<String> userIds = Assert.notNull(reqDTO.getExamineReqDTO().getUserIds(), "下一步参与者不能为空！");
+        // dmfm09.query  com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#submit
+        List<FaultTrackDO> dmfm9List = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
+        if (CollectionUtil.isEmpty(dmfm9List)) {
+            return;
+        }
+        FaultTrackDO dmfm09 = dmfm9List.get(0);
+        String processId = null;
+        // dmfm01.query
+        if (StringUtils.isEmpty(dmfm09.getWorkFlowInstId())) {
+            try {
+                processId = bpmnService.commit(dmfm09.getFaultTrackNo(), BpmnFlowEnum.FAULT_TRACK.value(), null, null, userIds);
+                // 保存下一步流程ID
+                dmfm09.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.FAULT_TRACK.value()));
+                dmfm09.setWorkFlowInstId(processId);
+                // 待办发送
+                overTodoService.overTodo(processId, "故障跟踪");
+                dmfm09.setRecStatus("40");
+            } catch (Exception e) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
+            }
+        }
+        // 记录日志
+        workFlowLogService.add(WorkFlowLogBO.builder()
+                .status("报告提交")
+                .userIds(userIds)
+                .workFlowInstId(processId)
+                .build());
+        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+    }
+
+    @Override
     public void pass(FaultExamineReqDTO reqDTO) {
         String faultTrackNo = reqDTO.getFaultTrackNo();
         FaultTrackDO dmfm09 = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq("FAULT_TRACK_NO", faultTrackNo));
         String processId = dmfm09.getWorkFlowInstId();
         String taskId = bpmnService.queryTaskIdByProcId(processId);
-        // submit
+        // 获取Aop对象，事务逻辑轻量化
+        TrackServiceImpl trackService = (TrackServiceImpl) AopContext.currentProxy();
+        trackService._agree(reqDTO, dmfm09, taskId, faultTrackNo);
+        workFlowLogService.add(WorkFlowLogBO.builder()
+                .status(BpmnStatus.PASS.getDesc())
+                .userIds(reqDTO.getExamineReqDTO().getUserIds())
+                .workFlowInstId(processId)
+                .remark(TokenUtil.getCurrentPersonId() + BpmnStatus.PASS.getDesc())
+                .build());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void _agree(FaultExamineReqDTO reqDTO, FaultTrackDO dmfm09, String processId, String faultTrackNo) {
         try {
-            bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}");
+            String taskId = bpmnService.queryTaskIdByProcId(processId);
+            if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_TRACK.value()).contains(dmfm09.getWorkFlowInstStatus())) {
+                bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}");
+            }
         } catch (Exception e) {
-            log.error("commit error", e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "agree error");
         }
         // submtStatus = WorkflowHelper.submit(taskId, userId, comment, "", nextUser, null);
         dmfm09.setRecStatus("40");
-        dmfm09.setWorkFlowInstStatus("审核通过");
+        dmfm09.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus()));
+        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void returns(FaultExamineReqDTO reqDTO) {
+        List<FaultTrackDO> list = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
+        FaultTrackDO dmfm09 = list.get(0);
+        // String userId = UserUtil.getLoginId();
+        String processId = dmfm09.getWorkFlowInstId();
+        String taskId = bpmnService.queryTaskIdByProcId(processId);
+        bpmnService.reject(taskId, reqDTO.getExamineReqDTO().getOpinion());
+        dmfm09.setRecStatus("30");
+        dmfm09.setWorkFlowInstStatus("驳回成功");
         faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
     }
 }

@@ -16,4 +16,7 @@ public class WorkFlowLogDO {
     private String workFlowInstId;
     private String userIds;
     private String status;
+    private String createTime;
+    private String creator;
+    private String remark;
 }

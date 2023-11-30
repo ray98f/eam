@@ -22,4 +22,7 @@ public class WorkFlowLogBO {
     private String status;
     //转换成逗号分割的userId
     private String userId;
+    private String remark;
+    private String creator;
+    private String createTime;
 }

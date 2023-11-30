@@ -97,11 +97,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public List<FaultDetailResDTO> statisticList(FaultQueryDetailReqDTO reqDTO) {
-        return faultQueryMapper.list(reqDTO);
-    }
-
-    @Override
     public String queryOrderStatus(SidEntity reqDTO) {
         // faultWorkNo
         List<String> status = faultQueryMapper.queryOrderStatus(reqDTO);
@@ -552,8 +547,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     private void _finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current) {
         list.forEach(a -> {
-            // /*  413 */             map.put("confirmUserId", currentUser);
-            // /*  414 */             map.put("confirmTime", dateTimeFormat.format(new Date()));
             String faultWorkNo = a.getFaultWorkNo();
             FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(a.getFaultNo());
             FaultOrderDO dmfm02 = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);

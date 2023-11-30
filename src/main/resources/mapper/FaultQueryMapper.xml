@@ -87,16 +87,16 @@
         IPLAT60.XS_USER u,
         T_FAULT_ORDER df
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="req.faultType!=null">
+            <if test="req.faultType!=null and req.faultType!=''">
                 AND d.FAULT_TYPE=#{req.faultType}
             </if>
-            <if test="req.positionCode!=null">
+            <if test="req.positionCode!=null and req.positionCode!=''">
                 AND d.POSITION_CODE=#{req.positionCode}
             </if>
-            <if test="req.faultNo!=null">
+            <if test="req.faultNo!=null and req.faultNo!=''">
                 AND d.FAULT_NO = #{req.faultNo}
             </if>
-            <if test="req.faultWorkNo!=null">
+            <if test="req.faultWorkNo!=null and req.faultWorkNo!=''">
                 AND df.FAULT_WORK_NO =#{req.faultWorkNo}
             </if>
             <if test="req.orderStatus!=null and req.orderStatus!=''">
@@ -108,13 +108,13 @@
             <if test="req.lineCode!=null and req.lineCode!=''">
                 AND d.LINE_CODE=#{req.lineCode}
             </if>
-            <if test="req.objectCode!=null">
+            <if test="req.objectCode!=null and req.objectCode!=''">
                 AND d.OBJECT_CODE=#{req.objectCode}
             </if>
-            <if test="req.objectName!=null">
+            <if test="req.objectName!=null and req.objectName!=''">
                 AND d.OBJECT_NAME=#{req.objectName}
             </if>
-            <if test="req.majorCode!=null">
+            <if test="req.majorCode!=null and req.majorCode!=''">
                 AND d.MAJOR_CODE=#{req.majorCode}
             </if>
             <if test="req.systemCode!=null and req.systemCode!=''">
@@ -123,13 +123,13 @@
             <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
                 AND d.EQUIP_TYPE_CODE=#{req.equipTypeCode}
             </if>
-            <if test="req.faultDetail!=null">
+            <if test="req.faultDetail!=null and req.faultDetail!=''">
                 AND d.FAULT_DETAIL LIKE '%' || #{req.faultDetail} || '%'
             </if>
-            <if test="req.fillinTimeStart!=null">
+            <if test="req.fillinTimeStart!=null and req.fillinTimeStart!=''">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD')
             </if>
-            <if test="req.fillinTimeEnd!=null">
+            <if test="req.fillinTimeEnd!=null and req.fillinTimeEnd!=''">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD') +
                 1
             </if>

@@ -150,11 +150,64 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         if (null == trackQueryResDTO) {
             String maxCode = trackQueryMapper.selectMaxCode();
             faultTrackDO.setFaultTrackNo(CodeUtils.getNextCode(maxCode, "GT"));
+            // 生成跟踪单
             trackQueryMapper.insert(faultTrackDO);
+            // 生成跟踪工单
+            // _buildTrackWork();
             return;
         }
-        trackQueryMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_NO, faultNo).eq(FaultTrackCols.FAULT_TRACK_NO,trackQueryResDTO.getFaultTrackNo()));
+        trackQueryMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_NO, faultNo).eq(FaultTrackCols.FAULT_TRACK_NO, trackQueryResDTO.getFaultTrackNo()));
     }
+
+
+    // public void _buildTrackWork() {
+    //     String tackStartDate = dmfm21.getTrackStartDate();
+    //     String tackEndDate = dmfm21.getTrackEndDate();
+    //     int trackCycle = dmfm21.getTrackCycle().intValue();
+    //     SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd");
+    //     Date startDate = dateTimeFormat.parse(tackStartDate);
+    //     Date endDate1 = dateTimeFormat.parse(tackEndDate);
+    //     int startDays = (int) ((nowDate.getTime() - startDate.getTime()) / 86400000L);
+    //     int endDays = (int) ((endDate1.getTime() - nowDate.getTime()) / 86400000L);
+    //     if (startDays >= 0 && endDays >= 0) {
+    //         int day = (startDays - 1) % trackCycle;
+    //         if (day == 0) {
+    //             // String seqTypeId = "EAM_FTRACK_WORK_NO";
+    //             // String[] args = {"s1", "s2", "s3"};
+    //             // String faultTrackWorkNo = SequenceGenerator.getNextSequence(seqTypeId, args);
+    //             DMFM22 dmfm22 = new DMFM22();
+    //             dmfm22.setFaultTrackNo(dmfm21.getFaultTrackNo());
+    //             dmfm22.setFaultTrackWorkNo(faultTrackWorkNo);
+    //             dmfm22.setRecCreator(dmfm21.getRecCreator());
+    //             dmfm22.setRecCreateTime(dateTimeFormat.format(new Date()));
+    //             dmfm22.setRecId(UUID.randomUUID().toString());
+    //             dmfm22.setRecStatus("10");
+    //             this.dao.insert("DMFM22.insert", dmfm22);
+    //             String currentUser = "EAM系统";
+    //             String faultWorkNo = dmfm21.getFaultWorkNo();
+    //             String faultNo = dmfm21.getFaultNo();
+    //             String faultTrackNo = dmfm21.getFaultTrackNo();
+    //             Map<Object, Object> map = new HashMap<>();
+    //             map.put("faultNo", faultNo);
+    //             map.put("faultWorkNo", faultWorkNo);
+    //             map.put("faultTrackNo", faultTrackNo);
+    //             List<Map> list = this.dao.query("DMFM09.query", map, 0, -999999);
+    //             Map dmfm09 = list.get(0);
+    //             String lineCode = dmfm09.get("lineCode").toString();
+    //             String majorCode = (String) dmfm09.get("majorCode");
+    //             String majorName = dmfm09.get("majorName").toString();
+    //             String content = "";
+    //             if (cos.contains(majorCode)) {
+    //                 String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "04", "1");
+    //                 status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm22.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障跟踪派工", "DMFM0011", currentUser, majorCode, lineCode, "10", content);
+    //             } else {
+    //                 String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "03", "1");
+    //                 status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm22.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障跟踪派工", "DMFM0011", currentUser, majorCode, lineCode, "10", content);
+    //             }
+    //         }
+    //     }
+    // }
+
 
     @Override
     public TrackQueryResDTO trackDetail(FaultBaseNoReqDTO reqDTO) {
