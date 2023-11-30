@@ -18,6 +18,7 @@ import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
@@ -77,6 +78,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private BpmnService bpmnService;
@@ -248,7 +252,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您的组织机构为空，请确认。");
             }
             String processId = bpmnService.commit(overhaulWeekPlanReqDTO.getWeekPlanCode(), BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value(), null, null, overhaulWeekPlanReqDTO.getExamineReqDTO().getUserIds());
-            overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已提交");
+            overhaulWeekPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value()));
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
             } else {
@@ -286,7 +290,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion());
-                overhaulWeekPlanReqDTO.setWorkFlowInstStatus("待提交");
+                overhaulWeekPlanReqDTO.setWorkFlowInstId("");
+                overhaulWeekPlanReqDTO.setWorkFlowInstStatus("");
                 overhaulWeekPlanReqDTO.setPlanStatus("10");
             }
         }
@@ -800,7 +805,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             }
         }
         String subjectCode = Optional.ofNullable(planList.get(0).getSubjectCode()).orElse(CommonConstants.BLANK);
-        String objectName = getEquipNameByCodeAndSubjcts(overhaulObjectReqDTO.getObjectCode(), subjectCode, planList.get(0).getSystemCode().trim(), planList.get(0).getEquipTypeCode().trim());
+        String objectName = getEquipNameByCodeAndSubjects(overhaulObjectReqDTO.getObjectCode(), subjectCode, planList.get(0).getSystemCode().trim(), planList.get(0).getEquipTypeCode().trim());
         if (StringUtils.isBlank(objectName)) {
             List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(), null, null, null, null, null);
             if (CollectionUtil.isNotEmpty(equipmentRoomList)) {
@@ -813,7 +818,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         return objectName;
     }
 
-    public String getEquipNameByCodeAndSubjcts(String code, String majorCode, String systemCode, String equipTypeCode) {
+    public String getEquipNameByCodeAndSubjects(String code, String majorCode, String systemCode, String equipTypeCode) {
         if (StringUtils.isEmpty(code.trim())) {
             return "";
         }

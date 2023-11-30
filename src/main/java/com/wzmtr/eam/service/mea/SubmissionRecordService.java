@@ -1,7 +1,6 @@
 package com.wzmtr.eam.service.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordReqDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
@@ -23,9 +22,9 @@ public interface SubmissionRecordService {
 
     void deleteSubmissionRecord(BaseIdsEntity baseIdsEntity);
 
-    void submitSubmissionRecord(ExamineReqDTO examineReqDTO) throws Exception;
+    void submitSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO) throws Exception;
 
-    void examineSubmissionRecord(ExamineReqDTO examineReqDTO);
+    void examineSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO);
 
     void exportSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, HttpServletResponse response);
 

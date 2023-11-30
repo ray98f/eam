@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.mea;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -112,4 +113,7 @@ public class SubmissionReqDTO {
 
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
+
+    @ApiModelProperty(value = "提交、审核信息")
+    private ExamineReqDTO examineReqDTO;
 }

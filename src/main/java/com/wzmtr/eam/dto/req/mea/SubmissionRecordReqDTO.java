@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.mea;
 
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -124,4 +125,7 @@ public class SubmissionRecordReqDTO {
     
     @ApiModelProperty(value = "编制部门")
     private String editDeptCode;
+
+    @ApiModelProperty(value = "提交、审核信息")
+    private ExamineReqDTO examineReqDTO;
 }

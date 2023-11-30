@@ -1,6 +1,5 @@
 package com.wzmtr.eam.controller.mea;
 
-import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionListReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionReqDTO;
@@ -68,15 +67,15 @@ public class SubmissionController {
 
     @PostMapping("/submit")
     @ApiOperation(value = "提交送检单")
-    public DataResponse<T> submitSubmission(@RequestBody ExamineReqDTO examineReqDTO) throws Exception {
-        submissionService.submitSubmission(examineReqDTO);
+    public DataResponse<T> submitSubmission(@RequestBody SubmissionReqDTO submissionReqDTO) throws Exception {
+        submissionService.submitSubmission(submissionReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/examine")
     @ApiOperation(value = "审核送检单")
-    public DataResponse<T> examineSubmission(@RequestBody ExamineReqDTO examineReqDTO) {
-        submissionService.examineSubmission(examineReqDTO);
+    public DataResponse<T> examineSubmission(@RequestBody SubmissionReqDTO submissionReqDTO) {
+        submissionService.examineSubmission(submissionReqDTO);
         return DataResponse.success();
     }
 
