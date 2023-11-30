@@ -17,6 +17,7 @@ import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.mea.CheckPlanMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.mea.CheckPlanService;
@@ -45,6 +46,9 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private BpmnService bpmnService;
@@ -182,7 +186,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             CheckPlanReqDTO reqDTO = new CheckPlanReqDTO();
             BeanUtils.copyProperties(res, reqDTO);
             reqDTO.setWorkFlowInstId(processId);
-            reqDTO.setWorkFlowInstStatus("已提交");
+            reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.CHECK_PLAN_SUBMIT.value()));
             reqDTO.setPlanStatus("20");
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -214,7 +218,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, examineReqDTO.getOpinion());
-                reqDTO.setWorkFlowInstStatus("待提交");
+                reqDTO.setWorkFlowInstId("");
+                reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setPlanStatus("10");
             }
         }

@@ -18,6 +18,7 @@ import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
@@ -77,6 +78,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private BpmnService bpmnService;
@@ -248,7 +252,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您的组织机构为空，请确认。");
             }
             String processId = bpmnService.commit(overhaulWeekPlanReqDTO.getWeekPlanCode(), BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value(), null, null, overhaulWeekPlanReqDTO.getExamineReqDTO().getUserIds());
-            overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已提交");
+            overhaulWeekPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value()));
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
             } else {
@@ -286,7 +290,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion());
-                overhaulWeekPlanReqDTO.setWorkFlowInstStatus("待提交");
+                overhaulWeekPlanReqDTO.setWorkFlowInstId("");
+                overhaulWeekPlanReqDTO.setWorkFlowInstStatus("");
                 overhaulWeekPlanReqDTO.setPlanStatus("10");
             }
         }

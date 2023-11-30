@@ -15,6 +15,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.mea.SubmissionService;
@@ -40,6 +41,9 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Autowired
     private SubmissionMapper submissionMapper;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private BpmnService bpmnService;
@@ -138,7 +142,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             SubmissionReqDTO reqDTO = new SubmissionReqDTO();
             BeanUtils.copyProperties(res, reqDTO);
             reqDTO.setWorkFlowInstId(processId);
-            reqDTO.setWorkFlowInstStatus("已提交");
+            reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.SUBMISSION_SUBMIT.value()));
             reqDTO.setSendVerifyStatus("20");
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -168,7 +172,8 @@ public class SubmissionServiceImpl implements SubmissionService {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, examineReqDTO.getOpinion());
-                reqDTO.setWorkFlowInstStatus("待提交");
+                reqDTO.setWorkFlowInstId("");
+                reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setRecStatus("10");
             }
         }

@@ -16,6 +16,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.overhaul.OverhaulPlanService;
@@ -62,6 +63,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Autowired
     private OverhaulItemMapper overhaulItemMapper;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private BpmnService bpmnService;
@@ -254,7 +258,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 String processId = overhaulPlanReqDTO.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, overhaulPlanReqDTO.getExamineReqDTO().getOpinion());
-                overhaulPlanReqDTO.setWorkFlowInstStatus("待提交");
+                overhaulPlanReqDTO.setWorkFlowInstId("");
+                overhaulPlanReqDTO.setWorkFlowInstStatus("");
                 overhaulPlanReqDTO.setTrialStatus("10");
             }
         }
@@ -584,7 +589,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
         }
         overhaulPlanReqDTO.setWorkFlowInstId(processId);
-        overhaulPlanReqDTO.setWorkFlowInstStatus("已提交");
+        overhaulPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.ORDER_PLAN_SUBMIT.value()));
         overhaulPlanReqDTO.setTrialStatus("20");
         overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
