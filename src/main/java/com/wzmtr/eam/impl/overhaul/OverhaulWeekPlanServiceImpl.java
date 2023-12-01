@@ -292,7 +292,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 bpmnService.reject(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion());
                 overhaulWeekPlanReqDTO.setWorkFlowInstId("");
                 overhaulWeekPlanReqDTO.setWorkFlowInstStatus("");
-                overhaulWeekPlanReqDTO.setPlanStatus("10");
+                overhaulWeekPlanReqDTO.setTrialStatus("10");
             }
         }
         overhaulWeekPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -343,7 +343,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 orderCode = CodeUtils.getNextCode(orderCode, 10);
             }
             insertInspectPlan(plan.getPlanCode(), new String[]{orderCode, weekPlanCode, plan.getFirstBeginTime()});
-            if (!"".equals(plan.getConstructionType().trim())) {
+            if (!Objects.isNull(plan.getConstructionType()) && !"".equals(plan.getConstructionType().trim())) {
                 plan.setExt1(orderCode);
                 try {
                     sendConstrctioOrderMsg(plan);

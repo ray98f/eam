@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
@@ -17,6 +18,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
+import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.overhaul.OverhaulPlanService;
@@ -73,6 +75,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     @Autowired
     private OrganizationMapper organizationMapper;
 
+    @Autowired
+    private FaultQueryMapper faultQueryMapper;
+
     @Override
     public Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO) {
         overhaulPlanListReqDTO.setTrialStatus("'20','10','30'");
@@ -99,6 +104,14 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
         res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
         return res;
+    }
+
+    @Override
+    public List<FaultRepairDeptResDTO> queryDept(String lineNo, String subjectCode) {
+        if (StringUtils.isEmpty(lineNo) || StringUtils.isEmpty(subjectCode)) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        return faultQueryMapper.queryDeptCode(lineNo, subjectCode, "20");
     }
 
     @Override

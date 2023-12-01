@@ -3,6 +3,7 @@ package com.wzmtr.eam.controller.overhaul;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulObjectReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulPlanListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulPlanReqDTO;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
@@ -47,6 +48,13 @@ public class ZCOverhaulPlanController {
     @ApiOperation(value = "获取检修计划（中车）详情")
     public DataResponse<OverhaulPlanResDTO> getOverhaulPlanDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(overhaulPlanService.getOverhaulPlanDetail(id));
+    }
+
+    @GetMapping("/plan/queryDept")
+    @ApiOperation(value = "检修计划（中车）获取作业工班")
+    public DataResponse<List<FaultRepairDeptResDTO>> queryDept(@RequestParam String lineNo,
+                                                               @RequestParam String subjectCode) {
+        return DataResponse.of(overhaulPlanService.queryDept(lineNo, subjectCode));
     }
 
     @PostMapping("/plan/add")
