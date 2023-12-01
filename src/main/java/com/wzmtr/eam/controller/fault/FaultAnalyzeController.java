@@ -56,7 +56,7 @@ public class FaultAnalyzeController {
     }
 
     @ApiOperation(value = "故障分析流程审核")
-    @PostMapping("/pass")
+    @PostMapping("/examine")
     public DataResponse<String> pass(@RequestBody FaultExamineReqDTO reqDTO) {
         //com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
         analyzeService.pass(reqDTO);

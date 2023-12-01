@@ -11,7 +11,6 @@ import lombok.Data;
  * String: 2023/9/5 15:49
  */
 @Data
-@Builder
 @TableName("T_FAULT_DETAIL")
 public class FaultAnalyzeDO {
     @TableId(value = "REC_ID")

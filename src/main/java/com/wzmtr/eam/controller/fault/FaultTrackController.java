@@ -68,7 +68,7 @@ public class FaultTrackController {
 
 
     @ApiOperation(value = "审核通过")
-    @PostMapping("/fault/track/pass")
+    @PostMapping("/fault/track/examine")
     public DataResponse<String> pass(@RequestBody FaultExamineReqDTO reqDTO) {
         trackService.pass(reqDTO);
         return DataResponse.success();
