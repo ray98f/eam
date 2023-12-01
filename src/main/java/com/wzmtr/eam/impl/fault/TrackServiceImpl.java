@@ -205,7 +205,7 @@ public class TrackServiceImpl implements TrackService {
         }
         // 记录日志
         workFlowLogService.add(WorkFlowLogBO.builder()
-                .status("报告提交")
+                .status(BpmnStatus.SUBMIT.getDesc())
                 .userIds(userIds)
                 .workFlowInstId(processId)
                 .build());
@@ -225,7 +225,6 @@ public class TrackServiceImpl implements TrackService {
                 .status(BpmnStatus.PASS.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(processId)
-                .remark(TokenUtil.getCurrentPersonId() + BpmnStatus.PASS.getDesc())
                 .build());
     }
 
@@ -236,13 +235,12 @@ public class TrackServiceImpl implements TrackService {
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_TRACK.value()).contains(dmfm09.getWorkFlowInstStatus())) {
                 bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}");
             }
+            dmfm09.setRecStatus("40");
+            dmfm09.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus()));
+            faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         } catch (Exception e) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "agree error");
         }
-        // submtStatus = WorkflowHelper.submit(taskId, userId, comment, "", nextUser, null);
-        dmfm09.setRecStatus("40");
-        dmfm09.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus()));
-        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
     }
 
 
@@ -251,12 +249,16 @@ public class TrackServiceImpl implements TrackService {
     public void returns(FaultExamineReqDTO reqDTO) {
         List<FaultTrackDO> list = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
         FaultTrackDO dmfm09 = list.get(0);
-        // String userId = UserUtil.getLoginId();
         String processId = dmfm09.getWorkFlowInstId();
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(taskId, reqDTO.getExamineReqDTO().getOpinion());
         dmfm09.setRecStatus("30");
-        dmfm09.setWorkFlowInstStatus("驳回成功");
+        dmfm09.setWorkFlowInstStatus("");
         faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+        workFlowLogService.add(WorkFlowLogBO.builder()
+                .status(BpmnStatus.REJECT.getDesc())
+                .userIds(reqDTO.getExamineReqDTO().getUserIds())
+                .workFlowInstId(processId)
+                .build());
     }
 }

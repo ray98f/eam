@@ -22,8 +22,7 @@ public class __BeanUtil {
             BeanMap.create(to).putAll(BeanMap.create(from));
             return to;
         } catch (Exception e) {
-            log.error("class " + from.getClass().getCanonicalName() + " can not copy to class " + to.getClass().getCanonicalName());
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "class " + from.getClass().getCanonicalName() + " can not copy to class " + to.getClass().getCanonicalName());
         }
     }
 
@@ -37,8 +36,7 @@ public class __BeanUtil {
             BeanMap.create(to).putAll(BeanMap.create(from));
             return to;
         } catch (Exception e) {
-            log.error("class " + from.getClass().getCanonicalName() + " can not convert to class " + clazz.getCanonicalName());
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "class " + from.getClass().getCanonicalName() + " can not convert to class " + clazz.getCanonicalName());
         }
     }
 }

@@ -16,13 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkFlowLogBO {
-    private String id;
     private String workFlowInstId;
     private List<String> userIds;
     private String status;
+    private String remark;
+
+    /*************不必填**************/
     //转换成逗号分割的userId
     private String userId;
-    private String remark;
+    private String id;
     private String creator;
     private String createTime;
 }

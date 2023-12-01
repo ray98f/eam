@@ -55,7 +55,7 @@ public interface RoleMapper {
     List<String> getNodeIdsByFlowId(@Param("flowId") String flowId);
 
     /**
-     * 获取流程第二步的role
+     * 获取流程第二步的node
      * @param flowId
      * @return
      */

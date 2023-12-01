@@ -113,7 +113,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (StringUtils.isEmpty(dmfm03.getWorkFlowInstId())) {
             try {
                 processId = bpmnService.commit(faultAnalysisNo, BpmnFlowEnum.FAULT_ANALIZE.value(), null, null, reqDTO.getExamineReqDTO().getUserIds());
-                dmfm03.setWorkFlowInstStatus("提交审核");
+                dmfm03.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.FAULT_ANALIZE.value()));
                 dmfm03.setWorkFlowInstId(processId);
                 dmfm03.setRecStatus("20");
             } catch (Exception e) {
@@ -125,7 +125,6 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 .status("报告提交")
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(processId)
-                .remark(TokenUtil.getCurrentPersonId() + BpmnStatus.SUBMIT.getDesc())
                 .build());
         faultAnalyzeMapper.update(dmfm03);
     }
@@ -150,7 +149,6 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 .status(BpmnStatus.PASS.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(faultAnalyzeDO.getWorkFlowInstId())
-                .remark(TokenUtil.getCurrentPersonId() + BpmnStatus.PASS.getDesc())
                 .build());
     }
 
@@ -169,7 +167,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         dmfm03.setWorkFlowInstStatus("");
         faultAnalyzeMapper.update(dmfm03);
         workFlowLogService.add(WorkFlowLogBO.builder()
-                .status("报告提交")
+                .status(BpmnStatus.REJECT.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(dmfm03.getWorkFlowInstId())
                 .build());

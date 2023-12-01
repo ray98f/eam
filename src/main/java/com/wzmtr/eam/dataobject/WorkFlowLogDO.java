@@ -14,7 +14,7 @@ import java.util.List;
 public class WorkFlowLogDO {
     private String id;
     private String workFlowInstId;
-    private String userIds;
+    private String userId;
     private String status;
     private String createTime;
     private String creator;
