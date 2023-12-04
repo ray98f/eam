@@ -189,11 +189,11 @@ public class DetectionServiceImpl implements DetectionService {
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.DETECTION_SUBMIT.value()).contains(reqDTO.getWorkFlowInstStatus())) {
-                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(), String.join(",", detectionReqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + res.getCheckNo() + "\"}");
+                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(), String.join(",", detectionReqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + res.getCheckNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.DETECTION_SUBMIT.value(), reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setRecStatus("20");
             } else {
-                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getCheckNo() + "\"}");
+                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getCheckNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setRecStatus("30");
                 List<DetectionDetailResDTO> list = detectionMapper.queryMsg(reqDTO.getRecId());

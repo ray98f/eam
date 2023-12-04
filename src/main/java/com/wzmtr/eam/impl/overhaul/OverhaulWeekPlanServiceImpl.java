@@ -281,7 +281,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
             String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
-            bpmnService.agree(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + overhaulWeekPlanReqDTO.getWeekPlanCode() + "\"}");
+            bpmnService.agree(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + overhaulWeekPlanReqDTO.getWeekPlanCode() + "\"}", null);
             overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已完成");
         } else {
             if (!"20".equals(overhaulWeekPlanReqDTO.getTrialStatus())) {

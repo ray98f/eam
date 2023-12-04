@@ -207,7 +207,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             }
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
-            bpmnService.agree(taskId, checkPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
+            bpmnService.agree(taskId, checkPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}", null);
             reqDTO.setWorkFlowInstStatus("已完成");
             reqDTO.setPlanStatus("30");
         } else {

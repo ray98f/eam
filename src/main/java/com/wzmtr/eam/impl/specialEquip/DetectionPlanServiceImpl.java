@@ -184,11 +184,11 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value()).contains(reqDTO.getWorkFlowInstStatus())) {
-                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(), String.join(",", detectionPlanReqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
+                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(), String.join(",", detectionPlanReqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + res.getInstrmPlanNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setPlanStatus("20");
             } else {
-                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}");
+                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setPlanStatus("30");
             }

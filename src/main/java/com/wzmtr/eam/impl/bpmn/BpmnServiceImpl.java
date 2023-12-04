@@ -313,15 +313,20 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     @Override
-    public void agree(String taskId, String opinion, String fromId, String formData) {
+    public void agree(String taskId, String opinion, String fromId, String formData, String modelId) {
         BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
         if (StringUtils.isNotEmpty(formData)) {
             bpmnExamineDTO.setFormData(formData);
         }
         // 根据procId获取最新的taskId
         bpmnExamineDTO.setTaskId(taskId);
-        // 获取流程引擎下一个流程节点key
-        String nodeId = nextTaskKey(taskId);
+        String nodeId = "";
+        if (modelId != null) {
+            nodeId = modelId;
+        } else {
+            // 获取流程引擎下一个流程节点key
+            nodeId = nextTaskKey(taskId);
+        }
         String flowId = getDefKeyByTaskId(taskId);
         // 获取审核人是谁填入
         if (StringUtils.isEmpty(fromId)) {
