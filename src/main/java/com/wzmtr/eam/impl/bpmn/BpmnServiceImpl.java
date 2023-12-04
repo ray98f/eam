@@ -389,7 +389,7 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     @Override
-    public String commit(String id, String flow, String otherParam, String roleCode, List<String> userIds) throws Exception {
+    public String commit(String id, String flow, String otherParam, String roleCode, List<String> userIds, String modelId) throws Exception {
         List<FlowRes> list = queryFlowList(BpmnFlowEnum.getLabelByValue(flow), flow);
             if (CollectionUtil.isEmpty(list)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
@@ -402,8 +402,13 @@ public class BpmnServiceImpl implements BpmnService {
         } else {
             startInstanceVO.setFormData(otherParam);
         }
-        // 获取流程引擎该表单第一个taskKey
-        String nodeId = queryFirstTaskKeyByModelId(startInstanceVO.getModelId());
+        String nodeId = "";
+        if (modelId != null) {
+            nodeId = modelId;
+        } else {
+            // 获取流程引擎该表单第一个taskKey
+            nodeId = queryFirstTaskKeyByModelId(startInstanceVO.getModelId());
+        }
         List<String> bpmnExaminePersonId = new ArrayList<>();
         if (userIds != null && !userIds.isEmpty()) {
             bpmnExaminePersonId = userIds;

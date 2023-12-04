@@ -56,7 +56,7 @@ public interface BpmnService {
 
     void reject(String id, String opinion);
 
-    String commit(String id, String flow, String otherParam, String roleId, List<String> userIds) throws Exception;
+    String commit(String id, String flow, String otherParam, String roleId, List<String> userIds, String modelId) throws Exception;
 
     String getNextNodeId(String flowId, String nodeId);
 }

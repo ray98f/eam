@@ -154,7 +154,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (!"10".equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态无法提交");
         } else {
-            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null, null, detectionPlanReqDTO.getExamineReqDTO().getUserIds());
+            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null, null, detectionPlanReqDTO.getExamineReqDTO().getUserIds(), null);
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }

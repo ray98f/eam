@@ -133,7 +133,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             if (result.size() == 0) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "此送检单不存在计划明细，无法提交");
             }
-            String processId = bpmnService.commit(res.getSendVerifyNo(), BpmnFlowEnum.SUBMISSION_SUBMIT.value(), null, null, submissionReqDTO.getExamineReqDTO().getUserIds());
+            String processId = bpmnService.commit(res.getSendVerifyNo(), BpmnFlowEnum.SUBMISSION_SUBMIT.value(), null, null, submissionReqDTO.getExamineReqDTO().getUserIds(), null);
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }

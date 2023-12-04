@@ -597,7 +597,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void submitOrderPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
         // OrderPlan  submitOrderPlan
         // /iam/org/getZcOverhaulPlanExamineUser接口获取审核人
-        String processId = bpmnService.commit(overhaulPlanReqDTO.getPlanCode(), BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(), null, null, overhaulPlanReqDTO.getExamineReqDTO().getUserIds());
+        String processId = bpmnService.commit(overhaulPlanReqDTO.getPlanCode(), BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(), null, null, overhaulPlanReqDTO.getExamineReqDTO().getUserIds(), null);
         if (processId == null || "-1".equals(processId)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
         }

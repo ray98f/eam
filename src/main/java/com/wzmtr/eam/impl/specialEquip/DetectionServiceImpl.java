@@ -159,7 +159,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (!"10".equals(res.getRecStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可提交");
         } else {
-            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null, null, detectionReqDTO.getExamineReqDTO().getUserIds());
+            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null, null, detectionReqDTO.getExamineReqDTO().getUserIds(), null);
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }

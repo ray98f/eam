@@ -251,7 +251,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             if (StringUtils.isBlank(TokenUtil.getCurrentPerson().getOfficeId())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您的组织机构为空，请确认。");
             }
-            String processId = bpmnService.commit(overhaulWeekPlanReqDTO.getWeekPlanCode(), BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value(), null, null, overhaulWeekPlanReqDTO.getExamineReqDTO().getUserIds());
+            String processId = bpmnService.commit(overhaulWeekPlanReqDTO.getWeekPlanCode(), BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value(), null, null, overhaulWeekPlanReqDTO.getExamineReqDTO().getUserIds(), null);
             overhaulWeekPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value()));
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");

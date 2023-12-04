@@ -175,7 +175,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             overhaulTplReqDTO.setWorkFlowInstStatus("运营-车辆专工：" + TokenUtil.getCurrentPersonId());
             overhaulTplReqDTO.setTrialStatus("30");
         } else {
-            String processId = bpmnService.commit(overhaulTplReqDTO.getTemplateId(), BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null, overhaulTplReqDTO.getExamineReqDTO().getUserIds());
+            String processId = bpmnService.commit(overhaulTplReqDTO.getTemplateId(), BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null, overhaulTplReqDTO.getExamineReqDTO().getUserIds(), null);
             overhaulTplReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value()));
             if (processId == null || "-1".equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败！");
