@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class JsonConfig {
     @Bean
-    public ObjectMapper objectMapper() {
+    public ObjectMapper jsonObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         // 日期和时间格式化
         JavaTimeModule javaTimeModule = new JavaTimeModule();
