@@ -234,14 +234,14 @@ public class TrackServiceImpl implements TrackService {
     public void _agree(FaultExamineReqDTO reqDTO, FaultTrackDO dmfm09, String taskId, String faultTrackNo) {
         try {
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_TRACK.value()).contains(dmfm09.getWorkFlowInstStatus())) {
+                String reviewOrNot = null;
                 // 提交部长审核指定下一流程
                 if (null != reqDTO.getReviewOrNot() && reqDTO.getReviewOrNot()) {
-                    bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}", CommonConstants.FAULT_TRACK_REVIEW_NODE);
-                } else {
-                    bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}", null);
+                    reviewOrNot = CommonConstants.FAULT_TRACK_REVIEW_NODE;
                 }
+                bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}", reviewOrNot);
+                dmfm09.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus()));
             }
-            dmfm09.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus()));
             dmfm09.setRecRevisor(TokenUtil.getCurrentPersonId());
             dmfm09.setRecReviseTime(DateUtil.getCurrentTime());
             // 空了说明没有下一步了,此时更新状态
