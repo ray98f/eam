@@ -120,7 +120,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulWeekPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -154,7 +154,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulWeekPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -163,7 +163,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (!"10".equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         overhaulWeekPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -176,10 +176,10 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulWeekPlanResDTO resDTO = overhaulWeekPlanMapper.getOverhaulWeekPlanDetail(id);
-                if (!"10".equals(resDTO.getTrialStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+                if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
                     if (Objects.isNull(resDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
@@ -204,7 +204,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void triggerOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulWeekPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -224,7 +224,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写！");
         }
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulWeekPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -236,7 +236,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO = new OverhaulWeekPlanListReqDTO();
         overhaulWeekPlanListReqDTO.setWeekPlanCode(overhaulWeekPlanReqDTO.getWeekPlanCode());
         List<OverhaulWeekPlanResDTO> list = overhaulWeekPlanMapper.listOverhaulWeekPlan(overhaulWeekPlanListReqDTO);
-        if (!"10".equals(list.get(0).getTrialStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(list.get(0).getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "送审");
         }
         List<OverhaulPlanResDTO> list11 = overhaulPlanMapper.queryWeekObj(overhaulWeekPlanReqDTO.getWeekPlanCode());
@@ -271,10 +271,10 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     @Override
     public void examineOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
         if (overhaulWeekPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
-            if ("30".equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
+            if (CommonConstants.THIRTY_STRING.equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
-            if ("10".equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
+            if (CommonConstants.TEN_STRING.equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
             }
             overhaulWeekPlanReqDTO.setTrialStatus("30");
@@ -284,7 +284,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             bpmnService.agree(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + overhaulWeekPlanReqDTO.getWeekPlanCode() + "\"}", null);
             overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已完成");
         } else {
-            if (!"20".equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
@@ -798,7 +798,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         if (CollectionUtil.isEmpty(planList)){
             return null;
         }
-        if ("07".equals(planList.get(0).getSubjectCode())) {
+        if (CommonConstants.CAR_SUBJECT_CODE.equals(planList.get(0).getSubjectCode())) {
             List<OverhaulObjectResDTO> objectList = overhaulPlanMapper.listOverhaulObject(overhaulObjectReqDTO.getPlanCode(), null, null, null, null, null);
             if (CollectionUtil.isNotEmpty(objectList)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "车辆专业的计划只能有一条设备对象！");

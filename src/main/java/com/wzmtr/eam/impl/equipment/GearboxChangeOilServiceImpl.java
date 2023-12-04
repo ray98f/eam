@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.GearboxChangeOilReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -134,7 +135,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
                 map.put("列车号", resDTO.getTrainNo());
                 map.put("列车公里数", String.valueOf(resDTO.getTotalMiles()));
                 map.put("完成日期", resDTO.getCompleteDate());
-                map.put("作业单位", "10".equals(resDTO.getOrgType()) ? "维保" : "20".equals(resDTO.getOrgType()) ? "售后服务站" : "30".equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
+                map.put("作业单位", CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
                 map.put("作业人员", resDTO.getOperator());
                 map.put("确认人员", resDTO.getConfirmor());
                 map.put("备注", resDTO.getRemark());

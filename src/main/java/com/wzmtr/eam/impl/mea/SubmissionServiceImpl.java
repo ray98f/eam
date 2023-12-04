@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionListReqDTO;
@@ -61,7 +62,7 @@ public class SubmissionServiceImpl implements SubmissionService {
     public void addSubmission(SubmissionReqDTO submissionReqDTO) {
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String sendVerifyNo = submissionMapper.getMaxCode();
-        if (sendVerifyNo == null || "".equals(sendVerifyNo) || !("20" + sendVerifyNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (sendVerifyNo == null || "".equals(sendVerifyNo) || !(CommonConstants.TWENTY_STRING + sendVerifyNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             sendVerifyNo = "JW" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             sendVerifyNo = CodeUtils.getNextCode(sendVerifyNo, 8);
@@ -84,7 +85,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
-        if (!"10".equals(res.getSendVerifyStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(res.getSendVerifyStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         submissionReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -103,7 +104,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
-                if (!"10".equals(res.getSendVerifyStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(res.getSendVerifyStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 submissionMapper.deleteSubmissionDetail(null, res.getSendVerifyNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -126,7 +127,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!"10".equals(res.getSendVerifyStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(res.getSendVerifyStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "提交");
         } else {
             List<SubmissionDetailResDTO> result = submissionMapper.listSubmissionDetail(res.getSendVerifyNo());
@@ -154,7 +155,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         SubmissionReqDTO reqDTO = new SubmissionReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
         if (submissionReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
-            if ("30".equals(res.getSendVerifyStatus())) {
+            if (CommonConstants.THIRTY_STRING.equals(res.getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             } else {
                 String processId = res.getWorkFlowInstId();
@@ -164,7 +165,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 reqDTO.setRecStatus("30");
             }
         } else {
-            if (!"20".equals(res.getRecStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(res.getRecStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = res.getWorkFlowInstId();
@@ -228,7 +229,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
-            if (!"10".equals(list.get(0).getSendVerifyStatus())) {
+            if (!CommonConstants.TEN_STRING.equals(list.get(0).getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "新增");
             }
         }
@@ -248,7 +249,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
-            if (!"10".equals(list.get(0).getSendVerifyStatus())) {
+            if (!CommonConstants.TEN_STRING.equals(list.get(0).getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
@@ -272,7 +273,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                     if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }
-                    if (!"10".equals(list.get(0).getSendVerifyStatus())) {
+                    if (!CommonConstants.TEN_STRING.equals(list.get(0).getSendVerifyStatus())) {
                         throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
                     }
                 }

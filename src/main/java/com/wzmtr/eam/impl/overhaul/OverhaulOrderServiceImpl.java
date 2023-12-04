@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.overhaul;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultInfoReqDTO;
@@ -160,7 +161,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void dispatchWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulOrderReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -187,7 +188,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void auditWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulOrderReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -196,7 +197,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if ("07".equals(overhaulOrderReqDTO.getSubjectCode()) && !overhaulOrderReqDTO.getPlanName().contains("二级修")) {
+        if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderReqDTO.getSubjectCode()) && !overhaulOrderReqDTO.getPlanName().contains("二级修")) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有工单为车辆二级修才能进行该操作。");
         }
         checkOrderState(overhaulOrderReqDTO, "4", "完工");
@@ -218,7 +219,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void confirmWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulOrderReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -257,7 +258,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 List<WoRuleResDTO.WoRuleDetail> rules = woRuleMapper.listWoRuleDetail(plans.get(0).getRuleCode(), nowDate.substring(nowDate.length() - 4), nowDate.substring(nowDate.length() - 4));
                 int trigerMiles = 0;
                 if (rules.size() > 0) {
-                    if ("07".equals(overhaulOrderReqDTO.getSubjectCode())) {
+                    if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderReqDTO.getSubjectCode())) {
                         List<String> queryObjMiles = overhaulOrderMapper.queryObjMiles(plans.get(0).getPlanCode());
                         if (queryObjMiles != null && queryObjMiles.size() > 0) {
                             int mileage = Integer.parseInt(rules.get(0).getExt1());

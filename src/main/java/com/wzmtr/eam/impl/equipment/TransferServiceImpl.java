@@ -63,9 +63,9 @@ public class TransferServiceImpl implements TransferService {
         String eamProcessStatus1 = null;
         String eamProcessStatus2 = null;
         if (eamProcessStatus != null && !"".equals(eamProcessStatus)) {
-            if ("20".equals(eamProcessStatus)) {
+            if (CommonConstants.TWENTY_STRING.equals(eamProcessStatus)) {
                 eamProcessStatus1 = "20";
-            } else if ("30".equals(eamProcessStatus)) {
+            } else if (CommonConstants.THIRTY_STRING.equals(eamProcessStatus)) {
                 eamProcessStatus = "20";
                 eamProcessStatus2 = "30";
             }
@@ -186,7 +186,7 @@ public class TransferServiceImpl implements TransferService {
                 if (!matches) {
                     throw new CommonException(ErrorCode.TRANSFER_QUANTITY_ERROR, transferResDTO.getTransferNo());
                 }
-                if ("20".equals(transferResDTO.getEamProcessStatus())) {
+                if (CommonConstants.TWENTY_STRING.equals(transferResDTO.getEamProcessStatus())) {
                     throw new CommonException(ErrorCode.TRANSFER_HAS_HANDLE, transferResDTO.getTransferNo());
                 }
                 CurrentLoginUser user = TokenUtil.getCurrentPerson();
@@ -292,7 +292,7 @@ public class TransferServiceImpl implements TransferService {
         if (Objects.isNull(equipmentResDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!"10".equals(equipmentResDTO.getApprovalStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(equipmentResDTO.getApprovalStatus())) {
             throw new CommonException(ErrorCode.TRANSFER_SPLIT_ERROR);
         }
         updateTransfer(equipmentResDTO);
@@ -306,7 +306,7 @@ public class TransferServiceImpl implements TransferService {
                 if (StringUtils.isBlank(resDTO.getStartUseDate()) || StringUtils.isBlank(resDTO.getSystemCode()) || StringUtils.isBlank(resDTO.getEquipTypeCode())) {
                     throw new CommonException(ErrorCode.REQUIRED_NULL, "设备" + resDTO.getEquipCode());
                 }
-                if (!"10".equals(resDTO.getApprovalStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(resDTO.getApprovalStatus())) {
                     throw new CommonException(ErrorCode.TRANSFER_SPLIT_ERROR);
                 }
             }
@@ -452,7 +452,7 @@ public class TransferServiceImpl implements TransferService {
     public void updateTransfer(EquipmentResDTO resDTO) {
         resDTO.setSpecialEquipFlag("10");
         List<EquipmentCategoryResDTO> msgs = equipmentCategoryMapper.listEquipmentCategory(null, resDTO.getEquipTypeCode(), null);
-        if (msgs != null && msgs.size() > 0 && "20".equals(msgs.get(0).getExt1().trim())) {
+        if (msgs != null && msgs.size() > 0 && CommonConstants.TWENTY_STRING.equals(msgs.get(0).getExt1().trim())) {
             resDTO.setSpecialEquipFlag("20");
         }
         resDTO.setMajorName(equipmentCategoryMapper.getIndexByIndex(resDTO.getMajorCode(), null, null).getNodeName());

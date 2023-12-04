@@ -591,11 +591,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             } else if ("DM_006".equals(ext2)) {
                 overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
                 if (cos.contains(majorCode)) {
-                    if ("07".equals(majorCode)) {
+                    if (CommonConstants.CAR_SUBJECT_CODE.equals(majorCode)) {
                         // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
                         // String stepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "04", "1");
                         // status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_007", stepOrg, "故障关闭", "DMFM0001", currentUser, majorCode, lineCode, "30", content);
-                    } else if ("06".equals(majorCode)) {
+                    } else if (CommonConstants.CAR_DEVICE_SUBJECT_CODE.equals(majorCode)) {
                         // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
                         // String stepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "05", "1");
                         // status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_037", stepOrg, "故障关闭", "DMFM0001", currentUser, majorCode, lineCode, "30", content);
@@ -685,11 +685,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             String majorCode = a.getMajorCode();
             String majorName = a.getMajorName();
             if (cos.contains(majorCode)) {
-                if ("07".equals(majorCode)) {
+                if (CommonConstants.CAR_SUBJECT_CODE.equals(majorCode)) {
                     // todo
                     // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已验收，请及时在EAM系统完工确认！";
                     // overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_007", stepOrg, "故障完工确认", "DMFM0001", currentUser, majorCode, lineCode, "30", content);
-                } else if ("06".equals(majorCode)) {
+                } else if (CommonConstants.CAR_DEVICE_SUBJECT_CODE.equals(majorCode)) {
                     // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已验收，请及时在EAM系统完工确认！";
                     // ISendMessage.sendMoblieMessageByGroup(messageInfo);
                     // status = DMUtil.insertTODOWithUserGroup("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_037", "故障完工确认", "DMFM0001", currentUser);

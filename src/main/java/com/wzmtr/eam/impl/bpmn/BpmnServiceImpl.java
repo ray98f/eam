@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.*;
 import com.wzmtr.eam.dto.res.bpmn.*;
 import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
@@ -70,7 +71,7 @@ public class BpmnServiceImpl implements BpmnService {
         String data = JSONObject.toJSONString(startInstanceVO);
         log.info("startInstance调用入参：[{}]",data);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_START, data, httpServletRequest.getHeader("Authorization-Flow")));
-        if ("0".equals(jsonObject.getString("code"))) {
+        if (CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
             return jsonObject.getString("procId");
         } else {
             return null;
@@ -173,7 +174,7 @@ public class BpmnServiceImpl implements BpmnService {
     public String queryFirstTaskKeyByModelId(String modelId) throws Exception {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
-        if (!"0".equals(jsonObject.getString("code"))) {
+        if (!CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, jsonObject.getString("msg"));
         }
         String xml = jsonObject.getString("xml");
@@ -193,7 +194,7 @@ public class BpmnServiceImpl implements BpmnService {
     public String queryTaskNameByModelIdAndTaskKey(String modelId, String taskKey) throws Exception {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
-        if (!"0".equals(jsonObject.getString("code"))) {
+        if (!CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, jsonObject.getString("msg"));
         }
         String xml = jsonObject.getString("xml");
@@ -234,13 +235,17 @@ public class BpmnServiceImpl implements BpmnService {
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
         List<ExaminedListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), ExaminedListRes.class);
-        int total = originalList.size();  // 总记录数
-        int startIndex = (req.getPageNo() - 1) * req.getPageSize();    // 起始索引
-        int endIndex = Math.min(startIndex + req.getPageSize(), total);   // 结束索引，防止越界
+        // 总记录数
+        int total = originalList.size();
+        // 起始索引
+        int startIndex = (req.getPageNo() - 1) * req.getPageSize();
+        // 结束索引，防止越界
+        int endIndex = Math.min(startIndex + req.getPageSize(), total);
         if (startIndex > endIndex) {
             return null;
         }
-        List<ExaminedListRes> paginatedList = originalList.subList(startIndex, endIndex);   // 获取分页结果
+        // 获取分页结果
+        List<ExaminedListRes> paginatedList = originalList.subList(startIndex, endIndex);
         Page<ExaminedListRes> pageInfo = new Page<>();
         pageInfo.setRecords(paginatedList);
         pageInfo.setTotal(total);
@@ -257,13 +262,17 @@ public class BpmnServiceImpl implements BpmnService {
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
         List<RunningListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), RunningListRes.class);
-        int total = originalList.size();  // 总记录数
-        int startIndex = (req.getPageNo() - 1) * req.getPageSize();    // 起始索引
-        int endIndex = Math.min(startIndex + req.getPageSize(), total);   // 结束索引，防止越界
+        // 总记录数
+        int total = originalList.size();
+        // 起始索引
+        int startIndex = (req.getPageNo() - 1) * req.getPageSize();
+        // 结束索引，防止越界
+        int endIndex = Math.min(startIndex + req.getPageSize(), total);
         if (startIndex > endIndex) {
             return null;
         }
-        List<RunningListRes> paginatedList = originalList.subList(startIndex, endIndex);   // 获取分页结果
+        // 获取分页结果
+        List<RunningListRes> paginatedList = originalList.subList(startIndex, endIndex);
         Page<RunningListRes> pageInfo = new Page<>();
         pageInfo.setRecords(paginatedList);
         pageInfo.setTotal(total);
@@ -288,13 +297,17 @@ public class BpmnServiceImpl implements BpmnService {
 
         // pagehelper不支持普通list分页 手动分页
         List<HisListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), HisListRes.class);
-        int total = originalList.size();  // 总记录数
-        int startIndex = (req.getPageNo() - 1) * req.getPageSize();    // 起始索引
-        int endIndex = Math.min(startIndex + req.getPageSize(), total);   // 结束索引，防止越界
+        // 总记录数
+        int total = originalList.size();
+        // 起始索引
+        int startIndex = (req.getPageNo() - 1) * req.getPageSize();
+        // 结束索引，防止越界
+        int endIndex = Math.min(startIndex + req.getPageSize(), total);
         if (startIndex > endIndex) {
             return null;
         }
-        List<HisListRes> paginatedList = originalList.subList(startIndex, endIndex);   // 获取分页结果
+        // 获取分页结果
+        List<HisListRes> paginatedList = originalList.subList(startIndex, endIndex);
         Page<HisListRes> pageInfo = new Page<>();
         pageInfo.setRecords(paginatedList);
         pageInfo.setTotal(total);
@@ -388,7 +401,7 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     @Override
-    public String commit(String id, String flow, String otherParam, String roleCode, List<String> userIds, String modelId) throws Exception {
+    public String commit(String id, String flow, String otherParam, String roleCode, List<String> userIds, String nodeId) throws Exception {
         List<FlowRes> list = queryFlowList(BpmnFlowEnum.getLabelByValue(flow), flow);
             if (CollectionUtil.isEmpty(list)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
@@ -401,7 +414,7 @@ public class BpmnServiceImpl implements BpmnService {
         } else {
             startInstanceVO.setFormData(otherParam);
         }
-        String nodeId = StringUtils.isEmpty(modelId) ? queryFirstTaskKeyByModelId(startInstanceVO.getModelId()) : modelId;
+        nodeId = StringUtils.isEmpty(nodeId) ? queryFirstTaskKeyByModelId(startInstanceVO.getModelId()) : nodeId;
         List<String> bpmnExaminePersonId = new ArrayList<>();
         if (userIds != null && !userIds.isEmpty()) {
             bpmnExaminePersonId = userIds;

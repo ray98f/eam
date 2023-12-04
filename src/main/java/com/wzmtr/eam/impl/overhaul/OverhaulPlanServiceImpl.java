@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
@@ -123,7 +124,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) || StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -154,7 +155,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void modifyOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -163,7 +164,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (!"10".equals(overhaulPlanReqDTO.getTrialStatus()) && !"90".equals(overhaulPlanReqDTO.getTrialStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !"90".equals(overhaulPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) ||
@@ -182,7 +183,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulPlanResDTO resDTO = overhaulPlanMapper.getOverhaulPlanDetail(id, "1");
-                if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+                if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
                     if (Objects.isNull(resDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
@@ -191,7 +192,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
                 }
-                if (!"10".equals(resDTO.getTrialStatus()) && !"90".equals(resDTO.getTrialStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) && !"90".equals(resDTO.getTrialStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 overhaulPlanMapper.deleteOverhaulPlanDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -210,7 +211,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     @Override
     public void triggerOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
         if (checkHasNotOrder(overhaulPlanReqDTO.getPlanCode())) {
-            if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+            if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
                 if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                     throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                 }
@@ -227,7 +228,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void submitOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -236,7 +237,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (!"10".equals(overhaulPlanReqDTO.getTrialStatus()) && !"90".equals(overhaulPlanReqDTO.getTrialStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !"90".equals(overhaulPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有编辑和驳回状态的数据才能够进行送审！");
         }
         if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode())) {
@@ -253,10 +254,10 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     @Override
     public void examineOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
         if (overhaulPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
-            if ("30".equals(overhaulPlanReqDTO.getTrialStatus())) {
+            if (CommonConstants.THIRTY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
-            if ("10".equals(overhaulPlanReqDTO.getTrialStatus())) {
+            if (CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
             }
             String processId = overhaulPlanReqDTO.getWorkFlowInstId();
@@ -265,7 +266,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             overhaulPlanReqDTO.setWorkFlowInstStatus("已完成");
             overhaulPlanReqDTO.setTrialStatus("30");
         } else {
-            if (!"20".equals(overhaulPlanReqDTO.getTrialStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = overhaulPlanReqDTO.getWorkFlowInstId();
@@ -286,7 +287,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void relationOverhaulPlan(List<OverhaulPlanReqDTO> list) {
         StringBuilder planCodeAndIn = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {
-            if (!"30".equals(list.get(i).getTrialStatus())) {
+            if (!CommonConstants.THIRTY_STRING.equals(list.get(i).getTrialStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "只有审批通过状态的数据才能够进行关联");
             }
             if ("关联".equals(list.get(i).getRelationCode())) {
@@ -328,7 +329,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void switchsOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -364,14 +365,14 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 map.put("计划名称", resDTO.getPlanName());
                 map.put("对象名称", resDTO.getExt1());
                 map.put("线路", "01".equals(resDTO.getLineNo()) ? "S1线" : "S2线");
-                map.put("审批状态", "10".equals(resDTO.getTrialStatus()) ? "编辑" : "20".equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
+                map.put("审批状态", CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
                 map.put("位置一", resDTO.getPosition1Name());
                 map.put("专业", resDTO.getSubjectName());
                 map.put("系统", resDTO.getSystemName());
                 map.put("设备类别", resDTO.getEquipTypeName());
                 map.put("规则", resDTO.getRuleName());
                 map.put("作业工班", organizationMapper.getNamesById(resDTO.getWorkerGroupCode()));
-                map.put("启用状态", "10".equals(resDTO.getPlanStatus()) ? "启用" : "禁用");
+                map.put("启用状态", CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus()) ? "启用" : "禁用");
                 map.put("首次开始日期", resDTO.getFirstBeginTime());
                 map.put("是否关联", resDTO.getDeleteFlag());
                 map.put("预警里程", resDTO.getExt2());

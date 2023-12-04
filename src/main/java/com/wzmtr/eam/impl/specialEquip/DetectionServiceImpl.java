@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.specialEquip;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
@@ -88,7 +89,7 @@ public class DetectionServiceImpl implements DetectionService {
         detectionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         detectionReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String checkNo = detectionMapper.getMaxCode();
-        if (checkNo == null || "".equals(checkNo) || !("20" + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (checkNo == null || "".equals(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             checkNo = "TJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
@@ -106,7 +107,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
-        if (!"10".equals(resDTO.getRecStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         if (!detectionReqDTO.getAssetKindCode().equals(resDTO.getAssetKindCode())) {
@@ -127,7 +128,7 @@ public class DetectionServiceImpl implements DetectionService {
                 if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
-                if (!"10".equals(resDTO.getRecStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 detectionMapper.deleteDetectionDetail(resDTO.getRecId(), null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -156,7 +157,7 @@ public class DetectionServiceImpl implements DetectionService {
         //         throw new CommonException(ErrorCode.NORMAL_ERROR, "存在检测记录明细检测结果或检测日期或检测有效期为空，无法提交");
         //     }
         // }
-        if (!"10".equals(res.getRecStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(res.getRecStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可提交");
         } else {
             String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null, null, detectionReqDTO.getExamineReqDTO().getUserIds(), null);
@@ -183,7 +184,7 @@ public class DetectionServiceImpl implements DetectionService {
         DetectionReqDTO reqDTO = new DetectionReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
         if (detectionReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
-            if ("30".equals(reqDTO.getRecStatus())) {
+            if (CommonConstants.THIRTY_STRING.equals(reqDTO.getRecStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
             String processId = res.getWorkFlowInstId();
@@ -204,7 +205,7 @@ public class DetectionServiceImpl implements DetectionService {
                 }
             }
         } else {
-            if (!"20".equals(reqDTO.getRecStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(reqDTO.getRecStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = res.getWorkFlowInstId();
@@ -229,11 +230,11 @@ public class DetectionServiceImpl implements DetectionService {
             for (DetectionResDTO resDTO : detectionResDTOList) {
                 Map<String, String> map = new HashMap<>();
                 map.put("检测单号", resDTO.getCheckNo());
-                map.put("特种设备分类", "10".equals(resDTO.getAssetKindCode()) ? "电梯" : "20".equals(resDTO.getAssetKindCode()) ? "起重机" : "30".equals(resDTO.getAssetKindCode()) ? "场（厂）内专用机动车辆" : "压力容器");
+                map.put("特种设备分类", CommonConstants.TEN_STRING.equals(resDTO.getAssetKindCode()) ? "电梯" : CommonConstants.TWENTY_STRING.equals(resDTO.getAssetKindCode()) ? "起重机" : CommonConstants.THIRTY_STRING.equals(resDTO.getAssetKindCode()) ? "场（厂）内专用机动车辆" : "压力容器");
                 map.put("管理部门", organizationMapper.getOrgById(resDTO.getManageOrg()));
                 map.put("维管部门", organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
                 map.put("编制部门", organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
-                map.put("检测单状态", "10".equals(resDTO.getRecStatus()) ? "编辑" : "20".equals(resDTO.getRecStatus()) ? "审核中" : "审核通过");
+                map.put("检测单状态", CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getRecStatus()) ? "审核中" : "审核通过");
                 map.put("备注", resDTO.getVerifyNote());
                 list.add(map);
             }
@@ -262,7 +263,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
-        if (!"10".equals(resDTO.getRecStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -286,7 +287,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
-        if (!"10".equals(resDTO.getRecStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -314,7 +315,7 @@ public class DetectionServiceImpl implements DetectionService {
                 if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
-                if (!"10".equals(resDTO.getRecStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 detectionMapper.deleteDetectionDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

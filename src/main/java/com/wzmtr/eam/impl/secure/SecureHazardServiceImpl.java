@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.SecureHazardDO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardDetailReqDTO;
@@ -63,7 +64,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         }
         if (StringUtils.isNotEmpty(a.getIsRestored())) {
             a.setRestoreDesc("整改中");
-            if ("10".equals(a.getIsRestored())) {
+            if (CommonConstants.TEN_STRING.equals(a.getIsRestored())) {
                 a.setRestoreDesc("已完成整改");
             }
             if ("1".equals(a.getIsRestored())) {
@@ -106,7 +107,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         List<Map<String, String>> list = new ArrayList<>();
         for (SecureHazardResDTO resDTO : resList) {
             resDTO.setRestoreDesc("整改中");
-            if ("10".equals(resDTO.getIsRestored())) {
+            if (CommonConstants.TEN_STRING.equals(resDTO.getIsRestored())) {
                 resDTO.setRestoreDesc("已完成整改");
             }
             if ("1".equals(resDTO.getIsRestored())) {

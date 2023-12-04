@@ -124,7 +124,7 @@ public class ExcelPortUtil {
                                 cn.setCellStyle(bottomStyle);
                             }
                         }
-                    } else if (!(columnNum % 2 == 0) & !(size % 2 == 0)) {
+                    } else if ((columnNum % 2 != 0) & (size % 2 != 0)) {
                         // 都是奇数执行
                         int c = columnNum - 1 / size;
                         for (int i = 0; i < size; i++) {

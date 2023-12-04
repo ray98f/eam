@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.OrgTypeReqDTO;
 import com.wzmtr.eam.dto.res.basic.OrgTypeResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -106,7 +107,7 @@ public class OrgTypeServiceImpl implements OrgTypeService {
                 map.put("组织机构代码", orgTypeRes.getOrgCode());
                 map.put("组织机构名称", orgTypeRes.getOrgName());
                 map.put("类别", TYPE_MAP.get(orgTypeRes.getOrgType()));
-                map.put("记录状态", "10".equals(orgTypeRes.getRecStatus()) ? "启用" : "禁用");
+                map.put("记录状态", CommonConstants.TEN_STRING.equals(orgTypeRes.getRecStatus()) ? "启用" : "禁用");
                 map.put("备注", orgTypeRes.getRemark());
                 map.put("创建者", orgTypeRes.getRecCreator());
                 map.put("创建时间", orgTypeRes.getRecCreateTime());

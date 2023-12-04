@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.common;
 
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -40,10 +41,10 @@ public class UserGroupMemberServiceImpl implements UserGroupMemberService {
     public List<BpmnExaminePersonRes> getZcOverhaulPlanExamineUser(String subjectCode, String lineCode) {
         List<BpmnExaminePersonRes> nextUser = new ArrayList<>();
         String roleCode;
-        if ("07".equals(subjectCode)) {
+        if (CommonConstants.CAR_SUBJECT_CODE.equals(subjectCode)) {
             roleCode = "DM_005";
             nextUser.addAll(roleMapper.getUserBySubjectAndLineAndRole(subjectCode, lineCode, roleCode));
-        } else if ("06".equals(subjectCode)) {
+        } else if (CommonConstants.CAR_DEVICE_SUBJECT_CODE.equals(subjectCode)) {
             roleCode = "DM_004";
             nextUser.addAll(roleMapper.getUserByOrgAndRole(roleCode, "D0901"));
         } else {

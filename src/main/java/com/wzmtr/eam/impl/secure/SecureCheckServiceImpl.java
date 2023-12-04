@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.secure;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
@@ -76,7 +77,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         //整改部门
         a.setRestoreDeptName(restoreDeptName == null ? a.getRestoreDeptCode() : restoreDeptName);
         a.setIsRestoredName("整改中");
-        if ("10".equals(a.getIsRestored())) {
+        if (CommonConstants.TEN_STRING.equals(a.getIsRestored())) {
             a.setIsRestoredName("已完成整改");
         }
         if ("1".equals(a.getIsRestored())) {
@@ -114,7 +115,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             String inspectDept = organizationMapper.getOrgById(res.getInspectDeptCode());
             String restoreDept = organizationMapper.getExtraOrgByAreaId(res.getRestoreDeptCode());
             res.setIsRestoredName("整改中");
-            if ("10".equals(res.getIsRestored())) {
+            if (CommonConstants.TEN_STRING.equals(res.getIsRestored())) {
                 res.setIsRestoredName("已完成整改");
             }
             if ("1".equals(res.getIsRestored())) {

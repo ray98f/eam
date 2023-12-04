@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordReqDTO;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
@@ -93,7 +94,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         String archiveFlag = "0";
         String recStatus = "10";
         String checkNo = submissionRecordMapper.getMaxCode();
-        if (checkNo == null || "".equals(checkNo) || !("20" + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (checkNo == null || "".equals(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             checkNo = "JJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
@@ -117,7 +118,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
-        if (!"10".equals(res.getRecStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(res.getRecStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         submissionRecordReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -136,7 +137,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
-                if (!"10".equals(res.getRecStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(res.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 submissionRecordMapper.deleteSubmissionRecordDetail(null, res.getRecId(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -159,7 +160,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!"10".equals(res.getRecStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(res.getRecStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "提交");
         } else {
             List<SubmissionRecordDetailResDTO> result = submissionRecordMapper.listSubmissionRecordDetail(res.getRecId());
@@ -187,7 +188,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         SubmissionRecordReqDTO reqDTO = new SubmissionRecordReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
         if (submissionRecordReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
-            if ("30".equals(res.getRecStatus())) {
+            if (CommonConstants.THIRTY_STRING.equals(res.getRecStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             } else {
                 String processId = res.getWorkFlowInstId();
@@ -197,7 +198,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 reqDTO.setRecStatus("30");
             }
         } else {
-            if (!"20".equals(res.getRecStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(res.getRecStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = res.getWorkFlowInstId();
@@ -274,7 +275,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
-            if (!"10".equals(list.get(0).getRecStatus())) {
+            if (!CommonConstants.TEN_STRING.equals(list.get(0).getRecStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
@@ -296,7 +297,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                     if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }
-                    if (!"10".equals(list.get(0).getRecStatus())) {
+                    if (!CommonConstants.TEN_STRING.equals(list.get(0).getRecStatus())) {
                         throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                     }
                 }

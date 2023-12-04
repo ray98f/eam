@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -93,7 +94,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
                 map.put("记录编号", categoryResDTO.getRecId());
                 map.put("节点编号", categoryResDTO.getNodeCode());
                 map.put("节点名称", categoryResDTO.getNodeName());
-                map.put("记录状态", "10".equals(categoryResDTO.getRecStatus()) ? "启用" : "禁用");
+                map.put("记录状态", CommonConstants.TEN_STRING.equals(categoryResDTO.getRecStatus()) ? "启用" : "禁用");
                 map.put("备注", categoryResDTO.getRemark());
                 map.put("创建者", categoryResDTO.getRecCreator());
                 map.put("创建时间", categoryResDTO.getRecCreateTime());

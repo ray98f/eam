@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulMaterialReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulTplDetailReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulTplReqDTO;
@@ -62,7 +63,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void addOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -82,7 +83,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void modifyOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -95,7 +96,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!"10".equals(resDTO.getTrialStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -110,7 +111,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 OverhaulTplResDTO resDTO = overhaulTplMapper.getOverhaulTplDetail(id);
                 OverhaulTplReqDTO overhaulTplReqDTO = new OverhaulTplReqDTO();
                 BeanUtils.copyProperties(overhaulTplReqDTO, resDTO);
-                if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+                if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
                     if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
@@ -129,7 +130,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void changeOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -149,7 +150,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     // ServiceDMER0003
     @Override
     public void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) throws Exception {
-        if (!"admin".equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -158,7 +159,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (!"10".equals(overhaulTplReqDTO.getTrialStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(overhaulTplReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "送审");
         }
         List<OverhaulTplDetailResDTO> list = overhaulTplMapper.listOverhaulTplDetail(overhaulTplReqDTO.getTemplateId());
@@ -191,10 +192,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     @Override
     public void examineOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
         if (overhaulTplReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
-            if ("30".equals(overhaulTplReqDTO.getTrialStatus())) {
+            if (CommonConstants.THIRTY_STRING.equals(overhaulTplReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
-            if ("10".equals(overhaulTplReqDTO.getTrialStatus())) {
+            if (CommonConstants.TEN_STRING.equals(overhaulTplReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
             }
             String processId = overhaulTplReqDTO.getWorkFlowInstId();
@@ -203,7 +204,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             overhaulTplReqDTO.setWorkFlowInstStatus("已完成");
             overhaulTplReqDTO.setTrialStatus("30");
         } else {
-            if (!"20".equals(overhaulTplReqDTO.getTrialStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(overhaulTplReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = overhaulTplReqDTO.getWorkFlowInstId();
@@ -240,7 +241,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 map.put("专业", resDTO.getSubjectName());
                 map.put("系统", resDTO.getSystemName());
                 map.put("设备类别", resDTO.getEquipTypeName());
-                map.put("审批状态", "10".equals(resDTO.getTrialStatus()) ? "编辑" : "20".equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
+                map.put("审批状态", CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
                 list.add(map);
             }
         }
@@ -261,10 +262,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     @Override
     public void addOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
         Pattern pattern = RegularUtils.getNumberPattern();
-        if ("10".equals(overhaulTplDetailReqDTO.getItemType()) && Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
+        if (CommonConstants.TEN_STRING.equals(overhaulTplDetailReqDTO.getItemType()) && Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
         }
-        if ("20".equals(overhaulTplDetailReqDTO.getItemType())) {
+        if (CommonConstants.TWENTY_STRING.equals(overhaulTplDetailReqDTO.getItemType())) {
             if (StringUtils.isBlank(overhaulTplDetailReqDTO.getDefaultValue()) || !pattern.matcher(overhaulTplDetailReqDTO.getDefaultValue()).matches()) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
             }
@@ -280,7 +281,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "上限必须填数字！");
         }
         if (StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMinValue()) && StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMaxValue())) {
-            if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
+            if (CommonConstants.TWENTY_STRING.equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
             }
         }
@@ -297,11 +298,11 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     @Override
     public void modifyOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
         Pattern pattern = RegularUtils.getNumberPattern();
-        if ("10".equals(overhaulTplDetailReqDTO.getItemType())) {
+        if (CommonConstants.TEN_STRING.equals(overhaulTplDetailReqDTO.getItemType())) {
             if (Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
             }
-        } else if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && !pattern.matcher(overhaulTplDetailReqDTO.getDefaultValue()).matches()) {
+        } else if (CommonConstants.TWENTY_STRING.equals(overhaulTplDetailReqDTO.getItemType()) && !pattern.matcher(overhaulTplDetailReqDTO.getDefaultValue()).matches()) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
         }
         List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
@@ -312,7 +313,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             if (!pattern.matcher(overhaulTplDetailReqDTO.getMaxValue()).matches() || !pattern.matcher(overhaulTplDetailReqDTO.getMinValue()).matches()) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "下限、上限必须填数字！");
             }
-            if ("20".equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
+            if (CommonConstants.TWENTY_STRING.equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
             }
         }
@@ -353,7 +354,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 map.put("车组号", (!"".equals(resDTO.getTrainNumber()) && !" ".equals(resDTO.getTrainNumber())) ? resDTO.getTrainNumber() + "车" : "");
                 map.put("检修项", resDTO.getItemName());
                 map.put("技术要求", resDTO.getExt1());
-                map.put("检修项类型", "10".equals(resDTO.getItemType()) ? "列表" : "20".equals(resDTO.getItemType()) ? "数值" : "文本");
+                map.put("检修项类型", CommonConstants.TEN_STRING.equals(resDTO.getItemType()) ? "列表" : CommonConstants.TWENTY_STRING.equals(resDTO.getItemType()) ? "数值" : "文本");
                 map.put("可选值", resDTO.getInspectItemValue());
                 map.put("默认值", resDTO.getDefaultValue());
                 map.put("上限", resDTO.getMaxValue());

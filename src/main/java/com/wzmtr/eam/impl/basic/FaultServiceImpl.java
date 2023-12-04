@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.FaultReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -89,7 +90,7 @@ public class FaultServiceImpl implements FaultService {
                 map.put("码值编号", fault.getFaultCode());
                 map.put("码值描述", fault.getFaultDescr());
                 map.put("关联码值", fault.getRelatedCodes());
-                map.put("记录状态", "10".equals(fault.getRecStatus()) ? "启用" : "禁用");
+                map.put("记录状态", CommonConstants.TEN_STRING.equals(fault.getRecStatus()) ? "启用" : "禁用");
                 map.put("备注", fault.getRemark());
                 map.put("创建者", fault.getRecCreator());
                 map.put("创建时间", fault.getRecCreateTime());

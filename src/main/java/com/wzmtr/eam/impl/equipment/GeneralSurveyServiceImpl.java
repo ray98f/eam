@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -175,11 +176,11 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
                 Map<String, String> map = new HashMap<>();
                 map.put("记录编号", resDTO.getRecId());
                 map.put("列车号", resDTO.getTrainNo());
-                map.put("类别", "10".equals(resDTO.getRecType()) ? "普查" : "技改");
+                map.put("类别", CommonConstants.TEN_STRING.equals(resDTO.getRecType()) ? "普查" : "技改");
                 map.put("技术通知单编号", resDTO.getRecNotifyNo());
                 map.put("项目内容", resDTO.getRecDetail());
                 map.put("完成时间", resDTO.getCompleteDate());
-                map.put("作业单位", "10".equals(resDTO.getOrgType()) ? "维保" : "20".equals(resDTO.getOrgType()) ? "一级修工班" : "30".equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
+                map.put("作业单位", CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
                 map.put("备注", resDTO.getRemark());
                 map.put("附件编号", resDTO.getDocId());
                 map.put("创建者", resDTO.getRecCreator());

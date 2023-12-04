@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultResDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
@@ -130,7 +131,7 @@ public class OrgMajorServiceImpl implements OrgMajorService {
                 map.put("组织机构代码", orgMajor.getOrgCode());
                 map.put("组织机构名称", orgMajor.getOrgName());
                 map.put("专业", MAJOR_MAP.get(orgMajor.getMajorCode()));
-                map.put("记录状态", "10".equals(orgMajor.getRecStatus()) ? "启用" : "禁用");
+                map.put("记录状态", CommonConstants.TEN_STRING.equals(orgMajor.getRecStatus()) ? "启用" : "禁用");
                 map.put("备注", orgMajor.getRemark());
                 map.put("创建者", orgMajor.getRecCreator());
                 map.put("创建时间", orgMajor.getRecCreateTime());

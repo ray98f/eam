@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.mea.CheckPlanListReqDTO;
 import com.wzmtr.eam.dto.req.mea.CheckPlanReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaInfoQueryReqDTO;
@@ -86,7 +87,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         String recCreateTime = new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis());
         String archiveFlag = "0";
         String instrmPlanNo = checkPlanMapper.getMaxCode();
-        if (instrmPlanNo == null || "".equals(instrmPlanNo) || !("20" + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (instrmPlanNo == null || "".equals(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             instrmPlanNo = "JP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
@@ -118,7 +119,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
-        if (!"10".equals(res.getPlanStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
@@ -145,7 +146,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
-                if (!"10".equals(res.getPlanStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(res.getPlanStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 checkPlanMapper.deleteCheckPlanDetail(null, res.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -175,7 +176,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         if (result.size() == 0) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "此定检计划不存在计划明细，无法提交");
         }
-        if (!"10".equals(res.getPlanStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         } else {
             String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.CHECK_PLAN_SUBMIT.value(), null, null, checkPlanReqDTO.getExamineReqDTO().getUserIds(), null);
@@ -199,10 +200,10 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         CheckPlanReqDTO reqDTO = new CheckPlanReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
         if (checkPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
-            if ("30".equals(res.getPlanStatus())) {
+            if (CommonConstants.THIRTY_STRING.equals(res.getPlanStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
-            if ("10".equals(res.getPlanStatus())) {
+            if (CommonConstants.TEN_STRING.equals(res.getPlanStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
             }
             String processId = res.getWorkFlowInstId();
@@ -211,7 +212,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             reqDTO.setWorkFlowInstStatus("已完成");
             reqDTO.setPlanStatus("30");
         } else {
-            if (!"20".equals(res.getPlanStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(res.getPlanStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = res.getWorkFlowInstId();
@@ -240,7 +241,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 map.put("年月", resDTO.getPlanPeriodMark());
                 map.put("编制部门", organizationMapper.getNamesById(resDTO.getEditDeptCode()));
                 map.put("计划人", resDTO.getPlanCreaterName());
-                map.put("计划状态", "10".equals(resDTO.getPlanStatus()) ? "编辑" : "20".equals(resDTO.getPlanStatus()) ? "审核中" : "审核通过");
+                map.put("计划状态", CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getPlanStatus()) ? "审核中" : "审核通过");
                 map.put("备注", resDTO.getPlanNote());
                 list.add(map);
             }
@@ -268,7 +269,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
-            if (!"10".equals(list.get(0).getPlanStatus())) {
+            if (!CommonConstants.TEN_STRING.equals(list.get(0).getPlanStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "新增");
             }
         }
@@ -291,7 +292,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
-            if (!"10".equals(list.get(0).getPlanStatus())) {
+            if (!CommonConstants.TEN_STRING.equals(list.get(0).getPlanStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
@@ -315,7 +316,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                     if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }
-                    if (!"10".equals(list.get(0).getPlanStatus())) {
+                    if (!CommonConstants.TEN_STRING.equals(list.get(0).getPlanStatus())) {
                         throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                     }
                 }

@@ -132,7 +132,7 @@ public class WoRuleServiceImpl implements WoRuleService {
                 map.put("规则编号", woRule.getRuleCode());
                 map.put("规则名称", woRule.getRuleName());
                 map.put("用途", RULE_USE_MAP.get(woRule.getRuleUseage()));
-                map.put("记录状态", "10".equals(woRule.getRecStatus()) ? "无效" : "有效");
+                map.put("记录状态", CommonConstants.TEN_STRING.equals(woRule.getRecStatus()) ? "无效" : "有效");
                 map.put("备注", woRule.getRemark());
                 map.put("创建者", woRule.getRecCreator());
                 map.put("创建时间", woRule.getRecCreateTime());

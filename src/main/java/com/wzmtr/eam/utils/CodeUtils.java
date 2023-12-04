@@ -1,5 +1,7 @@
 package com.wzmtr.eam.utils;
 
+import com.wzmtr.eam.constant.CommonConstants;
+
 import java.text.SimpleDateFormat;
 
 public class CodeUtils {
@@ -13,7 +15,7 @@ public class CodeUtils {
 
     public static String getNextCode(String code,String head) {
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
-        if (StringUtils.isEmpty(code) || !("20" + code.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(code) || !(CommonConstants.TWENTY_STRING + code.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             code = head + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             code = CodeUtils.getNextCode(code, 8);

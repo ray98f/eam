@@ -1,5 +1,6 @@
 package com.wzmtr.eam.shiro.realm;
 
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -47,9 +48,9 @@ public class ShiroCasRealm extends CasRealm {
         SecurityUtils.getSubject().getSession().setAttribute("name", name);
 
         CurrentLoginUser person = new CurrentLoginUser();
-        if ("admin".equals(name)) {
-            person.setPersonId("admin");
-            person.setPersonNo("admin");
+        if (CommonConstants.ADMIN.equals(name)) {
+            person.setPersonId(CommonConstants.ADMIN);
+            person.setPersonNo(CommonConstants.ADMIN);
             person.setPersonName("系统管理员");
             person.setCompanyId("A");
             person.setCompanyName("集团本级");

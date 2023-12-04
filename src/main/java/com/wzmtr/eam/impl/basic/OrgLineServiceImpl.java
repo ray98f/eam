@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.OrgLineReqDTO;
 import com.wzmtr.eam.dto.res.basic.OrgLineResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -105,7 +106,7 @@ public class OrgLineServiceImpl implements OrgLineService {
                 map.put("组织机构代码", orgLine.getOrgCode());
                 map.put("组织机构名称", orgLine.getOrgName());
                 map.put("线路", LINE_MAP.get(orgLine.getLineCode()));
-                map.put("记录状态", "10".equals(orgLine.getRecStatus()) ? "启用" : "禁用");
+                map.put("记录状态", CommonConstants.TEN_STRING.equals(orgLine.getRecStatus()) ? "启用" : "禁用");
                 map.put("备注", orgLine.getRemark());
                 map.put("创建者", orgLine.getRecCreator());
                 map.put("创建时间", orgLine.getRecCreateTime());

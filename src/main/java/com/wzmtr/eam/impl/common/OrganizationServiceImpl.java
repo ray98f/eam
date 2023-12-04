@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.exception.CommonException;
@@ -62,7 +63,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (!Objects.isNull(newId)) {
             return organizationMapper.pageUserByOffice(pageReqDTO.of(), newId);
         }
-        if ("root".equals(id)) {
+        if (CommonConstants.ROOT.equals(id)) {
             page = organizationMapper.pageMember(pageReqDTO.of(), id, name);
         } else {
             page = organizationMapper.pageMember(pageReqDTO.of(), "," + id, name);
@@ -98,14 +99,14 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (!Objects.isNull(newId)) {
             return organizationMapper.listUserByOffice(newId);
         }
-        if ("root".equals(id)) {
+        if (CommonConstants.ROOT.equals(id)) {
             list = organizationMapper.listMember(id);
         } else {
             list = organizationMapper.listMember("," + id);
         }
         if (null != list && !list.isEmpty()) {
             for (MemberResDTO memberResDTO : list) {
-                if ("root".equals(memberResDTO.getParentId())) {
+                if (CommonConstants.ROOT.equals(memberResDTO.getParentId())) {
                     continue;
                 }
                 memberResDTO.setOrgPath(organizationMapper.selectOfficeNameById(memberResDTO.getParentId()));

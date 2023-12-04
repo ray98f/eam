@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanDetailResDTO;
@@ -87,7 +88,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         specialEquipReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         specialEquipReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String instrmPlanNo = detectionPlanMapper.getMaxCode();
-        if (instrmPlanNo == null || "".equals(instrmPlanNo) || !("20" + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (instrmPlanNo == null || "".equals(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             instrmPlanNo = "TP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
@@ -108,7 +109,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
-        if (!"10".equals(resDTO.getPlanStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         if (!specialEquipReqDTO.getAssetKindCode().equals(resDTO.getAssetKindCode())) {
@@ -129,7 +130,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
-                if (!"10".equals(resDTO.getPlanStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -151,7 +152,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (result.size() == 0) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "此计划不存在计划明细，无法提交");
         }
-        if (!"10".equals(res.getPlanStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态无法提交");
         } else {
             String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null, null, detectionPlanReqDTO.getExamineReqDTO().getUserIds(), null);
@@ -178,7 +179,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         DetectionPlanReqDTO reqDTO = new DetectionPlanReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
         if (detectionPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
-            if ("30".equals(reqDTO.getPlanStatus())) {
+            if (CommonConstants.THIRTY_STRING.equals(reqDTO.getPlanStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
             }
             String processId = res.getWorkFlowInstId();
@@ -193,7 +194,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 reqDTO.setPlanStatus("30");
             }
         } else {
-            if (!"20".equals(reqDTO.getPlanStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(reqDTO.getPlanStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = res.getWorkFlowInstId();
@@ -256,7 +257,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
-        if (!"10".equals(resDTO.getPlanStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         detectionPlanDetailReqDTO.setRecId(TokenUtil.getUuId());
@@ -276,7 +277,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
-        if (!"10".equals(resDTO.getPlanStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         detectionPlanDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -300,7 +301,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
-                if (!"10".equals(resDTO.getPlanStatus())) {
+                if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

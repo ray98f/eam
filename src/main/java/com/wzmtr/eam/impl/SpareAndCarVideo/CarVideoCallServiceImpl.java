@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.SpareAndCarVideo;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.CarVideoDO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoExportReqDTO;
@@ -141,8 +142,8 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             return;
         }
         CarVideoDO carVideoDO = new CarVideoDO();
-        if ("20".equals(reqDTO.getRecStatus())) {
-            if (!"10".equals(detail.getRecStatus())) {
+        if (CommonConstants.TWENTY_STRING.equals(reqDTO.getRecStatus())) {
+            if (!CommonConstants.TEN_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可下达!");
             }
             if (StringUtils.isBlank(detail.getDispatchUserId())) {
@@ -152,8 +153,8 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
             overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getApplyNo(), reqDTO.getDispatchUserId(), "视频调阅下达", "DMBR0022", TokenUtil.getCurrentPersonId());
         }
-        if ("30".equals(reqDTO.getRecStatus())) {
-            if (!"20".equals(detail.getRecStatus())) {
+        if (CommonConstants.THIRTY_STRING.equals(reqDTO.getRecStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非下达状态下不可派工");
             }
             overTodoService.overTodo(reqDTO.getRecId(), "");
@@ -167,7 +168,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             carVideoDO.setWorkClass(reqDTO.getWorkClass());
         }
         if ("40".equals(reqDTO.getRecStatus())) {
-            if (!"30".equals(detail.getRecStatus())) {
+            if (!CommonConstants.THIRTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非派工状态下不可完工");
             }
             overTodoService.overTodo(reqDTO.getRecId(), "");
