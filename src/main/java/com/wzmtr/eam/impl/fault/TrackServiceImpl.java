@@ -11,6 +11,7 @@ import com.wzmtr.eam.constant.FaultTrackCols;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
@@ -236,18 +237,17 @@ public class TrackServiceImpl implements TrackService {
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_TRACK.value()).contains(dmfm09.getWorkFlowInstStatus())) {
                 String reviewOrNot = null;
                 // 提交部长审核指定下一流程
-                if (null != reqDTO.getReviewOrNot() && reqDTO.getReviewOrNot()) {
-                    reviewOrNot = CommonConstants.FAULT_TRACK_REVIEW_NODE;
+                if (null != reqDTO.getReviewOrNot()) {
+                    if (reqDTO.getReviewOrNot()) {
+                        reviewOrNot = CommonConstants.FAULT_TRACK_REVIEW_NODE;
+                    }
+                    dmfm09.setRecStatus("30");
                 }
                 bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}", reviewOrNot);
                 dmfm09.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus()));
             }
             dmfm09.setRecRevisor(TokenUtil.getCurrentPersonId());
             dmfm09.setRecReviseTime(DateUtil.getCurrentTime());
-            // 空了说明没有下一步了,此时更新状态
-            if (StringUtils.isEmpty(bpmnService.nextTaskKey(taskId))) {
-                dmfm09.setRecStatus("40");
-            }
             faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         } catch (Exception e) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "agree error");

@@ -21,7 +21,6 @@ import com.wzmtr.eam.utils.bpmn.FastFlowPathUrl;
 import com.wzmtr.eam.utils.bpmn.HttpUtil;
 import com.wzmtr.eam.utils.bpmn.JointUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,6 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,7 +67,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String startInstance(StartInstanceVO startInstanceVO) {
         String data = JSONObject.toJSONString(startInstanceVO);
-        log.info("startInstance调用入参：[{}]",data);
+        log.info("startInstance调用入参：[{}]", data);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_START, data, httpServletRequest.getHeader("Authorization-Flow")));
         if (CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
             return jsonObject.getString("procId");
@@ -82,7 +80,7 @@ public class BpmnServiceImpl implements BpmnService {
     public ResultEntity agreeInstance(BpmnExamineDTO bpmnExamineDTO) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(bpmnExamineDTO);
-        log.info("agreeInstance调用入参：[{}]",data);
+        log.info("agreeInstance调用入参：[{}]", data);
         return JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_AGREE + data, null, authorization), ResultEntity.class);
     }
 
@@ -126,9 +124,9 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String nextTaskKey(String procId) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        log.info("流程引擎调用入参：[{}]", FastFlowPathUrl.NEXT_TASK_KEY + procId);
+        log.info("nextTaskKey调用入参：[{}]", FastFlowPathUrl.NEXT_TASK_KEY + procId);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.NEXT_TASK_KEY + procId, authorization));
-        log.info("流程引擎调用结果：[{}]", JSONObject.toJSONString(jsonObject));
+        log.info("nextTaskKey调用结果：[{}]", JSONObject.toJSONString(jsonObject));
         JSONArray data = jsonObject.getJSONArray("data");
         return CollectionUtil.isEmpty(data) ? null : data.getJSONObject(0).getString("taskId");
     }
@@ -146,7 +144,7 @@ public class BpmnServiceImpl implements BpmnService {
     public List<FlowRes> queryFlowList(String name, String modelKey) throws Exception {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         String param = FastFlowPathUrl.FLOW_LIST + "?name=" + URLEncoder.encode(name, "UTF-8") + "&modelkey=" + modelKey + "&page=1&limit=100000&pageSize=100000&type=2";
-        log.info("queryFlowList调用入参：[{}]",param);
+        log.info("queryFlowList调用入参：[{}]", param);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doGet(param, authorization), ResultEntity.class);
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
         List<FlowRes> list = new ArrayList<>();
@@ -395,7 +393,7 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     public String getDefKeyByTaskId(String taskId) {
-        log.info("流程引擎调用入参getDefKeyByTaskId:[{}]",taskId);
+        log.info("流程引擎调用入参getDefKeyByTaskId:[{}]", taskId);
         String processDefinitionId = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.GET_DEF_KEY + taskId, null)).getString("processDefinitionId");
         return processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
     }
@@ -403,7 +401,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String commit(String id, String flow, String otherParam, String roleCode, List<String> userIds, String nodeId) throws Exception {
         List<FlowRes> list = queryFlowList(BpmnFlowEnum.getLabelByValue(flow), flow);
-            if (CollectionUtil.isEmpty(list)) {
+        if (CollectionUtil.isEmpty(list)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
         }
         StartInstanceVO startInstanceVO = new StartInstanceVO();

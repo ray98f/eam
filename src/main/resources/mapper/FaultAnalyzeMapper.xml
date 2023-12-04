@@ -287,8 +287,6 @@
         d3.FAULT_PROCESS_DETAIL as "faultProcessDetail",  <!-- 故障调查及处置 -->
         d1.DISCOVERY_TIME as "discoveryTime",  <!-- 发现时间 -->
         d1.RESP_DEPT_CODE as "respDeptCode",  <!-- 主责部门 -->
-#         todo 这里数据库还没迁过来
-#         (select rv.ORG_NAME from RPLAT60.V_CO_ORG rv where rv.ORG_CODE=d1.RESP_DEPT_CODE) as "respDeptName",
         d1.FAULT_LEVEL as "faultLevel",  <!-- 故障等级 -->
         d3.AFFECT_CODES as "affectCodes",  <!-- 故障影响 -->
         d1.FAULT_STATUS as "faultStatus",  <!-- 故障状态 -->
