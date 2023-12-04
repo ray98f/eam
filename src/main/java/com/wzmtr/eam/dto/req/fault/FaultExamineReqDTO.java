@@ -24,4 +24,6 @@ public class FaultExamineReqDTO {
     private String isCommit;
     private String comment;
     private ExamineReqDTO examineReqDTO;
+    @ApiModelProperty(value = "是否提交他人审核")
+    private Boolean reviewOrNot;
 }

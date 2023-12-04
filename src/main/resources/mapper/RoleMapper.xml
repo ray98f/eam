@@ -214,5 +214,8 @@
 
     <select id="getSubmitNodeId" resultType="java.lang.String">
         SELECT DISTINCT NODE_ID from T_BPMN_EXAMINE where FLOW_ID=#{flowId} and STEP=2
+        <if test="roleId!=null and roleId!=''">
+            AND ROLE_ID=#{roleId}
+        </if>
     </select>
 </mapper>

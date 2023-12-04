@@ -140,7 +140,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             SubmissionReqDTO reqDTO = new SubmissionReqDTO();
             BeanUtils.copyProperties(res, reqDTO);
             reqDTO.setWorkFlowInstId(processId);
-            reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.SUBMISSION_SUBMIT.value()));
+            reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.SUBMISSION_SUBMIT.value(),null));
             reqDTO.setSendVerifyStatus("20");
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

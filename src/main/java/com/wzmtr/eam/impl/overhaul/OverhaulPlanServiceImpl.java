@@ -602,7 +602,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
         }
         overhaulPlanReqDTO.setWorkFlowInstId(processId);
-        overhaulPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.ORDER_PLAN_SUBMIT.value()));
+        overhaulPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(),null));
         overhaulPlanReqDTO.setTrialStatus("20");
         overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
