@@ -59,5 +59,5 @@ public interface RoleMapper {
      * @param flowId
      * @return
      */
-    String getSubmitNodeId(@Param("flowId") String flowId);
+    String getSubmitNodeId(@Param("flowId") String flowId,String roleId);
 }

@@ -20,4 +20,6 @@ public class ExamineReqDTO {
     @ApiModelProperty(value = "下一步审核人 没有时为空")
     private List<String> userIds;
 
+    private String roleId;
+
 }

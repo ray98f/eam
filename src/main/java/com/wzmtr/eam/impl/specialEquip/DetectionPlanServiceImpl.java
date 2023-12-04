@@ -162,7 +162,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             DetectionPlanReqDTO reqDTO = new DetectionPlanReqDTO();
             BeanUtils.copyProperties(res, reqDTO);
             reqDTO.setWorkFlowInstId(processId);
-            reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value()));
+            reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(),null));
             reqDTO.setPlanStatus("20");
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

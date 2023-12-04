@@ -4,7 +4,9 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
+import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultExamineReqDTO;
@@ -21,6 +23,7 @@ import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,7 +105,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Override
     public void submit(FaultExamineReqDTO reqDTO) {
         String faultAnalysisNo = Assert.notNull(reqDTO.getFaultAnalysisNo(), "faultAnalysisNo can not be null!");
-        Assert.notNull(reqDTO.getExamineReqDTO().getUserIds(), "下一步参与者不存在");
+        ExamineReqDTO examineReqDTO = Assert.notNull(reqDTO.getExamineReqDTO(), "ExamineReqDTO can not be null");
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
         List<FaultAnalyzeDO> list = faultAnalyzeMapper.getFaultAnalysisList(faultAnalysisNo, reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (CollectionUtil.isEmpty(list)) {
@@ -110,10 +113,12 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         }
         FaultAnalyzeDO dmfm03 = list.get(0);
         String processId = null;
+        String bpmnFlow = BpmnFlowEnum.FAULT_ANALIZE.value();
         if (StringUtils.isEmpty(dmfm03.getWorkFlowInstId())) {
             try {
-                processId = bpmnService.commit(faultAnalysisNo, BpmnFlowEnum.FAULT_ANALIZE.value(), null, null, reqDTO.getExamineReqDTO().getUserIds());
-                dmfm03.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.FAULT_ANALIZE.value()));
+                String submitNodeId = roleMapper.getSubmitNodeId(bpmnFlow, examineReqDTO.getRoleId());
+                processId = bpmnService.commit(faultAnalysisNo, bpmnFlow, null, null, examineReqDTO.getUserIds(), submitNodeId);
+                dmfm03.setWorkFlowInstStatus(submitNodeId);
                 dmfm03.setWorkFlowInstId(processId);
                 dmfm03.setRecStatus("20");
             } catch (Exception e) {
@@ -122,7 +127,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         }
         // 流程日志记录
         workFlowLogService.add(WorkFlowLogBO.builder()
-                .status("报告提交")
+                .status(BpmnStatus.SUBMIT.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(processId)
                 .build());
@@ -130,26 +135,39 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void pass(FaultExamineReqDTO reqDTO) {
         String faultAnalysisNo = Assert.notNull(reqDTO.getFaultAnalysisNo(), "faultAnalysisNo can not be null!");
         FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq("FAULT_ANALYSIS_NO", faultAnalysisNo));
         String taskId = bpmnService.queryTaskIdByProcId(faultAnalyzeDO.getWorkFlowInstId());
-        bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\"}");
-        if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_ANALIZE.value()).contains(faultAnalyzeDO.getWorkFlowInstStatus())) {
-            bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), String.join(",", reqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\"}");
-            faultAnalyzeDO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_ANALIZE.value(), faultAnalyzeDO.getWorkFlowInstStatus()));
-        }
-        faultAnalyzeDO.setRecStatus("30");
-        faultAnalyzeDO.setRecReviseTime(DateUtils.getTime());
-        faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        faultAnalyzeMapper.update(faultAnalyzeDO);
-        // 流程通过日志记录
+        AnalyzeServiceImpl aop = (AnalyzeServiceImpl) AopContext.currentProxy();
+        ;
+        aop._agree(reqDTO, faultAnalyzeDO, taskId);
+        // 流程流转日志记录
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.PASS.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(faultAnalyzeDO.getWorkFlowInstId())
                 .build());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void _agree(FaultExamineReqDTO reqDTO, FaultAnalyzeDO faultAnalyzeDO, String taskId) {
+        if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_ANALIZE.value()).contains(faultAnalyzeDO.getWorkFlowInstStatus())) {
+            // 提交部长审核指定下一流程
+            String reviewOrNot = null;
+            if (reqDTO.getReviewOrNot() != null && reqDTO.getReviewOrNot()) {
+                reviewOrNot = CommonConstants.FAULT_ANALIZE_REVIEW_NODE;
+            }
+            bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), String.join(",", reqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\"}", reviewOrNot);
+            faultAnalyzeDO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_ANALIZE.value(), faultAnalyzeDO.getWorkFlowInstStatus()));
+        }
+        faultAnalyzeDO.setRecReviseTime(DateUtils.getTime());
+        faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        // 如果下一步没有了 再去更新
+        if (StringUtils.isEmpty(bpmnService.nextTaskKey(taskId))) {
+            faultAnalyzeDO.setRecStatus("30");
+        }
+        faultAnalyzeMapper.update(faultAnalyzeDO);
     }
 
     @Override
