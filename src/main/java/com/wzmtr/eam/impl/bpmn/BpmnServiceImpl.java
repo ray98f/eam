@@ -313,20 +313,14 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     @Override
-    public void agree(String taskId, String opinion, String fromId, String formData, String modelId) {
+    public void agree(String taskId, String opinion, String fromId, String formData, String nodeId) {
         BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
         if (StringUtils.isNotEmpty(formData)) {
             bpmnExamineDTO.setFormData(formData);
         }
         // 根据procId获取最新的taskId
         bpmnExamineDTO.setTaskId(taskId);
-        String nodeId = "";
-        if (modelId != null) {
-            nodeId = modelId;
-        } else {
-            // 获取流程引擎下一个流程节点key
-            nodeId = nextTaskKey(taskId);
-        }
+        nodeId = StringUtils.isEmpty(nodeId) ? nextTaskKey(taskId) : nodeId;
         String flowId = getDefKeyByTaskId(taskId);
         // 获取审核人是谁填入
         if (StringUtils.isEmpty(fromId)) {
@@ -407,13 +401,7 @@ public class BpmnServiceImpl implements BpmnService {
         } else {
             startInstanceVO.setFormData(otherParam);
         }
-        String nodeId = "";
-        if (modelId != null) {
-            nodeId = modelId;
-        } else {
-            // 获取流程引擎该表单第一个taskKey
-            nodeId = queryFirstTaskKeyByModelId(startInstanceVO.getModelId());
-        }
+        String nodeId = StringUtils.isEmpty(modelId) ? queryFirstTaskKeyByModelId(startInstanceVO.getModelId()) : modelId;
         List<String> bpmnExaminePersonId = new ArrayList<>();
         if (userIds != null && !userIds.isEmpty()) {
             bpmnExaminePersonId = userIds;

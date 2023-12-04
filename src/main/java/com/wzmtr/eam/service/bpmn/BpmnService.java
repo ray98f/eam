@@ -52,7 +52,7 @@ public interface BpmnService {
 
     String getSelfId(String procId);
 
-    void agree(String taskId, String opinion, String fromId, String formData, String modelId);
+    void agree(String taskId, String opinion, String fromId, String formData, String nodeId);
 
     void reject(String id, String opinion);
 
