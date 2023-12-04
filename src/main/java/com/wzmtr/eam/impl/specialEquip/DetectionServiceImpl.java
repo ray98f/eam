@@ -20,6 +20,7 @@ import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.specialEquip.DetectionService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -89,7 +90,7 @@ public class DetectionServiceImpl implements DetectionService {
         detectionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         detectionReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String checkNo = detectionMapper.getMaxCode();
-        if (checkNo == null || "".equals(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             checkNo = "TJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);

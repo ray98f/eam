@@ -63,7 +63,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         List<SubmissionRecordResDTO> list = page.getRecords();
         if (!Objects.isNull(list) && !list.isEmpty()) {
             for (SubmissionRecordResDTO res : list) {
-                if (res.getDocId() != null && !"".equals(res.getDocId())) {
+                if (StringUtils.isNotEmpty(res.getDocId())) {
                     res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
                 }
             }
@@ -78,7 +78,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (res.getDocId() != null && !"".equals(res.getDocId())) {
+        if (StringUtils.isNotEmpty(res.getDocId())) {
             res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
         }
         return res;
@@ -94,7 +94,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         String archiveFlag = "0";
         String recStatus = "10";
         String checkNo = submissionRecordMapper.getMaxCode();
-        if (checkNo == null || "".equals(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             checkNo = "JJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);

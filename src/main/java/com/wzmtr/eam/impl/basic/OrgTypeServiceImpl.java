@@ -47,7 +47,7 @@ public class OrgTypeServiceImpl implements OrgTypeService {
     @Override
     public Page<OrgTypeResDTO> listOrgType(String orgCode, String orgType, PageReqDTO pageReqDTO) {
         List<String> orgCodes = new ArrayList<>();
-        if (orgCode != null && !"".equals(orgCode)) {
+        if (StringUtils.isNotEmpty(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
@@ -95,7 +95,7 @@ public class OrgTypeServiceImpl implements OrgTypeService {
     public void exportOrgType(String orgCode, String orgType, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "组织机构代码", "组织机构名称", "类别", "记录状态", "备注", "创建者", "创建时间");
         List<String> orgCodes = new ArrayList<>();
-        if (orgCode != null && !"".equals(orgCode)) {
+        if (StringUtils.isNotEmpty(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
         List<OrgTypeResDTO> orgTypeList = orgTypeMapper.listOrgType(StringUtils.getSumArrayList(orgCodes), orgType);

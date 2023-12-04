@@ -19,6 +19,7 @@ import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.specialEquip.DetectionPlanService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -88,13 +89,13 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         specialEquipReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         specialEquipReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String instrmPlanNo = detectionPlanMapper.getMaxCode();
-        if (instrmPlanNo == null || "".equals(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             instrmPlanNo = "TP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
         }
         specialEquipReqDTO.setInstrmPlanNo(instrmPlanNo);
-        if ("".equals(specialEquipReqDTO.getPlanPeriodMark())) {
+        if (StringUtils.isEmpty(specialEquipReqDTO.getPlanPeriodMark())) {
             specialEquipReqDTO.setPlanPeriodMark(" ");
         }
         detectionPlanMapper.addDetectionPlan(specialEquipReqDTO);

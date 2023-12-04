@@ -385,7 +385,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (list != null && list.size() > 0) {
             String planNmae = list.get(0).getPlanName();
             String orderstatus = list.get(0).getWorkStatus();
-            if (planNmae != null && !"".equals(planNmae.trim()) && planNmae.contains("二级修") && "4".equals(orderstatus)) {
+            if (StringUtils.isNotEmpty(planNmae) && planNmae.contains("二级修") && "4".equals(orderstatus)) {
                 return;
             }
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有二级修工单可以进行模块验收！");
@@ -511,7 +511,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
         dmfm01.setExt2(queryNowUser(fillinUserId));
         dmfm01.setRecId(UUID.randomUUID().toString());
-        if (objectCode != null && !"".equals(objectCode.trim()) && objectCode.startsWith("9")) {
+        if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith("9")) {
             dmfm01.setObjectName(list2.get(0).getObjectName());
             dmfm01.setObjectCode(list2.get(0).getObjectCode());
         }

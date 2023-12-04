@@ -20,10 +20,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.equipment.EquipmentService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.FileUtils;
-import com.wzmtr.eam.utils.QrUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
@@ -63,13 +60,13 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public EquipmentTreeResDTO listEquipmentTree(String lineCode, String regionCode, String recId, String parentNodeRecId, String equipmentCategoryCode) {
         EquipmentTreeResDTO res = new EquipmentTreeResDTO();
-        if (lineCode == null || "".equals(lineCode)) {
+        if (StringUtils.isEmpty(lineCode)) {
             res.setLine(equipmentMapper.listLine());
         } else {
             List<RegionResDTO> region = equipmentMapper.listRegion(lineCode, regionCode, recId);
-            boolean bool = (equipmentCategoryCode == null || "".equals(equipmentCategoryCode)) && region != null && !region.isEmpty();
+            boolean bool = StringUtils.isEmpty(equipmentCategoryCode) && region != null && !region.isEmpty();
             if (bool) {
-                if (regionCode == null || "".equals(regionCode)) {
+                if (StringUtils.isEmpty(regionCode)) {
                     RegionResDTO regionResDTO = new RegionResDTO();
                     regionResDTO.setRecId("E" + ("01".equals(lineCode) ? "S1" : "S2"));
                     regionResDTO.setParentNodeRecId(lineCode);

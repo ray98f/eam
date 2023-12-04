@@ -12,6 +12,7 @@ import com.wzmtr.eam.dto.res.bpmn.FlowRes;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -62,7 +63,7 @@ public class BpmnController {
     @ApiOperation(value = "登录")
     public DataResponse<String> login(@RequestParam(value = "account", required = false) String account,
                                       @RequestParam(value = "password", required = false) String password) {
-        if (account == null || "".equals(account)) {
+        if (StringUtils.isEmpty(account)) {
             account = "eam" + TokenUtil.getCurrentPersonId();
             password = account;
         }

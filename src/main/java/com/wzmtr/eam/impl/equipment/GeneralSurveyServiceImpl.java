@@ -14,6 +14,7 @@ import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.equipment.GeneralSurveyService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.FileUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -56,10 +57,10 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         List<GeneralSurveyResDTO> list = page.getRecords();
         if (list != null && !list.isEmpty()) {
             for (GeneralSurveyResDTO res : list) {
-                if (res.getDocId() != null && !"".equals(res.getDocId())) {
+                if (StringUtils.isNotEmpty(res.getDocId())) {
                     res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
                 }
-                if (res.getRecordId() != null && !"".equals(res.getRecordId())) {
+                if (StringUtils.isNotEmpty(res.getRecordId())) {
                     res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
                 }
             }
@@ -74,10 +75,10 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (res.getDocId() != null && !"".equals(res.getDocId())) {
+        if (StringUtils.isNotEmpty(res.getDocId())) {
             res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
         }
-        if (res.getRecordId() != null && !"".equals(res.getRecordId())) {
+        if (StringUtils.isNotEmpty(res.getRecordId())) {
             res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
         }
         return res;
@@ -144,7 +145,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
                 reqDTO.setRecDetail(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
                 cells.getCell(4).setCellType(CellType.STRING);
                 reqDTO.setCompleteDate(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
-                if (!"".equals(reqDTO.getCompleteDate()) && !reqDTO.getCompleteDate().contains("-")) {
+                if (StringUtils.isNotEmpty(reqDTO.getCompleteDate()) && !reqDTO.getCompleteDate().contains("-")) {
                     reqDTO.setCompleteDate(sdf2.format(sdf1.parse(reqDTO.getCompleteDate())));
                 }
                 cells.getCell(5).setCellType(CellType.STRING);

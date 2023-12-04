@@ -16,6 +16,7 @@ import com.wzmtr.eam.mapper.specialEquip.SpecialEquipMapper;
 import com.wzmtr.eam.service.specialEquip.SpecialEquipService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.FileUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -61,10 +62,10 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
         List<SpecialEquipResDTO> list = page.getRecords();
         if (list != null && !list.isEmpty()) {
             for (SpecialEquipResDTO resDTO : list) {
-                if (resDTO.getManageOrg() != null && !"".equals(resDTO.getManageOrg())) {
+                if (StringUtils.isNotEmpty(resDTO.getManageOrg())) {
                     resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
                 }
-                if (resDTO.getSecOrg() != null && !"".equals(resDTO.getSecOrg())) {
+                if (StringUtils.isNotEmpty(resDTO.getSecOrg())) {
                     resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
                 }
             }
@@ -79,10 +80,10 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (resDTO.getManageOrg() != null && !"".equals(resDTO.getManageOrg())) {
+        if (StringUtils.isNotEmpty(resDTO.getManageOrg())) {
             resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
         }
-        if (resDTO.getSecOrg() != null && !"".equals(resDTO.getSecOrg())) {
+        if (StringUtils.isNotEmpty(resDTO.getSecOrg())) {
             resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
         }
         return resDTO;
@@ -148,7 +149,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                 reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
                 reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                if (!"".equals(reqDTO.getSpecialEquipType())) {
+                if (StringUtils.isNotEmpty(reqDTO.getSpecialEquipType())) {
                     reqDTO.setSpecialEquipType("电梯".equals(reqDTO.getSpecialEquipType()) ? "10" : "起重机".equals(reqDTO.getSpecialEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getSpecialEquipType()) ? "30" : "40");
                 }
                 SysOffice manageOrg = organizationMapper.getByNames(reqDTO.getManageOrg());

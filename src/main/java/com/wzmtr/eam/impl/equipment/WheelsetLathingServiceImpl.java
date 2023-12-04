@@ -12,6 +12,7 @@ import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
 import com.wzmtr.eam.service.equipment.WheelsetLathingService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.FileUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -101,7 +102,7 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                 reqDTO.setCarriageNo(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
                 cells.getCell(2).setCellType(CellType.STRING);
                 String axleNo = cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue();
-                if (!"".equals(axleNo)) {
+                if (StringUtils.isNotEmpty(axleNo)) {
                     reqDTO.setAxleNo("一轴".equals(axleNo) ? "01" : "二轴".equals(axleNo) ? "02" : "三轴".equals(axleNo) ? "03" : "04");
                 } else {
                     reqDTO.setAxleNo(axleNo);

@@ -343,7 +343,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 orderCode = CodeUtils.getNextCode(orderCode, 10);
             }
             insertInspectPlan(plan.getPlanCode(), new String[]{orderCode, weekPlanCode, plan.getFirstBeginTime()});
-            if (!Objects.isNull(plan.getConstructionType()) && !"".equals(plan.getConstructionType().trim())) {
+            if (StringUtils.isNotEmpty(plan.getConstructionType())) {
                 plan.setExt1(orderCode);
                 try {
                     sendConstrctioOrderMsg(plan);
@@ -376,10 +376,10 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         String orgCode = weekPlan.get(0).getWorkerGroupCode();
         String userCode = weekPlan.get(0).getWorkerCode();
         String userName = weekPlan.get(0).getWorkerName();
-        if (orgCode == null || "".equals(orgCode.trim())) {
+        if (StringUtils.isEmpty(orgCode)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该周计划中没有填写作业工班！");
         }
-        if (userCode == null || "".equals(userCode.trim())) {
+        if (StringUtils.isEmpty(userCode)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该周计划中没有填写工班长！");
         }
         OverhaulOrderReqDTO overhaulOrderReqDTO = new OverhaulOrderReqDTO();
@@ -559,7 +559,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO) {
-        if (overhaulPlanListReqDTO.getWeekPlanCode() == null || "".equals(overhaulPlanListReqDTO.getWeekPlanCode().trim())) {
+        if (StringUtils.isEmpty(overhaulPlanListReqDTO.getWeekPlanCode())) {
             overhaulPlanListReqDTO.setWeekPlanCode("flag");
         }
         overhaulPlanListReqDTO.setObjectFlag("1");
@@ -657,7 +657,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     @Override
     public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "计划编号", "计划名称", "对象名称", "线路", "审批状态", "位置一", "专业", "系统", "设备类别", "规则", "作业工班", "启用状态", "首次开始日期", "是否关联", "预警里程");
-        if (overhaulPlanListReqDTO.getWeekPlanCode() == null || "".equals(overhaulPlanListReqDTO.getWeekPlanCode().trim())) {
+        if (StringUtils.isEmpty(overhaulPlanListReqDTO.getWeekPlanCode())) {
             overhaulPlanListReqDTO.setWeekPlanCode("flag");
         }
         overhaulPlanListReqDTO.setObjectFlag("1");
@@ -789,7 +789,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     }
 
     public String detailJudge(OverhaulObjectReqDTO overhaulObjectReqDTO) {
-        if ("".equals(overhaulObjectReqDTO.getObjectCode())) {
+        if (StringUtils.isEmpty(overhaulObjectReqDTO.getObjectCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "在" + overhaulObjectReqDTO.getPlanName() + "计划中，有对象编号为空");
         }
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
@@ -812,7 +812,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 objectName = equipmentRoomList.get(0).getEquipRoomName();
             }
         }
-        if ("".equals(objectName.trim())) {
+        if (StringUtils.isEmpty(objectName)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "在" + overhaulObjectReqDTO.getPlanName() + "计划中，对象编码" + overhaulObjectReqDTO.getObjectCode() + "错误");
         }
         return objectName;

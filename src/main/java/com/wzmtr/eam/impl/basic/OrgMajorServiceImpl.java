@@ -66,7 +66,7 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     @Override
     public Page<OrgMajorResDTO> listOrgMajor(String orgCode, String majorCode, PageReqDTO pageReqDTO) {
         List<String> orgCodes = new ArrayList<>();
-        if (orgCode != null && !"".equals(orgCode)) {
+        if (StringUtils.isNotEmpty(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
@@ -119,7 +119,7 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     public void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response) {
         List<String> listName = Arrays.asList("记录编号", "组织机构代码", "组织机构名称", "专业", "记录状态", "备注", "创建者", "创建时间");
         List<String> orgCodes = new ArrayList<>();
-        if (orgCode != null && !"".equals(orgCode)) {
+        if (StringUtils.isNotEmpty(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
         List<OrgMajorResDTO> orgMajors = orgMajorMapper.listOrgMajor(StringUtils.getSumArrayList(orgCodes), majorCode);

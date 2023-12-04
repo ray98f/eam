@@ -346,7 +346,7 @@ public class BpmnServiceImpl implements BpmnService {
                 StringBuilder chooseNodeUser = new StringBuilder();
                 String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
                 for (BpmnExaminePersonRes res : bpmnExaminePersonId) {
-                    if (res.getUserId() == null || "".equals(res.getUserId())) {
+                    if (StringUtils.isEmpty(res.getUserId())) {
                         continue;
                     }
                     if (null != res.getIsOwnerOrg() && "1".equals(res.getIsOwnerOrg())) {

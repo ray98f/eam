@@ -12,6 +12,7 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.entity.CompanyStructureTree;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.tree.CompanyTreeUtils;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.service.common.OrganizationService;
@@ -79,7 +80,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                             continue;
                         }
                         String officeName = organizationMapper.selectOfficeNameById(officeId);
-                        if (officeName != null && !"".equals(officeName)) {
+                        if (StringUtils.isNotEmpty(officeName)) {
                             names.append(officeName).append("-");
                         }
                     }

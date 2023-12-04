@@ -351,7 +351,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 map.put("模块顺序", resDTO.getModelSequence());
                 map.put("检修模块", resDTO.getModelName());
                 map.put("检修项顺序", resDTO.getSequenceId());
-                map.put("车组号", (!"".equals(resDTO.getTrainNumber()) && !" ".equals(resDTO.getTrainNumber())) ? resDTO.getTrainNumber() + "车" : "");
+                map.put("车组号", StringUtils.isNotEmpty(resDTO.getTrainNumber()) ? resDTO.getTrainNumber() + "车" : "");
                 map.put("检修项", resDTO.getItemName());
                 map.put("技术要求", resDTO.getExt1());
                 map.put("检修项类型", CommonConstants.TEN_STRING.equals(resDTO.getItemType()) ? "列表" : CommonConstants.TWENTY_STRING.equals(resDTO.getItemType()) ? "数值" : "文本");

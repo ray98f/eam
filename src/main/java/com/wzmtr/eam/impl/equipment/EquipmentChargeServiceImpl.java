@@ -11,6 +11,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentChargeMapper;
 import com.wzmtr.eam.service.equipment.EquipmentChargeService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
     @Override
     public void addEquipmentCharge(EquipmentChargeReqDTO equipmentChargeReqDTO) {
         String equipName = equipmentChargeMapper.selectEquipmentNameByCode(equipmentChargeReqDTO.getEquipCode());
-        if (equipName == null || "".equals(equipName)) {
+        if (StringUtils.isEmpty(equipName)) {
             throw new CommonException(ErrorCode.EQUIP_CODE_ERROR);
         }
         equipmentChargeReqDTO.setRecId(TokenUtil.getUuId());

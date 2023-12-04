@@ -63,7 +63,7 @@ public class TransferServiceImpl implements TransferService {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         String eamProcessStatus1 = null;
         String eamProcessStatus2 = null;
-        if (eamProcessStatus != null && !"".equals(eamProcessStatus)) {
+        if (StringUtils.isNotEmpty(eamProcessStatus)) {
             if (CommonConstants.TWENTY_STRING.equals(eamProcessStatus)) {
                 eamProcessStatus1 = "20";
             } else if (CommonConstants.THIRTY_STRING.equals(eamProcessStatus)) {
@@ -315,7 +315,7 @@ public class TransferServiceImpl implements TransferService {
             for (int j = 0; j < transferSplitReqDTO.getEquipmentList().size(); j++) {
                 EquipmentResDTO resDTO = transferSplitReqDTO.getEquipmentList().get(j);
                 String sourceRecId = resDTO.getSourceRecId();
-                if (sourceRecId != null && "".equals(sourceRecId.trim())) {
+                if (StringUtils.isNotEmpty(sourceRecId.trim())) {
                     EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
                     equipmentReqDTO.setSourceRecId(sourceRecId);
                     equipmentReqDTO.setApprovalStatus("10");

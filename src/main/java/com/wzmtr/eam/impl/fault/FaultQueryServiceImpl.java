@@ -617,7 +617,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 String faultProcessResult = dmfm02.getFaultProcessResult();
                 // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
                 if ("01".equals(faultProcessResult) || "02".equals(faultProcessResult)) {
-                    if (stationCode != null && !"".equals(stationCode.trim())) {
+                    if (StringUtils.isNotEmpty(stationCode)) {
                         List<StationBO> stationBOS = stationMapper.queryStation(null, stationCode);
                         for (StationBO bo : stationBOS) {
                             overTodoService.insertTodo("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, bo.getUserId(), "故障关闭", "DMFM0001", currentUser);

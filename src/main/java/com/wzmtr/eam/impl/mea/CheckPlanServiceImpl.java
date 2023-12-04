@@ -87,7 +87,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         String recCreateTime = new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis());
         String archiveFlag = "0";
         String instrmPlanNo = checkPlanMapper.getMaxCode();
-        if (instrmPlanNo == null || "".equals(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
             instrmPlanNo = "JP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
@@ -101,10 +101,10 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         checkPlanReqDTO.setRecCreateTime(recCreateTime);
         checkPlanReqDTO.setArchiveFlag(archiveFlag);
         checkPlanReqDTO.setEditDeptCode(editDeptCode);
-        if ("".equals(checkPlanReqDTO.getPlanPeriodMark())) {
+        if (StringUtils.isEmpty(checkPlanReqDTO.getPlanPeriodMark())) {
             checkPlanReqDTO.setPlanPeriodMark(" ");
         }
-        if ("".equals(checkPlanReqDTO.getPlanCreateTime())) {
+        if (StringUtils.isEmpty(checkPlanReqDTO.getPlanCreateTime())) {
             checkPlanReqDTO.setPlanCreateTime(" ");
         }
         checkPlanMapper.addCheckPlan(checkPlanReqDTO);

@@ -482,7 +482,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 String nowDate = dateTimeFormat.format(new Date());
                 List<WoRuleResDTO.WoRuleDetail> ruleList = woRuleMapper.queryRuleList(planCode, nowDate.substring(nowDate.length() - 4));
                 int beforeDay = ruleList.get(0).getBeforeTime();
-                if (trigerTime == null || "".equals(trigerTime.trim()) || "0".equals(trigerTime)) {
+                if (StringUtils.isEmpty(trigerTime) || "0".equals(trigerTime)) {
                     trigerTime = orderCode.substring(2, 10);
                 } else {
                     trigerTime = trigerTime.substring(0, 8);

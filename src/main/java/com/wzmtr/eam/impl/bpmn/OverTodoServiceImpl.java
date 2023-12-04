@@ -100,7 +100,7 @@ public class OverTodoServiceImpl implements OverTodoService {
         // todo 根据角色获取用户列表
 //        List<Map<String, String>> userList = InterfaceHelper.getUserHelpe().getUserByGroupNameAndOrg(stepUserGroup, stepOrg);
         List<Map<String, String>> userList = new ArrayList<>();
-        if (userList != null && userList.size() > 0 && content != null && !"".equals(content.trim())) {
+        if (userList != null && userList.size() > 0 && StringUtils.isNotEmpty(content)) {
             // todo 发送短信
 //            eiInfo.set("contacts", userList);
 //            eiInfo.set("content", content);

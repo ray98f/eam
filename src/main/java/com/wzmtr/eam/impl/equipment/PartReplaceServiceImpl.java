@@ -14,6 +14,7 @@ import com.wzmtr.eam.mapper.equipment.PartReplaceMapper;
 import com.wzmtr.eam.service.equipment.PartReplaceService;
 import com.wzmtr.eam.utils.ExcelPortUtil;
 import com.wzmtr.eam.utils.FileUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -57,9 +58,9 @@ public class PartReplaceServiceImpl implements PartReplaceService {
 
     @Override
     public List<PartReplaceBomResDTO> getBom(String equipCode, String node) {
-        if (equipCode != null && !"".equals(equipCode)) {
+        if (StringUtils.isNotEmpty(equipCode)) {
             node = partReplaceMapper.selectBomCode(equipCode);
-            if (Objects.isNull(node) || "".equals(node)) {
+            if (StringUtils.isEmpty(node)) {
                 throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
             }
         }
