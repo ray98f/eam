@@ -3,7 +3,6 @@ package com.wzmtr.eam.impl.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.diboot.core.util.BeanUtils;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.*;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
