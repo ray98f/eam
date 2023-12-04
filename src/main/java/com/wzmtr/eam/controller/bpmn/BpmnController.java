@@ -149,8 +149,8 @@ public class BpmnController {
                                  @RequestParam(value = "opinion", required = false) String opinion,
                                  @RequestParam("fromId") String fromId,
                                  @RequestParam("formData") String formData,
-                                 @RequestParam(value = "formData", required = false) String modelId) {
-        bpmnService.agree(taskId, opinion, fromId, formData, modelId);
+                                 @RequestParam(value = "formData", required = false) String nodeId) {
+        bpmnService.agree(taskId, opinion, fromId, formData, nodeId);
         return DataResponse.success();
     }
 
