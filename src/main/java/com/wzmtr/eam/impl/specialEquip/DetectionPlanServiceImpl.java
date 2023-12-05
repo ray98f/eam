@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
+import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanDetailResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -163,7 +164,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             DetectionPlanReqDTO reqDTO = new DetectionPlanReqDTO();
             BeanUtils.copyProperties(res, reqDTO);
             reqDTO.setWorkFlowInstId(processId);
-            reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(),null));
+            reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null));
             reqDTO.setPlanStatus("20");
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
