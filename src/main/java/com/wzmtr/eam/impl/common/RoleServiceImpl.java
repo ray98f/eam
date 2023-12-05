@@ -149,6 +149,7 @@ public class RoleServiceImpl implements RoleService {
         BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
         req.setFlowId(flowId);
         req.setNodeId(nodeId);
+        req.setParentId(nodeId);
         //查当前节点的信息
         List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
         if (CollectionUtil.isEmpty(flowRoleResDTO)) {
