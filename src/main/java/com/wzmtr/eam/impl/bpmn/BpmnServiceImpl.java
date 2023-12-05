@@ -175,7 +175,7 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
         if (!CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, jsonObject.getString("msg"));
+            throw new CommonException(ErrorCode.BPMN_ERROR, jsonObject.getString("msg"));
         }
         String xml = jsonObject.getString("xml");
         // 创建DOM解析器工厂
@@ -195,7 +195,7 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
         if (!CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, jsonObject.getString("msg"));
+            throw new CommonException(ErrorCode.BPMN_ERROR, jsonObject.getString("msg"));
         }
         String xml = jsonObject.getString("xml");
         // 创建DOM解析器工厂
@@ -232,6 +232,9 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.EXAMINED_LIST + data, null, authorization), ResultEntity.class);
+        if (resultEntity.getCode() != 0) {
+            throw new CommonException(ErrorCode.BPMN_ERROR, resultEntity.getMsg());
+        }
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
         List<ExaminedListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), ExaminedListRes.class);
@@ -246,12 +249,12 @@ public class BpmnServiceImpl implements BpmnService {
         }
         // 获取分页结果
         List<ExaminedListRes> paginatedList = originalList.subList(startIndex, endIndex);
-        Page<ExaminedListRes> pageInfo = new Page<>();
-        pageInfo.setRecords(paginatedList);
-        pageInfo.setTotal(total);
-        pageInfo.setCurrent(req.getPageNo());
-        pageInfo.setSize(req.getPageSize());
-        return pageInfo;
+        Page<ExaminedListRes> page = new Page<>();
+        page.setRecords(paginatedList);
+        page.setTotal(total);
+        page.setCurrent(req.getPageNo());
+        page.setSize(req.getPageSize());
+        return page;
     }
 
     @Override
@@ -259,6 +262,9 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_RUNNING_LIST + data, null, authorization), ResultEntity.class);
+        if (resultEntity.getCode() != 0) {
+            throw new CommonException(ErrorCode.BPMN_ERROR, resultEntity.getMsg());
+        }
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
         List<RunningListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), RunningListRes.class);
@@ -293,8 +299,10 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_ENDING_LIST + data, null, authorization), ResultEntity.class);
+        if (resultEntity.getCode() != 0) {
+            throw new CommonException(ErrorCode.BPMN_ERROR, resultEntity.getMsg());
+        }
         JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
-
         // pagehelper不支持普通list分页 手动分页
         List<HisListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), HisListRes.class);
         // 总记录数
@@ -313,7 +321,6 @@ public class BpmnServiceImpl implements BpmnService {
         pageInfo.setTotal(total);
         pageInfo.setCurrent(req.getPageNo());
         pageInfo.setSize(req.getPageSize());
-
         return pageInfo;
     }
 
@@ -380,7 +387,7 @@ public class BpmnServiceImpl implements BpmnService {
         bpmnExamineDTO.setOpinion(opinion);
         ResultEntity result = agreeInstance(bpmnExamineDTO);
         if (result.getCode() != 0) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, result.getMsg());
+            throw new CommonException(ErrorCode.BPMN_ERROR, result.getMsg());
         }
     }
 
