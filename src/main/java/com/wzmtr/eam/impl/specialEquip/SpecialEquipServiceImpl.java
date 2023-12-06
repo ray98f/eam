@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.specialEquip.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.SpecialEquipHistoryResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.SpecialEquipResDTO;
@@ -197,7 +198,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                 } else {
                     map.put("特种设备类别", "");
                 }
-                map.put("应用线别代码", "01".equals(resDTO.getUseLineNo()) ? "S1线" : "S2线");
+                map.put("应用线别代码", CommonConstants.LINE_CODE_ONE.equals(resDTO.getUseLineNo()) ? "S1线" : "S2线");
                 map.put("位置一编号", resDTO.getPosition1Code());
                 map.put("位置一名称", resDTO.getPosition1Name());
                 map.put("特种设备检测日期", resDTO.getVerifyDate());

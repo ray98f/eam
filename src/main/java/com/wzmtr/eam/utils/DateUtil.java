@@ -1,5 +1,6 @@
 package com.wzmtr.eam.utils;
 
+import com.wzmtr.eam.constant.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -143,7 +144,7 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
         int year = (Integer.parseInt(dataStr[1]) + recordDate) / 12;
         int month = (Integer.parseInt(dataStr[1]) + recordDate) % 12;
         String a;
-        if (month < 10) {
+        if (month < CommonConstants.TEN) {
             if (month < 1) {
                 a = "12";
             } else {

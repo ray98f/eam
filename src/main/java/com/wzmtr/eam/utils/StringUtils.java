@@ -1,6 +1,7 @@
 package com.wzmtr.eam.utils;
 
 
+import com.wzmtr.eam.constant.CommonConstants;
 import org.springframework.util.AntPathMatcher;
 
 import java.util.Collection;
@@ -307,12 +308,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             // 没必要转换
             return "";
         }
-        else if (!name.contains("_")) {
+        else if (!name.contains(CommonConstants.UNDERLINE)) {
             // 不含下划线，仅将首字母大写
             return name.substring(0, 1).toUpperCase() + name.substring(1);
         }
         // 用下划线将原始字符串分割
-        String[] camels = name.split("_");
+        String[] camels = name.split(CommonConstants.UNDERLINE);
         for (String camel : camels) {
             // 跳过原始字符串中开头、结尾的下换线或双重下划线
             if (camel.isEmpty()) {

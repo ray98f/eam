@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.WheelsetLathingReqDTO;
 import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -152,7 +153,7 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                 map.put("记录编号", resDTO.getRecId());
                 map.put("列车号", resDTO.getTrainNo());
                 map.put("车厢号", resDTO.getCarriageNo());
-                map.put("镟修轮对车轴", "01".equals(resDTO.getAxleNo()) ? "一轴" : "02".equals(resDTO.getAxleNo()) ? "二轴" : "03".equals(resDTO.getAxleNo()) ? "三轴" : "四轴");
+                map.put("镟修轮对车轴", CommonConstants.LINE_CODE_ONE.equals(resDTO.getAxleNo()) ? "一轴" : CommonConstants.LINE_CODE_TWO.equals(resDTO.getAxleNo()) ? "二轴" : "03".equals(resDTO.getAxleNo()) ? "三轴" : "四轴");
                 map.put("镟修轮对号", resDTO.getWheelNo());
                 map.put("轮高", resDTO.getWheelHeight());
                 map.put("轮厚", resDTO.getWheelThick());

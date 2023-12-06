@@ -355,7 +355,7 @@ public class BpmnServiceImpl implements BpmnService {
                     if (StringUtils.isEmpty(res.getUserId())) {
                         continue;
                     }
-                    if (null != res.getIsOwnerOrg() && "1".equals(res.getIsOwnerOrg())) {
+                    if (null != res.getIsOwnerOrg() && CommonConstants.ONE_STRING.equals(res.getIsOwnerOrg())) {
                         // 找出为自己部门的
                         if (currentUserDepartCode.equals(res.getOfficeId())) {
                             String s = "eam" + res.getUserId();
@@ -434,7 +434,7 @@ public class BpmnServiceImpl implements BpmnService {
             List<BpmnExaminePersonRes> resList = roleMapper.getBpmnExaminePerson(req);
             String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
             for (BpmnExaminePersonRes res : resList) {
-                if (null != res.getIsOwnerOrg() && "1".equals(res.getIsOwnerOrg())) {
+                if (null != res.getIsOwnerOrg() && CommonConstants.ONE_STRING.equals(res.getIsOwnerOrg())) {
                     // 找出为自己部门的
                     if (currentUserDepartCode.equals(res.getOfficeId())) {
                         bpmnExaminePersonId.add(res.getUserId());

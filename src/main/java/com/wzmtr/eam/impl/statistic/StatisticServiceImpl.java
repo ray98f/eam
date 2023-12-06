@@ -45,6 +45,9 @@ import java.util.*;
 @Service
 @Slf4j
 public class StatisticServiceImpl implements StatisticService {
+    public static final Double ZERO = 0.0D;
+    public static final Double ONE_POINT_FIVE = 1.5D;
+    public static final Double FOUR_POINT_FIVE = 4.5D;
     @Autowired
     private CarFaultMapper carFaultMapper;
     @Autowired
@@ -630,12 +633,12 @@ public class StatisticServiceImpl implements StatisticService {
 
         String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles) * 4.0D);
         String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles) * 4.0D);
-        if (Double.parseDouble(affect12) > 1.5D) {
+        if (Double.parseDouble(affect12) > ONE_POINT_FIVE) {
             ramsCarResDTO.setAffect13("未达标");
         } else {
             ramsCarResDTO.setAffect13("达标");
         }
-        if (Double.parseDouble(affect22) > 4.5D) {
+        if (Double.parseDouble(affect22) > FOUR_POINT_FIVE) {
             ramsCarResDTO.setAffect23("未达标");
         } else {
             ramsCarResDTO.setAffect23("达标");
@@ -744,12 +747,12 @@ public class StatisticServiceImpl implements StatisticService {
             double noServiceZ = 0.0D;
             a.setMiles(a.getMiles() == null ? "0" : a.getMiles());
             double miles = Double.parseDouble(a.getMiles()) != 0.0D ? Double.parseDouble(a.getMiles()) : 0.0D;
-            if (Double.parseDouble(a.getLate()) == 0.0D) {
+            if (Double.parseDouble(a.getLate()) == ZERO) {
                 lateZ = Double.parseDouble("0");
             } else {
                 lateZ = Double.parseDouble(a.getLate()) * 1000000.0D / miles / 4.0D;
             }
-            if (Double.parseDouble(a.getNoService()) == 0.0D) {
+            if (Double.parseDouble(a.getNoService()) == ZERO) {
                 noServiceZ = Double.parseDouble("0");
             } else {
                 noServiceZ = Double.parseDouble(a.getNoService()) * 1000000.0D / miles / 4.0D;
@@ -814,14 +817,14 @@ public class StatisticServiceImpl implements StatisticService {
             }
             DecimalFormat df = new DecimalFormat("#0");
             Double MTBF_LATE;
-            if (Double.parseDouble(a.getNumLate()) == 0.0D) {
+            if (Double.parseDouble(a.getNumLate()) == ZERO) {
                 MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
             } else {
                 MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumLate());
             }
             a.setMTBF_LATE(df.format(MTBF_LATE));
             Double MTBF_NOS;
-            if (Double.parseDouble(a.getNumNos()) == 0.0D) {
+            if (Double.parseDouble(a.getNumNos()) == ZERO) {
                 MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
             } else {
                 MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumNos());
@@ -920,7 +923,7 @@ public class StatisticServiceImpl implements StatisticService {
         map.values().forEach(a -> {
             DecimalFormat df = new DecimalFormat("#0");
             double ZB;
-            if (Double.parseDouble(a.getNOYF()) == 0.0D) {
+            if (Double.parseDouble(a.getNOYF()) == ZERO) {
                 ZB = Double.parseDouble(ramsResDTO.getTotalMiles()) * 4.0D / 55.0D;
             } else {
                 ZB = Double.parseDouble(ramsResDTO.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNOYF());

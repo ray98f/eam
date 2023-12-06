@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.SpecialEquipReqDTO;
@@ -151,7 +152,7 @@ public class MeaServiceImpl implements MeaService {
                 map.put("出厂编号", resDTO.getManufactureNo());
                 map.put("使用保管人手机号", resDTO.getPhoneNo());
                 map.put("使用保管人姓名", resDTO.getUseName());
-                map.put("线别", "01".equals(resDTO.getLineNo()) ? "S1线" : "S2线");
+                map.put("线别", CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineNo()) ? "S1线" : "S2线");
                 list.add(map);
             }
         }

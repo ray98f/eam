@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.equipment;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
@@ -49,6 +50,9 @@ import static com.wzmtr.eam.constant.CommonConstants.XLSX;
 @Slf4j
 public class EquipmentServiceImpl implements EquipmentService {
 
+    private static final String REGION_CODE_ES1 = "ES1";
+    private static final String REGION_CODE_ES2 = "ES2";
+
     @Autowired
     private EquipmentMapper equipmentMapper;
 
@@ -68,19 +72,20 @@ public class EquipmentServiceImpl implements EquipmentService {
             if (bool) {
                 if (StringUtils.isEmpty(regionCode)) {
                     RegionResDTO regionResDTO = new RegionResDTO();
-                    regionResDTO.setRecId("E" + ("01".equals(lineCode) ? "S1" : "S2"));
+                    String name = "E" + (CommonConstants.LINE_CODE_ONE.equals(lineCode) ? "S1" : "S2");
+                    regionResDTO.setRecId(name);
                     regionResDTO.setParentNodeRecId(lineCode);
-                    regionResDTO.setNodeCode("E" + ("01".equals(lineCode) ? "S1" : "S2"));
-                    regionResDTO.setNodeName(("01".equals(lineCode) ? "S1线" : "S2线") + "车辆");
+                    regionResDTO.setNodeCode(name);
+                    regionResDTO.setNodeName((CommonConstants.LINE_CODE_ONE.equals(lineCode) ? "S1线" : "S2线") + "车辆");
                     regionResDTO.setLineCode(lineCode);
                     region.add(regionResDTO);
-                } else if ("ES1".equals(regionCode) || "ES2".equals(regionCode)) {
+                } else if (REGION_CODE_ES1.equals(regionCode) || REGION_CODE_ES2.equals(regionCode)) {
                     region = equipmentMapper.listCarRegion(lineCode, recId);
                 }
                 res.setRegion(region);
-            } else if ("01".equals(parentNodeRecId) && "ES1".equals(recId) && "01".equals(lineCode)) {
+            } else if (CommonConstants.LINE_CODE_ONE.equals(parentNodeRecId) && REGION_CODE_ES1.equals(recId) && CommonConstants.LINE_CODE_ONE.equals(lineCode)) {
                 res.setRegion(equipmentMapper.listCarRegion(lineCode, recId));
-            } else if (!"ES1".equals(parentNodeRecId) && !"ES2".equals(parentNodeRecId)) {
+            } else if (!REGION_CODE_ES1.equals(parentNodeRecId) && !REGION_CODE_ES2.equals(parentNodeRecId)) {
                 res.setEquipment(equipmentMapper.listEquipmentCategory(equipmentCategoryCode, lineCode, recId, regionCode));
             }
         }

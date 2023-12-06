@@ -20,6 +20,8 @@ import java.util.List;
  */
 @Service
 public class UserGroupMemberServiceImpl implements UserGroupMemberService {
+
+    public static final String OPERATE_PROFESSION_ENGINE = "DM_004";
     @Autowired
     private OrgMajorMapper orgMajorMapper;
 
@@ -52,7 +54,7 @@ public class UserGroupMemberServiceImpl implements UserGroupMemberService {
             nextUser.addAll(roleMapper.getUserBySubjectAndLineAndRole(subjectCode, lineCode, roleCode));
         }
         if (nextUser.size() <= 0) {
-            if ("DM_004".equals(roleCode)) {
+            if (OPERATE_PROFESSION_ENGINE.equals(roleCode)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（运营）角色中没有人员，不能进行送审操作");
             }
             throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（车辆部）角色中没有人员，不能进行送审操作");

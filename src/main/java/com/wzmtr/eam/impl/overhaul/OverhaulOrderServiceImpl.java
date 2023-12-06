@@ -123,7 +123,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 map.put("作业人员", resDTO.getWorkerName());
                 map.put("实际开始时间", resDTO.getRealStartTime());
                 map.put("实际完成时间", resDTO.getRealEndTime());
-                map.put("线路", "01".equals(resDTO.getLineNo()) ? "S1线" : "S2线");
+                map.put("线路", CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineNo()) ? "S1线" : "S2线");
                 map.put("位置", resDTO.getPosition1Name());
                 map.put("专业", resDTO.getSubjectName());
                 map.put("系统", resDTO.getSystemName());
@@ -171,7 +171,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             }
         }
         checkOrderState(overhaulOrderReqDTO, "1,2,3", "请求、已下达、已分配");
-        if ("1".equals(overhaulOrderReqDTO.getWorkStatus())) {
+        if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
             overhaulOrderReqDTO.setWorkStatus("2");
             overhaulOrderReqDTO.setRecDeletor(TokenUtil.getCurrentPerson().getPersonName() + "-" + new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
@@ -197,7 +197,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderReqDTO.getSubjectCode()) && !overhaulOrderReqDTO.getPlanName().contains("二级修")) {
+        if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderReqDTO.getSubjectCode()) && !overhaulOrderReqDTO.getPlanName().contains(CommonConstants.SECOND_REPAIR_SHIFT)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有工单为车辆二级修才能进行该操作。");
         }
         checkOrderState(overhaulOrderReqDTO, "4", "完工");
@@ -228,7 +228,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (!overhaulOrderReqDTO.getPlanName().contains("二级修")) {
+        if (!overhaulOrderReqDTO.getPlanName().contains(CommonConstants.SECOND_REPAIR_SHIFT)) {
             checkOrderState(overhaulOrderReqDTO, "4", "完工");
         } else {
             checkOrderState(overhaulOrderReqDTO, "6", "验收");
@@ -383,9 +383,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderListReqDTO.setOrderCode(orderCode);
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
         if (list != null && list.size() > 0) {
-            String planNmae = list.get(0).getPlanName();
-            String orderstatus = list.get(0).getWorkStatus();
-            if (StringUtils.isNotEmpty(planNmae) && planNmae.contains("二级修") && "4".equals(orderstatus)) {
+            String planName = list.get(0).getPlanName();
+            String orderStatus = list.get(0).getWorkStatus();
+            if (StringUtils.isNotEmpty(planName) && planName.contains(CommonConstants.SECOND_REPAIR_SHIFT) && CommonConstants.FOUR_STRING.equals(orderStatus)) {
                 return;
             }
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有二级修工单可以进行模块验收！");
@@ -511,7 +511,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
         dmfm01.setExt2(queryNowUser(fillinUserId));
         dmfm01.setRecId(UUID.randomUUID().toString());
-        if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith("9")) {
+        if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith(CommonConstants.NINE_STRING)) {
             dmfm01.setObjectName(list2.get(0).getObjectName());
             dmfm01.setObjectCode(list2.get(0).getObjectCode());
         }

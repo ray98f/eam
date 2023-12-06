@@ -164,7 +164,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !"90".equals(overhaulPlanReqDTO.getTrialStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !CommonConstants.NINETY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) ||
@@ -237,7 +237,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !"90".equals(overhaulPlanReqDTO.getTrialStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !CommonConstants.NINETY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有编辑和驳回状态的数据才能够进行送审！");
         }
         if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode())) {
@@ -364,7 +364,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 map.put("计划编号", resDTO.getPlanCode());
                 map.put("计划名称", resDTO.getPlanName());
                 map.put("对象名称", resDTO.getExt1());
-                map.put("线路", "01".equals(resDTO.getLineNo()) ? "S1线" : "S2线");
+                map.put("线路", CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineNo()) ? "S1线" : "S2线");
                 map.put("审批状态", CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
                 map.put("位置一", resDTO.getPosition1Name());
                 map.put("专业", resDTO.getSubjectName());
@@ -413,7 +413,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     public String createInsepectRecordByPlanCode(String[] planCodes) {
         String flag = "0";
-        if (planCodes.length > 1 && "1".equals(planCodes[1])) {
+        if (planCodes.length > 1 && CommonConstants.ONE_STRING.equals(planCodes[1])) {
             flag = "1";
         }
         String planCode = planCodes[0];
@@ -423,7 +423,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String orderCode = overhaulOrderMapper.getMaxCode();
-        if (StringUtils.isEmpty(orderCode) || !orderCode.substring(2, 10).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(day.format(System.currentTimeMillis()))) {
             orderCode = "JX" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             orderCode = CodeUtils.getNextCode(orderCode, 10);
@@ -475,15 +475,15 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         insertMap.setRealEndTime(" ");
         insertMap.setExt1(" ");
         if (orderCodes.length > 1) {
-            if ("1".equals(orderCodes[1])) {
-                insertMap.setPlanStartTime(orderCode.substring(2, 10));
+            if (CommonConstants.ONE_STRING.equals(orderCodes[1])) {
+                insertMap.setPlanStartTime(orderCode.substring(CommonConstants.TWO, CommonConstants.TEN));
             } else {
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
                 String nowDate = dateTimeFormat.format(new Date());
                 List<WoRuleResDTO.WoRuleDetail> ruleList = woRuleMapper.queryRuleList(planCode, nowDate.substring(nowDate.length() - 4));
                 int beforeDay = ruleList.get(0).getBeforeTime();
-                if (StringUtils.isEmpty(trigerTime) || "0".equals(trigerTime)) {
-                    trigerTime = orderCode.substring(2, 10);
+                if (StringUtils.isEmpty(trigerTime) || CommonConstants.ZERO_STRING.equals(trigerTime)) {
+                    trigerTime = orderCode.substring(CommonConstants.TWO, CommonConstants.TEN);
                 } else {
                     trigerTime = trigerTime.substring(0, 8);
                 }
@@ -494,7 +494,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 insertMap.setPlanStartTime(dateTimeFormat.format(ca.getTime()));
             }
         } else {
-            insertMap.setPlanStartTime(orderCode.substring(2, 10));
+            insertMap.setPlanStartTime(orderCode.substring(CommonConstants.TWO, CommonConstants.TEN));
         }
         try {
             List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(queryMap1);
@@ -579,7 +579,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         dmer24.setPlanCode(planCode);
         dmer24.setOrderCode(orderCode);
         dmer24.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
-        if (workCode.length() > 2) {
+        if (workCode.length() > CommonConstants.TWO) {
             String[] workerCodes = workCode.split(",");
             if (workerCodes.length > 0) {
                 for (String workerCode : workerCodes) {
@@ -599,7 +599,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         // OrderPlan  submitOrderPlan
         // /iam/org/getZcOverhaulPlanExamineUser接口获取审核人
         String processId = bpmnService.commit(overhaulPlanReqDTO.getPlanCode(), BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(), null, null, overhaulPlanReqDTO.getExamineReqDTO().getUserIds(), null);
-        if (processId == null || "-1".equals(processId)) {
+        if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
         }
         overhaulPlanReqDTO.setWorkFlowInstId(processId);

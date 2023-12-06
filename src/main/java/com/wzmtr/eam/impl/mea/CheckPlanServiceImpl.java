@@ -87,7 +87,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         String recCreateTime = new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis());
         String archiveFlag = "0";
         String instrmPlanNo = checkPlanMapper.getMaxCode();
-        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
             instrmPlanNo = "JP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
@@ -180,7 +180,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         } else {
             String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.CHECK_PLAN_SUBMIT.value(), null, null, checkPlanReqDTO.getExamineReqDTO().getUserIds(), null);
-            if (processId == null || "-1".equals(processId)) {
+            if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
             CheckPlanReqDTO reqDTO = new CheckPlanReqDTO();

@@ -35,11 +35,13 @@ import java.util.*;
 @Slf4j
 public class SecureCheckServiceImpl implements SecureCheckService {
 
+    public static final String AREA_ID = "0103705";
     @Autowired
     private SecureCheckMapper secureMapper;
 
     @Autowired
     private FileMapper fileMapper;
+
     @Autowired
     private OrganizationMapper organizationMapper;
 
@@ -66,10 +68,10 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         if (StringUtils.isEmpty(restoreDeptName)) {
             restoreDeptName = organizationMapper.getOrgById(a.getRestoreDeptCode());
         }
-        if(StringUtils.isNotEmpty(a.getSecRiskPic())){
+        if (StringUtils.isNotEmpty(a.getSecRiskPic())) {
             a.setSecRiskPicFile(fileMapper.selectFileInfo(Arrays.asList(a.getSecRiskPic().split(","))));
         }
-        if(StringUtils.isNotEmpty(a.getRestorePic())){
+        if (StringUtils.isNotEmpty(a.getRestorePic())) {
             a.setRestorePicFile(fileMapper.selectFileInfo(Arrays.asList(a.getRestorePic().split(","))));
         }
         //检查部门
@@ -80,7 +82,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         if (CommonConstants.TEN_STRING.equals(a.getIsRestored())) {
             a.setIsRestoredName("已完成整改");
         }
-        if ("1".equals(a.getIsRestored())) {
+        if (CommonConstants.ONE_STRING.equals(a.getIsRestored())) {
             a.setIsRestoredName("未完成整改");
         }
     }
@@ -118,7 +120,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             if (CommonConstants.TEN_STRING.equals(res.getIsRestored())) {
                 res.setIsRestoredName("已完成整改");
             }
-            if ("1".equals(res.getIsRestored())) {
+            if (CommonConstants.ONE_STRING.equals(res.getIsRestored())) {
                 res.setIsRestoredName("未完成整改");
             }
             if (StringUtils.isEmpty(inspectDept)) {
@@ -170,7 +172,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         reqDTO.setSecRiskId(secRiskId);
         reqDTO.setRecStatus("10");
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        if ("0103705".equals(reqDTO.getRestoreDeptCode().trim())) {
+        if (AREA_ID.equals(reqDTO.getRestoreDeptCode().trim())) {
             reqDTO.setExt5("0103705");
         } else {
             reqDTO.setExt5(reqDTO.getRestoreDeptCode());

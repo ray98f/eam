@@ -92,7 +92,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(CarVideoAddReqDTO reqDTO) {
-        if (DateUtil.dateCompare(reqDTO.getVideoEndTime(), reqDTO.getVideoStartTime(), "yyyy-MM-dd HH:mm:ss") != 1) {
+        if (DateUtil.dateCompare(reqDTO.getVideoEndTime(), reqDTO.getVideoStartTime(), CommonConstants.TIME) != 1) {
             log.error("视频截止时间必须大于视频开始时间!");
             throw new CommonException(ErrorCode.VERIFY_DATE_ERROR);
         }
@@ -167,7 +167,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             carVideoDO.setWorkerId(reqDTO.getWorkerId());
             carVideoDO.setWorkClass(reqDTO.getWorkClass());
         }
-        if ("40".equals(reqDTO.getRecStatus())) {
+        if (CommonConstants.FORTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.THIRTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非派工状态下不可完工");
             }
@@ -187,9 +187,9 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             carVideoDO.setRecCreator(reqDTO.getRecStatus());
             carVideoDO.setWorkTime(DateUtil.getCurrentTime());
         }
-        if ("50".equals(reqDTO.getRecStatus())) {
-            if (!"40".equals(detail.getRecStatus())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非完工状态下不可关闭\"");
+        if (CommonConstants.FIFTY_STRING.equals(reqDTO.getRecStatus())) {
+            if (!CommonConstants.FORTY_STRING.equals(detail.getRecStatus())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非完工状态下不可关闭");
             }
             overTodoService.overTodo(reqDTO.getRecId(), "");
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
