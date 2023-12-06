@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.common;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineFlowRoleReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExaminePersonIdReq;
 import com.wzmtr.eam.dto.req.common.RoleReqDTO;
@@ -20,11 +21,12 @@ import com.wzmtr.eam.service.common.RoleService;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -142,43 +144,26 @@ public class RoleServiceImpl implements RoleService {
         if (StringUtils.isEmpty(nodeId)) {
             BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
             req.setFlowId(flowId);
-            req.setStep("2");
+            req.setStep(CommonConstants.TWO_STRING);
             List<FlowRoleResDTO> flowRoleResDTOS = roleMapper.queryBpmnExamine(req);
+            if (CollectionUtil.isEmpty(flowRoleResDTOS)) {
+                return null;
+            }
             return _buildRes(_toUniqueList(flowRoleResDTOS));
         }
         BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
         req.setFlowId(flowId);
         req.setNodeId(nodeId);
-        req.setParentId(nodeId);
-        //查当前节点的信息
+        // 查当前节点的信息
         List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
         if (CollectionUtil.isEmpty(flowRoleResDTO)) {
             return null;
         }
         FlowRoleResDTO flowRole = flowRoleResDTO.get(0);
-        // 跟踪，分析流程特殊处理，需要去判断属于哪条流程线，且归属同一父节点
-        // if (FLOW_SPECIAL_HAND.contains(flowId)) {
-        //     // 需要转换，走部长审核的那条流程
-        //     String line = flowRole.getLine();
-        //     if (null != change && !change) {
-        //         //先去查父节点为当前节点的集合，再过滤出不等于当前流程线的那条。
-        //         List<FlowRoleResDTO> flowRoleResDTOS = roleMapper.queryBpmnExamine(BpmnExamineFlowRoleReq.builder().parentId(nodeId).flowId(flowId).build());
-        //         flowRoleResDTOS = flowRoleResDTOS.stream()
-        //                 .filter(item-> !line.equals(item.getLine()))
-        //                 .collect(Collectors.toList());
-        //         //再去查这条新的流程线的下一步角色信息
-        //         String newLine = null;
-        //         if (CollectionUtil.isNotEmpty(flowRoleResDTOS)){
-        //             newLine = flowRoleResDTOS.get(0).getLine();
-        //         }
-        //         bpmnExamineFlowRoleReq.setLine(newLine);
-        //     }
-        // }
         return _buildRes((_getNextNodeInfo(flowId, flowRole)));
     }
 
-    @NotNull
-    private static List<FlowRoleResDTO> _toUniqueList(List<FlowRoleResDTO> flowRoleResDTOS) {
+    private List<FlowRoleResDTO> _toUniqueList(List<FlowRoleResDTO> flowRoleResDTOS) {
         return flowRoleResDTOS.stream()
                 .collect(Collectors.groupingBy(FlowRoleResDTO::getRoleId))
                 .values()
@@ -199,13 +184,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private List<FlowRoleResDTO> _getNextNodeInfo(String flowId, FlowRoleResDTO flowRole) {
-        //查下一步的节点信息
+        // 查下一步的节点信息
         BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
         bpmnExamineFlowRoleReq.setLine(flowRole.getLine());
         String step = flowRole.getStep();
         String nextStep = String.valueOf((Integer.parseInt(step) + 1));
         bpmnExamineFlowRoleReq.setStep(nextStep);
         bpmnExamineFlowRoleReq.setFlowId(flowId);
+        bpmnExamineFlowRoleReq.setParentId(flowRole.getNodeId());
         return roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
     }
 

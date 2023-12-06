@@ -10,6 +10,7 @@ import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultExamineReqDTO;
+import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.BpmnStatus;
@@ -126,6 +127,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 processId = bpmnService.commit(faultAnalysisNo, bpmnFlow, "{\"id\":\"" + faultAnalysisNo + "\",\"flag\":\"" + flag + "\"}", null, examineReqDTO.getUserIds(), submitNodeId);
                 dmfm03.setWorkFlowInstStatus(submitNodeId);
                 dmfm03.setWorkFlowInstId(processId);
+                dmfm03.setExt5(reqDTO.getLine());
                 dmfm03.setRecStatus("20");
             } catch (Exception e) {
                 log.error("故障分析流程提交错误，分析单号为-[{}]", faultAnalysisNo);
@@ -167,17 +169,23 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                     reviewOrNot = FaultAnalizeFlow.FAULT_ANALIZE_REVIEW_NODE.getCode();
                     flag = CommonConstants.ZERO_STRING;
                 } else {
+                    // 不需要部长审核 直接变更为结束状态
+                    faultAnalyzeDO.setRecStatus("30");
                     reviewOrNot = FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode();
                     flag = CommonConstants.ONE_STRING;
                 }
             }
-            String nextNodeId = bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_ANALIZE.value(), faultAnalyzeDO.getWorkFlowInstStatus());
-            // 下一步无后续时，变更状态
-            if (bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_ANALIZE.value(), nextNodeId).equals(FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode())) {
+            // 当前审核完需要获取下一步
+            FlowRoleResDTO nextNode = bpmnService.getNextNode(BpmnFlowEnum.FAULT_ANALIZE.value(), faultAnalyzeDO.getWorkFlowInstStatus(), faultAnalyzeDO.getExt5());
+            String nextNodeId = nextNode.getNodeId();
+            // 下一步为结束节点时，变更状态
+            if (nextNodeId.equals(FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode())) {
                 faultAnalyzeDO.setRecStatus("30");
             }
             bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), String.join(",", reqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\",\"review\":\"" + flag + "\"}", reviewOrNot);
             faultAnalyzeDO.setWorkFlowInstStatus(nextNodeId);
+            // 保存当前属于哪条流程线
+            faultAnalyzeDO.setExt5(nextNode.getLine());
         }
         faultAnalyzeDO.setRecReviseTime(DateUtils.getTime());
         faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
