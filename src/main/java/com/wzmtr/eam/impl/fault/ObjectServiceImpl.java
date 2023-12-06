@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.BomDO;
 import com.wzmtr.eam.dto.req.fault.CarObjectReqDTO;
 import com.wzmtr.eam.dto.req.fault.ObjectReqDTO;
@@ -32,6 +33,12 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ObjectServiceImpl implements ObjectService {
+
+    public static final String XL = "xl";
+    public static final String WZ = "wz";
+    public static final String ES = "ES";
+    public static final String CAR = "car";
+    public static final String CARPOS = "carpos";
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -69,7 +76,7 @@ public class ObjectServiceImpl implements ObjectService {
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0021Tree#query
         String node = reqDTO.getNodeCode();
         String type = reqDTO.getType();
-        if ("0".equals(node)) {
+        if (CommonConstants.ZERO_STRING.equals(node)) {
             // todo 接口暂时没有 先写死
             List<CarTreeListObjResDTO> list = Lists.newArrayList();
             list.add(CarTreeListObjResDTO.toS1ResDTO());
@@ -145,7 +152,7 @@ public class ObjectServiceImpl implements ObjectService {
         CarObjResDTO carObjResDTO = new CarObjResDTO();
         carObjResDTO.setPathName(pathName);
         if (StringUtils.isNotEmpty(reqDTO.getType())) {
-            if ("xl".equals(reqDTO.getType())) {
+            if (XL.equals(reqDTO.getType())) {
                 carObjResDTO.setUseLineName(reqDTO.getText());
                 carObjResDTO.setUseLineNo(reqDTO.getNodeCode());
                 carObjResDTO.setPosition1Name("");
@@ -156,9 +163,9 @@ public class ObjectServiceImpl implements ObjectService {
                 carObjResDTO.setSystemCode("");
                 carObjResDTO.setEquipTypeName("");
                 carObjResDTO.setEquipTypeCode("");
-            } else if ("wz".equals(reqDTO.getType()) && !"0".equals(reqDTO.getLabel())) {
+            } else if (WZ.equals(reqDTO.getType()) && !CommonConstants.ZERO_STRING.equals(reqDTO.getLabel())) {
                 LineResDTO lineResDTOS;
-                if (!reqDTO.getText().contains("ES")) {
+                if (!reqDTO.getText().contains(ES)) {
                     lineResDTOS = equipmentMapper.queryLine(reqDTO.getLabel());
                 } else {
                     lineResDTOS = equipmentMapper.queryCarLine(reqDTO.getLine());
@@ -183,16 +190,16 @@ public class ObjectServiceImpl implements ObjectService {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         String positionCode = (reqDTO.getPosition1Code() == null) ? "" : reqDTO.getPosition1Code();
         String car = reqDTO.getCar() == null ? "" : reqDTO.getCar();
-        if (positionCode.contains("ES") && car.trim().isEmpty()) {
+        if (positionCode.contains(ES) && car.trim().isEmpty()) {
             return bomMapper.queryCarEquip(reqDTO.of(), reqDTO);
-        } else if ("car".equals(car)) {
+        } else if (CAR.equals(car)) {
             List<String> carChild = bomMapper.queryCarTree(reqDTO.getCarNode());
             if (CollectionUtil.isNotEmpty(carChild)) {
                 return bomMapper.queryCarChild(reqDTO.of(), reqDTO);
             } else {
                 return bomMapper.queryCarLastChild(reqDTO.of(), reqDTO);
             }
-        } else if ("carpos".equals(car)) {
+        } else if (CARPOS.equals(car)) {
             return bomMapper.queryCar(reqDTO.of(), reqDTO);
         }
         return new Page<>();
@@ -203,7 +210,7 @@ public class ObjectServiceImpl implements ObjectService {
         if (bomDO != null) {
             String parentId = bomDO.getParentId();
             String cname = bomDO.getCname();
-            if (parentId != null && !"1".equals(parentId) && !"root".equals(parentId)) {
+            if (parentId != null && !CommonConstants.ONE_STRING.equals(parentId) && !CommonConstants.ROOT.equals(parentId)) {
                 rescv.add(cname + "-");
                 queryNodes(parentId, rescv);
             }

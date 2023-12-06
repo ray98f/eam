@@ -94,7 +94,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         String archiveFlag = "0";
         String recStatus = "10";
         String checkNo = submissionRecordMapper.getMaxCode();
-        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
             checkNo = "JJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
@@ -168,7 +168,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "此定检记录不存在计划明细，无法提交");
             }
             String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.value(), null, null, submissionRecordReqDTO.getExamineReqDTO().getUserIds(), null);
-            if (processId == null || "-1".equals(processId)) {
+            if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
             SubmissionRecordReqDTO reqDTO = new SubmissionRecordReqDTO();

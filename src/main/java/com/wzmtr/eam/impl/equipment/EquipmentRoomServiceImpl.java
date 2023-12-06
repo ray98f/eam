@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.EquipmentRoomReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -83,7 +84,7 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
                 map.put("设备房名称", resDTO.getEquipRoomName());
                 map.put("专业编码", resDTO.getSubjectCode());
                 map.put("专业名称", resDTO.getSubjectName());
-                map.put("线别编码", "01".equals(resDTO.getLineCode()) ? "S1线" : "S2线");
+                map.put("线别编码", CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineCode()) ? "S1线" : "S2线");
                 map.put("位置一编码", resDTO.getPosition1Code());
                 map.put("位置一名称", resDTO.getPosition1Name());
                 map.put("位置二编码", resDTO.getPosition2Code());

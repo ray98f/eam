@@ -67,7 +67,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             if (CommonConstants.TEN_STRING.equals(a.getIsRestored())) {
                 a.setRestoreDesc("已完成整改");
             }
-            if ("1".equals(a.getIsRestored())) {
+            if (CommonConstants.ONE_STRING.equals(a.getIsRestored())) {
                 a.setRestoreDesc("未完成整改");
             }
         }
@@ -110,7 +110,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             if (CommonConstants.TEN_STRING.equals(resDTO.getIsRestored())) {
                 resDTO.setRestoreDesc("已完成整改");
             }
-            if ("1".equals(resDTO.getIsRestored())) {
+            if (CommonConstants.ONE_STRING.equals(resDTO.getIsRestored())) {
                 resDTO.setRestoreDesc("未完成整改");
             }
             SecureRecStatus secureRecStatus = SecureRecStatus.getByCode(resDTO.getRecStatus());

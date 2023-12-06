@@ -90,7 +90,7 @@ public class DetectionServiceImpl implements DetectionService {
         detectionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         detectionReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String checkNo = detectionMapper.getMaxCode();
-        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
             checkNo = "TJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
@@ -162,7 +162,7 @@ public class DetectionServiceImpl implements DetectionService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可提交");
         } else {
             String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null, null, detectionReqDTO.getExamineReqDTO().getUserIds(), null);
-            if (processId == null || "-1".equals(processId)) {
+            if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
             DetectionReqDTO reqDTO = new DetectionReqDTO();

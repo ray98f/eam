@@ -131,7 +131,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
         SimpleDateFormat month = new SimpleDateFormat("yyMM");
         String weekPlanCode = overhaulWeekPlanMapper.getMaxCode();
-        if (StringUtils.isEmpty(weekPlanCode) || !weekPlanCode.substring(3, 7).equals(month.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(weekPlanCode) || !weekPlanCode.substring(CommonConstants.THREE, CommonConstants.SEVEN).equals(month.format(System.currentTimeMillis()))) {
             weekPlanCode = "ZJH" + month.format(System.currentTimeMillis()) + "0001";
         } else {
             weekPlanCode = CodeUtils.getNextCode(weekPlanCode, 7);
@@ -253,7 +253,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             }
             String processId = bpmnService.commit(overhaulWeekPlanReqDTO.getWeekPlanCode(), BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value(), null, null, overhaulWeekPlanReqDTO.getExamineReqDTO().getUserIds(), null);
             overhaulWeekPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value(),null));
-            if (processId == null || "-1".equals(processId)) {
+            if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
             } else {
                 overhaulWeekPlanReqDTO.setWorkFlowInstId(processId);
@@ -312,7 +312,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 map.put("周计划编号", resDTO.getWeekPlanCode());
                 map.put("周计划名称", resDTO.getPlanName());
                 map.put("周末", resDTO.getFirstBeginTime());
-                map.put("线路", "01".equals(resDTO.getLineNo()) ? "S1线" : "S2线");
+                map.put("线路", CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineNo()) ? "S1线" : "S2线");
                 map.put("专业", resDTO.getSubjectName());
                 map.put("作业工班", organizationMapper.getNamesById(resDTO.getWorkerGroupCode()));
                 map.put("工班长", resDTO.getWorkerName());
@@ -337,7 +337,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             }
             SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
             String orderCode = overhaulOrderMapper.getMaxCode();
-            if (StringUtils.isEmpty(orderCode) || !orderCode.substring(2, 10).equals(day.format(System.currentTimeMillis()))) {
+            if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(day.format(System.currentTimeMillis()))) {
                 orderCode = "JX" + day.format(System.currentTimeMillis()).substring(2) + "0001";
             } else {
                 orderCode = CodeUtils.getNextCode(orderCode, 10);
@@ -541,7 +541,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         dmer24.setPlanCode(planCode);
         dmer24.setOrderCode(orderCode);
         dmer24.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
-        if (workCode.length() > 2) {
+        if (workCode.length() > CommonConstants.TWO) {
             String[] workerCodes = workCode.split(",");
             if (workerCodes.length > 0) {
                 for (String workerCode : workerCodes) {

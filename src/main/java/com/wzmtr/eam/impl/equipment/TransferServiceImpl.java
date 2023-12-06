@@ -354,9 +354,9 @@ public class TransferServiceImpl implements TransferService {
                 list.add(map);
             }
             if (list.size() > 0) {
-                if (transferSplitReqDTO.getType() == 1) {
+                if (transferSplitReqDTO.getType() == CommonConstants.ONE) {
                     getOsbSend(list);
-                } else if (transferSplitReqDTO.getType() == 2) {
+                } else if (transferSplitReqDTO.getType() == CommonConstants.TWO) {
                     // todo ServiceDMDM0103 sendOSBbase
                     String url = "";
                     sendOsbBase(list, "EAM-MT-01", url);

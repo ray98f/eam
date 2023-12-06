@@ -1,5 +1,6 @@
 package com.wzmtr.eam.service.common;
 
+import com.wzmtr.eam.constant.CommonConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -110,7 +111,7 @@ public class RedisService {
         try {
             ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
             String value = valueOps.get(proName + keyPrefix + KEY_PREFIX_VALUE + k);
-            if (value.contains("\"")) {
+            if (value.contains(CommonConstants.DOUBLE_QUOTATION_MARKS)) {
                 // 去掉之前jaskson序列化多余产生的空格
                 return value.replaceAll("\"", "");
             }

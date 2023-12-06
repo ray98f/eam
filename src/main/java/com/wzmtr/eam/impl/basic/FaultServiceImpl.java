@@ -85,8 +85,8 @@ public class FaultServiceImpl implements FaultService {
                 map.put("记录编号", fault.getRecId());
                 map.put("对象编码", fault.getEquipmentTypeCode());
                 map.put("对象名称", fault.getEquipmentTypeName());
-                map.put("线路编号", "01".equals(fault.getLineCode()) ? "S1线" : "S2线");
-                map.put("码值类型", "1".equals(fault.getFaultCodeType()) ? "现象码" : "2".equals(fault.getFaultCodeType()) ? "原因码" : "行动码");
+                map.put("线路编号", CommonConstants.LINE_CODE_ONE.equals(fault.getLineCode()) ? "S1线" : "S2线");
+                map.put("码值类型", CommonConstants.ONE_STRING.equals(fault.getFaultCodeType()) ? "现象码" : CommonConstants.TWO_STRING.equals(fault.getFaultCodeType()) ? "原因码" : "行动码");
                 map.put("码值编号", fault.getFaultCode());
                 map.put("码值描述", fault.getFaultDescr());
                 map.put("关联码值", fault.getRelatedCodes());

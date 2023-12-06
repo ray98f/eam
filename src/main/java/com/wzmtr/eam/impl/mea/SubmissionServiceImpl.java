@@ -62,7 +62,7 @@ public class SubmissionServiceImpl implements SubmissionService {
     public void addSubmission(SubmissionReqDTO submissionReqDTO) {
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String sendVerifyNo = submissionMapper.getMaxCode();
-        if (StringUtils.isEmpty(sendVerifyNo) || !(CommonConstants.TWENTY_STRING + sendVerifyNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(sendVerifyNo) || !(CommonConstants.TWENTY_STRING + sendVerifyNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
             sendVerifyNo = "JW" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             sendVerifyNo = CodeUtils.getNextCode(sendVerifyNo, 8);
@@ -135,7 +135,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "此送检单不存在计划明细，无法提交");
             }
             String processId = bpmnService.commit(res.getSendVerifyNo(), BpmnFlowEnum.SUBMISSION_SUBMIT.value(), null, null, submissionReqDTO.getExamineReqDTO().getUserIds(), null);
-            if (processId == null || "-1".equals(processId)) {
+            if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
             SubmissionReqDTO reqDTO = new SubmissionReqDTO();

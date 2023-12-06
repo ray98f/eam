@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.overhaul;
 
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulWorkRecordReqDTO;
 import com.wzmtr.eam.mapper.overhaul.OverhaulWorkRecordMapper;
@@ -35,7 +36,7 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
         String workCode = overhaulOrderReqDTO.getWorkerCode();
         String workName = overhaulOrderReqDTO.getWorkerName();
         overhaulWorkRecordMapper.deleteByOrderCode(overhaulOrderReqDTO);
-        if (workCode.length() > 2) {
+        if (workCode.length() > CommonConstants.TWO) {
             String[] workerCodes = workCode.split(",");
             String[] workerNames = workName.split(",");
             if (workerCodes.length > 0) {
@@ -58,9 +59,9 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
                     overhaulWorkRecordMapper.insert(dmer24);
                     // 流程流转
                     try {
-                        if ("2".equals(overhaulOrderReqDTO.getWorkStatus())) {
+                        if (CommonConstants.TWO_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
                             overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), dmer24.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtil.getCurrentPersonId());
-                        } else if ("1".equals(overhaulOrderReqDTO.getWorkStatus())) {
+                        } else if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
                             // todo 根据角色获取用户列表
 //                            List<Map<String, String>> userList = InterfaceHelper.getUserHelpe().getUserBySubjectAndLineAndGroup(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");
                             List<Map<String, String>> userList = new ArrayList<>();

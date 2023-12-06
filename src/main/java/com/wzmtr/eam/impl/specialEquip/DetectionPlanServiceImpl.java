@@ -90,7 +90,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         specialEquipReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         specialEquipReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String instrmPlanNo = detectionPlanMapper.getMaxCode();
-        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(2, 8)).equals(day.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
             instrmPlanNo = "TP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
@@ -158,7 +158,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态无法提交");
         } else {
             String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null, null, detectionPlanReqDTO.getExamineReqDTO().getUserIds(), null);
-            if (processId == null || "-1".equals(processId)) {
+            if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
             DetectionPlanReqDTO reqDTO = new DetectionPlanReqDTO();

@@ -28,6 +28,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MdmSyncServiceImpl implements MdmSyncService {
 
+    public static final String ORG = "org";
+    public static final String SUPP = "supp";
+    public static final String EXTRA = "extra";
+
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
 
@@ -340,8 +344,8 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             user.setUpdateBy(personDefaultConfig.getUpdateBy());
         } else if (result instanceof com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Result) {
             com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Result result2 = (com.wzmtr.eam.soft.mdm.suppcontactsquery.vo.Result) result;
-            if (!StringUtils.isEmpty(result2.getPerId()) && !"-1".equals(result2.getExtraOrg())
-                    && !StringUtils.isEmpty(result2.getExtraOrg()) && "1".equals(result2.getIsUse())) {
+            if (!StringUtils.isEmpty(result2.getPerId()) && !CommonConstants.PROCESS_ERROR_CODE.equals(result2.getExtraOrg())
+                    && !StringUtils.isEmpty(result2.getExtraOrg()) && CommonConstants.ONE_STRING.equals(result2.getIsUse())) {
                 String parentIds = organizationMapper.selectCompanyIdByOfficeId(result2.getExtraOrg());
                 if (parentIds != null) {
                     user.setId(result2.getPerId());
@@ -375,7 +379,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             com.wzmtr.eam.soft.mdm.orgquery.vo.Result result1 = (com.wzmtr.eam.soft.mdm.orgquery.vo.Result) result;
             if (result1.getOrgCode() != null && !StringUtils.isEmpty(result1.getOrgCode())
                     && result1.getOrgName() != null && !StringUtils.isEmpty(result1.getOrgName())
-                    && "1".equals(result1.getStatus())) {
+                    && CommonConstants.ONE_STRING.equals(result1.getStatus())) {
                 org.setId(result1.getOrgCode());
                 org.setParentId(result1.getParentOrgCode() == null ? "-1" : result1.getParentOrgCode());
                 org.setParentIds(result1.getParentOrgCode() == null ? "-1" : "");
@@ -391,7 +395,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } else if (result instanceof com.wzmtr.eam.soft.mdm.supplierquery.vo.Result) {
             //外单位
             com.wzmtr.eam.soft.mdm.supplierquery.vo.Result result2 = (com.wzmtr.eam.soft.mdm.supplierquery.vo.Result) result;
-            if (StringUtils.isNotBlank(result2.getSuppName()) && !"-1".equals(result2.getSuppId()) && result2.getNodeStatus() == 1
+            if (StringUtils.isNotBlank(result2.getSuppName()) && !CommonConstants.PROCESS_ERROR_CODE.equals(result2.getSuppId()) && result2.getNodeStatus() == 1
                     && !"温州中车四方轨道车辆有限公司".equals(result2.getSuppName()) && !"中铁通轨道运营有限公司".equals(result2.getSuppName())) {
                 org.setId(result2.getSuppId());
                 org.setParentId("W");
@@ -458,9 +462,9 @@ public class MdmSyncServiceImpl implements MdmSyncService {
      * 批量添加人员信息
      */
     private void doPersonInsertBatch(List<SysUser> list, String type) {
-        if ("org".equals(type)) {
+        if (ORG.equals(type)) {
             userAccountMapper.cleanTable();
-        } else if ("supp".equals(type)) {
+        } else if (SUPP.equals(type)) {
             userAccountMapper.cleanSuppCon();
         }
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
@@ -486,11 +490,11 @@ public class MdmSyncServiceImpl implements MdmSyncService {
      * 批量添加组织机构信息
      */
     private void doOrgInsertBatch(List<SysOffice> list, String type) {
-        if ("org".equals(type)) {
+        if (ORG.equals(type)) {
             organizationMapper.cleanOrg();
-        } else if ("supp".equals(type)) {
+        } else if (SUPP.equals(type)) {
             organizationMapper.cleanSupplier();
-        } else if ("extra".equals(type)) {
+        } else if (EXTRA.equals(type)) {
             organizationMapper.cleanExtra();
         }
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
@@ -529,7 +533,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             List<SysUser> uList = new ArrayList<>();
             Date now = new Date();
             for (SysOrgUser sysOrgUser : list) {
-                boolean bool = ("1".equals(sysOrgUser.getLeavestatus()) || "11".equals(sysOrgUser.getLeavestatus()) || "12".equals(sysOrgUser.getLeavestatus()))
+                boolean bool = (CommonConstants.ONE_STRING.equals(sysOrgUser.getLeavestatus()) || "11".equals(sysOrgUser.getLeavestatus()) || "12".equals(sysOrgUser.getLeavestatus()))
                         && now.before(sysOrgUser.getLeavedate()) && !StringUtils.isEmpty(sysOrgUser.getCompanyId()) && !StringUtils.isEmpty(sysOrgUser.getOfficeId());
                 if (bool) {
                     SysUser user = new SysUser();
