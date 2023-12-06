@@ -10,11 +10,11 @@ import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultExamineReqDTO;
+import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.BpmnStatus;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.enums.FaultAnalizeFlow;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
@@ -121,9 +121,13 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (StringUtils.isEmpty(dmfm03.getWorkFlowInstId())) {
             try {
                 String submitNodeId = roleMapper.getSubmitNodeId(bpmnFlow, examineReqDTO.getRoleId());
-                processId = bpmnService.commit(faultAnalysisNo, bpmnFlow, null, null, examineReqDTO.getUserIds(), submitNodeId);
+                // 2 技术主管流程
+                String flag = FaultAnalizeFlow.FAULT_ANALIZE_TECHNICAL_LEAD.getCode().equals(submitNodeId)
+                        ? CommonConstants.TWO_STRING : CommonConstants.ONE_STRING;
+                processId = bpmnService.commit(faultAnalysisNo, bpmnFlow, "{\"id\":\"" + faultAnalysisNo + "\",\"flag\":\"" + flag + "\"}", null, examineReqDTO.getUserIds(), submitNodeId);
                 dmfm03.setWorkFlowInstStatus(submitNodeId);
                 dmfm03.setWorkFlowInstId(processId);
+                dmfm03.setExt5(reqDTO.getLine());
                 dmfm03.setRecStatus("20");
             } catch (Exception e) {
                 log.error("故障分析流程提交错误，分析单号为-[{}]", faultAnalysisNo);
@@ -158,14 +162,30 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_ANALIZE.value()).contains(faultAnalyzeDO.getWorkFlowInstStatus())) {
             // 提交部长审核指定下一流程
             String reviewOrNot = null;
+            String flag = null;
             if (null != reqDTO.getReviewOrNot()) {
+                // 需要部长审核时 flag固定为0
                 if (reqDTO.getReviewOrNot()) {
-                    reviewOrNot = CommonConstants.FAULT_ANALIZE_REVIEW_NODE;
+                    reviewOrNot = FaultAnalizeFlow.FAULT_ANALIZE_REVIEW_NODE.getCode();
+                    flag = CommonConstants.ZERO_STRING;
+                } else {
+                    // 不需要部长审核 直接变更为结束状态
+                    faultAnalyzeDO.setRecStatus("30");
+                    reviewOrNot = FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode();
+                    flag = CommonConstants.ONE_STRING;
                 }
+            }
+            // 当前审核完需要获取下一步
+            FlowRoleResDTO nextNode = bpmnService.getNextNode(BpmnFlowEnum.FAULT_ANALIZE.value(), faultAnalyzeDO.getWorkFlowInstStatus(), faultAnalyzeDO.getExt5());
+            String nextNodeId = nextNode.getNodeId();
+            // 下一步为结束节点时，变更状态
+            if (nextNodeId.equals(FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode())) {
                 faultAnalyzeDO.setRecStatus("30");
             }
-            bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), String.join(",", reqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\"}", reviewOrNot);
-            faultAnalyzeDO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_ANALIZE.value(), faultAnalyzeDO.getWorkFlowInstStatus()));
+            bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), String.join(",", reqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\",\"review\":\"" + flag + "\"}", reviewOrNot);
+            faultAnalyzeDO.setWorkFlowInstStatus(nextNodeId);
+            // 保存当前属于哪条流程线
+            faultAnalyzeDO.setExt5(nextNode.getLine());
         }
         faultAnalyzeDO.setRecReviseTime(DateUtils.getTime());
         faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());

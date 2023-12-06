@@ -205,6 +205,12 @@
         <if test="step!=null and step!=''">
             AND STEP=#{step}
         </if>
+        <if test="line!=null and line!=''">
+            AND LINE=#{line}
+        </if>
+        <if test="parentId!=null and parentId!=''">
+            AND PARENT_ID=#{parentId}
+        </if>
     </select>
 
     <select id="getNodeIdsByFlowId" resultType="java.lang.String">

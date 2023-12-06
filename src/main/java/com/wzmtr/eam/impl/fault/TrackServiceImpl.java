@@ -18,6 +18,7 @@ import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.FaultTrackFlow;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
@@ -195,7 +196,7 @@ public class TrackServiceImpl implements TrackService {
         if (StringUtils.isEmpty(dmfm09.getWorkFlowInstId())) {
             try {
                 String submitNodeId = roleMapper.getSubmitNodeId(BpmnFlowEnum.FAULT_TRACK.value(), null);
-                processId = bpmnService.commit(dmfm09.getFaultTrackNo(), BpmnFlowEnum.FAULT_TRACK.value(), null, null, userIds, submitNodeId);
+                processId = bpmnService.commit(dmfm09.getFaultTrackNo(), BpmnFlowEnum.FAULT_TRACK.value(), "{\"id\":\"id\",\"flag\":\"1\"}", null, userIds, submitNodeId);
                 // 保存下一步流程ID
                 dmfm09.setWorkFlowInstStatus(submitNodeId);
                 dmfm09.setWorkFlowInstId(processId);
@@ -237,14 +238,16 @@ public class TrackServiceImpl implements TrackService {
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_TRACK.value()).contains(dmfm09.getWorkFlowInstStatus())) {
                 String reviewOrNot = null;
                 // 提交部长审核指定下一流程
-                if (null != reqDTO.getReviewOrNot()) {
-                    if (reqDTO.getReviewOrNot()) {
-                        reviewOrNot = CommonConstants.FAULT_TRACK_REVIEW_NODE;
-                    }
+                if (null != reqDTO.getReviewOrNot() && reqDTO.getReviewOrNot()) {
+                    reviewOrNot = FaultTrackFlow.FAULT_TRACK_REVIEW_NODE.getCode();
+                }
+                String nextNodeId = bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus());
+                //只有当下一步没有后续时，才变更状态
+                if (StringUtils.isEmpty(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(),nextNodeId))) {
                     dmfm09.setRecStatus("30");
                 }
                 bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}", reviewOrNot);
-                dmfm09.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus()));
+                dmfm09.setWorkFlowInstStatus(nextNodeId);
             }
             dmfm09.setRecRevisor(TokenUtil.getCurrentPersonId());
             dmfm09.setRecReviseTime(DateUtil.getCurrentTime());

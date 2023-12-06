@@ -27,6 +27,10 @@ public class FlowRoleResDTO {
     private String isOwnerOrg;
     //第几步
     private String step;
+    //属于哪一条流程线
+    private String line;
+    //父节点
+    private String parentId;
 
     private List<PersonListResDTO> person;
 

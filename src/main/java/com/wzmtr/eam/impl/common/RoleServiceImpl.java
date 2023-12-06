@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.common;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineFlowRoleReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExaminePersonIdReq;
 import com.wzmtr.eam.dto.req.common.RoleReqDTO;
@@ -12,6 +13,7 @@ import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
@@ -22,8 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -31,6 +35,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleMapper roleMapper;
+
+    private static final List<String> FLOW_SPECIAL_HAND = Arrays.asList(BpmnFlowEnum.FAULT_ANALIZE.value(), BpmnFlowEnum.FAULT_TRACK.value());
+
 
     @Override
     public List<Role> getLoginRole() {
@@ -137,30 +144,35 @@ public class RoleServiceImpl implements RoleService {
         if (StringUtils.isEmpty(nodeId)) {
             BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
             req.setFlowId(flowId);
-            req.setStep("2");
-            List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(req);
-            if (CollectionUtil.isNotEmpty(flowRoleRes)) {
-                for (FlowRoleResDTO res : flowRoleRes) {
-                    if (res.getRoleId() != null) {
-                        res.setPerson(listRoleUsers(null, res.getRoleId()));
-                    }
-                }
+            req.setStep(CommonConstants.TWO_STRING);
+            List<FlowRoleResDTO> flowRoleResDTOS = roleMapper.queryBpmnExamine(req);
+            if (CollectionUtil.isEmpty(flowRoleResDTOS)) {
+                return null;
             }
-            return flowRoleRes;
+            return _buildRes(_toUniqueList(flowRoleResDTOS));
         }
         BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
         req.setFlowId(flowId);
         req.setNodeId(nodeId);
+        // 查当前节点的信息
         List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
         if (CollectionUtil.isEmpty(flowRoleResDTO)) {
             return null;
         }
-        String step = flowRoleResDTO.get(0).getStep();
-        String nextStep = String.valueOf((Integer.parseInt(step) + 1));
-        BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
-        bpmnExamineFlowRoleReq.setStep(nextStep);
-        bpmnExamineFlowRoleReq.setFlowId(flowId);
-        List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
+        FlowRoleResDTO flowRole = flowRoleResDTO.get(0);
+        return _buildRes((_getNextNodeInfo(flowId, flowRole)));
+    }
+
+    private List<FlowRoleResDTO> _toUniqueList(List<FlowRoleResDTO> flowRoleResDTOS) {
+        return flowRoleResDTOS.stream()
+                .collect(Collectors.groupingBy(FlowRoleResDTO::getRoleId))
+                .values()
+                .stream()
+                .map(list -> list.get(0))
+                .collect(Collectors.toList());
+    }
+
+    private List<FlowRoleResDTO> _buildRes(List<FlowRoleResDTO> flowRoleRes) {
         if (CollectionUtil.isNotEmpty(flowRoleRes)) {
             for (FlowRoleResDTO res : flowRoleRes) {
                 if (res.getRoleId() != null) {
@@ -170,4 +182,17 @@ public class RoleServiceImpl implements RoleService {
         }
         return flowRoleRes;
     }
+
+    private List<FlowRoleResDTO> _getNextNodeInfo(String flowId, FlowRoleResDTO flowRole) {
+        // 查下一步的节点信息
+        BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
+        bpmnExamineFlowRoleReq.setLine(flowRole.getLine());
+        String step = flowRole.getStep();
+        String nextStep = String.valueOf((Integer.parseInt(step) + 1));
+        bpmnExamineFlowRoleReq.setStep(nextStep);
+        bpmnExamineFlowRoleReq.setFlowId(flowId);
+        bpmnExamineFlowRoleReq.setParentId(flowRole.getNodeId());
+        return roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
+    }
+
 }
