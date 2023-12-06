@@ -1,11 +1,12 @@
 package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bizobject.FaultTrackBO;
-import com.wzmtr.eam.constant.FaultTrackCols;
+import com.wzmtr.eam.constant.Cols;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
@@ -17,11 +18,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
-import com.wzmtr.eam.mapper.fault.TrackQueryMapper;
+import com.wzmtr.eam.mapper.fault.FaultTrackMapper;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.*;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +36,7 @@ import java.util.*;
 @Service
 public class TrackQueryServiceImpl implements TrackQueryService {
     @Autowired
-    private TrackQueryMapper trackQueryMapper;
+    private FaultTrackMapper faultTrackMapper;
     @Autowired
     private OrganizationMapper organizationMapper;
     @Autowired
@@ -45,7 +45,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<TrackQueryResDTO> list = trackQueryMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(), reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode());
+        Page<TrackQueryResDTO> list = faultTrackMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(), reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode());
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
@@ -54,8 +54,8 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
-        FaultInfoDO faultInfo = trackQueryMapper.faultDetail(reqDTO);
-        FaultDetailResDTO faultOrder = trackQueryMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        FaultInfoDO faultInfo = faultTrackMapper.faultDetail(reqDTO);
+        FaultDetailResDTO faultOrder = faultTrackMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (faultInfo == null) {
             return faultOrder;
         }
@@ -102,7 +102,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
                 bo.setRecRevisor(TokenUtil.getCurrentPersonId());
                 bo.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 bo.setExt1("");
-                trackQueryMapper.cancellGenZ(bo);
+                faultTrackMapper.cancellGenZ(bo);
             });
         }
         // faultTrackNo
@@ -111,7 +111,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public void export(TrackQueryReqDTO reqDTO, HttpServletResponse response) {
         List<String> listName = Arrays.asList("跟踪单号", "故障编号", "对象名称", "故障现象", "故障原因", "故障处理", "转跟踪人员", "转跟踪时间", "跟踪期限", "跟踪周期", "跟踪结果", "跟踪状态");
-        List<TrackQueryResDTO> res = trackQueryMapper.query(reqDTO);
+        List<TrackQueryResDTO> res = faultTrackMapper.query(reqDTO);
         List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(res)) {
             for (TrackQueryResDTO resDTO : res) {
@@ -144,19 +144,19 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         if (StringUtils.isEmpty(faultNo)) {
             return;
         }
-        TrackQueryServiceImpl proxy = (TrackQueryServiceImpl) AopContext.currentProxy();
-        TrackQueryResDTO trackQueryResDTO = proxy.trackDetail(FaultBaseNoReqDTO.builder().faultNo(faultNo).build());
+        FaultTrackDO faultTrackDO1 = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo));
         // 根据faultNo判断 不存在则插入，存在即更新
-        if (null == trackQueryResDTO) {
-            String maxCode = trackQueryMapper.selectMaxCode();
+        if (null == faultTrackDO1) {
+            String maxCode = faultTrackMapper.selectMaxCode();
             faultTrackDO.setFaultTrackNo(CodeUtils.getNextCode(maxCode, "GT"));
             // 生成跟踪单
-            trackQueryMapper.insert(faultTrackDO);
+            faultTrackMapper.insert(faultTrackDO);
             // 生成跟踪工单
             // _buildTrackWork();
             return;
         }
-        trackQueryMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_NO, faultNo).eq(FaultTrackCols.FAULT_TRACK_NO, trackQueryResDTO.getFaultTrackNo()));
+        //更新fault_track表
+        faultTrackMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo).eq(Cols.FAULT_TRACK_NO, faultTrackDO1.getFaultTrackNo()));
     }
 
 
@@ -212,8 +212,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public TrackQueryResDTO trackDetail(FaultBaseNoReqDTO reqDTO) {
         // faultTrackNo //faultNo
-        return trackQueryMapper.detail(reqDTO);
+        return faultTrackMapper.detail(reqDTO);
     }
-
 
 }

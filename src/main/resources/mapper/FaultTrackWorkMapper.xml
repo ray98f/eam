@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.fault.FaultTrackWorkMapper">
+
+    <update id="report">
+        UPDATE T_FAULT_TRACK_DETAIL
+        SET
+        <if test="recStatus!=null">
+            REC_STATUS = #{recStatus},
+        </if>
+        <if test="trackReporterId!=null">
+            TRACK_REPORTER_ID = #{trackReporterId},
+        </if>
+        <if test="trackResult!=null">
+            TRACK_RESULT = #{trackResult},
+        </if>
+        <if test="trackReportTime!=null">
+            TRACK_REPORT_TIME = #{trackReportTime}
+        </if>
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="faultTrackNo!=null and faultTrackNo!=''">
+                and FAULT_TRACK_NO = #{faultTrackNo}
+            </if>
+            <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
+                and FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+            </if>
+        </trim>
+    </update>
+    <update id="close">
+        UPDATE T_FAULT_TRACK_DETAIL
+        SET
+        REC_STATUS = #{recStatus},
+        TRACK_CLOSER_ID = #{trackCloserId},
+        TRACK_CLOSE_TIME = #{trackCloseTime}
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="faultTrackNo!=null and faultTrackNo!=''">
+                and FAULT_TRACK_NO = #{faultTrackNo}
+            </if>
+            <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
+                and FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+            </if>
+        </trim>
+    </update>
+    <update id="repair">
+        UPDATE T_FAULT_TRACK_DETAIL
+        SET
+        WORKER_GROUP_CODE = #{workerGroupCode},
+        TRACK_REPORTER_ID = #{trackReporterId},
+        DISPATCH_USER_ID = #{dispatchUserId},
+        DISPATCH_TIME = #{dispatchTime},
+        REC_STATUS = #{recStatus}
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="faultTrackNo!=null and faultTrackNo!=''">
+                and FAULT_TRACK_NO = #{faultTrackNo}
+            </if>
+            <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
+                and FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+            </if>
+        </trim>
+    </update>
+    <select id="query" resultType="com.wzmtr.eam.dto.res.fault.TrackResDTO">
+        SELECT
+        df11.REC_ID as "recId",  <!-- 记录编号 -->
+        df11.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
+        df11.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
+        df11.FAULT_TRACK_NO as "faultTrackNo",  <!-- 故障跟踪编号 -->
+        df11.FAULT_TRACK_WORK_NO as "faultTrackWorkNo",  <!-- 故障跟踪工单号 -->
+        df11.DISPATCH_USER_ID as "dispatchUserId",  <!-- 派工人工号 -->
+        df11.DISPATCH_TIME as "dispatchTime",  <!-- 派工时间 -->
+        df11.WORKER_GROUP_CODE as "workerGroupCode",
+        df11.WORK_GROUP_NAME as "workGroupName",
+        df11.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
+        df11.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME =df11.TRACK_REPORTER_ID) as "trackReportName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.DISPATCH_USER_ID) as "dispatchUserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.TRACK_CLOSER_ID) as "trackCloserName",
+        df11.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
+        df11.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
+        df11.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->
+        df11.DOC_ID as "docId",  <!-- 附件编号 -->
+        df11.REMARK as "remark",  <!-- 备注 -->
+        df11.REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        df11.REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        df11.REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        df11.REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        df11.REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        df11.REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        df11.DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        df11.ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        df11.REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        df1.OBJECT_CODE as "objectCode",
+        df1.OBJECT_NAME as "objectName"
+        FROM T_FAULT_TRACK_DETAIL df11,
+        T_FAULT_ORDER df2,T_FAULT_TRACK df9,T_FAULT_INFO df1
+        <trim prefix="WHERE" prefixOverrides="AND">
+            and df11.FAULT_TRACK_NO = df9.FAULT_TRACK_NO
+            and df9.FAULT_NO=df1.FAULT_NO
+            and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+            and df2.FAULT_NO=df1.FAULT_NO
+            <if test="faultTrackNo!=null and faultTrackNo!=''">
+                and df11.FAULT_TRACK_NO = #{faultTrackNo}
+            </if>
+            <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
+                and df11.FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+            </if>
+            <if test="objectCode!=null and objectCode!=''">
+                and df1.OBJECT_CODE = #{objectCode}
+            </if>
+            <if test="objectName!=null and objectName!=''">
+                and df1.OBJECT_NAME = #{objectName}
+            </if>
+            <if test="majorCode!=null and majorCode!=''">
+                and df1.MAJOR_CODE = #{majorCode}
+            </if>
+            <if test="systemCode!=null and systemCode!=''">
+                and df1.SYSTEM_CODE = #{systemCode}
+            </if>
+            <if test="equipTypeCode!=null and equipTypeCode!=''">
+                and df1.EQUIP_TYPE_CODE = #{equipTypeCode}
+            </if>
+            <if test="recStatus!=null and recStatus!=''">
+                and df9.REC_STATUS = #{recStatus}
+            </if>
+        </trim>
+        order by df11.FAULT_TRACK_WORK_NO
+    </select>
+
+    <select id="detail" resultType="com.wzmtr.eam.dto.res.fault.TrackResDTO">
+        SELECT
+        df11.REC_ID as "recId",  <!-- 记录编号 -->
+        df11.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
+        df11.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
+        df11.FAULT_TRACK_NO as "faultTrackNo",  <!-- 故障跟踪编号 -->
+        df11.FAULT_TRACK_WORK_NO as "faultTrackWorkNo",  <!-- 故障跟踪工单号 -->
+        df11.DISPATCH_USER_ID as "dispatchUserId",  <!-- 派工人工号 -->
+        df11.DISPATCH_TIME as "dispatchTime",  <!-- 派工时间 -->
+        df11.WORKER_GROUP_CODE as "workerGroupCode",
+        df11.WORK_GROUP_NAME as "workGroupName",
+        df11.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
+        df11.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
+        (Select u.USER_NAME from IPLAT60.c u where u.LOGIN_NAME =df11.TRACK_REPORTER_ID) as "trackReportName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.DISPATCH_USER_ID) as "dispatchUserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.TRACK_CLOSER_ID) as "trackCloserName",
+        df11.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
+        df11.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
+        df11.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->
+        df11.DOC_ID as "docId",  <!-- 附件编号 -->
+        df11.REMARK as "remark",  <!-- 备注 -->
+        df11.REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        df11.REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        df11.REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        df11.REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        df11.REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        df11.REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        df11.DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        df11.ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        df11.REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        df1.OBJECT_CODE as "objectCode",
+        df1.OBJECT_NAME as "objectName"
+        FROM T_FAULT_TRACK_DETAIL df11
+        LEFT JOIN T_FAULT_TRACK df9
+        ON df11.FAULT_TRACK_NO = df9.FAULT_TRACK_NO
+        LEFT JOIN T_FAULT_ORDER df2
+        ON df9.FAULT_WORK_NO = df2.FAULT_WORK_NO
+        LEFT JOIN T_FAULT_INFO df1
+        ON df9.FAULT_NO = df1.FAULT_NO
+        AND df2.FAULT_NO = df1.FAULT_NO
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="id!=null and id!=''">
+                and df11.REC_ID = #{id}
+            </if>
+        </trim>
+    </select>
+    <select id="queryFault" resultType="com.wzmtr.eam.dto.res.fault.TrackResDTO">
+        SELECT
+        df1.FAULT_NO AS "faultNo",
+        df2.FAULT_WORK_NO AS "faultWorkNo",
+        df1.OBJECT_CODE AS "objectCode",
+        df1.OBJECT_NAME AS "objectName",
+        df1.DISCOVERY_TIME AS "discoveryTime",
+        df1.FAULT_DISPLAY_DETAIL AS "faultDisplayDetail",
+        df2.FAULT_REASON_DETAIL AS "faultReasonDetail",
+        df2.FAULT_ACTION_DETAIL AS "faultActionDetail",
+        df1.FAULT_MODULE AS "faultModule",
+        df1.LINE_CODE AS "lineCode",
+        df1.POSITION_CODE AS "positionCode"
+        FROM
+        T_FAULT_ORDER df2,
+        T_FAULT_INFO df1
+        WHERE
+        df1.FAULT_NO = df2.FAULT_NO
+        <if test="faultWorkNo!=null">
+            df2.FAULT_WORK_NO =#{faultWorkNo}
+        </if>
+    </select>
+
+
+</mapper>

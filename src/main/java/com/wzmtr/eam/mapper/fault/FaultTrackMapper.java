@@ -3,13 +3,13 @@ package com.wzmtr.eam.mapper.fault;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
-import com.wzmtr.eam.dto.req.fault.TrackCloseReqDTO;
-import com.wzmtr.eam.dto.req.fault.TrackExportReqDTO;
-import com.wzmtr.eam.dto.req.fault.TrackRepairReqDTO;
-import com.wzmtr.eam.dto.req.fault.TrackReportReqDTO;
-import com.wzmtr.eam.dto.res.fault.TrackResDTO;
+import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dataobject.FaultInfoDO;
+import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,22 +20,23 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface FaultTrackMapper extends BaseMapper<FaultTrackDO>{
-    Page<TrackResDTO> query(Page<Object> of, String faultTrackNo, String faultTrackWorkNo, String recStatus, String equipTypeCode, String majorCode, String objectName, String objectCode, String systemCode);
+public interface FaultTrackMapper extends BaseMapper<FaultTrackDO> {
 
-    List<TrackResDTO> query(TrackExportReqDTO reqDTO);
 
-    TrackResDTO detail(@Param("id") String id);
+    TrackQueryResDTO detail(FaultBaseNoReqDTO reqDTO);
 
-    void report(TrackReportReqDTO reqDTO);
 
-    void close(TrackCloseReqDTO reqDTO);
+    FaultInfoDO faultDetail(FaultDetailReqDTO reqDTO);
 
-    TrackResDTO queryFault(@Param("id") String id);
+    FaultDetailResDTO faultOrderDetail(String faultNo, String faultWorkNo);
 
-    void repair(TrackRepairReqDTO reqDTO);
+    void cancellGenZ(TrackQueryResDTO bo);
 
-    List<FaultTrackDO> queryOne(String faultNo, String faultWorkNo, String faultAnalysisNo, String faultTrackNo);
+    Page<TrackQueryResDTO> query(Page<Object> of, String faultTrackNo, String faultNo, String faultTrackWorkNo, String faultWorkNo, String lineCode, String majorCode, String objectCode, String positionCode, String systemCode, String objectName, String recStatus, String equipTypeCode);
 
+    List<TrackQueryResDTO> query(TrackQueryReqDTO req);
     void transmit(FaultTrackDO faultTrackDO);
+    String selectMaxCode();
+
+    List<FaultTrackDO> queryList(String faultNo, String faultWorkNo, String faultAnalysisNo, String faultTrackNo);
 }

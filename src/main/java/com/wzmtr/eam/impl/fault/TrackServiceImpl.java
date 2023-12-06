@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
+import com.wzmtr.eam.constant.Cols;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.constant.FaultTrackCols;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.fault.*;
@@ -15,14 +15,12 @@ import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
-import com.wzmtr.eam.enums.BpmnFlowEnum;
-import com.wzmtr.eam.enums.BpmnStatus;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.enums.FaultTrackFlow;
+import com.wzmtr.eam.enums.*;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultTrackMapper;
+import com.wzmtr.eam.mapper.fault.FaultTrackWorkMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
@@ -30,7 +28,6 @@ import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +46,8 @@ public class TrackServiceImpl implements TrackService {
     @Autowired
     private FaultTrackMapper faultTrackMapper;
     @Autowired
+    private FaultTrackWorkMapper faultTrackWorkMapper;
+    @Autowired
     private BpmnService bpmnService;
     @Autowired
     private FaultQueryMapper faultQueryMapper;
@@ -61,22 +60,10 @@ public class TrackServiceImpl implements TrackService {
     @Autowired
     private RoleMapper roleMapper;
 
-    private static final Map<String, String> PROCESS_MAP = new HashMap<>();
-
-    static {
-        PROCESS_MAP.put("A30", "跟踪报告编制");
-        PROCESS_MAP.put("A40", "技术主管审核");
-        PROCESS_MAP.put("A50", "维保经理审核");
-        PROCESS_MAP.put("A60", "运营公司专业工程师审核");
-        PROCESS_MAP.put("A70", "中铁通科长审核");
-        PROCESS_MAP.put("A80", "中铁通部长审核");
-        PROCESS_MAP.put("A90", "部长审核");
-    }
-
     @Override
     public Page<TrackResDTO> list(TrackReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<TrackResDTO> list = faultTrackMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode(), reqDTO.getMajorCode(), reqDTO.getObjectName(), reqDTO.getObjectCode(), reqDTO.getSystemCode());
+        Page<TrackResDTO> list = faultTrackWorkMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode(), reqDTO.getMajorCode(), reqDTO.getObjectName(), reqDTO.getObjectCode(), reqDTO.getSystemCode());
         if (CollectionUtil.isEmpty(list.getRecords())) {
             return new Page<>();
         }
@@ -85,7 +72,7 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public TrackResDTO detail(SidEntity reqDTO) {
-        return faultTrackMapper.detail(reqDTO.getId());
+        return faultTrackWorkMapper.detail(reqDTO.getId());
     }
 
     @Override
@@ -95,7 +82,7 @@ public class TrackServiceImpl implements TrackService {
         reqDTO.setTrackReportTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
         reqDTO.setTrackReporterId(TokenUtil.getCurrentPersonId());
         reqDTO.setRecStatus("30");
-        faultTrackMapper.report(reqDTO);
+        faultTrackWorkMapper.report(reqDTO);
     }
 
     @Override
@@ -105,7 +92,7 @@ public class TrackServiceImpl implements TrackService {
         reqDTO.setTrackCloserId(TokenUtil.getCurrentPersonId());
         reqDTO.setRecStatus("40");
         // /* 136 */       DMUtil.overTODO((String)((Map)dm03List.get(0)).get("recId"), "关闭");
-        faultTrackMapper.close(reqDTO);
+        faultTrackWorkMapper.close(reqDTO);
     }
 
     @Override
@@ -116,10 +103,8 @@ public class TrackServiceImpl implements TrackService {
         reqDTO.setDispatchTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
         overTodoService.overTodo(reqDTO.getRecId(), "派工完毕");
         reqDTO.setRecStatus("20");
-        faultTrackMapper.repair(reqDTO);
+        faultTrackWorkMapper.repair(reqDTO);
     }
-    // TODO com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#buildWork 看着像是生成一个跟踪工单，暂时还不知道在哪触发
-
 
     @Override
     public void transmit(TrackTransmitReqDTO reqDTO) {
@@ -155,7 +140,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public void export(TrackExportReqDTO reqDTO, HttpServletResponse response) {
         List<String> listName = Arrays.asList("跟踪单工单号", "跟踪单号", "对象编码", "对象名称", "跟踪状态", "派工人", "跟踪报告人", "派工时间", "跟踪结果", "备注", "跟踪报告时间", "跟踪关闭人", "跟踪关闭时间");
-        List<TrackResDTO> resList = faultTrackMapper.query(reqDTO);
+        List<TrackResDTO> resList = faultTrackWorkMapper.query(reqDTO);
         if (CollectionUtil.isEmpty(resList)) {
             return;
         }
@@ -186,7 +171,7 @@ public class TrackServiceImpl implements TrackService {
     public void commit(FaultExamineReqDTO reqDTO) {
         List<String> userIds = Assert.notNull(reqDTO.getExamineReqDTO().getUserIds(), "下一步参与者不能为空！");
         // dmfm09.query  com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#submit
-        List<FaultTrackDO> dmfm9List = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
+        List<FaultTrackDO> dmfm9List = faultTrackMapper.queryList(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
         if (CollectionUtil.isEmpty(dmfm9List)) {
             return;
         }
@@ -194,17 +179,22 @@ public class TrackServiceImpl implements TrackService {
         String processId = null;
         // dmfm01.query
         if (StringUtils.isEmpty(dmfm09.getWorkFlowInstId())) {
+            String faultTrackNo = dmfm09.getFaultTrackNo();
             try {
+                // 根据前端选择的roleId获取下一步的流程走向
                 String submitNodeId = roleMapper.getSubmitNodeId(BpmnFlowEnum.FAULT_TRACK.value(), null);
-                processId = bpmnService.commit(dmfm09.getFaultTrackNo(), BpmnFlowEnum.FAULT_TRACK.value(), "{\"id\":\"id\",\"flag\":\"1\"}", null, userIds, submitNodeId);
-                // 保存下一步流程ID
+                String flag = FaultTrackFlow.TECHNICAL_LEAD.getCode().equals(submitNodeId)
+                        ? CommonConstants.TWO_STRING : CommonConstants.ONE_STRING;
+                processId = bpmnService.commit(faultTrackNo, BpmnFlowEnum.FAULT_TRACK.value(), "{\"id\":\"" + faultTrackNo + "\",\"flag\":\"" + flag + "\"}", null, userIds, submitNodeId);
+                // 保存流程相关信息
                 dmfm09.setWorkFlowInstStatus(submitNodeId);
                 dmfm09.setWorkFlowInstId(processId);
+                dmfm09.setExt5(reqDTO.getLine());
                 // 待办发送
                 overTodoService.overTodo(processId, "故障跟踪");
                 dmfm09.setRecStatus("40");
             } catch (Exception e) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败，故障跟踪编号为-[{}]", faultTrackNo);
             }
         }
         // 记录日志
@@ -213,7 +203,8 @@ public class TrackServiceImpl implements TrackService {
                 .userIds(userIds)
                 .workFlowInstId(processId)
                 .build());
-        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+        faultTrackMapper.update(dmfm09,
+                new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
     }
 
     @Override
@@ -237,21 +228,32 @@ public class TrackServiceImpl implements TrackService {
         try {
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_TRACK.value()).contains(dmfm09.getWorkFlowInstStatus())) {
                 String reviewOrNot = null;
-                // 提交部长审核指定下一流程
-                if (null != reqDTO.getReviewOrNot() && reqDTO.getReviewOrNot()) {
-                    reviewOrNot = FaultTrackFlow.FAULT_TRACK_REVIEW_NODE.getCode();
+                String flag = null;
+                // 需要部长审核时 flag固定为0
+                if (null != reqDTO.getReviewOrNot()) {
+                    if (reqDTO.getReviewOrNot()) {
+                        reviewOrNot = FaultTrackFlow.REVIEW_NODE.getCode();
+                        flag = CommonConstants.ZERO_STRING;
+                    } else {
+                        // 不需要部长审核 直接变更为结束状态
+                        dmfm09.setRecStatus("30");
+                        reviewOrNot = FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode();
+                        flag = CommonConstants.ONE_STRING;
+                    }
                 }
-                String nextNodeId = bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus());
-                //只有当下一步没有后续时，才变更状态
-                if (StringUtils.isEmpty(bpmnService.getNextNodeId(BpmnFlowEnum.FAULT_TRACK.value(),nextNodeId))) {
+                FlowRoleResDTO nextNode = bpmnService.getNextNode(BpmnFlowEnum.FAULT_TRACK.value(), dmfm09.getWorkFlowInstStatus(), dmfm09.getExt5());
+                String nodeId = nextNode.getNodeId();
+                // 下一步为结束节点时，变更状态
+                if (nodeId.equals(FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode())) {
                     dmfm09.setRecStatus("30");
                 }
-                bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\"}", reviewOrNot);
-                dmfm09.setWorkFlowInstStatus(nextNodeId);
+                bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + faultTrackNo + "\",\"review\":\"" + flag + "\"}", reviewOrNot);
+                dmfm09.setWorkFlowInstStatus(nodeId);
+                dmfm09.setExt5(nextNode.getLine());
             }
             dmfm09.setRecRevisor(TokenUtil.getCurrentPersonId());
             dmfm09.setRecReviseTime(DateUtil.getCurrentTime());
-            faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+            faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         } catch (Exception e) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "agree error");
         }
@@ -261,14 +263,14 @@ public class TrackServiceImpl implements TrackService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void returns(FaultExamineReqDTO reqDTO) {
-        List<FaultTrackDO> list = faultTrackMapper.queryOne(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
+        List<FaultTrackDO> list = faultTrackMapper.queryList(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
         FaultTrackDO dmfm09 = list.get(0);
         String processId = dmfm09.getWorkFlowInstId();
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(taskId, reqDTO.getExamineReqDTO().getOpinion());
         dmfm09.setRecStatus("30");
         dmfm09.setWorkFlowInstStatus("");
-        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(FaultTrackCols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.REJECT.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())

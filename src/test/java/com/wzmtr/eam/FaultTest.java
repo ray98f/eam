@@ -4,30 +4,23 @@ import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulObjectReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.impl.overhaul.OverhaulWeekPlanServiceImpl;
-import com.wzmtr.eam.mapper.fault.FaultTrackMapper;
+import com.wzmtr.eam.mapper.fault.FaultTrackWorkMapper;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.utils.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FaultTest {
     @Autowired
-    private FaultTrackMapper faultTrackMapper;
+    private FaultTrackWorkMapper faultTrackWorkMapper;
 
     @Test
     public void test() {
@@ -47,7 +40,6 @@ public class FaultTest {
         faultTrackDO.setRecCreator("admin");
         faultTrackDO.setRecCreateTime("2023-11-24 16:49:53");
         faultTrackDO.setDeleteFlag("0");
-        faultTrackMapper.insert(faultTrackDO);
     }
 
     @Autowired

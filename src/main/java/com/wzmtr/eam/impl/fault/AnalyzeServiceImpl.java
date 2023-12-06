@@ -14,7 +14,9 @@ import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.BpmnStatus;
+import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.FaultAnalizeFlow;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
@@ -159,37 +161,42 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Transactional(rollbackFor = Exception.class)
     public void _agree(FaultExamineReqDTO reqDTO, FaultAnalyzeDO faultAnalyzeDO, String taskId) {
-        if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_ANALIZE.value()).contains(faultAnalyzeDO.getWorkFlowInstStatus())) {
-            // 提交部长审核指定下一流程
-            String reviewOrNot = null;
-            String flag = null;
-            if (null != reqDTO.getReviewOrNot()) {
-                // 需要部长审核时 flag固定为0
-                if (reqDTO.getReviewOrNot()) {
-                    reviewOrNot = FaultAnalizeFlow.FAULT_ANALIZE_REVIEW_NODE.getCode();
-                    flag = CommonConstants.ZERO_STRING;
-                } else {
-                    // 不需要部长审核 直接变更为结束状态
-                    faultAnalyzeDO.setRecStatus("30");
-                    reviewOrNot = FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode();
-                    flag = CommonConstants.ONE_STRING;
+        try {
+            if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_ANALIZE.value()).contains(faultAnalyzeDO.getWorkFlowInstStatus())) {
+                // 提交部长审核指定下一流程
+                String reviewOrNot = null;
+                String flag = null;
+                if (null != reqDTO.getReviewOrNot()) {
+                    // 需要部长审核时 flag固定为0
+                    if (reqDTO.getReviewOrNot()) {
+                        reviewOrNot = FaultAnalizeFlow.FAULT_ANALIZE_REVIEW_NODE.getCode();
+                        flag = CommonConstants.ZERO_STRING;
+                    } else {
+                        // 不需要部长审核 直接变更为结束状态
+                        faultAnalyzeDO.setRecStatus("30");
+                        reviewOrNot = FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode();
+                        flag = CommonConstants.ONE_STRING;
+                    }
                 }
+                // 当前审核完需要获取下一步
+                FlowRoleResDTO nextNode = bpmnService.getNextNode(BpmnFlowEnum.FAULT_ANALIZE.value(), faultAnalyzeDO.getWorkFlowInstStatus(), faultAnalyzeDO.getExt5());
+                String nextNodeId = nextNode.getNodeId();
+                // 下一步为结束节点时，变更状态
+                if (nextNodeId.equals(FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode())) {
+                    faultAnalyzeDO.setRecStatus("30");
+                }
+                bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), String.join(",", reqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\",\"review\":\"" + flag + "\"}", reviewOrNot);
+                faultAnalyzeDO.setWorkFlowInstStatus(nextNodeId);
+                // 保存当前属于哪条流程线
+                faultAnalyzeDO.setExt5(nextNode.getLine());
             }
-            // 当前审核完需要获取下一步
-            FlowRoleResDTO nextNode = bpmnService.getNextNode(BpmnFlowEnum.FAULT_ANALIZE.value(), faultAnalyzeDO.getWorkFlowInstStatus(), faultAnalyzeDO.getExt5());
-            String nextNodeId = nextNode.getNodeId();
-            // 下一步为结束节点时，变更状态
-            if (nextNodeId.equals(FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode())) {
-                faultAnalyzeDO.setRecStatus("30");
-            }
-            bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), String.join(",", reqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\",\"review\":\"" + flag + "\"}", reviewOrNot);
-            faultAnalyzeDO.setWorkFlowInstStatus(nextNodeId);
-            // 保存当前属于哪条流程线
-            faultAnalyzeDO.setExt5(nextNode.getLine());
+            faultAnalyzeDO.setRecReviseTime(DateUtils.getTime());
+            faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            faultAnalyzeMapper.update(faultAnalyzeDO);
         }
-        faultAnalyzeDO.setRecReviseTime(DateUtils.getTime());
-        faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        faultAnalyzeMapper.update(faultAnalyzeDO);
+        catch (Exception e){
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "agree error");
+        }
     }
 
     @Override

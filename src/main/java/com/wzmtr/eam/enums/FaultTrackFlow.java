@@ -10,8 +10,9 @@ import lombok.Getter;
 @Getter
 public enum FaultTrackFlow {
 
-    FAULT_TRACK_REVIEW_NODE("UserTask_1ftz952", "部长审核节点"),
-    FAULT_TRACK_END_NODE("EndEvent_05wcpma", "结束");
+    TECHNICAL_LEAD("UserTask_0oxqw8s", "技术主管审核"),
+    REVIEW_NODE("UserTask_1ftz952", "部长审核节点"),
+    END_NODE("EndEvent_05wcpma", "结束");
     FaultTrackFlow(String code, String desc) {
         this.code = code;
         this.desc = desc;

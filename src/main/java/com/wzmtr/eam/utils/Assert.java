@@ -17,11 +17,11 @@ public class Assert {
     // ********************** 不为空值  **********************
 
     /**
-     * String a =”notnull“;
-     * String b = null;
-     * //a不为null,条件为真，不抛出异常,并返回对象
-     * Assert.notNull(a,ErrorCode.NORMAL_ERROR);
-     * //由于b为null 条件为假，抛出ErrorCode.NORMAL_ERROR
+     * String a = notnull
+     * String b = null
+     * a不为null,条件为真，不抛出异常,并返回对象
+     * Assert.notNull(a，ErrorCode.NORMAL_ERROR);
+     * 由于b为null 条件为假，抛出ErrorCode.NORMAL_ERROR
      * Assert.notNull(b,ErrorCode.NORMAL_ERROR);
      *
      * @param obj

@@ -1,10 +1,16 @@
 package com.wzmtr.eam.controller.fault;
 
-import com.wzmtr.eam.dto.req.fault.*;
-import com.wzmtr.eam.dto.res.fault.TrackResDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultTrackAddReqDTO;
+import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
+import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
-import com.wzmtr.eam.service.fault.TrackService;
+import com.wzmtr.eam.service.fault.TrackQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,77 +21,57 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Author: Li.Wang
+ * Date: 2023/8/11 16:25
+ */
 @RestController
-@RequestMapping("/fault/track")
-@Api(tags = "故障管理-故障跟踪工单")
+@RequestMapping("/fault/track/query")
+@Api(tags = "故障管理-故障跟踪查询")
 public class FaultTrackController {
-
     @Autowired
-    private TrackService trackService;
+    private TrackQueryService trackQueryService;
 
     @ApiOperation(value = "列表")
     @PostMapping("/list")
-    public PageResponse<TrackResDTO> list(@RequestBody TrackReqDTO reqDTO) {
-        return PageResponse.of(trackService.list(reqDTO));
+    public PageResponse<TrackQueryResDTO> list(@RequestBody TrackQueryReqDTO reqDTO) {
+        return PageResponse.of(trackQueryService.list(reqDTO));
     }
 
-    @ApiOperation(value = "报告")
-    @PostMapping("/report")
-    public DataResponse<TrackResDTO> report(@RequestBody TrackReportReqDTO reqDTO) {
-        trackService.report(reqDTO);
+    @ApiOperation(value = "故障编号详情")
+    @PostMapping("/fault/detail")
+    public DataResponse<FaultDetailResDTO> faultDetail(@RequestBody FaultDetailReqDTO reqDTO) {
+        return DataResponse.of(trackQueryService.faultDetail(reqDTO));
+    }
+
+    @ApiOperation(value = "跟踪单详情")
+    @PostMapping("/track/detail")
+    public DataResponse<TrackQueryResDTO> detail(@RequestBody FaultBaseNoReqDTO reqDTO) {
+        return DataResponse.of(trackQueryService.trackDetail(reqDTO));
+    }
+
+    @ApiOperation(value = "跟踪单保存")
+    @PostMapping("/save")
+    public DataResponse<Void> save(@RequestBody FaultTrackAddReqDTO reqDTO) {
+       trackQueryService.save(reqDTO.toBO(reqDTO));
+       return DataResponse.success();
+    }
+
+    @ApiOperation(value = "作废")
+    @PostMapping("/cancellGenZ")
+    public DataResponse<AnalyzeResDTO> cancellGenZ(@RequestBody BaseIdsEntity reqDTO) {
+        // 		FAULT_TRACK_NO = #faultTrackNo# 故障跟踪查询 作废
+        trackQueryService.cancellGenZ(reqDTO);
         return DataResponse.success();
     }
 
-    @ApiOperation(value = "关闭")
-    @PostMapping("/close")
-    public DataResponse<TrackResDTO> close(@RequestBody TrackCloseReqDTO reqDTO) {
-        trackService.close(reqDTO);
-        return DataResponse.success();
-    }
-
-    @ApiOperation(value = "派工")
-    @PostMapping("/repair")
-    public DataResponse<TrackResDTO> repair(@RequestBody TrackRepairReqDTO reqDTO) {
-        trackService.repair(reqDTO);
-        return DataResponse.success();
-    }
-
-    @ApiOperation(value = "故障跟踪下达")
-    @PostMapping("/fault/track/transmit")
-    public DataResponse<String> transmit(@RequestBody TrackTransmitReqDTO reqDTO) {
-        // faultWorkNo EAM/service/DMFM0010/transmit
-        trackService.transmit(reqDTO);
-        return DataResponse.success();
-    }
-
-    @ApiOperation(value = "故障跟踪送审")
-    @PostMapping("/fault/track/commit")
-    public DataResponse<String> commit(@RequestBody FaultExamineReqDTO reqDTO) {
-        // faultWorkNo
-        trackService.commit(reqDTO);
-        return DataResponse.success();
+    @ApiOperation(value = "导出")
+    @PostMapping("/record/export")
+    public void export(@RequestBody TrackQueryReqDTO reqDTO,
+                       HttpServletResponse response) {
+        // 		FAULT_TRACK_NO = #faultTrackNo#
+        trackQueryService.export(reqDTO, response);
     }
 
 
-    @ApiOperation(value = "审核通过")
-    @PostMapping("/fault/track/examine")
-    public DataResponse<String> pass(@RequestBody FaultExamineReqDTO reqDTO) {
-        trackService.pass(reqDTO);
-        return DataResponse.success();
-    }
-
-    @ApiOperation(value = "故障跟踪驳回")
-    @PostMapping("/cancel")
-    public DataResponse<String> cancel(@RequestBody FaultExamineReqDTO reqDTO) {
-        // faultWorkNo
-        trackService.returns(reqDTO);
-        return DataResponse.success();
-    }
-
-    @ApiOperation(value = "故障跟踪导出")
-    @PostMapping("/fault/track/export")
-    public void export(@RequestBody TrackExportReqDTO reqDTO, HttpServletResponse response) {
-        // faultWorkNo
-        trackService.export(reqDTO,response);
-    }
 }
