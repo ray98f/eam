@@ -37,6 +37,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -413,7 +414,7 @@ public class BpmnServiceImpl implements BpmnService {
         }
         StartInstanceVO startInstanceVO = new StartInstanceVO();
         BeanUtils.copyProperties(list.get(0), startInstanceVO);
-        startInstanceVO.setTypeTitle("eam流程");
+        startInstanceVO.setTypeTitle(Objects.requireNonNull(BpmnFlowEnum.find(flow)).label());
         if (otherParam == null) {
             startInstanceVO.setFormData("{\"id\":\"" + id + "\"}");
         } else {
