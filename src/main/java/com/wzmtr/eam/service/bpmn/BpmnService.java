@@ -5,6 +5,7 @@ import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.bpmn.ExamineListReq;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
 import com.wzmtr.eam.dto.res.bpmn.*;
+import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.result.ResultEntity;
 
 import java.util.List;
@@ -54,4 +55,6 @@ public interface BpmnService {
     String commit(String id, String flow, String otherParam, String roleId, List<String> userIds, String modelId) throws Exception;
 
     String getNextNodeId(String flowId, String nodeId);
+
+    FlowRoleResDTO getNextNode(String flowId, String nodeId, String line);
 }

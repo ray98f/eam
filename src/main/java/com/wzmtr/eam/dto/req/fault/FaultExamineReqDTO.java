@@ -26,4 +26,5 @@ public class FaultExamineReqDTO {
     private ExamineReqDTO examineReqDTO;
     @ApiModelProperty(value = "是否提交他人审核")
     private Boolean reviewOrNot;
+    private String line;
 }

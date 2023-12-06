@@ -469,11 +469,16 @@ public class BpmnServiceImpl implements BpmnService {
         req.setNodeId(nodeId);
         List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
         if (CollectionUtil.isNotEmpty(flowRoleResDTO)) {
-            String step = flowRoleResDTO.get(0).getStep();
+            FlowRoleResDTO roleResDTO = flowRoleResDTO.get(0);
+            String step = roleResDTO.getStep();
             String nextStep = String.valueOf((Integer.parseInt(step) + 1));
             BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
             bpmnExamineFlowRoleReq.setStep(nextStep);
             bpmnExamineFlowRoleReq.setFlowId(flowId);
+            if (StringUtils.isNotEmpty(roleResDTO.getLine()) && StringUtils.isNotEmpty(roleResDTO.getNodeId())) {
+                bpmnExamineFlowRoleReq.setLine(roleResDTO.getLine());
+                bpmnExamineFlowRoleReq.setParentId(roleResDTO.getNodeId());
+            }
             List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
             if (CollectionUtil.isNotEmpty(flowRoleRes)) {
                 return flowRoleRes.get(0).getNodeId();
@@ -481,4 +486,33 @@ public class BpmnServiceImpl implements BpmnService {
         }
         return null;
     }
+
+    @Override
+    public FlowRoleResDTO getNextNode(String flowId, String nodeId, String line) {
+        if (StringUtils.isEmpty(flowId) || StringUtils.isEmpty(nodeId) || StringUtils.isEmpty(line)) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
+        req.setFlowId(flowId);
+        req.setNodeId(nodeId);
+        List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
+        if (CollectionUtil.isNotEmpty(flowRoleResDTO)) {
+            flowRoleResDTO = flowRoleResDTO.stream().filter(a -> line.equals(a.getLine())).collect(Collectors.toList());
+            FlowRoleResDTO roleResDTO = flowRoleResDTO.get(0);
+            String step = roleResDTO.getStep();
+            BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
+            bpmnExamineFlowRoleReq.setStep(String.valueOf((Integer.parseInt(step) + 1)));
+            bpmnExamineFlowRoleReq.setFlowId(flowId);
+            if (StringUtils.isNotEmpty(roleResDTO.getLine())) {
+                bpmnExamineFlowRoleReq.setLine(roleResDTO.getLine());
+            }
+            List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
+            if (CollectionUtil.isNotEmpty(flowRoleRes)) {
+                return flowRoleRes.get(0);
+            }
+        }
+        return null;
+    }
+
+
 }
