@@ -1,7 +1,9 @@
 package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.bizobject.FaultTrackBO;
+import com.wzmtr.eam.bizobject.FaultTrackWorkBO;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dataobject.FaultTrackWorkDO;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -16,11 +18,14 @@ import lombok.Data;
  */
 @Data
 @ApiModel
-public class FaultTrackAddReqDTO {
+public class FaultTrackSaveReqDTO {
     @ApiModelProperty(value = "跟踪单号")
     private String faultTrackNo;
+    @ApiModelProperty(value = "跟踪分析单号")
     private String faultAnalysisNo;
+    @ApiModelProperty(value = "故障编号")
     private String faultNo;
+    @ApiModelProperty(value = "故障工单号")
     private String faultWorkNo;
     @ApiModelProperty(value = "跟踪原因")
     private String trackReason;
@@ -50,11 +55,31 @@ public class FaultTrackAddReqDTO {
     private String docId;
     private String companyCode;
     private String companyName;
-    /*  41 */   private String remark;
-    /*  50 */   private String recStatus;
+    private String remark;
+    private String recStatus;
 
-    public FaultTrackBO toBO(FaultTrackAddReqDTO req) {
+    public FaultTrackBO toFaultTrackBO(FaultTrackSaveReqDTO req) {
         FaultTrackBO bo = __BeanUtil.convert(req, FaultTrackBO.class);
+        bo.setRecStatus("10");
+        bo.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
+        bo.setRecCreateTime(DateUtil.getCurrentTime());
+        bo.setRecId(TokenUtil.getUuId());
+        bo.setDeleteFlag("0");
+        if (StringUtils.isEmpty(req.getDocId())){
+            bo.setDocId(CommonConstants.BLANK);
+        }
+        if (StringUtils.isEmpty(req.getCompanyCode())){
+            bo.setCompanyCode(CommonConstants.BLANK);
+        }
+        if (StringUtils.isEmpty(req.getCompanyName())){
+            bo.setCompanyName(CommonConstants.BLANK);
+        }
+        return bo;
+    }
+
+
+    public FaultTrackWorkBO toFaultTrackWorkBO(FaultTrackSaveReqDTO req) {
+        FaultTrackWorkBO bo = __BeanUtil.convert(req, FaultTrackWorkBO.class);
         bo.setRecStatus("10");
         bo.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
         bo.setRecCreateTime(DateUtil.getCurrentTime());

@@ -6,27 +6,39 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bizobject.FaultTrackBO;
+import com.wzmtr.eam.bizobject.FaultTrackWorkBO;
 import com.wzmtr.eam.constant.Cols;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
+import com.wzmtr.eam.dataobject.FaultTrackWorkDO;
 import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultTrackSaveReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
+import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultTrackMapper;
+import com.wzmtr.eam.mapper.fault.FaultTrackWorkMapper;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.*;
+import jodd.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -34,6 +46,7 @@ import java.util.*;
  * Date: 2023/8/10 9:49
  */
 @Service
+@Slf4j
 public class TrackQueryServiceImpl implements TrackQueryService {
     @Autowired
     private FaultTrackMapper faultTrackMapper;
@@ -41,6 +54,10 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     private OrganizationMapper organizationMapper;
     @Autowired
     private IDictionariesService dictService;
+    @Autowired
+    private FaultTrackWorkMapper faultTrackWorkMapper;
+    @Autowired
+    private OverTodoService overTodoService;
 
     @Override
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
@@ -137,76 +154,112 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     }
 
     @Override
+    public void save(FaultTrackSaveReqDTO req) {
+        String faultNo = req.getFaultNo();
+        String faultWorkNo = req.getFaultWorkNo();
+        Assert.isTrue(StringUtils.isNotEmpty(faultNo) && StringUtils.isNotEmpty(faultWorkNo), ErrorCode.PARAM_ERROR);
+        FaultTrackBO faultTrackBO = req.toFaultTrackBO(req);
+        FaultTrackWorkBO faultTrackWorkBO = req.toFaultTrackWorkBO(req);
+
+        FaultTrackDO exist = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo));
+        TrackQueryServiceImpl proxy = (TrackQueryServiceImpl) AopContext.currentProxy();
+        proxy._save(exist, faultTrackBO, faultTrackWorkBO, faultNo);
+    }
     @Transactional(rollbackFor = Exception.class)
-    public void save(FaultTrackBO bo) {
-        FaultTrackDO faultTrackDO = __BeanUtil.convert(bo, FaultTrackDO.class);
-        String faultNo = bo.getFaultNo();
-        if (StringUtils.isEmpty(faultNo)) {
-            return;
-        }
-        FaultTrackDO faultTrackDO1 = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo));
-        // 根据faultNo判断 不存在则插入，存在即更新
-        if (null == faultTrackDO1) {
-            String maxCode = faultTrackMapper.selectMaxCode();
-            faultTrackDO.setFaultTrackNo(CodeUtils.getNextCode(maxCode, "GT"));
+    public void _save(FaultTrackDO exist, FaultTrackBO faultTrackBO, FaultTrackWorkBO faultTrackWorkBO, String faultNo) {
+        // 根据faultNo判断是否存在跟踪单 不存在则插入，存在即更新
+        if (null == exist) {
             // 生成跟踪单
-            faultTrackMapper.insert(faultTrackDO);
+            String maxCode = faultTrackMapper.selectMaxCode();
+            String nextCode = CodeUtils.getNextCode(maxCode, "GT");
+            faultTrackBO.setFaultTrackNo(nextCode);
+            faultTrackMapper.insert(__BeanUtil.convert(faultTrackBO, FaultTrackDO.class));
             // 生成跟踪工单
-            // _buildTrackWork();
+            String faultTrackNo = faultTrackBO.getFaultTrackNo();
+            String faultWorkNo = faultTrackBO.getFaultWorkNo();
+            faultTrackWorkBO.setFaultTrackNo(faultTrackNo);
+            String maxCodeFaultTrackWorkNo = faultTrackWorkMapper.selectMaxCode();
+            String nextFaultTrackWorkNo = CodeUtils.getNextCode(maxCodeFaultTrackWorkNo, "GTW");
+            faultTrackWorkBO.setFaultTrackWorkNo(nextFaultTrackWorkNo);
+            faultTrackWorkBO.setRecCreator(TokenUtil.getCurrentPersonId());
+            faultTrackWorkBO.setRecCreateTime(DateUtil.getDate());
+            faultTrackWorkBO.setRecId(UUID.randomUUID().toString());
+            faultTrackWorkBO.setDispatchUserId(CommonConstants.BLANK);
+            faultTrackWorkBO.setDispatchTime(CommonConstants.BLANK);
+            faultTrackWorkBO.setRecStatus("10");
+            faultTrackWorkMapper.insert(__BeanUtil.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
+            // 待办逻辑处理
+            TrackQueryResDTO dmfm09 = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
+            String majorCode = dmfm09.getMajorCode();
+            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+            List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
+            String zcStepOrg ;
+            if (cos.contains(majorCode)) {
+                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
+                zcStepOrg = matchControl.getItemCname();
+            } else {
+                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
+                zcStepOrg = matchControl.getItemCname();
+            }
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + dmfm09.getMajorName() + "】故障管理流程",faultTrackWorkBO.getRecId(),faultWorkNo,"DM_007",zcStepOrg,"故障跟踪派工","DMFM0011","EAM","10");
             return;
         }
-        //更新fault_track表
-        faultTrackMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo).eq(Cols.FAULT_TRACK_NO, faultTrackDO1.getFaultTrackNo()));
+        // 更新两张表
+        faultTrackMapper.update(__BeanUtil.convert(faultTrackBO, FaultTrackDO.class), new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo).eq(Cols.FAULT_TRACK_NO, exist.getFaultTrackNo()));
+        faultTrackWorkMapper.update(__BeanUtil.convert(faultTrackWorkBO, FaultTrackWorkDO.class), new UpdateWrapper<FaultTrackWorkDO>().eq(Cols.FAULT_TRACK_NO, exist.getFaultTrackNo()));
     }
 
 
-    // public void _buildTrackWork() {
-    //     String tackStartDate = dmfm21.getTrackStartDate();
-    //     String tackEndDate = dmfm21.getTrackEndDate();
-    //     int trackCycle = dmfm21.getTrackCycle().intValue();
-    //     SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd");
-    //     Date startDate = dateTimeFormat.parse(tackStartDate);
-    //     Date endDate1 = dateTimeFormat.parse(tackEndDate);
-    //     int startDays = (int) ((nowDate.getTime() - startDate.getTime()) / 86400000L);
-    //     int endDays = (int) ((endDate1.getTime() - nowDate.getTime()) / 86400000L);
-    //     if (startDays >= 0 && endDays >= 0) {
-    //         int day = (startDays - 1) % trackCycle;
-    //         if (day == 0) {
-    //             // String seqTypeId = "EAM_FTRACK_WORK_NO";
-    //             // String[] args = {"s1", "s2", "s3"};
-    //             // String faultTrackWorkNo = SequenceGenerator.getNextSequence(seqTypeId, args);
-    //             DMFM22 dmfm22 = new DMFM22();
-    //             dmfm22.setFaultTrackNo(dmfm21.getFaultTrackNo());
-    //             dmfm22.setFaultTrackWorkNo(faultTrackWorkNo);
-    //             dmfm22.setRecCreator(dmfm21.getRecCreator());
-    //             dmfm22.setRecCreateTime(dateTimeFormat.format(new Date()));
-    //             dmfm22.setRecId(UUID.randomUUID().toString());
-    //             dmfm22.setRecStatus("10");
-    //             this.dao.insert("DMFM22.insert", dmfm22);
-    //             String currentUser = "EAM系统";
-    //             String faultWorkNo = dmfm21.getFaultWorkNo();
-    //             String faultNo = dmfm21.getFaultNo();
-    //             String faultTrackNo = dmfm21.getFaultTrackNo();
-    //             Map<Object, Object> map = new HashMap<>();
-    //             map.put("faultNo", faultNo);
-    //             map.put("faultWorkNo", faultWorkNo);
-    //             map.put("faultTrackNo", faultTrackNo);
-    //             List<Map> list = this.dao.query("DMFM09.query", map, 0, -999999);
-    //             Map dmfm09 = list.get(0);
-    //             String lineCode = dmfm09.get("lineCode").toString();
-    //             String majorCode = (String) dmfm09.get("majorCode");
-    //             String majorName = dmfm09.get("majorName").toString();
-    //             String content = "";
-    //             if (cos.contains(majorCode)) {
-    //                 String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "04", "1");
-    //                 status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm22.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障跟踪派工", "DMFM0011", currentUser, majorCode, lineCode, "10", content);
-    //             } else {
-    //                 String zcStepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "03", "1");
-    //                 status = DMUtil.insertTODOWithUserGroupAndAllOrg("【" + majorName + "】故障管理流程", dmfm22.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障跟踪派工", "DMFM0011", currentUser, majorCode, lineCode, "10", content);
-    //             }
-    //         }
-    //     }
-    // }
+    @Deprecated
+    public void _buildTrackWork(FaultTrackWorkBO faultTrackWorkBO, FaultTrackBO faultTrackBO) {
+        try {
+            String faultNo = faultTrackBO.getFaultNo();
+            String faultTrackNo = faultTrackBO.getFaultTrackNo();
+            String faultWorkNo = faultTrackBO.getFaultWorkNo();
+            // todo 原逻辑,由于结合现系统设计无法进入if语句块，先注释了
+            // Date nowDate = new Date();
+            // String tackStartDate = faultTrackBO.getTrackStartDate();
+            // String tackEndDate = faultTrackBO.getTrackEndDate();
+            // SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd");
+            // int trackCycle = faultTrackBO.getTrackCycle();
+            // Date startDate = dateTimeFormat.parse(tackStartDate);
+            // Date endDate1 = dateTimeFormat.parse(tackEndDate);
+            // // 计算当前日期与跟踪开始日期之间的天数差
+            // int startDays = (int) ((nowDate.getTime() - startDate.getTime()) / 86400000L);
+            // // 计算endDate与当前日期之间的天数差
+            // int endDays = (int) ((endDate1.getTime() - nowDate.getTime()) / 86400000L);
+            // if (startDays >= 0 && endDays >= 0) {
+            //     //当前日期的天数差和 - 1是否能被跟踪周期整除。
+            //     if ((startDays - 1) % trackCycle == 0) {
+            faultTrackWorkBO.setFaultTrackNo(faultTrackNo);
+            String maxCode = faultTrackWorkMapper.selectMaxCode();
+            String nextCode = CodeUtils.getNextCode(maxCode, "GTW");
+            faultTrackWorkBO.setFaultTrackWorkNo(nextCode);
+            faultTrackWorkBO.setRecCreator(TokenUtil.getCurrentPersonId());
+            faultTrackWorkBO.setRecCreateTime(DateUtil.getDate());
+            faultTrackWorkBO.setRecId(UUID.randomUUID().toString());
+            faultTrackWorkBO.setDispatchUserId(CommonConstants.BLANK);
+            faultTrackWorkBO.setDispatchTime(CommonConstants.BLANK);
+            // 待派工
+            faultTrackWorkBO.setRecStatus("10");
+            faultTrackWorkMapper.insert(__BeanUtil.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
+            TrackQueryResDTO dmfm09 = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
+            String majorCode = dmfm09.getMajorCode();
+            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+            List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
+            String zcStepOrg ;
+            if (cos.contains(majorCode)) {
+                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
+                zcStepOrg = matchControl.getItemCname();
+            } else {
+                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
+                zcStepOrg = matchControl.getItemCname();
+            }
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + dmfm09.getMajorName() + "】故障管理流程",faultTrackWorkBO.getRecId(),faultWorkNo,"DM_007",zcStepOrg,"故障跟踪派工","DMFM0011","EAM","10");
+        } catch (Exception e) {
+            log.error("save error", e);
+        }
+    }
 
 
     @Override

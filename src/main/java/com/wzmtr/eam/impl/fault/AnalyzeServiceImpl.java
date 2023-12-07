@@ -190,7 +190,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 // 保存当前属于哪条流程线
                 faultAnalyzeDO.setExt5(nextNode.getLine());
             }
-            faultAnalyzeDO.setRecReviseTime(DateUtils.getTime());
+            faultAnalyzeDO.setRecReviseTime(DateUtil.getCurrentTime());
             faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
             faultAnalyzeMapper.update(faultAnalyzeDO);
         }

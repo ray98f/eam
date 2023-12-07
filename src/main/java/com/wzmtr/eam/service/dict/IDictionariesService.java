@@ -17,6 +17,9 @@ public interface IDictionariesService {
 
     Dictionaries detail(String itemCode);
 
+    /**
+     * @return State=1的字典
+     */
     Dictionaries queryOneByItemCodeAndCodesetCode(String codesetCode, String itemCode);
 
     void add(Dictionaries dictionaries);

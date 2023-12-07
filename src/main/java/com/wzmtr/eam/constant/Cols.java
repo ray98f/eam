@@ -8,4 +8,5 @@ package com.wzmtr.eam.constant;
 public interface Cols {
     String FAULT_TRACK_NO = "FAULT_TRACK_NO";
     String FAULT_NO = "FAULT_NO";
+    String FAULT_WORK_NO = "faultWorkNo";
 }

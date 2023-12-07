@@ -193,6 +193,10 @@
             df2.FAULT_WORK_NO =#{faultWorkNo}
         </if>
     </select>
+    <select id="selectMaxCode" resultType="java.lang.String">
+        SELECT max(FAULT_TRACK_WORK_NO)
+        FROM T_FAULT_TRACK_DETAIL
+    </select>
 
 
 </mapper>

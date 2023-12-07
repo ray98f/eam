@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.bizobject.FaultTrackBO;
 import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultTrackSaveReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
@@ -27,7 +28,7 @@ public interface TrackQueryService {
 
     void export(TrackQueryReqDTO reqDTO, HttpServletResponse response);
 
-    void save(FaultTrackBO bo);
+    void save(FaultTrackSaveReqDTO bo);
 
 
     // TrackResDTO detail(SidEntity reqDTO);

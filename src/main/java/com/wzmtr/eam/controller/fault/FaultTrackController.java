@@ -2,7 +2,7 @@ package com.wzmtr.eam.controller.fault;
 
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultTrackAddReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultTrackSaveReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
@@ -52,8 +52,8 @@ public class FaultTrackController {
 
     @ApiOperation(value = "跟踪单保存")
     @PostMapping("/save")
-    public DataResponse<Void> save(@RequestBody FaultTrackAddReqDTO reqDTO) {
-       trackQueryService.save(reqDTO.toBO(reqDTO));
+    public DataResponse<Void> save(@RequestBody FaultTrackSaveReqDTO reqDTO) {
+       trackQueryService.save(reqDTO);
        return DataResponse.success();
     }
 

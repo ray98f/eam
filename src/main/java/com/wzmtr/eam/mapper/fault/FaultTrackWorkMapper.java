@@ -33,5 +33,6 @@ public interface FaultTrackWorkMapper extends BaseMapper<FaultTrackWorkDO> {
     void close(TrackCloseReqDTO reqDTO);
 
     void repair(TrackRepairReqDTO reqDTO);
+    String selectMaxCode();
 
 }
