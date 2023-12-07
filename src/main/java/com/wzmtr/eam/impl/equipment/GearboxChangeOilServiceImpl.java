@@ -5,13 +5,14 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.GearboxChangeOilReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
+import com.wzmtr.eam.dto.res.equipment.excel.ExcelGearboxChangeOilResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.service.equipment.GearboxChangeOilService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.FileUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -124,28 +127,19 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
     }
 
     @Override
-    public void exportGearboxChangeOil(String trainNo, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "列车号", "列车公里数", "完成日期", "作业单位", "作业人员", "确认人员", "备注", "附件编号", "创建者", "创建时间");
+    public void exportGearboxChangeOil(String trainNo, HttpServletResponse response) throws IOException {
         List<GearboxChangeOilResDTO> gearboxChangeOilResDTOList = gearboxChangeOilMapper.listGearboxChangeOil(trainNo);
-        List<Map<String, String>> list = new ArrayList<>();
         if (gearboxChangeOilResDTOList != null && !gearboxChangeOilResDTOList.isEmpty()) {
+            List<ExcelGearboxChangeOilResDTO> list = new ArrayList<>();
             for (GearboxChangeOilResDTO resDTO : gearboxChangeOilResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("列车号", resDTO.getTrainNo());
-                map.put("列车公里数", String.valueOf(resDTO.getTotalMiles()));
-                map.put("完成日期", resDTO.getCompleteDate());
-                map.put("作业单位", CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
-                map.put("作业人员", resDTO.getOperator());
-                map.put("确认人员", resDTO.getConfirmor());
-                map.put("备注", resDTO.getRemark());
-                map.put("附件编号", resDTO.getDocId());
-                map.put("创建者", resDTO.getRecCreator());
-                map.put("创建时间", resDTO.getRecCreateTime());
-                list.add(map);
+                ExcelGearboxChangeOilResDTO res = new ExcelGearboxChangeOilResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setTotalMiles(String.valueOf(resDTO.getTotalMiles()));
+                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "", list);
         }
-        ExcelPortUtil.excelPort("齿轮箱换油台账信息", listName, list, null, response);
     }
 
 }

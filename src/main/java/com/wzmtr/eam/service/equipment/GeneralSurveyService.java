@@ -27,6 +27,6 @@ public interface GeneralSurveyService {
 
     void importGeneralSurvey(MultipartFile file);
 
-    void exportGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, HttpServletResponse response);
+    void exportGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, HttpServletResponse response) throws IOException;
 
 }

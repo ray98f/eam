@@ -14,6 +14,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface EquipmentService {
 
     void importEquipment(MultipartFile file);
 
-    void exportEquipment(List<String> ids, HttpServletResponse response);
+    void exportEquipment(List<String> ids, HttpServletResponse response) throws IOException;
 
     List<EquipmentQrResDTO> generateQr(BaseIdsEntity baseIdsEntity) throws ParseException;
 

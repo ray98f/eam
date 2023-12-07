@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -50,7 +51,7 @@ public class TrainMileController {
     public void exportTrainMile(@RequestParam(required = false) @ApiParam("设备编码") String equipCode,
                                 @RequestParam(required = false) @ApiParam("设备名称") String equipName,
                                 @RequestParam(required = false) @ApiParam("线路编号") String originLineNo,
-                                HttpServletResponse response) {
+                                HttpServletResponse response) throws IOException {
         trainMileService.exportTrainMile(equipCode, equipName, originLineNo, response);
     }
 
@@ -81,7 +82,7 @@ public class TrainMileController {
     public void exportTrainMileage(@RequestParam(required = false) @ApiParam("开始时间") String startTime,
                                    @RequestParam(required = false) @ApiParam("结束时间") String endTime,
                                    @RequestParam(required = false) @ApiParam("设备编号") String equipCode,
-                                   HttpServletResponse response) {
+                                   HttpServletResponse response) throws IOException {
         trainMileService.exportTrainMileage(startTime, endTime, equipCode, response);
     }
 

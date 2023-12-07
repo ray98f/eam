@@ -5,16 +5,14 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.WheelsetLathingReqDTO;
 import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
+import com.wzmtr.eam.dto.res.equipment.excel.ExcelWheelsetLathingResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
 import com.wzmtr.eam.service.equipment.WheelsetLathingService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.FileUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
@@ -22,12 +20,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -142,34 +142,18 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
     }
 
     @Override
-    public void exportWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "列车号", "车厢号", "镟修轮对车轴", "镟修轮对号", "轮高", "轮厚", "轮径",
-                "镟修详情", "开始日期", "完成日期", "负责人", "备注", "附件编号", "创建者", "创建时间");
+    public void exportWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo, HttpServletResponse response) throws IOException {
         List<WheelsetLathingResDTO> wheelsetLathingResDTOList = wheelsetLathingMapper.listWheelsetLathing(trainNo, carriageNo, axleNo, wheelNo);
-        List<Map<String, String>> list = new ArrayList<>();
         if (wheelsetLathingResDTOList != null && !wheelsetLathingResDTOList.isEmpty()) {
+            List<ExcelWheelsetLathingResDTO> list = new ArrayList<>();
             for (WheelsetLathingResDTO resDTO : wheelsetLathingResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("列车号", resDTO.getTrainNo());
-                map.put("车厢号", resDTO.getCarriageNo());
-                map.put("镟修轮对车轴", CommonConstants.LINE_CODE_ONE.equals(resDTO.getAxleNo()) ? "一轴" : CommonConstants.LINE_CODE_TWO.equals(resDTO.getAxleNo()) ? "二轴" : "03".equals(resDTO.getAxleNo()) ? "三轴" : "四轴");
-                map.put("镟修轮对号", resDTO.getWheelNo());
-                map.put("轮高", resDTO.getWheelHeight());
-                map.put("轮厚", resDTO.getWheelThick());
-                map.put("轮径", resDTO.getWheelDiameter());
-                map.put("镟修详情", resDTO.getRepairDetail());
-                map.put("开始日期", resDTO.getStartDate());
-                map.put("完成日期", resDTO.getCompleteDate());
-                map.put("负责人", resDTO.getRespPeople());
-                map.put("备注", resDTO.getRemark());
-                map.put("附件编号", resDTO.getDocId());
-                map.put("创建者", resDTO.getRecCreator());
-                map.put("创建时间", resDTO.getRecCreateTime());
-                list.add(map);
+                ExcelWheelsetLathingResDTO res = new ExcelWheelsetLathingResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setAxleNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getAxleNo()) ? "一轴" : CommonConstants.LINE_CODE_TWO.equals(resDTO.getAxleNo()) ? "二轴" : "03".equals(resDTO.getAxleNo()) ? "三轴" : "四轴");
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "轮对镟修台账信息", list);
         }
-        ExcelPortUtil.excelPort("轮对镟修台账信息", listName, list, null, response);
     }
 
 }

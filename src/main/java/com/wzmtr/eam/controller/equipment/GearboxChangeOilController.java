@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -67,7 +68,7 @@ public class GearboxChangeOilController {
     @GetMapping("/export")
     @ApiOperation(value = "导出齿轮箱换油台账")
     public void exportGearboxChangeOil(@RequestParam(required = false) @ApiParam("列车号") String trainNo,
-                                       HttpServletResponse response) {
+                                       HttpServletResponse response) throws IOException {
         gearboxChangeOilService.exportGearboxChangeOil(trainNo, response);
     }
 

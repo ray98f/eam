@@ -6,16 +6,14 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.PartReplaceReqDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
+import com.wzmtr.eam.dto.res.equipment.excel.ExcelPartReplaceResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.PartReplaceMapper;
 import com.wzmtr.eam.service.equipment.PartReplaceService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.FileUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
@@ -23,12 +21,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -153,35 +153,18 @@ public class PartReplaceServiceImpl implements PartReplaceService {
     }
 
     @Override
-    public void exportPartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "故障工单编号", "设备编码", "设备名称", "作业单位", "作业人员", "更换配件代码",
-                "更换配件名称", "更换原因", "旧配件编号", "新配件编号", "更换所用时间", "处理日期", "备注", "附件编号", "创建者", "创建时间");
+    public void exportPartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason, HttpServletResponse response) throws IOException {
         List<PartReplaceResDTO> partReplaceResDTOList = partReplaceMapper.listPartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason);
-        List<Map<String, String>> list = new ArrayList<>();
         if (partReplaceResDTOList != null && !partReplaceResDTOList.isEmpty()) {
+            List<ExcelPartReplaceResDTO> list = new ArrayList<>();
             for (PartReplaceResDTO resDTO : partReplaceResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("故障工单编号", resDTO.getFaultWorkNo());
-                map.put("设备编码", resDTO.getEquipCode());
-                map.put("设备名称", resDTO.getEquipName());
-                map.put("作业单位", CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
-                map.put("作业人员", resDTO.getOperator());
-                map.put("更换配件代码", resDTO.getReplacementNo());
-                map.put("更换配件名称", resDTO.getReplacementName());
-                map.put("更换原因", resDTO.getReplaceReason());
-                map.put("旧配件编号", resDTO.getOldRepNo());
-                map.put("新配件编号", resDTO.getNewRepNo());
-                map.put("更换所用时间", resDTO.getOperateCostTime());
-                map.put("处理日期", resDTO.getReplaceDate());
-                map.put("备注", resDTO.getRemark());
-                map.put("附件编号", resDTO.getDocId());
-                map.put("创建者", resDTO.getRecCreator());
-                map.put("创建时间", resDTO.getRecCreateTime());
-                list.add(map);
+                ExcelPartReplaceResDTO res = new ExcelPartReplaceResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "部件更换台账信息", list);
         }
-        ExcelPortUtil.excelPort("部件更换台账信息", listName, list, null, response);
     }
 
 }

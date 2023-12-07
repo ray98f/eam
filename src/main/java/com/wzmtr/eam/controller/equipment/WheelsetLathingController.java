@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -73,7 +74,7 @@ public class WheelsetLathingController {
                                       @RequestParam(required = false) @ApiParam("车厢号") String carriageNo,
                                       @RequestParam(required = false) @ApiParam("镟修轮对车轴") String axleNo,
                                       @RequestParam(required = false) @ApiParam("镟修轮对号") String wheelNo,
-                                      HttpServletResponse response) {
+                                      HttpServletResponse response) throws IOException {
         wheelsetLathingService.exportWheelsetLathing(trainNo, carriageNo, axleNo, wheelNo, response);
     }
 

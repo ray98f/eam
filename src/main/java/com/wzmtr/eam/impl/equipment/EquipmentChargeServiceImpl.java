@@ -4,20 +4,23 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.equipment.EquipmentChargeReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentChargeResDTO;
+import com.wzmtr.eam.dto.res.equipment.excel.ExcelEquipChargeResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentChargeMapper;
 import com.wzmtr.eam.service.equipment.EquipmentChargeService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -73,29 +76,18 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
 
     @Override
     public void exportEquipmentCharge(String equipCode, String equipName, String chargeDate, String position1Name,
-                                      String subjectCode, String systemCode, String equipTypeCode, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "设备编码", "设备名称", "专业", "系统", "设备类别", "位置一", "充电日期", "充电时长", "备注", "创建者", "创建时间");
+                                      String subjectCode, String systemCode, String equipTypeCode, HttpServletResponse response) throws IOException {
         List<EquipmentChargeResDTO> equipmentChargeResDTOList = equipmentChargeMapper.listEquipmentCharge(equipCode, equipName, chargeDate, position1Name, subjectCode, systemCode, equipTypeCode);
-        List<Map<String, String>> list = new ArrayList<>();
         if (equipmentChargeResDTOList != null && !equipmentChargeResDTOList.isEmpty()) {
+            List<ExcelEquipChargeResDTO> list = new ArrayList<>();
             for (EquipmentChargeResDTO resDTO : equipmentChargeResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("设备编码", resDTO.getEquipCode());
-                map.put("设备名称", resDTO.getEquipName());
-                map.put("专业", resDTO.getMajorName());
-                map.put("系统", resDTO.getSystemName());
-                map.put("设备类别", resDTO.getEquipTypeName());
-                map.put("位置一", resDTO.getPosition1Name());
-                map.put("充电日期", resDTO.getChargeDate());
-                map.put("充电时长", String.valueOf(resDTO.getChargeDuration()));
-                map.put("备注", resDTO.getRemark());
-                map.put("创建者", resDTO.getRecCreator());
-                map.put("创建时间", resDTO.getRecCreateTime());
-                list.add(map);
+                ExcelEquipChargeResDTO res = new ExcelEquipChargeResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setChargeDuration(String.valueOf(resDTO.getChargeDuration()));
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "设备充电信息", list);
         }
-        ExcelPortUtil.excelPort("设备充电信息", listName, list, null, response);
     }
 
 }

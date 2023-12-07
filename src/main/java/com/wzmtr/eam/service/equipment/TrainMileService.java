@@ -7,6 +7,7 @@ import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface TrainMileService {
@@ -15,7 +16,7 @@ public interface TrainMileService {
 
     TrainMileResDTO getTrainMileDetail(String id);
 
-    void exportTrainMile(String equipCode, String equipName, String originLineNo, HttpServletResponse response);
+    void exportTrainMile(String equipCode, String equipName, String originLineNo, HttpServletResponse response) throws IOException;
 
     void modifyTrainMile(TrainMileReqDTO trainMileReqDTO);
 
@@ -23,6 +24,6 @@ public interface TrainMileService {
 
     TrainMileageResDTO getTrainMileageDetail(String id);
 
-    void exportTrainMileage(String startTime, String endTime, String equipCode, HttpServletResponse response);
+    void exportTrainMileage(String startTime, String endTime, String equipCode, HttpServletResponse response) throws IOException;
 
 }

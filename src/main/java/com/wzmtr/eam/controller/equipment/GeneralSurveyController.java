@@ -81,7 +81,7 @@ public class GeneralSurveyController {
                                     @RequestParam(required = false) @ApiParam("技术通知单编号") String recNotifyNo,
                                     @RequestParam(required = false) @ApiParam("项目内容") String recDetail,
                                     @RequestParam(required = false) @ApiParam("作业单位") String orgType,
-                                    HttpServletResponse response) {
+                                    HttpServletResponse response) throws IOException {
         generalSurveyService.exportGeneralSurvey(trainNo, recNotifyNo, recDetail, orgType, response);
     }
 
