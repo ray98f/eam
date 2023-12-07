@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -51,7 +52,7 @@ public class MeaController {
 
     @GetMapping("/export")
     @ApiOperation(value = "导出计量器具台账")
-    public void exportMea(MeaListReqDTO meaListReqDTO, HttpServletResponse response) {
+    public void exportMea(MeaListReqDTO meaListReqDTO, HttpServletResponse response) throws IOException {
         meaService.exportMea(meaListReqDTO, response);
     }
 

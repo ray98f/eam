@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -82,7 +83,7 @@ public class CheckPlanController {
 
     @GetMapping("/export")
     @ApiOperation(value = "导出定检计划")
-    public void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response) {
+    public void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response) throws IOException {
         checkPlanService.exportCheckPlan(checkPlanListReqDTO, response);
     }
 
@@ -125,7 +126,7 @@ public class CheckPlanController {
     @ApiOperation(value = "导出定检计划明细")
     public void exportCheckPlanInfo(@RequestParam(required = false) @ApiParam("计量器具代码") String equipCode,
                                     @RequestParam(required = false) @ApiParam("计量器具检定计划号") String instrmPlanNo,
-                                    HttpServletResponse response) {
+                                    HttpServletResponse response) throws IOException {
         checkPlanService.exportCheckPlanInfo(equipCode, instrmPlanNo, response);
     }
 

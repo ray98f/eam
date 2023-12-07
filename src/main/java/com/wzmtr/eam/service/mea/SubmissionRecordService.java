@@ -9,6 +9,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface SubmissionRecordService {
 
@@ -26,7 +27,7 @@ public interface SubmissionRecordService {
 
     void examineSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO);
 
-    void exportSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, HttpServletResponse response);
+    void exportSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, HttpServletResponse response) throws IOException;
 
     Page<SubmissionRecordDetailResDTO> pageSubmissionRecordDetail(String testRecId, PageReqDTO pageReqDTO);
 
@@ -38,6 +39,6 @@ public interface SubmissionRecordService {
 
     void deleteSubmissionRecordDetail(BaseIdsEntity baseIdsEntity);
 
-    void exportSubmissionRecordDetail(String testRecId, HttpServletResponse response);
+    void exportSubmissionRecordDetail(String testRecId, HttpServletResponse response) throws IOException;
 
 }
