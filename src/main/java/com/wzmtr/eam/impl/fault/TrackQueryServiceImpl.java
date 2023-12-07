@@ -189,19 +189,15 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             faultTrackWorkBO.setRecStatus("10");
             faultTrackWorkMapper.insert(__BeanUtil.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
             // 待办逻辑处理
-            TrackQueryResDTO dmfm09 = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
-            String majorCode = dmfm09.getMajorCode();
+            TrackQueryResDTO trackRes = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
             Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
             List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
-            String zcStepOrg ;
-            if (cos.contains(majorCode)) {
-                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
-                zcStepOrg = matchControl.getItemCname();
+            if (cos.contains(trackRes.getMajorCode())) {
+                dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
             } else {
-                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
-                zcStepOrg = matchControl.getItemCname();
+                dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
             }
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + dmfm09.getMajorName() + "】故障管理流程",faultTrackWorkBO.getRecId(),faultWorkNo,"DM_007",zcStepOrg,"故障跟踪派工","DMFM0011","EAM","10");
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + trackRes.getMajorName() + "】故障管理流程",faultTrackWorkBO.getRecId(),faultWorkNo,"DM_007",dictionaries.getItemCname(),"故障跟踪派工","DMFM0011","EAM","10");
             return;
         }
         // 更新两张表
