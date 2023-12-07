@@ -3,7 +3,7 @@ package com.wzmtr.eam.impl.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.dto.res.excel.ExcelEquipmentCategoryResDTO;
+import com.wzmtr.eam.dto.res.basic.excel.ExcelEquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;

@@ -1,4 +1,4 @@
-package com.wzmtr.eam.dto.res.excel;
+package com.wzmtr.eam.dto.res.basic.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
@@ -7,23 +7,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 设备分类导出类
+ * 组织机构类别导出类
  * @author  Ray
  * @version 1.0
- * @date 2023/12/06
+ * @date 2023/12/07
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class ExcelEquipmentCategoryResDTO {
+public class ExcelOrgTypeResDTO {
 
     @ExcelProperty(value = "记录编号")
     private String recId;
-    @ExcelProperty(value = "节点编号")
-    private String nodeCode;
-    @ExcelProperty(value = "节点名称")
-    private String nodeName;
+    @ExcelProperty(value = "组织机构代码")
+    private String orgCode;
+    @ExcelProperty(value = "组织机构名称")
+    private String orgName;
+    @ExcelProperty(value = "类别")
+    private String orgType;
     @ExcelProperty(value = "记录状态")
     private String recStatus;
     @ExcelProperty(value = "备注")

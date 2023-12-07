@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
-import com.wzmtr.eam.dto.res.basic.FaultResDTO;
-import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
-import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
+import com.wzmtr.eam.dto.res.basic.*;
+import com.wzmtr.eam.dto.res.basic.excel.ExcelOrgMajorResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -15,7 +14,7 @@ import com.wzmtr.eam.mapper.basic.FaultMapper;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.service.basic.OrgMajorService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -116,29 +116,29 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     }
 
     @Override
-    public void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "组织机构代码", "组织机构名称", "专业", "记录状态", "备注", "创建者", "创建时间");
+    public void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response) throws IOException {
         List<String> orgCodes = new ArrayList<>();
         if (StringUtils.isNotEmpty(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
         List<OrgMajorResDTO> orgMajors = orgMajorMapper.listOrgMajor(StringUtils.getSumArrayList(orgCodes), majorCode);
-        List<Map<String, String>> list = new ArrayList<>();
         if (orgMajors != null && !orgMajors.isEmpty()) {
-            for (OrgMajorResDTO orgMajor : orgMajors) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", orgMajor.getRecId());
-                map.put("组织机构代码", orgMajor.getOrgCode());
-                map.put("组织机构名称", orgMajor.getOrgName());
-                map.put("专业", MAJOR_MAP.get(orgMajor.getMajorCode()));
-                map.put("记录状态", CommonConstants.TEN_STRING.equals(orgMajor.getRecStatus()) ? "启用" : "禁用");
-                map.put("备注", orgMajor.getRemark());
-                map.put("创建者", orgMajor.getRecCreator());
-                map.put("创建时间", orgMajor.getRecCreateTime());
-                list.add(map);
+            List<ExcelOrgMajorResDTO> resList = new ArrayList<>();
+            for (OrgMajorResDTO resDTO : orgMajors) {
+                ExcelOrgMajorResDTO res = ExcelOrgMajorResDTO.builder()
+                        .recId(resDTO.getRecId())
+                        .orgCode(resDTO.getOrgCode())
+                        .orgName(resDTO.getOrgName())
+                        .majorCode(MAJOR_MAP.get(resDTO.getMajorCode()))
+                        .recStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "启用" : "禁用")
+                        .remark(resDTO.getRemark())
+                        .recCreator(resDTO.getRecCreator())
+                        .recCreateTime(resDTO.getRecCreateTime())
+                        .build();
+                resList.add(res);
             }
+            EasyExcelUtils.export(response, "组织机构专业信息", resList);
         }
-        ExcelPortUtil.excelPort("组织机构专业信息", listName, list, null, response);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface OrgMajorService {
@@ -24,7 +25,7 @@ public interface OrgMajorService {
 
     void deleteOrgMajor(BaseIdsEntity baseIdsEntity);
 
-    void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response);
+    void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response) throws IOException;
 
     FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode, String majorCode);
 }

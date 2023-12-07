@@ -7,6 +7,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface FaultService {
 
@@ -20,5 +21,5 @@ public interface FaultService {
 
     void deleteFault(BaseIdsEntity baseIdsEntity);
 
-    void exportFault(String code, Integer type, String lineCode, String equipmentCategoryCode, HttpServletResponse response);
+    void exportFault(String code, Integer type, String lineCode, String equipmentCategoryCode, HttpServletResponse response) throws IOException;
 }

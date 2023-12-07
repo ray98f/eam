@@ -6,7 +6,6 @@ import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.wzmtr.eam.config.CustomCellWriteHeightConfig;
 import com.wzmtr.eam.config.CustomCellWriteWidthConfig;
-import com.wzmtr.eam.dto.res.excel.ExcelEquipmentCategoryResDTO;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;

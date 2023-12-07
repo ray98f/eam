@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -73,7 +74,7 @@ public class FaultController {
                             @RequestParam(required = false) @ApiParam("码值类型") Integer type,
                             @RequestParam(required = false) @ApiParam("线路") String lineCode,
                             @RequestParam(required = false) @ApiParam("设备分类编号") String equipmentCategoryCode,
-                            HttpServletResponse response) {
+                            HttpServletResponse response) throws IOException {
         faultService.exportFault(code, type, lineCode, equipmentCategoryCode, response);
     }
 }

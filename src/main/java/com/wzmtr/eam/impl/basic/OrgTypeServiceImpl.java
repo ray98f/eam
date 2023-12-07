@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.OrgTypeReqDTO;
+import com.wzmtr.eam.dto.res.basic.excel.ExcelOrgTypeResDTO;
 import com.wzmtr.eam.dto.res.basic.OrgTypeResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -12,7 +13,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.basic.OrgTypeMapper;
 import com.wzmtr.eam.service.basic.OrgTypeService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -92,29 +94,29 @@ public class OrgTypeServiceImpl implements OrgTypeService {
     }
 
     @Override
-    public void exportOrgType(String orgCode, String orgType, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "组织机构代码", "组织机构名称", "类别", "记录状态", "备注", "创建者", "创建时间");
+    public void exportOrgType(String orgCode, String orgType, HttpServletResponse response) throws IOException {
         List<String> orgCodes = new ArrayList<>();
         if (StringUtils.isNotEmpty(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
         List<OrgTypeResDTO> orgTypeList = orgTypeMapper.listOrgType(StringUtils.getSumArrayList(orgCodes), orgType);
-        List<Map<String, String>> list = new ArrayList<>();
         if (orgTypeList != null && !orgTypeList.isEmpty()) {
-            for (OrgTypeResDTO orgTypeRes : orgTypeList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", orgTypeRes.getRecId());
-                map.put("组织机构代码", orgTypeRes.getOrgCode());
-                map.put("组织机构名称", orgTypeRes.getOrgName());
-                map.put("类别", TYPE_MAP.get(orgTypeRes.getOrgType()));
-                map.put("记录状态", CommonConstants.TEN_STRING.equals(orgTypeRes.getRecStatus()) ? "启用" : "禁用");
-                map.put("备注", orgTypeRes.getRemark());
-                map.put("创建者", orgTypeRes.getRecCreator());
-                map.put("创建时间", orgTypeRes.getRecCreateTime());
-                list.add(map);
+            List<ExcelOrgTypeResDTO> resList = new ArrayList<>();
+            for (OrgTypeResDTO resDTO : orgTypeList) {
+                ExcelOrgTypeResDTO res = ExcelOrgTypeResDTO.builder()
+                        .recId(resDTO.getRecId())
+                        .orgCode(resDTO.getOrgCode())
+                        .orgName(resDTO.getOrgName())
+                        .orgType(TYPE_MAP.get(resDTO.getOrgType()))
+                        .recStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "启用" : "禁用")
+                        .remark(resDTO.getRemark())
+                        .recCreator(resDTO.getRecCreator())
+                        .recCreateTime(resDTO.getRecCreateTime())
+                        .build();
+                resList.add(res);
             }
+            EasyExcelUtils.export(response, "组织机构线别信息", resList);
         }
-        ExcelPortUtil.excelPort("组织机构类别信息", listName, list, null, response);
     }
 
 }
