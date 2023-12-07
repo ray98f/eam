@@ -11,6 +11,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface OverhaulWeekPlanService {
 
     void examineOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception;
 
-    void exportOverhaulWeekPlan(List<String> ids, HttpServletResponse response);
+    void exportOverhaulWeekPlan(List<String> ids, HttpServletResponse response) throws IOException;
 
     Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO);
 
@@ -46,7 +47,7 @@ public interface OverhaulWeekPlanService {
 
     void importOverhaulPlan(MultipartFile file);
 
-    void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response);
+    void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) throws IOException;
 
     List<OverhaulTplDetailResDTO> getTemplates(String planCode);
 
@@ -60,5 +61,5 @@ public interface OverhaulWeekPlanService {
 
     void deleteOverhaulObject(BaseIdsEntity baseIdsEntity);
 
-    void exportOverhaulObject(String planCode, String planName, String objectCode, String objectName, HttpServletResponse response);
+    void exportOverhaulObject(String planCode, String planName, String objectCode, String objectName, HttpServletResponse response) throws IOException;
 }

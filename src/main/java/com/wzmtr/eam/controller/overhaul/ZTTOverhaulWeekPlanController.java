@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class ZTTOverhaulWeekPlanController {
 
     @PostMapping("/weekPlan/export")
     @ApiOperation(value = "导出检修周计划（中铁通）")
-    public void exportOverhaulWeekPlan(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) {
+    public void exportOverhaulWeekPlan(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
         if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
         }
@@ -144,7 +145,7 @@ public class ZTTOverhaulWeekPlanController {
 
     @GetMapping("/plan/export")
     @ApiOperation(value = "导出检修计划（中铁通）")
-    public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) {
+    public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) throws IOException {
         overhaulWeekPlanService.exportOverhaulPlan(overhaulPlanListReqDTO, response);
     }
 
@@ -197,7 +198,7 @@ public class ZTTOverhaulWeekPlanController {
                                      @RequestParam(required = false) @ApiParam("计划名称") String planName,
                                      @RequestParam(required = false) @ApiParam("对象编号") String objectCode,
                                      @RequestParam(required = false) @ApiParam("对象名称") String objectName,
-                                     HttpServletResponse response) {
+                                     HttpServletResponse response) throws IOException {
         overhaulWeekPlanService.exportOverhaulObject(planCode, planName, objectCode, objectName, response);
     }
 }

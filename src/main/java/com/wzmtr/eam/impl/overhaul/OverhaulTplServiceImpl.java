@@ -10,6 +10,9 @@ import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulTplResDTO;
+import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulMaterialResDTO;
+import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulTplDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulTplResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -227,25 +231,18 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void exportOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
-                                  String majorCode, String systemCode, String equipTypeCode, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "模板编号", "模板名称", "线路", "专业", "系统", "设备类别", "审批状态");
+                                  String majorCode, String systemCode, String equipTypeCode, HttpServletResponse response) throws IOException {
         List<OverhaulTplResDTO> overhaulTplResDTOList = overhaulTplMapper.listOverhaulTpl(templateId, templateName, lineNo, position1Code, majorCode, systemCode, equipTypeCode, null);
-        List<Map<String, String>> list = new ArrayList<>();
         if (overhaulTplResDTOList != null && !overhaulTplResDTOList.isEmpty()) {
+            List<ExcelOverhaulTplResDTO> list = new ArrayList<>();
             for (OverhaulTplResDTO resDTO : overhaulTplResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("模板编号", resDTO.getTemplateId());
-                map.put("模板名称", resDTO.getTemplateName());
-                map.put("线路", resDTO.getLineName());
-                map.put("专业", resDTO.getSubjectName());
-                map.put("系统", resDTO.getSystemName());
-                map.put("设备类别", resDTO.getEquipTypeName());
-                map.put("审批状态", CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
-                list.add(map);
+                ExcelOverhaulTplResDTO res = new ExcelOverhaulTplResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setTrialStatus(CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检修模板信息", list);
         }
-        ExcelPortUtil.excelPort("检修模板信息", listName, list, null, response);
     }
 
     @Override
@@ -340,31 +337,19 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public void exportOverhaulTplDetail(String templateId, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "模块顺序", "检修模块", "检修项顺序", "车组号", "检修项", "技术要求", "检修项类型", "可选值", "默认值", "上限", "下限", "单位", "备注");
+    public void exportOverhaulTplDetail(String templateId, HttpServletResponse response) throws IOException {
         List<OverhaulTplDetailResDTO> overhaulTplDetailResDTOList = overhaulTplMapper.listOverhaulTplDetail(templateId);
-        List<Map<String, String>> list = new ArrayList<>();
         if (overhaulTplDetailResDTOList != null && !overhaulTplDetailResDTOList.isEmpty()) {
+            List<ExcelOverhaulTplDetailResDTO> list = new ArrayList<>();
             for (OverhaulTplDetailResDTO resDTO : overhaulTplDetailResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("模块顺序", resDTO.getModelSequence());
-                map.put("检修模块", resDTO.getModelName());
-                map.put("检修项顺序", resDTO.getSequenceId());
-                map.put("车组号", StringUtils.isNotEmpty(resDTO.getTrainNumber()) ? resDTO.getTrainNumber() + "车" : "");
-                map.put("检修项", resDTO.getItemName());
-                map.put("技术要求", resDTO.getExt1());
-                map.put("检修项类型", CommonConstants.TEN_STRING.equals(resDTO.getItemType()) ? "列表" : CommonConstants.TWENTY_STRING.equals(resDTO.getItemType()) ? "数值" : "文本");
-                map.put("可选值", resDTO.getInspectItemValue());
-                map.put("默认值", resDTO.getDefaultValue());
-                map.put("上限", resDTO.getMaxValue());
-                map.put("下限", resDTO.getMinValue());
-                map.put("单位", resDTO.getItemUnit());
-                map.put("备注", resDTO.getRemark());
-                list.add(map);
+                ExcelOverhaulTplDetailResDTO res = new ExcelOverhaulTplDetailResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setTrainNumber(StringUtils.isNotEmpty(resDTO.getTrainNumber()) ? resDTO.getTrainNumber() + "车" : "");
+                res.setItemType(CommonConstants.TEN_STRING.equals(resDTO.getItemType()) ? "列表" : CommonConstants.TWENTY_STRING.equals(resDTO.getItemType()) ? "数值" : "文本");
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检修项信息", list);
         }
-        ExcelPortUtil.excelPort("检修项信息", listName, list, null, response);
     }
 
     @Override
@@ -409,26 +394,18 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public void exportOverhaulMaterial(String templateId, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "模板编号", "模板名称", "物资编码", "物资名称", "物资名称", "规格型号", "计量单位", "数量", "备注");
+    public void exportOverhaulMaterial(String templateId, HttpServletResponse response) throws IOException {
         List<OverhaulMaterialResDTO> overhaulMaterialResDTOList = overhaulTplMapper.listOverhaulMaterial(templateId);
-        List<Map<String, String>> list = new ArrayList<>();
         if (overhaulMaterialResDTOList != null && !overhaulMaterialResDTOList.isEmpty()) {
+            List<ExcelOverhaulMaterialResDTO> list = new ArrayList<>();
             for (OverhaulMaterialResDTO resDTO : overhaulMaterialResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("模板编号", resDTO.getTemplateId());
-                map.put("模板名称", resDTO.getTemplateName());
-                map.put("物资编码", resDTO.getMaterialCode());
-                map.put("物资名称", resDTO.getMaterialName());
-                map.put("规格型号", resDTO.getMaterialSpec());
-                map.put("计量单位", resDTO.getUnitName());
-                map.put("数量", String.valueOf(resDTO.getQuantity()));
-                map.put("备注", resDTO.getRemark());
-                list.add(map);
+                ExcelOverhaulMaterialResDTO res = new ExcelOverhaulMaterialResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setQuantity(String.valueOf(resDTO.getQuantity()));
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "物料信息", list);
         }
-        ExcelPortUtil.excelPort("物料信息", listName, list, null, response);
     }
 
 }

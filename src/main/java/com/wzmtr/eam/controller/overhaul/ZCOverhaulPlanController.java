@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -122,7 +123,7 @@ public class ZCOverhaulPlanController {
 
     @GetMapping("/plan/export")
     @ApiOperation(value = "导出检修计划（中车）")
-    public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) {
+    public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) throws IOException {
         overhaulPlanService.exportOverhaulPlan(overhaulPlanListReqDTO, response);
     }
 
@@ -175,7 +176,7 @@ public class ZCOverhaulPlanController {
                                      @RequestParam(required = false) @ApiParam("计划名称") String planName,
                                      @RequestParam(required = false) @ApiParam("对象编号") String objectCode,
                                      @RequestParam(required = false) @ApiParam("对象名称") String objectName,
-                                     HttpServletResponse response) {
+                                     HttpServletResponse response) throws IOException {
         overhaulPlanService.exportOverhaulObject(planCode, planName, objectCode, objectName, response);
     }
 }

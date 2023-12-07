@@ -55,7 +55,7 @@ public class OverhaulOrderController {
 
     @PostMapping("/export")
     @ApiOperation(value = "导出检修工单")
-    public void exportOverhaulOrder(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) {
+    public void exportOverhaulOrder(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
         if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
         }
@@ -158,7 +158,7 @@ public class OverhaulOrderController {
                                      @RequestParam(required = false) @ApiParam("计划编号") String planCode,
                                      @RequestParam(required = false) @ApiParam("计划名称") String planName,
                                      @RequestParam(required = false) @ApiParam("对象编号") String objectCode,
-                                     HttpServletResponse response) {
+                                     HttpServletResponse response) throws IOException {
         overhaulOrderService.exportOverhaulObject(orderCode, planCode, planName, objectCode, response);
     }
 
@@ -185,7 +185,7 @@ public class OverhaulOrderController {
     @GetMapping("/item/export")
     @ApiOperation(value = "导出检修项")
     public void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO,
-                                   HttpServletResponse response) {
+                                   HttpServletResponse response) throws IOException {
         overhaulOrderService.exportOverhaulItem(overhaulItemListReqDTO, response);
     }
 
@@ -211,7 +211,7 @@ public class OverhaulOrderController {
                                     @RequestParam(required = false) @ApiParam("检修项名称") String itemName,
                                     @RequestParam(required = false) @ApiParam("工单编号") String orderCode,
                                     @RequestParam(required = false) @ApiParam("检修项id") String tdmer23RecId,
-                                    HttpServletResponse response) {
+                                    HttpServletResponse response) throws IOException {
         overhaulOrderService.exportOverhaulState(objectCode, itemName, orderCode, tdmer23RecId, response);
     }
 
