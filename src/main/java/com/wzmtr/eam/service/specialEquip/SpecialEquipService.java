@@ -8,6 +8,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface SpecialEquipService {
     
@@ -21,11 +22,11 @@ public interface SpecialEquipService {
     void modifySpecialEquip(SpecialEquipReqDTO specialEquipReqDTO);
 
     void exportSpecialEquip(String equipCode, String equipName, String specialEquipCode, String factNo,
-                            String useLineNo, String position1Code, String specialEquipType, String equipStatus, HttpServletResponse response);
+                            String useLineNo, String position1Code, String specialEquipType, String equipStatus, HttpServletResponse response) throws IOException;
 
     Page<SpecialEquipHistoryResDTO> pageSpecialEquipHistory(String equipCode, PageReqDTO pageReqDTO);
 
     SpecialEquipHistoryResDTO getSpecialEquipHistoryDetail(String id);
 
-    void exportSpecialEquipHistory(String equipCode, HttpServletResponse response);
+    void exportSpecialEquipHistory(String equipCode, HttpServletResponse response) throws IOException;
 }

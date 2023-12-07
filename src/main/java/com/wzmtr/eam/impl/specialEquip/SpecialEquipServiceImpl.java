@@ -6,6 +6,8 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.specialEquip.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.SpecialEquipHistoryResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.SpecialEquipResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.excel.ExcelSpecialEquipHistoryResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.excel.ExcelSpecialEquipResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysOffice;
@@ -15,10 +17,7 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.specialEquip.SpecialEquipMapper;
 import com.wzmtr.eam.service.specialEquip.SpecialEquipService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.FileUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
@@ -26,12 +25,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -178,47 +179,25 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
 
     @Override
     public void exportSpecialEquip(String equipCode, String equipName, String specialEquipCode, String factNo,
-                                   String useLineNo, String position1Code, String specialEquipType, String equipStatus, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "设备编码", "特种设备代码", "设备名称", "特种设备类别", "应用线别代码", "位置一编号", "位置一名称",
-                "特种设备检测日期", "特种设备检测有效期", "使用登记机构", "登记证编号", "出厂编号", "设备内部编号", "设备所在地点", "设备详细地址", "设备主要参数",
-                "管理部门名称", "安管人员", "安管人员电话", "安管人员手机", "维管部门名称");
+                                   String useLineNo, String position1Code, String specialEquipType, String equipStatus, HttpServletResponse response) throws IOException {
         List<SpecialEquipResDTO> specialEquipResDTOList = specialEquipMapper.listSpecialEquip(equipCode, equipName, specialEquipCode, factNo, useLineNo,
                 position1Code, specialEquipType, equipStatus);
-        List<Map<String, String>> list = new ArrayList<>();
         if (specialEquipResDTOList != null && !specialEquipResDTOList.isEmpty()) {
+            List<ExcelSpecialEquipResDTO> list = new ArrayList<>();
             for (SpecialEquipResDTO resDTO : specialEquipResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("设备编码", resDTO.getEquipCode());
-                map.put("特种设备代码", resDTO.getSpecialEquipCode());
-                map.put("设备名称", resDTO.getEquipName());
+                ExcelSpecialEquipResDTO res = new ExcelSpecialEquipResDTO();
+                BeanUtils.copyProperties(resDTO, res);
                 List<Dictionaries> dicList = dictionariesMapper.list("dm.specialequiptype", resDTO.getSpecialEquipType() == null ? " " : resDTO.getSpecialEquipType(), null);
                 if (dicList != null && !dicList.isEmpty()) {
-                    map.put("特种设备类别", dicList.get(0).getItemCname());
+                    res.setSpecialEquipType(dicList.get(0).getItemCname());
                 } else {
-                    map.put("特种设备类别", "");
+                    res.setSpecialEquipType("");
                 }
-                map.put("应用线别代码", CommonConstants.LINE_CODE_ONE.equals(resDTO.getUseLineNo()) ? "S1线" : "S2线");
-                map.put("位置一编号", resDTO.getPosition1Code());
-                map.put("位置一名称", resDTO.getPosition1Name());
-                map.put("特种设备检测日期", resDTO.getVerifyDate());
-                map.put("特种设备检测有效期", resDTO.getVerifyValidityDate());
-                map.put("使用登记机构", resDTO.getRegOrg());
-                map.put("登记证编号", resDTO.getRegNo());
-                map.put("出厂编号", resDTO.getFactNo());
-                map.put("设备内部编号", resDTO.getEquipInnerNo());
-                map.put("设备所在地点", resDTO.getEquipPosition());
-                map.put("设备详细地址", resDTO.getEquipDetailedPosition());
-                map.put("设备主要参数", resDTO.getEquipParameter());
-                map.put("管理部门名称", resDTO.getManageOrgName());
-                map.put("安管人员", resDTO.getSecStaffName());
-                map.put("安管人员电话", resDTO.getSecStaffPhone());
-                map.put("安管人员手机", resDTO.getSecStaffMobile());
-                map.put("维管部门名称", resDTO.getSecOrgName());
-                list.add(map);
+                res.setUseLineNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getUseLineNo()) ? "S1线" : "S2线");
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "特种设备台账信息", list);
         }
-        ExcelPortUtil.excelPort("特种设备台账信息", listName, list, null, response);
     }
 
     @Override
@@ -233,27 +212,17 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
     }
 
     @Override
-    public void exportSpecialEquipHistory(String equipCode, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "设备编码", "设备名称", "编制部门", "检测结果", "检测结果说明", "检测日期", "检测有效期", "检测单状态", "附件");
+    public void exportSpecialEquipHistory(String equipCode, HttpServletResponse response) throws IOException {
         List<SpecialEquipHistoryResDTO> specialEquipHistoryResDTOList = specialEquipMapper.listSpecialEquiHistory(equipCode);
-        List<Map<String, String>> list = new ArrayList<>();
         if (specialEquipHistoryResDTOList != null && !specialEquipHistoryResDTOList.isEmpty()) {
+            List<ExcelSpecialEquipHistoryResDTO> list = new ArrayList<>();
             for (SpecialEquipHistoryResDTO resDTO : specialEquipHistoryResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("设备编码", resDTO.getEquipCode());
-                map.put("设备名称", resDTO.getEquipName());
-                map.put("编制部门", resDTO.getUseDeptCname());
-                map.put("检测结果", resDTO.getVerifyResult());
-                map.put("检测结果说明", resDTO.getVerifyConclusion());
-                map.put("检测日期", resDTO.getLastVerifyDate());
-                map.put("检测有效期", resDTO.getVerifyValidityDate());
-                map.put("检测单状态", resDTO.getRecStatus());
-                map.put("附件", resDTO.getDocId());
-                list.add(map);
+                ExcelSpecialEquipHistoryResDTO res = new ExcelSpecialEquipHistoryResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "特种设备检测记录历史信息", list);
         }
-        ExcelPortUtil.excelPort("特种设备检测记录历史信息", listName, list, null, response);
     }
 
 }

@@ -9,6 +9,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface DetectionPlanService {
     
@@ -28,7 +29,7 @@ public interface DetectionPlanService {
     void examineDetectionPlan(DetectionPlanReqDTO detectionPlanReqDTO);
 
     void exportDetectionPlan(String instrmPlanNo, String  planStatus, String  editDeptCode,
-                             String assetKindCode, String  planPeriodMark, HttpServletResponse response);
+                             String assetKindCode, String  planPeriodMark, HttpServletResponse response) throws IOException;
 
     Page<DetectionPlanDetailResDTO> pageDetectionPlanDetail(String instrmPlanNo, PageReqDTO pageReqDTO);
 
@@ -40,5 +41,5 @@ public interface DetectionPlanService {
 
     void deleteDetectionPlanDetail(BaseIdsEntity baseIdsEntity);
 
-    void exportDetectionPlanDetail(String instrmPlanNo, HttpServletResponse response);
+    void exportDetectionPlanDetail(String instrmPlanNo, HttpServletResponse response) throws IOException;
 }

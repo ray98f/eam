@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 
 @Slf4j
@@ -89,7 +90,7 @@ public class DetectionController {
                                 @RequestParam(required = false) @ApiParam("委托单号") String sendVerifyNo,
                                 @RequestParam(required = false) @ApiParam("编制部门") String editDeptCode,
                                 @RequestParam(required = false) @ApiParam("检测单状态") String recStatus,
-                                HttpServletResponse response) {
+                                HttpServletResponse response) throws IOException {
         detectionService.exportDetection(checkNo, sendVerifyNo, editDeptCode, recStatus, response);
     }
 
@@ -130,7 +131,7 @@ public class DetectionController {
     @GetMapping("/detail/export")
     @ApiOperation(value = "导出检测记录明细")
     public void exportDetectionDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
-                                      HttpServletResponse response) {
+                                      HttpServletResponse response) throws IOException {
         detectionService.exportDetectionDetail(testRecId, response);
     }
 }

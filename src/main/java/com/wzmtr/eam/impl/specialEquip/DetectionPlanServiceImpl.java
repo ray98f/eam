@@ -8,6 +8,8 @@ import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
 import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanDetailResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.excel.ExcelDetectionPlanDetailResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.excel.ExcelDetectionPlanResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
@@ -18,16 +20,14 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.specialEquip.DetectionPlanMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.specialEquip.DetectionPlanService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -214,28 +214,20 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Override
     public void exportDetectionPlan(String instrmPlanNo, String planStatus, String editDeptCode,
-                                    String assetKindCode, String planPeriodMark, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("检测计划号", "特种设备分类", "年月", "检测委托人", "检测委托人电话", "管理部门", "维管部门", "编制部门", "检测单位", "计划状态", "备注");
+                                    String assetKindCode, String planPeriodMark, HttpServletResponse response) throws IOException {
         List<DetectionPlanResDTO> detectionPlanResDTOList = detectionPlanMapper.listDetectionPlan(instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark);
-        List<Map<String, String>> list = new ArrayList<>();
         if (detectionPlanResDTOList != null && !detectionPlanResDTOList.isEmpty()) {
+            List<ExcelDetectionPlanResDTO> list = new ArrayList<>();
             for (DetectionPlanResDTO resDTO : detectionPlanResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("检测计划号", resDTO.getInstrmPlanNo());
-                map.put("特种设备分类", resDTO.getInstrmPlanType());
-                map.put("年月", resDTO.getPlanPeriodMark());
-                map.put("检测委托人", resDTO.getSendConsignerName());
-                map.put("检测委托人电话", resDTO.getSendConsignerTele());
-                map.put("管理部门", organizationMapper.getExtraOrgByAreaId(resDTO.getManageOrg()));
-                map.put("维管部门", organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
-                map.put("编制部门", organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
-                map.put("检测单位", resDTO.getVerifyDept());
-                map.put("计划状态", resDTO.getPlanStatus());
-                map.put("备注", resDTO.getPlanNote());
-                list.add(map);
+                ExcelDetectionPlanResDTO res = new ExcelDetectionPlanResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setManageOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getManageOrg()));
+                res.setSecOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+                res.setEditDeptCode(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检测计划信息", list);
         }
-        ExcelPortUtil.excelPort("检测计划信息", listName, list, null, response);
     }
 
     @Override
@@ -314,23 +306,16 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
     }
 
     @Override
-    public void exportDetectionPlanDetail(String instrmPlanNo, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("设备编码", "名称", "上次检测日期", "上次检测有效期", "位置一名称", "位置二名称", "型号规格");
+    public void exportDetectionPlanDetail(String instrmPlanNo, HttpServletResponse response) throws IOException {
         List<DetectionPlanDetailResDTO> detectionPlanDetailResDTOList = detectionPlanMapper.listDetectionPlanDetail(instrmPlanNo);
-        List<Map<String, String>> list = new ArrayList<>();
         if (detectionPlanDetailResDTOList != null && !detectionPlanDetailResDTOList.isEmpty()) {
+            List<ExcelDetectionPlanDetailResDTO> list = new ArrayList<>();
             for (DetectionPlanDetailResDTO resDTO : detectionPlanDetailResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("设备编码", resDTO.getEquipCode());
-                map.put("名称", resDTO.getEquipName());
-                map.put("上次检测日期", resDTO.getVerifyDate());
-                map.put("上次检测有效期", resDTO.getVerifyValidityDate());
-                map.put("位置一名称", resDTO.getPosition1Name());
-                map.put("位置二名称", resDTO.getPosition2Name());
-                map.put("型号规格", resDTO.getMatSpecifi());
-                list.add(map);
+                ExcelDetectionPlanDetailResDTO res = new ExcelDetectionPlanDetailResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检测计划明细信息", list);
         }
-        ExcelPortUtil.excelPort("检测计划明细信息", listName, list, null, response);
     }
 }
