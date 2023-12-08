@@ -132,7 +132,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 dmfm03.setExt5(reqDTO.getLine());
                 dmfm03.setRecStatus("20");
             } catch (Exception e) {
-                log.error("故障分析流程提交错误，分析单号为-[{}]", faultAnalysisNo);
+                log.error("故障分析流程提交错误，分析单号为-[{}]", faultAnalysisNo,e);
             }
         }
         // 流程日志记录
@@ -195,7 +195,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
             faultAnalyzeMapper.update(faultAnalyzeDO);
         }
         catch (Exception e){
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "agree error");
+            log.error("pass error",e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "pass error");
         }
     }
 

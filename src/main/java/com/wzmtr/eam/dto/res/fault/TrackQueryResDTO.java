@@ -53,7 +53,7 @@ public class TrackQueryResDTO {
     private String trackCloseTime;
     @ApiModelProperty(value = "工作流实例ID")
     private String workFlowInstId;
-    @ApiModelProperty(value = "工作流实例状态")
+    @ApiModelProperty(value = "工作流下一步的nodeId")
     private String workFlowInstStatus;
     @ApiModelProperty(value = "附件编号")
     private String docId;

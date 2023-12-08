@@ -348,7 +348,7 @@ public class BpmnServiceImpl implements BpmnService {
             req.setFlowId(flowId);
             req.setNodeId(nodeId);
             List<BpmnExaminePersonRes> bpmnExaminePersonId = roleMapper.getBpmnExaminePerson(req);
-            if (null != bpmnExaminePersonId && bpmnExaminePersonId.size() > 0) {
+            if (CollectionUtil.isNotEmpty(bpmnExaminePersonId)) {
                 StringBuilder chooseNodeUser = new StringBuilder();
                 String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
                 for (BpmnExaminePersonRes res : bpmnExaminePersonId) {

@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class WorkFlowLogBO {
     private String workFlowInstId;
+    //提交流程时选择的下一步人员
     private List<String> userIds;
     private String status;
     private String remark;
