@@ -31,4 +31,6 @@ public class TPerson implements Serializable {
 
     private String email;
 
+    private String names;
+
 }

@@ -30,4 +30,6 @@ public class CurrentLoginUser implements Serializable {
     private String mobile;
 
     private String phone;
+
+    private String names;
 }
