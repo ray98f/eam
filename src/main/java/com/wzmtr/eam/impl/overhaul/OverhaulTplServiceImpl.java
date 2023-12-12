@@ -151,9 +151,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         overhaulTplMapper.changeOverhaulTpl(overhaulTplReqDTO);
     }
 
-    // ServiceDMER0003
     @Override
     public void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) throws Exception {
+        // ServiceDMER0003
         if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);

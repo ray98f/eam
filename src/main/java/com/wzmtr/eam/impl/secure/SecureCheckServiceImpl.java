@@ -52,7 +52,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO.getSecRiskId(), reqDTO.getInspectDateStart(), reqDTO.getInspectDateEnd(), reqDTO.getIsRestoredCode(), reqDTO.getRecStatus());
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
-            // __StreamUtil.map(records,SecureCheckRecordListResDTO::create);
+            // StreamUtil.map(records,SecureCheckRecordListResDTO::create);
             records.forEach(this::assembly);
             return list;
         }

@@ -153,9 +153,9 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         }
     }
 
-    // ServiceDMAM0301
     @Override
     public void submitSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO) throws Exception {
+        // ServiceDMAM0301
         SubmissionRecordResDTO res = submissionRecordMapper.getSubmissionRecordDetail(submissionRecordReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);

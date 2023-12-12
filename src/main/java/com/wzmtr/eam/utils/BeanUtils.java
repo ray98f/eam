@@ -6,11 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.beans.BeanMap;
 
 /**
- * @ClassName: __BeanUtil
+ * @ClassName: BeanUtils
  * @Description: cglib bean工具类
  */
 @Slf4j
-public class __BeanUtil {
+public class BeanUtils {
 
     /**
      * @return T

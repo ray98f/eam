@@ -2,10 +2,10 @@ package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.bizobject.FaultTrackBO;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.utils.BeanUtils;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -54,7 +54,7 @@ public class FaultTrackAddReqDTO {
     /*  50 */   private String recStatus;
 
     public FaultTrackBO toBO(FaultTrackAddReqDTO req) {
-        FaultTrackBO bo = __BeanUtil.convert(req, FaultTrackBO.class);
+        FaultTrackBO bo = BeanUtils.convert(req, FaultTrackBO.class);
         bo.setRecStatus("10");
         bo.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
         bo.setRecCreateTime(DateUtil.getCurrentTime());

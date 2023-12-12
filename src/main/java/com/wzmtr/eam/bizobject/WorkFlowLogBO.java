@@ -21,8 +21,10 @@ public class WorkFlowLogBO {
     private String status;
     private String remark;
 
-    /*************不必填**************/
-    //转换成逗号分割的userId
+//    --------不必填--------
+    /**
+     * 转换成逗号分割的userId
+     */
     private String userId;
     private String id;
     private String creator;

@@ -15,7 +15,6 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.enums.RiskRank;
 import com.wzmtr.eam.enums.SecureRecStatus;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
-import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.secure.SecureHazardMapper;
 import com.wzmtr.eam.service.secure.SecureHazardService;
@@ -167,7 +166,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         }
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        SecureHazardDO convert = __BeanUtil.convert(reqDTO, SecureHazardDO.class);
+        SecureHazardDO convert = BeanUtils.convert(reqDTO, SecureHazardDO.class);
         hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID",reqDTO.getRiskId()));
     }
 

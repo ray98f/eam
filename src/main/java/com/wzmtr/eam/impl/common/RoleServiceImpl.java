@@ -149,7 +149,7 @@ public class RoleServiceImpl implements RoleService {
             if (CollectionUtil.isEmpty(flowRoleResDTOS)) {
                 return null;
             }
-            return _buildRes(_toUniqueList(flowRoleResDTOS));
+            return buildRes(toUniqueList(flowRoleResDTOS));
         }
         BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
         req.setFlowId(flowId);
@@ -160,10 +160,10 @@ public class RoleServiceImpl implements RoleService {
             return null;
         }
         FlowRoleResDTO flowRole = flowRoleResDTO.get(0);
-        return _buildRes((_getNextNodeInfo(flowId, flowRole)));
+        return buildRes((getNextNodeInfo(flowId, flowRole)));
     }
 
-    private List<FlowRoleResDTO> _toUniqueList(List<FlowRoleResDTO> flowRoleResDTOS) {
+    private List<FlowRoleResDTO> toUniqueList(List<FlowRoleResDTO> flowRoleResDTOS) {
         return flowRoleResDTOS.stream()
                 .collect(Collectors.groupingBy(FlowRoleResDTO::getRoleId))
                 .values()
@@ -172,7 +172,7 @@ public class RoleServiceImpl implements RoleService {
                 .collect(Collectors.toList());
     }
 
-    private List<FlowRoleResDTO> _buildRes(List<FlowRoleResDTO> flowRoleRes) {
+    private List<FlowRoleResDTO> buildRes(List<FlowRoleResDTO> flowRoleRes) {
         if (CollectionUtil.isNotEmpty(flowRoleRes)) {
             for (FlowRoleResDTO res : flowRoleRes) {
                 if (res.getRoleId() != null) {
@@ -183,7 +183,7 @@ public class RoleServiceImpl implements RoleService {
         return flowRoleRes;
     }
 
-    private List<FlowRoleResDTO> _getNextNodeInfo(String flowId, FlowRoleResDTO flowRole) {
+    private List<FlowRoleResDTO> getNextNodeInfo(String flowId, FlowRoleResDTO flowRole) {
         // 查下一步的节点信息
         BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
         bpmnExamineFlowRoleReq.setLine(flowRole.getLine());

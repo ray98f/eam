@@ -8,15 +8,25 @@ import lombok.Data;
  */
 @Data
 public class RunningListRes {
-    //taskId
+    /**
+     *    taskId
+     */
     private String taskId;
-    //procId
+    /**
+     *    procId
+     */
     private String procId;
-    //标题
+    /**
+     *    标题
+     */
     private String procDefName;
-    //当前环节
+    /**
+     *    当前环节
+     */
     private String taskName;
-    //发起时间
+    /**
+     *    发起时间
+     */
     private String createTime;
 
 }

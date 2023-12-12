@@ -10,90 +10,142 @@ import java.util.Date;
  *
  */
 public class Result implements Serializable {
-	/**
-	 *
-	 */
+
 	private static final long serialVersionUID = 5393448087925727882L;
 
-	// 任职信息ID
+	/**
+	 * 任职信息ID
+	 */
 	private String empJobInfoId;
 
-	// 员工ID
+	/**
+	 * 员工ID
+	 */
 	private String personId;
 
-	// 员工编号
+	/**
+	 * 员工编号
+	 */
 	private String personNo;
 
-	// 所属部门
+	/**
+	 * 所属部门
+	 */
 	private String departCode;
 
-	// 所属部门名称
+	/**
+	 * 所属部门名称
+	 */
 	private String departName;
 
-	// 所属公司
+	/**
+	 * 所属公司
+	 */
 	private String companyCode;
 
-	// 所属公司名称
+	/**
+	 * 所属公司名称
+	 */
 	private String companyName;
 
-	// 岗位编号
+	/**
+	 * 岗位编号
+	 */
 	private String postCode;
 
-	// 岗位名称
+	/**
+	 * 岗位名称
+	 */
 	private String postName;
 
-	// 最新到岗日期
+	/**
+	 * 最新到岗日期
+	 */
 	private Date latestArriDate;
 
-	// 离职日期
+	/**
+	 * 离职日期
+	 */
 	private Date leaveDate;
 
-	// 状态
+	/**
+	 * 状态
+	 */
 	private String leaveStatus;
 
-	// 所在组织路径
+	/**
+	 * 所在组织路径
+	 */
 	private String departFullPath;
 
-	// 岗位序列
+	/**
+	 * 岗位序列
+	 */
 	private String jobCategory;
 
-	// 职等
+	/**
+	 * 职等
+	 */
 	private String jobGrade;
 
-	// 在职状态
+	/**
+	 * 在职状态
+	 */
 	private String activeStatus;
 
-	// 职级
+	/**
+	 * 职级
+	 */
 	private String jobLevel;
 
-	// 职位名称
+	/**
+	 * 职位名称
+	 */
 	private String jobName;
 
-	// 岗位序列名称
+	/**
+	 * 岗位序列名称
+	 */
 	private String jobCategoryName;
 
-	// 职级名称
+	/**
+	 * 职级名称
+	 */
 	private String jobLevelName;
 
-	// 职等名称
+	/**
+	 * 职等名称
+	 */
 	private String jobGradeName;
 
-	// 职位层级
+	/**
+	 * 职位层级
+	 */
 	private String positionLevel;
 
-	// 职级开始日期
+	/**
+	 * 职级开始日期
+	 */
 	private Date jobLevelDate;
 
-	// 变动前信息ID
+	/**
+	 * 变动前信息ID
+	 */
 	private String oldInfoId;
 
-	// 审批状态
+	/**
+	 * 审批状态
+	 */
 	private String procResult;
 
-	// 范围类型
+	/**
+	 * 范围类型
+	 */
 	private String scopeType;
 
-	// 期限类型
+	/**
+	 * 期限类型
+	 */
 	private String termType;
 
 	public String getEmpJobInfoId() {

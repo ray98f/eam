@@ -52,7 +52,8 @@ public enum BpmnFlowEnum {
                 return orgTypeEnum.label;
             }
         }
-        return null; // 如果未找到匹配的 label，则返回 null 或者抛出异常
+        // 如果未找到匹配的 label，则返回 null 或者抛出异常
+        return null;
     }
 
     public static String getValueByLabel(String label) {
@@ -61,7 +62,8 @@ public enum BpmnFlowEnum {
                 return orgTypeEnum.value;
             }
         }
-        return null; // 如果未找到匹配的 label，则返回 null 或者抛出异常
+        // 如果未找到匹配的 label，则返回 null 或者抛出异常
+        return null;
     }
 
     public static List<HashMap<String, String>> printAllValuesAndLabels() {

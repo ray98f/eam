@@ -66,9 +66,10 @@ public class HttpUtil {
             // Post请求不能使用缓存
             conn.setUseCaches(false);
 
-            //设置通用的请求属性
+            // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
-            conn.setRequestProperty("connection", "Keep-Alive");  //维持长链接
+            // 维持长链接
+            conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
             if (!StringUtils.isEmpty(authorization)) {
                 conn.setRequestProperty("Authorization", authorization);
@@ -181,7 +182,8 @@ public class HttpUtil {
 
             //设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
-            conn.setRequestProperty("connection", "Keep-Alive");  //维持长链接
+            //维持长链接
+            conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
             if (!StringUtils.isEmpty(authorization)) {
                 conn.setRequestProperty("Authorization", authorization);

@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class ResponseMessage implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -2168874414452520348L;
 
 	private String state;
@@ -37,16 +35,16 @@ public class ResponseMessage implements Serializable {
 		return errorMessage;
 	}
 
-	public void setState(String _state) {
-		this.state = _state;
+	public void setState(String state) {
+		this.state = state;
 	}
 
-	public void setContent(String _content) {
-		this.content = _content;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
-	public void setErrorMessage(ErrorMessage _errorMessage) {
-		this.errorMessage = _errorMessage;
+	public void setErrorMessage(ErrorMessage errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 }

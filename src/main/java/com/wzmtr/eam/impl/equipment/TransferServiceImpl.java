@@ -42,6 +42,8 @@ import java.util.regex.Pattern;
 @Slf4j
 public class TransferServiceImpl implements TransferService {
 
+    public static final String S = "S";
+
     @Autowired
     private TransferMapper transferMapper;
 
@@ -140,8 +142,8 @@ public class TransferServiceImpl implements TransferService {
                     unitCodeReqDTO.setDevNo(equipCode);
                     unitCodeReqDTO.setBatchNo(" ");
                     unitCodeReqDTO.setAssetNo(" ");
-                    unitCodeReqDTO.setSupplierId(user.getOfficeId());
-                    unitCodeReqDTO.setSupplierName(user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId());
+                    unitCodeReqDTO.setSupplierId(user.getOfficeAreaId());
+                    unitCodeReqDTO.setSupplierName(user.getNames());
                     unitCodeReqDTO.setOrderNo(transferResDTO.getOrderNo());
                     unitCodeReqDTO.setOrderName(transferResDTO.getOrderName());
                     unitCodeReqDTO.setProCode(" ");
@@ -149,57 +151,7 @@ public class TransferServiceImpl implements TransferService {
                     unitCodeReqDTO.setMatSpecifi(transferResDTO.getMatSpecifi());
                     unitCodeReqDTO.setBrand(transferResDTO.getBrand());
                     equipmentMapper.insertUnitCode(unitCodeReqDTO);
-                    EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
-                    BeanUtils.copyProperties(transferResDTO, equipmentReqDTO);
-                    equipmentReqDTO.setSystemCode(" ");
-                    equipmentReqDTO.setSystemName(" ");
-                    equipmentReqDTO.setEquipTypeCode(" ");
-                    equipmentReqDTO.setEquipTypeName(" ");
-                    equipmentReqDTO.setUseLineNo(transferResDTO.getLineNo());
-                    equipmentReqDTO.setUseLineName(transferResDTO.getLineName());
-                    equipmentReqDTO.setUseSegNo(transferResDTO.getLineSubNo());
-                    equipmentReqDTO.setUseSegName(transferResDTO.getLineSubName());
-                    equipmentReqDTO.setEquipCode(unitNo);
-                    List<EquipmentCategoryResDTO> listSys = equipmentCategoryMapper.getChildEquipmentCategory(transferResDTO.getMajorCode());
-                    if (listSys != null && listSys.size() == 1) {
-                        equipmentReqDTO.setSystemCode(listSys.get(0).getNodeCode());
-                        equipmentReqDTO.setSystemName(listSys.get(0).getNodeName());
-                        List<EquipmentCategoryResDTO> listEquipType = equipmentCategoryMapper.getChildEquipmentCategory(equipmentReqDTO.getSystemCode());
-                        if (listEquipType != null && listEquipType.size() == 1) {
-                            equipmentReqDTO.setEquipTypeCode(listEquipType.get(0).getNodeCode());
-                            equipmentReqDTO.setEquipTypeName(listEquipType.get(0).getNodeName());
-                        }
-                    }
-                    equipmentReqDTO.setRecId(TokenUtil.getUuId());
-                    equipmentReqDTO.setEquipName(transferResDTO.getItemName());
-                    equipmentReqDTO.setApprovalStatus("10");
-                    equipmentReqDTO.setSpecialEquipFlag("10");
-                    equipmentReqDTO.setSourceAppNo(transferResDTO.getTransferNo());
-                    equipmentReqDTO.setSourceSubNo(transferResDTO.getItemCode());
-                    equipmentReqDTO.setSourceRecId(transferResDTO.getRecId());
-                    equipmentReqDTO.setRecCreator(user.getPersonId());
-                    equipmentReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                    equipmentReqDTO.setQuantity(new BigDecimal("1"));
-                    equipmentReqDTO.setCompanyCode(user.getCompanyAreaId() == null ? user.getCompanyId() : user.getCompanyAreaId());
-                    equipmentReqDTO.setCompanyName(user.getCompanyName());
-                    equipmentReqDTO.setDeptCode(user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId());
-                    equipmentReqDTO.setDeptName(user.getOfficeName());
-                    if (transferResDTO.getSupplierId() != null && "S".equals(transferResDTO.getItemCode().substring(0, 1))) {
-                        equipmentReqDTO.setBomType(transferResDTO.getItemCode());
-                    }
-                    equipmentReqDTO.setExt5(transferResDTO.getVendorCode());
-                    equipmentReqDTO.setEquipStatus(" ");
-                    equipmentReqDTO.setSourceKind(" ");
-                    equipmentReqDTO.setStartUseDate(" ");
-                    equipmentReqDTO.setInAccountTime(" ");
-                    equipmentReqDTO.setInstallDealer(" ");
-                    equipmentReqDTO.setDocId(" ");
-                    equipmentReqDTO.setOriginLineNo(" ");
-                    equipmentReqDTO.setOriginLineName(" ");
-                    equipmentReqDTO.setOriginSegNo(" ");
-                    equipmentReqDTO.setOriginSegName(" ");
-                    equipmentReqDTO.setRecStatus(" ");
-                    equipmentMapper.insertEquipment(equipmentReqDTO);
+                    insertEquipment(transferResDTO, unitNo, user);
                     transferResDTO.setEamProcessStatus("20");
                     transferMapper.updateTransfer(transferResDTO);
                 }
@@ -326,6 +278,66 @@ public class TransferServiceImpl implements TransferService {
         }
     }
 
+    /**
+     * 新增设备台账
+     * @param transferResDTO 设备移交类对象
+     * @param unitNo 合一码
+     * @param user token解析用户
+     */
+    public void insertEquipment(TransferResDTO transferResDTO, String unitNo, CurrentLoginUser user) {
+        EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
+        BeanUtils.copyProperties(transferResDTO, equipmentReqDTO);
+        equipmentReqDTO.setSystemCode(" ");
+        equipmentReqDTO.setSystemName(" ");
+        equipmentReqDTO.setEquipTypeCode(" ");
+        equipmentReqDTO.setEquipTypeName(" ");
+        equipmentReqDTO.setUseLineNo(transferResDTO.getLineNo());
+        equipmentReqDTO.setUseLineName(transferResDTO.getLineName());
+        equipmentReqDTO.setUseSegNo(transferResDTO.getLineSubNo());
+        equipmentReqDTO.setUseSegName(transferResDTO.getLineSubName());
+        equipmentReqDTO.setEquipCode(unitNo);
+        List<EquipmentCategoryResDTO> listSys = equipmentCategoryMapper.getChildEquipmentCategory(transferResDTO.getMajorCode());
+        if (listSys != null && listSys.size() == 1) {
+            equipmentReqDTO.setSystemCode(listSys.get(0).getNodeCode());
+            equipmentReqDTO.setSystemName(listSys.get(0).getNodeName());
+            List<EquipmentCategoryResDTO> listEquipType = equipmentCategoryMapper.getChildEquipmentCategory(equipmentReqDTO.getSystemCode());
+            if (listEquipType != null && listEquipType.size() == 1) {
+                equipmentReqDTO.setEquipTypeCode(listEquipType.get(0).getNodeCode());
+                equipmentReqDTO.setEquipTypeName(listEquipType.get(0).getNodeName());
+            }
+        }
+        equipmentReqDTO.setRecId(TokenUtil.getUuId());
+        equipmentReqDTO.setEquipName(transferResDTO.getItemName());
+        equipmentReqDTO.setApprovalStatus("10");
+        equipmentReqDTO.setSpecialEquipFlag("10");
+        equipmentReqDTO.setSourceAppNo(transferResDTO.getTransferNo());
+        equipmentReqDTO.setSourceSubNo(transferResDTO.getItemCode());
+        equipmentReqDTO.setSourceRecId(transferResDTO.getRecId());
+        equipmentReqDTO.setRecCreator(user.getPersonId());
+        equipmentReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentReqDTO.setQuantity(new BigDecimal("1"));
+        equipmentReqDTO.setCompanyCode(user.getCompanyAreaId() == null ? user.getCompanyId() : user.getCompanyAreaId());
+        equipmentReqDTO.setCompanyName(user.getCompanyName());
+        equipmentReqDTO.setDeptCode(user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId());
+        equipmentReqDTO.setDeptName(user.getOfficeName());
+        if (transferResDTO.getSupplierId() != null && S.equals(transferResDTO.getItemCode().substring(0, 1))) {
+            equipmentReqDTO.setBomType(transferResDTO.getItemCode());
+        }
+        equipmentReqDTO.setExt5(transferResDTO.getVendorCode());
+        equipmentReqDTO.setEquipStatus(" ");
+        equipmentReqDTO.setSourceKind(" ");
+        equipmentReqDTO.setStartUseDate(" ");
+        equipmentReqDTO.setInAccountTime(" ");
+        equipmentReqDTO.setInstallDealer(" ");
+        equipmentReqDTO.setDocId(" ");
+        equipmentReqDTO.setOriginLineNo(" ");
+        equipmentReqDTO.setOriginLineName(" ");
+        equipmentReqDTO.setOriginSegNo(" ");
+        equipmentReqDTO.setOriginSegName(" ");
+        equipmentReqDTO.setRecStatus(" ");
+        equipmentMapper.insertEquipment(equipmentReqDTO);
+    }
+
     public void updateTransfer(EquipmentResDTO resDTO) {
         resDTO.setSpecialEquipFlag("10");
         List<EquipmentCategoryResDTO> msgs = equipmentCategoryMapper.listEquipmentCategory(null, resDTO.getEquipTypeCode(), null);
@@ -378,7 +390,12 @@ public class TransferServiceImpl implements TransferService {
         }
     }
 
-    // ServiceDMDM0103 getOSBsend
+    /**
+     * 推送数据至OSB
+     * ServiceDMDM0103 getOSBsend
+     * @param list 推送的数据集合
+     * @throws Exception
+     */
     public void getOsbSend(List<Map<String, String>> list) throws Exception {
 //        String methodName = "setData";
 //        String method = "S_AT_09";

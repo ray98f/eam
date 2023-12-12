@@ -117,7 +117,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public void issue(FaultDetailReqDTO reqDTO) {
         FaultQueryServiceImpl aop = (FaultQueryServiceImpl) AopContext.currentProxy();
         String status = aop.queryOrderStatus(SidEntity.builder().id(reqDTO.getFaultWorkNo()).build());
-        FaultOrderDO faultOrderDO = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
+        FaultOrderDO faultOrderDO = BeanUtils.convert(reqDTO, FaultOrderDO.class);
         switch (status) {
             case "40":
                 faultOrderDO.setReportStartUserId(TokenUtil.getCurrentPersonId());
@@ -143,7 +143,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         faultOrderDO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         faultOrderDO.setOrderStatus(OrderStatus.XIA_FA.getCode());
         faultReportMapper.updateFaultOrder(faultOrderDO);
-        FaultInfoDO faultInfoDO = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
+        FaultInfoDO faultInfoDO = BeanUtils.convert(reqDTO, FaultInfoDO.class);
         faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultInfoDO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         faultReportMapper.updateFaultInfo(faultInfoDO);

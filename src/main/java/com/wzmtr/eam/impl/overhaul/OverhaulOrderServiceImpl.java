@@ -35,7 +35,6 @@ import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -358,7 +357,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             List<ExcelOverhaulObjectResDTO> list = new ArrayList<>();
             for (OverhaulOrderDetailResDTO resDTO : overhaulObject) {
                 ExcelOverhaulObjectResDTO res = new ExcelOverhaulObjectResDTO();
-                BeanUtils.copyProperties(resDTO, res);
+                org.springframework.beans.BeanUtils.copyProperties(resDTO, res);
                 list.add(res);
             }
             EasyExcelUtils.export(response, "检修对象信息", list);
@@ -398,7 +397,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             List<ExcelOverhaulItemResDTO> list = new ArrayList<>();
             for (OverhaulItemResDTO resDTO : overhaulItem) {
                 ExcelOverhaulItemResDTO res = new ExcelOverhaulItemResDTO();
-                BeanUtils.copyProperties(resDTO, res);
+                org.springframework.beans.BeanUtils.copyProperties(resDTO, res);
                 list.add(res);
             }
             EasyExcelUtils.export(response, "检修项信息", list);
@@ -423,7 +422,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             List<ExcelOverhaulStateResDTO> list = new ArrayList<>();
             for (OverhaulStateResDTO resDTO : overhaulState) {
                 ExcelOverhaulStateResDTO res = new ExcelOverhaulStateResDTO();
-                BeanUtils.copyProperties(resDTO, res);
+                org.springframework.beans.BeanUtils.copyProperties(resDTO, res);
                 list.add(res);
             }
             EasyExcelUtils.export(response, "检修异常信息", list);
@@ -476,7 +475,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         }
         List<OverhaulOrderDetailResDTO> list2 = overhaulOrderMapper.listOverhaulObject(orderCode, list.get(0).getPlanCode(), null, objectCode);
         FaultInfoReqDTO dmfm01 = new FaultInfoReqDTO();
-        BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm01);
+        org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm01);
         String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
         dmfm01.setExt2(queryNowUser(fillinUserId));
         dmfm01.setRecId(UUID.randomUUID().toString());
@@ -503,15 +502,15 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         String faultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
         dmfm01.setFaultNo(faultNo);
         FaultOrderReqDTO dmfm02 = new FaultOrderReqDTO();
-        BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm02);
+        org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm02);
         dmfm02.setRecId(TokenUtil.getUuId());
         dmfm02.setFaultWorkNo(faultWorkNo);
         dmfm02.setFaultNo(faultNo);
         dmfm02.setOrderStatus("30");
         dmfm02.setWorkClass(list.get(0).getWorkerGroupCode());
-        FaultInfoDO f1 = __BeanUtil.convert(dmfm01, FaultInfoDO.class);
+        FaultInfoDO f1 = BeanUtils.convert(dmfm01, FaultInfoDO.class);
         faultReportMapper.addToFaultInfo(f1);
-        FaultOrderDO f2 = __BeanUtil.convert(dmfm02, FaultOrderDO.class);
+        FaultOrderDO f2 = BeanUtils.convert(dmfm02, FaultOrderDO.class);
         faultReportMapper.addToFaultOrder(f2);
         overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
         String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";

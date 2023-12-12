@@ -140,9 +140,9 @@ public class DetectionServiceImpl implements DetectionService {
         }
     }
 
-    // ServiceDMSE0301
     @Override
     public void submitDetection(DetectionReqDTO detectionReqDTO) throws Exception {
+        // ServiceDMSE0301
         DetectionResDTO res = detectionMapper.getDetectionDetail(detectionReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);

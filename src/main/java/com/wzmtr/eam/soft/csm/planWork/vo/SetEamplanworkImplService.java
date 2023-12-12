@@ -27,11 +27,11 @@ public class SetEamplanworkImplService extends Service {
     }
 
     public SetEamplanworkImplService() {
-        super(__getWsdlLocation(), SETEAMPLANWORKIMPLSERVICE_QNAME);
+        super(getWsdlLocation(), SETEAMPLANWORKIMPLSERVICE_QNAME);
     }
 
     public SetEamplanworkImplService(WebServiceFeature... features) {
-        super(__getWsdlLocation(), SETEAMPLANWORKIMPLSERVICE_QNAME, features);
+        super(getWsdlLocation(), SETEAMPLANWORKIMPLSERVICE_QNAME, features);
     }
 
     public SetEamplanworkImplService(URL wsdlLocation) {
@@ -60,7 +60,7 @@ public class SetEamplanworkImplService extends Service {
         return getPort(new QName("http://impl.service.planwork.eam.soft.com/", "SetEamplanworkImplPort"), ISetEamplanwork.class, features);
     }
 
-    private static URL __getWsdlLocation() {
+    private static URL getWsdlLocation() {
         if (SETEAMPLANWORKIMPLSERVICE_EXCEPTION != null) {
             throw SETEAMPLANWORKIMPLSERVICE_EXCEPTION;
         }

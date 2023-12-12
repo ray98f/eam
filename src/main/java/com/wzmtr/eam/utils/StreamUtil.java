@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.groupingBy;
  * Author: Li.Wang
  * Date: 2023/8/4 10:12
  */
-public class __StreamUtil {
+public class StreamUtil {
     /**
      * 将集合按特定的键转换成map，满足一对一关系，若key重复则后者覆盖前者
      *
@@ -118,9 +118,9 @@ public class __StreamUtil {
         // list.add(SecureCheckAddReqDTO.builder().recId("1").build());
         // list.add(SecureCheckAddReqDTO.builder().recId("2").build());
         // list.add(SecureCheckAddReqDTO.builder().recId("1").build());
-        Set<String> strings = __StreamUtil.mapToSet(list, SecureCheckAddReqDTO::getRecId);
+        Set<String> strings = StreamUtil.mapToSet(list, SecureCheckAddReqDTO::getRecId);
         System.out.println(JSON.toJSONString(strings));
-        Map<String, SecureCheckAddReqDTO> map = __StreamUtil.toMap(list, SecureCheckAddReqDTO::getRecId);
+        Map<String, SecureCheckAddReqDTO> map = StreamUtil.toMap(list, SecureCheckAddReqDTO::getRecId);
         System.out.println(JSON.toJSONString(map));
     }
 }

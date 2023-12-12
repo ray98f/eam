@@ -63,7 +63,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     }
 
     private FaultDetailResDTO assemblyResDTO(FaultInfoDO faultInfo, FaultDetailResDTO faultOrder) {
-        FaultDetailResDTO res = __BeanUtil.copy(faultInfo, faultOrder);
+        FaultDetailResDTO res = BeanUtils.copy(faultInfo, faultOrder);
         if (StringUtils.isNotEmpty(res.getLineCode())) {
             LineCode name = LineCode.getByCode(res.getLineCode());
             if (null != name) {
@@ -139,7 +139,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(FaultTrackBO bo) {
-        FaultTrackDO faultTrackDO = __BeanUtil.convert(bo, FaultTrackDO.class);
+        FaultTrackDO faultTrackDO = BeanUtils.convert(bo, FaultTrackDO.class);
         String faultNo = bo.getFaultNo();
         if (StringUtils.isEmpty(faultNo)) {
             return;

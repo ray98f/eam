@@ -8,17 +8,29 @@ import lombok.Data;
  */
 @Data
 public class ExaminedListRes {
-    //taskId
+    /**
+     *    taskId
+     */
     private String taskId;
-    //procId
+    /**
+     *    procId
+     */
     private String processInstanceId;
-    //标题
+    /**
+     *    标题
+     */
     private String processDefName;
-    //当前环节
+    /**
+     *    当前环节
+     */
     private String taskName;
-    //开始时间
+    /**
+     *    开始时间
+     */
     private String startTime;
-    //结束时间
+    /**
+     *    结束时间
+     */
     private String endTime;
 
 }

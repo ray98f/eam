@@ -217,9 +217,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
     }
 
-    // ServiceDMER0111
     @Override
     public void submitOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
+        // ServiceDMER0111
         if (StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName()) || StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime()) ||
                 StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode()) || StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode()) ||
                 StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {

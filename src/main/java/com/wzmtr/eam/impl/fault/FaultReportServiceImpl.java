@@ -182,10 +182,10 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     public void update(FaultReportReqDTO reqDTO) {
         // 修改已提报故障单  修改时间 修改人， 各属性的值
-        FaultInfoDO infoUpdate = __BeanUtil.convert(reqDTO, FaultInfoDO.class);
+        FaultInfoDO infoUpdate = BeanUtils.convert(reqDTO, FaultInfoDO.class);
         infoUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
         infoUpdate.setRecReviseTime(DateUtil.getCurrentTime());
-        FaultOrderDO orderUpdate = __BeanUtil.convert(reqDTO, FaultOrderDO.class);
+        FaultOrderDO orderUpdate = BeanUtils.convert(reqDTO, FaultOrderDO.class);
         orderUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
         orderUpdate.setRecReviseTime(DateUtil.getCurrentTime());
         if (StringUtils.isEmpty(reqDTO.getDocId())) {
