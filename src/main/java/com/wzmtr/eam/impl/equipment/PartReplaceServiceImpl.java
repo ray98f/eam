@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.PartReplaceReqDTO;
+import com.wzmtr.eam.dto.req.equipment.excel.ExcelGearboxChangeOilReqDTO;
+import com.wzmtr.eam.dto.req.equipment.excel.ExcelPartReplaceReqDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelPartReplaceResDTO;
@@ -92,58 +94,20 @@ public class PartReplaceServiceImpl implements PartReplaceService {
     @Override
     public void importPartReplace(MultipartFile file) {
         try {
-            Workbook workbook;
-            String fileName = file.getOriginalFilename();
-            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
-            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
-                workbook = new HSSFWorkbook(fileInputStream);
-            } else if (fileName.endsWith(XLSX)) {
-                workbook = new XSSFWorkbook(fileInputStream);
-            } else {
-                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
-            }
-            Sheet sheet = workbook.getSheetAt(0);
+            List<ExcelPartReplaceReqDTO> list = EasyExcelUtils.read(file, ExcelPartReplaceReqDTO.class);
             List<PartReplaceReqDTO> temp = new ArrayList<>();
-            for (Row cells : sheet) {
-                if (cells.getRowNum() < 1) {
-                    continue;
+            if (!Objects.isNull(list) && !list.isEmpty()) {
+                for (ExcelPartReplaceReqDTO reqDTO : list) {
+                    PartReplaceReqDTO req = new PartReplaceReqDTO();
+                    BeanUtils.copyProperties(reqDTO, req);
+                    req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+                    req.setRecId(TokenUtil.getUuId());
+                    req.setDeleteFlag("0");
+                    req.setRecCreator(TokenUtil.getCurrentPersonId());
+                    req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    temp.add(req);
                 }
-                PartReplaceReqDTO reqDTO = new PartReplaceReqDTO();
-                cells.getCell(0).setCellType(CellType.STRING);
-                reqDTO.setEquipCode(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
-                cells.getCell(1).setCellType(CellType.STRING);
-                reqDTO.setEquipName(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
-                cells.getCell(2).setCellType(CellType.STRING);
-                reqDTO.setReplacementNo(cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue());
-                cells.getCell(3).setCellType(CellType.STRING);
-                reqDTO.setReplacementName(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
-                cells.getCell(4).setCellType(CellType.STRING);
-                reqDTO.setFaultWorkNo(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
-                cells.getCell(5).setCellType(CellType.STRING);
-                reqDTO.setOrgType(cells.getCell(5) == null ? "" : "维保".equals(cells.getCell(5).getStringCellValue()) ? "10" : "20");
-                cells.getCell(6).setCellType(CellType.STRING);
-                reqDTO.setOperator(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
-                cells.getCell(7).setCellType(CellType.STRING);
-                reqDTO.setReplaceReason(cells.getCell(7) == null ? "" : cells.getCell(7).getStringCellValue());
-                cells.getCell(8).setCellType(CellType.STRING);
-                reqDTO.setExt1(cells.getCell(8) == null ? "" : cells.getCell(8).getStringCellValue());
-                cells.getCell(9).setCellType(CellType.STRING);
-                reqDTO.setOldRepNo(cells.getCell(9) == null ? "" : cells.getCell(9).getStringCellValue());
-                cells.getCell(10).setCellType(CellType.STRING);
-                reqDTO.setNewRepNo(cells.getCell(10) == null ? "" : cells.getCell(10).getStringCellValue());
-                cells.getCell(11).setCellType(CellType.STRING);
-                reqDTO.setOperateCostTime(cells.getCell(11) == null ? "" : cells.getCell(11).getStringCellValue());
-                cells.getCell(12).setCellType(CellType.STRING);
-                reqDTO.setReplaceDate(cells.getCell(12) == null ? "" : cells.getCell(12).getStringCellValue());
-                cells.getCell(13).setCellType(CellType.STRING);
-                reqDTO.setRemark(cells.getCell(13) == null ? "" : cells.getCell(13).getStringCellValue());
-                reqDTO.setRecId(TokenUtil.getUuId());
-                reqDTO.setDeleteFlag("0");
-                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                temp.add(reqDTO);
             }
-            fileInputStream.close();
             if (temp.size() > 0) {
                 partReplaceMapper.importPartReplace(temp);
             }

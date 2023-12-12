@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.WheelsetLathingReqDTO;
+import com.wzmtr.eam.dto.req.equipment.excel.ExcelPartReplaceReqDTO;
+import com.wzmtr.eam.dto.req.equipment.excel.ExcelWheelsetLathingReqDTO;
 import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelWheelsetLathingResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -80,59 +82,24 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
     @Override
     public void importWheelsetLathing(MultipartFile file) {
         try {
-            Workbook workbook;
-            String fileName = file.getOriginalFilename();
-            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
-            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
-                workbook = new HSSFWorkbook(fileInputStream);
-            } else if (fileName.endsWith(XLSX)) {
-                workbook = new XSSFWorkbook(fileInputStream);
-            } else {
-                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
-            }
-            Sheet sheet = workbook.getSheetAt(0);
+            List<ExcelWheelsetLathingReqDTO> list = EasyExcelUtils.read(file, ExcelWheelsetLathingReqDTO.class);
             List<WheelsetLathingReqDTO> temp = new ArrayList<>();
-            for (Row cells : sheet) {
-                if (cells.getRowNum() < 1) {
-                    continue;
+            if (!Objects.isNull(list) && !list.isEmpty()) {
+                for (ExcelWheelsetLathingReqDTO reqDTO : list) {
+                    WheelsetLathingReqDTO req = new WheelsetLathingReqDTO();
+                    BeanUtils.copyProperties(reqDTO, req);
+                    if (StringUtils.isNotEmpty(reqDTO.getAxleNo())) {
+                        req.setAxleNo("一轴".equals(reqDTO.getAxleNo()) ? "01" : "二轴".equals(reqDTO.getAxleNo()) ? "02" : "三轴".equals(reqDTO.getAxleNo()) ? "03" : "04");
+                    } else {
+                        req.setAxleNo(reqDTO.getAxleNo());
+                    }
+                    req.setRecId(TokenUtil.getUuId());
+                    req.setDeleteFlag("0");
+                    req.setRecCreator(TokenUtil.getCurrentPersonId());
+                    req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    temp.add(req);
                 }
-                WheelsetLathingReqDTO reqDTO = new WheelsetLathingReqDTO();
-                cells.getCell(0).setCellType(CellType.STRING);
-                reqDTO.setTrainNo(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
-                cells.getCell(1).setCellType(CellType.STRING);
-                reqDTO.setCarriageNo(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
-                cells.getCell(2).setCellType(CellType.STRING);
-                String axleNo = cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue();
-                if (StringUtils.isNotEmpty(axleNo)) {
-                    reqDTO.setAxleNo("一轴".equals(axleNo) ? "01" : "二轴".equals(axleNo) ? "02" : "三轴".equals(axleNo) ? "03" : "04");
-                } else {
-                    reqDTO.setAxleNo(axleNo);
-                }
-                cells.getCell(3).setCellType(CellType.STRING);
-                reqDTO.setWheelNo(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
-                cells.getCell(4).setCellType(CellType.STRING);
-                reqDTO.setWheelHeight(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
-                cells.getCell(5).setCellType(CellType.STRING);
-                reqDTO.setWheelThick(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
-                cells.getCell(6).setCellType(CellType.STRING);
-                reqDTO.setWheelDiameter(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
-                cells.getCell(7).setCellType(CellType.STRING);
-                reqDTO.setRepairDetail(cells.getCell(7) == null ? "" : cells.getCell(7).getStringCellValue());
-                cells.getCell(8).setCellType(CellType.STRING);
-                reqDTO.setStartDate(cells.getCell(8) == null ? "" : cells.getCell(8).getStringCellValue());
-                cells.getCell(9).setCellType(CellType.STRING);
-                reqDTO.setCompleteDate(cells.getCell(9) == null ? "" : cells.getCell(9).getStringCellValue());
-                cells.getCell(10).setCellType(CellType.STRING);
-                reqDTO.setRespPeople(cells.getCell(10) == null ? "" : cells.getCell(10).getStringCellValue());
-                cells.getCell(11).setCellType(CellType.STRING);
-                reqDTO.setRemark(cells.getCell(11) == null ? "" : cells.getCell(11).getStringCellValue());
-                reqDTO.setRecId(TokenUtil.getUuId());
-                reqDTO.setDeleteFlag("0");
-                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                temp.add(reqDTO);
             }
-            fileInputStream.close();
             if (temp.size() > 0) {
                 wheelsetLathingMapper.importWheelsetLathing(temp);
             }

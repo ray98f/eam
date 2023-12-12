@@ -105,7 +105,7 @@ public class TransferController {
     @GetMapping("/split/export")
     @ApiOperation(value = "导出设备拆分")
     public void exportSplitTransfer(@RequestParam(required = false) @ApiParam("来源记录编号") String sourceRecId,
-                                    HttpServletResponse response) {
+                                    HttpServletResponse response) throws IOException {
         transferService.exportSplitTransfer(sourceRecId, response);
     }
 }

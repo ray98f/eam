@@ -7,6 +7,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
+import com.wzmtr.eam.dto.req.equipment.excel.ExcelEquipmentReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
@@ -111,96 +112,28 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public void importEquipment(MultipartFile file) {
         try {
-            Workbook workbook;
-            String fileName = file.getOriginalFilename();
-            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
-            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
-                workbook = new HSSFWorkbook(fileInputStream);
-            } else if (fileName.endsWith(XLSX)) {
-                workbook = new XSSFWorkbook(fileInputStream);
-            } else {
-                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
-            }
-            Sheet sheet = workbook.getSheetAt(0);
+            List<ExcelEquipmentReqDTO> list = EasyExcelUtils.read(file, ExcelEquipmentReqDTO.class);
             List<EquipmentReqDTO> temp = new ArrayList<>();
-            for (Row cells : sheet) {
-                if (cells.getRowNum() < 1) {
-                    continue;
-                }
-                EquipmentReqDTO reqDTO = new EquipmentReqDTO();
-                cells.getCell(0).setCellType(CellType.STRING);
-                reqDTO.setEquipName(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
-                cells.getCell(1).setCellType(CellType.STRING);
-                reqDTO.setUseLineName(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
-                reqDTO.setUseLineNo(cells.getCell(1) == null ? "" : "S1线".equals(cells.getCell(1).getStringCellValue()) ? "01" : "02");
-                cells.getCell(2).setCellType(CellType.STRING);
-                reqDTO.setUseSegName(cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue());
-                reqDTO.setUseSegNo(cells.getCell(2) == null ? "" : "一期".equals(cells.getCell(2).getStringCellValue()) ? "01" : "二期".equals(cells.getCell(2).getStringCellValue()) ? "二期" : "三期");
-                cells.getCell(3).setCellType(CellType.STRING);
-                reqDTO.setStartUseDate(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
-                cells.getCell(4).setCellType(CellType.STRING);
-                reqDTO.setMajorName(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
-                cells.getCell(5).setCellType(CellType.STRING);
-                reqDTO.setSystemName(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
-                cells.getCell(6).setCellType(CellType.STRING);
-                reqDTO.setEquipTypeName(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
-                cells.getCell(7).setCellType(CellType.STRING);
-                reqDTO.setSpecialEquipFlag(cells.getCell(7) == null ? "" : "否".equals(cells.getCell(7).getStringCellValue()) ? "10" : "20");
-                cells.getCell(8).setCellType(CellType.STRING);
-                reqDTO.setManufacture(cells.getCell(8) == null ? "" : cells.getCell(8).getStringCellValue());
-                cells.getCell(9).setCellType(CellType.STRING);
-                reqDTO.setMatSpecifi(cells.getCell(9) == null ? "" : cells.getCell(9).getStringCellValue());
-                cells.getCell(10).setCellType(CellType.STRING);
-                reqDTO.setBrand(cells.getCell(10) == null ? "" : cells.getCell(10).getStringCellValue());
-                cells.getCell(11).setCellType(CellType.STRING);
-                reqDTO.setManufactureDate(cells.getCell(11) == null ? "" : cells.getCell(11).getStringCellValue());
-                cells.getCell(12).setCellType(CellType.STRING);
-                reqDTO.setManufactureNo(cells.getCell(12) == null ? "" : cells.getCell(12).getStringCellValue());
-                cells.getCell(13).setCellType(CellType.STRING);
-                reqDTO.setInstallDealer(cells.getCell(13) == null ? "" : cells.getCell(13).getStringCellValue());
-                cells.getCell(14).setCellType(CellType.STRING);
-                reqDTO.setPosition1Name(cells.getCell(14) == null ? "" : cells.getCell(14).getStringCellValue());
-                cells.getCell(15).setCellType(CellType.STRING);
-                reqDTO.setPosition2Name(cells.getCell(15) == null ? "" : cells.getCell(15).getStringCellValue());
-                cells.getCell(16).setCellType(CellType.STRING);
-                reqDTO.setPosition3(cells.getCell(16) == null ? "" : cells.getCell(16).getStringCellValue());
-                cells.getCell(17).setCellType(CellType.STRING);
-                reqDTO.setPositionRemark(cells.getCell(17) == null ? "" : cells.getCell(17).getStringCellValue());
-                cells.getCell(18).setCellType(CellType.STRING);
-                reqDTO.setRemark(cells.getCell(18) == null ? "" : cells.getCell(18).getStringCellValue());
-                reqDTO.setRecId(TokenUtil.getUuId());
-                reqDTO.setApprovalStatus("30");
-                reqDTO.setQuantity(new BigDecimal("1"));
-                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            for (ExcelEquipmentReqDTO reqDTO : list) {
+                EquipmentReqDTO req = new EquipmentReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setUseLineNo(Objects.isNull(reqDTO.getUseLineName()) ? "" : "S1线".equals(reqDTO.getUseLineName()) ? "01" : "02");
+                req.setUseSegNo(Objects.isNull(reqDTO.getUseSegName()) ? "" : "一期".equals(reqDTO.getUseSegName()) ? "01" : "二期".equals(reqDTO.getUseSegName()) ? "二期" : "三期");
+                req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" : "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
+                req.setRecId(TokenUtil.getUuId());
+                req.setApprovalStatus("30");
+                req.setQuantity(new BigDecimal("1"));
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 CurrentLoginUser user = TokenUtil.getCurrentPerson();
-                reqDTO.setCompanyCode(user.getCompanyAreaId() == null ? user.getCompanyId() : user.getCompanyAreaId());
-                reqDTO.setCompanyName(user.getCompanyName());
-                reqDTO.setDeptCode(user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId());
-                reqDTO.setDeptName(user.getOfficeName());
-                String unitNo = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(1)) + 1);
-                String equipCode = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(4)) + 1);
-                UnitCodeReqDTO unitCodeReqDTO = new UnitCodeReqDTO();
-                unitCodeReqDTO.setRecId(TokenUtil.getUuId());
-                unitCodeReqDTO.setUnitNo(unitNo);
-                unitCodeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                unitCodeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                unitCodeReqDTO.setDevNo(equipCode);
-                unitCodeReqDTO.setBatchNo("");
-                unitCodeReqDTO.setAssetNo("");
-                unitCodeReqDTO.setProCode("");
-                unitCodeReqDTO.setProName("");
-                unitCodeReqDTO.setOrderNo(reqDTO.getOrderNo());
-                unitCodeReqDTO.setOrderName(reqDTO.getOrderName());
-                unitCodeReqDTO.setSupplierId(user.getOfficeId());
-                unitCodeReqDTO.setSupplierName(user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId());
-                unitCodeReqDTO.setMatSpecifi(reqDTO.getMatSpecifi());
-                unitCodeReqDTO.setBrand(reqDTO.getBrand());
-                equipmentMapper.insertUnitCode(unitCodeReqDTO);
-                reqDTO.setEquipCode(unitNo);
-                temp.add(reqDTO);
+                req.setCompanyCode(user.getCompanyAreaId());
+                req.setCompanyName(user.getCompanyName());
+                req.setDeptCode(user.getOfficeAreaId());
+                req.setDeptName(user.getOfficeName());
+                String unitNo = insertUnitCode(req, user);
+                req.setEquipCode(unitNo);
+                temp.add(req);
             }
-            fileInputStream.close();
             if (temp.size() > 0) {
                 equipmentMapper.importEquipment(temp);
             }
@@ -266,6 +199,29 @@ public class EquipmentServiceImpl implements EquipmentService {
     public Page<PartReplaceResDTO> listPartReplace(String equipCode, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentMapper.listPartReplace(pageReqDTO.of(), equipCode);
+    }
+
+    private String insertUnitCode(EquipmentReqDTO req, CurrentLoginUser user) {
+        String unitNo = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(1)) + 1);
+        String equipCode = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(4)) + 1);
+        UnitCodeReqDTO unitCodeReqDTO = new UnitCodeReqDTO();
+        unitCodeReqDTO.setRecId(TokenUtil.getUuId());
+        unitCodeReqDTO.setUnitNo(unitNo);
+        unitCodeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        unitCodeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        unitCodeReqDTO.setDevNo(equipCode);
+        unitCodeReqDTO.setBatchNo("");
+        unitCodeReqDTO.setAssetNo("");
+        unitCodeReqDTO.setProCode("");
+        unitCodeReqDTO.setProName("");
+        unitCodeReqDTO.setOrderNo(req.getOrderNo());
+        unitCodeReqDTO.setOrderName(req.getOrderName());
+        unitCodeReqDTO.setSupplierId(user.getOfficeAreaId());
+        unitCodeReqDTO.setSupplierName(user.getNames());
+        unitCodeReqDTO.setMatSpecifi(req.getMatSpecifi());
+        unitCodeReqDTO.setBrand(req.getBrand());
+        equipmentMapper.insertUnitCode(unitCodeReqDTO);
+        return unitNo;
     }
 
 }

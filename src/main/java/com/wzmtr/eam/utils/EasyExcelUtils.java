@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -105,5 +106,16 @@ public class EasyExcelUtils {
                     .registerWriteHandler(EasyExcelUtils.getStyleStrategy())
                     .doWrite(list);
         }
+    }
+
+    /**
+     * 文件导入数据读取
+     * @param file
+     * @param head
+     * @return
+     * @throws IOException
+     */
+    public static <T> List<T> read(MultipartFile file, Class<T> head) throws IOException {
+        return EasyExcel.read(file.getInputStream(), head, null).doReadAllSync();
     }
 }

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaReqDTO;
+import com.wzmtr.eam.dto.req.mea.excel.ExcelMeaReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.mea.MeaResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
@@ -64,63 +65,19 @@ public class MeaServiceImpl implements MeaService {
     @Override
     public void importMea(MultipartFile file) {
         try {
-            Workbook workbook;
-            String fileName = file.getOriginalFilename();
-            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
-            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
-                workbook = new HSSFWorkbook(fileInputStream);
-            } else if (fileName.endsWith(XLSX)) {
-                workbook = new XSSFWorkbook(fileInputStream);
-            } else {
-                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
-            }
-            Sheet sheet = workbook.getSheetAt(0);
+            List<ExcelMeaReqDTO> list = EasyExcelUtils.read(file, ExcelMeaReqDTO.class);
             List<MeaReqDTO> temp = new ArrayList<>();
-            for (Row cells : sheet) {
-                if (cells.getRowNum() < 1) {
-                    continue;
+            if (!Objects.isNull(list) && !list.isEmpty()) {
+                for (ExcelMeaReqDTO reqDTO : list) {
+                    MeaReqDTO req = new MeaReqDTO();
+                    BeanUtils.copyProperties(reqDTO, req);
+                    req.setVerifyPeriod(Integer.valueOf(reqDTO.getVerifyPeriod()));
+                    req.setRecId(TokenUtil.getUuId());
+                    req.setRecCreator(TokenUtil.getCurrentPersonId());
+                    req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    temp.add(req);
                 }
-                MeaReqDTO reqDTO = new MeaReqDTO();
-                cells.getCell(0).setCellType(CellType.STRING);
-                reqDTO.setEquipCode(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
-                cells.getCell(1).setCellType(CellType.STRING);
-                reqDTO.setEquipName(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
-                cells.getCell(2).setCellType(CellType.STRING);
-                reqDTO.setMatSpecifi(cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue());
-                cells.getCell(3).setCellType(CellType.STRING);
-                reqDTO.setCertificateNo(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
-                cells.getCell(4).setCellType(CellType.STRING);
-                reqDTO.setTransferDate(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
-                cells.getCell(5).setCellType(CellType.STRING);
-                reqDTO.setManufacture(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
-                cells.getCell(6).setCellType(CellType.STRING);
-                reqDTO.setSource(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
-                cells.getCell(7).setCellType(CellType.STRING);
-                reqDTO.setVerifyPeriod((int) cells.getCell(7).getNumericCellValue());
-                cells.getCell(8).setCellType(CellType.STRING);
-                reqDTO.setUseDeptCode(cells.getCell(8) == null ? "" : cells.getCell(8).getStringCellValue());
-                cells.getCell(9).setCellType(CellType.STRING);
-                reqDTO.setUseDeptCname(cells.getCell(9) == null ? "" : cells.getCell(9).getStringCellValue());
-                cells.getCell(10).setCellType(CellType.STRING);
-                reqDTO.setUseBeginDate(cells.getCell(10) == null ? "" : cells.getCell(10).getStringCellValue());
-                cells.getCell(11).setCellType(CellType.STRING);
-                reqDTO.setLastVerifyDate(cells.getCell(11) == null ? "" : cells.getCell(11).getStringCellValue());
-                cells.getCell(12).setCellType(CellType.STRING);
-                reqDTO.setExpirationDate(cells.getCell(12) == null ? "" : cells.getCell(12).getStringCellValue());
-                cells.getCell(13).setCellType(CellType.STRING);
-                reqDTO.setManufactureNo(cells.getCell(13) == null ? "" : cells.getCell(13).getStringCellValue());
-                cells.getCell(14).setCellType(CellType.STRING);
-                reqDTO.setPhoneNo(cells.getCell(14) == null ? "" : cells.getCell(14).getStringCellValue());
-                cells.getCell(15).setCellType(CellType.STRING);
-                reqDTO.setUseName(cells.getCell(15) == null ? "" : cells.getCell(15).getStringCellValue());
-                cells.getCell(16).setCellType(CellType.STRING);
-                reqDTO.setLineNo(cells.getCell(16) == null ? "" : cells.getCell(16).getStringCellValue());
-                reqDTO.setRecId(TokenUtil.getUuId());
-                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                temp.add(reqDTO);
             }
-            fileInputStream.close();
             if (temp.size() > 0) {
                 meaMapper.importMea(temp);
             }

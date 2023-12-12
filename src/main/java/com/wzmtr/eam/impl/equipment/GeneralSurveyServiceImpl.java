@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
+import com.wzmtr.eam.dto.req.equipment.excel.ExcelGeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelGeneralSurveyResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -115,49 +116,19 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     @Override
     public void importGeneralSurvey(MultipartFile file) {
         try {
-            Workbook workbook;
-            String fileName = file.getOriginalFilename();
-            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
-            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
-                workbook = new HSSFWorkbook(fileInputStream);
-            } else if (fileName.endsWith(XLSX)) {
-                workbook = new XSSFWorkbook(fileInputStream);
-            } else {
-                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
-            }
-            Sheet sheet = workbook.getSheetAt(0);
+            List<ExcelGeneralSurveyReqDTO> list = EasyExcelUtils.read(file, ExcelGeneralSurveyReqDTO.class);
             List<GeneralSurveyReqDTO> temp = new ArrayList<>();
-            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd");
-            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-            for (Row cells : sheet) {
-                if (cells.getRowNum() < 1) {
-                    continue;
-                }
-                GeneralSurveyReqDTO reqDTO = new GeneralSurveyReqDTO();
-                cells.getCell(0).setCellType(CellType.STRING);
-                reqDTO.setTrainNo(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
-                cells.getCell(1).setCellType(CellType.STRING);
-                reqDTO.setRecType(cells.getCell(1) == null ? "" : "普查".equals(cells.getCell(1).getStringCellValue()) ? "10" : "20");
-                cells.getCell(2).setCellType(CellType.STRING);
-                reqDTO.setRecNotifyNo(cells.getCell(2) == null ? "" : cells.getCell(2).getStringCellValue());
-                cells.getCell(3).setCellType(CellType.STRING);
-                reqDTO.setRecDetail(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
-                cells.getCell(4).setCellType(CellType.STRING);
-                reqDTO.setCompleteDate(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
-                if (StringUtils.isNotEmpty(reqDTO.getCompleteDate()) && !reqDTO.getCompleteDate().contains("-")) {
-                    reqDTO.setCompleteDate(sdf2.format(sdf1.parse(reqDTO.getCompleteDate())));
-                }
-                cells.getCell(5).setCellType(CellType.STRING);
-                reqDTO.setOrgType(cells.getCell(5) == null ? "" : "维保".equals(cells.getCell(5).getStringCellValue()) ? "10" : "20");
-                cells.getCell(6).setCellType(CellType.STRING);
-                reqDTO.setRemark(cells.getCell(6) == null ? "" : cells.getCell(6).getStringCellValue());
-                reqDTO.setRecId(TokenUtil.getUuId());
-                reqDTO.setDeleteFlag("0");
-                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                temp.add(reqDTO);
+            for (ExcelGeneralSurveyReqDTO reqDTO : list) {
+                GeneralSurveyReqDTO req = new GeneralSurveyReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setRecType(Objects.isNull(reqDTO.getRecType()) ? "" : "普查".equals(reqDTO.getRecType()) ? "10" : "20");
+                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+                req.setRecId(TokenUtil.getUuId());
+                req.setDeleteFlag("0");
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(req);
             }
-            fileInputStream.close();
             if (temp.size() > 0) {
                 generalSurveyMapper.importGeneralSurvey(temp);
             }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.GearboxChangeOilReqDTO;
+import com.wzmtr.eam.dto.req.equipment.excel.ExcelGearboxChangeOilReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelGearboxChangeOilResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -82,42 +83,20 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
     @Override
     public void importGearboxChangeOil(MultipartFile file) {
         try {
-            Workbook workbook;
-            String fileName = file.getOriginalFilename();
-            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
-            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
-                workbook = new HSSFWorkbook(fileInputStream);
-            } else if (fileName.endsWith(XLSX)) {
-                workbook = new XSSFWorkbook(fileInputStream);
-            } else {
-                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
-            }
-            Sheet sheet = workbook.getSheetAt(0);
+            List<ExcelGearboxChangeOilReqDTO> list = EasyExcelUtils.read(file, ExcelGearboxChangeOilReqDTO.class);
             List<GearboxChangeOilReqDTO> temp = new ArrayList<>();
-            for (Row cells : sheet) {
-                if (cells.getRowNum() < 1) {
-                    continue;
+            if (!Objects.isNull(list) && !list.isEmpty()) {
+                for (ExcelGearboxChangeOilReqDTO reqDTO : list) {
+                    GearboxChangeOilReqDTO req = new GearboxChangeOilReqDTO();
+                    BeanUtils.copyProperties(reqDTO, req);
+                    req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+                    req.setRecId(TokenUtil.getUuId());
+                    req.setDeleteFlag("0");
+                    req.setRecCreator(TokenUtil.getCurrentPersonId());
+                    req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    temp.add(req);
                 }
-                GearboxChangeOilReqDTO reqDTO = new GearboxChangeOilReqDTO();
-                cells.getCell(0).setCellType(CellType.STRING);
-                reqDTO.setTrainNo(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
-                cells.getCell(1).setCellType(CellType.STRING);
-                reqDTO.setCompleteDate(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
-                cells.getCell(2).setCellType(CellType.STRING);
-                reqDTO.setOrgType(cells.getCell(2) == null ? "" : "维保".equals(cells.getCell(2).getStringCellValue()) ? "10" : "20");
-                cells.getCell(3).setCellType(CellType.STRING);
-                reqDTO.setOperator(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
-                cells.getCell(4).setCellType(CellType.STRING);
-                reqDTO.setConfirmor(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
-                cells.getCell(5).setCellType(CellType.STRING);
-                reqDTO.setRemark(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
-                reqDTO.setRecId(TokenUtil.getUuId());
-                reqDTO.setDeleteFlag("0");
-                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                temp.add(reqDTO);
             }
-            fileInputStream.close();
             if (temp.size() > 0) {
                 gearboxChangeOilMapper.importGearboxChangeOil(temp);
             }
