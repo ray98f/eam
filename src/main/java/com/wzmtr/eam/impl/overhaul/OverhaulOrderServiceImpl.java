@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.overhaul;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -8,13 +7,15 @@ import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultInfoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultOrderReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
+import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulItemResDTO;
+import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulObjectResDTO;
+import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulOrderResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
-import com.wzmtr.eam.entity.Dictionaries;
+import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulStateResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -99,44 +100,41 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void exportOverhaulOrder(List<String> ids, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "工单编号", "计划名称", "计划编号", "对象名称", "工单状态", "检修情况",
-                "异常数量", "工器具", "计划开始时间", "计划完成时间", "作业工班", "作业人员", "实际开始时间", "实际完成时间",
-                "线路", "位置", "专业", "系统", "设备类别", "派工人", "确认人", "施工计划号", "最后修改人", "备注");
+    public void exportOverhaulOrder(List<String> ids, HttpServletResponse response) throws IOException {
         List<OverhaulOrderResDTO> overhaulOrderResDTOList = overhaulOrderMapper.getOrderByIds(ids, "1");
-        List<Map<String, String>> list = new ArrayList<>();
         if (overhaulOrderResDTOList != null && !overhaulOrderResDTOList.isEmpty()) {
+            List<ExcelOverhaulOrderResDTO> resList = new ArrayList<>();
             for (OverhaulOrderResDTO resDTO : overhaulOrderResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("工单编号", resDTO.getOrderCode());
-                map.put("计划名称", resDTO.getPlanName());
-                map.put("计划编号", resDTO.getPlanCode());
-                map.put("对象名称", resDTO.getExt1());
-                map.put("工单状态", dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.er.recStatus", resDTO.getWorkStatus()).getItemCname());
-                map.put("检修情况", resDTO.getWorkFinishStatus());
-                map.put("异常数量", resDTO.getAbnormalNumber());
-                map.put("工器具", resDTO.getRecDeletor());
-                map.put("计划开始时间", resDTO.getPlanStartTime());
-                map.put("计划完成时间", resDTO.getPlanEndTime());
-                map.put("作业工班", resDTO.getWorkGroupName());
-                map.put("作业人员", resDTO.getWorkerName());
-                map.put("实际开始时间", resDTO.getRealStartTime());
-                map.put("实际完成时间", resDTO.getRealEndTime());
-                map.put("线路", CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineNo()) ? "S1线" : "S2线");
-                map.put("位置", resDTO.getPosition1Name());
-                map.put("专业", resDTO.getSubjectName());
-                map.put("系统", resDTO.getSystemName());
-                map.put("设备类别", resDTO.getEquipTypeName());
-                map.put("派工人", resDTO.getSendPersonName());
-                map.put("确认人", resDTO.getAckPersonName());
-                map.put("施工计划号", resDTO.getSystemName());
-                map.put("最后修改人", resDTO.getRecRevisor());
-                map.put("备注", resDTO.getRemark());
-                list.add(map);
+                ExcelOverhaulOrderResDTO res = ExcelOverhaulOrderResDTO.builder()
+                        .recId(resDTO.getRecId())
+                        .orderCode(resDTO.getOrderCode())
+                        .planCode(resDTO.getPlanCode())
+                        .planName(resDTO.getPlanName())
+                        .objectName(resDTO.getExt1())
+                        .workStatus(dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.er.recStatus", resDTO.getWorkStatus()).getItemCname())
+                        .workFinishStatus(resDTO.getWorkFinishStatus())
+                        .abnormalNumber(resDTO.getAbnormalNumber())
+                        .tools(resDTO.getRecDeletor())
+                        .planStartTime(resDTO.getPlanStartTime())
+                        .planEndTime(resDTO.getPlanEndTime())
+                        .workGroupName(resDTO.getWorkGroupName())
+                        .workerName(resDTO.getWorkerName())
+                        .realStartTime(resDTO.getRealStartTime())
+                        .realEndTime(resDTO.getRealEndTime())
+                        .lineNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineNo()) ? "S1线" : "S2线")
+                        .position1Name(resDTO.getPosition1Name())
+                        .subjectName(resDTO.getSubjectName())
+                        .systemName(resDTO.getSystemName())
+                        .equipTypeName(resDTO.getEquipTypeName())
+                        .sendPersonName(resDTO.getSendPersonName())
+                        .ackPersonName(resDTO.getAckPersonName())
+                        .constructionPlanNo(resDTO.getSystemName())
+                        .remark(resDTO.getRemark())
+                        .build();
+                resList.add(res);
             }
+            EasyExcelUtils.export(response, "检修工单信息", resList);
         }
-        ExcelPortUtil.excelPort("检修工单信息", listName, list, null, response);
     }
 
     @Override
@@ -354,27 +352,17 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void exportOverhaulObject(String orderCode, String planCode, String planName, String objectCode, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "对象编号", "对象名称", "检修情况", "检修情况说明", "开始时间", "完成时间", "异常数量", "作业人员", "备注");
+    public void exportOverhaulObject(String orderCode, String planCode, String planName, String objectCode, HttpServletResponse response) throws IOException {
         List<OverhaulOrderDetailResDTO> overhaulObject = overhaulOrderMapper.listOverhaulObject(orderCode, planCode, planName, objectCode);
-        List<Map<String, String>> list = new ArrayList<>();
         if (overhaulObject != null && !overhaulObject.isEmpty()) {
+            List<ExcelOverhaulObjectResDTO> list = new ArrayList<>();
             for (OverhaulOrderDetailResDTO resDTO : overhaulObject) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("对象编号", resDTO.getObjectCode());
-                map.put("对象名称", resDTO.getObjectName());
-                map.put("检修情况", resDTO.getRepairStatus());
-                map.put("检修情况说明", resDTO.getRepairDetail());
-                map.put("开始时间", resDTO.getStartTime());
-                map.put("完成时间", resDTO.getCompliteTime());
-                map.put("异常数量", resDTO.getAbnormalNumber());
-                map.put("作业人员", resDTO.getTaskPersonName());
-                map.put("备注", resDTO.getTaskRemark());
-                list.add(map);
+                ExcelOverhaulObjectResDTO res = new ExcelOverhaulObjectResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检修对象信息", list);
         }
-        ExcelPortUtil.excelPort("检修对象信息", listName, list, null, response);
     }
 
     @Override
@@ -404,29 +392,17 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "检修模块", "检修项目", "技术要求", "检修项类型", "车组号", "检修结果", "上限", "下限", "单位", "检修人", "附件");
+    public void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, HttpServletResponse response) throws IOException {
         List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(overhaulItemListReqDTO);
-        List<Map<String, String>> list = new ArrayList<>();
         if (overhaulItem != null && !overhaulItem.isEmpty()) {
+            List<ExcelOverhaulItemResDTO> list = new ArrayList<>();
             for (OverhaulItemResDTO resDTO : overhaulItem) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("检修模块", resDTO.getModelName());
-                map.put("检修项目", resDTO.getItemName());
-                map.put("技术要求", resDTO.getExt1());
-                map.put("检修项类型", resDTO.getItemType());
-                map.put("车组号", resDTO.getTrainNumber());
-                map.put("检修结果", resDTO.getWorkResult());
-                map.put("上限", resDTO.getMaxValue());
-                map.put("下限", resDTO.getMinValue());
-                map.put("单位", resDTO.getItemUnit());
-                map.put("检修人", resDTO.getWorkUserName());
-                map.put("附件", resDTO.getDocId());
-                list.add(map);
+                ExcelOverhaulItemResDTO res = new ExcelOverhaulItemResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检修项信息", list);
         }
-        ExcelPortUtil.excelPort("检修项信息", listName, list, null, response);
     }
 
     @Override
@@ -441,24 +417,17 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void exportOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "检修项目", "检修结果", "问题描述", "处理意见", "跟踪结果", "故障单号");
+    public void exportOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId, HttpServletResponse response) throws IOException {
         List<OverhaulStateResDTO> overhaulState = overhaulStateMapper.listOverhaulState(objectCode, itemName, orderCode, tdmer23RecId);
-        List<Map<String, String>> list = new ArrayList<>();
         if (overhaulState != null && !overhaulState.isEmpty()) {
+            List<ExcelOverhaulStateResDTO> list = new ArrayList<>();
             for (OverhaulStateResDTO resDTO : overhaulState) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("检修项目", resDTO.getItemName());
-                map.put("检修结果", resDTO.getFaultStatus());
-                map.put("问题描述", resDTO.getProblemDescription());
-                map.put("处理意见", resDTO.getHandlingSuggestion());
-                map.put("跟踪结果", resDTO.getFollowStatus());
-                map.put("故障单号", resDTO.getFaultCode());
-                list.add(map);
+                ExcelOverhaulStateResDTO res = new ExcelOverhaulStateResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检修异常信息", list);
         }
-        ExcelPortUtil.excelPort("检修异常信息", listName, list, null, response);
     }
 
     @Override

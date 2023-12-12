@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -111,7 +112,7 @@ public class OverhaulTplController {
                                   @RequestParam(required = false) @ApiParam("专业编号") String majorCode,
                                   @RequestParam(required = false) @ApiParam("系统编号") String systemCode,
                                   @RequestParam(required = false) @ApiParam("设备分类编号") String equipTypeCode,
-                                  HttpServletResponse response) {
+                                  HttpServletResponse response) throws IOException {
         overhaulTplService.exportOverhaulTpl(templateId, templateName, lineNo, position1Code, majorCode, systemCode, equipTypeCode, response);
     }
 
@@ -152,7 +153,7 @@ public class OverhaulTplController {
     @GetMapping("/detail/export")
     @ApiOperation(value = "导出检修项")
     public void exportOverhaulTplDetail(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
-                                        HttpServletResponse response) {
+                                        HttpServletResponse response) throws IOException {
         overhaulTplService.exportOverhaulTplDetail(templateId, response);
     }
 
@@ -193,7 +194,7 @@ public class OverhaulTplController {
     @GetMapping("/material/export")
     @ApiOperation(value = "导出物料")
     public void exportOverhaulMaterial(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
-                                       HttpServletResponse response) {
+                                       HttpServletResponse response) throws IOException {
         overhaulTplService.exportOverhaulMaterial(templateId, response);
     }
 }

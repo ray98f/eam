@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -78,7 +79,7 @@ public class EquipmentChargeController {
                                       @RequestParam(required = false) @ApiParam("专业") String subjectCode,
                                       @RequestParam(required = false) @ApiParam("系统") String systemCode,
                                       @RequestParam(required = false) @ApiParam("设备类别") String equipTypeCode,
-                                      HttpServletResponse response) {
+                                      HttpServletResponse response) throws IOException {
         equipmentChargeService.exportEquipmentCharge(equipCode, equipName, chargeDate, position1Name, subjectCode, systemCode, equipTypeCode, response);
     }
 }

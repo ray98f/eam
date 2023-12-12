@@ -5,6 +5,8 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.WoRuleReqDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
+import com.wzmtr.eam.dto.res.basic.excel.ExcelWoRuleDetailResDTO;
+import com.wzmtr.eam.dto.res.basic.excel.ExcelWoRuleResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -12,13 +14,14 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.service.basic.WoRuleService;
 import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -122,51 +125,51 @@ public class WoRuleServiceImpl implements WoRuleService {
     }
 
     @Override
-    public void exportWoRule(String ruleCode, String ruleName, String ruleUseage, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "规则编号", "规则名称", "用途", "记录状态", "备注", "创建者", "创建时间");
+    public void exportWoRule(String ruleCode, String ruleName, String ruleUseage, HttpServletResponse response) throws IOException {
         List<WoRuleResDTO> woRules = woRuleMapper.listWoRule(ruleCode, ruleName, ruleUseage);
-        List<Map<String, String>> list = new ArrayList<>();
         if (woRules != null && !woRules.isEmpty()) {
-            for (WoRuleResDTO woRule : woRules) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", woRule.getRecId());
-                map.put("规则编号", woRule.getRuleCode());
-                map.put("规则名称", woRule.getRuleName());
-                map.put("用途", RULE_USE_MAP.get(woRule.getRuleUseage()));
-                map.put("记录状态", CommonConstants.TEN_STRING.equals(woRule.getRecStatus()) ? "无效" : "有效");
-                map.put("备注", woRule.getRemark());
-                map.put("创建者", woRule.getRecCreator());
-                map.put("创建时间", woRule.getRecCreateTime());
-                list.add(map);
+            List<ExcelWoRuleResDTO> list = new ArrayList<>();
+            for (WoRuleResDTO resDTO : woRules) {
+                ExcelWoRuleResDTO res = ExcelWoRuleResDTO.builder()
+                        .recId(resDTO.getRecId())
+                        .ruleCode(resDTO.getRuleCode())
+                        .ruleName(resDTO.getRuleName())
+                        .ruleUseage(RULE_USE_MAP.get(resDTO.getRuleUseage()))
+                        .recStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "启用" : "禁用")
+                        .remark(resDTO.getRemark())
+                        .recCreator(resDTO.getRecCreator())
+                        .recCreateTime(resDTO.getRecCreateTime())
+                        .build();
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "工单触发规则信息", list);
         }
-        ExcelPortUtil.excelPort("工单触发规则信息", listName, list, null, response);
     }
 
     @Override
-    public void exportWoRuleDetail(String ruleCode, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "规则编号", "规则明细名称", "起始日期", "结束日期", "周期(小时)", "里程周期", "提前天数", "规则排序", "备注", "创建者", "创建时间");
+    public void exportWoRuleDetail(String ruleCode, HttpServletResponse response) throws IOException {
         List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.listWoRuleDetail(ruleCode, null, null);
-        List<Map<String, String>> list = new ArrayList<>();
         if (woRuleDetails != null && !woRuleDetails.isEmpty()) {
-            for (WoRuleResDTO.WoRuleDetail woRuleDetail : woRuleDetails) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", woRuleDetail.getRecId());
-                map.put("规则编号", woRuleDetail.getRuleCode());
-                map.put("规则明细名称", woRuleDetail.getRuleDetalName());
-                map.put("起始日期", woRuleDetail.getStartDate());
-                map.put("结束日期", woRuleDetail.getEndDate());
-                map.put("周期(小时)", String.valueOf(woRuleDetail.getPeriod()));
-                map.put("里程周期", woRuleDetail.getExt1() == null ? "" : String.valueOf(woRuleDetail.getExt1()));
-                map.put("提前天数", String.valueOf(woRuleDetail.getBeforeTime()));
-                map.put("规则排序", String.valueOf(woRuleDetail.getRuleSort()));
-                map.put("备注", woRuleDetail.getRemark());
-                map.put("创建者", woRuleDetail.getRecCreator());
-                map.put("创建时间", woRuleDetail.getRecCreateTime());
-                list.add(map);
+            List<ExcelWoRuleDetailResDTO> list = new ArrayList<>();
+            for (WoRuleResDTO.WoRuleDetail resDTO : woRuleDetails) {
+                ExcelWoRuleDetailResDTO res = ExcelWoRuleDetailResDTO.builder()
+                        .recId(resDTO.getRecId())
+                        .ruleCode(resDTO.getRuleCode())
+                        .ruleDetailName(resDTO.getRuleDetalName())
+                        .startDate(resDTO.getStartDate())
+                        .endDate(resDTO.getEndDate())
+                        .period(String.valueOf(resDTO.getPeriod()))
+                        .cycle(resDTO.getExt1() == null ? "" : String.valueOf(resDTO.getExt1()))
+                        .beforeTime(String.valueOf(resDTO.getBeforeTime()))
+                        .ruleSort(String.valueOf(resDTO.getRuleSort()))
+                        .remark(resDTO.getRemark())
+                        .recCreator(resDTO.getRecCreator())
+                        .recCreateTime(resDTO.getRecCreateTime())
+                        .build();
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "工单触发规则明细信息", list);
         }
-        ExcelPortUtil.excelPort("工单触发规则明细信息", listName, list, null, response);
     }
 
 }

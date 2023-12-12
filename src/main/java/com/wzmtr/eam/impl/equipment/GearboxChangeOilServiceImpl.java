@@ -4,14 +4,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.GearboxChangeOilReqDTO;
+import com.wzmtr.eam.dto.req.equipment.excel.ExcelGearboxChangeOilReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
+import com.wzmtr.eam.dto.res.equipment.excel.ExcelGearboxChangeOilResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.service.equipment.GearboxChangeOilService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.FileUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +23,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -79,42 +83,20 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
     @Override
     public void importGearboxChangeOil(MultipartFile file) {
         try {
-            Workbook workbook;
-            String fileName = file.getOriginalFilename();
-            FileInputStream fileInputStream = new FileInputStream(FileUtils.transferToFile(file));
-            if (Objects.requireNonNull(fileName).endsWith(XLS)) {
-                workbook = new HSSFWorkbook(fileInputStream);
-            } else if (fileName.endsWith(XLSX)) {
-                workbook = new XSSFWorkbook(fileInputStream);
-            } else {
-                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
-            }
-            Sheet sheet = workbook.getSheetAt(0);
+            List<ExcelGearboxChangeOilReqDTO> list = EasyExcelUtils.read(file, ExcelGearboxChangeOilReqDTO.class);
             List<GearboxChangeOilReqDTO> temp = new ArrayList<>();
-            for (Row cells : sheet) {
-                if (cells.getRowNum() < 1) {
-                    continue;
+            if (!Objects.isNull(list) && !list.isEmpty()) {
+                for (ExcelGearboxChangeOilReqDTO reqDTO : list) {
+                    GearboxChangeOilReqDTO req = new GearboxChangeOilReqDTO();
+                    BeanUtils.copyProperties(reqDTO, req);
+                    req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+                    req.setRecId(TokenUtil.getUuId());
+                    req.setDeleteFlag("0");
+                    req.setRecCreator(TokenUtil.getCurrentPersonId());
+                    req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    temp.add(req);
                 }
-                GearboxChangeOilReqDTO reqDTO = new GearboxChangeOilReqDTO();
-                cells.getCell(0).setCellType(CellType.STRING);
-                reqDTO.setTrainNo(cells.getCell(0) == null ? "" : cells.getCell(0).getStringCellValue());
-                cells.getCell(1).setCellType(CellType.STRING);
-                reqDTO.setCompleteDate(cells.getCell(1) == null ? "" : cells.getCell(1).getStringCellValue());
-                cells.getCell(2).setCellType(CellType.STRING);
-                reqDTO.setOrgType(cells.getCell(2) == null ? "" : "维保".equals(cells.getCell(2).getStringCellValue()) ? "10" : "20");
-                cells.getCell(3).setCellType(CellType.STRING);
-                reqDTO.setOperator(cells.getCell(3) == null ? "" : cells.getCell(3).getStringCellValue());
-                cells.getCell(4).setCellType(CellType.STRING);
-                reqDTO.setConfirmor(cells.getCell(4) == null ? "" : cells.getCell(4).getStringCellValue());
-                cells.getCell(5).setCellType(CellType.STRING);
-                reqDTO.setRemark(cells.getCell(5) == null ? "" : cells.getCell(5).getStringCellValue());
-                reqDTO.setRecId(TokenUtil.getUuId());
-                reqDTO.setDeleteFlag("0");
-                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                temp.add(reqDTO);
             }
-            fileInputStream.close();
             if (temp.size() > 0) {
                 gearboxChangeOilMapper.importGearboxChangeOil(temp);
             }
@@ -124,28 +106,19 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
     }
 
     @Override
-    public void exportGearboxChangeOil(String trainNo, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "列车号", "列车公里数", "完成日期", "作业单位", "作业人员", "确认人员", "备注", "附件编号", "创建者", "创建时间");
+    public void exportGearboxChangeOil(String trainNo, HttpServletResponse response) throws IOException {
         List<GearboxChangeOilResDTO> gearboxChangeOilResDTOList = gearboxChangeOilMapper.listGearboxChangeOil(trainNo);
-        List<Map<String, String>> list = new ArrayList<>();
         if (gearboxChangeOilResDTOList != null && !gearboxChangeOilResDTOList.isEmpty()) {
+            List<ExcelGearboxChangeOilResDTO> list = new ArrayList<>();
             for (GearboxChangeOilResDTO resDTO : gearboxChangeOilResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("列车号", resDTO.getTrainNo());
-                map.put("列车公里数", String.valueOf(resDTO.getTotalMiles()));
-                map.put("完成日期", resDTO.getCompleteDate());
-                map.put("作业单位", CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
-                map.put("作业人员", resDTO.getOperator());
-                map.put("确认人员", resDTO.getConfirmor());
-                map.put("备注", resDTO.getRemark());
-                map.put("附件编号", resDTO.getDocId());
-                map.put("创建者", resDTO.getRecCreator());
-                map.put("创建时间", resDTO.getRecCreateTime());
-                list.add(map);
+                ExcelGearboxChangeOilResDTO res = new ExcelGearboxChangeOilResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setTotalMiles(String.valueOf(resDTO.getTotalMiles()));
+                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "", list);
         }
-        ExcelPortUtil.excelPort("齿轮箱换油台账信息", listName, list, null, response);
     }
 
 }

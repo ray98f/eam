@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -76,7 +77,7 @@ public class EquipmentRoomController {
                                     @RequestParam(required = false) @ApiParam("位置一编码") String position1Code,
                                     @RequestParam(required = false) @ApiParam("位置一名称") String position1Name,
                                     @RequestParam(required = false) @ApiParam("专业") String subjectCode,
-                                    HttpServletResponse response) {
+                                    HttpServletResponse response) throws IOException {
         equipmentRoomService.exportEquipmentRoom(equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode, response);
     }
 }

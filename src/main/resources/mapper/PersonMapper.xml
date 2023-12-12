@@ -4,7 +4,7 @@
 
     <select id="searchPersonByNo" resultType="com.wzmtr.eam.shiro.model.TPerson">
         SELECT u.ID, u.NO, u.NAME, u.MOBILE,u.PHONE,u.EMAIL,u.OFFICE_ID, o1.NAME as OFFICE_NAME, u.COMPANY_ID, o2.NAME as COMPANY_NAME,
-        o1.AREA_ID as OFFICE_AREA_ID, o2.AREA_ID as COMPANY_AREA_ID
+        o1.AREA_ID as OFFICE_AREA_ID, o2.AREA_ID as COMPANY_AREA_ID, o1.NAMES
         FROM SYS_USER u
         LEFT JOIN SYS_OFFICE o1 ON o1.ID=u.OFFICE_ID
         LEFT JOIN SYS_OFFICE o2 ON o2.ID=u.COMPANY_ID

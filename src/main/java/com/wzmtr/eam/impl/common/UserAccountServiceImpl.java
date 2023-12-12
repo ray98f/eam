@@ -76,6 +76,7 @@ public class UserAccountServiceImpl implements UserAccountService {
                 person.setOfficeId(p.getOfficeId());
                 person.setOfficeName(p.getOfficeName());
                 person.setOfficeAreaId(p.getOfficeAreaId());
+                person.setNames(p.getNames());
             } else {
                 throw new CommonException(ErrorCode.USER_NOT_EXIST);
             }

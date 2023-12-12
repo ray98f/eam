@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -90,7 +91,7 @@ public class DetectionPlanController {
                                     @RequestParam(required = false) @ApiParam("编制部门") String editDeptCode,
                                     @RequestParam(required = false) @ApiParam("特种设备分类代码") String assetKindCode,
                                     @RequestParam(required = false) @ApiParam("定检计划时期") String planPeriodMark,
-                                    HttpServletResponse response) {
+                                    HttpServletResponse response) throws IOException {
         detectionPlanService.exportDetectionPlan(instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark, response);
     }
 
@@ -131,7 +132,7 @@ public class DetectionPlanController {
     @GetMapping("/detail/export")
     @ApiOperation(value = "导出检测计划明细")
     public void exportDetectionPlanDetail(@RequestParam(required = false) @ApiParam("特种设备定检计划号") String instrmPlanNo,
-                                          HttpServletResponse response) {
+                                          HttpServletResponse response) throws IOException {
         detectionPlanService.exportDetectionPlanDetail(instrmPlanNo, response);
     }
 }

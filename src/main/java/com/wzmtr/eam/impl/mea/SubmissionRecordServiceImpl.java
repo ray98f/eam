@@ -9,6 +9,8 @@ import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.mea.MeaResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO;
+import com.wzmtr.eam.dto.res.mea.excel.ExcelSubmissionRecordDetailResDTO;
+import com.wzmtr.eam.dto.res.mea.excel.ExcelSubmissionRecordResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -21,16 +23,14 @@ import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionRecordMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.mea.SubmissionRecordService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -215,23 +215,17 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     }
 
     @Override
-    public void exportSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "检定记录号", "检测校准单位", "检定记录状态", "附件", "备注");
+    public void exportSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, HttpServletResponse response) throws IOException {
         List<SubmissionRecordResDTO> checkPlanList = submissionRecordMapper.listSubmissionRecord(null, checkNo, instrmPlanNo, recStatus, workFlowInstId);
-        List<Map<String, String>> list = new ArrayList<>();
         if (checkPlanList != null && !checkPlanList.isEmpty()) {
+            List<ExcelSubmissionRecordResDTO> list = new ArrayList<>();
             for (SubmissionRecordResDTO resDTO : checkPlanList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("检定记录号", resDTO.getCheckNo());
-                map.put("检测校准单位", resDTO.getVerifyDept());
-                map.put("检定记录状态", resDTO.getRecStatus());
-                map.put("附件", resDTO.getExt1());
-                map.put("备注", resDTO.getVerifyNote());
-                list.add(map);
+                ExcelSubmissionRecordResDTO res = new ExcelSubmissionRecordResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "定检计划信息", list);
         }
-        ExcelPortUtil.excelPort("定检计划信息", listName, list, null, response);
     }
 
     @Override
@@ -309,31 +303,17 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     }
 
     @Override
-    public void exportSubmissionRecordDetail(String testRecId, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "设备编码", "设备名称", "型号规格", "出厂编号", "公司编号", "检定校准单位",
-                "证书编号", "送检条码号", "上次检定日期", "下次检定日期", "使用单位名称", "附件");
+    public void exportSubmissionRecordDetail(String testRecId, HttpServletResponse response) throws IOException {
         List<SubmissionRecordDetailResDTO> meaInfoList = submissionRecordMapper.listSubmissionRecordDetail(testRecId);
-        List<Map<String, String>> list = new ArrayList<>();
         if (meaInfoList != null && !meaInfoList.isEmpty()) {
+            List<ExcelSubmissionRecordDetailResDTO> list = new ArrayList<>();
             for (SubmissionRecordDetailResDTO resDTO : meaInfoList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("设备编码", resDTO.getEquipCode());
-                map.put("设备名称", resDTO.getEquipName());
-                map.put("型号规格", resDTO.getMatSpecifi());
-                map.put("出厂编号", resDTO.getManufacture());
-                map.put("公司编号", resDTO.getCompanyCode());
-                map.put("检定校准单位", resDTO.getVerifyDept());
-                map.put("证书编号", resDTO.getVerificationNo());
-                map.put("送检条码号", resDTO.getMeasureBarcode());
-                map.put("上次检定日期", resDTO.getLastVerifyDate());
-                map.put("下次检定日期", resDTO.getNextVerifyDate());
-                map.put("使用单位名称", resDTO.getUseDeptCname());
-                map.put("附件", resDTO.getVerifyNote());
-                list.add(map);
+                ExcelSubmissionRecordDetailResDTO res = new ExcelSubmissionRecordDetailResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检定记录明细信息", list);
         }
-        ExcelPortUtil.excelPort("检定记录明细信息", listName, list, null, response);
     }
 
 }

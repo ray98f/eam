@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -81,7 +82,7 @@ public class SubmissionController {
 
     @GetMapping("/export")
     @ApiOperation(value = "导出送检单")
-    public void exportSubmission(SubmissionListReqDTO submissionListReqDTO, HttpServletResponse response) {
+    public void exportSubmission(SubmissionListReqDTO submissionListReqDTO, HttpServletResponse response) throws IOException {
         submissionService.exportSubmission(submissionListReqDTO, response);
     }
 
@@ -122,7 +123,7 @@ public class SubmissionController {
     @GetMapping("/detail/export")
     @ApiOperation(value = "导出送检单")
     public void exportSubmissionDetail(@RequestParam(required = false) @ApiParam("检测单号") String sendVerifyNo,
-                                       HttpServletResponse response) {
+                                       HttpServletResponse response) throws IOException {
         submissionService.exportSubmissionDetail(sendVerifyNo, response);
     }
 }

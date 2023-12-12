@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -77,7 +78,7 @@ public class RegionController {
     public void exportRegion(@RequestParam(required = false) @ApiParam("节点名称") String name,
                              @RequestParam(required = false) @ApiParam("节点编号") String code,
                              @RequestParam(required = false) @ApiParam("设备分类代码") String parentId,
-                             HttpServletResponse response) {
+                             HttpServletResponse response) throws IOException {
         regionService.exportRegion(name, code, parentId, response);
     }
 }

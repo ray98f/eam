@@ -7,6 +7,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface EquipmentChargeService {
 
@@ -22,5 +23,5 @@ public interface EquipmentChargeService {
     void deleteEquipmentCharge(BaseIdsEntity baseIdsEntity);
 
     void exportEquipmentCharge(String equipCode, String equipName, String chargeDate, String position1Name,
-                               String subjectCode, String systemCode, String equipTypeCode, HttpServletResponse response);
+                               String subjectCode, String systemCode, String equipTypeCode, HttpServletResponse response) throws IOException;
 }

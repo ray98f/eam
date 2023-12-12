@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.res.basic.excel.ExcelEquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -11,7 +12,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.service.basic.EquipmentCategoryService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.tree.EquipmentCategoryTreeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -84,24 +86,24 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     }
 
     @Override
-    public void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "节点编号", "节点名称", "记录状态", "备注", "创建者", "创建时间");
+    public void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response) throws IOException {
         List<EquipmentCategoryResDTO> categoryResDTOList = equipmentCategoryMapper.listEquipmentCategory(name, no, parentId);
-        List<Map<String, String>> list = new ArrayList<>();
         if (categoryResDTOList != null && !categoryResDTOList.isEmpty()) {
+            List<ExcelEquipmentCategoryResDTO> resList = new ArrayList<>();
             for (EquipmentCategoryResDTO categoryResDTO : categoryResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", categoryResDTO.getRecId());
-                map.put("节点编号", categoryResDTO.getNodeCode());
-                map.put("节点名称", categoryResDTO.getNodeName());
-                map.put("记录状态", CommonConstants.TEN_STRING.equals(categoryResDTO.getRecStatus()) ? "启用" : "禁用");
-                map.put("备注", categoryResDTO.getRemark());
-                map.put("创建者", categoryResDTO.getRecCreator());
-                map.put("创建时间", categoryResDTO.getRecCreateTime());
-                list.add(map);
+                ExcelEquipmentCategoryResDTO res = ExcelEquipmentCategoryResDTO.builder()
+                        .recId(categoryResDTO.getRecId())
+                        .nodeCode(categoryResDTO.getNodeCode())
+                        .nodeName(categoryResDTO.getNodeName())
+                        .recStatus(CommonConstants.TEN_STRING.equals(categoryResDTO.getRecStatus()) ? "启用" : "禁用")
+                        .remark(categoryResDTO.getRemark())
+                        .recCreator(categoryResDTO.getRecCreator())
+                        .recCreateTime(categoryResDTO.getRecCreateTime())
+                        .build();
+                resList.add(res);
             }
+            EasyExcelUtils.export(response, "设备分类信息", resList);
         }
-        ExcelPortUtil.excelPort("设备分类信息", listName, list, null, response);
     }
 
     @Override

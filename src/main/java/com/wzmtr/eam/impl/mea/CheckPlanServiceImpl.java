@@ -10,6 +10,8 @@ import com.wzmtr.eam.dto.req.mea.MeaInfoReqDTO;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.res.mea.CheckPlanResDTO;
 import com.wzmtr.eam.dto.res.mea.MeaInfoResDTO;
+import com.wzmtr.eam.dto.res.mea.excel.ExcelCheckPlanResDTO;
+import com.wzmtr.eam.dto.res.mea.excel.ExcelMeaInfoResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -21,16 +23,14 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.mea.CheckPlanMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.mea.CheckPlanService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -229,24 +229,19 @@ public class CheckPlanServiceImpl implements CheckPlanService {
     }
 
     @Override
-    public void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "定检计划号", "年月", "编制部门", "计划人", "计划状态", "备注");
+    public void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response) throws IOException {
         List<CheckPlanResDTO> checkPlanList = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
-        List<Map<String, String>> list = new ArrayList<>();
         if (checkPlanList != null && !checkPlanList.isEmpty()) {
+            List<ExcelCheckPlanResDTO> list = new ArrayList<>();
             for (CheckPlanResDTO resDTO : checkPlanList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("定检计划号", resDTO.getInstrmPlanNo());
-                map.put("年月", resDTO.getPlanPeriodMark());
-                map.put("编制部门", organizationMapper.getNamesById(resDTO.getEditDeptCode()));
-                map.put("计划人", resDTO.getPlanCreaterName());
-                map.put("计划状态", CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getPlanStatus()) ? "审核中" : "审核通过");
-                map.put("备注", resDTO.getPlanNote());
-                list.add(map);
+                ExcelCheckPlanResDTO res = new ExcelCheckPlanResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setEditDeptCode(organizationMapper.getNamesById(resDTO.getEditDeptCode()));
+                res.setPlanStatus(CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getPlanStatus()) ? "审核中" : "审核通过");
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "定检计划信息", list);
         }
-        ExcelPortUtil.excelPort("定检计划信息", listName, list, null, response);
     }
 
     @Override
@@ -328,22 +323,17 @@ public class CheckPlanServiceImpl implements CheckPlanService {
     }
 
     @Override
-    public void exportCheckPlanInfo(String equipCode, String instrmPlanNo, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "计划号", "计量器具编码", "名称", "出厂编号");
+    public void exportCheckPlanInfo(String equipCode, String instrmPlanNo, HttpServletResponse response) throws IOException {
         List<MeaInfoResDTO> meaInfoList = checkPlanMapper.listInfo(equipCode, instrmPlanNo);
-        List<Map<String, String>> list = new ArrayList<>();
         if (meaInfoList != null && !meaInfoList.isEmpty()) {
+            List<ExcelMeaInfoResDTO> list = new ArrayList<>();
             for (MeaInfoResDTO resDTO : meaInfoList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("计划号", resDTO.getInstrmPlanNo());
-                map.put("计量器具编码", resDTO.getEquipCode());
-                map.put("名称", resDTO.getEquipName());
-                map.put("出厂编号", resDTO.getManufactureNo());
-                list.add(map);
+                ExcelMeaInfoResDTO res = new ExcelMeaInfoResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "定检计划明细信息", list);
         }
-        ExcelPortUtil.excelPort("定检计划明细信息", listName, list, null, response);
     }
 
     @Override

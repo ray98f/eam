@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -88,7 +89,7 @@ public class SubmissionRecordController {
                                        @RequestParam(required = false) @ApiParam("计量器具检验计划号") String instrmPlanNo,
                                        @RequestParam(required = false) @ApiParam("记录状态") String recStatus,
                                        @RequestParam(required = false) @ApiParam("工作流实例ID") String workFlowInstId,
-                                       HttpServletResponse response) {
+                                       HttpServletResponse response) throws IOException {
         submissionRecordService.exportSubmissionRecord(checkNo, instrmPlanNo, recStatus, workFlowInstId, response);
     }
 
@@ -129,7 +130,7 @@ public class SubmissionRecordController {
     @GetMapping("/detail/export")
     @ApiOperation(value = "导出检定记录明细")
     public void exportSubmissionRecordDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
-                                             HttpServletResponse response) {
+                                             HttpServletResponse response) throws IOException {
         submissionRecordService.exportSubmissionRecordDetail(testRecId, response);
     }
 }

@@ -11,6 +11,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface CheckPlanService {
 
@@ -28,7 +29,7 @@ public interface CheckPlanService {
 
     void examineCheckPlan(CheckPlanReqDTO checkPlanReqDTO);
 
-    void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response);
+    void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response) throws IOException;
 
     Page<MeaInfoResDTO> pageCheckPlanInfo(String equipCode, String instrmPlanNo, PageReqDTO pageReqDTO);
 
@@ -40,7 +41,7 @@ public interface CheckPlanService {
 
     void deleteCheckPlanInfo(BaseIdsEntity baseIdsEntity);
 
-    void exportCheckPlanInfo(String equipCode, String instrmPlanNo, HttpServletResponse response);
+    void exportCheckPlanInfo(String equipCode, String instrmPlanNo, HttpServletResponse response) throws IOException;
 
     Page<MeaInfoResDTO> queryCheckPlanInfo(MeaInfoQueryReqDTO meaInfoQueryReqDTO, PageReqDTO pageReqDTO);
     

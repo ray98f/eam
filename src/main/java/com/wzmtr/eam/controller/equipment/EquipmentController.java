@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -90,7 +91,7 @@ public class EquipmentController {
 
     @PostMapping("/export")
     @ApiOperation(value = "导出设备台账")
-    public void exportEquipment(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) {
+    public void exportEquipment(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
         if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
         }

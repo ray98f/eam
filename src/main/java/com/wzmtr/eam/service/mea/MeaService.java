@@ -8,6 +8,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface MeaService {
 
@@ -17,7 +18,7 @@ public interface MeaService {
 
     void importMea(MultipartFile file);
 
-    void exportMea(MeaListReqDTO meaListReqDTO, HttpServletResponse response);
+    void exportMea(MeaListReqDTO meaListReqDTO, HttpServletResponse response) throws IOException;
 
     Page<SubmissionRecordDetailResDTO> pageMeaRecord(String equipCode, PageReqDTO pageReqDTO);
     

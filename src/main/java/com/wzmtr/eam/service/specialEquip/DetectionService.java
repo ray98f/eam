@@ -9,6 +9,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 
 public interface DetectionService {
@@ -27,7 +28,7 @@ public interface DetectionService {
 
     void examineDetection(DetectionReqDTO detectionReqDTO);
 
-    void exportDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, HttpServletResponse response);
+    void exportDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, HttpServletResponse response) throws IOException;
 
     Page<DetectionDetailResDTO> pageDetectionDetail(String testRecId, PageReqDTO pageReqDTO);
 
@@ -39,5 +40,5 @@ public interface DetectionService {
 
     void deleteDetectionDetail(BaseIdsEntity baseIdsEntity);
 
-    void exportDetectionDetail(String testRecId, HttpServletResponse response);
+    void exportDetectionDetail(String testRecId, HttpServletResponse response) throws IOException;
 }

@@ -7,6 +7,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface OrgLineService {
 
@@ -20,5 +21,5 @@ public interface OrgLineService {
 
     void deleteOrgLine(BaseIdsEntity baseIdsEntity);
 
-    void exportOrgLine(String orgCode, String lineCode, HttpServletResponse response);
+    void exportOrgLine(String orgCode, String lineCode, HttpServletResponse response) throws IOException;
 }

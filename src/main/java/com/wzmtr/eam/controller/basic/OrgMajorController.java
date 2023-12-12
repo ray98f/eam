@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -75,7 +76,7 @@ public class OrgMajorController {
     @ApiOperation(value = "导出组织机构专业")
     public void exportOrgMajor(@RequestParam(required = false) @ApiParam("组织机构") String orgCode,
                                @RequestParam(required = false) @ApiParam("专业") String majorCode,
-                               HttpServletResponse response) {
+                               HttpServletResponse response) throws IOException {
         orgMajorService.exportOrgMajor(orgCode, majorCode, response);
     }
 }
