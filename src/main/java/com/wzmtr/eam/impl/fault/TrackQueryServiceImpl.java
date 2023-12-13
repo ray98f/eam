@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bizobject.FaultTrackBO;
+import com.wzmtr.eam.bizobject.export.FaultTrackExportBO;
 import com.wzmtr.eam.bizobject.FaultTrackWorkBO;
 import com.wzmtr.eam.constant.Cols;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -22,6 +23,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.LineCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultTrackMapper;
 import com.wzmtr.eam.mapper.fault.FaultTrackWorkMapper;
@@ -29,7 +31,6 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.*;
-import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Author: Li.Wang
@@ -127,30 +129,24 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public void export(TrackQueryReqDTO reqDTO, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("跟踪单号", "故障编号", "对象名称", "故障现象", "故障原因", "故障处理", "转跟踪人员", "转跟踪时间", "跟踪期限", "跟踪周期", "跟踪结果", "跟踪状态");
         List<TrackQueryResDTO> res = faultTrackMapper.query(reqDTO);
-        List<Map<String, String>> list = new ArrayList<>();
+        List<FaultTrackExportBO> exportList = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(res)) {
-            for (TrackQueryResDTO resDTO : res) {
+            res.forEach(resDTO -> {
+                FaultTrackExportBO exportBO = __BeanUtil.convert(resDTO, FaultTrackExportBO.class);
                 Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackStatus", resDTO.getRecStatus());
-                Map<String, String> map = new HashMap<>();
-                map.put("跟踪单号", resDTO.getFaultTrackNo());
-                map.put("故障编号", resDTO.getFaultNo());
-                map.put("对象名称", resDTO.getObjectName());
-                map.put("线路编码", resDTO.getLineCode());
-                map.put("故障现象", resDTO.getFaultDetail());
-                map.put("故障原因", resDTO.getFaultReasonDetail());
-                map.put("故障处理", resDTO.getFaultActionDetail());
-                map.put("转跟踪人员", resDTO.getTrackUserName());
-                map.put("转跟踪时间", resDTO.getTrackTime());
-                map.put("跟踪期限", resDTO.getTrackPeriod().toString());
-                map.put("跟踪周期", resDTO.getTrackCycle().toString());
-                map.put("跟踪结果", resDTO.getTrackResult());
-                map.put("跟踪状态", dictionaries.getItemCname());
-                list.add(map);
-            }
+                exportBO.setTrackDDL(resDTO.getTrackPeriod().toString());
+                exportBO.setTrackCyc(resDTO.getTrackCycle().toString());
+                exportBO.setTrackStatus(dictionaries.getItemCname());
+                exportList.add(exportBO);
+            });
         }
-        ExcelPortUtil.excelPort("跟踪查询信息", listName, list, null, response);
+        try {
+            EasyExcelUtils.export(response, "跟踪查询信息", exportList);
+        } catch (Exception e) {
+            log.error("导出失败！", e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR);
+        }
     }
 
     @Override
@@ -165,6 +161,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         TrackQueryServiceImpl proxy = (TrackQueryServiceImpl) AopContext.currentProxy();
         proxy._save(exist, faultTrackBO, faultTrackWorkBO, faultNo);
     }
+
     @Transactional(rollbackFor = Exception.class)
     public void _save(FaultTrackDO exist, FaultTrackBO faultTrackBO, FaultTrackWorkBO faultTrackWorkBO, String faultNo) {
         // 根据faultNo判断是否存在跟踪单 不存在则插入，存在即更新
@@ -197,7 +194,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             } else {
                 dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
             }
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + trackRes.getMajorName() + "】故障管理流程",faultTrackWorkBO.getRecId(),faultWorkNo,"DM_007",dictionaries.getItemCname(),"故障跟踪派工","DMFM0011","EAM","10");
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + trackRes.getMajorName() + "】故障管理流程", faultTrackWorkBO.getRecId(), faultWorkNo, "DM_007", dictionaries.getItemCname(), "故障跟踪派工", "DMFM0011", "EAM", "10");
             return;
         }
         // 更新两张表
@@ -243,7 +240,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             String majorCode = dmfm09.getMajorCode();
             Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
             List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
-            String zcStepOrg ;
+            String zcStepOrg;
             if (cos.contains(majorCode)) {
                 Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
                 zcStepOrg = matchControl.getItemCname();
@@ -251,7 +248,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
                 Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
                 zcStepOrg = matchControl.getItemCname();
             }
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + dmfm09.getMajorName() + "】故障管理流程",faultTrackWorkBO.getRecId(),faultWorkNo,"DM_007",zcStepOrg,"故障跟踪派工","DMFM0011","EAM","10");
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + dmfm09.getMajorName() + "】故障管理流程", faultTrackWorkBO.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障跟踪派工", "DMFM0011", "EAM", "10");
         } catch (Exception e) {
             log.error("save error", e);
         }

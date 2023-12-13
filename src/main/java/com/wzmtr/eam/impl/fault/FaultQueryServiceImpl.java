@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
-import com.wzmtr.eam.bizobject.FaultExportBO;
+import com.wzmtr.eam.bizobject.export.FaultExportBO;
 import com.wzmtr.eam.bizobject.PartBO;
 import com.wzmtr.eam.bizobject.StationBO;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -164,7 +164,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         try {
             EasyExcelUtils.export(response, "故障信息", exportList);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("导出失败!",e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
     }
 

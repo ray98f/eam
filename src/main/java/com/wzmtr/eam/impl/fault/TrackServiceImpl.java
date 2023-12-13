@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
+import com.wzmtr.eam.bizobject.export.FaultTrackWorkExportBO;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.Cols;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -60,7 +62,8 @@ public class TrackServiceImpl implements TrackService {
     private IWorkFlowLogService workFlowLogService;
     @Autowired
     private RoleMapper roleMapper;
-    private static final List<String> IGNORE_STATE= Arrays.asList("10","20","30");
+    private static final List<String> IGNORE_STATE = Arrays.asList("10", "20", "30");
+
     @Override
     public Page<TrackResDTO> list(TrackReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
@@ -140,31 +143,23 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public void export(TrackExportReqDTO reqDTO, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("跟踪单工单号", "跟踪单号", "对象编码", "对象名称", "跟踪状态", "派工人", "跟踪报告人", "派工时间", "跟踪结果", "备注", "跟踪报告时间", "跟踪关闭人", "跟踪关闭时间");
         List<TrackResDTO> resList = faultTrackWorkMapper.query(reqDTO);
         if (CollectionUtil.isEmpty(resList)) {
             return;
         }
-        List<Map<String, String>> list = new ArrayList<>();
-        for (TrackResDTO resDTO : resList) {
-            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackWorkStatus", resDTO.getRecStatus());
-            Map<String, String> map = new HashMap<>();
-            map.put("跟踪单工单号", resDTO.getFaultTrackWorkNo());
-            map.put("跟踪单号", resDTO.getFaultTrackNo());
-            map.put("对象编码", resDTO.getObjectCode());
-            map.put("对象名称", resDTO.getObjectName());
-            map.put("跟踪状态", dictionaries.getItemCname());
-            map.put("派工人", resDTO.getDispatchUserName());
-            map.put("跟踪报告人", resDTO.getTrackReportName());
-            map.put("派工时间", resDTO.getDispatchTime());
-            map.put("跟踪结果", resDTO.getTrackResult());
-            map.put("备注", resDTO.getRemark());
-            map.put("跟踪报告时间", resDTO.getTrackReportTime());
-            map.put("跟踪关闭人", resDTO.getTrackCloserName());
-            map.put("跟踪关闭时间", resDTO.getTrackCloseTime());
-            list.add(map);
+        List<FaultTrackWorkExportBO> exportList = Lists.newArrayList();
+        resList.forEach(a -> {
+            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackWorkStatus", a.getRecStatus());
+            FaultTrackWorkExportBO exportBO = __BeanUtil.convert(a, FaultTrackWorkExportBO.class);
+            exportBO.setTrackStatus(dictionaries.getItemCname());
+            exportList.add(exportBO);
+        });
+        try {
+            EasyExcelUtils.export(response, "跟踪查询信息", exportList);
+        } catch (Exception e) {
+            log.error("导出失败！", e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
-        ExcelPortUtil.excelPort("故障跟踪工单信息", listName, list, null, response);
     }
 
     @Override
@@ -203,7 +198,7 @@ public class TrackServiceImpl implements TrackService {
                 overTodoService.overTodo(processId, "故障跟踪");
                 faultTrackDO.setRecStatus("40");
             } catch (Exception e) {
-                log.error("送审失败！",e);
+                log.error("送审失败！", e);
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败!", faultTrackNo);
             }
         }
@@ -219,10 +214,10 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public void pass(FaultExamineReqDTO reqDTO) {
-        Assert.notNull(reqDTO.getExamineReqDTO(),ErrorCode.PARAM_ERROR);
+        Assert.notNull(reqDTO.getExamineReqDTO(), ErrorCode.PARAM_ERROR);
         String faultTrackNo = reqDTO.getFaultTrackNo();
         FaultTrackDO dmfm09 = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq("FAULT_TRACK_NO", faultTrackNo));
-        Assert.isTrue(!IGNORE_STATE.contains(dmfm09.getRecStatus()),"跟踪单状态不为审核中时，不允许审核");
+        Assert.isTrue(!IGNORE_STATE.contains(dmfm09.getRecStatus()), "跟踪单状态不为审核中时，不允许审核");
         String processId = dmfm09.getWorkFlowInstId();
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         // 获取Aop对象，事务逻辑轻量化
@@ -275,7 +270,7 @@ public class TrackServiceImpl implements TrackService {
             faultTrackDO.setRecReviseTime(DateUtil.getCurrentTime());
             faultTrackMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         } catch (Exception e) {
-            log.error("agree error",e);
+            log.error("agree error", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "agree error");
         }
     }

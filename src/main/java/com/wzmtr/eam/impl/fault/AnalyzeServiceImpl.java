@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
-import com.wzmtr.eam.bizobject.FaultAnalizeExportBO;
+import com.wzmtr.eam.bizobject.export.FaultAnalizeExportBO;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.Cols;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -82,9 +82,9 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         try {
             EasyExcelUtils.export(response, "故障调查及处置情况", exportList);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("导出失败",e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
-
     }
 
     @Override
