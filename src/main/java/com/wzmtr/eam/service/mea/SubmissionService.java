@@ -10,6 +10,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface SubmissionService {
 
@@ -27,7 +28,7 @@ public interface SubmissionService {
 
     void examineSubmission(SubmissionReqDTO submissionReqDTO);
 
-    void exportSubmission(SubmissionListReqDTO submissionListReqDTO, HttpServletResponse response);
+    void exportSubmission(SubmissionListReqDTO submissionListReqDTO, HttpServletResponse response) throws IOException;
 
     Page<SubmissionDetailResDTO> pageSubmissionDetail(String sendVerifyNo, PageReqDTO pageReqDTO);
 
@@ -39,6 +40,6 @@ public interface SubmissionService {
 
     void deleteSubmissionDetail(BaseIdsEntity baseIdsEntity);
 
-    void exportSubmissionDetail(String sendVerifyNo, HttpServletResponse response);
+    void exportSubmissionDetail(String sendVerifyNo, HttpServletResponse response) throws IOException;
 
 }

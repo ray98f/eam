@@ -9,6 +9,8 @@ import com.wzmtr.eam.dto.req.mea.SubmissionListReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionReqDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionDetailResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionResDTO;
+import com.wzmtr.eam.dto.res.mea.excel.ExcelSubmissionDetailResDTO;
+import com.wzmtr.eam.dto.res.mea.excel.ExcelSubmissionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
@@ -18,16 +20,14 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.mea.SubmissionService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -182,31 +182,17 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
 
     @Override
-    public void exportSubmission(SubmissionListReqDTO checkPlanListReqDTO, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "送检单号", "送检委托人", "送检委托人电话", "送检接收人", "送检接收人电话",
-                "送检日期", "返送人", "返送人电话", "返还日期", "返还接收人", "返还接收人电话", "送检单状态");
+    public void exportSubmission(SubmissionListReqDTO checkPlanListReqDTO, HttpServletResponse response) throws IOException {
         List<SubmissionResDTO> checkPlanList = submissionMapper.listSubmission(checkPlanListReqDTO);
-        List<Map<String, String>> list = new ArrayList<>();
         if (checkPlanList != null && !checkPlanList.isEmpty()) {
+            List<ExcelSubmissionResDTO> list = new ArrayList<>();
             for (SubmissionResDTO resDTO : checkPlanList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("送检单号", resDTO.getSendVerifyNo());
-                map.put("送检委托人", resDTO.getSendConsignerName());
-                map.put("送检委托人电话", resDTO.getSendConsignerTele());
-                map.put("送检接收人", resDTO.getSendReceiverName());
-                map.put("送检接收人电话", resDTO.getSendReceiverTele());
-                map.put("送检日期", resDTO.getSendVerifyDate());
-                map.put("返送人", resDTO.getBackReturnName());
-                map.put("返送人电话", resDTO.getBackReturnTele());
-                map.put("返还日期", resDTO.getVerifyBackDate());
-                map.put("返还接收人", resDTO.getBackReceiverName());
-                map.put("返还接收人电话", resDTO.getBackConsignerTele());
-                map.put("送检单状态", resDTO.getSendVerifyStatus());
-                list.add(map);
+                ExcelSubmissionResDTO res = new ExcelSubmissionResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "送检单信息", list);
         }
-        ExcelPortUtil.excelPort("送检单信息", listName, list, null, response);
     }
 
     @Override
@@ -285,24 +271,17 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
 
     @Override
-    public void exportSubmissionDetail(String sendVerifyNo, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "送检单号", "计量器具编码", "计量器具名称", "型号规格", "出厂编号", "检定校准单位");
+    public void exportSubmissionDetail(String sendVerifyNo, HttpServletResponse response) throws IOException {
         List<SubmissionDetailResDTO> submissionDetail = submissionMapper.listSubmissionDetail(sendVerifyNo);
-        List<Map<String, String>> list = new ArrayList<>();
         if (submissionDetail != null && !submissionDetail.isEmpty()) {
+            List<ExcelSubmissionDetailResDTO> list = new ArrayList<>();
             for (SubmissionDetailResDTO resDTO : submissionDetail) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("送检单号", resDTO.getSendVerifyNo());
-                map.put("计量器具编码", resDTO.getEquipCode());
-                map.put("计量器具名称", resDTO.getEquipName());
-                map.put("型号规格", resDTO.getMatSpecifi());
-                map.put("出厂编号", resDTO.getManufactureNo());
-                map.put("检定校准单位", resDTO.getInstallationUnit());
-                list.add(map);
+                ExcelSubmissionDetailResDTO res = new ExcelSubmissionDetailResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "送检单明细信息", list);
         }
-        ExcelPortUtil.excelPort("送检单明细信息", listName, list, null, response);
     }
 
 }

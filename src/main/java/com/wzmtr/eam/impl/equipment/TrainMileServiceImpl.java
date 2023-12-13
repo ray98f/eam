@@ -6,12 +6,14 @@ import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
+import com.wzmtr.eam.dto.res.equipment.excel.ExcelTrainMileResDTO;
+import com.wzmtr.eam.dto.res.equipment.excel.ExcelTrainMileageResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.TrainMileMapper;
 import com.wzmtr.eam.service.equipment.TrainMileService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,26 +48,21 @@ public class TrainMileServiceImpl implements TrainMileService {
     }
 
     @Override
-    public void exportTrainMile(String equipCode, String equipName, String originLineNo, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "设备编码", "车号", "里程(公里)", "牵引总能耗(kW·h)",
-                "辅助总能耗(kW·h)", "再生总电量(kW·h)", "维护时间");
+    public void exportTrainMile(String equipCode, String equipName, String originLineNo, HttpServletResponse response) throws IOException {
         List<TrainMileResDTO> trainMileResDTOList = trainMileMapper.listTrainMile(equipCode, equipName, originLineNo);
-        List<Map<String, String>> list = new ArrayList<>();
         if (trainMileResDTOList != null && !trainMileResDTOList.isEmpty()) {
-            for (TrainMileResDTO trainMileResDTO : trainMileResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", trainMileResDTO.getRecId());
-                map.put("设备编码", trainMileResDTO.getEquipCode());
-                map.put("车号", trainMileResDTO.getEquipName());
-                map.put("里程(公里)", String.valueOf(trainMileResDTO.getTotalMiles()));
-                map.put("牵引总能耗(kW·h)", String.valueOf(trainMileResDTO.getTotalTractionEnergy()));
-                map.put("辅助总能耗(kW·h)", String.valueOf(trainMileResDTO.getTotalAuxiliaryEnergy()));
-                map.put("再生总电量(kW·h)", String.valueOf(trainMileResDTO.getTotalRegenratedElectricity()));
-                map.put("维护时间", trainMileResDTO.getFillinTime());
-                list.add(map);
+            List<ExcelTrainMileResDTO> list = new ArrayList<>();
+            for (TrainMileResDTO resDTO : trainMileResDTOList) {
+                ExcelTrainMileResDTO res = new ExcelTrainMileResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setTotalMiles(String.valueOf(resDTO.getTotalMiles()));
+                res.setTotalTractionEnergy(String.valueOf(resDTO.getTotalTractionEnergy()));
+                res.setTotalAuxiliaryEnergy(String.valueOf(resDTO.getTotalAuxiliaryEnergy()));
+                res.setTotalRegenratedElectricity(String.valueOf(resDTO.getTotalRegenratedElectricity()));
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "车辆走行里程信息", list);
         }
-        ExcelPortUtil.excelPort("车辆走行里程信息", listName, list, null, response);
     }
 
     @Override
@@ -128,32 +126,25 @@ public class TrainMileServiceImpl implements TrainMileService {
     }
 
     @Override
-    public void exportTrainMileage(String startTime, String endTime, String equipCode, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "设备编码", "车号", "里程(公里)", "增加里程(公里)", "填报时间", "填报人",
-                "牵引总能耗(kW·h)", "牵引能耗增量", "辅助总能耗(kW·h)", "辅助能耗增量", "再生总电量(kW·h)", "再生电量增量", "备注");
+    public void exportTrainMileage(String startTime, String endTime, String equipCode, HttpServletResponse response) throws IOException {
         List<TrainMileageResDTO> trainMileageResDTOList = trainMileMapper.listTrainMileage(startTime, endTime, equipCode);
-        List<Map<String, String>> list = new ArrayList<>();
         if (trainMileageResDTOList != null && !trainMileageResDTOList.isEmpty()) {
-            for (TrainMileageResDTO trainMileageResDTO : trainMileageResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", trainMileageResDTO.getRecId());
-                map.put("设备编码", trainMileageResDTO.getEquipCode());
-                map.put("车号", trainMileageResDTO.getEquipName());
-                map.put("里程(公里)", String.valueOf(trainMileageResDTO.getTotalMiles()));
-                map.put("增加里程(公里)", String.valueOf(trainMileageResDTO.getMilesIncrement()));
-                map.put("填报时间", trainMileageResDTO.getFillinTime());
-                map.put("填报人", trainMileageResDTO.getFillinUserId());
-                map.put("牵引总能耗(kW·h)", String.valueOf(trainMileageResDTO.getTotalTractionEnergy()));
-                map.put("牵引能耗增量", String.valueOf(trainMileageResDTO.getTractionIncrement()));
-                map.put("辅助总能耗(kW·h)", String.valueOf(trainMileageResDTO.getTotalAuxiliaryEnergy()));
-                map.put("辅助能耗增量", String.valueOf(trainMileageResDTO.getAuxiliaryIncrement()));
-                map.put("再生总电量(kW·h)", String.valueOf(trainMileageResDTO.getTotalRegenratedElectricity()));
-                map.put("再生电量增量", String.valueOf(trainMileageResDTO.getRegenratedIncrement()));
-                map.put("备注", trainMileageResDTO.getRemark());
-                list.add(map);
+            List<ExcelTrainMileageResDTO> list = new ArrayList<>();
+            for (TrainMileageResDTO resDTO : trainMileageResDTOList) {
+                ExcelTrainMileageResDTO res = new ExcelTrainMileageResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setTotalMiles(String.valueOf(resDTO.getTotalMiles()));
+                res.setMilesIncrement(String.valueOf(resDTO.getMilesIncrement()));
+                res.setTotalTractionEnergy(String.valueOf(resDTO.getTotalTractionEnergy()));
+                res.setTractionIncrement(String.valueOf(resDTO.getTractionIncrement()));
+                res.setTotalAuxiliaryEnergy(String.valueOf(resDTO.getTotalAuxiliaryEnergy()));
+                res.setAuxiliaryIncrement(String.valueOf(resDTO.getAuxiliaryIncrement()));
+                res.setTotalRegenratedElectricity(String.valueOf(resDTO.getTotalRegenratedElectricity()));
+                res.setRegenratedIncrement(String.valueOf(resDTO.getRegenratedIncrement()));
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "车辆走行里程历史信息", list);
         }
-        ExcelPortUtil.excelPort("车辆走行里程历史信息", listName, list, null, response);
     }
 
 }

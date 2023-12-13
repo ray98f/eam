@@ -24,7 +24,7 @@ public interface OverhaulOrderService {
 
     OverhaulOrderResDTO getOverhaulOrderDetail(String id);
 
-    void exportOverhaulOrder(List<String> ids, HttpServletResponse response);
+    void exportOverhaulOrder(List<String> ids, HttpServletResponse response) throws IOException;
 
     List<FaultRepairDeptResDTO> queryDept(String id);
 
@@ -52,7 +52,7 @@ public interface OverhaulOrderService {
 
     OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id);
 
-    void exportOverhaulObject(String orderCode, String planCode, String planName, String objectCode, HttpServletResponse response);
+    void exportOverhaulObject(String orderCode, String planCode, String planName, String objectCode, HttpServletResponse response) throws IOException;
 
     void checkjx(String orderCode);
 
@@ -60,13 +60,13 @@ public interface OverhaulOrderService {
 
     OverhaulItemResDTO getOverhaulItemDetail(String id);
 
-    void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, HttpServletResponse response);
+    void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, HttpServletResponse response) throws IOException;
 
     Page<OverhaulStateResDTO> pageOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId, PageReqDTO pageReqDTO);
 
     OverhaulStateResDTO getOverhaulStateDetail(String id);
 
-    void exportOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId, HttpServletResponse response);
+    void exportOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId, HttpServletResponse response) throws IOException;
 
     OverhaulStateOrderResDTO queryOrderInfo(String orderCode);
 

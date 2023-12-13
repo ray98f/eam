@@ -8,6 +8,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface GearboxChangeOilService {
 
@@ -21,6 +22,6 @@ public interface GearboxChangeOilService {
 
     void importGearboxChangeOil(MultipartFile file);
 
-    void exportGearboxChangeOil(String trainNo, HttpServletResponse response);
+    void exportGearboxChangeOil(String trainNo, HttpServletResponse response) throws IOException;
 
 }

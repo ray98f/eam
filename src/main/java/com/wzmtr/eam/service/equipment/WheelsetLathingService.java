@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface WheelsetLathingService {
 
@@ -23,6 +24,6 @@ public interface WheelsetLathingService {
 
     void importWheelsetLathing(MultipartFile file);
 
-    void exportWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo, HttpServletResponse response);
+    void exportWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo, HttpServletResponse response) throws IOException;
 
 }

@@ -8,6 +8,8 @@ import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.excel.ExcelDetectionDetailResDTO;
+import com.wzmtr.eam.dto.res.specialEquip.excel.ExcelDetectionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
@@ -18,16 +20,14 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.specialEquip.DetectionMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.specialEquip.DetectionService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -223,24 +223,24 @@ public class DetectionServiceImpl implements DetectionService {
     }
 
     @Override
-    public void exportDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("检测单号", "特种设备分类", "管理部门", "维管部门", "编制部门", "检测单状态", "备注");
+    public void exportDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, HttpServletResponse response) throws IOException {
         List<DetectionResDTO> detectionResDTOList = detectionMapper.listDetection(null, checkNo, sendVerifyNo, editDeptCode, recStatus);
-        List<Map<String, String>> list = new ArrayList<>();
         if (detectionResDTOList != null && !detectionResDTOList.isEmpty()) {
+            List<ExcelDetectionResDTO> list = new ArrayList<>();
             for (DetectionResDTO resDTO : detectionResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("检测单号", resDTO.getCheckNo());
-                map.put("特种设备分类", CommonConstants.TEN_STRING.equals(resDTO.getAssetKindCode()) ? "电梯" : CommonConstants.TWENTY_STRING.equals(resDTO.getAssetKindCode()) ? "起重机" : CommonConstants.THIRTY_STRING.equals(resDTO.getAssetKindCode()) ? "场（厂）内专用机动车辆" : "压力容器");
-                map.put("管理部门", organizationMapper.getOrgById(resDTO.getManageOrg()));
-                map.put("维管部门", organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
-                map.put("编制部门", organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()));
-                map.put("检测单状态", CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getRecStatus()) ? "审核中" : "审核通过");
-                map.put("备注", resDTO.getVerifyNote());
-                list.add(map);
+                ExcelDetectionResDTO res = ExcelDetectionResDTO.builder()
+                        .checkNo(resDTO.getCheckNo())
+                        .assetKindCode(CommonConstants.TEN_STRING.equals(resDTO.getAssetKindCode()) ? "电梯" : CommonConstants.TWENTY_STRING.equals(resDTO.getAssetKindCode()) ? "起重机" : CommonConstants.THIRTY_STRING.equals(resDTO.getAssetKindCode()) ? "场（厂）内专用机动车辆" : "压力容器")
+                        .manageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()))
+                        .secOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()))
+                        .editDeptCode(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()))
+                        .recStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getRecStatus()) ? "审核中" : "审核通过")
+                        .verifyNote(resDTO.getVerifyNote())
+                        .build();
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检测记录信息", list);
         }
-        ExcelPortUtil.excelPort("检测记录信息", listName, list, null, response);
     }
 
     @Override
@@ -327,24 +327,17 @@ public class DetectionServiceImpl implements DetectionService {
     }
 
     @Override
-    public void exportDetectionDetail(String testRecId, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("设备编码", "名称", "上次检测日期", "上次检测有效期", "位置一名称", "位置二名称", "型号规格");
+    public void exportDetectionDetail(String testRecId, HttpServletResponse response) throws IOException {
         List<DetectionDetailResDTO> detectionPlanDetailResDTOList = detectionMapper.listDetectionDetail(testRecId);
-        List<Map<String, String>> list = new ArrayList<>();
         if (detectionPlanDetailResDTOList != null && !detectionPlanDetailResDTOList.isEmpty()) {
+            List<ExcelDetectionDetailResDTO> list = new ArrayList<>();
             for (DetectionDetailResDTO resDTO : detectionPlanDetailResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("设备编码", resDTO.getEquipCode());
-                map.put("名称", resDTO.getEquipName());
-                map.put("上次检测日期", resDTO.getVerifyDate());
-                map.put("上次检测有效期", resDTO.getVerifyValidityDate());
-                map.put("位置一名称", resDTO.getPosition1Name());
-                map.put("位置二名称", resDTO.getPosition2Name());
-                map.put("型号规格", resDTO.getMatSpecifi());
-                list.add(map);
+                ExcelDetectionDetailResDTO res = new ExcelDetectionDetailResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "检测计划明细信息", list);
         }
-        ExcelPortUtil.excelPort("检测计划明细信息", listName, list, null, response);
     }
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -68,7 +69,7 @@ public class OrgTypeController {
     @ApiOperation(value = "导出组织机构类别")
     public void exportOrgType(@RequestParam(required = false) @ApiParam("组织机构") String orgCode,
                               @RequestParam(required = false) @ApiParam("类别") String orgType,
-                              HttpServletResponse response) {
+                              HttpServletResponse response) throws IOException {
         orgTypeService.exportOrgType(orgCode, orgType, response);
     }
 }

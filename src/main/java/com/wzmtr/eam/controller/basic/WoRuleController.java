@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -104,14 +105,14 @@ public class WoRuleController {
     public void exportWoRule(@RequestParam(required = false) @ApiParam("规则编号") String ruleCode,
                              @RequestParam(required = false) @ApiParam("规则名称") String ruleName,
                              @RequestParam(required = false) @ApiParam("用途 10 20 30") String ruleUseage,
-                             HttpServletResponse response) {
+                             HttpServletResponse response) throws IOException {
         woRuleService.exportWoRule(ruleCode, ruleName, ruleUseage, response);
     }
 
     @GetMapping("/detail/export")
     @ApiOperation(value = "导出工单触发规则明细")
     public void exportWoRuleDetail(@RequestParam @ApiParam("规则编号") String ruleCode,
-                                   HttpServletResponse response) {
+                                   HttpServletResponse response) throws IOException {
         woRuleService.exportWoRuleDetail(ruleCode, response);
     }
 }

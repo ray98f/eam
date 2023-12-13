@@ -8,6 +8,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface TransferService {
@@ -18,7 +19,7 @@ public interface TransferService {
     TransferResDTO getTransferDetail(String id);
 
     void exportTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
-                        String majorCode, String orderNo, String orderName, HttpServletResponse response);
+                        String majorCode, String orderNo, String orderName, HttpServletResponse response) throws IOException;
 
     void encodingTransfer(BaseIdsEntity baseIdsEntity);
 
@@ -30,5 +31,5 @@ public interface TransferService {
 
     void submitSplitTransfer(TransferSplitReqDTO transferSplitReqDTO) throws Exception;
 
-    void exportSplitTransfer(String sourceRecId, HttpServletResponse response);
+    void exportSplitTransfer(String sourceRecId, HttpServletResponse response) throws IOException;
 }

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -75,7 +76,7 @@ public class SpecialEquipController {
                                    @RequestParam(required = false) @ApiParam("位置一") String position1Code,
                                    @RequestParam(required = false) @ApiParam("特种设备类别") String specialEquipType,
                                    @RequestParam(required = false) @ApiParam("设备状态") String equipStatus,
-                                   HttpServletResponse response) {
+                                   HttpServletResponse response) throws IOException {
         specialEquipService.exportSpecialEquip(equipCode, equipName, specialEquipCode, factNo, useLineNo,
                 position1Code, specialEquipType, equipStatus, response);
     }
@@ -96,7 +97,7 @@ public class SpecialEquipController {
     @GetMapping("/history/export")
     @ApiOperation(value = "导出特种设备检测历史记录详情")
     public void exportSpecialEquipHistory(@RequestParam @ApiParam("设备编码") String equipCode,
-                                          HttpServletResponse response) {
+                                          HttpServletResponse response) throws IOException {
         specialEquipService.exportSpecialEquipHistory(equipCode, response);
     }
 }

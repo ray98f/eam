@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -84,7 +85,7 @@ public class PartReplaceController {
                                   @RequestParam(required = false) @ApiParam("故障工单编号") String faultWorkNo,
                                   @RequestParam(required = false) @ApiParam("作业单位") String orgType,
                                   @RequestParam(required = false) @ApiParam("更换原因") String replaceReason,
-                                  HttpServletResponse response) {
+                                  HttpServletResponse response) throws IOException {
         partReplaceService.exportPartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason, response);
     }
 

@@ -7,6 +7,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface RegionService {
@@ -23,5 +24,5 @@ public interface RegionService {
 
     void deleteRegion(BaseIdsEntity baseIdsEntity);
 
-    void exportRegion(String name, String no, String parentId, HttpServletResponse response);
+    void exportRegion(String name, String no, String parentId, HttpServletResponse response) throws IOException;
 }

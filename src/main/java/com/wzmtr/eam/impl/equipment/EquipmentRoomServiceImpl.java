@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.EquipmentRoomReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
+import com.wzmtr.eam.dto.res.equipment.excel.ExcelEquipRoomResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -12,13 +13,15 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
 import com.wzmtr.eam.service.equipment.EquipmentRoomService;
 import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -71,31 +74,18 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void exportEquipmentRoom(String equipRoomCode, String equipRoomName, String lineCode, String position1Code,
-                                    String position1Name, String subjectCode, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "设备房编码", "设备房名称", "专业编码", "专业名称", "线别编码",
-                "位置一编码", "位置一名称", "位置二编码", "位置二名称", "备注", "创建者", "创建时间");
+                                    String position1Name, String subjectCode, HttpServletResponse response) throws IOException {
         List<EquipmentRoomResDTO> equipmentRoomResDTOList = equipmentRoomMapper.listEquipmentRoom(equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode);
-        List<Map<String, String>> list = new ArrayList<>();
         if (equipmentRoomResDTOList != null && !equipmentRoomResDTOList.isEmpty()) {
+            List<ExcelEquipRoomResDTO> list = new ArrayList<>();
             for (EquipmentRoomResDTO resDTO : equipmentRoomResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", resDTO.getRecId());
-                map.put("设备房编码", resDTO.getEquipRoomCode());
-                map.put("设备房名称", resDTO.getEquipRoomName());
-                map.put("专业编码", resDTO.getSubjectCode());
-                map.put("专业名称", resDTO.getSubjectName());
-                map.put("线别编码", CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineCode()) ? "S1线" : "S2线");
-                map.put("位置一编码", resDTO.getPosition1Code());
-                map.put("位置一名称", resDTO.getPosition1Name());
-                map.put("位置二编码", resDTO.getPosition2Code());
-                map.put("位置二名称", resDTO.getPosition2Name());
-                map.put("备注", resDTO.getRemark());
-                map.put("创建者", resDTO.getRecCreator());
-                map.put("创建时间", resDTO.getRecCreateTime());
-                list.add(map);
+                ExcelEquipRoomResDTO res = new ExcelEquipRoomResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setLineCode(CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineCode()) ? "S1线" : "S2线");
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "设备房信息", list);
         }
-        ExcelPortUtil.excelPort("设备房信息", listName, list, null, response);
     }
 
 }

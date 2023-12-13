@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -62,7 +63,7 @@ public class TransferController {
                                @RequestParam(required = false) @ApiParam("专业编号") String majorCode,
                                @RequestParam(required = false) @ApiParam("合同编号") String orderNo,
                                @RequestParam(required = false) @ApiParam("合同名称") String orderName,
-                               HttpServletResponse response) {
+                               HttpServletResponse response) throws IOException {
         transferService.exportTransfer(transferNo, itemCode, itemName, position1Code,
                 eamProcessStatus, majorCode, orderNo, orderName, response);
     }
@@ -104,7 +105,7 @@ public class TransferController {
     @GetMapping("/split/export")
     @ApiOperation(value = "导出设备拆分")
     public void exportSplitTransfer(@RequestParam(required = false) @ApiParam("来源记录编号") String sourceRecId,
-                                    HttpServletResponse response) {
+                                    HttpServletResponse response) throws IOException {
         transferService.exportSplitTransfer(sourceRecId, response);
     }
 }

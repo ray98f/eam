@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.RegionReqDTO;
+import com.wzmtr.eam.dto.res.basic.excel.ExcelRegionResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -11,7 +12,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.service.basic.RegionService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.tree.RegionTreeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -84,24 +86,24 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public void exportRegion(String name, String no, String parentId, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("记录编号", "节点编号", "节点名称", "记录状态", "备注", "创建者", "创建时间");
+    public void exportRegion(String name, String no, String parentId, HttpServletResponse response) throws IOException {
         List<RegionResDTO> categoryResDTOList = regionMapper.listRegion(name, no, parentId);
-        List<Map<String, String>> list = new ArrayList<>();
         if (categoryResDTOList != null && !categoryResDTOList.isEmpty()) {
-            for (RegionResDTO categoryResDTO : categoryResDTOList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("记录编号", categoryResDTO.getRecId());
-                map.put("节点编号", categoryResDTO.getNodeCode());
-                map.put("节点名称", categoryResDTO.getNodeName());
-                map.put("记录状态", CommonConstants.TEN_STRING.equals(categoryResDTO.getRecStatus()) ? "启用" : "禁用");
-                map.put("备注", categoryResDTO.getRemark());
-                map.put("创建者", categoryResDTO.getRecCreator());
-                map.put("创建时间", categoryResDTO.getRecCreateTime());
-                list.add(map);
+            List<ExcelRegionResDTO> list = new ArrayList<>();
+            for (RegionResDTO resDTO : categoryResDTOList) {
+                ExcelRegionResDTO res = ExcelRegionResDTO.builder()
+                        .recId(resDTO.getRecId())
+                        .nodeCode(resDTO.getNodeCode())
+                        .nodeName(resDTO.getNodeName())
+                        .recStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "启用" : "禁用")
+                        .remark(resDTO.getRemark())
+                        .recCreator(resDTO.getRecCreator())
+                        .recCreateTime(resDTO.getRecCreateTime())
+                        .build();
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "位置分类信息", list);
         }
-        ExcelPortUtil.excelPort("位置分类信息", listName, list, null, response);
     }
 
 }

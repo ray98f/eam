@@ -7,6 +7,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface EquipmentCategoryService {
@@ -23,7 +24,7 @@ public interface EquipmentCategoryService {
 
     void deleteEquipmentCategory(BaseIdsEntity baseIdsEntity);
 
-    void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response);
+    void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response) throws IOException;
 
     List<EquipmentCategoryResDTO> getFirstEquipmentCategory();
 
