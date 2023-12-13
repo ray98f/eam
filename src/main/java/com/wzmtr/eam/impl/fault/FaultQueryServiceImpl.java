@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
+import com.wzmtr.eam.bizobject.FaultExportBO;
 import com.wzmtr.eam.bizobject.PartBO;
 import com.wzmtr.eam.bizobject.StationBO;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -33,6 +35,7 @@ import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -152,67 +155,54 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public void export(FaultExportReqDTO reqDTO, HttpServletResponse response) {
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0001#export
-        List<String> listName = Arrays.asList("故障编号", "故障现象", "故障详情", "对象名称", "部件名称", "故障工单编号", "对象编码", "故障状态", "维修部门", "提报部门", "提报人员", "联系电话", "提报时间", "发现人", "发现时间", "故障分类", "故障紧急程度", "故障影响", "线路", "车底号/车厢号", "位置一", "位置二", "专业", "系统", "设备分类", "模块", "更换部件", "旧配件编号", "新配件编号", "部件更换时间", "故障处理人员", "故障处理情况", "故障处理人数");
         List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.export(reqDTO);
-        List<Map<String, String>> list = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
-            for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
-                PartBO partBO = partMapper.queryPartByFaultWorkNo(resDTO.getFaultWorkNo());
-                String repairDept = " ";
-                String fillinDept = " ";
-                if (StringUtils.isNotEmpty(resDTO.getRepairDeptCode())) {
-                    repairDept = organizationMapper.getNamesById(resDTO.getRepairDeptCode());
-                }
-                if (StringUtils.isNotEmpty(resDTO.getFillinDeptCode())) {
-                    fillinDept = organizationMapper.getNamesById(resDTO.getFillinDeptCode());
-                }
-                Dictionaries position2 = dictService.queryOneByItemCodeAndCodesetCode("dm.station2", resDTO.getPosition2Code());
-                Map<String, String> map = new HashMap<>();
-                OrderStatus orderStatus = OrderStatus.getByCode(resDTO.getOrderStatus());
-                FaultAffect faultAffect = FaultAffect.getByCode(resDTO.getFaultAffect());
-                FaultLevel faultLevel = FaultLevel.getByCode(resDTO.getOrderStatus());
-                DealerUnit dealerUnit = DealerUnit.getByCode(resDTO.getDealerUnit());
-                LineCode lineCode = LineCode.getByCode(resDTO.getLineCode());
-                FaultType faultType = FaultType.getByCode(resDTO.getFaultType());
-                map.put("故障编号", resDTO.getFaultNo());
-                map.put("故障现象", resDTO.getFaultDisplayDetail());
-                map.put("故障详情", resDTO.getFaultDetail());
-                map.put("对象名称", resDTO.getObjectName());
-                map.put("部件名称", resDTO.getPartName());
-                map.put("故障工单编号", resDTO.getFaultWorkNo());
-                map.put("对象编码", resDTO.getObjectCode());
-                map.put("故障状态", orderStatus != null ? orderStatus.getDesc() : resDTO.getOrderStatus());
-                map.put("维修部门", repairDept);
-                map.put("提报部门", fillinDept);
-                map.put("提报人员", resDTO.getFillinUserName());
-                map.put("联系电话", resDTO.getDiscovererPhone());
-                map.put("提报时间", resDTO.getFillinTime());
-                map.put("发现人", resDTO.getDiscovererName());
-                map.put("发现时间", resDTO.getDiscoveryTime());
-                map.put("故障分类", faultType == null ? resDTO.getFaultType() : faultType.getDesc());
-                map.put("故障紧急程度", faultLevel == null ? resDTO.getFaultLevel() : faultLevel.getDesc());
-                map.put("故障影响", faultAffect != null ? faultAffect.getDesc() : resDTO.getFaultAffect());
-                map.put("线路", lineCode != null ? lineCode.getDesc() : resDTO.getLineCode());
-                map.put("车底号/车厢号", resDTO.getTrainTrunk());
-                map.put("位置一", resDTO.getPositionName());
-                map.put("位置二", Optional.ofNullable(position2.getItemCname()).orElse(CommonConstants.EMPTY));
-                map.put("专业", resDTO.getMajorName());
-                map.put("系统", resDTO.getSystemName());
-                if (partBO != null) {
-                    map.put("更换配件名称", partBO.getReplacementName());
-                    map.put("旧配件编号", partBO.getOldRepNo());
-                    map.put("新配件编号", partBO.getNewRepNo());
-                    map.put("更换所用时间", partBO.getOperateCostTime());
-                }
-                map.put("设备分类", resDTO.getEquipTypeName());
-                map.put("模块", resDTO.getFaultModule());
-                map.put("故障处理人员", dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
-                map.put("故障处理情况", resDTO.getFaultActionDetail());
-                map.put("故障处理人数", resDTO.getDealerNum());
-                list.add(map);
-            }
+        if (CollectionUtil.isEmpty(faultDetailResDTOS)) {
+            return;
         }
-        ExcelPortUtil.excelPort("故障信息", listName, list, null, response);
+        List<FaultExportBO> exportList = Lists.newArrayList();
+        faultDetailResDTOS.forEach(resDTO -> exportList.add(_buildExportBO(resDTO)));
+        try {
+            EasyExcelUtils.export(response, "故障信息", exportList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @NotNull
+    private FaultExportBO _buildExportBO(FaultDetailResDTO resDTO) {
+        FaultExportBO exportBO = __BeanUtil.convert(resDTO, FaultExportBO.class);
+        OrderStatus orderStatus = OrderStatus.getByCode(resDTO.getOrderStatus());
+        FaultAffect faultAffect = FaultAffect.getByCode(resDTO.getFaultAffect());
+        FaultLevel faultLevel = FaultLevel.getByCode(resDTO.getOrderStatus());
+        DealerUnit dealerUnit = DealerUnit.getByCode(resDTO.getDealerUnit());
+        LineCode lineCode = LineCode.getByCode(resDTO.getLineCode());
+        FaultType faultType = FaultType.getByCode(resDTO.getFaultType());
+        Dictionaries position2 = dictService.queryOneByItemCodeAndCodesetCode("dm.station2", resDTO.getPosition2Code());
+        String repairDept = null;
+        String fillinDept = null;
+        if (StringUtils.isNotEmpty(resDTO.getRepairDeptCode())) {
+            repairDept = organizationMapper.getNamesById(resDTO.getRepairDeptCode());
+        }
+        if (StringUtils.isNotEmpty(resDTO.getFillinDeptCode())) {
+            fillinDept = organizationMapper.getNamesById(resDTO.getFillinDeptCode());
+        }
+        exportBO.setDealerUnit(dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
+        exportBO.setFillinDept(Optional.ofNullable(fillinDept).orElse(CommonConstants.EMPTY));
+        exportBO.setRepairDept(Optional.ofNullable(repairDept).orElse(CommonConstants.EMPTY));
+        exportBO.setPosition2Name(Optional.ofNullable(position2.getItemCname()).orElse(CommonConstants.EMPTY));
+        exportBO.setOrderStatus(orderStatus != null ? orderStatus.getDesc() : resDTO.getOrderStatus());
+        exportBO.setFaultType(faultType == null ? resDTO.getFaultType() : faultType.getDesc());
+        exportBO.setFaultLevel(faultLevel == null ? resDTO.getFaultLevel() : faultLevel.getDesc());
+        exportBO.setFaultAffect(faultAffect != null ? faultAffect.getDesc() : resDTO.getFaultAffect());
+        exportBO.setLineName(lineCode != null ? lineCode.getDesc() : resDTO.getLineCode());
+        PartBO partBO = partMapper.queryPartByFaultWorkNo(resDTO.getFaultWorkNo());
+        if (null != partBO) {
+            exportBO.setReplacementName(partBO.getReplacementName());
+            exportBO.setOldRepNo(partBO.getOldRepNo());
+            exportBO.setNewRepNo(partBO.getNewRepNo());
+            exportBO.setOperateCostTime(partBO.getOperateCostTime());
+        }
+        return exportBO;
     }
 
     @Override
@@ -554,7 +544,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         });
     }
 
-    private void _finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current) {
+    private void _finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String
+            currentUser, String current) {
         list.forEach(a -> {
             String faultWorkNo = a.getFaultWorkNo();
             FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(a.getFaultNo());
@@ -673,7 +664,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         });
     }
 
-    private void _check(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current, String stepOrg) {
+    private void _check(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String
+            current, String stepOrg) {
         list.forEach(a -> {
             String faultNo = a.getFaultNo();
             String faultWorkNo = a.getFaultWorkNo();

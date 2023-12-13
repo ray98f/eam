@@ -3,6 +3,8 @@ package com.wzmtr.eam.impl.fault;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
+import com.wzmtr.eam.bizobject.FaultAnalizeExportBO;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.Cols;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -32,7 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -66,34 +68,23 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Override
     public void export(String faultAnalysisNo, String faultNo, String faultWorkNo, HttpServletResponse response) {
         List<AnalyzeResDTO> resList = faultAnalyzeMapper.list(faultAnalysisNo, faultNo, faultWorkNo);
-        List<String> listName = Arrays.asList("故障分析编号", "故障编号", "故障工单编号", "专业", "故障发现时间", "线路", "频次", "位置", "牵头部门", "故障等级", "故障影响", "故障现象", "故障原因", "故障调查及处置情况", "系统", "本次故障暴露的问题", "整改措施");
         if (CollectionUtil.isEmpty(resList)) {
             return;
         }
-        List<Map<String, String>> list = new ArrayList<>();
-        for (AnalyzeResDTO resDTO : resList) {
-            String respDept = organizationMapper.getOrgById(resDTO.getRespDeptCode());
-            Map<String, String> map = new HashMap<>();
-            map.put("故障分析编号", resDTO.getFaultAnalysisNo());
-            map.put("故障编号", resDTO.getFaultNo());
-            map.put("故障工单编号", resDTO.getFaultWorkNo());
-            map.put("专业", resDTO.getMajorName());
-            map.put("故障发现时间", resDTO.getDiscoveryTime());
-            map.put("线路", resDTO.getLineCode());
-            map.put("频次", resDTO.getFrequency());
-            map.put("位置", resDTO.getPositionName());
-            map.put("牵头部门", StringUtils.isEmpty(respDept) ? resDTO.getRespDeptCode() : respDept);
-            map.put("故障等级", resDTO.getFaultLevel());
-            map.put("故障影响", resDTO.getAffectCodes());
-            map.put("故障现象", resDTO.getFaultDisplayDetail());
-            map.put("故障原因", resDTO.getFaultReasonDetail());
-            map.put("故障调查及处置情况", resDTO.getFaultProcessDetail());
-            map.put("系统", resDTO.getSystemCode());
-            map.put("本次故障暴露的问题", resDTO.getProblemDescr());
-            map.put("整改措施", resDTO.getImproveDetail());
-            list.add(map);
+        List<FaultAnalizeExportBO> exportList = Lists.newArrayList();
+        resList.forEach(item -> {
+                    String respDeptName = organizationMapper.getOrgById(item.getRespDeptCode());
+                    FaultAnalizeExportBO exportBO = __BeanUtil.convert(item, FaultAnalizeExportBO.class);
+                    exportBO.setRespDeptName(respDeptName == null ? CommonConstants.EMPTY : respDeptName);
+                    exportList.add(exportBO);
+                }
+        );
+        try {
+            EasyExcelUtils.export(response, "故障调查及处置情况", exportList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        ExcelPortUtil.excelPort("故障调查及处置情况", listName, list, null, response);
+
     }
 
     @Override
@@ -133,7 +124,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 dmfm03.setExt5(reqDTO.getLine());
                 dmfm03.setRecStatus("20");
             } catch (Exception e) {
-                log.error("故障分析流程提交错误，分析单号为-[{}]", faultAnalysisNo,e);
+                log.error("故障分析流程提交错误，分析单号为-[{}]", faultAnalysisNo, e);
             }
         }
         // 流程日志记录
@@ -194,9 +185,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
             faultAnalyzeDO.setRecReviseTime(DateUtil.getCurrentTime());
             faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
             faultAnalyzeMapper.update(faultAnalyzeDO);
-        }
-        catch (Exception e){
-            log.error("pass error",e);
+        } catch (Exception e) {
+            log.error("pass error", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "pass error");
         }
     }
