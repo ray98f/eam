@@ -98,6 +98,7 @@ public class RegionServiceImpl implements RegionService {
                 ExcelRegionResDTO res = ExcelRegionResDTO.builder()
                         .recId(resDTO.getRecId())
                         .nodeCode(resDTO.getNodeCode())
+                        .lineCode(resDTO.getLineCode())
                         .nodeName(resDTO.getNodeName())
                         .recStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "启用" : "禁用")
                         .remark(resDTO.getRemark())

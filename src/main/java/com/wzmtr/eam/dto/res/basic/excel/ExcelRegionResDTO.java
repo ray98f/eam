@@ -32,4 +32,6 @@ public class ExcelRegionResDTO {
     private String recCreator;
     @ExcelProperty(value = "创建时间")
     private String recCreateTime;
+    @ExcelProperty(value = "创建时间",index = 4)
+    private String lineCode;
 }
