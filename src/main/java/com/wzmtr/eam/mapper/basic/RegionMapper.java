@@ -1,6 +1,8 @@
 package com.wzmtr.eam.mapper.basic;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dataobject.RegionDO;
 import com.wzmtr.eam.dto.req.basic.RegionReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,7 +15,7 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface RegionMapper {
+public interface RegionMapper extends BaseMapper<RegionDO> {
 
     /**
      * 获取位置分类列表-分页
