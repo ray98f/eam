@@ -23,6 +23,7 @@
         and to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') >=      add_months(SYSDATE, -3)
         and d.FAULT_FLAG<![CDATA[ <> ]]>'2'
         <!--作废的故障除外-->
+        and d.DELETE_FLAG ='0'
         and d2.ORDER_STATUS<![CDATA[ <> ]]>'99'
         ) b
         on db.NODE_CODE = b.MAJOR_CODE
@@ -38,6 +39,7 @@
         where   d.FAULT_NO=d2.FAULT_NO
         and to_date(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') -trunc(sysdate) between -7 and 7
         and d.FAULT_FLAG<![CDATA[ <> ]]>'2'
+        and d.DELETE_FLAG ='0'
         <!--作废的故障除外-->
         and d2.ORDER_STATUS<![CDATA[ <> ]]>'99'
         ) b
@@ -55,6 +57,7 @@
         WHERE 1 = 1
         AND d.FAULT_NO = t.FAULT_NO
         and d.FAULT_FLAG<![CDATA[ <> ]]>'2'
+          and d.DELETE_FLAG ='0'
         <!--作废的故障除外-->
         <!--and t.ORDER_STATUS<![CDATA[ <> ]]>'99'-->
         and to_date(d.FILLIN_TIME,'yyyy-mm-dd hh24:mi:ss') >= add_months(SYSDATE, -3)

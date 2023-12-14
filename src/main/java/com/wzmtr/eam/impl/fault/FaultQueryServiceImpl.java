@@ -545,8 +545,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         });
     }
 
-    private void _finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String
-            currentUser, String current) {
+    private void _finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current) {
         list.forEach(a -> {
             String faultWorkNo = a.getFaultWorkNo();
             FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(a.getFaultNo());

@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.export.SecureHazardExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.SecureHazardDO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardAddReqDTO;
@@ -12,8 +13,10 @@ import com.wzmtr.eam.dto.req.secure.SecureHazardDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureHazardResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
+import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.RiskRank;
 import com.wzmtr.eam.enums.SecureRecStatus;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
@@ -74,7 +77,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         if (StringUtils.isNotEmpty(a.getInspectDeptCode())) {
             a.setInspectDeptName(organizationMapper.getNamesById(a.getInspectDeptCode()));
         }
-        if (StringUtils.isNotEmpty(a.getRiskPic())){
+        if (StringUtils.isNotEmpty(a.getRiskPic())) {
             a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getRiskPic().split(","))));
         }
         if (StringUtils.isNotEmpty(a.getNotifyDeptCode())) {
@@ -99,13 +102,12 @@ public class SecureHazardServiceImpl implements SecureHazardService {
 
     @Override
     public void export(String riskId, String begin, String end, String riskRank, String restoreDesc, String workFlowInstStatus, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("安全隐患排查单号", "发现日期", "安全隐患等级", "安全隐患内容", "检查部门", "检查人", "地点", "计划完成日期", "整改部门", "整改情况", "记录状态", "备注");
         List<SecureHazardResDTO> resList = hazardMapper.list(riskId, begin, end, riskRank, restoreDesc, workFlowInstStatus);
         if (CollectionUtil.isEmpty(resList)) {
             return;
         }
-        List<Map<String, String>> list = new ArrayList<>();
-        for (SecureHazardResDTO resDTO : resList) {
+        List<SecureHazardExportBO> exportList = new ArrayList<>();
+        resList.forEach(resDTO -> {
             resDTO.setRestoreDesc("整改中");
             if (CommonConstants.TEN_STRING.equals(resDTO.getIsRestored())) {
                 resDTO.setRestoreDesc("已完成整改");
@@ -113,24 +115,19 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             if (CommonConstants.ONE_STRING.equals(resDTO.getIsRestored())) {
                 resDTO.setRestoreDesc("未完成整改");
             }
+            SecureHazardExportBO exportBO = __BeanUtil.convert(resDTO, SecureHazardExportBO.class);
             SecureRecStatus secureRecStatus = SecureRecStatus.getByCode(resDTO.getRecStatus());
             RiskRank rank = RiskRank.getByCode(resDTO.getRiskRank());
-            Map<String, String> map = new HashMap<>();
-            map.put("安全隐患排查单号", resDTO.getRiskId());
-            map.put("发现日期", resDTO.getInspectDate());
-            map.put("安全隐患等级", rank == null ? resDTO.getRiskRank() : rank.getDesc());
-            map.put("安全隐患内容", resDTO.getRiskDetail());
-            map.put("检查部门", organizationMapper.getNamesById(resDTO.getInspectDeptCode()));
-            map.put("检查人", resDTO.getInspectorCode());
-            map.put("地点", resDTO.getPositionDesc());
-            map.put("计划完成日期", resDTO.getPlanDate());
-            map.put("整改部门", organizationMapper.getNamesById(resDTO.getRestoreDeptCode()));
-            map.put("整改情况", resDTO.getRestoreDesc());
-            map.put("记录状态", secureRecStatus == null ? resDTO.getRecStatus() : secureRecStatus.getDesc());
-            map.put("备注", resDTO.getPlanNote());
-            list.add(map);
+            exportBO.setRiskRank(rank == null ? resDTO.getRiskRank() : rank.getDesc());
+            exportBO.setRecStatus(secureRecStatus == null ? resDTO.getRecStatus() : secureRecStatus.getDesc());
+            exportList.add(exportBO);
+        });
+        try {
+            EasyExcelUtils.export(response, "安全隐患整改信息", exportList);
+        } catch (Exception e) {
+            log.error("导出失败",e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
-        ExcelPortUtil.excelPort("安全隐患整改信息", listName, list, null, response);
     }
 
     @Override
@@ -168,7 +165,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         SecureHazardDO convert = __BeanUtil.convert(reqDTO, SecureHazardDO.class);
-        hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID",reqDTO.getRiskId()));
+        hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID", reqDTO.getRiskId()));
     }
 
     @Override

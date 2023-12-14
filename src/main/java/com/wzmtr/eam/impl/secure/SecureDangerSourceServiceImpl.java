@@ -4,19 +4,19 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.export.SecureDangerSourceExportBO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceListReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.secure.SecureDangerSourceMapper;
 import com.wzmtr.eam.service.secure.SecureDangerSourceService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.ExcelPortUtil;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,25 +68,22 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
 
     @Override
     public void export(String dangerRiskId, String discDate, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("危险源单号", "危险源", "危险源级别", "危险源内容", "发现部门", "后果", "地点", "防范措施", "责任部门", "责任人");
         List<SecureDangerSourceResDTO> resList = secureDangerSourceMapper.list(dangerRiskId, discDate);
-        List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(resList)) {
+            List<SecureDangerSourceExportBO> exportList = new ArrayList<>();
             for (SecureDangerSourceResDTO resDTO : resList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("危险源单号", resDTO.getDangerRiskId());
-                map.put("危险源", resDTO.getDangerRisk());
-                map.put("危险源级别", resDTO.getDangerRiskRank());
-                map.put("发现部门", organizationMapper.getExtraOrgByAreaId(resDTO.getRecDept()));
-                map.put("后果", resDTO.getConsequense());
-                map.put("地点", resDTO.getPositionDesc());
-                map.put("防范措施", resDTO.getControlDetail());
-                map.put("责任部门", organizationMapper.getExtraOrgByAreaId(resDTO.getRespDeptCode()));
-                map.put("责任人", resDTO.getRespCode());
-                list.add(map);
+                SecureDangerSourceExportBO exportBO = __BeanUtil.convert(resDTO, SecureDangerSourceExportBO.class);
+                exportBO.setInspectDept(organizationMapper.getExtraOrgByAreaId(resDTO.getRecDept()));
+                exportBO.setRestoreDept(organizationMapper.getExtraOrgByAreaId(resDTO.getRespDeptCode()));
+                exportList.add(exportBO);
+            }
+            try {
+                EasyExcelUtils.export(response, "危险源排查信息", exportList);
+            } catch (Exception e) {
+                log.error("导出失败",e);
+                throw new CommonException(ErrorCode.NORMAL_ERROR);
             }
         }
-        ExcelPortUtil.excelPort("危险源排查信息", listName, list, null, response);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.SpareAndCarVideo;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.export.CarVideoExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.CarVideoDO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
@@ -203,29 +204,27 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     public void export(CarVideoExportReqDTO reqDTO, HttpServletResponse response) {
         // 2级修180天
         List<CarVideoResDTO> resList = carVideoMapper.list(reqDTO);
-        List<String> listName = Arrays.asList("调阅记录号", "车组号", "调阅性质", "申请部门", "视频起始时间", "视频截止时间", "申请调阅原因", "状态");
-        List<Map<String, String>> list = new ArrayList<>();
+        List<CarVideoExportBO> exportList = new ArrayList<>();
         if (CollectionUtil.isEmpty(resList)) {
             log.error("数据为空，无导出数据");
             return;
         }
         for (CarVideoResDTO res : resList) {
+            CarVideoExportBO exportBO = __BeanUtil.convert(res, CarVideoExportBO.class);
             String applyDeptName = " ";
             if (StringUtils.isNotEmpty(res.getApplyDeptCode())) {
                 applyDeptName = organizationMapper.getOrgById(res.getApplyDeptCode());
             }
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.videoApplyType", res.getApplyType());
-            Map<String, String> map = new HashMap<>();
-            map.put("调阅记录号", res.getApplyNo());
-            map.put("车组号", res.getTrainNo());
-            map.put("调阅性质", dictionaries.getItemCname());
-            map.put("申请部门", applyDeptName);
-            map.put("视频起始时间", res.getVideoStartTime());
-            map.put("视频截止时间", res.getVideoEndTime());
-            map.put("申请调阅原因", res.getApplyReason());
-            map.put("状态", res.getRecStatus());
-            list.add(map);
+            exportBO.setApplyDeptName(applyDeptName);
+            exportBO.setApplyType(dictionaries.getItemCname());
+            exportList.add(exportBO);
         }
-        ExcelPortUtil.excelPort("检调视频调阅", listName, list, null, response);
+        try {
+            EasyExcelUtils.export(response, "检调视频调阅", exportList);
+        } catch (Exception e) {
+            log.error("导出失败",e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR);
+        }
     }
 }

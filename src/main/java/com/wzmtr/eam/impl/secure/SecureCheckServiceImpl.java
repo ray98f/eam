@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.secure;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.export.SecureCheckExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureCheckDetailReqDTO;
@@ -105,15 +106,14 @@ public class SecureCheckServiceImpl implements SecureCheckService {
 
     @Override
     public void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("检查问题单号", "发现日期", "检查问题", "检查部门", "检查人", "地点", "整改措施",
-                "计划完成日期", "整改部门", "整改情况", "记录状态");
         List<SecureCheckRecordListResDTO> list = secureMapper.list(secRiskId, restoreDesc, inspectDate, workFlowInstStatus);
         if (CollectionUtil.isEmpty(list)) {
             log.warn("未查询到数据，丢弃导出操作!");
             return;
         }
-        List<Map<String, String>> exportList = new ArrayList<>();
+        List<SecureCheckExportBO> exportList = new ArrayList<>();
         for (SecureCheckRecordListResDTO res : list) {
+            SecureCheckExportBO exportBO = __BeanUtil.convert(res, SecureCheckExportBO.class);
             String inspectDept = organizationMapper.getOrgById(res.getInspectDeptCode());
             String restoreDept = organizationMapper.getExtraOrgByAreaId(res.getRestoreDeptCode());
             res.setIsRestoredName("整改中");
@@ -134,21 +134,18 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             if (null != secureRecStatus) {
                 desc = secureRecStatus.getDesc();
             }
-            Map<String, String> map = new HashMap<>();
-            map.put("检查问题单号", res.getSecRiskId());
-            map.put("发现日期", res.getInspectDate());
-            map.put("检查问题", res.getSecRiskDetail());
-            map.put("检查部门", StringUtils.isEmpty(inspectDept) ? res.getInspectDeptCode() : inspectDept);
-            map.put("检查人", res.getInspectorCode());
-            map.put("地点", res.getPositionDesc());
-            map.put("整改措施", res.getRestoreDetail());
-            map.put("计划完成日期", res.getPlanDate());
-            map.put("整改部门", StringUtils.isEmpty(restoreDept) ? res.getRestoreDeptCode() : restoreDept);
-            map.put("整改情况", res.getIsRestoredName() == null ? res.getIsRestored() : res.getIsRestoredName());
-            map.put("记录状态", StringUtils.isEmpty(desc) ? res.getRecStatus() : desc);
-            exportList.add(map);
+            exportBO.setInspectDept(StringUtils.isEmpty(inspectDept) ? res.getInspectDeptCode() : inspectDept);
+            exportBO.setRestoreDept(StringUtils.isEmpty(restoreDept) ? res.getRestoreDeptCode() : restoreDept);
+            exportBO.setIsRestoredName(res.getIsRestoredName() == null ? res.getIsRestored() : res.getIsRestoredName());
+            exportBO.setRecStatus(StringUtils.isEmpty(desc) ? res.getRecStatus() : desc);
+            exportList.add(exportBO);
         }
-        ExcelPortUtil.excelPort("安全、质量、消防检查记录", listName, exportList, null, response);
+        try {
+            EasyExcelUtils.export(response, "安全、质量、消防检查记录", exportList);
+        } catch (Exception e) {
+            log.error("导出失败",e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR);
+        }
     }
 
     @Override
