@@ -9,9 +9,8 @@
         LEFT JOIN SYS_USER u ON om.REC_CREATOR=u.ID
         where om.DELETE_FLAG='0'
         <if test="orgCodes!=null and orgCodes.size()>0">
-            and
             <foreach collection="orgCodes" index="index" item="orgCode">
-                om.ORG_CODE in
+                and om.ORG_CODE in
                 <foreach collection="orgCode" item="x" separator="," open="(" close=")">
                     #{x}
                 </foreach>
