@@ -173,7 +173,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         List<Role> roles = roleMapper.getLoginRole(TokenUtil.getCurrentPersonId());
         List<String> roleCode = new ArrayList<>();
         if (!roles.isEmpty()) {
-            roleCode = roles.stream().map(Role::getRoleCode).collect(Collectors.toList());
+            // roleCode = roles.stream().map(Role::getRoleCode).collect(Collectors.toList());
+            roleCode = __StreamUtil.mapToList(roles, r -> StringUtils.isNotEmpty(r.getRoleCode()), Role::getRoleCode);
         }
         boolean bool = !roleCode.isEmpty() && (roleCode.contains("5") || roleCode.contains("6"));
         if (bool) {
