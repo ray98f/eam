@@ -3,9 +3,9 @@ package com.wzmtr.eam.impl.specialEquip;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dataobject.DetectionPlanDetailDO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanReqDTO;
-import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanDetailResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.DetectionPlanResDTO;
 import com.wzmtr.eam.dto.res.specialEquip.excel.ExcelDetectionPlanDetailResDTO;
@@ -17,6 +17,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
+import com.wzmtr.eam.mapper.specialEquip.DetectionPlanDetailMapper;
 import com.wzmtr.eam.mapper.specialEquip.DetectionPlanMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.specialEquip.DetectionPlanService;
@@ -29,7 +30,9 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author frp
@@ -49,6 +52,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Autowired
     private BpmnService bpmnService;
+    @Autowired
+    private DetectionPlanDetailMapper detectionPlanDetailMapper;
 
     @Override
     public Page<DetectionPlanResDTO> pageDetectionPlan(String instrmPlanNo, String planStatus, String editDeptCode,
@@ -298,7 +303,10 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                DetectionPlanDetailDO detectionPlanDetailDO = new DetectionPlanDetailDO();
+                detectionPlanDetailDO.setRecId(id).setDeleteFlag(CommonConstants.ONE_STRING).setRecDeletor(TokenUtil.getCurrentPersonId()).setRecDeleteTime(DateUtil.dateTimeNow());
+                detectionPlanDetailMapper.updateById(detectionPlanDetailDO);
+                // detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
