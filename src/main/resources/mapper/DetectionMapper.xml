@@ -677,63 +677,67 @@
 
     <select id="listDetectionDetail" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO">
         SELECT
-        a.REC_ID	as "recId",  <!-- 记录编号 -->
-        a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
-        a.TESTLIST_DETAIL_REC_ID	as "testlistDetailRecId",  <!-- 检测单明细表REC_ID -->
-        a.EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
-        a.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
-        a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
-        a.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
-        a.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
-        a.INSTALLATION_UNIT	as "installationUnit",  <!-- 安装单位 -->
-        a.VERIFY_DATE	as "verifyDate",  <!-- 检测日期 -->
-        a.VERIFICATION_NO	as "verificationNo",  <!-- 证书编号 -->
-        a.VERIFICATION_TYPE	as "verificationType",  <!-- 证书类型 -->
-        a.VERIFY_PROOF	as "verifyProof",  <!-- 检测依据 -->
-        a.VERIFY_REPORT_NO	as "verifyReportNo",  <!-- 检测报告编号 -->
-        a.VERIFY_REPORT_TYPE	as "verifyReportType",  <!-- 检测报告类型 0:检测证书;1:校准证书;2:检测结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
-        a.VERIFY_REPORT_NAME	as "verifyReportName",  <!-- 检测报告名称 -->
-        a.VERIFY_REPORT_DATE	as "verifyReportDate",  <!-- 检测报告日期 -->
-        a.VERIFY_FEE	as "verifyFee",  <!-- 检测费用 -->
-        a.VERIFY_RESULT	as "verifyResult",  <!-- 检测结果（0：合格；1：不合格） -->
-        a.VERIFY_CONCLUSION	as "verifyConclusion",  <!-- 检测结果说明 -->
-        a.VERIFY_REPORT_ATT	as "verifyReportAtt",  <!-- 检测报告附件 -->
-        a.LAST_VERIFY_DATE	as "lastVerifyDate",  <!-- 上次检测日期 -->
-        a.NEXT_VERIFY_DATE	as "nextVerifyDate",  <!-- 下次检测日期 -->
-        a.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
-        a.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
-        a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
-        a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
-        a.POSITION3	as "position3",  <!-- 位置三 -->
-        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
-        a.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
-        a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
-        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
-        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
-        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
-        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
-        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
-        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
-        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
-        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
-        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
-        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
-        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
-        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
-        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
-        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        a.REC_ID as "recId",  <!-- 记录编号 -->
+        a.TEST_REC_ID as "testRecId",  <!-- 检测记录表REC_ID -->
+        a.TESTLIST_DETAIL_REC_ID as "testlistDetailRecId",  <!-- 检测单明细表REC_ID -->
+        a.EQUIP_CODE as "equipCode",  <!-- 设备代码 -->
+        a.EQUIP_NAME as "equipName",  <!-- 设备名称 -->
+        a.MAT_SPECIFI as "matSpecifi",  <!-- 型号规格 -->
+        a.MANUFACTURE_NO as "manufactureNo",  <!-- 出厂编号 -->
+        a.MANUFACTURE as "manufacture",  <!-- 生产厂家 -->
+        a.INSTALLATION_UNIT as "installationUnit",  <!-- 安装单位 -->
+        a.VERIFY_DATE as "verifyDate",  <!-- 检测日期 -->
+        a.VERIFICATION_NO as "verificationNo",  <!-- 证书编号 -->
+        a.VERIFICATION_TYPE as "verificationType",  <!-- 证书类型 -->
+        a.VERIFY_PROOF as "verifyProof",  <!-- 检测依据 -->
+        a.VERIFY_REPORT_NO as "verifyReportNo",  <!-- 检测报告编号 -->
+        a.VERIFY_REPORT_TYPE as
+        "verifyReportType",  <!-- 检测报告类型 0:检测证书;1:校准证书;2:检测结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
+        a.VERIFY_REPORT_NAME as "verifyReportName",  <!-- 检测报告名称 -->
+        a.VERIFY_REPORT_DATE as "verifyReportDate",  <!-- 检测报告日期 -->
+        a.VERIFY_FEE as "verifyFee",  <!-- 检测费用 -->
+        a.VERIFY_RESULT as "verifyResult",  <!-- 检测结果（0：合格；1：不合格） -->
+        a.VERIFY_CONCLUSION as "verifyConclusion",  <!-- 检测结果说明 -->
+        a.VERIFY_REPORT_ATT as "verifyReportAtt",  <!-- 检测报告附件 -->
+        a.LAST_VERIFY_DATE as "lastVerifyDate",  <!-- 上次检测日期 -->
+        a.NEXT_VERIFY_DATE as "nextVerifyDate",  <!-- 下次检测日期 -->
+        a.POSITION1_CODE as "position1Code",  <!-- 位置一 -->
+        a.POSITION1_NAME as "position1Name",  <!-- 位置一名称 -->
+        a.POSITION2_CODE as "position2Code",  <!-- 位置二 -->
+        a.POSITION2_NAME as "position2Name",  <!-- 位置二名称 -->
+        a.POSITION3 as "position3",  <!-- 位置三 -->
+        a.POSITION_REMARK as "positionRemark",  <!-- 位置补充说明 -->
+        a.FAULT_NO as "faultNo",  <!-- 故障编号 -->
+        a.VERIFY_NOTE as "verifyNote",  <!-- 备注 -->
+        a.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        a.EXT1 as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2 as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3 as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4 as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5 as "ext5", <!-- 扩展字段5 -->
         b.SEND_VERIFY_NO as "sendVerifyNo",
         b.VERIFY_DEPT as "verifyDept",
         a.VERIFY_VALIDITY_DATE as "verifyValidityDate",
-        se31.EQUIP_INNER_NO as "equipInnerNo",
+        <!-- se31.EQUIP_INNER_NO as "equipInnerNo",-->
         a.DOC_ID as "docId"
         <!--d.PLAN_STATUS as "planStatus"-->
         FROM T_DETECTION_DETAIL a
         LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
-        LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE
-        WHERE 1=1 and a.TEST_REC_ID=#{testRecId} and a.DELETE_FLAG='0'
+        <!--LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE-->
+        WHERE a.DELETE_FLAG='0'
+        <if test="testRecId!=null and testRecId!=''">
+            a.TEST_REC_ID=#{testRecId}
+        </if>
         <!--<isNotEmpty prepend=" AND " property="testRecId">-->
         <!--a.TEST_REC_ID=#{testRecId#-->
         <!--</isNotEmpty>-->

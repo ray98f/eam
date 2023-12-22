@@ -329,7 +329,7 @@ public class DetectionServiceImpl implements DetectionService {
     @Override
     public void exportDetectionDetail(String testRecId, HttpServletResponse response) throws IOException {
         List<DetectionDetailResDTO> detectionPlanDetailResDTOList = detectionMapper.listDetectionDetail(testRecId);
-        if (detectionPlanDetailResDTOList != null && !detectionPlanDetailResDTOList.isEmpty()) {
+        if (CollectionUtil.isNotEmpty(detectionPlanDetailResDTOList)) {
             List<ExcelDetectionDetailResDTO> list = new ArrayList<>();
             for (DetectionDetailResDTO resDTO : detectionPlanDetailResDTOList) {
                 ExcelDetectionDetailResDTO res = new ExcelDetectionDetailResDTO();
