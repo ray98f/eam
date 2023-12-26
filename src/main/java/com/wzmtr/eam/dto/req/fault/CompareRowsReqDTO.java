@@ -13,6 +13,8 @@ import java.util.Set;
 @Data
 @ApiModel
 public class CompareRowsReqDTO {
-    //选中的行
+    /**
+     * 选中的行
+     */
     Set<String> faultNos;
 }

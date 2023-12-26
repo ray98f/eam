@@ -82,7 +82,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     }
 
     private FaultDetailResDTO assemblyResDTO(FaultInfoDO faultInfo, FaultDetailResDTO faultOrder) {
-        FaultDetailResDTO res = __BeanUtil.copy(faultInfo, faultOrder);
+        FaultDetailResDTO res = BeanUtils.copy(faultInfo, faultOrder);
         if (StringUtils.isNotEmpty(res.getLineCode())) {
             LineCode name = LineCode.getByCode(res.getLineCode());
             if (null != name) {
@@ -133,7 +133,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         List<FaultTrackExportBO> exportList = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(res)) {
             res.forEach(resDTO -> {
-                FaultTrackExportBO exportBO = __BeanUtil.convert(resDTO, FaultTrackExportBO.class);
+                FaultTrackExportBO exportBO = BeanUtils.convert(resDTO, FaultTrackExportBO.class);
                 Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackStatus", resDTO.getRecStatus());
                 exportBO.setTrackDDL(resDTO.getTrackPeriod().toString());
                 exportBO.setTrackCyc(resDTO.getTrackCycle().toString());
@@ -170,7 +170,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             String maxCode = faultTrackMapper.selectMaxCode();
             String nextCode = CodeUtils.getNextCode(maxCode, "GT");
             faultTrackBO.setFaultTrackNo(nextCode);
-            faultTrackMapper.insert(__BeanUtil.convert(faultTrackBO, FaultTrackDO.class));
+            faultTrackMapper.insert(BeanUtils.convert(faultTrackBO, FaultTrackDO.class));
             // 生成跟踪工单
             String faultTrackNo = faultTrackBO.getFaultTrackNo();
             String faultWorkNo = faultTrackBO.getFaultWorkNo();
@@ -184,7 +184,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             faultTrackWorkBO.setDispatchUserId(CommonConstants.BLANK);
             faultTrackWorkBO.setDispatchTime(CommonConstants.BLANK);
             faultTrackWorkBO.setRecStatus("10");
-            faultTrackWorkMapper.insert(__BeanUtil.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
+            faultTrackWorkMapper.insert(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
             // 待办逻辑处理
             TrackQueryResDTO trackRes = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
             Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
@@ -198,8 +198,8 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             return;
         }
         // 更新两张表
-        faultTrackMapper.update(__BeanUtil.convert(faultTrackBO, FaultTrackDO.class), new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo).eq(Cols.FAULT_TRACK_NO, exist.getFaultTrackNo()));
-        faultTrackWorkMapper.update(__BeanUtil.convert(faultTrackWorkBO, FaultTrackWorkDO.class), new UpdateWrapper<FaultTrackWorkDO>().eq(Cols.FAULT_TRACK_NO, exist.getFaultTrackNo()));
+        faultTrackMapper.update(BeanUtils.convert(faultTrackBO, FaultTrackDO.class), new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo).eq(Cols.FAULT_TRACK_NO, exist.getFaultTrackNo()));
+        faultTrackWorkMapper.update(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class), new UpdateWrapper<FaultTrackWorkDO>().eq(Cols.FAULT_TRACK_NO, exist.getFaultTrackNo()));
     }
 
 
@@ -235,7 +235,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             faultTrackWorkBO.setDispatchTime(CommonConstants.BLANK);
             // 待派工
             faultTrackWorkBO.setRecStatus("10");
-            faultTrackWorkMapper.insert(__BeanUtil.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
+            faultTrackWorkMapper.insert(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
             TrackQueryResDTO dmfm09 = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
             String majorCode = dmfm09.getMajorCode();
             Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");

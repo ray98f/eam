@@ -53,7 +53,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO.getSecRiskId(), reqDTO.getInspectDateStart(), reqDTO.getInspectDateEnd(), reqDTO.getIsRestoredCode(), reqDTO.getRecStatus());
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
-            // __StreamUtil.map(records,SecureCheckRecordListResDTO::create);
+            // StreamUtil.map(records,SecureCheckRecordListResDTO::create);
             records.forEach(this::assembly);
             return list;
         }
@@ -113,7 +113,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         }
         List<SecureCheckExportBO> exportList = new ArrayList<>();
         for (SecureCheckRecordListResDTO res : list) {
-            SecureCheckExportBO exportBO = __BeanUtil.convert(res, SecureCheckExportBO.class);
+            SecureCheckExportBO exportBO = BeanUtils.convert(res, SecureCheckExportBO.class);
             String inspectDept = organizationMapper.getOrgById(res.getInspectDeptCode());
             String restoreDept = organizationMapper.getExtraOrgByAreaId(res.getRestoreDeptCode());
             res.setIsRestoredName("整改中");

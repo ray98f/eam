@@ -143,9 +143,9 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         }
     }
 
-    // ServiceDMSE0001
     @Override
     public void submitDetectionPlan(DetectionPlanReqDTO detectionPlanReqDTO) throws Exception {
+        // ServiceDMSE0001
         DetectionPlanResDTO res = detectionPlanMapper.getDetectionPlanDetail(detectionPlanReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);

@@ -3,16 +3,23 @@ package com.wzmtr.eam.soft.mdm.orgquery.vo;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-	/**
-	 *
-	 */
+
 	private static final long serialVersionUID = -6936988529248640521L;
 
-	private String syscode;// 系统编码
+	/**
+	 * 系统编码
+	 */
+	private String syscode;
 
-	private Integer operType;// 操作类型
+	/**
+	 * 操作类型
+	 */
+	private Integer operType;
 
-	private String orgId;// 组织机构ID
+	/**
+	 * 组织机构ID
+	 */
+	private String orgId;
 
 	public String getSyscode() {
 		return syscode;

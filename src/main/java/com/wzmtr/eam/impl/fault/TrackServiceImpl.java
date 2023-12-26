@@ -124,7 +124,7 @@ public class TrackServiceImpl implements TrackService {
             workFlowInstId = res.getRecId() + "_" + res.getFaultWorkNo();
         }
         overTodoService.overTodo(workFlowInstId, "跟踪工单");
-        FaultTrackDO bo = __BeanUtil.convert(res, FaultTrackDO.class);
+        FaultTrackDO bo = BeanUtils.convert(res, FaultTrackDO.class);
         bo.setFaultTrackNo(reqDTO.getFaultTrackNo());
         bo.setRecStatus("20");
         bo.setExt1(workFlowInstId);
@@ -150,7 +150,7 @@ public class TrackServiceImpl implements TrackService {
         List<FaultTrackWorkExportBO> exportList = Lists.newArrayList();
         resList.forEach(a -> {
             Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackWorkStatus", a.getRecStatus());
-            FaultTrackWorkExportBO exportBO = __BeanUtil.convert(a, FaultTrackWorkExportBO.class);
+            FaultTrackWorkExportBO exportBO = BeanUtils.convert(a, FaultTrackWorkExportBO.class);
             exportBO.setTrackStatus(dictionaries.getItemCname());
             exportList.add(exportBO);
         });

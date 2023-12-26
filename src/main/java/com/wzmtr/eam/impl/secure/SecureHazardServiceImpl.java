@@ -18,7 +18,6 @@ import com.wzmtr.eam.enums.RiskRank;
 import com.wzmtr.eam.enums.SecureRecStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
-import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.secure.SecureHazardMapper;
 import com.wzmtr.eam.service.secure.SecureHazardService;
@@ -115,7 +114,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             if (CommonConstants.ONE_STRING.equals(resDTO.getIsRestored())) {
                 resDTO.setRestoreDesc("未完成整改");
             }
-            SecureHazardExportBO exportBO = __BeanUtil.convert(resDTO, SecureHazardExportBO.class);
+            SecureHazardExportBO exportBO = BeanUtils.convert(resDTO, SecureHazardExportBO.class);
             SecureRecStatus secureRecStatus = SecureRecStatus.getByCode(resDTO.getRecStatus());
             RiskRank rank = RiskRank.getByCode(resDTO.getRiskRank());
             exportBO.setRiskRank(rank == null ? resDTO.getRiskRank() : rank.getDesc());
@@ -164,7 +163,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         }
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        SecureHazardDO convert = __BeanUtil.convert(reqDTO, SecureHazardDO.class);
+        SecureHazardDO convert = BeanUtils.convert(reqDTO, SecureHazardDO.class);
         hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID", reqDTO.getRiskId()));
     }
 

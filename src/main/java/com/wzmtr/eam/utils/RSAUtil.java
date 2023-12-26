@@ -14,6 +14,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -21,12 +22,16 @@ public class RSAUtil {
 
 
     public static final String RSA = "RSA";
-    // PKCS1
+    /**
+     * PKCS1
+     */
     public static final String ECB_PADDING = "RSA/ECB/PKCS1Padding";
     public static final String PUBLIC_KEY = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJriKRcr8gLRcxksjG6caUtn+K440SMvdzWMerlru4MH+ErA8HFJKEroziIZrb913P4VXu00qTZFIl/AD0VsFT8CAwEAAQ==";
     public static final String PRIVATE_KEY = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAmuIpFyvyAtFzGSyMbpxpS2f4rjjRIy93NYx6uWu7gwf4SsDwcUkoSujOIhmtv3Xc/hVe7TSpNkUiX8APRWwVPwIDAQABAkBJeZSoq25Jq/cAMEQGjSjeXtp4O/fqyy+wNY5avCLeS4IRGSqeyabMKiXnGl31QCgQ++LK/Uv5cg7RewHZQU/RAiEA1+LaUkfyU5oBhnNYCKiJPddWiHr8AbAFF5dLbwfNXpUCIQC3qZD8IUznYlNHV80uMQJZWWcDlCD7QnuW4f/WkUkzgwIgVJiXdqCsy6fQqy/tsk7goLQOO6L9t2eTR0BJFfQXvNUCIHUTqbGfxLdHLZEv/kKwyS+N1yYn2jJxOfl/zafI66HjAiEAnZd78b8FbPMHDicGDpSk/eigjqaUh2Wu1WKfr0Ex7FM=";
 
-    // 密钥位数
+    /**
+     * 密钥位数
+     */
     private static final int KEY_SIZE = 512;
     private static final int RESERVE_BYTES = 11;
     private static final int DECRYPT_BLOCK = KEY_SIZE / 8;
@@ -197,19 +202,24 @@ public class RSAUtil {
     }
 
     public static Map<Integer, String> genKeyPair() {
-        Map<Integer, String> keyMap = new HashMap<>(); // 用于封装随机产生的公钥与私钥
+        // 用于封装随机产生的公钥与私钥
+        Map<Integer, String> keyMap = new HashMap<>();
         try {
             // 生成一个密钥对，保存在keyPair中
             KeyPair keyPair = generateKeyPair(KEY_SIZE);
-            RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate(); // 得到私钥
-            RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic(); // 得到公钥
+            // 得到私钥
+            RSAPrivateKey privateKey = (RSAPrivateKey) Objects.requireNonNull(keyPair).getPrivate();
+            // 得到公钥
+            RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
             // 得到公钥字符串
             String publicKeyString = new String(Base64.encodeBase64(publicKey.getEncoded()));
             // 得到私钥字符串
             String privateKeyString = new String(Base64.encodeBase64((privateKey.getEncoded())));
             // 将公钥和私钥保存到Map
-            keyMap.put(0, publicKeyString); // 0表示公钥
-            keyMap.put(1, privateKeyString); // 1表示私钥
+            // 0表示公钥
+            keyMap.put(0, publicKeyString);
+            // 1表示私钥
+            keyMap.put(1, privateKeyString);
         } catch (Exception e) {
             log.info("生成公钥私钥异常：" + e.getMessage());
             return null;

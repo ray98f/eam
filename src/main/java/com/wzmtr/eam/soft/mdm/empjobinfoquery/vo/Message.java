@@ -4,17 +4,22 @@ import java.io.Serializable;
 
 public class Message implements Serializable {
 
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 3920212262223415377L;
 
-	private String syscode;// 系统编码
+	/**
+	 * 系统编码
+	 */
+	private String syscode;
 
-	private Integer operType;// 操作类型
+	/**
+	 * 操作类型
+	 */
+	private Integer operType;
 
-	private String empJobInfoId;// 任职信息ID
+	/**
+	 * 任职信息ID
+	 */
+	private String empJobInfoId;
 
 	public String getSyscode() {
 		return syscode;

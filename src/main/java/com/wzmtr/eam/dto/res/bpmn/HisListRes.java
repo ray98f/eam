@@ -8,11 +8,17 @@ import lombok.Data;
  */
 @Data
 public class HisListRes {
-    //procId
+    /**
+     *    procId
+     */
     private String procId;
-    //标题
+    /**
+     *    标题
+     */
     private String procDefName;
-    //开始时间
+    /**
+     *    开始时间
+     */
     private String createTime;
 
 

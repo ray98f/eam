@@ -35,27 +35,39 @@ import java.util.Map;
 @Configuration
 public class ShiroCasConfiguration {
 
-    //    cas 的server地址
+    /**
+     * 的server地址
+     */
     @Value("${cas.serverUrlPrefix}")
     public String casServerUrlPrefix;
 
-    //    对外提供的服务地址
+    /**
+     * 对外提供的服务地址
+     */
     @Value("${cas.serviceUrlPrefix}")
     public String casServiceUrlPrefix;
 
-    //    casFilter cas 拦截的地址
+    /**
+     * casFilter cas 拦截的地址
+     */
     @Value("${cas.casFilterUrlPattern}")
     public String casFilterUrlPattern;
 
-    //    登录成功的地址
+    /**
+     * 登录成功的地址
+     */
     @Value("${cas.successUrlPattern}")
     public String loginSuccessUrl;
 
-    //    登录的地址
+    /**
+     * 登录的地址
+     */
     @Value("${cas.loginUrlPattern}")
     public String loginUrlPattern;
 
-    //    退出的地址
+    /**
+     * 退出的地址
+     */
     @Value("${cas.logoutUrlPattern}")
     public String logoutUrlPattern;
 
@@ -91,9 +103,11 @@ public class ShiroCasConfiguration {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         registrationBean.setName("registrationBean");
         registrationBean.setFilter(new SingleSignOutFilter());
-        registrationBean.addUrlPatterns("/*");//拦截所有的请求
+        //拦截所有的请求
+        registrationBean.addUrlPatterns("/*");
         registrationBean.setEnabled(true);
-        registrationBean.setOrder(10);//设置优先级
+        //设置优先级
+        registrationBean.setOrder(10);
         return registrationBean;
     }
 
@@ -127,7 +141,12 @@ public class ShiroCasConfiguration {
         return advisor;
     }
 
-    //	使用工厂模式，创建并初始化ShiroFilter
+    /**
+     * 使用工厂模式，创建并初始化ShiroFilter
+     * @param securityManager
+     * @param casFilter
+     * @return
+     */
     @Bean(name = "shiroFilter")
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(SecurityManager securityManager, CasFilter casFilter) {
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();

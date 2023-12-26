@@ -12,24 +12,42 @@ import java.util.List;
 @Data
 @ApiModel
 public class FlowRoleResDTO {
-    //流程节点Id
+    /**
+     *    流程节点Id
+     */
     private String nodeId;
-    //流程节点名称
+    /**
+     *    流程节点名称
+     */
     private String nodeName;
-    //流程ID
+    /**
+     *    流程ID
+     */
     private String flowId;
-    //流程名称
+    /**
+     *    流程名称
+     */
     private String flowName;
-    //角色ID
+    /**
+     *    角色ID
+     */
     private String roleId;
-    //角色名称
+    /**
+     *    角色名称
+     */
     private String roleName;
     private String isOwnerOrg;
-    //第几步
+    /**
+     *    第几步
+     */
     private String step;
-    //属于哪一条流程线
+    /**
+     *    属于哪一条流程线
+     */
     private String line;
-    //父节点
+    /**
+     *    父节点
+     */
     private String parentId;
 
     private List<PersonListResDTO> person;

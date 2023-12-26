@@ -3,9 +3,7 @@ package com.wzmtr.eam.soft.mdm.supplierquery.vo;
 import java.io.Serializable;
 
 public class ErrorMessage implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 7961040980876634320L;
 
 	private String errorCode;
@@ -20,12 +18,12 @@ public class ErrorMessage implements Serializable {
 		return this.message;
 	}
 
-	public void setErrorCode(String _errorCode) {
-		this.errorCode = _errorCode;
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
 	}
 
-	public void setMessage(String _message) {
-		this.message = _message;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

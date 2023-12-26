@@ -3,18 +3,28 @@ package com.wzmtr.eam.soft.mdm.personquery.vo;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-	/**
-	 *
-	 */
+
 	private static final long serialVersionUID = -2702408200886040737L;
 
-	private String syscode;// 系统编码
+	/**
+	 * 系统编码
+	 */
+	private String syscode;
 
-	private Integer operType;// 操作类型
+	/**
+	 * 操作类型
+	 */
+	private Integer operType;
 
-	private String personId;// 用户Id
+	/**
+	 * 用户Id
+	 */
+	private String personId;
 
-	private Integer ifPhoto;// 是否返回照片
+	/**
+	 * 是否返回照片
+	 */
+	private Integer ifPhoto;
 
 	public String getSyscode() {
 		return syscode;

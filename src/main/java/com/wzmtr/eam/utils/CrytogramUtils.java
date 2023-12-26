@@ -12,11 +12,11 @@ import java.security.NoSuchAlgorithmException;
  * @version 1.0
  * @date 2021/11/19 15:00
  */
-public class CrytogramUtil
+public class CrytogramUtils
 {
 
 /*  public static void main(String[] args){
-    //String pwd = CrytogramUtil.encrypt("WZxxzx@123456mtr","MD5");
+    //String pwd = CrytogramUtils.encrypt("WZxxzx@123456mtr","MD5");
     //System.out.println(pwd);
     //oGcN2dlXlSSeon+HcRaQsg==
     //UkGW01e3If73/o+9yF/6Zg==

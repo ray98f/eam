@@ -162,9 +162,9 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         }
     }
 
-    // ServiceDMAM0201
     @Override
     public void submitCheckPlan(CheckPlanReqDTO checkPlanReqDTO) throws Exception {
+        // ServiceDMAM0201
         CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(checkPlanReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);

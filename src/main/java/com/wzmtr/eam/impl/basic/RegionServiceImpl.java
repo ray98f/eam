@@ -3,7 +3,6 @@ package com.wzmtr.eam.impl.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.dataobject.RegionDO;
 import com.wzmtr.eam.dto.req.basic.RegionReqDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelRegionResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
@@ -15,7 +14,6 @@ import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.service.basic.RegionService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__BeanUtil;
 import com.wzmtr.eam.utils.tree.RegionTreeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +63,7 @@ public class RegionServiceImpl implements RegionService {
         regionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         regionReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         regionMapper.addRegion(regionReqDTO);
-        // RegionDO regionDO = __BeanUtil.convert(regionReqDTO, RegionDO.class);
+        // RegionDO regionDO = BeanUtils.convert(regionReqDTO, RegionDO.class);
         // regionMapper.insert(regionDO);
     }
 

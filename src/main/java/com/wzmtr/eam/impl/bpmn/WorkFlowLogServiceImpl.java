@@ -7,8 +7,8 @@ import com.wzmtr.eam.dataobject.WorkFlowLogDO;
 import com.wzmtr.eam.mapper.bpmn.WorkFlowLogMapper;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.BeanUtils;
 import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.__BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +31,6 @@ public class WorkFlowLogServiceImpl implements IWorkFlowLogService {
             String userId = String.join(CommonConstants.COMMA, logBO.getUserIds());
             logBO.setUserId(userId);
         }
-        workFlowLogMapper.insert(__BeanUtil.convert(logBO, WorkFlowLogDO.class));
+        workFlowLogMapper.insert(BeanUtils.convert(logBO, WorkFlowLogDO.class));
     }
 }

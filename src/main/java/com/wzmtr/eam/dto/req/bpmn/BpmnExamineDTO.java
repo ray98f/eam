@@ -8,22 +8,31 @@ import lombok.Data;
  */
 @Data
 public class BpmnExamineDTO {
-    //任务ID
+    /**
+     *    任务ID
+     */
     private String taskId;
-    //处理意见
+    /**
+     *    处理意见
+     */
     private String opinion;
     private String action="agree";
     private String actionName="agree";
-    //下一个审批人，可多个 逗号隔开
+    /**
+     *    下一个审批人，可多个 逗号隔开
+     */
     private String chooseNodeUser;
-    //下一环节 如果要修改下个环节的审批人必须带上下一环节
+    /**
+     *    下一环节 如果要修改下个环节的审批人必须带上下一环节
+     */
     private String chooseNode;
-    //标题
+    /**
+     *    标题
+     */
     private String taskTitle;
     private String formData;
-    //下面好像都不重要
 
-    /*
+    /* 下面好像都不重要
     private String chooseNode="EndEvent_0xonpfg";
 
     private String formData;

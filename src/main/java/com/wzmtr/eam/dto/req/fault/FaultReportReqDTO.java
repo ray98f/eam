@@ -4,7 +4,7 @@ import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.__BeanUtil;
+import com.wzmtr.eam.utils.BeanUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -109,7 +109,7 @@ public class FaultReportReqDTO {
      * 数据库非空字段兜底赋值，初始化为空字符串
      */
     public FaultOrderDO toFaultOrderInsertDO(FaultReportReqDTO req) {
-        FaultOrderDO convert = __BeanUtil.convert(req, FaultOrderDO.class);
+        FaultOrderDO convert = BeanUtils.convert(req, FaultOrderDO.class);
         if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
             convert.setWorkClass(req.getRepairDeptCode());
         }
@@ -135,7 +135,7 @@ public class FaultReportReqDTO {
     }
 
     public FaultInfoDO toFaultInfoInsertDO(FaultReportReqDTO req) {
-        FaultInfoDO convert = __BeanUtil.convert(req, FaultInfoDO.class);
+        FaultInfoDO convert = BeanUtils.convert(req, FaultInfoDO.class);
         // String Toocc = (String)((Map)faultinfo.get(0)).get("ext4");
         convert.setExt4(req.getMaintenance().toString());
         convert.setTrainTag(req.getTraintag());

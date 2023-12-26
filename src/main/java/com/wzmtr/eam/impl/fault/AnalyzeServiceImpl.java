@@ -74,7 +74,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         List<FaultAnalizeExportBO> exportList = Lists.newArrayList();
         resList.forEach(item -> {
                     String respDeptName = organizationMapper.getOrgById(item.getRespDeptCode());
-                    FaultAnalizeExportBO exportBO = __BeanUtil.convert(item, FaultAnalizeExportBO.class);
+                    FaultAnalizeExportBO exportBO = BeanUtils.convert(item, FaultAnalizeExportBO.class);
                     exportBO.setRespDeptName(respDeptName == null ? CommonConstants.EMPTY : respDeptName);
                     exportList.add(exportBO);
                 }

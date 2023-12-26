@@ -72,7 +72,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
         if (CollectionUtil.isNotEmpty(resList)) {
             List<SecureDangerSourceExportBO> exportList = new ArrayList<>();
             for (SecureDangerSourceResDTO resDTO : resList) {
-                SecureDangerSourceExportBO exportBO = __BeanUtil.convert(resDTO, SecureDangerSourceExportBO.class);
+                SecureDangerSourceExportBO exportBO = BeanUtils.convert(resDTO, SecureDangerSourceExportBO.class);
                 exportBO.setInspectDept(organizationMapper.getExtraOrgByAreaId(resDTO.getRecDept()));
                 exportBO.setRestoreDept(organizationMapper.getExtraOrgByAreaId(resDTO.getRespDeptCode()));
                 exportList.add(exportBO);

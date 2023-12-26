@@ -210,7 +210,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             return;
         }
         for (CarVideoResDTO res : resList) {
-            CarVideoExportBO exportBO = __BeanUtil.convert(res, CarVideoExportBO.class);
+            CarVideoExportBO exportBO = BeanUtils.convert(res, CarVideoExportBO.class);
             String applyDeptName = " ";
             if (StringUtils.isNotEmpty(res.getApplyDeptCode())) {
                 applyDeptName = organizationMapper.getOrgById(res.getApplyDeptCode());

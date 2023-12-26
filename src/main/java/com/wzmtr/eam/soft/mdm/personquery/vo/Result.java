@@ -10,161 +10,259 @@ import java.util.Date;
  *
  */
 public class Result implements Serializable {
-	/**
-	 *
-	 */
+
 	private static final long serialVersionUID = 5393448087925727882L;
 
 	private String personId;
 
-	// 工号
+	/**
+	 *	工号
+	 */
 	private String personNo;
 
-	// 姓名
+	/**
+	 *	姓名
+	 */
 	private String personName;
 
-	// 姓名全拼
+	/**
+	 *	姓名全拼
+	 */
 	private String personFullName;
 
-	// 曾用名
+	/**
+	 *	曾用名
+	 */
 	private String beforeName;
 
-	// 性别
+	/**
+	 *	性别
+	 */
 	private String personSex;
 
-	// 民族
+	/**
+	 *	民族
+	 */
 	private String nation;
 
-	// 籍贯
+	/**
+	 *	籍贯
+	 */
 	private String nativePlace;
 
-	// 国籍
+	/**
+	 *	国籍
+	 */
 	private String nationality;
 
-	// 婚姻状况
+	/**
+	 *	婚姻状况
+	 */
 	private String marital;
 
-	// 政治面貌
+	/**
+	 *	政治面貌
+	 */
 	private String political;
 
-	// 民主党派
+	/**
+	 *	民主党派
+	 */
 	private String democraticParty;
 
-	// 出生日期
+	/**
+	 *	出生日期
+	 */
 	private Date birthday;
 
-	// 出生地
+	/**
+	 *	出生地
+	 */
 	private String bitrdhPlace;
 
-	// 年龄
+	/**
+	 *	年龄
+	 */
 	private Integer age;
 
-	// 身份证号码
+	/**
+	 *	身份证号码
+	 */
 	private String idCardNo;
 
-	// 身份证地址
+	/**
+	 *	身份证地址
+	 */
 	private String idCardAddress;
 
-	// 身份证生效日期
+	/**
+	 *	身份证生效日期
+	 */
 	private Date idCardEffectDate;
 
-	// 身份证截止日期
+	/**
+	 *	身份证截止日期
+	 */
 	private Date idCardExpDate;
 
-	// 身份证签发机关
+	/**
+	 *	身份证签发机关
+	 */
 	private String idCardSignOffice;
 
-	// 护照号码
+	/**
+	 *	护照号码
+	 */
 	private String passportNo;
 
-	// 户口簿编号
+	/**
+	 *	户口簿编号
+	 */
 	private String householdRegNo;
 
-	// 户口类型
+	/**
+	 *	户口类型
+	 */
 	private String householdType;
 
-	// 户口所在地
+	/**
+	 *	户口所在地
+	 */
 	private String householdAddress;
 
-	// 照片
+	/**
+	 *	照片
+	 */
 	private byte[] photo;
 
-	// 开始工作日期
+	/**
+	 *	开始工作日期
+	 */
 	private Date startWorkDate;
 
-	// 用工日期
+	/**
+	 *	用工日期
+	 */
 	private Date workingDate;
 
-	// 司龄（周年）
+	/**
+	 *	司龄（周年）
+	 */
 	private Integer serviceAge;
 
-	// 司龄（虚年）
+	/**
+	 *	司龄（虚年）
+	 */
 	private Integer serviceAgeXu;
 
-	// 用工形式
+	/**
+	 *	用工形式
+	 */
 	private String workType;
 
-	// 员工来源
+	/**
+	 *	员工来源
+	 */
 	private String personSource;
 
-	// 工龄（周年）
+	/**
+	 *	工龄（周年）
+	 */
 	private Integer workAge;
 
-	// 工龄（虚年）
+	/**
+	 *	工龄（虚年）
+	 */
 	private Integer workAgeX;
 
-	// 入司前工龄
+	/**
+	 *	入司前工龄
+	 */
 	private Integer inCompanyWorkAge;
 
-	// 最高学历
+	/**
+	 *	最高学历
+	 */
 	private String highestEdu;
 
-	// 最高学位
+	/**
+	 *	最高学位
+	 */
 	private String highestDegree;
 
-	// 入职来源
+	/**
+	 *	入职来源
+	 */
 	private String entrySource;
 
-	// 加入集团日期
+	/**
+	 *	加入集团日期
+	 */
 	private Date joinGroupDate;
 
-	// 加入当前公司日期
+	/**
+	 *	加入当前公司日期
+	 */
 	private Date joinCompanyDate;
 
-	// 相关工作年限
+	/**
+	 *	相关工作年限
+	 */
 	private Integer workYear;
 
-	// 相关工作年限（虚）
+	/**
+	 *	相关工作年限（虚）
+	 */
 	private Integer workYearX;
 
-	// 非相关工作年限
+	/**
+	 *	非相关工作年限
+	 */
 	private Integer noRelWorkYear;
 
-	// 员工身份
+	/**
+	 *	员工身份
+	 */
 	private String personIdentity;
 
-	// 最高职称
+	/**
+	 *	最高职称
+	 */
 	private String highestTitle;
 
-	// 转正日期
+	/**
+	 *	转正日期
+	 */
 	private Date toOffiDate;
 
-	// 电子邮件
+	/**
+	 *	电子邮件
+	 */
 	private String email;
 
-	// 手机
+	/**
+	 *	手机
+	 */
 	private String phoneNo;
 
-	// 家庭电话
+	/**
+	 *	家庭电话
+	 */
 	private String homePhoneNo;
 
-	// 办公电话
+	/**
+	 *	办公电话
+	 */
 	private String officePhoneNo;
 
-	// 邮政编码
+	/**
+	 *	邮政编码
+	 */
 	private String zipCode;
 
-	// 显示序号
+	/**
+	 *	显示序号
+	 */
 	private Integer showOrder;
 
 	public String getPersonNo() {
