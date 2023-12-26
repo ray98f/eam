@@ -26,8 +26,6 @@ public class ExcelSubmissionRecordResDTO {
     private String verifyDept;
     @ExcelProperty(value = "检定记录状态")
     private String recStatus;
-    @ExcelProperty(value = "附件")
-    private String ext1;
     @ExcelProperty(value = "备注")
     private String verifyNote;
 }

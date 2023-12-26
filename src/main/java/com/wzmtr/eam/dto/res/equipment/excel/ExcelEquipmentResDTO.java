@@ -77,8 +77,6 @@ public class ExcelEquipmentResDTO {
     private String sourceRecId;
     @ExcelProperty(value = "安装单位")
     private String installDealer;
-    @ExcelProperty(value = "附件编号")
-    private String docId;
     @ExcelProperty(value = "来源线别代码")
     private String originLineNo;
     @ExcelProperty(value = "来源线别名称")

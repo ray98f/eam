@@ -34,8 +34,6 @@ public class ExcelGeneralSurveyResDTO {
     private String orgType;
     @ExcelProperty(value = "备注")
     private String remark;
-    @ExcelProperty(value = "附件编号")
-    private String docId;
     @ExcelProperty(value = "创建者")
     private String recCreator;
     @ExcelProperty(value = "创建时间")

@@ -36,6 +36,4 @@ public class ExcelSpecialEquipHistoryResDTO {
     private String verifyValidityDate;
     @ExcelProperty(value = "检测单状态")
     private String recStatus;
-    @ExcelProperty(value = "附件")
-    private String docId;
 }
