@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.specialEquip;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionReqDTO;
@@ -13,12 +14,14 @@ import com.wzmtr.eam.dto.res.specialEquip.excel.ExcelDetectionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.specialEquip.DetectionMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.specialEquip.DetectionService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +53,9 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Autowired
     private BpmnService bpmnService;
+
+    @Autowired
+    private IWorkFlowLogService workFlowLogService;
 
     @Override
     public Page<DetectionResDTO> pageDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, PageReqDTO pageReqDTO) {
@@ -173,6 +179,12 @@ public class DetectionServiceImpl implements DetectionService {
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             detectionMapper.modifyDetection(reqDTO);
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.SUBMIT.getDesc())
+                    .userIds(detectionReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         }
     }
 
@@ -184,6 +196,7 @@ public class DetectionServiceImpl implements DetectionService {
         }
         DetectionReqDTO reqDTO = new DetectionReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
+        workFlowLogService.ifReviewer(res.getWorkFlowInstId());
         if (detectionReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if (CommonConstants.THIRTY_STRING.equals(reqDTO.getRecStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
@@ -205,6 +218,12 @@ public class DetectionServiceImpl implements DetectionService {
                     }
                 }
             }
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.PASS.getDesc())
+                    .userIds(detectionReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         } else {
             if (!CommonConstants.TWENTY_STRING.equals(reqDTO.getRecStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
@@ -215,6 +234,12 @@ public class DetectionServiceImpl implements DetectionService {
                 reqDTO.setWorkFlowInstId("");
                 reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setRecStatus("10");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.REJECT.getDesc())
+                        .userIds(detectionReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         }
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());

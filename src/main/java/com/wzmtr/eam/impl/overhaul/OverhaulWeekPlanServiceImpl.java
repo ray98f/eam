@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
@@ -18,6 +19,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
@@ -27,6 +29,7 @@ import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.overhaul.OverhaulWeekPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.soft.csm.planWork.vo.Message;
@@ -89,6 +92,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     @Autowired
     private DictionariesMapper dictionariesMapper;
 
+    @Autowired
+    private IWorkFlowLogService workFlowLogService;
 
     @Override
     public Page<OverhaulWeekPlanResDTO> pageOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO, PageReqDTO pageReqDTO) {
@@ -248,7 +253,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulPlanListReqDTO.setWeekPlanCode(overhaulWeekPlanReqDTO.getWeekPlanCode());
         overhaulPlanListReqDTO.setConstructionType("C2");
         List<OverhaulPlanResDTO> contractQuery = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (contractQuery != null && contractQuery.size() > 0) {
+        if (contractQuery != null && !contractQuery.isEmpty()) {
             if (StringUtils.isBlank(TokenUtil.getCurrentPerson().getOfficeId())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您的组织机构为空，请确认。");
             }
@@ -259,6 +264,12 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             } else {
                 overhaulWeekPlanReqDTO.setWorkFlowInstId(processId);
                 overhaulWeekPlanReqDTO.setTrialStatus("20");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.SUBMIT.getDesc())
+                        .userIds(overhaulWeekPlanReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         } else {
             overhaulWeekPlanReqDTO.setTrialStatus("30");
@@ -271,6 +282,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void examineOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
+        workFlowLogService.ifReviewer(overhaulWeekPlanReqDTO.getWorkFlowInstId());
         if (overhaulWeekPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if (CommonConstants.THIRTY_STRING.equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
@@ -284,6 +296,12 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             bpmnService.agree(taskId, overhaulWeekPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + overhaulWeekPlanReqDTO.getWeekPlanCode() + "\"}", null);
             overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已完成");
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.PASS.getDesc())
+                    .userIds(overhaulWeekPlanReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         } else {
             if (!CommonConstants.TWENTY_STRING.equals(overhaulWeekPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
@@ -294,6 +312,12 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 overhaulWeekPlanReqDTO.setWorkFlowInstId("");
                 overhaulWeekPlanReqDTO.setWorkFlowInstStatus("");
                 overhaulWeekPlanReqDTO.setTrialStatus("10");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.REJECT.getDesc())
+                        .userIds(overhaulWeekPlanReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         }
         overhaulWeekPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());

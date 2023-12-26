@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
@@ -16,6 +17,7 @@ import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulPlanResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
@@ -24,6 +26,7 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.overhaul.OverhaulPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
@@ -78,6 +81,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Autowired
     private FaultQueryMapper faultQueryMapper;
+
+    @Autowired
+    private IWorkFlowLogService workFlowLogService;
 
     @Override
     public Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO) {
@@ -253,6 +259,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void examineOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
+        workFlowLogService.ifReviewer(overhaulPlanReqDTO.getWorkFlowInstId());
         if (overhaulPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if (CommonConstants.THIRTY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
@@ -265,6 +272,12 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             bpmnService.agree(taskId, overhaulPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + overhaulPlanReqDTO.getPlanCode() + "\"}", null);
             overhaulPlanReqDTO.setWorkFlowInstStatus("已完成");
             overhaulPlanReqDTO.setTrialStatus("30");
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.PASS.getDesc())
+                    .userIds(overhaulPlanReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         } else {
             if (!CommonConstants.TWENTY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
@@ -275,6 +288,12 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 overhaulPlanReqDTO.setWorkFlowInstId("");
                 overhaulPlanReqDTO.setWorkFlowInstStatus("");
                 overhaulPlanReqDTO.setTrialStatus("10");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.REJECT.getDesc())
+                        .userIds(overhaulPlanReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         }
         overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -596,6 +615,12 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
+        // 记录日志
+        workFlowLogService.add(WorkFlowLogBO.builder()
+                .status(BpmnStatus.SUBMIT.getDesc())
+                .userIds(overhaulPlanReqDTO.getExamineReqDTO().getUserIds())
+                .workFlowInstId(processId)
+                .build());
     }
 
     @Override

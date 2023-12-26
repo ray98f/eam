@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulMaterialReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulTplDetailReqDTO;
@@ -17,11 +18,13 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulTplMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.overhaul.OverhaulTplService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +55,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Autowired
     private RoleMapper roleMapper;
+
+    @Autowired
+    private IWorkFlowLogService workFlowLogService;
 
     @Override
     public Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineCode, String position1Code,
@@ -188,6 +194,12 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
             overhaulTplReqDTO.setWorkFlowInstId(processId);
             overhaulTplReqDTO.setTrialStatus("20");
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.SUBMIT.getDesc())
+                    .userIds(overhaulTplReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         }
         overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -196,6 +208,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void examineOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
+        workFlowLogService.ifReviewer(overhaulTplReqDTO.getWorkFlowInstId());
         if (overhaulTplReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if (CommonConstants.THIRTY_STRING.equals(overhaulTplReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
@@ -208,6 +221,12 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             bpmnService.agree(taskId, overhaulTplReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + overhaulTplReqDTO.getTemplateId() + "\"}", null);
             overhaulTplReqDTO.setWorkFlowInstStatus("已完成");
             overhaulTplReqDTO.setTrialStatus("30");
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.PASS.getDesc())
+                    .userIds(overhaulTplReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         } else {
             if (!CommonConstants.TWENTY_STRING.equals(overhaulTplReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
@@ -218,6 +237,12 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 overhaulTplReqDTO.setWorkFlowInstId("");
                 overhaulTplReqDTO.setWorkFlowInstStatus("");
                 overhaulTplReqDTO.setTrialStatus("10");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.REJECT.getDesc())
+                        .userIds(overhaulTplReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         }
         overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());

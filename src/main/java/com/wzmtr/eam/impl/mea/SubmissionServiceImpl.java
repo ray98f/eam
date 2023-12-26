@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionDetailReqDTO;
@@ -14,11 +15,13 @@ import com.wzmtr.eam.dto.res.mea.excel.ExcelSubmissionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.mea.SubmissionService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +49,9 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Autowired
     private BpmnService bpmnService;
+
+    @Autowired
+    private IWorkFlowLogService workFlowLogService;
 
     @Override
     public Page<SubmissionResDTO> pageSubmission(SubmissionListReqDTO submissionListReqDTO, PageReqDTO pageReqDTO) {
@@ -131,7 +137,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "提交");
         } else {
             List<SubmissionDetailResDTO> result = submissionMapper.listSubmissionDetail(res.getSendVerifyNo());
-            if (result.size() == 0) {
+            if (result.isEmpty()) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "此送检单不存在计划明细，无法提交");
             }
             String processId = bpmnService.commit(res.getSendVerifyNo(), BpmnFlowEnum.SUBMISSION_SUBMIT.value(), null, null, submissionReqDTO.getExamineReqDTO().getUserIds(), null);
@@ -146,6 +152,12 @@ public class SubmissionServiceImpl implements SubmissionService {
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             submissionMapper.modifySubmission(reqDTO);
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.SUBMIT.getDesc())
+                    .userIds(submissionReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         }
     }
 
@@ -154,6 +166,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         SubmissionResDTO res = submissionMapper.getSubmissionDetail(submissionReqDTO.getRecId());
         SubmissionReqDTO reqDTO = new SubmissionReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
+        workFlowLogService.ifReviewer(res.getWorkFlowInstId());
         if (submissionReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if (CommonConstants.THIRTY_STRING.equals(res.getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
@@ -163,6 +176,12 @@ public class SubmissionServiceImpl implements SubmissionService {
                 bpmnService.agree(taskId, submissionReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getSendVerifyNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setRecStatus("30");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.PASS.getDesc())
+                        .userIds(submissionReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         } else {
             if (!CommonConstants.TWENTY_STRING.equals(res.getRecStatus())) {
@@ -174,6 +193,12 @@ public class SubmissionServiceImpl implements SubmissionService {
                 reqDTO.setWorkFlowInstId("");
                 reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setRecStatus("10");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.REJECT.getDesc())
+                        .userIds(submissionReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         }
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());

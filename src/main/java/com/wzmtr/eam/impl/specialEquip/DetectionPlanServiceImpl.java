@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.specialEquip;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.DetectionPlanDetailDO;
 import com.wzmtr.eam.dto.req.specialEquip.DetectionPlanDetailReqDTO;
@@ -13,6 +14,7 @@ import com.wzmtr.eam.dto.res.specialEquip.excel.ExcelDetectionPlanResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
@@ -20,6 +22,7 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.specialEquip.DetectionPlanDetailMapper;
 import com.wzmtr.eam.mapper.specialEquip.DetectionPlanMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.specialEquip.DetectionPlanService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +57,9 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
     private BpmnService bpmnService;
     @Autowired
     private DetectionPlanDetailMapper detectionPlanDetailMapper;
+
+    @Autowired
+    private IWorkFlowLogService workFlowLogService;
 
     @Override
     public Page<DetectionPlanResDTO> pageDetectionPlan(String instrmPlanNo, String planStatus, String editDeptCode,
@@ -156,7 +162,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         List<DetectionPlanDetailResDTO> result = detectionPlanMapper.listDetectionPlanDetail(res.getInstrmPlanNo());
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "此计划不存在计划明细，无法提交");
         }
         if (!CommonConstants.TEN_STRING.equals(res.getPlanStatus())) {
@@ -174,6 +180,12 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             detectionPlanMapper.modifyDetectionPlan(reqDTO);
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.SUBMIT.getDesc())
+                    .userIds(detectionPlanReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         }
     }
 
@@ -185,6 +197,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         }
         DetectionPlanReqDTO reqDTO = new DetectionPlanReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
+        workFlowLogService.ifReviewer(res.getWorkFlowInstId());
         if (detectionPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if (CommonConstants.THIRTY_STRING.equals(reqDTO.getPlanStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
@@ -200,6 +213,12 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setPlanStatus("30");
             }
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.PASS.getDesc())
+                    .userIds(detectionPlanReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         } else {
             if (!CommonConstants.TWENTY_STRING.equals(reqDTO.getPlanStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
@@ -210,6 +229,12 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 reqDTO.setWorkFlowInstId("");
                 reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setPlanStatus("10");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.REJECT.getDesc())
+                        .userIds(detectionPlanReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         }
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
