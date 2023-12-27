@@ -35,6 +35,8 @@ public class WorkFlowLogServiceImpl implements IWorkFlowLogService {
         if (CollectionUtil.isNotEmpty(logBO.getUserIds())){
             String userId = String.join(CommonConstants.COMMA, logBO.getUserIds());
             logBO.setUserId(userId);
+        }else {
+            logBO.setUserId(CommonConstants.BLANK);
         }
         workFlowLogMapper.insert(__BeanUtil.convert(logBO, WorkFlowLogDO.class));
     }
