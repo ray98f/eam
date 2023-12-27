@@ -2,13 +2,19 @@ package com.wzmtr.eam.dto.req.basic;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author frp
  */
 @Data
 @ApiModel
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegionReqDTO {
 
     @ApiModelProperty(value = "设备分类id")

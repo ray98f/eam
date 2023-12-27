@@ -27,6 +27,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultTrackMapper;
 import com.wzmtr.eam.mapper.fault.FaultTrackWorkMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
@@ -60,14 +61,22 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     private FaultTrackWorkMapper faultTrackWorkMapper;
     @Autowired
     private OverTodoService overTodoService;
+    @Autowired
+    private FileMapper fileMapper;
 
     @Override
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<TrackQueryResDTO> list = faultTrackMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(), reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode());
-        if (CollectionUtil.isEmpty(list.getRecords())) {
+        List<TrackQueryResDTO> records = list.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
+        records.forEach(a -> {
+            if (StringUtils.isNotEmpty(a.getDocId())) {
+                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
+            }
+        });
         return list;
     }
 

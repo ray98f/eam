@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author frp
@@ -90,4 +91,5 @@ public interface RegionMapper extends BaseMapper<RegionDO> {
      */
     List<RegionResDTO> listRegion(String name, String code, String parentId);
 
+    List<RegionResDTO> selectByNodeCodes(Set<String> nodeCodes);
 }

@@ -23,6 +23,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.fault.AnalyzeService;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -53,6 +55,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     private RoleMapper roleMapper;
     @Autowired
     private IWorkFlowLogService workFlowLogService;
+    @Autowired
+    private FileMapper fileMapper;
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
@@ -61,7 +65,13 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-        records.forEach(a -> a.setRespDeptName(organizationMapper.getNamesById(a.getRespDeptCode())));
+        records.forEach(a -> {
+                    a.setRespDeptName(organizationMapper.getNamesById(a.getRespDeptCode()));
+                    if (StringUtils.isNotEmpty(a.getDocId())) {
+                        a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
+                    }
+                }
+        );
         return query;
     }
 
@@ -82,7 +92,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         try {
             EasyExcelUtils.export(response, "故障调查及处置情况", exportList);
         } catch (Exception e) {
-            log.error("导出失败",e);
+            log.error("导出失败", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
     }

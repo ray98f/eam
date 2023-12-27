@@ -119,7 +119,7 @@
                 and df1.EQUIP_TYPE_CODE = #{equipTypeCode}
             </if>
             <if test="recStatus!=null and recStatus!=''">
-                and df9.REC_STATUS = #{recStatus}
+                and df11.REC_STATUS = #{recStatus}
             </if>
         </trim>
         order by df11.FAULT_TRACK_WORK_NO desc
