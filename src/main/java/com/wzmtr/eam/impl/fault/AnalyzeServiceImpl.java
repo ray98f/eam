@@ -140,6 +140,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     public void pass(FaultExamineReqDTO reqDTO) {
         String faultAnalysisNo = Assert.notNull(reqDTO.getFaultAnalysisNo(), "faultAnalysisNo can not be null!");
         FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALIZE_NO, faultAnalysisNo));
+        workFlowLogService.ifReviewer(faultAnalyzeDO.getWorkFlowInstId());
         String taskId = bpmnService.queryTaskIdByProcId(faultAnalyzeDO.getWorkFlowInstId());
         AnalyzeServiceImpl aop = (AnalyzeServiceImpl) AopContext.currentProxy();
         aop._agree(reqDTO, faultAnalyzeDO, taskId);
@@ -200,6 +201,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         String backOpinion = reqDTO.getExamineReqDTO().getOpinion();
         FaultAnalyzeDO dmfm03 = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq("FAULT_NO", faultNo).eq("FAULT_WORK_NO", faultWorkNo).eq("FAULT_ANALYSIS_NO", checkFaultAnalysisNo));
         String processId = dmfm03.getWorkFlowInstId();
+        workFlowLogService.ifReviewer(processId);
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(taskId, backOpinion);
         dmfm03.setRecStatus("10");

@@ -219,6 +219,7 @@ public class TrackServiceImpl implements TrackService {
         FaultTrackDO dmfm09 = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq("FAULT_TRACK_NO", faultTrackNo));
         Assert.isTrue(!IGNORE_STATE.contains(dmfm09.getRecStatus()), "跟踪单状态不为审核中时，不允许审核");
         String processId = dmfm09.getWorkFlowInstId();
+        workFlowLogService.ifReviewer(processId);
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         // 获取Aop对象，事务逻辑轻量化
         TrackServiceImpl trackService = (TrackServiceImpl) AopContext.currentProxy();
@@ -282,6 +283,7 @@ public class TrackServiceImpl implements TrackService {
         List<FaultTrackDO> list = faultTrackMapper.queryList(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null, reqDTO.getFaultTrackNo());
         FaultTrackDO dmfm09 = list.get(0);
         String processId = dmfm09.getWorkFlowInstId();
+        workFlowLogService.ifReviewer(processId);
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(taskId, reqDTO.getExamineReqDTO().getOpinion());
         dmfm09.setRecStatus("30");
