@@ -236,7 +236,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         SubmissionListReqDTO submissionListReqDTO = new SubmissionListReqDTO();
         submissionListReqDTO.setSendVerifyNo(submissionDetailReqDTO.getSendVerifyNo());
         List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
-        if (list.size() != 0) {
+        if (!list.isEmpty()) {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
@@ -256,7 +256,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         SubmissionListReqDTO submissionListReqDTO = new SubmissionListReqDTO();
         submissionListReqDTO.setSendVerifyNo(submissionDetailReqDTO.getSendVerifyNo());
         List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
-        if (list.size() != 0) {
+        if (!list.isEmpty()) {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
@@ -280,7 +280,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 SubmissionListReqDTO submissionListReqDTO = new SubmissionListReqDTO();
                 submissionListReqDTO.setSendVerifyNo(id);
                 List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
-                if (list.size() != 0) {
+                if (!list.isEmpty()) {
                     if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }

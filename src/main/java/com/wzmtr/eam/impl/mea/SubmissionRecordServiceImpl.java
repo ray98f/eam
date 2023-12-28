@@ -247,6 +247,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             for (SubmissionRecordResDTO resDTO : checkPlanList) {
                 ExcelSubmissionRecordResDTO res = new ExcelSubmissionRecordResDTO();
                 BeanUtils.copyProperties(resDTO, res);
+                res.setRecStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getRecStatus()) ? "审核中" : "审核通过");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "定检计划信息", list);
