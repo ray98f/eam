@@ -163,7 +163,6 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void commit(FaultExamineReqDTO reqDTO) {
         ExamineReqDTO examineReqDTO = Assert.notNull(reqDTO.getExamineReqDTO(), "下一步参与者不能为空！");
         // faultTrackDO.query  com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#submit
@@ -172,8 +171,21 @@ public class TrackServiceImpl implements TrackService {
             return;
         }
         FaultTrackDO faultTrackDO = dmfm9List.get(0);
-        String processId = null;
+        //判断当前状态是否已是审核中，防止重复提交
+        Assert.isFalse("40".equals(faultTrackDO.getRecStatus()),"当前状态已变更，不允许重复提交!");
+        String processId;
         // dmfm01.query
+        TrackServiceImpl aop = (TrackServiceImpl) AopContext.currentProxy();
+        processId = aop._commit(reqDTO, faultTrackDO, examineReqDTO, null);
+        // 记录日志
+        workFlowLogService.add(WorkFlowLogBO.builder()
+                .status(BpmnStatus.SUBMIT.getDesc())
+                .userIds(examineReqDTO.getUserIds())
+                .workFlowInstId(processId)
+                .build());
+    }
+    @Transactional(rollbackFor = Exception.class)
+    public String _commit(FaultExamineReqDTO reqDTO, FaultTrackDO faultTrackDO, ExamineReqDTO examineReqDTO, String processId) {
         if (StringUtils.isEmpty(faultTrackDO.getWorkFlowInstId())) {
             String faultTrackNo = faultTrackDO.getFaultTrackNo();
             try {
@@ -202,14 +214,9 @@ public class TrackServiceImpl implements TrackService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败!", faultTrackNo);
             }
         }
-        // 记录日志
-        workFlowLogService.add(WorkFlowLogBO.builder()
-                .status(BpmnStatus.SUBMIT.getDesc())
-                .userIds(examineReqDTO.getUserIds())
-                .workFlowInstId(processId)
-                .build());
         faultTrackMapper.update(faultTrackDO,
                 new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+        return processId;
     }
 
     @Override
