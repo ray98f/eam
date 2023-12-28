@@ -62,9 +62,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public static final String DM_031 = "DM_031";
     public static final String DM_044 = "DM_044";
     @Autowired
-    FaultQueryMapper faultQueryMapper;
+    private FaultQueryMapper faultQueryMapper;
     @Autowired
-    FaultReportMapper faultReportMapper;
+    private FaultReportMapper faultReportMapper;
     @Autowired
     private OrganizationMapper organizationMapper;
     @Autowired

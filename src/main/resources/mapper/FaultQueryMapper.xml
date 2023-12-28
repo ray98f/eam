@@ -127,10 +127,10 @@
                 AND d.FAULT_DETAIL LIKE '%' || #{req.faultDetail} || '%'
             </if>
             <if test="req.fillinTimeStart!=null and req.fillinTimeStart!=''">
-                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD')
+                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'yyyy-mm-dd hh24:mi:ss')
             </if>
             <if test="req.fillinTimeEnd!=null and req.fillinTimeEnd!=''">
-                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD') +
+                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'yyyy-mm-dd hh24:mi:ss') +
                 1
             </if>
             AND d.FILLIN_USER_ID=u.LOGIN_NAME

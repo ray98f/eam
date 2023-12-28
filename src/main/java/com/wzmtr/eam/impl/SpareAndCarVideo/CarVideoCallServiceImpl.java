@@ -15,6 +15,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.VideoApplyStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.SpareAndCarVideo.CarVideoMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
@@ -211,12 +212,15 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         }
         for (CarVideoResDTO res : resList) {
             CarVideoExportBO exportBO = __BeanUtil.convert(res, CarVideoExportBO.class);
+            String status = res.getRecStatus();
+            VideoApplyStatus recStatus = VideoApplyStatus.getByCode(status);
             String applyDeptName = " ";
             if (StringUtils.isNotEmpty(res.getApplyDeptCode())) {
-                applyDeptName = organizationMapper.getOrgById(res.getApplyDeptCode());
+                applyDeptName = organizationMapper.getNamesById(res.getApplyDeptCode());
             }
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.videoApplyType", res.getApplyType());
             exportBO.setApplyDeptName(applyDeptName);
+            exportBO.setRecStatus(recStatus != null ? recStatus.getDesc() : status);
             exportBO.setApplyType(dictionaries.getItemCname());
             exportList.add(exportBO);
         }
