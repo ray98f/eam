@@ -88,7 +88,9 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                     String respDeptName = organizationMapper.getOrgById(item.getRespDeptCode());
                     FaultAnalizeExportBO exportBO = __BeanUtil.convert(item, FaultAnalizeExportBO.class);
                     exportBO.setLineCode(lineCode != null ? lineCode.getDesc() : item.getLineCode());
-                    exportBO.setFaultLevel(dictService.queryOneByItemCodeAndCodesetCode("dm.faultLevel", item.getFaultLevel()).getItemCname());
+                    if (StringUtils.isNotEmpty(item.getFaultLevel())){
+                        exportBO.setFaultLevel(dictService.queryOneByItemCodeAndCodesetCode("dm.faultLevel", item.getFaultLevel()).getItemCname());
+                    }
                     exportBO.setFrequency(frequency != null ? frequency.getDesc() : item.getFrequency());
                     exportBO.setRespDeptName(respDeptName == null ? CommonConstants.EMPTY : respDeptName);
                     exportList.add(exportBO);
