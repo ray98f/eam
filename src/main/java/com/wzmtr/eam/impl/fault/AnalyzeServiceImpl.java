@@ -15,10 +15,7 @@ import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultExamineReqDTO;
 import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
-import com.wzmtr.eam.enums.BpmnFlowEnum;
-import com.wzmtr.eam.enums.BpmnStatus;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.enums.FaultAnalizeFlow;
+import com.wzmtr.eam.enums.*;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
@@ -26,6 +23,7 @@ import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
+import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +55,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     private IWorkFlowLogService workFlowLogService;
     @Autowired
     private FileMapper fileMapper;
+    @Autowired
+    private IDictionariesService dictService;
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
@@ -83,8 +83,13 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         }
         List<FaultAnalizeExportBO> exportList = Lists.newArrayList();
         resList.forEach(item -> {
+                    LineCode lineCode = LineCode.getByCode(item.getLineCode());
+                    FaultFrequency frequency = FaultFrequency.getByCode(item.getFrequency());
                     String respDeptName = organizationMapper.getOrgById(item.getRespDeptCode());
                     FaultAnalizeExportBO exportBO = __BeanUtil.convert(item, FaultAnalizeExportBO.class);
+                    exportBO.setLineCode(lineCode != null ? lineCode.getDesc() : item.getLineCode());
+                    exportBO.setFaultLevel(dictService.queryOneByItemCodeAndCodesetCode("dm.faultLevel", item.getFaultLevel()).getItemCname());
+                    exportBO.setFrequency(frequency != null ? frequency.getDesc() : item.getFrequency());
                     exportBO.setRespDeptName(respDeptName == null ? CommonConstants.EMPTY : respDeptName);
                     exportList.add(exportBO);
                 }
