@@ -81,4 +81,6 @@ public class TrackResDTO {
     private String ext4;
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
+    @ApiModelProperty(value = "跟踪状态")
+    private String trackStatus;
 }

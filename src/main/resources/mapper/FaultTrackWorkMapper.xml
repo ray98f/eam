@@ -88,6 +88,7 @@
         df11.DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
         df11.ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
         df11.REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        df9.REC_STATUS as "trackStatus",
         df1.OBJECT_CODE as "objectCode",
         df1.OBJECT_NAME as "objectName"
         FROM T_FAULT_TRACK_DETAIL df11,
