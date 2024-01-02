@@ -68,4 +68,11 @@ public interface EquipmentMapper {
     LineResDTO queryCarLine(String lineCode);
 
     Page<PartReplaceResDTO> listPartReplace(Page<PartReplaceResDTO> page, String equipCode);
+
+    /**
+     * 根据设备名称获取设备编号
+     * @param name 设备名称
+     * @return 设备编号
+     */
+    String getEquipCodeByName(String name);
 }

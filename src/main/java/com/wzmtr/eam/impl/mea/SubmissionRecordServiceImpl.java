@@ -20,6 +20,7 @@ import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
+import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionRecordMapper;
@@ -58,6 +59,9 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Autowired
     private RoleMapper roleMapper;
+
+    @Autowired
+    private EquipmentMapper equipmentMapper;
 
     @Autowired
     private IWorkFlowLogService workFlowLogService;
@@ -271,6 +275,16 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         submissionRecordDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionRecordDetailReqDTO.setArchiveFlag("0");
+        if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
+            String equipCode = equipmentMapper.getEquipCodeByName(submissionRecordDetailReqDTO.getEquipName());
+            if (StringUtils.isNotEmpty(equipCode)) {
+                submissionRecordDetailReqDTO.setEquipCode(equipCode);
+            } else {
+                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+            }
+        } else {
+            throw new CommonException(ErrorCode.PARAM_NULL);
+        }
         MeaResDTO meaResDTO = new MeaResDTO();
         meaResDTO.setLastVerifyDate(submissionRecordDetailReqDTO.getLastVerifyDate());
         meaResDTO.setNextVerifyDate(submissionRecordDetailReqDTO.getNextVerifyDate());
@@ -291,7 +305,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     @Override
     public void modifySubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
         List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(submissionRecordDetailReqDTO.getTestRecId(), null, null, null, null);
-        if (list.size() != 0) {
+        if (!list.isEmpty()) {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
@@ -313,7 +327,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
                 List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(res.getTestRecId(), null, null, null, null);
-                if (list.size() != 0) {
+                if (!list.isEmpty()) {
                     if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }
