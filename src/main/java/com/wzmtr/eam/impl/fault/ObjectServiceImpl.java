@@ -127,25 +127,26 @@ public class ObjectServiceImpl implements ObjectService {
                 carList.add(carTreeListObjResDTO);
                 return carList;
             case "wz":
-                List<CarTreeListObjResDTO> carTreeListObjResDTOS = bomMapper.queryForCar(reqDTO.getNode(), reqDTO.getLine());
-                carTreeListObjResDTOS.forEach(a -> {
+                List<CarTreeListObjResDTO> carTreeListObj = bomMapper.queryForCar(reqDTO.getNode(), reqDTO.getLine());
+                carTreeListObj.forEach(a -> {
                     a.setParent(reqDTO.getText());
                 });
-                return carTreeListObjResDTOS;
+                return carTreeListObj;
             case "tz":
-                List<CarTreeListObjResDTO> carTreeListObjResDTOS1 = bomMapper.queryForCarEquip(reqDTO.getNode(), reqDTO.getLine());
-                carTreeListObjResDTOS1.forEach(a -> {
+                List<CarTreeListObjResDTO> carTreeListObj1 = bomMapper.queryForCarEquip(reqDTO.getNode(), reqDTO.getLine());
+                carTreeListObj1.forEach(a -> {
                     a.setParent(reqDTO.getText());
                 });
-                return carTreeListObjResDTOS1;
+                return carTreeListObj1;
             case "cc":
-                List<CarTreeListObjResDTO> carTreeListObjResDTOS2 = bomMapper.queryForCarChild(reqDTO.getNode(), reqDTO.getLine(), reqDTO.getCarEquipCode(), reqDTO.getCarEquipName());
-                carTreeListObjResDTOS2.forEach(a -> {
+                List<CarTreeListObjResDTO> carTreeListObj2 = bomMapper.queryForCarChild(reqDTO.getNode(), reqDTO.getLine(), reqDTO.getCarEquipCode(), reqDTO.getCarEquipName());
+                carTreeListObj2.forEach(a -> {
                     a.setParent(reqDTO.getText());
                 });
-                return carTreeListObjResDTOS2;
+                return carTreeListObj2;
+            default:
+                return null;
         }
-        return null;
     }
 
     private CarObjResDTO getCarObjResDTO(CarObjectReqDTO reqDTO, String pathName) {
@@ -164,14 +165,14 @@ public class ObjectServiceImpl implements ObjectService {
                 carObjResDTO.setEquipTypeName("");
                 carObjResDTO.setEquipTypeCode("");
             } else if (WZ.equals(reqDTO.getType()) && !CommonConstants.ZERO_STRING.equals(reqDTO.getLabel())) {
-                LineResDTO lineResDTOS;
+                LineResDTO lineRes;
                 if (!reqDTO.getText().contains(ES)) {
-                    lineResDTOS = equipmentMapper.queryLine(reqDTO.getLabel());
+                    lineRes = equipmentMapper.queryLine(reqDTO.getLabel());
                 } else {
-                    lineResDTOS = equipmentMapper.queryCarLine(reqDTO.getLine());
+                    lineRes = equipmentMapper.queryCarLine(reqDTO.getLine());
                 }
-                carObjResDTO.setUseLineName(lineResDTOS.getLineName());
-                carObjResDTO.setUseLineNo(lineResDTOS.getLineCode());
+                carObjResDTO.setUseLineName(lineRes.getLineName());
+                carObjResDTO.setUseLineNo(lineRes.getLineCode());
                 carObjResDTO.setPosition1Name(reqDTO.getText());
                 carObjResDTO.setPosition1Code(reqDTO.getNodeCode());
                 carObjResDTO.setMajorName("");

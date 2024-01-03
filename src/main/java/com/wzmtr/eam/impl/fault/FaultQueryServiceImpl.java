@@ -141,6 +141,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultOrderDO.setCheckUserId(TokenUtil.getCurrentPersonId());
                 faultOrderDO.setCheckTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
                 break;
+            default:
+                break;
         }
         faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
@@ -155,12 +157,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public void export(FaultExportReqDTO reqDTO, HttpServletResponse response) {
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0001#export
-        List<FaultDetailResDTO> faultDetailResDTOS = faultQueryMapper.export(reqDTO);
-        if (CollectionUtil.isEmpty(faultDetailResDTOS)) {
+        List<FaultDetailResDTO> faultDetailRes = faultQueryMapper.export(reqDTO);
+        if (CollectionUtil.isEmpty(faultDetailRes)) {
             return;
         }
         List<FaultExportBO> exportList = Lists.newArrayList();
-        faultDetailResDTOS.forEach(resDTO -> exportList.add(_buildExportBO(resDTO)));
+        faultDetailRes.forEach(resDTO -> exportList.add(_buildExportBO(resDTO)));
         try {
             EasyExcelUtils.export(response, "故障信息", exportList);
         } catch (Exception e) {
@@ -278,33 +280,33 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         List<String> faultWorkNos = Arrays.asList(reqDTO.getFaultWorkNo().split(","));
         faultWorkNos.forEach(a -> {
             String workerGroupCode = reqDTO.getWorkerGroupCode();
-            FaultOrderDO faultOrderDO1 = faultQueryMapper.queryOneFaultOrder(null, a);
-            if (faultOrderDO1 != null) {
+            FaultOrderDO faultOrder1 = faultQueryMapper.queryOneFaultOrder(null, a);
+            if (faultOrder1 != null) {
                 if (StringUtils.isNotEmpty(reqDTO.getLevelFault())) {
-                    faultOrderDO1.setExt1(reqDTO.getLevelFault());
+                    faultOrder1.setExt1(reqDTO.getLevelFault());
                 }
-                faultOrderDO1.setRecRevisor(TokenUtil.getCurrentPersonId());
-                faultOrderDO1.setRecReviseTime(DateUtil.getCurrentTime());
-                faultOrderDO1.setOrderStatus(OrderStatus.PAI_GONG.getCode());
-                faultReportMapper.updateFaultOrder(faultOrderDO1);
-                FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultOrderDO1.getFaultNo());
+                faultOrder1.setRecRevisor(TokenUtil.getCurrentPersonId());
+                faultOrder1.setRecReviseTime(DateUtil.getCurrentTime());
+                faultOrder1.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                faultReportMapper.updateFaultOrder(faultOrder1);
+                FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultOrder1.getFaultNo());
                 faultInfoDO.setRepairDeptCode(workerGroupCode);
                 if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) && IS_TIKAI_CODE.equals(reqDTO.getIsTiKai())) {
                     faultInfoDO.setExt3("08");
                 }
                 faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
                 faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
-                faultInfoDO.setFaultNo(faultOrderDO1.getFaultNo());
+                faultInfoDO.setFaultNo(faultOrder1.getFaultNo());
                 faultReportMapper.updateFaultInfo(faultInfoDO);
-                overTodoService.overTodo(faultOrderDO1.getRecId(), "故障维修");
+                overTodoService.overTodo(faultOrder1.getRecId(), "故障维修");
                 // todo 发短信
                 // String content = "【市铁投集团】" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "向您指派了一条故障工单，故障位置：" + positionName + "," + position2Name + "，设备名称：" + objectName + ",故障现象：" + faultDisplayDetail + "请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
-                overTodoService.insertTodoWithUserGroupAndOrg("【" + reqDTO.getMajorCode() + "】故障管理流程", faultOrderDO1.getRecId(), faultOrderDO1.getFaultWorkNo(), "DM_013", workerGroupCode, "故障维修", "DMFM0001", TokenUtil.getCurrentPersonId(), null);
+                overTodoService.insertTodoWithUserGroupAndOrg("【" + reqDTO.getMajorCode() + "】故障管理流程", faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), "DM_013", workerGroupCode, "故障维修", "DMFM0001", TokenUtil.getCurrentPersonId(), null);
                 Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "01");
                 String zcStepOrg = dictionaries.getItemEname();
-                if (!faultOrderDO1.getWorkClass().contains(zcStepOrg)) {
+                if (!faultOrder1.getWorkClass().contains(zcStepOrg)) {
                     // todo 调用施工调度接口
-                    _sendContractFault(faultOrderDO1);
+                    _sendContractFault(faultOrder1);
                 }
             }
         });
@@ -568,19 +570,19 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             //     ISendMessage.sendMoblieMessageByGroup(eiInfo);
             //     ISendMessage.sendMessageByGroup(eiInfo);
             // }
-            String Toocc = faultInfo.getExt4();
-            String Toclose = faultInfo.getExt5();
-            if (Toocc != null && !Toocc.trim().isEmpty() && Y.equals(Toocc)) {
+            String toOcc = faultInfo.getExt4();
+            String toClose = faultInfo.getExt5();
+            if (toOcc != null && !toOcc.trim().isEmpty() && Y.equals(toOcc)) {
                 overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
                 overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, "DM_021", null, "故障设调确认", "DMFM0001", currentUser, null);
-            } else if (Toclose != null && !Toclose.trim().isEmpty()) {
-                FaultOrderDO faultOrderDO1 = new FaultOrderDO();
-                faultOrderDO1.setOrderStatus(OrderStatus.GUAN_BI.getCode());
-                faultOrderDO1.setFaultNo(faultInfo.getFaultNo());
-                faultOrderDO1.setCloseTime(current);
-                faultOrderDO1.setCloseUserId(currentUser);
-                faultOrderDO1.setFaultWorkNo(dmfm02.getFaultWorkNo());
-                faultReportMapper.updateFaultOrder(faultOrderDO1);
+            } else if (toClose != null && !toClose.trim().isEmpty()) {
+                FaultOrderDO faultOrder1 = new FaultOrderDO();
+                faultOrder1.setOrderStatus(OrderStatus.GUAN_BI.getCode());
+                faultOrder1.setFaultNo(faultInfo.getFaultNo());
+                faultOrder1.setCloseTime(current);
+                faultOrder1.setCloseUserId(currentUser);
+                faultOrder1.setFaultWorkNo(dmfm02.getFaultWorkNo());
+                faultReportMapper.updateFaultOrder(faultOrder1);
                 overTodoService.overTodo(dmfm02.getRecId(), "故障关闭");
             } else if (cos.contains(majorCode)) {
                 overTodoService.overTodo(dmfm02.getRecId(), "故障完工确认");
@@ -618,8 +620,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 // content = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
                 if (CommonConstants.LINE_CODE_ONE.equals(faultProcessResult) || CommonConstants.LINE_CODE_TWO.equals(faultProcessResult)) {
                     if (StringUtils.isNotEmpty(stationCode)) {
-                        List<StationBO> stationBOS = stationMapper.queryStation(null, stationCode);
-                        for (StationBO bo : stationBOS) {
+                        List<StationBO> stations = stationMapper.queryStation(null, stationCode);
+                        for (StationBO bo : stations) {
                             overTodoService.insertTodo("【" + majorName + "】故障管理流程", dmfm02.getRecId(), faultWorkNo, bo.getUserId(), "故障关闭", "DMFM0001", currentUser);
                             // if (map1.get("mobile") != null && !"".equals(map1.get("mobile"))) {
                             //     ISendMessage.messageCons(map1.get("mobile"), content);

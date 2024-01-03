@@ -814,6 +814,8 @@ public class StatisticServiceImpl implements StatisticService {
                 case "20":
                     rebuildBlock4SP(a, names, "辅助供电设备系统", "647749", "323825");
                     break;
+                default:
+                    break;
             }
             DecimalFormat df = new DecimalFormat("#0");
             Double MTBF_LATE;
@@ -906,6 +908,8 @@ public class StatisticServiceImpl implements StatisticService {
                 case "16":
                 case "20":
                     rebuildBlock(a, names, "辅助供电设备系统", "38000");
+                    break;
+                default:
                     break;
             }
             FaultConditionResDTO last = map.get(a.getModuleName());

@@ -29,31 +29,31 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public HomeCountResDTO count() {
-        HomeCountBO countBO = HomeCountBO.builder()
+        HomeCountBO count = HomeCountBO.builder()
                 .modelName("DM")
                 .state("open")
                 .userId(TokenUtil.getCurrentPersonId())
                 .todoStatus("1")
                 .build();
-        Integer todoSize = homeMapper.queryForIndex(countBO);
-        HomeCountBO countBO2 = HomeCountBO.builder()
+        Integer todoSize = homeMapper.queryForIndex(count);
+        HomeCountBO count2 = HomeCountBO.builder()
                 .modelName("DM")
                 .state("completed")
                 .userId(TokenUtil.getCurrentPersonId())
                 .todoStatus("2")
                 .build();
-        Integer overSize = homeMapper.queryForIndex(countBO2);
+        Integer overSize = homeMapper.queryForIndex(count2);
 
-        HomeCountBO countBO3 = HomeCountBO.builder()
+        HomeCountBO count3 = HomeCountBO.builder()
                 .receiveUserId(TokenUtil.getCurrentPersonId())
                 .status("0")
                 .build();
-        Integer messageSize = homeMapper.count(countBO3);
-        HomeCountBO countBO4 = HomeCountBO.builder()
+        Integer messageSize = homeMapper.count(count3);
+        HomeCountBO count4 = HomeCountBO.builder()
                 .receiveUserId(TokenUtil.getCurrentPersonId())
                 .status("1")
                 .build();
-        Integer readSize = homeMapper.count(countBO4);
+        Integer readSize = homeMapper.count(count4);
         HomeCountResDTO homeCountResDTO = new HomeCountResDTO();
         homeCountResDTO.setOverSize(overSize.toString());
         homeCountResDTO.setTodoSize(todoSize.toString());
@@ -78,11 +78,11 @@ public class HomeServiceImpl implements HomeService {
         List<ShowBCResDTO> list = Lists.newArrayList();
         for (ShowBCResDTO a : listB) {
             if (map.containsKey(a.getMajorName())){
-                ShowBCResDTO showBCResDTO = new ShowBCResDTO();
-                showBCResDTO.setMajorName(a.getMajorName());
-                showBCResDTO.setCNT(a.getCNT());
-                showBCResDTO.setCNTSeven(map.get(a.getMajorName()).getCNT());
-                list.add(showBCResDTO);
+                ShowBCResDTO showBcRes = new ShowBCResDTO();
+                showBcRes.setMajorName(a.getMajorName());
+                showBcRes.setCNT(a.getCNT());
+                showBcRes.setCNTSeven(map.get(a.getMajorName()).getCNT());
+                list.add(showBcRes);
             }
         }
         if (CollectionUtil.isNotEmpty(listA)){
