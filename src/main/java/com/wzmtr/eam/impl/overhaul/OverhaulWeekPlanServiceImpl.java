@@ -433,6 +433,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 reqDTO.setRealEndTime(" ");
                 reqDTO.setExt1(" ");
                 reqDTO.setPlanStartTime(firstBeginTime);
+                reqDTO.setRecId(TokenUtil.getUuId());
                 overhaulOrderMapper.addOverhaulOrder(reqDTO);
             }
         }

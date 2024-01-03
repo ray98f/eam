@@ -854,7 +854,7 @@
     </select>
 
     <select id="getOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
-        SELECT
+        SELECT DISTINCT
         REC_ID	as "recId",  <!-- 记录ID -->
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->

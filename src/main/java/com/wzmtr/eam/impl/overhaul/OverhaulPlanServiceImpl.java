@@ -31,6 +31,7 @@ import com.wzmtr.eam.service.overhaul.OverhaulPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -186,7 +187,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void deleteOverhaulPlan(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulPlanResDTO resDTO = overhaulPlanMapper.getOverhaulPlanDetail(id, "1");
                 if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
@@ -325,25 +326,31 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         List<WoRuleResDTO.WoRuleDetail> dmer21TopOrder = overhaulPlanMapper.queryAllRule(String.valueOf(planCodeAndIn));
         String relationCode = TokenUtil.getUuId();
         for (int j = 0; j < dmer21TopOrder.size(); j++) {
-            OverhaulPlanReqDTO reqDTO = new OverhaulPlanReqDTO();
-            reqDTO.setRecId(dmer21TopOrder.get(j).getRecId());
-            reqDTO.setRelationCode(relationCode);
-            reqDTO.setNodeLevel(dmer21TopOrder.size() - j);
-            if (j == 0) {
-                reqDTO.setCountFlag(1);
-            } else {
-                int max = dmer21TopOrder.get(j - 1).getPeriod();
-                int min = dmer21TopOrder.get(j).getPeriod();
-                if (max % min != 0 || max == min) {
-                    throw new CommonException(ErrorCode.NORMAL_ERROR, "所有关联计划之间的规则周期必须为倍数关系");
-                }
-                int max1 = dmer21TopOrder.get(j - 1).getPeriod();
-                int min1 = dmer21TopOrder.get(j).getPeriod();
-                reqDTO.setCountFlag(max1 / min1 - 1);
-                reqDTO.setParentNodeRecId(dmer21TopOrder.get(j - 1).getExt1());
-            }
+            OverhaulPlanReqDTO reqDTO = getOverhaulPlan(dmer21TopOrder, j, relationCode);
             overhaulPlanMapper.modifyOverhaulPlan(reqDTO);
         }
+    }
+
+    @NotNull
+    private static OverhaulPlanReqDTO getOverhaulPlan(List<WoRuleResDTO.WoRuleDetail> dmer21TopOrder, int j, String relationCode) {
+        OverhaulPlanReqDTO reqDTO = new OverhaulPlanReqDTO();
+        reqDTO.setRecId(dmer21TopOrder.get(j).getRecId());
+        reqDTO.setRelationCode(relationCode);
+        reqDTO.setNodeLevel(dmer21TopOrder.size() - j);
+        if (j == 0) {
+            reqDTO.setCountFlag(1);
+        } else {
+            int max = dmer21TopOrder.get(j - 1).getPeriod();
+            int min = dmer21TopOrder.get(j).getPeriod();
+            if (max % min != 0 || max == min) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "所有关联计划之间的规则周期必须为倍数关系");
+            }
+            int max1 = dmer21TopOrder.get(j - 1).getPeriod();
+            int min1 = dmer21TopOrder.get(j).getPeriod();
+            reqDTO.setCountFlag(max1 / min1 - 1);
+            reqDTO.setParentNodeRecId(dmer21TopOrder.get(j - 1).getExt1());
+        }
+        return reqDTO;
     }
 
     @Override
@@ -411,7 +418,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanListReqDTO.setFirstBegin("flag");
         overhaulPlanListReqDTO.setParentNode(planCode);
         List<OverhaulPlanResDTO> dmer11List = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (dmer11List != null && dmer11List.size() > 0) {
+        if (StringUtils.isNotEmpty(dmer11List)) {
             return dmer11List.get(0).getPlanCode();
         }
         return null;
@@ -456,7 +463,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         OverhaulPlanListReqDTO queryMap1 = new OverhaulPlanListReqDTO();
         queryMap1.setPlanCode(planCode);
         List<OverhaulPlanResDTO> list11 = overhaulPlanMapper.listOverhaulPlan(queryMap1);
-        if (list11 != null && list11.size() > 0 && !"".equals(list11.get(0).getWorkerGroupCode().trim())) {
+        if (StringUtils.isNotEmpty(list11) && !list11.get(0).getWorkerGroupCode().trim().isEmpty()) {
             trigerTime = list11.get(0).getTrigerTime();
             insertMap.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
             insertMap.setWorkerCode(TokenUtil.getCurrentPersonId());
@@ -504,7 +511,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
         try {
             List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(queryMap1);
-            if (planList != null && planList.size() > 0) {
+            if (StringUtils.isNotEmpty(planList)) {
                 for (OverhaulPlanResDTO plan : planList) {
                     plan.setRecCreator(TokenUtil.getCurrentPersonId());
                     plan.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -525,14 +532,14 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         for (OverhaulObjectResDTO object : objects) {
             String dmer22uuid = TokenUtil.getUuId();
             List<OverhaulTplDetailResDTO> objectIsValid = overhaulTplMapper.listOverhaulTplDetail(object.getTemplateId());
-            if (objectIsValid != null && objectIsValid.size() > 0) {
+            if (StringUtils.isNotEmpty(objectIsValid)) {
                 String objectCode = object.getObjectCode();
                 String objectName = object.getObjectName();
                 String templateId = object.getTemplateId();
                 insertInspectObjectItem(orderCode, objectCode, objectName, templateId, dmer22uuid);
                 try {
                     List<OverhaulObjectResDTO> list = overhaulPlanMapper.listOverhaulObject(planCode, object.getRecId(), null, objectCode, null, null);
-                    if (list != null && list.size() > 0) {
+                    if (StringUtils.isNotEmpty(list)) {
                         for (OverhaulObjectResDTO resDTO : list) {
                             resDTO.setRecCreator(TokenUtil.getCurrentPersonId());
                             resDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -563,7 +570,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         reqDTO.setErrorFlag("1");
         try {
             List<OverhaulTplDetailResDTO> overhaulTplDetailList = overhaulTplMapper.listOverhaulTplDetail(templateId);
-            if (overhaulTplDetailList != null && overhaulTplDetailList.size() > 0) {
+            if (StringUtils.isNotEmpty(overhaulTplDetailList)) {
                 for (OverhaulTplDetailResDTO overhaulTplDetail : overhaulTplDetailList) {
                     BeanUtils.copyProperties(overhaulTplDetail, reqDTO);
                     reqDTO.setTdmer02Id(overhaulTplDetail.getRecId());
@@ -587,15 +594,13 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         dmer24.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
         if (workCode.length() > CommonConstants.TWO) {
             String[] workerCodes = workCode.split(",");
-            if (workerCodes.length > 0) {
-                for (String workerCode : workerCodes) {
-                    dmer24.setRecId(TokenUtil.getUuId());
-                    dmer24.setWorkerCode(workerCode);
-                    try {
-                        overhaulWorkRecordMapper.insert(dmer24);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            for (String workerCode : workerCodes) {
+                dmer24.setRecId(TokenUtil.getUuId());
+                dmer24.setWorkerCode(workerCode);
+                try {
+                    overhaulWorkRecordMapper.insert(dmer24);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
