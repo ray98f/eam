@@ -78,7 +78,7 @@ public class MeaServiceImpl implements MeaService {
                     temp.add(req);
                 }
             }
-            if (temp.size() > 0) {
+            if (!temp.isEmpty()) {
                 meaMapper.importMea(temp);
             }
         } catch (Exception e) {
@@ -95,7 +95,7 @@ public class MeaServiceImpl implements MeaService {
                 ExcelMeaResDTO res = new ExcelMeaResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setVerifyPeriod(String.valueOf(resDTO.getVerifyPeriod()));
-                res.setLineNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineNo()) ? "S1线" : "S2线");
+                res.setLineNo(resDTO.getLineNo());
                 list.add(res);
             }
             EasyExcelUtils.export(response, "计量器具台账信息", list);

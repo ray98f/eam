@@ -531,12 +531,9 @@
         d.POSITION2_CODE as "position2Code",
         d.PART_CODE as "partCode",
         d.PART_NAME as "partName",
-        (SELECT db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d.POSITION_CODE) as "positionName_textField",
-        (SELECT db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d.POSITION_CODE) as "positionName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d.MAJOR_CODE) as "majorName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d.SYSTEM_CODE) as "systemName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d.EQUIP_TYPE_CODE) as "equipTypeName",
-        (select d3.NODE_NAME from SYS_REGION d3 where d3.NODE_CODE=d.EXT1)             as "stationCode",
         d.MAJOR_CODE	as "majorCode",  <!-- 专业代码 -->
         d.SYSTEM_CODE	as "systemCode",  <!-- 系统代码 -->
         d.EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
@@ -645,12 +642,9 @@
         d.POSITION2_CODE as "position2Code",
         d.PART_CODE as "partCode",
         d.PART_NAME as "partName",
-        (SELECT db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d.POSITION_CODE) as "positionName_textField",
-        (SELECT db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d.POSITION_CODE) as "positionName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d.MAJOR_CODE) as "majorName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d.SYSTEM_CODE) as "systemName",
         (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d.EQUIP_TYPE_CODE) as "equipTypeName",
-        (select d3.NODE_NAME from SYS_REGION d3 where d3.NODE_CODE=d.EXT1) as "stationCode",
         d.MAJOR_CODE as "majorCode",  <!-- 专业代码 -->
         d.SYSTEM_CODE as "systemCode",  <!-- 系统代码 -->
         d.EQUIP_TYPE_CODE as "equipTypeCode",  <!-- 设备分类代码 -->

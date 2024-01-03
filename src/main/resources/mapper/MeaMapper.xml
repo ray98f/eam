@@ -29,7 +29,7 @@
         PERIOD_MODE	as "periodMode",  <!-- 周期方式 -->
         PLAN_STATUS	as "planStatus",  <!-- 计划完成状态 -->
         ALARM	as "alarm",  <!-- 报警(天) -->
-        LINE_NO	as "lineNo",  <!-- 线别代码 -->
+        (case when LINE_NO='01' then 'S1线' else 'S2线' end)	as "lineNo",  <!-- 线别代码 -->
         LINE_SUB_NO	as "lineSubNo",  <!-- 线段代码 -->
         POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
         POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->

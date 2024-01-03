@@ -126,7 +126,8 @@ public enum ErrorCode {
     EXAMINE_DONE(32000047, "examine.done"),
     EXAMINE_NOT_DONE(32000048, "examine.not.done"),
     REJECT_ERROR(32000049, "reject.error"),
-    BPMN_ERROR(32000050, "bpmn.error");
+    BPMN_ERROR(32000050, "bpmn.error"),
+    NOT_REVIEWER(32000051, "not.reviewer");
 
     private Integer code;
 

@@ -111,6 +111,9 @@ public class StreamUtil {
     public static <F, T> Set<T> mapToSet(Collection<F> from, Predicate<F> predicate, Function<? super F, T> mapper) {
         return from.stream().filter(predicate).map(mapper).collect(Collectors.toSet());
     }
+    public static <F, T> List<T> mapToList(Collection<F> from, Predicate<F> predicate, Function<? super F, T> mapper) {
+        return from.stream().filter(predicate).map(mapper).collect(Collectors.toList());
+    }
 
 
     public static void main(String[] args) {

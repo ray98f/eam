@@ -18,7 +18,7 @@ public enum BpmnStatus {
         this.desc = desc;
     }
 
-    public static BpmnStatus getByCode(String code) {
+    public static BpmnStatus getByCode(Integer code) {
         for (BpmnStatus value : values()) {
             if (value.getCode().equals(code)) {
                 return value;

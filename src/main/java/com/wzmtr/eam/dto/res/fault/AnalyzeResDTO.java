@@ -1,8 +1,11 @@
 package com.wzmtr.eam.dto.res.fault;
 
+import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -89,5 +92,8 @@ public class AnalyzeResDTO {
     private String objectName;
     @ApiModelProperty(value = "位置")
     private String positionName;
-
+    @ApiModelProperty(value = "附件文件")
+    private List<File> docFile;
+    @ApiModelProperty(value = "附件文件")
+    private String docId;
 }

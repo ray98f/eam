@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordReqDTO;
@@ -15,13 +16,16 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
+import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.mapper.mea.SubmissionRecordMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.mea.SubmissionRecordService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +59,12 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Autowired
     private RoleMapper roleMapper;
+
+    @Autowired
+    private EquipmentMapper equipmentMapper;
+
+    @Autowired
+    private IWorkFlowLogService workFlowLogService;
 
     @Override
     public Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, PageReqDTO pageReqDTO) {
@@ -164,7 +174,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "提交");
         } else {
             List<SubmissionRecordDetailResDTO> result = submissionRecordMapper.listSubmissionRecordDetail(res.getRecId());
-            if (result.size() == 0) {
+            if (result.isEmpty()) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "此定检记录不存在计划明细，无法提交");
             }
             String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.value(), null, null, submissionRecordReqDTO.getExamineReqDTO().getUserIds(), null);
@@ -179,6 +189,12 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             submissionRecordMapper.modifySubmissionRecord(reqDTO);
+            // 记录日志
+            workFlowLogService.add(WorkFlowLogBO.builder()
+                    .status(BpmnStatus.SUBMIT.getDesc())
+                    .userIds(submissionRecordReqDTO.getExamineReqDTO().getUserIds())
+                    .workFlowInstId(processId)
+                    .build());
         }
     }
 
@@ -187,6 +203,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         SubmissionRecordResDTO res = submissionRecordMapper.getSubmissionRecordDetail(submissionRecordReqDTO.getRecId());
         SubmissionRecordReqDTO reqDTO = new SubmissionRecordReqDTO();
         BeanUtils.copyProperties(res, reqDTO);
+        workFlowLogService.ifReviewer(res.getWorkFlowInstId());
         if (submissionRecordReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if (CommonConstants.THIRTY_STRING.equals(res.getRecStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
@@ -196,6 +213,12 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 bpmnService.agree(taskId, submissionRecordReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getCheckNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setRecStatus("30");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.PASS.getDesc())
+                        .userIds(submissionRecordReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         } else {
             if (!CommonConstants.TWENTY_STRING.equals(res.getRecStatus())) {
@@ -207,6 +230,12 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 reqDTO.setWorkFlowInstId("");
                 reqDTO.setWorkFlowInstStatus("");
                 reqDTO.setRecStatus("10");
+                // 记录日志
+                workFlowLogService.add(WorkFlowLogBO.builder()
+                        .status(BpmnStatus.REJECT.getDesc())
+                        .userIds(submissionRecordReqDTO.getExamineReqDTO().getUserIds())
+                        .workFlowInstId(processId)
+                        .build());
             }
         }
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -222,6 +251,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             for (SubmissionRecordResDTO resDTO : checkPlanList) {
                 ExcelSubmissionRecordResDTO res = new ExcelSubmissionRecordResDTO();
                 BeanUtils.copyProperties(resDTO, res);
+                res.setRecStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getRecStatus()) ? "审核中" : "审核通过");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "定检计划信息", list);
@@ -245,6 +275,16 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         submissionRecordDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionRecordDetailReqDTO.setArchiveFlag("0");
+        if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
+            String equipCode = equipmentMapper.getEquipCodeByName(submissionRecordDetailReqDTO.getEquipName());
+            if (StringUtils.isNotEmpty(equipCode)) {
+                submissionRecordDetailReqDTO.setEquipCode(equipCode);
+            } else {
+                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+            }
+        } else {
+            throw new CommonException(ErrorCode.PARAM_NULL);
+        }
         MeaResDTO meaResDTO = new MeaResDTO();
         meaResDTO.setLastVerifyDate(submissionRecordDetailReqDTO.getLastVerifyDate());
         meaResDTO.setNextVerifyDate(submissionRecordDetailReqDTO.getNextVerifyDate());
@@ -265,7 +305,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     @Override
     public void modifySubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
         List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(submissionRecordDetailReqDTO.getTestRecId(), null, null, null, null);
-        if (list.size() != 0) {
+        if (!list.isEmpty()) {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
@@ -287,7 +327,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
                 List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(res.getTestRecId(), null, null, null, null);
-                if (list.size() != 0) {
+                if (!list.isEmpty()) {
                     if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }

@@ -15,16 +15,15 @@ import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultExamineReqDTO;
 import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
-import com.wzmtr.eam.enums.BpmnFlowEnum;
-import com.wzmtr.eam.enums.BpmnStatus;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.enums.FaultAnalizeFlow;
+import com.wzmtr.eam.enums.*;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
+import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -53,6 +53,10 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     private RoleMapper roleMapper;
     @Autowired
     private IWorkFlowLogService workFlowLogService;
+    @Autowired
+    private FileMapper fileMapper;
+    @Autowired
+    private IDictionariesService dictService;
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
@@ -61,7 +65,13 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-        records.forEach(a -> a.setRespDeptName(organizationMapper.getNamesById(a.getRespDeptCode())));
+        records.forEach(a -> {
+                    a.setRespDeptName(organizationMapper.getNamesById(a.getRespDeptCode()));
+                    if (StringUtils.isNotEmpty(a.getDocId())) {
+                        a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
+                    }
+                }
+        );
         return query;
     }
 
@@ -73,8 +83,15 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         }
         List<FaultAnalizeExportBO> exportList = Lists.newArrayList();
         resList.forEach(item -> {
+                    LineCode lineCode = LineCode.getByCode(item.getLineCode());
+                    FaultFrequency frequency = FaultFrequency.getByCode(item.getFrequency());
                     String respDeptName = organizationMapper.getOrgById(item.getRespDeptCode());
                     FaultAnalizeExportBO exportBO = BeanUtils.convert(item, FaultAnalizeExportBO.class);
+                    exportBO.setLineCode(lineCode != null ? lineCode.getDesc() : item.getLineCode());
+                    if (StringUtils.isNotEmpty(item.getFaultLevel())){
+                        exportBO.setFaultLevel(dictService.queryOneByItemCodeAndCodesetCode("dm.faultLevel", item.getFaultLevel()).getItemCname());
+                    }
+                    exportBO.setFrequency(frequency != null ? frequency.getDesc() : item.getFrequency());
                     exportBO.setRespDeptName(respDeptName == null ? CommonConstants.EMPTY : respDeptName);
                     exportList.add(exportBO);
                 }
@@ -82,7 +99,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         try {
             EasyExcelUtils.export(response, "故障调查及处置情况", exportList);
         } catch (Exception e) {
-            log.error("导出失败",e);
+            log.error("导出失败", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
     }
@@ -140,6 +157,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     public void pass(FaultExamineReqDTO reqDTO) {
         String faultAnalysisNo = Assert.notNull(reqDTO.getFaultAnalysisNo(), "faultAnalysisNo can not be null!");
         FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALIZE_NO, faultAnalysisNo));
+        workFlowLogService.ifReviewer(faultAnalyzeDO.getWorkFlowInstId());
         String taskId = bpmnService.queryTaskIdByProcId(faultAnalyzeDO.getWorkFlowInstId());
         AnalyzeServiceImpl aop = (AnalyzeServiceImpl) AopContext.currentProxy();
         aop._agree(reqDTO, faultAnalyzeDO, taskId);
@@ -200,6 +218,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         String backOpinion = reqDTO.getExamineReqDTO().getOpinion();
         FaultAnalyzeDO dmfm03 = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq("FAULT_NO", faultNo).eq("FAULT_WORK_NO", faultWorkNo).eq("FAULT_ANALYSIS_NO", checkFaultAnalysisNo));
         String processId = dmfm03.getWorkFlowInstId();
+        workFlowLogService.ifReviewer(processId);
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(taskId, backOpinion);
         dmfm03.setRecStatus("10");

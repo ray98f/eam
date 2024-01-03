@@ -55,6 +55,7 @@ public class CommonConstants {
      * 数字
      */
     public static final int ZERO = 0;
+    public static final long ZERO_LONG = 0L;
     public static final int ONE = 1;
     public static final int TWO = 2;
     public static final int THREE = 3;

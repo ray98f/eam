@@ -4,15 +4,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.RegionReqDTO;
-import com.wzmtr.eam.dto.res.basic.excel.ExcelRegionResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.basic.excel.ExcelRegionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.service.basic.RegionService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.tree.RegionTreeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author frp
@@ -93,9 +96,14 @@ public class RegionServiceImpl implements RegionService {
         if (categoryResDTOList != null && !categoryResDTOList.isEmpty()) {
             List<ExcelRegionResDTO> list = new ArrayList<>();
             for (RegionResDTO resDTO : categoryResDTOList) {
+                LineCode lineCode = null;
+                if (StringUtils.isNotEmpty(resDTO.getLineCode())) {
+                    lineCode = LineCode.getByCode(resDTO.getLineCode());
+                }
                 ExcelRegionResDTO res = ExcelRegionResDTO.builder()
                         .recId(resDTO.getRecId())
                         .nodeCode(resDTO.getNodeCode())
+                        .lineCode(lineCode == null ? resDTO.getLineCode() : lineCode.getDesc())
                         .nodeName(resDTO.getNodeName())
                         .recStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "启用" : "禁用")
                         .remark(resDTO.getRemark())

@@ -83,6 +83,7 @@ public class WoRuleServiceImpl implements WoRuleService {
         woRuleDetail.setRecId(TokenUtil.getUuId());
         woRuleDetail.setRecCreator(TokenUtil.getCurrentPersonId());
         woRuleDetail.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        woRuleDetail.setPeriod(Optional.ofNullable(woRuleDetail.getPeriod()).orElse(CommonConstants.ZERO_LONG));
         woRuleMapper.addWoRuleDetail(woRuleDetail);
     }
 

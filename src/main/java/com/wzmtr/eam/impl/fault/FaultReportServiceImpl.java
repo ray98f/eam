@@ -6,10 +6,12 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.enums.OrderStatus;
+import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
@@ -24,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,6 +50,8 @@ public class FaultReportServiceImpl implements FaultReportService {
     private OverTodoService overTodoService;
     @Autowired
     private FileMapper fileMapper;
+    @Autowired
+    private RegionMapper regionMapper;
 
     @Override
     // @Transactional(rollbackFor = Exception.class)
@@ -101,20 +108,11 @@ public class FaultReportServiceImpl implements FaultReportService {
         long startTime = System.nanoTime();
         Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode());
         log.info("已提报故障查询耗时{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
-        if (CollectionUtil.isEmpty(list.getRecords())) {
+        List<FaultReportResDTO> records = list.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-        list.getRecords().forEach(a -> {
-            if (StringUtils.isNotEmpty(a.getDocId())) {
-                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
-            }
-            LineCode line = LineCode.getByCode(a.getLineCode());
-            a.setLineName(line == null ? a.getLineCode() : line.getDesc());
-            if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
-                a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
-            }
-            a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
-        });
+       _buildRes(records);
         return list;
     }
 
@@ -125,10 +123,20 @@ public class FaultReportServiceImpl implements FaultReportService {
         long startTime = System.nanoTime();
         Page<FaultReportResDTO> list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode());
         log.info("车辆故障查询耗时-------{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
-        if (CollectionUtil.isEmpty(list.getRecords())) {
+        List<FaultReportResDTO> records = list.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-        list.getRecords().forEach(a -> {
+        // (SELECT distinct db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d.POSITION_CODE) as "positionName",
+        //         (select d3.NODE_NAME from SYS_REGION d3 where d3.NODE_CODE=d.EXT1) as "stationCode",
+        _buildRes(records);
+        return list;
+    }
+    private void _buildRes(List<FaultReportResDTO> records) {
+        Set<String> positionCodes = StreamUtil.mapToSet(records, FaultReportResDTO::getPositionCode);
+        List<RegionResDTO> regionResDTOS = regionMapper.selectByNodeCodes(positionCodes);
+        Map<String, RegionResDTO> regionMap = StreamUtil.toMap(regionResDTOS, RegionResDTO::getNodeCode);
+        records.forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
             if (StringUtils.isNotEmpty(a.getDocId())) {
                 a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
@@ -137,11 +145,13 @@ public class FaultReportServiceImpl implements FaultReportService {
             if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
                 a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
             }
+            if (regionMap.containsKey(a.getPositionCode())){
+                a.setPositionName(regionMap.get(a.getPositionCode()).getNodeName());
+            }
             if (StringUtils.isNotEmpty(a.getFillinDeptCode())) {
                 a.setFillinDeptCode(organizationMapper.getNamesById(a.getFillinDeptCode()));
             }
         });
-        return list;
     }
 
 

@@ -42,6 +42,4 @@ public class ExcelSubmissionRecordDetailResDTO {
     private String nextVerifyDate;
     @ExcelProperty(value = "使用单位名称")
     private String useDeptCname;
-    @ExcelProperty(value = "附件")
-    private String verifyNote;
 }

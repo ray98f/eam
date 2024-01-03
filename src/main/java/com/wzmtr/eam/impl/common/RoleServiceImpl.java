@@ -186,12 +186,14 @@ public class RoleServiceImpl implements RoleService {
     private List<FlowRoleResDTO> getNextNodeInfo(String flowId, FlowRoleResDTO flowRole) {
         // 查下一步的节点信息
         BpmnExamineFlowRoleReq bpmnExamineFlowRoleReq = new BpmnExamineFlowRoleReq();
-        bpmnExamineFlowRoleReq.setLine(flowRole.getLine());
+        if (StringUtils.isNotEmpty(flowRole.getLine())){
+            bpmnExamineFlowRoleReq.setLine(flowRole.getLine());
+            bpmnExamineFlowRoleReq.setParentId(flowRole.getNodeId());
+        }
         String step = flowRole.getStep();
         String nextStep = String.valueOf((Integer.parseInt(step) + 1));
         bpmnExamineFlowRoleReq.setStep(nextStep);
         bpmnExamineFlowRoleReq.setFlowId(flowId);
-        bpmnExamineFlowRoleReq.setParentId(flowRole.getNodeId());
         return roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
     }
 

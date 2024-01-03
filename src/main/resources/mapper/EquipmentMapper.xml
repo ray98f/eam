@@ -1209,5 +1209,11 @@
         </if>
     </select>
 
+    <select id="getEquipCodeByName" resultType="java.lang.String">
+        SELECT EQUIP_CODE
+        FROM T_EQUIPMENT WHERE EQUIP_NAME=#{name} AND DELETE_FLAG='0'
+        AND ROWNUM=1
+    </select>
+
 
 </mapper>

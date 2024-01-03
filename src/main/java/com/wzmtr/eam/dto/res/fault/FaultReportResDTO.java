@@ -107,4 +107,6 @@ public class FaultReportResDTO {
 
     @ApiModelProperty(value = "附件文件")
     private List<File> docFile;
+
+    private String ext1;
 }

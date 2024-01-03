@@ -40,6 +40,4 @@ public class ExcelOverhaulItemResDTO {
     private String itemUnit;
     @ExcelProperty(value = "检修人")
     private String workUserName;
-    @ExcelProperty(value = "附件")
-    private String docId;
 }
