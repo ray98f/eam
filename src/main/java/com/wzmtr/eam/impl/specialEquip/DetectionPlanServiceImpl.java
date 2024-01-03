@@ -191,6 +191,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Override
     public void examineDetectionPlan(DetectionPlanReqDTO detectionPlanReqDTO) {
+        Assert.notNull(detectionPlanReqDTO.getExamineReqDTO(),ErrorCode.PARAM_ERROR);
         DetectionPlanResDTO res = detectionPlanMapper.getDetectionPlanDetail(detectionPlanReqDTO.getRecId());
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);

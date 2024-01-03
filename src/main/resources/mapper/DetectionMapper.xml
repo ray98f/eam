@@ -736,12 +736,12 @@
         <!--LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE-->
         WHERE a.DELETE_FLAG='0'
         <if test="testRecId!=null and testRecId!=''">
-            a.TEST_REC_ID=#{testRecId}
+           and a.TEST_REC_ID=#{testRecId}
         </if>
         <!--<isNotEmpty prepend=" AND " property="testRecId">-->
         <!--a.TEST_REC_ID=#{testRecId#-->
         <!--</isNotEmpty>-->
-        order by a.EQUIP_CODE asc
+        order by a.EQUIP_CODE
     </select>
 
     <select id="queryMsg" resultType="com.wzmtr.eam.dto.res.specialEquip.DetectionDetailResDTO">

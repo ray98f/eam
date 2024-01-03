@@ -10,7 +10,6 @@ import com.wzmtr.eam.entity.DynamicSource;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
-import com.wzmtr.eam.utils.EasyExcelUtil;
 import com.wzmtr.eam.utils.ExcelTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,7 +33,6 @@ public class FaultExportComponent {
 
     public void exportByTemplate(FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
         try {
-            log.info("FaultQueryDetailReqDTO:{}", JSONObject.toJSONString(reqDTO));
             List<FaultDetailResDTO> data = faultQueryMapper.list(reqDTO);
             if (CollectionUtil.isEmpty(data)) {
                 log.info("未查询到数据！");
@@ -61,7 +59,6 @@ public class FaultExportComponent {
             // 2.保存到本地
             ExcelTemplateUtil.save(workbook, "故障列表", response);
             // ExcelTemplateUtil.save(workbook, "C:/PoiExcel/" + System.currentTimeMillis() + "dynamic-poi-excel-template.xls");
-            log.info("导出成功!");
         } catch (Exception e) {
             log.error("导出失败", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR);
@@ -69,23 +66,21 @@ public class FaultExportComponent {
     }
 
 
-
-
-    public void faultExportWithTemplateUseEasyExcel(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response){
+    public void faultExportWithTemplateUseEasyExcel(FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
         List<FaultDetailResDTO> data = faultQueryMapper.list(reqDTO);
         InputStream resourceAsStream = getClass().getResourceAsStream("/excel_template/faulttemplate.xlsx");
         Map<String, String> map = _buildSingleMap();
         Map<String, List<?>> sheetAndDataMap = _buildSheetAndDataMap(data);
-        EasyExcelUtil.fillReportWithEasyExcel(response,sheetAndDataMap,map,"test.xls",resourceAsStream);
+        ExcelTemplateUtil.fillReportWithEasyExcel(response, sheetAndDataMap, map, "test.xls", resourceAsStream);
     }
 
     private Map<String, List<?>> _buildSheetAndDataMap(List<FaultDetailResDTO> data) {
         Map<String, List<?>> dataMap = Maps.newHashMap();
-        dataMap.put("0",data);
+        dataMap.put("0", data);
         return dataMap;
     }
 
-    private Map<String,String> _buildSingleMap() {
+    private Map<String, String> _buildSingleMap() {
         Calendar calendar = Calendar.getInstance();
         Map<String, String> map = Maps.newHashMap();
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
