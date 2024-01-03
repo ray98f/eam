@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
-import com.wzmtr.eam.bizobject.export.FaultExportBO;
 import com.wzmtr.eam.bizobject.PartBO;
 import com.wzmtr.eam.bizobject.StationBO;
+import com.wzmtr.eam.bizobject.export.FaultExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
@@ -166,7 +166,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         try {
             EasyExcelUtils.export(response, "故障信息", exportList);
         } catch (Exception e) {
-            log.error("导出失败!",e);
+            log.error("导出失败!", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
     }
@@ -668,6 +668,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     private void _check(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String
             current, String stepOrg) {
+        // 判断是否存在验收状态的数据
+        Set<String> orderStatus = StreamUtil.mapToSet(list, FaultDetailResDTO::getOrderStatus);
+        Assert.isFalse(orderStatus.contains(OrderStatus.YAN_SHOU.getCode()), "当前勾选的数据中存在验收状态的数据，无法进行重复操作!");
         list.forEach(a -> {
             String faultNo = a.getFaultNo();
             String faultWorkNo = a.getFaultWorkNo();
