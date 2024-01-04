@@ -167,9 +167,7 @@ public class TrackServiceImpl implements TrackService {
         ExamineReqDTO examineReqDTO = Assert.notNull(reqDTO.getExamineReqDTO(), "下一步参与者不能为空！");
         // faultTrackDO.query  com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#submit
         List<FaultTrackDO> dmfm9List = faultTrackMapper.queryList(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
-        if (CollectionUtil.isEmpty(dmfm9List)) {
-            return;
-        }
+        Assert.notEmpty(dmfm9List,ErrorCode.RESOURCE_NOT_EXIST);
         FaultTrackDO faultTrackDO = dmfm9List.get(0);
         //判断当前状态是否已是审核中，防止重复提交
         Assert.isFalse("40".equals(faultTrackDO.getRecStatus()),"当前状态已变更，不允许重复提交!");
@@ -294,6 +292,7 @@ public class TrackServiceImpl implements TrackService {
         // String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(processId, reqDTO.getExamineReqDTO().getOpinion());
         dmfm09.setRecStatus("10");
+        dmfm09.setWorkFlowInstId("");
         dmfm09.setWorkFlowInstStatus("");
         faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         workFlowLogService.add(WorkFlowLogBO.builder()

@@ -623,7 +623,7 @@
             and a.EQUIP_NAME like '%' || #{req.equipName} || '%'
         </if>
         <if test="req.matSpecifi!=null and req.matSpecifi!=''">
-            and a.MAT_SPECIFI like '%' || #{req.matSpecifi} || '%'
+            and e.MAT_SPECIFI like '%' || #{req.matSpecifi} || '%'
         </if>
         <if test="req.planBeginBeginDate!=null and req.planBeginBeginDate!=''">
             and a.PLAN_BEGIN_DATE >= #{req.planBeginBeginDate}

@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class FaultAnalyzeUploadReqDTO {
     @ApiModelProperty("故障分析编号")
-    private String faultAnalyzeNo;
+    private String faultAnalysisNo;
 
     @ApiModelProperty("附件编号")
     private String docId;

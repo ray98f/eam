@@ -119,6 +119,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void submit(FaultExamineReqDTO reqDTO) {
         String faultAnalysisNo = Assert.notNull(reqDTO.getFaultAnalysisNo(), "faultAnalysisNo can not be null!");
         ExamineReqDTO examineReqDTO = Assert.notNull(reqDTO.getExamineReqDTO(), "ExamineReqDTO can not be null");
@@ -143,6 +144,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 dmfm03.setRecStatus("20");
             } catch (Exception e) {
                 log.error("故障分析流程提交错误，分析单号为-[{}]", faultAnalysisNo, e);
+                throw new CommonException(ErrorCode.BPMN_ERROR);
             }
         }
         // 流程日志记录
@@ -157,7 +159,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Override
     public void pass(FaultExamineReqDTO reqDTO) {
         String faultAnalysisNo = Assert.notNull(reqDTO.getFaultAnalysisNo(), "faultAnalysisNo can not be null!");
-        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALIZE_NO, faultAnalysisNo));
+        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALYSIS_NO, faultAnalysisNo));
         workFlowLogService.ifReviewer(faultAnalyzeDO.getWorkFlowInstId());
         String taskId = bpmnService.queryTaskIdByProcId(faultAnalyzeDO.getWorkFlowInstId());
         AnalyzeServiceImpl aop = (AnalyzeServiceImpl) AopContext.currentProxy();
@@ -224,6 +226,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         bpmnService.reject(processId, backOpinion);
         dmfm03.setRecStatus("10");
         dmfm03.setWorkFlowInstStatus("");
+        dmfm03.setWorkFlowInstId("");
         faultAnalyzeMapper.update(dmfm03);
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.REJECT.getDesc())
@@ -234,8 +237,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public void upload(FaultAnalyzeUploadReqDTO reqDTO) {
-        Assert.notNull(reqDTO.getFaultAnalyzeNo(),ErrorCode.PARAM_ERROR);
-        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALIZE_NO, reqDTO.getFaultAnalyzeNo()));
+        Assert.notNull(reqDTO.getFaultAnalysisNo(),ErrorCode.PARAM_ERROR);
+        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALYSIS_NO, reqDTO.getFaultAnalysisNo()));
         faultAnalyzeDO.setDocId(reqDTO.getDocId());
         faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultAnalyzeDO.setRecReviseTime(DateUtil.getCurrentTime());
