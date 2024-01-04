@@ -15,6 +15,7 @@ import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.service.basic.WoRuleService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +109,7 @@ public class WoRuleServiceImpl implements WoRuleService {
 
     @Override
     public void deleteWoRule(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             woRuleMapper.deleteWoRule(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             woRuleMapper.deleteWoRuleDetailByCode(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
@@ -118,7 +119,7 @@ public class WoRuleServiceImpl implements WoRuleService {
 
     @Override
     public void deleteWoRuleDetail(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             woRuleMapper.deleteWoRuleDetail(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -128,7 +129,7 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void exportWoRule(String ruleCode, String ruleName, String ruleUseage, HttpServletResponse response) throws IOException {
         List<WoRuleResDTO> woRules = woRuleMapper.listWoRule(ruleCode, ruleName, ruleUseage);
-        if (woRules != null && !woRules.isEmpty()) {
+        if (StringUtils.isNotEmpty(woRules)) {
             List<ExcelWoRuleResDTO> list = new ArrayList<>();
             for (WoRuleResDTO resDTO : woRules) {
                 ExcelWoRuleResDTO res = ExcelWoRuleResDTO.builder()
@@ -150,7 +151,7 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void exportWoRuleDetail(String ruleCode, HttpServletResponse response) throws IOException {
         List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.listWoRuleDetail(ruleCode, null, null);
-        if (woRuleDetails != null && !woRuleDetails.isEmpty()) {
+        if (StringUtils.isNotEmpty(woRuleDetails)) {
             List<ExcelWoRuleDetailResDTO> list = new ArrayList<>();
             for (WoRuleResDTO.WoRuleDetail resDTO : woRuleDetails) {
                 ExcelWoRuleDetailResDTO res = ExcelWoRuleDetailResDTO.builder()

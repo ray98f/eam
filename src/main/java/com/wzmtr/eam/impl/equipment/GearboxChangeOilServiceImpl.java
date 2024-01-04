@@ -15,6 +15,7 @@ import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.service.equipment.GearboxChangeOilService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.FileUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -68,7 +69,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
 
     @Override
     public void deleteGearboxChangeOil(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 if (!gearboxChangeOilMapper.getRecCreator(id).equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
@@ -97,7 +98,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
                     temp.add(req);
                 }
             }
-            if (temp.size() > 0) {
+            if (!temp.isEmpty()) {
                 gearboxChangeOilMapper.importGearboxChangeOil(temp);
             }
         } catch (Exception e) {

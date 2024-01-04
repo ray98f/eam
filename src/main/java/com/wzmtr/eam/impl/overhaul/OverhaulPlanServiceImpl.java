@@ -93,7 +93,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OverhaulPlanResDTO> page = overhaulPlanMapper.pageOverhaulPlan(pageReqDTO.of(), overhaulPlanListReqDTO);
         List<OverhaulPlanResDTO> list = page.getRecords();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             for (OverhaulPlanResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getWorkerGroupCode())) {
                     res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
@@ -634,7 +634,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(planCode);
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             resList = overhaulTplMapper.queryTemplate(list.get(0).getLineNo(), list.get(0).getSubjectCode(),
                     list.get(0).getSystemCode(), list.get(0).getEquipTypeCode(), "30");
         }
@@ -686,7 +686,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void deleteOverhaulObject(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulObjectResDTO resDTO = overhaulPlanMapper.getOverhaulObjectDetail(id);
                 OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();

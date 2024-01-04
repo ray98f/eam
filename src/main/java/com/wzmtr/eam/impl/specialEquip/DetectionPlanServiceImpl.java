@@ -67,7 +67,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<DetectionPlanResDTO> page = detectionPlanMapper.pageDetectionPlan(pageReqDTO.of(), instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark);
         List<DetectionPlanResDTO> list = page.getRecords();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             for (DetectionPlanResDTO resDTO : list) {
                 resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
                 resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
@@ -137,7 +137,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Override
     public void deleteDetectionPlan(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 DetectionPlanResDTO resDTO = detectionPlanMapper.getDetectionPlanDetail(id);
                 if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
@@ -312,7 +312,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Override
     public void deleteDetectionPlanDetail(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 DetectionPlanDetailResDTO detailResDTO = detectionPlanMapper.getDetectionPlanDetailDetail(id);
                 if (Objects.isNull(detailResDTO)) {

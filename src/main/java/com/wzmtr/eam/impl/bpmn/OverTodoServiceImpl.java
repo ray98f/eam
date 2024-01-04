@@ -38,7 +38,7 @@ public class OverTodoServiceImpl implements OverTodoService {
         }
         try {
             List<QueryNotWorkFlowResDTO> list = overTodoMapper.queryNotWorkFlow(businessRecId);
-            if (list != null && !list.isEmpty()) {
+            if (StringUtils.isNotEmpty(list)) {
                 for (QueryNotWorkFlowResDTO l : list) {
                     EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
                     BeanUtils.copyProperties(l, eipMsgPushReq);

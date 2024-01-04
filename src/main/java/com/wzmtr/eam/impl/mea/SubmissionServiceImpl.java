@@ -101,7 +101,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public void deleteSubmission(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 SubmissionResDTO res = submissionMapper.getSubmissionDetail(id);
                 if (Objects.isNull(res)) {
@@ -271,7 +271,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public void deleteSubmissionDetail(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 SubmissionDetailResDTO res = submissionMapper.getSubmissionDetailDetail(id);
                 if (Objects.isNull(res)) {

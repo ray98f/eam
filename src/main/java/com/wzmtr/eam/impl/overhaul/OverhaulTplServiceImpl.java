@@ -116,7 +116,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void deleteOverhaulTpl(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulTplResDTO resDTO = overhaulTplMapper.getOverhaulTplDetail(id);
                 OverhaulTplReqDTO overhaulTplReqDTO = new OverhaulTplReqDTO();
@@ -347,7 +347,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void deleteOverhaulTplDetail(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulTplDetailResDTO resDTO = overhaulTplMapper.getOverhaulTplDetailDetail(id);
                 if (Objects.isNull(resDTO)) {
@@ -414,7 +414,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void deleteOverhaulMaterial(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             overhaulTplMapper.deleteOverhaulMaterial(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         }
     }
