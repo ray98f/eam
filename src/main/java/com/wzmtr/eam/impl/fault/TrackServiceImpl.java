@@ -291,9 +291,9 @@ public class TrackServiceImpl implements TrackService {
         FaultTrackDO dmfm09 = list.get(0);
         String processId = dmfm09.getWorkFlowInstId();
         workFlowLogService.ifReviewer(processId);
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
-        bpmnService.reject(taskId, reqDTO.getExamineReqDTO().getOpinion());
-        dmfm09.setRecStatus("30");
+        // String taskId = bpmnService.queryTaskIdByProcId(processId);
+        bpmnService.reject(processId, reqDTO.getExamineReqDTO().getOpinion());
+        dmfm09.setRecStatus("10");
         dmfm09.setWorkFlowInstStatus("");
         faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         workFlowLogService.add(WorkFlowLogBO.builder()
@@ -301,5 +301,13 @@ public class TrackServiceImpl implements TrackService {
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(processId)
                 .build());
+    }
+
+    public static void main(String[] args) {
+        String userId = "";
+        ArrayList<String> userIds = new ArrayList<>();
+        userIds.add(userId);
+        boolean empty = CollectionUtil.isEmpty(userIds);
+        System.out.println(empty);
     }
 }

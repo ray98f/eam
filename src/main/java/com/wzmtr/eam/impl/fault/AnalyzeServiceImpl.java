@@ -12,6 +12,7 @@ import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
 import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
 import com.wzmtr.eam.dto.req.fault.AnalyzeReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultAnalyzeDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultAnalyzeUploadReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultExamineReqDTO;
 import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.AnalyzeResDTO;
@@ -219,8 +220,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         FaultAnalyzeDO dmfm03 = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq("FAULT_NO", faultNo).eq("FAULT_WORK_NO", faultWorkNo).eq("FAULT_ANALYSIS_NO", checkFaultAnalysisNo));
         String processId = dmfm03.getWorkFlowInstId();
         workFlowLogService.ifReviewer(processId);
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
-        bpmnService.reject(taskId, backOpinion);
+        // String taskId = bpmnService.queryTaskIdByProcId(processId);
+        bpmnService.reject(processId, backOpinion);
         dmfm03.setRecStatus("10");
         dmfm03.setWorkFlowInstStatus("");
         faultAnalyzeMapper.update(dmfm03);
@@ -229,5 +230,15 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(dmfm03.getWorkFlowInstId())
                 .build());
+    }
+
+    @Override
+    public void upload(FaultAnalyzeUploadReqDTO reqDTO) {
+        Assert.notNull(reqDTO.getFaultAnalyzeNo(),ErrorCode.PARAM_ERROR);
+        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALIZE_NO, reqDTO.getFaultAnalyzeNo()));
+        faultAnalyzeDO.setDocId(reqDTO.getDocId());
+        faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        faultAnalyzeDO.setRecReviseTime(DateUtil.getCurrentTime());
+        faultAnalyzeMapper.update(faultAnalyzeDO);
     }
 }
