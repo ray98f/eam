@@ -23,7 +23,7 @@ public class ExcelSubmissionRecordResDTO {
     @ExcelProperty(value = "检定记录号")
     private String checkNo;
     @ExcelProperty(value = "检测校准单位")
-    private String verifyDept;
+    private String verifyDeptName;
     @ExcelProperty(value = "检定记录状态")
     private String recStatus;
     @ExcelProperty(value = "备注")

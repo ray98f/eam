@@ -19,6 +19,7 @@ import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.BpmnStatus;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
@@ -66,6 +67,9 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     @Autowired
     private IWorkFlowLogService workFlowLogService;
 
+    @Autowired
+    private OrganizationMapper organizationMapper;
+
     @Override
     public Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
@@ -75,6 +79,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             for (SubmissionRecordResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getDocId())) {
                     res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+                    res.setVerifyDeptName(organizationMapper.getNamesById(res.getVerifyDept()));
                 }
             }
         }
@@ -249,6 +254,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         if (checkPlanList != null && !checkPlanList.isEmpty()) {
             List<ExcelSubmissionRecordResDTO> list = new ArrayList<>();
             for (SubmissionRecordResDTO resDTO : checkPlanList) {
+                resDTO.setVerifyDeptName(organizationMapper.getNamesById(resDTO.getVerifyDept()));
                 ExcelSubmissionRecordResDTO res = new ExcelSubmissionRecordResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setRecStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getRecStatus()) ? "审核中" : "审核通过");
