@@ -55,7 +55,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<GeneralSurveyResDTO> page = generalSurveyMapper.pageGeneralSurvey(pageReqDTO.of(), trainNo, recNotifyNo, recDetail, orgType);
         List<GeneralSurveyResDTO> list = page.getRecords();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             for (GeneralSurveyResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getDocId())) {
                     res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
@@ -101,7 +101,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
 
     @Override
     public void deleteGeneralSurvey(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 if (!generalSurveyMapper.getGeneralSurveyDetail(id).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
@@ -129,7 +129,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
                 req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 temp.add(req);
             }
-            if (temp.size() > 0) {
+            if (!temp.isEmpty()) {
                 generalSurveyMapper.importGeneralSurvey(temp);
             }
         } catch (Exception e) {

@@ -64,7 +64,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<CheckPlanResDTO> page = checkPlanMapper.pageCheckPlan(pageReqDTO.of(), checkPlanListReqDTO);
         List<CheckPlanResDTO> list = page.getRecords();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             for (CheckPlanResDTO res : list) {
                 res.setEditDeptCode(organizationMapper.getNamesById(res.getEditDeptCode()));
             }
@@ -143,7 +143,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public void deleteCheckPlan(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(id);
                 if (Objects.isNull(res)) {
@@ -323,7 +323,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public void deleteCheckPlanInfo(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 MeaInfoResDTO res = checkPlanMapper.getInfoDetail(id);
                 if (Objects.isNull(res)) {

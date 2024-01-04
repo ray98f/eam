@@ -83,7 +83,7 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public void deleteRegion(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             regionMapper.deleteRegion(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

@@ -62,7 +62,7 @@ public class DetectionServiceImpl implements DetectionService {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<DetectionResDTO> page = detectionMapper.pageDetection(pageReqDTO.of(), checkNo, sendVerifyNo, editDeptCode, recStatus);
         List<DetectionResDTO> list = page.getRecords();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             for (DetectionResDTO resDTO : list) {
                 resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));
                 resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
@@ -129,7 +129,7 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Override
     public void deleteDetection(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 DetectionResDTO resDTO = detectionMapper.getDetectionDetail(id);
                 if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
@@ -212,7 +212,7 @@ public class DetectionServiceImpl implements DetectionService {
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setRecStatus("30");
                 List<DetectionDetailResDTO> list = detectionMapper.queryMsg(reqDTO.getRecId());
-                if (list != null && !list.isEmpty()) {
+                if (StringUtils.isNotEmpty(list)) {
                     for (DetectionDetailResDTO detectionDetail : list) {
                         detectionMapper.updateEquip(detectionDetail);
                     }
@@ -327,7 +327,7 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Override
     public void deleteDetectionDetail(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 DetectionDetailResDTO detailResDTO = detectionMapper.getDetectionDetailDetail(id);
                 if (Objects.isNull(detailResDTO)) {

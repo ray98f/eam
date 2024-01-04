@@ -64,7 +64,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
         Page<SpecialEquipResDTO> page =  specialEquipMapper.pageSpecialEquip(pageReqDTO.of(), equipCode, equipName, specialEquipCode, factNo, useLineNo,
                 position1Code, specialEquipType, equipStatus);
         List<SpecialEquipResDTO> list = page.getRecords();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             for (SpecialEquipResDTO resDTO : list) {
                 if (StringUtils.isNotEmpty(resDTO.getManageOrg())) {
                     resDTO.setManageOrgName(organizationMapper.getOrgById(resDTO.getManageOrg()));

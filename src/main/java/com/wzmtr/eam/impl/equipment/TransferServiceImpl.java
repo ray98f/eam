@@ -116,7 +116,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void encodingTransfer(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 TransferResDTO transferResDTO = transferMapper.getTransferDetail(id);
                 if (Objects.isNull(transferResDTO)) {

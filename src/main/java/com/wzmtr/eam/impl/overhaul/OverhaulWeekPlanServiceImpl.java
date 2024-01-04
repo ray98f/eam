@@ -100,7 +100,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OverhaulWeekPlanResDTO> page = overhaulWeekPlanMapper.pageOverhaulWeekPlan(pageReqDTO.of(), overhaulWeekPlanListReqDTO);
         List<OverhaulWeekPlanResDTO> list = page.getRecords();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             for (OverhaulWeekPlanResDTO res : list) {
                 res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
             }
@@ -179,7 +179,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void deleteOverhaulWeekPlan(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulWeekPlanResDTO resDTO = overhaulWeekPlanMapper.getOverhaulWeekPlanDetail(id);
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus())) {
@@ -648,7 +648,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void deleteOverhaulPlan(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulPlanResDTO resDTO = overhaulPlanMapper.getOverhaulPlanDetail(id, "1");
                 OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO = new OverhaulWeekPlanListReqDTO();
@@ -697,7 +697,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(planCode);
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             resList = overhaulTplMapper.queryTemplate(list.get(0).getLineNo(), list.get(0).getSubjectCode(),
                     list.get(0).getSystemCode(), list.get(0).getEquipTypeCode(), "30");
         }
@@ -753,13 +753,13 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void deleteOverhaulObject(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulObjectResDTO resDTO = overhaulPlanMapper.getOverhaulObjectDetail(id);
                 OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
                 overhaulPlanListReqDTO.setPlanCode(resDTO.getPlanCode());
                 List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-                if (list != null && !list.isEmpty()) {
+                if (StringUtils.isNotEmpty(list)) {
                     OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO = new OverhaulWeekPlanListReqDTO();
                     overhaulWeekPlanListReqDTO.setWeekPlanCode(list.get(0).getWeekPlanCode());
                     overhaulWeekPlanListReqDTO.setTrialStatus("10");

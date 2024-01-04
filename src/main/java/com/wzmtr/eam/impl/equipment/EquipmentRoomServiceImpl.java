@@ -14,6 +14,7 @@ import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
 import com.wzmtr.eam.service.equipment.EquipmentRoomService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -65,7 +66,7 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void deleteEquipmentRoom(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             equipmentRoomMapper.deleteEquipmentRoom(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -76,7 +77,7 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
     public void exportEquipmentRoom(String equipRoomCode, String equipRoomName, String lineCode, String position1Code,
                                     String position1Name, String subjectCode, HttpServletResponse response) throws IOException {
         List<EquipmentRoomResDTO> equipmentRoomResDTOList = equipmentRoomMapper.listEquipmentRoom(equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode);
-        if (equipmentRoomResDTOList != null && !equipmentRoomResDTOList.isEmpty()) {
+        if (StringUtils.isNotEmpty(equipmentRoomResDTOList)) {
             List<ExcelEquipRoomResDTO> list = new ArrayList<>();
             for (EquipmentRoomResDTO resDTO : equipmentRoomResDTOList) {
                 ExcelEquipRoomResDTO res = new ExcelEquipRoomResDTO();

@@ -435,7 +435,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderListReqDTO.setOrderCode(orderCode);
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOrder(overhaulOrderListReqDTO);
         OverhaulStateOrderResDTO res = new OverhaulStateOrderResDTO();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             res.setLineNo(list.get(0).getLineNo());
             res.setPosition1Name(list.get(0).getPosition1Name());
             res.setPosition1Code(list.get(0).getPosition1Code());

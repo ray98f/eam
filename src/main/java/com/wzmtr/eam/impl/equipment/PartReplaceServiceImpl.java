@@ -79,7 +79,7 @@ public class PartReplaceServiceImpl implements PartReplaceService {
 
     @Override
     public void deletePartReplace(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 if (!partReplaceMapper.getPartReplaceDetail(id).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
