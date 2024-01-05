@@ -33,7 +33,7 @@ import java.util.List;
 @RequestMapping("/overhaul/ztt")
 @Api(tags = "预防性检修管理-检修周计划（中铁通）")
 @Validated
-public class ZTTOverhaulWeekPlanController {
+public class ZttOverhaulWeekPlanController {
 
     @Resource
     private OverhaulWeekPlanService overhaulWeekPlanService;

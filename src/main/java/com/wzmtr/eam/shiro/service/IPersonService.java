@@ -1,6 +1,6 @@
 package com.wzmtr.eam.shiro.service;
 
-import com.wzmtr.eam.shiro.model.TPerson;
+import com.wzmtr.eam.shiro.model.Person;
 
 /**
  * description:
@@ -11,6 +11,6 @@ import com.wzmtr.eam.shiro.model.TPerson;
  */
 public interface IPersonService {
 
-    TPerson searchPersonByNo(String no);
+    Person searchPersonByNo(String no);
 
 }

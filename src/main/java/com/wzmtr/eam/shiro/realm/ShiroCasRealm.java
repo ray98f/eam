@@ -5,7 +5,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.entity.CurrentLoginUser;
-import com.wzmtr.eam.shiro.model.TPerson;
+import com.wzmtr.eam.shiro.model.Person;
 import com.wzmtr.eam.shiro.service.IPersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -58,7 +58,7 @@ public class ShiroCasRealm extends CasRealm {
             person.setOfficeName("办公室");
             person.setNames("集团本级-办公室");
         } else {
-            TPerson p = personService.searchPersonByNo(name);
+            Person p = personService.searchPersonByNo(name);
             if (p != null) {
                 person.setPersonId(p.getId());
                 person.setPersonNo(p.getNo());

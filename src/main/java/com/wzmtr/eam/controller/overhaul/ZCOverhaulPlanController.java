@@ -33,7 +33,7 @@ import java.util.List;
 @RequestMapping("/overhaul/zc")
 @Api(tags = "预防性检修管理-检修计划（中车）")
 @Validated
-public class ZCOverhaulPlanController {
+public class ZcOverhaulPlanController {
 
     @Resource
     private OverhaulPlanService overhaulPlanService;
