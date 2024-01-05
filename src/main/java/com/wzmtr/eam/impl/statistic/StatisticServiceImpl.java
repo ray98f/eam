@@ -8,7 +8,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -657,12 +656,12 @@ public class StatisticServiceImpl implements StatisticService {
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
         } else {
-            startDate = _getLastMouths(11);
+            startDate = getLastMouths(11);
         }
         if (StringUtils.isNotEmpty(endDate)) {
             endDate = endDate.substring(0, 7);
         } else {
-            endDate = _getLastMouths(0);
+            endDate = getLastMouths(0);
         }
         Set<String> moduleIds = new HashSet<>();
         switch (sys) {
@@ -712,7 +711,7 @@ public class StatisticServiceImpl implements StatisticService {
         return ramsMapper.queryFautTypeByMonthBySys(moduleIds, startDate, endDate);
     }
 
-    private static String _getLastMouths(int i) {
+    private static String getLastMouths(int i) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
@@ -733,12 +732,12 @@ public class StatisticServiceImpl implements StatisticService {
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
         } else {
-            startDate = _getLastMouths(11);
+            startDate = getLastMouths(11);
         }
         if (StringUtils.isNotEmpty(endDate)) {
             endDate = endDate.substring(0, 7);
         } else {
-            endDate = _getLastMouths(0);
+            endDate = getLastMouths(0);
         }
         DecimalFormat df = new DecimalFormat("#0.00");
         List<RAMSResult2ResDTO> ramsResDTOS = ramsMapper.queryresult2(startDate, endDate);

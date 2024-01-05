@@ -163,7 +163,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         workFlowLogService.ifReviewer(faultAnalyzeDO.getWorkFlowInstId());
         String taskId = bpmnService.queryTaskIdByProcId(faultAnalyzeDO.getWorkFlowInstId());
         AnalyzeServiceImpl aop = (AnalyzeServiceImpl) AopContext.currentProxy();
-        aop._agree(reqDTO, faultAnalyzeDO, taskId);
+        aop.agree(reqDTO, faultAnalyzeDO, taskId);
         // 流程流转日志记录
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.PASS.getDesc())
@@ -173,7 +173,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void _agree(FaultExamineReqDTO reqDTO, FaultAnalyzeDO faultAnalyzeDO, String taskId) {
+    public void agree(FaultExamineReqDTO reqDTO, FaultAnalyzeDO faultAnalyzeDO, String taskId) {
         try {
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_ANALIZE.value()).contains(faultAnalyzeDO.getWorkFlowInstStatus())) {
                 // 提交部长审核指定下一流程

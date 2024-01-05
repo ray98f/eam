@@ -162,7 +162,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             return;
         }
         List<FaultExportBO> exportList = Lists.newArrayList();
-        faultDetailRes.forEach(resDTO -> exportList.add(_buildExportBO(resDTO)));
+        faultDetailRes.forEach(resDTO -> exportList.add(buildExportBO(resDTO)));
         try {
             EasyExcelUtils.export(response, "故障信息", exportList);
         } catch (Exception e) {
@@ -172,7 +172,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @NotNull
-    private FaultExportBO _buildExportBO(FaultDetailResDTO resDTO) {
+    private FaultExportBO buildExportBO(FaultDetailResDTO resDTO) {
         FaultExportBO exportBO = BeanUtils.convert(resDTO, FaultExportBO.class);
         OrderStatus orderStatus = OrderStatus.getByCode(resDTO.getOrderStatus());
         FaultAffect faultAffect = FaultAffect.getByCode(resDTO.getFaultAffect());
@@ -306,7 +306,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 String zcStepOrg = dictionaries.getItemEname();
                 if (!faultOrder1.getWorkClass().contains(zcStepOrg)) {
                     // todo 调用施工调度接口
-                    _sendContractFault(faultOrder1);
+                    sendContractFault(faultOrder1);
                 }
             }
         });
@@ -435,7 +435,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         /*      */
     }
 
-    public void _sendContractFault(FaultOrderDO dmfm02) {
+    public void sendContractFault(FaultOrderDO dmfm02) {
         // /* 557 */
         // Map<Object, Object> map = new HashMap<>();
         // /* 558 */
@@ -490,16 +490,16 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         // String stepOrg = CodeFactory.getCodeService().getCodeEName("dm.matchControl", "04", "1");
         switch (reqDTO.getType()) {
             case WAN_GONG_QUE_REN:
-                _finishWorkConfirm(list, cos, currentUser, current);
+                finishWorkConfirm(list, cos, currentUser, current);
                 break;
             case YAN_SHOU:
-                _check(list, cos, currentUser, current, itemEname);
+                check(list, cos, currentUser, current, itemEname);
                 break;
             case GUAN_BI:
-                _close(list);
+                close(list);
                 break;
             case ZUO_FEI:
-                _cancel(list, currentUser, current);
+                cancel(list, currentUser, current);
                 break;
             default:
                 break;
@@ -525,7 +525,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
 
-    private void _cancel(List<FaultDetailResDTO> list, String currentUser, String current) {
+    private void cancel(List<FaultDetailResDTO> list, String currentUser, String current) {
         list.forEach(a -> {
             String faultNo = a.getFaultNo();
             String faultWorkNo = a.getFaultWorkNo();
@@ -547,7 +547,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         });
     }
 
-    private void _finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current) {
+    private void finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current) {
         list.forEach(a -> {
             String faultWorkNo = a.getFaultWorkNo();
             FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(a.getFaultNo());
@@ -651,7 +651,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         });
     }
 
-    private void _close(List<FaultDetailResDTO> list) {
+    private void close(List<FaultDetailResDTO> list) {
         list.forEach(a -> {
             FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(a.getFaultNo(), null);
             faultOrderDO.setOrderStatus(OrderStatus.GUAN_BI.getCode());
@@ -666,7 +666,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         });
     }
 
-    private void _check(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String
+    private void check(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String
             current, String stepOrg) {
         // 判断是否存在验收状态的数据
         Set<String> orderStatus = StreamUtil.mapToSet(list, FaultDetailResDTO::getOrderStatus);

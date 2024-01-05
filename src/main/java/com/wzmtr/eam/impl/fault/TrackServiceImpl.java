@@ -174,7 +174,7 @@ public class TrackServiceImpl implements TrackService {
         String processId;
         // dmfm01.query
         TrackServiceImpl aop = (TrackServiceImpl) AopContext.currentProxy();
-        processId = aop._commit(reqDTO, faultTrackDO, examineReqDTO, null);
+        processId = aop.commit(reqDTO, faultTrackDO, examineReqDTO, null);
         // 记录日志
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.SUBMIT.getDesc())
@@ -183,7 +183,7 @@ public class TrackServiceImpl implements TrackService {
                 .build());
     }
     @Transactional(rollbackFor = Exception.class)
-    public String _commit(FaultExamineReqDTO reqDTO, FaultTrackDO faultTrackDO, ExamineReqDTO examineReqDTO, String processId) {
+    public String commit(FaultExamineReqDTO reqDTO, FaultTrackDO faultTrackDO, ExamineReqDTO examineReqDTO, String processId) {
         if (StringUtils.isEmpty(faultTrackDO.getWorkFlowInstId())) {
             String faultTrackNo = faultTrackDO.getFaultTrackNo();
             try {
@@ -228,7 +228,7 @@ public class TrackServiceImpl implements TrackService {
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         // 获取Aop对象，事务逻辑轻量化
         TrackServiceImpl trackService = (TrackServiceImpl) AopContext.currentProxy();
-        trackService._agree(reqDTO, dmfm09, taskId, faultTrackNo);
+        trackService.agree(reqDTO, dmfm09, taskId, faultTrackNo);
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.PASS.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
@@ -237,7 +237,7 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void _agree(FaultExamineReqDTO reqDTO, FaultTrackDO faultTrackDO, String taskId, String faultTrackNo) {
+    public void agree(FaultExamineReqDTO reqDTO, FaultTrackDO faultTrackDO, String taskId, String faultTrackNo) {
         try {
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_TRACK.value()).contains(faultTrackDO.getWorkFlowInstStatus())) {
                 String reviewOrNot = null;
