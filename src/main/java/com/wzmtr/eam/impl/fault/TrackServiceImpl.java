@@ -84,7 +84,8 @@ public class TrackServiceImpl implements TrackService {
     public void report(TrackReportReqDTO reqDTO) {
         // EAM/service/DMFM0011/ReportRow
         reqDTO.setTrackReportTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
-        reqDTO.setTrackReporterId(TokenUtil.getCurrentPersonId());
+        //原系统这里的ID 放的就是name 为支持老数据展示，这里也放name
+        reqDTO.setTrackReporterId(TokenUtil.getCurrentPerson().getPersonName());
         reqDTO.setRecStatus("30");
         faultTrackWorkMapper.report(reqDTO);
     }

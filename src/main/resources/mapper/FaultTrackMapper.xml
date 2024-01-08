@@ -207,7 +207,6 @@
         df9.TRACK_REASON as "trackReason",  <!-- 跟踪原因 -->
         df9.TRACK_USER_ID as "trackUserId",  <!-- 转跟踪人员工号 -->
         (SELECT USER_NAME FROM IPLAT60.XS_USER WHERE df9.TRACK_USER_ID = LOGIN_NAME) as "trackUserName",
-        (SELECT USER_NAME FROM IPLAT60.XS_USER WHERE df9.TRACK_REPORTER_ID = LOGIN_NAME) as "trackReporterName",
         df9.TRACK_TIME as "trackTime",  <!-- 转跟踪时间 -->
         df9.TRACK_PERIOD as "trackPeriod",  <!-- 跟踪期限 -->
         df9.TRACK_CYCLE as "trackCycle",  <!-- 跟踪周期 -->
