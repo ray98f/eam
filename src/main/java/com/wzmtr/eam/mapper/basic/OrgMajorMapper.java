@@ -3,6 +3,7 @@ package com.wzmtr.eam.mapper.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
 import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
+import com.wzmtr.eam.dto.res.common.DispatchResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +39,7 @@ public interface OrgMajorMapper {
     List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(@Param("subjectCode") String subjectCode, @Param("line") String line, @Param("orgType") String orgType);
 
     List<OrganMajorLineType> getDepartmentUserByGroupName(@Param("dptCode") String dptCode, @Param("groupCname") String groupCname);
+
+
+    List<DispatchResDTO> queryDispatch();
 }

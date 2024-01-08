@@ -144,6 +144,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             return;
         }
         CarVideoDO carVideoDO = new CarVideoDO();
+        //下达
         if (CommonConstants.TWENTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.TEN_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可下达!");
@@ -155,6 +156,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
             overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getApplyNo(), reqDTO.getDispatchUserId(), "视频调阅下达", "DMBR0022", TokenUtil.getCurrentPersonId());
         }
+        //派工
         if (CommonConstants.THIRTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.TWENTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非下达状态下不可派工");
@@ -169,6 +171,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             carVideoDO.setWorkerId(reqDTO.getWorkerId());
             carVideoDO.setWorkClass(reqDTO.getWorkClass());
         }
+        //完工
         if (CommonConstants.FORTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.THIRTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非派工状态下不可完工");
@@ -189,6 +192,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             carVideoDO.setRecCreator(reqDTO.getRecStatus());
             carVideoDO.setWorkTime(DateUtil.getCurrentTime());
         }
+        //关闭
         if (CommonConstants.FIFTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.FORTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非完工状态下不可关闭");
