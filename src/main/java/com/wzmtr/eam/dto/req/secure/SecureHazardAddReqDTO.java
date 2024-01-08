@@ -63,7 +63,7 @@ public class SecureHazardAddReqDTO {
     private String lastCheckerId ;
     @ApiModelProperty(value = "追查日期")
     private String lastCheckDate ;
-    @ApiModelProperty(value = "是否整改")
+    @ApiModelProperty(value = "整改情况")
     private String isRestored ;
     @ApiModelProperty(value = "备注")
     private String planNote ;

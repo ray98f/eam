@@ -14,6 +14,7 @@ import com.wzmtr.eam.dto.req.secure.SecureHazardReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureHazardResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.ReformCase;
 import com.wzmtr.eam.enums.RiskRank;
 import com.wzmtr.eam.enums.SecureRecStatus;
 import com.wzmtr.eam.exception.CommonException;
@@ -65,12 +66,10 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             a.setRestoreDeptName(organizationMapper.getNamesById(a.getRestoreDeptCode()));
         }
         if (StringUtils.isNotEmpty(a.getIsRestored())) {
-            a.setRestoreDesc("整改中");
-            if (CommonConstants.TEN_STRING.equals(a.getIsRestored())) {
-                a.setRestoreDesc("已完成整改");
-            }
-            if (CommonConstants.ONE_STRING.equals(a.getIsRestored())) {
-                a.setRestoreDesc("未完成整改");
+            a.setRestoreDesc(ReformCase.IN_REF0RM.getDesc());
+            ReformCase reformCase = ReformCase.getByCode(a.getIsRestored());
+            if (null != reformCase) {
+                a.setRestoreDesc(reformCase.getDesc());
             }
         }
         if (StringUtils.isNotEmpty(a.getInspectDeptCode())) {
@@ -107,12 +106,12 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         }
         List<SecureHazardExportBO> exportList = new ArrayList<>();
         resList.forEach(resDTO -> {
-            resDTO.setRestoreDesc("整改中");
-            if (CommonConstants.TEN_STRING.equals(resDTO.getIsRestored())) {
-                resDTO.setRestoreDesc("已完成整改");
-            }
-            if (CommonConstants.ONE_STRING.equals(resDTO.getIsRestored())) {
-                resDTO.setRestoreDesc("未完成整改");
+            if (StringUtils.isNotEmpty(resDTO.getIsRestored())) {
+                resDTO.setRestoreDesc(ReformCase.IN_REF0RM.getDesc());
+                ReformCase reformCase = ReformCase.getByCode(resDTO.getIsRestored());
+                if (null != reformCase) {
+                    resDTO.setRestoreDesc(reformCase.getDesc());
+                }
             }
             SecureHazardExportBO exportBO = BeanUtils.convert(resDTO, SecureHazardExportBO.class);
             SecureRecStatus secureRecStatus = SecureRecStatus.getByCode(resDTO.getRecStatus());
@@ -124,13 +123,12 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         try {
             EasyExcelUtils.export(response, "安全隐患整改信息", exportList);
         } catch (Exception e) {
-            log.error("导出失败",e);
+            log.error("导出失败", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void delete(BaseIdsEntity reqDTO) {
         if (CollectionUtil.isEmpty(reqDTO.getIds())) {
             return;
@@ -139,7 +137,6 @@ public class SecureHazardServiceImpl implements SecureHazardService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void add(SecureHazardAddReqDTO reqDTO) {
         String maxCode = hazardMapper.getMaxCode();
         reqDTO.setRiskId(CodeUtils.getNextCode(maxCode, "YH"));
@@ -150,25 +147,18 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         reqDTO.setArchiveFlag("0");
         reqDTO.setRecStatus("10");
-        reqDTO.setIsRestored("30");
+        reqDTO.setIsRestored(ReformCase.IN_REF0RM.getCode());
         hazardMapper.add(reqDTO);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void update(SecureHazardAddReqDTO reqDTO) {
         if (StrUtil.isEmpty(reqDTO.getRiskId())) {
-            log.warn("安全隐患单号为空!");
             return;
         }
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         SecureHazardDO convert = BeanUtils.convert(reqDTO, SecureHazardDO.class);
         hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID", reqDTO.getRiskId()));
-    }
-
-    @Override
-    public void finalExam(SecureHazardReqDTO reqDTO) {
-        // todo
     }
 }
