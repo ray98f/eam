@@ -46,6 +46,8 @@ public class TrackQueryResDTO {
     private String trackEndDate;
     @ApiModelProperty(value = "转跟踪人员")
     private String trackReporterId;
+    @ApiModelProperty(value = "跟踪报告人姓名")
+    private String trackReporterName;
     @ApiModelProperty(value = "转跟踪报告时间")
     private String trackReportTime;
     @ApiModelProperty(value = "跟踪结果")
