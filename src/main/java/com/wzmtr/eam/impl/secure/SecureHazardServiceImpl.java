@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.secure;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
@@ -152,12 +153,12 @@ public class SecureHazardServiceImpl implements SecureHazardService {
 
     @Override
     public void update(SecureHazardAddReqDTO reqDTO) {
-        if (StrUtil.isEmpty(reqDTO.getRiskId())) {
-            return;
-        }
+        String riskId = Assert.notNull(reqDTO.getRiskId(), ErrorCode.PARAM_ERROR);
+        SecureHazardDO secureHazardDO = hazardMapper.selectOne(new QueryWrapper<SecureHazardDO>().eq("RISK_ID", riskId));
+        Assert.notNull(secureHazardDO, ErrorCode.RESOURCE_NOT_EXIST);
         reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         SecureHazardDO convert = BeanUtils.convert(reqDTO, SecureHazardDO.class);
-        hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID", reqDTO.getRiskId()));
+        hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID", riskId));
     }
 }
