@@ -100,7 +100,7 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                     temp.add(req);
                 }
             }
-            if (temp.size() > 0) {
+            if (StringUtils.isNotEmpty(temp)) {
                 wheelsetLathingMapper.importWheelsetLathing(temp);
             }
         } catch (Exception e) {

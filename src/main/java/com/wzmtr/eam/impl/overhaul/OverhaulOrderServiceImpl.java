@@ -35,6 +35,7 @@ import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -244,34 +245,27 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         OverhaulOrderListReqDTO listReqDTO = new OverhaulOrderListReqDTO();
         listReqDTO.setPlanCode(overhaulOrderReqDTO.getPlanCode());
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(listReqDTO);
-        if (list != null && list.size() > 0 && overhaulOrderReqDTO.getOrderCode().equals(list.get(0).getOrderCode())) {
+        if (StringUtils.isNotEmpty(list) && overhaulOrderReqDTO.getOrderCode().equals(list.get(0).getOrderCode())) {
             OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
             overhaulPlanListReqDTO.setPlanCode(overhaulOrderReqDTO.getPlanCode());
             List<OverhaulPlanResDTO> plans = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-            if (plans.size() > 0) {
+            if (StringUtils.isNotEmpty(plans)) {
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
                 SimpleDateFormat dateTimeFormat1 = new SimpleDateFormat("yyyyMMddHH");
                 String nowDate = dateTimeFormat.format(new Date());
-                List<WoRuleResDTO.WoRuleDetail> rules = woRuleMapper.listWoRuleDetail(plans.get(0).getRuleCode(), nowDate.substring(nowDate.length() - 4), nowDate.substring(nowDate.length() - 4));
+                String substring = nowDate.substring(nowDate.length() - 4);
+                List<WoRuleResDTO.WoRuleDetail> rules = woRuleMapper.listWoRuleDetail(plans.get(0).getRuleCode(), substring, substring);
                 int trigerMiles = 0;
-                if (rules.size() > 0) {
+                if (StringUtils.isNotEmpty(rules)) {
                     if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderReqDTO.getSubjectCode())) {
                         List<String> queryObjMiles = overhaulOrderMapper.queryObjMiles(plans.get(0).getPlanCode());
-                        if (queryObjMiles != null && queryObjMiles.size() > 0) {
+                        if (StringUtils.isNotEmpty(queryObjMiles)) {
                             int mileage = Integer.parseInt(rules.get(0).getExt1());
                             int totalMiles = Integer.parseInt(queryObjMiles.get(0));
                             trigerMiles = mileage + totalMiles;
                         }
                     }
-                    int period = rules.get(0).getPeriod();
-                    int beforeTime = rules.get(0).getBeforeTime();
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
-                    Date realEndTime1 = format.parse(overhaulOrderReqDTO.getRealEndTime().substring(0, 13));
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(realEndTime1);
-                    calendar.add(Calendar.HOUR_OF_DAY, period);
-                    calendar.add(Calendar.DAY_OF_YEAR, -beforeTime);
-                    Date realEndTime = calendar.getTime();
+                    Date realEndTime = getRealEndTime(overhaulOrderReqDTO, rules);
                     String realEndTimeStr = dateTimeFormat1.format(realEndTime);
                     OverhaulPlanReqDTO overhaulPlanReqDTO = new OverhaulPlanReqDTO();
                     overhaulPlanReqDTO.setRecId(plans.get(0).getRecId());
@@ -285,6 +279,26 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         }
         // ServiceDMER0201  confirmWorkers
         overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
+    }
+
+    /**
+     * 获取实际结束时间
+     * @param overhaulOrderReqDTO 检修工单信息
+     * @param rules 规则
+     * @return 结束时间
+     * @throws ParseException 异常
+     */
+    @NotNull
+    private static Date getRealEndTime(OverhaulOrderReqDTO overhaulOrderReqDTO, List<WoRuleResDTO.WoRuleDetail> rules) throws ParseException {
+        int period = rules.get(0).getPeriod();
+        int beforeTime = rules.get(0).getBeforeTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
+        Date realEndTime1 = format.parse(overhaulOrderReqDTO.getRealEndTime().substring(0, 13));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(realEndTime1);
+        calendar.add(Calendar.HOUR_OF_DAY, period);
+        calendar.add(Calendar.DAY_OF_YEAR, -beforeTime);
+        return calendar.getTime();
     }
 
     @Override
@@ -303,7 +317,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
         overhaulOrderListReqDTO.setOrderCode(overhaulOrderReqDTO.getOrderCode());
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
-        if (list.size() > 0) {
+        if (StringUtils.isNotEmpty(list)) {
             if (!orderStates.contains(list.get(0).getWorkStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "只有工单为" + msg + "的状态才能进行该操作。");
             }
@@ -369,7 +383,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
         overhaulOrderListReqDTO.setOrderCode(orderCode);
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
-        if (list != null && list.size() > 0) {
+        if (StringUtils.isNotEmpty(list)) {
             String planName = list.get(0).getPlanName();
             String orderStatus = list.get(0).getWorkStatus();
             if (StringUtils.isNotEmpty(planName) && planName.contains(CommonConstants.SECOND_REPAIR_SHIFT) && CommonConstants.FOUR_STRING.equals(orderStatus)) {

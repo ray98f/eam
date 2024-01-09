@@ -23,6 +23,7 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.equipment.TransferService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -203,8 +204,8 @@ public class TransferServiceImpl implements TransferService {
             }
             List<Map<String, String>> list = new ArrayList<>();
             for (int j = 0; j < transferSplitReqDTO.getEquipmentList().size(); j++) {
-                EquipmentResDTO resDTO = transferSplitReqDTO.getEquipmentList().get(j);
-                String sourceRecId = resDTO.getSourceRecId();
+                EquipmentResDTO equipmentResDTO = transferSplitReqDTO.getEquipmentList().get(j);
+                String sourceRecId = equipmentResDTO.getSourceRecId();
                 if (StringUtils.isNotEmpty(sourceRecId.trim())) {
                     EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
                     equipmentReqDTO.setSourceRecId(sourceRecId);
@@ -213,37 +214,14 @@ public class TransferServiceImpl implements TransferService {
                     if (queryState == null || queryState.size() <= 0) {
                         overTodoService.overTodo(sourceRecId, "");
                     }
-                    resDTO.setApprovalStatus("30");
-                    buildPart(resDTO);
-                    updateTransfer(resDTO);
+                    equipmentResDTO.setApprovalStatus("30");
+                    buildPart(equipmentResDTO);
+                    updateTransfer(equipmentResDTO);
                 }
-                Map<String, String> map = new HashMap<>();
-                if (transferSplitReqDTO.getType() == 1) {
-                    map.put("recId", resDTO.getRecId());
-                    map.put("equipmentId", resDTO.getEquipCode());
-                    map.put("equipmentCname", resDTO.getEquipName());
-                    map.put("quantityActual", resDTO.getQuantity().toString());
-                    map.put("remark", resDTO.getRemark());
-                    map.put("recId2", resDTO.getSourceRecId());
-                    map.put("ext1", resDTO.getStartUseDate());
-                } else if (transferSplitReqDTO.getType() == 2) {
-//                    if (j == 0) {
-//                        Map<String, String> query16Map = new HashMap<>();
-//                        query16Map.put("recId", resDTO.getSourceRecId());
-//                        query16 = this.dao.query("DMDM16.query", query16Map, 0, -999999);
-//                    }
-//                    map.put("unitCode", dmdm01.getEquipCode());
-//                    map.put("assetCname", dmdm01.getEquipName());
-//                    map.put("stockUnit", dmdm01.getMeasureUnit());
-//                    map.put("costPrice", String.valueOf(((DMDM16)query16.get(0)).getCostPrice()));
-//                    map.put("costTotal", String.valueOf(((DMDM16)query16.get(0)).getCostTotal()));
-//                    map.put("mangGrit", ((DMDM16)query16.get(0)).getMgtFineness());
-//                    map.put("assetNature", ((DMDM16)query16.get(0)).getAssetNature());
-//                    map.putAll(dmdm01.toMap());
-                }
+                Map<String, String> map = getMap(transferSplitReqDTO, equipmentResDTO);
                 list.add(map);
             }
-            if (list.size() > 0) {
+            if (StringUtils.isNotEmpty(list)) {
                 if (transferSplitReqDTO.getType() == CommonConstants.ONE) {
                     getOsbSend(list);
                 } else if (transferSplitReqDTO.getType() == CommonConstants.TWO) {
@@ -255,6 +233,41 @@ public class TransferServiceImpl implements TransferService {
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
+    }
+
+    /**
+     * 设备拆分map拼装
+     * @param transferSplitReqDTO 设备拆分信息
+     * @param equipmentResDTO 设备信息
+     * @return map
+     */
+    @NotNull
+    private static Map<String, String> getMap(TransferSplitReqDTO transferSplitReqDTO, EquipmentResDTO equipmentResDTO) {
+        Map<String, String> map = new HashMap<>();
+        if (transferSplitReqDTO.getType() == 1) {
+            map.put("recId", equipmentResDTO.getRecId());
+            map.put("equipmentId", equipmentResDTO.getEquipCode());
+            map.put("equipmentCname", equipmentResDTO.getEquipName());
+            map.put("quantityActual", equipmentResDTO.getQuantity().toString());
+            map.put("remark", equipmentResDTO.getRemark());
+            map.put("recId2", equipmentResDTO.getSourceRecId());
+            map.put("ext1", equipmentResDTO.getStartUseDate());
+        } else if (transferSplitReqDTO.getType() == 2) {
+//            if (j == 0) {
+//                Map<String, String> query16Map = new HashMap<>();
+//                query16Map.put("recId", equipmentResDTO.getSourceRecId());
+//                query16 = this.dao.query("DMDM16.query", query16Map, 0, -999999);
+//            }
+//            map.put("unitCode", equipmentResDTO.getEquipCode());
+//            map.put("assetCname", equipmentResDTO.getEquipName());
+//            map.put("stockUnit", equipmentResDTO.getMeasureUnit());
+//            map.put("costPrice", String.valueOf(((DMDM16)query16.get(0)).getCostPrice()));
+//            map.put("costTotal", String.valueOf(((DMDM16)query16.get(0)).getCostTotal()));
+//            map.put("mangGrit", ((DMDM16)query16.get(0)).getMgtFineness());
+//            map.put("assetNature", ((DMDM16)query16.get(0)).getAssetNature());
+//            map.putAll(dmdm01.toMap());
+        }
+        return map;
     }
 
     @Override
@@ -340,8 +353,9 @@ public class TransferServiceImpl implements TransferService {
 
     public void updateTransfer(EquipmentResDTO resDTO) {
         resDTO.setSpecialEquipFlag("10");
-        List<EquipmentCategoryResDTO> msgs = equipmentCategoryMapper.listEquipmentCategory(null, resDTO.getEquipTypeCode(), null);
-        if (msgs != null && msgs.size() > 0 && CommonConstants.TWENTY_STRING.equals(msgs.get(0).getExt1().trim())) {
+        List<EquipmentCategoryResDTO> msgList = equipmentCategoryMapper.listEquipmentCategory(null,
+                resDTO.getEquipTypeCode(), null);
+        if (StringUtils.isNotEmpty(msgList) && CommonConstants.TWENTY_STRING.equals(msgList.get(0).getExt1().trim())) {
             resDTO.setSpecialEquipFlag("20");
         }
         resDTO.setMajorName(equipmentCategoryMapper.getIndexByIndex(resDTO.getMajorCode(), null, null).getNodeName());
@@ -355,9 +369,9 @@ public class TransferServiceImpl implements TransferService {
     }
 
     public void buildPart(EquipmentResDTO resDTO) {
-        List<Bom> boms = transferMapper.queryBomTree(resDTO.getBomType());
-        if (boms != null && boms.size() > 0) {
-            for (Bom bom : boms) {
+        List<Bom> bomList = transferMapper.queryBomTree(resDTO.getBomType());
+        if (StringUtils.isNotEmpty(bomList)) {
+            for (Bom bom : bomList) {
                 if (bom.getQuantity() != null) {
                     for (int i = 0; i < bom.getQuantity().intValue(); i++) {
                         EquipmentPartReqDTO equipmentPartReqDTO = new EquipmentPartReqDTO();

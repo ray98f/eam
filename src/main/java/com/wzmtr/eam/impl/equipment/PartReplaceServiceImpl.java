@@ -108,7 +108,7 @@ public class PartReplaceServiceImpl implements PartReplaceService {
                     temp.add(req);
                 }
             }
-            if (temp.size() > 0) {
+            if (StringUtils.isNotEmpty(temp)) {
                 partReplaceMapper.importPartReplace(temp);
             }
         } catch (Exception e) {

@@ -563,7 +563,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             // String content2 = "【市铁投集团】工单号：" + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请知晓！";
             // todo 发短信
             // List<Map> list = this.dao.query("DMDM59.queryMByUserGroup", faultInfo.getFillinUserId());
-            // if (list != null && list.size() > 0 && isToSend.equals("ToSend") && !list.contains("DM_021")) {
+            // if (StringUtils.isNotEmpty(list) && isToSend.equals("ToSend") && !list.contains("DM_021")) {
             //     EiInfo eiInfo = new EiInfo();
             //     eiInfo.set("group", "DM_021");
             //     eiInfo.set("content", content2);

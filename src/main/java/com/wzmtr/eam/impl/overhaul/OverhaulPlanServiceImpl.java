@@ -424,7 +424,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         return null;
     }
 
-    public String createInsepectRecordByPlanCode(String[] planCodes) {
+    public void createInsepectRecordByPlanCode(String[] planCodes) {
         String flag = "0";
         if (planCodes.length > 1 && CommonConstants.ONE_STRING.equals(planCodes[1])) {
             flag = "1";
@@ -432,7 +432,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         String planCode = planCodes[0];
         List<OverhaulTplDetailResDTO> tplDetailList = overhaulPlanMapper.getOrderIsValid(planCode);
         if (tplDetailList == null || tplDetailList.size() <= 0) {
-            return "2";
+            return;
         }
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String orderCode = overhaulOrderMapper.getMaxCode();
@@ -449,7 +449,6 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             e.printStackTrace();
         }
         overhaulPlanMapper.updateTrigerTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()), planCode);
-        return "1";
     }
 
     public void insertInspectPlan1(String planCode, String[] orderCodes) throws Exception {

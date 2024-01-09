@@ -133,7 +133,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         checkPlanListReqDTO.setPlanPeriodMark(checkPlanReqDTO.getPlanPeriodMark());
         checkPlanListReqDTO.setEditDeptCode(checkPlanReqDTO.getEditDeptCode());
         List<CheckPlanResDTO> planList = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
-        if (planList != null && planList.size() != 0) {
+        if (StringUtils.isNotEmpty(planList)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该定检计划已存在");
         }
         checkPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -285,7 +285,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
         checkPlanListReqDTO.setInstrmPlanNo(meaInfoReqDTO.getInstrmPlanNo());
         List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
-        if (list.size() != 0) {
+        if (StringUtils.isNotEmpty(list)) {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
@@ -308,7 +308,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
         checkPlanListReqDTO.setInstrmPlanNo(meaInfoReqDTO.getInstrmPlanNo());
         List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
-        if (list.size() != 0) {
+        if (StringUtils.isNotEmpty(list)) {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
@@ -332,7 +332,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
                 checkPlanListReqDTO.setInstrmPlanNo(res.getInstrmPlanNo());
                 List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
-                if (list.size() != 0) {
+                if (StringUtils.isNotEmpty(list)) {
                     if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }

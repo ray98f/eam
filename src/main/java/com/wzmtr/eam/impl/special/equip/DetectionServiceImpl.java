@@ -118,7 +118,7 @@ public class DetectionServiceImpl implements DetectionService {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         if (!detectionReqDTO.getAssetKindCode().equals(resDTO.getAssetKindCode())) {
-            if (detectionMapper.hasDetail(detectionReqDTO.getRecId()).size() != 0) {
+            if (!detectionMapper.hasDetail(detectionReqDTO.getRecId()).isEmpty()) {
                 throw new CommonException(ErrorCode.PLAN_HAS_DETAIL);
             }
         }

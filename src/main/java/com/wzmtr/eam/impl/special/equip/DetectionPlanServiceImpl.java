@@ -126,7 +126,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         if (!specialEquipReqDTO.getAssetKindCode().equals(resDTO.getAssetKindCode())) {
-            if (detectionPlanMapper.hasDetail(specialEquipReqDTO.getInstrmPlanNo()).size() != 0) {
+            if (!detectionPlanMapper.hasDetail(specialEquipReqDTO.getInstrmPlanNo()).isEmpty()) {
                 throw new CommonException(ErrorCode.PLAN_HAS_DETAIL);
             }
         }
