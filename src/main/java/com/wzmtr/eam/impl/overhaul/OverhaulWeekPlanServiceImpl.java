@@ -372,7 +372,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                     t11map.setRecRevisor(TokenUtil.getCurrentPersonId());
                     t11map.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                     overhaulPlanMapper.modifyOverhaulPlan(t11map);
-                    e.printStackTrace();
+                    log.error("exception message", e);
                 }
             }
             insertInspectObject(plan.getPlanCode(), orderCode);
@@ -411,7 +411,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         try {
             overhaulWorkRecordService.insertRepair(overhaulOrderReqDTO);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(planCode);
@@ -523,7 +523,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("exception message", e);
                 }
             }
         }
@@ -547,7 +547,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
     }
 
@@ -568,7 +568,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 try {
                     overhaulWorkRecordMapper.insert(dmer24);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("exception message", e);
                 }
             }
         }

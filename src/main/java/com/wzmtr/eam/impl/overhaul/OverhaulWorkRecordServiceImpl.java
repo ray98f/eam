@@ -70,7 +70,7 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
                             }
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("exception message", e);
                     }
                 }
             }

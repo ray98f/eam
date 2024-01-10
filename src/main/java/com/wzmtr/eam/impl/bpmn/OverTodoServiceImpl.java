@@ -56,7 +56,7 @@ public class OverTodoServiceImpl implements OverTodoService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "完成失败");
         }
     }
@@ -90,7 +90,7 @@ public class OverTodoServiceImpl implements OverTodoService {
             overTodoMapper.insert(sLog);
             EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "新增失败");
         }
     }

@@ -446,7 +446,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             insertInspectObject(planCode, orderCode);
             insertWorker(planCode, orderCode);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
         overhaulPlanMapper.updateTrigerTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()), planCode);
     }
@@ -480,7 +480,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             try {
                 overhaulWorkRecordService.insertRepair(dmer21);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("exception message", e);
             }
         }
         insertMap.setRealStartTime(" ");
@@ -508,21 +508,30 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         } else {
             insertMap.setPlanStartTime(orderCode.substring(CommonConstants.TWO, CommonConstants.TEN));
         }
+        addOverhaulOrder(queryMap1, insertMap);
+    }
+
+    /**
+     * 新增检修工单
+     * @param overhaulPlanList 检修计划信息
+     * @param overhaulOrder 检修工单信息
+     */
+    public void addOverhaulOrder(OverhaulPlanListReqDTO overhaulPlanList, OverhaulOrderReqDTO overhaulOrder) {
         try {
-            List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(queryMap1);
+            List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(overhaulPlanList);
             if (StringUtils.isNotEmpty(planList)) {
                 for (OverhaulPlanResDTO plan : planList) {
                     plan.setRecCreator(TokenUtil.getCurrentPersonId());
                     plan.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                     plan.setRecRevisor("");
                     plan.setRecReviseTime("");
-                    BeanUtils.copyProperties(plan, insertMap);
-                    insertMap.setRecId(TokenUtil.getUuId());
-                    overhaulOrderMapper.addOverhaulOrder(insertMap);
+                    BeanUtils.copyProperties(plan, overhaulOrder);
+                    overhaulOrder.setRecId(TokenUtil.getUuId());
+                    overhaulOrderMapper.addOverhaulOrder(overhaulOrder);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
     }
 
@@ -554,7 +563,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("exception message", e);
                 }
             }
         }
@@ -578,7 +587,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
     }
 
@@ -599,7 +608,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 try {
                     overhaulWorkRecordMapper.insert(dmer24);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("exception message", e);
                 }
             }
         }

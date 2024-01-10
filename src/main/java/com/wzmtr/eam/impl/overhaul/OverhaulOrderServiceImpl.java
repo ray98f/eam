@@ -242,6 +242,17 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
+        modifyOverhaulPlanByOrder(overhaulOrderReqDTO);
+        // ServiceDMER0201  confirmWorkers
+        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
+    }
+
+    /**
+     * 根据检修工单修改检修计划（中车）
+     * @param overhaulOrderReqDTO 检修工单信息
+     * @throws ParseException
+     */
+    private void modifyOverhaulPlanByOrder(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {
         OverhaulOrderListReqDTO listReqDTO = new OverhaulOrderListReqDTO();
         listReqDTO.setPlanCode(overhaulOrderReqDTO.getPlanCode());
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(listReqDTO);
@@ -277,8 +288,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 }
             }
         }
-        // ServiceDMER0201  confirmWorkers
-        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
     }
 
     /**

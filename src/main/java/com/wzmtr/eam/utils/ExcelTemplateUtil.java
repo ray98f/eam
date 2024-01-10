@@ -6,6 +6,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.wzmtr.eam.entity.DynamicSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -30,6 +31,7 @@ import java.util.Map;
  * Author: Li.Wang
  * Date: 2023/9/25 11:30
  */
+@Slf4j
 public class ExcelTemplateUtil {
 
     public static Workbook buildByTemplate(InputStream inputStream, Map<String, String> staticSource, List<DynamicSource> dynamicSourceList) throws IOException {
@@ -210,7 +212,7 @@ public class ExcelTemplateUtil {
     //         excelWriter.fill(map, writeSheet);
     //         excelWriter.writeContext().writeWorkbookHolder().getWorkbook().setForceFormulaRecalculation(true);
     //     }catch (Exception e){
-    //         e.printStackTrace();
+    //         log.error("exception message", e);
     //     }finally {
     //         if (excelWriter != null) {
     //             excelWriter.close();
@@ -218,7 +220,7 @@ public class ExcelTemplateUtil {
     //         try {
     //             inputStream.close();
     //         } catch (Exception e) {
-    //             e.printStackTrace();
+    //             log.error("exception message", e);
     //         }
     //     }
     // }
@@ -252,7 +254,7 @@ public class ExcelTemplateUtil {
                 excelWriter.writeContext().writeWorkbookHolder().getWorkbook().setForceFormulaRecalculation(true);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         } finally {
             if (excelWriter != null) {
                 excelWriter.finish();
@@ -260,7 +262,7 @@ public class ExcelTemplateUtil {
             try {
                 inputStream.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("exception message", e);
             }
         }
     }
