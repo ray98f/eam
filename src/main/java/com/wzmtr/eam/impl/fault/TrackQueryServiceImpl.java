@@ -105,7 +105,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             res.setTraintag(faultInfo.getTrainTag());
         }
         if (StringUtils.isNotEmpty(faultInfo.getExt4())) {
-            res.setMaintenance("true".equals(faultInfo.getExt4()) ? Boolean.TRUE : Boolean.FALSE);
+            res.setMaintenance("true".equalsIgnoreCase(faultInfo.getExt4()) ? Boolean.TRUE : Boolean.FALSE);
         }
         if (StringUtils.isNotEmpty(res.getRespDeptCode())) {
             res.setRespDeptName(organizationMapper.getNamesById(res.getRespDeptCode()));

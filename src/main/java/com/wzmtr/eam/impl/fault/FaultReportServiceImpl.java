@@ -145,7 +145,7 @@ public class FaultReportServiceImpl implements FaultReportService {
             if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
                 a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
             }
-            if (regionMap.containsKey(a.getPositionCode())){
+            if (regionMap.containsKey(a.getPositionCode())) {
                 a.setPositionName(regionMap.get(a.getPositionCode()).getNodeName());
             }
             if (StringUtils.isNotEmpty(a.getFillinDeptCode())) {
@@ -191,6 +191,7 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public void update(FaultReportReqDTO reqDTO) {
+        Assert.isNotEmpty(reqDTO.getFaultNo(), "参数缺失[故障编号]不能为空!");
         // 修改已提报故障单  修改时间 修改人， 各属性的值
         FaultInfoDO infoUpdate = BeanUtils.convert(reqDTO, FaultInfoDO.class);
         infoUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -202,6 +203,9 @@ public class FaultReportServiceImpl implements FaultReportService {
             // 前端传的是个空值，特殊处理下
             infoUpdate.setDocId(" ");
             orderUpdate.setDocId(" ");
+        }
+        if (null != reqDTO.getMaintenance()){
+             infoUpdate.setExt4(reqDTO.getMaintenance().toString());
         }
         faultReportMapper.updateFaultInfo(infoUpdate);
         faultReportMapper.updateFaultOrder(orderUpdate);
