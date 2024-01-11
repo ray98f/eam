@@ -105,7 +105,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             res.setTraintag(faultInfo.getTrainTag());
         }
         if (StringUtils.isNotEmpty(faultInfo.getExt4())) {
-            res.setMaintenance("true".equals(faultInfo.getExt4()) ? Boolean.TRUE : Boolean.FALSE);
+            res.setMaintenance("true".equalsIgnoreCase(faultInfo.getExt4()) ? Boolean.TRUE : Boolean.FALSE);
         }
         if (StringUtils.isNotEmpty(res.getRespDeptCode())) {
             res.setRespDeptName(organizationMapper.getNamesById(res.getRespDeptCode()));
@@ -168,11 +168,11 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
         FaultTrackDO exist = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo));
         TrackQueryServiceImpl proxy = (TrackQueryServiceImpl) AopContext.currentProxy();
-        proxy._save(exist, faultTrackBO, faultTrackWorkBO, faultNo);
+        proxy.save(exist, faultTrackBO, faultTrackWorkBO, faultNo);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void _save(FaultTrackDO exist, FaultTrackBO faultTrackBO, FaultTrackWorkBO faultTrackWorkBO, String faultNo) {
+    public void save(FaultTrackDO exist, FaultTrackBO faultTrackBO, FaultTrackWorkBO faultTrackWorkBO, String faultNo) {
         // 根据faultNo判断是否存在跟踪单 不存在则插入，存在即更新
         if (null == exist) {
             // 生成跟踪单
@@ -213,7 +213,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
 
     @Deprecated
-    public void _buildTrackWork(FaultTrackWorkBO faultTrackWorkBO, FaultTrackBO faultTrackBO) {
+    public void buildTrackWork(FaultTrackWorkBO faultTrackWorkBO, FaultTrackBO faultTrackBO) {
         try {
             String faultNo = faultTrackBO.getFaultNo();
             String faultTrackNo = faultTrackBO.getFaultTrackNo();

@@ -67,7 +67,7 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
 
     @Override
     public void deleteWheelsetLathing(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 if (!wheelsetLathingMapper.getWheelsetLathingDetail(id).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
@@ -100,7 +100,7 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                     temp.add(req);
                 }
             }
-            if (temp.size() > 0) {
+            if (StringUtils.isNotEmpty(temp)) {
                 wheelsetLathingMapper.importWheelsetLathing(temp);
             }
         } catch (Exception e) {

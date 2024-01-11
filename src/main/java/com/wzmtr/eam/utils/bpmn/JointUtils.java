@@ -1,6 +1,7 @@
 package com.wzmtr.eam.utils.bpmn;
 
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -52,8 +53,8 @@ public class JointUtils {
                 //抑制java语言访问检查，反射访问private访问权限的属性值
                 declared.setAccessible(true);
                 value = "null".equals(String.valueOf(declared.get(object))) ? "" : String.valueOf(declared.get(object));
-                val.append(name).append("=").append(URLEncoder.encode(value)).append("&");
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+                val.append(name).append("=").append(URLEncoder.encode(value,"UTF-8")).append("&");
+            } catch (NoSuchFieldException | IllegalAccessException | UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
         }

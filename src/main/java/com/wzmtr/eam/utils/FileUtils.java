@@ -1,10 +1,12 @@
 package com.wzmtr.eam.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.Objects;
 
+@Slf4j
 public class FileUtils {
 
     /** 字符常量：斜杠 {@code '/'} */
@@ -69,7 +71,7 @@ public class FileUtils {
             multipartFile.transferTo(file);
             file.deleteOnExit();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
         return file;
     }

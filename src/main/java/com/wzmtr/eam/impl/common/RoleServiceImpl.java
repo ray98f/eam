@@ -145,11 +145,11 @@ public class RoleServiceImpl implements RoleService {
             BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
             req.setFlowId(flowId);
             req.setStep(CommonConstants.TWO_STRING);
-            List<FlowRoleResDTO> flowRoleResDTOS = roleMapper.queryBpmnExamine(req);
-            if (CollectionUtil.isEmpty(flowRoleResDTOS)) {
+            List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(req);
+            if (CollectionUtil.isEmpty(flowRoleRes)) {
                 return null;
             }
-            return buildRes(toUniqueList(flowRoleResDTOS));
+            return buildRes(toUniqueList(flowRoleRes));
         }
         BpmnExamineFlowRoleReq req = new BpmnExamineFlowRoleReq();
         req.setFlowId(flowId);
@@ -163,8 +163,8 @@ public class RoleServiceImpl implements RoleService {
         return buildRes((getNextNodeInfo(flowId, flowRole)));
     }
 
-    private List<FlowRoleResDTO> toUniqueList(List<FlowRoleResDTO> flowRoleResDTOS) {
-        return flowRoleResDTOS.stream()
+    private List<FlowRoleResDTO> toUniqueList(List<FlowRoleResDTO> flowRoleRes) {
+        return flowRoleRes.stream()
                 .collect(Collectors.groupingBy(FlowRoleResDTO::getRoleId))
                 .values()
                 .stream()

@@ -100,7 +100,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OverhaulWeekPlanResDTO> page = overhaulWeekPlanMapper.pageOverhaulWeekPlan(pageReqDTO.of(), overhaulWeekPlanListReqDTO);
         List<OverhaulWeekPlanResDTO> list = page.getRecords();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             for (OverhaulWeekPlanResDTO res : list) {
                 res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
             }
@@ -179,7 +179,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void deleteOverhaulWeekPlan(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulWeekPlanResDTO resDTO = overhaulWeekPlanMapper.getOverhaulWeekPlanDetail(id);
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus())) {
@@ -345,7 +345,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setWeekPlanCode(weekPlanCode);
         List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (planList == null || planList.size() <= 0) {
+        if (StringUtils.isEmpty(planList)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "您选择触发的周计划中没有检修项！");
         }
         for (OverhaulPlanResDTO plan : planList) {
@@ -372,7 +372,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                     t11map.setRecRevisor(TokenUtil.getCurrentPersonId());
                     t11map.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                     overhaulPlanMapper.modifyOverhaulPlan(t11map);
-                    e.printStackTrace();
+                    log.error("exception message", e);
                 }
             }
             insertInspectObject(plan.getPlanCode(), orderCode);
@@ -388,7 +388,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO = new OverhaulWeekPlanListReqDTO();
         overhaulWeekPlanListReqDTO.setWeekPlanCode(weekPlanCode);
         List<OverhaulWeekPlanResDTO> weekPlan = overhaulWeekPlanMapper.listOverhaulWeekPlan(overhaulWeekPlanListReqDTO);
-        if (Objects.isNull(weekPlan) || weekPlan.isEmpty()) {
+        if (StringUtils.isEmpty(weekPlan)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         String orgCode = weekPlan.get(0).getWorkerGroupCode();
@@ -411,7 +411,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         try {
             overhaulWorkRecordService.insertRepair(overhaulOrderReqDTO);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(planCode);
@@ -439,7 +439,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
     }
 
-    public void sendConstrctioOrderMsg(OverhaulPlanResDTO dmer11) throws Exception {
+    public void sendConstrctioOrderMsg(OverhaulPlanResDTO dmer11) {
         OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
         overhaulOrderListReqDTO.setOrderCode(dmer11.getExt1());
         List<OverhaulOrderResDTO> recIdList = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
@@ -464,7 +464,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         message.setEquipType3(dmer11.getEquipTypeName());
         message.setGroupCode(workerGroupCode);
         List<OverhaulObjectResDTO> objectList = overhaulPlanMapper.queryObject(dmer11.getPlanCode());
-        if (objectList != null && objectList.size() > 0) {
+        if (StringUtils.isNotEmpty(objectList)) {
             message.setObjectCodes(objectList.get(0).getObjectCode());
             message.setObjectNames(objectList.get(0).getObjectName());
         }
@@ -500,14 +500,14 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         for (OverhaulObjectResDTO object : objects) {
             String dmer22uuid = TokenUtil.getUuId();
             List<OverhaulTplDetailResDTO> objectIsValid = overhaulTplMapper.listOverhaulTplDetail(object.getTemplateId());
-            if (objectIsValid != null && objectIsValid.size() > 0) {
+            if (StringUtils.isNotEmpty(objectIsValid)) {
                 String objectCode = object.getObjectCode();
                 String objectName = object.getObjectName();
                 String templateId = object.getTemplateId();
                 insertInspectObjectItem(orderCode, objectCode, objectName, templateId, dmer22uuid);
                 try {
                     List<OverhaulObjectResDTO> list = overhaulPlanMapper.listOverhaulObject(planCode, object.getRecId(), null, objectCode, null, null);
-                    if (list != null && list.size() > 0) {
+                    if (StringUtils.isNotEmpty(list)) {
                         for (OverhaulObjectResDTO resDTO : list) {
                             resDTO.setRecCreator(TokenUtil.getCurrentPersonId());
                             resDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -523,7 +523,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("exception message", e);
                 }
             }
         }
@@ -538,7 +538,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         reqDTO.setErrorFlag("1");
         try {
             List<OverhaulTplDetailResDTO> overhaulTplDetailList = overhaulTplMapper.listOverhaulTplDetail(templateId);
-            if (overhaulTplDetailList != null && overhaulTplDetailList.size() > 0) {
+            if (StringUtils.isNotEmpty(overhaulTplDetailList)) {
                 for (OverhaulTplDetailResDTO overhaulTplDetail : overhaulTplDetailList) {
                     BeanUtils.copyProperties(overhaulTplDetail, reqDTO);
                     reqDTO.setTdmer02Id(overhaulTplDetail.getRecId());
@@ -547,7 +547,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
     }
 
@@ -562,15 +562,13 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         dmer24.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
         if (workCode.length() > CommonConstants.TWO) {
             String[] workerCodes = workCode.split(",");
-            if (workerCodes.length > 0) {
-                for (String workerCode : workerCodes) {
-                    dmer24.setRecId(TokenUtil.getUuId());
-                    dmer24.setWorkerCode(workerCode);
-                    try {
-                        overhaulWorkRecordMapper.insert(dmer24);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            for (String workerCode : workerCodes) {
+                dmer24.setRecId(TokenUtil.getUuId());
+                dmer24.setWorkerCode(workerCode);
+                try {
+                    overhaulWorkRecordMapper.insert(dmer24);
+                } catch (Exception e) {
+                    log.error("exception message", e);
                 }
             }
         }
@@ -648,7 +646,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void deleteOverhaulPlan(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulPlanResDTO resDTO = overhaulPlanMapper.getOverhaulPlanDetail(id, "1");
                 OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO = new OverhaulWeekPlanListReqDTO();
@@ -697,7 +695,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(planCode);
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             resList = overhaulTplMapper.queryTemplate(list.get(0).getLineNo(), list.get(0).getSubjectCode(),
                     list.get(0).getSystemCode(), list.get(0).getEquipTypeCode(), "30");
         }
@@ -753,13 +751,13 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void deleteOverhaulObject(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulObjectResDTO resDTO = overhaulPlanMapper.getOverhaulObjectDetail(id);
                 OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
                 overhaulPlanListReqDTO.setPlanCode(resDTO.getPlanCode());
                 List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-                if (list != null && !list.isEmpty()) {
+                if (StringUtils.isNotEmpty(list)) {
                     OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO = new OverhaulWeekPlanListReqDTO();
                     overhaulWeekPlanListReqDTO.setWeekPlanCode(list.get(0).getWeekPlanCode());
                     overhaulWeekPlanListReqDTO.setTrialStatus("10");

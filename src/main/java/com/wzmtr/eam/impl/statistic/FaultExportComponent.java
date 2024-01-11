@@ -1,7 +1,6 @@
 package com.wzmtr.eam.impl.statistic;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
@@ -10,7 +9,6 @@ import com.wzmtr.eam.entity.DynamicSource;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
-import com.wzmtr.eam.utils.EasyExcelUtil;
 import com.wzmtr.eam.utils.ExcelTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,7 +32,6 @@ public class FaultExportComponent {
 
     public void exportByTemplate(FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
         try {
-            log.info("FaultQueryDetailReqDTO:{}", JSONObject.toJSONString(reqDTO));
             List<FaultDetailResDTO> data = faultQueryMapper.list(reqDTO);
             if (CollectionUtil.isEmpty(data)) {
                 log.info("未查询到数据！");
@@ -48,7 +45,7 @@ public class FaultExportComponent {
             int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
             staticSource.put("week", String.valueOf(weekOfYear));
             staticSource.put("year", String.valueOf(calendar.get(Calendar.YEAR)));
-            List<Map<String, String>> dataList = _getDataList(data);
+            List<Map<String, String>> dataList = getDataList(data);
             // 模板自定义的head
             List<String> list = Arrays.asList("a", "list1");
             List<String> optimizedList = new ArrayList<>(list);
@@ -61,7 +58,6 @@ public class FaultExportComponent {
             // 2.保存到本地
             ExcelTemplateUtil.save(workbook, "故障列表", response);
             // ExcelTemplateUtil.save(workbook, "C:/PoiExcel/" + System.currentTimeMillis() + "dynamic-poi-excel-template.xls");
-            log.info("导出成功!");
         } catch (Exception e) {
             log.error("导出失败", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR);
@@ -69,23 +65,21 @@ public class FaultExportComponent {
     }
 
 
-
-
-    public void faultExportWithTemplateUseEasyExcel(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response){
+    public void faultExportWithTemplateUseEasyExcel(FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
         List<FaultDetailResDTO> data = faultQueryMapper.list(reqDTO);
         InputStream resourceAsStream = getClass().getResourceAsStream("/excel_template/faulttemplate.xlsx");
-        Map<String, String> map = _buildSingleMap();
-        Map<String, List<?>> sheetAndDataMap = _buildSheetAndDataMap(data);
-        EasyExcelUtil.fillReportWithEasyExcel(response,sheetAndDataMap,map,"test.xls",resourceAsStream);
+        Map<String, String> map = buildSingleMap();
+        Map<String, List<?>> sheetAndDataMap = buildSheetAndDataMap(data);
+        ExcelTemplateUtil.fillReportWithEasyExcel(response, sheetAndDataMap, map, "test.xls", resourceAsStream);
     }
 
-    private Map<String, List<?>> _buildSheetAndDataMap(List<FaultDetailResDTO> data) {
+    private Map<String, List<?>> buildSheetAndDataMap(List<FaultDetailResDTO> data) {
         Map<String, List<?>> dataMap = Maps.newHashMap();
-        dataMap.put("0",data);
+        dataMap.put("0", data);
         return dataMap;
     }
 
-    private Map<String,String> _buildSingleMap() {
+    private Map<String, String> buildSingleMap() {
         Calendar calendar = Calendar.getInstance();
         Map<String, String> map = Maps.newHashMap();
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
@@ -98,7 +92,7 @@ public class FaultExportComponent {
     }
 
     @NotNull
-    private static List<Map<String, String>> _getDataList(List<FaultDetailResDTO> data) {
+    private static List<Map<String, String>> getDataList(List<FaultDetailResDTO> data) {
         List<Map<String, String>> dataList = new ArrayList<>();
         for (FaultDetailResDTO detailResDTO : data) {
             Map<String, String> rowMap = new HashMap<>();

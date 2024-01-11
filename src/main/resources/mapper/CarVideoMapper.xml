@@ -223,7 +223,7 @@
         REPAIR_MANAGER_ID as "repairManagerId",
         DISPATCH_USER_ID as "dispatchUserId",
         DISPATCH_TIME as "dispatchTime",
-        WORKER_ID as "workerId",
+        ( SELECT u1.USER_NAME FROM IPLAT60.XS_USER u1 WHERE u1.LOGIN_NAME=WORKER_ID ) AS "workerId",
         WORK_TIME as "workTime",
         CLOSER_ID as "closerId",
         CLOSE_TIME as "closeTime",

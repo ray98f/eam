@@ -1,10 +1,10 @@
 package com.wzmtr.eam.shiro.filter;
 
+import com.wzmtr.eam.utils.StringUtils;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.cas.CasFilter;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

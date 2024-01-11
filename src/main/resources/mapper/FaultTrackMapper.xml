@@ -251,6 +251,7 @@
                 and df9.FAULT_NO = #{faultNo}
             </if>
             and df9.DELETE_FLAG='0'
+            and db3.DELETE_FLAG='0'
         </trim>
     </select>
     <select id="faultDetail" resultType="com.wzmtr.eam.dataobject.FaultInfoDO">

@@ -90,7 +90,6 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void close(TrackCloseReqDTO reqDTO) {
         reqDTO.setTrackCloseTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
         reqDTO.setTrackCloserId(TokenUtil.getCurrentPersonId());
@@ -167,16 +166,14 @@ public class TrackServiceImpl implements TrackService {
         ExamineReqDTO examineReqDTO = Assert.notNull(reqDTO.getExamineReqDTO(), "下一步参与者不能为空！");
         // faultTrackDO.query  com.baosight.wzplat.dm.fm.service.ServiceDMFM0010#submit
         List<FaultTrackDO> dmfm9List = faultTrackMapper.queryList(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), reqDTO.getFaultAnalysisNo(), reqDTO.getFaultTrackNo());
-        if (CollectionUtil.isEmpty(dmfm9List)) {
-            return;
-        }
+        Assert.notEmpty(dmfm9List,ErrorCode.RESOURCE_NOT_EXIST);
         FaultTrackDO faultTrackDO = dmfm9List.get(0);
         //判断当前状态是否已是审核中，防止重复提交
         Assert.isFalse("40".equals(faultTrackDO.getRecStatus()),"当前状态已变更，不允许重复提交!");
         String processId;
         // dmfm01.query
         TrackServiceImpl aop = (TrackServiceImpl) AopContext.currentProxy();
-        processId = aop._commit(reqDTO, faultTrackDO, examineReqDTO, null);
+        processId = aop.commit(reqDTO, faultTrackDO, examineReqDTO, null);
         // 记录日志
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.SUBMIT.getDesc())
@@ -185,7 +182,7 @@ public class TrackServiceImpl implements TrackService {
                 .build());
     }
     @Transactional(rollbackFor = Exception.class)
-    public String _commit(FaultExamineReqDTO reqDTO, FaultTrackDO faultTrackDO, ExamineReqDTO examineReqDTO, String processId) {
+    public String commit(FaultExamineReqDTO reqDTO, FaultTrackDO faultTrackDO, ExamineReqDTO examineReqDTO, String processId) {
         if (StringUtils.isEmpty(faultTrackDO.getWorkFlowInstId())) {
             String faultTrackNo = faultTrackDO.getFaultTrackNo();
             try {
@@ -230,7 +227,7 @@ public class TrackServiceImpl implements TrackService {
         String taskId = bpmnService.queryTaskIdByProcId(processId);
         // 获取Aop对象，事务逻辑轻量化
         TrackServiceImpl trackService = (TrackServiceImpl) AopContext.currentProxy();
-        trackService._agree(reqDTO, dmfm09, taskId, faultTrackNo);
+        trackService.agree(reqDTO, dmfm09, taskId, faultTrackNo);
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.PASS.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
@@ -239,7 +236,7 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void _agree(FaultExamineReqDTO reqDTO, FaultTrackDO faultTrackDO, String taskId, String faultTrackNo) {
+    public void agree(FaultExamineReqDTO reqDTO, FaultTrackDO faultTrackDO, String taskId, String faultTrackNo) {
         try {
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.FAULT_TRACK.value()).contains(faultTrackDO.getWorkFlowInstStatus())) {
                 String reviewOrNot = null;
@@ -291,9 +288,10 @@ public class TrackServiceImpl implements TrackService {
         FaultTrackDO dmfm09 = list.get(0);
         String processId = dmfm09.getWorkFlowInstId();
         workFlowLogService.ifReviewer(processId);
-        String taskId = bpmnService.queryTaskIdByProcId(processId);
-        bpmnService.reject(taskId, reqDTO.getExamineReqDTO().getOpinion());
-        dmfm09.setRecStatus("30");
+        // String taskId = bpmnService.queryTaskIdByProcId(processId);
+        bpmnService.reject(processId, reqDTO.getExamineReqDTO().getOpinion());
+        dmfm09.setRecStatus("10");
+        dmfm09.setWorkFlowInstId("");
         dmfm09.setWorkFlowInstStatus("");
         faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         workFlowLogService.add(WorkFlowLogBO.builder()
@@ -301,5 +299,13 @@ public class TrackServiceImpl implements TrackService {
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(processId)
                 .build());
+    }
+
+    public static void main(String[] args) {
+        String userId = "";
+        ArrayList<String> userIds = new ArrayList<>();
+        userIds.add(userId);
+        boolean empty = CollectionUtil.isEmpty(userIds);
+        System.out.println(empty);
     }
 }

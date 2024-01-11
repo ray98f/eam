@@ -1,6 +1,7 @@
 package com.wzmtr.eam.controller.common;
 
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
+import com.wzmtr.eam.dto.res.common.DispatchResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.service.common.OrganizationService;
@@ -10,10 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -50,5 +48,12 @@ public class UserGroupMemberController {
     public DataResponse<List<BpmnExaminePersonRes>> getZcOverhaulPlanExamineUser(@RequestParam String subjectCode,
                                                                                  @RequestParam String lineCode) {
         return DataResponse.of(userGroupMemberService.getZcOverhaulPlanExamineUser(subjectCode, lineCode));
+    }
+
+
+    @PostMapping("/queryDispatch")
+    @ApiOperation(value = "获取检修调度人")
+    public DataResponse<List<DispatchResDTO>> queryDispatch() {
+        return DataResponse.of(userGroupMemberService.queryDispatch());
     }
 }

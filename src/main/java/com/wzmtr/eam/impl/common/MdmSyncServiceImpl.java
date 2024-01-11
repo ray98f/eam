@@ -481,7 +481,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             sqlSession.close();
             batchResults.clear();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
             log.info(e.getMessage());
         }
     }
@@ -517,7 +517,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             sqlSession.clearCache();
             sqlSession.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
             log.info(e.getMessage());
         }
     }
@@ -558,7 +558,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             sqlSession.clearCache();
             sqlSession.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
             log.info(e.getMessage());
         }
 
@@ -582,7 +582,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             sqlSession.close();
             batchResults.clear();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
             log.info(e.getMessage());
         }
     }

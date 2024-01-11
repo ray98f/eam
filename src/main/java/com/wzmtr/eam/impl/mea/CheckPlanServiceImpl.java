@@ -64,7 +64,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<CheckPlanResDTO> page = checkPlanMapper.pageCheckPlan(pageReqDTO.of(), checkPlanListReqDTO);
         List<CheckPlanResDTO> list = page.getRecords();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             for (CheckPlanResDTO res : list) {
                 res.setEditDeptCode(organizationMapper.getNamesById(res.getEditDeptCode()));
             }
@@ -133,7 +133,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         checkPlanListReqDTO.setPlanPeriodMark(checkPlanReqDTO.getPlanPeriodMark());
         checkPlanListReqDTO.setEditDeptCode(checkPlanReqDTO.getEditDeptCode());
         List<CheckPlanResDTO> planList = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
-        if (planList != null && planList.size() != 0) {
+        if (StringUtils.isNotEmpty(planList)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该定检计划已存在");
         }
         checkPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -143,7 +143,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public void deleteCheckPlan(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 CheckPlanResDTO res = checkPlanMapper.getCheckPlanDetail(id);
                 if (Objects.isNull(res)) {
@@ -285,7 +285,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
         checkPlanListReqDTO.setInstrmPlanNo(meaInfoReqDTO.getInstrmPlanNo());
         List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
-        if (list.size() != 0) {
+        if (StringUtils.isNotEmpty(list)) {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
@@ -308,7 +308,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
         checkPlanListReqDTO.setInstrmPlanNo(meaInfoReqDTO.getInstrmPlanNo());
         List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
-        if (list.size() != 0) {
+        if (StringUtils.isNotEmpty(list)) {
             if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
@@ -323,7 +323,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public void deleteCheckPlanInfo(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 MeaInfoResDTO res = checkPlanMapper.getInfoDetail(id);
                 if (Objects.isNull(res)) {
@@ -332,7 +332,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 CheckPlanListReqDTO checkPlanListReqDTO = new CheckPlanListReqDTO();
                 checkPlanListReqDTO.setInstrmPlanNo(res.getInstrmPlanNo());
                 List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
-                if (list.size() != 0) {
+                if (StringUtils.isNotEmpty(list)) {
                     if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }

@@ -13,6 +13,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.service.basic.EquipmentCategoryService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import com.wzmtr.eam.utils.tree.EquipmentCategoryTreeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +79,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
 
     @Override
     public void deleteEquipmentCategory(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             equipmentCategoryMapper.deleteEquipmentCategory(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

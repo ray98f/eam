@@ -1,7 +1,10 @@
 package com.wzmtr.eam.impl.common;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.google.common.collect.Lists;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
+import com.wzmtr.eam.dto.res.common.DispatchResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -30,7 +33,7 @@ public class UserGroupMemberServiceImpl implements UserGroupMemberService {
 
     @Override
     public List<OrganMajorLineType> getDepartmentUserByGroupName(String groupCode) {
-        //DM_012 是故障跟踪这边写死的 原来的逻辑 我也看不懂
+        // DM_012 是故障跟踪这边写死的 原来的逻辑 我也看不懂
         return orgMajorMapper.getDepartmentUserByGroupName(groupCode, "DM_012");
     }
 
@@ -60,5 +63,14 @@ public class UserGroupMemberServiceImpl implements UserGroupMemberService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（车辆部）角色中没有人员，不能进行送审操作");
         }
         return nextUser;
+    }
+
+    @Override
+    public List<DispatchResDTO> queryDispatch() {
+        List<DispatchResDTO> dispatchList = orgMajorMapper.queryDispatch();
+        if (CollectionUtil.isEmpty(dispatchList)) {
+            return Lists.newArrayList();
+        }
+        return dispatchList;
     }
 }

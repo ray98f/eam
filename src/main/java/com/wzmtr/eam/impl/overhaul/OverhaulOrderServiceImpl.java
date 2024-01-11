@@ -35,6 +35,7 @@ import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -241,37 +242,41 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
+        modifyOverhaulPlanByOrder(overhaulOrderReqDTO);
+        // ServiceDMER0201  confirmWorkers
+        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
+    }
+
+    /**
+     * 根据检修工单修改检修计划（中车）
+     * @param overhaulOrderReqDTO 检修工单信息
+     * @throws ParseException
+     */
+    private void modifyOverhaulPlanByOrder(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {
         OverhaulOrderListReqDTO listReqDTO = new OverhaulOrderListReqDTO();
         listReqDTO.setPlanCode(overhaulOrderReqDTO.getPlanCode());
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(listReqDTO);
-        if (list != null && list.size() > 0 && overhaulOrderReqDTO.getOrderCode().equals(list.get(0).getOrderCode())) {
+        if (StringUtils.isNotEmpty(list) && overhaulOrderReqDTO.getOrderCode().equals(list.get(0).getOrderCode())) {
             OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
             overhaulPlanListReqDTO.setPlanCode(overhaulOrderReqDTO.getPlanCode());
             List<OverhaulPlanResDTO> plans = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-            if (plans.size() > 0) {
+            if (StringUtils.isNotEmpty(plans)) {
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
                 SimpleDateFormat dateTimeFormat1 = new SimpleDateFormat("yyyyMMddHH");
                 String nowDate = dateTimeFormat.format(new Date());
-                List<WoRuleResDTO.WoRuleDetail> rules = woRuleMapper.listWoRuleDetail(plans.get(0).getRuleCode(), nowDate.substring(nowDate.length() - 4), nowDate.substring(nowDate.length() - 4));
+                String substring = nowDate.substring(nowDate.length() - 4);
+                List<WoRuleResDTO.WoRuleDetail> rules = woRuleMapper.listWoRuleDetail(plans.get(0).getRuleCode(), substring, substring);
                 int trigerMiles = 0;
-                if (rules.size() > 0) {
+                if (StringUtils.isNotEmpty(rules)) {
                     if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderReqDTO.getSubjectCode())) {
                         List<String> queryObjMiles = overhaulOrderMapper.queryObjMiles(plans.get(0).getPlanCode());
-                        if (queryObjMiles != null && queryObjMiles.size() > 0) {
+                        if (StringUtils.isNotEmpty(queryObjMiles)) {
                             int mileage = Integer.parseInt(rules.get(0).getExt1());
                             int totalMiles = Integer.parseInt(queryObjMiles.get(0));
                             trigerMiles = mileage + totalMiles;
                         }
                     }
-                    int period = rules.get(0).getPeriod();
-                    int beforeTime = rules.get(0).getBeforeTime();
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
-                    Date realEndTime1 = format.parse(overhaulOrderReqDTO.getRealEndTime().substring(0, 13));
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(realEndTime1);
-                    calendar.add(Calendar.HOUR_OF_DAY, period);
-                    calendar.add(Calendar.DAY_OF_YEAR, -beforeTime);
-                    Date realEndTime = calendar.getTime();
+                    Date realEndTime = getRealEndTime(overhaulOrderReqDTO, rules);
                     String realEndTimeStr = dateTimeFormat1.format(realEndTime);
                     OverhaulPlanReqDTO overhaulPlanReqDTO = new OverhaulPlanReqDTO();
                     overhaulPlanReqDTO.setRecId(plans.get(0).getRecId());
@@ -283,8 +288,26 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 }
             }
         }
-        // ServiceDMER0201  confirmWorkers
-        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
+    }
+
+    /**
+     * 获取实际结束时间
+     * @param overhaulOrderReqDTO 检修工单信息
+     * @param rules 规则
+     * @return 结束时间
+     * @throws ParseException 异常
+     */
+    @NotNull
+    private static Date getRealEndTime(OverhaulOrderReqDTO overhaulOrderReqDTO, List<WoRuleResDTO.WoRuleDetail> rules) throws ParseException {
+        int period = rules.get(0).getPeriod();
+        int beforeTime = rules.get(0).getBeforeTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
+        Date realEndTime1 = format.parse(overhaulOrderReqDTO.getRealEndTime().substring(0, 13));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(realEndTime1);
+        calendar.add(Calendar.HOUR_OF_DAY, period);
+        calendar.add(Calendar.DAY_OF_YEAR, -beforeTime);
+        return calendar.getTime();
     }
 
     @Override
@@ -303,7 +326,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
         overhaulOrderListReqDTO.setOrderCode(overhaulOrderReqDTO.getOrderCode());
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
-        if (list.size() > 0) {
+        if (StringUtils.isNotEmpty(list)) {
             if (!orderStates.contains(list.get(0).getWorkStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "只有工单为" + msg + "的状态才能进行该操作。");
             }
@@ -369,7 +392,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
         overhaulOrderListReqDTO.setOrderCode(orderCode);
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
-        if (list != null && list.size() > 0) {
+        if (StringUtils.isNotEmpty(list)) {
             String planName = list.get(0).getPlanName();
             String orderStatus = list.get(0).getWorkStatus();
             if (StringUtils.isNotEmpty(planName) && planName.contains(CommonConstants.SECOND_REPAIR_SHIFT) && CommonConstants.FOUR_STRING.equals(orderStatus)) {
@@ -435,7 +458,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderListReqDTO.setOrderCode(orderCode);
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOrder(overhaulOrderListReqDTO);
         OverhaulStateOrderResDTO res = new OverhaulStateOrderResDTO();
-        if (list != null && !list.isEmpty()) {
+        if (StringUtils.isNotEmpty(list)) {
             res.setLineNo(list.get(0).getLineNo());
             res.setPosition1Name(list.get(0).getPosition1Name());
             res.setPosition1Code(list.get(0).getPosition1Code());
@@ -464,7 +487,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public void upState(OverhaulUpStateReqDTO overhaulUpStateReqDTO) {
         String currentUser = TokenUtil.getCurrentPerson().getPersonName();
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String orderCode = overhaulUpStateReqDTO.getOrderCode();
         String objectCode = overhaulUpStateReqDTO.getObjectCode();
         OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
@@ -477,25 +499,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         FaultInfoReqDTO dmfm01 = new FaultInfoReqDTO();
         org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm01);
         String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
-        dmfm01.setExt2(queryNowUser(fillinUserId));
-        dmfm01.setRecId(UUID.randomUUID().toString());
-        if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith(CommonConstants.NINE_STRING)) {
-            dmfm01.setObjectName(list2.get(0).getObjectName());
-            dmfm01.setObjectCode(list2.get(0).getObjectCode());
-        }
-        dmfm01.setFaultType("30");
-        dmfm01.setMajorCode(list.get(0).getSubjectCode());
-        dmfm01.setMajorName(list.get(0).getSubjectName());
-        dmfm01.setSystemCode(list.get(0).getSystemCode());
-        dmfm01.setSystemName(list.get(0).getSystemName());
-        dmfm01.setEquipTypeCode(list.get(0).getEquipTypeCode());
-        dmfm01.setEquipTypeName(list.get(0).getEquipTypeName());
-        dmfm01.setPositionName(list.get(0).getPosition1Name());
-        dmfm01.setPositionCode(list.get(0).getPosition1Code());
-        dmfm01.setRecCreator(currentUser);
-        dmfm01.setRecCreateTime(dateTimeFormat.format(new Date()));
-        dmfm01.setDiscoveryTime(dateTimeFormat.format(new Date()));
-        dmfm01.setFillinTime(dateTimeFormat.format(new Date()));
+        buildFaultInfo(dmfm01, fillinUserId, objectCode, list2, list);
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         String faultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
@@ -517,6 +521,38 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         // ServiceDMER0205 insertUpFaultMessage
         overTodoService.insertTodoWithUserGroupAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + "】故障管理流程",
                 dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content);
+    }
+
+    /**
+     * 故障信息拼装
+     * @param faultInfo 故障信息
+     * @param fillinUserId 提报人
+     * @param objectCode 对象编号
+     * @param overhaulOrderDetailList 检修对象列表
+     * @param overhaulOrderList 检修工单列表
+     */
+    public void buildFaultInfo(FaultInfoReqDTO faultInfo, String fillinUserId, String objectCode,
+                               List<OverhaulOrderDetailResDTO> overhaulOrderDetailList, List<OverhaulOrderResDTO> overhaulOrderList) {
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        faultInfo.setExt2(queryNowUser(fillinUserId));
+        faultInfo.setRecId(UUID.randomUUID().toString());
+        if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith(CommonConstants.NINE_STRING)) {
+            faultInfo.setObjectName(overhaulOrderDetailList.get(0).getObjectName());
+            faultInfo.setObjectCode(overhaulOrderDetailList.get(0).getObjectCode());
+        }
+        faultInfo.setFaultType("30");
+        faultInfo.setMajorCode(overhaulOrderList.get(0).getSubjectCode());
+        faultInfo.setMajorName(overhaulOrderList.get(0).getSubjectName());
+        faultInfo.setSystemCode(overhaulOrderList.get(0).getSystemCode());
+        faultInfo.setSystemName(overhaulOrderList.get(0).getSystemName());
+        faultInfo.setEquipTypeCode(overhaulOrderList.get(0).getEquipTypeCode());
+        faultInfo.setEquipTypeName(overhaulOrderList.get(0).getEquipTypeName());
+        faultInfo.setPositionName(overhaulOrderList.get(0).getPosition1Name());
+        faultInfo.setPositionCode(overhaulOrderList.get(0).getPosition1Code());
+        faultInfo.setRecCreator(TokenUtil.getCurrentPerson().getPersonName());
+        faultInfo.setRecCreateTime(dateTimeFormat.format(new Date()));
+        faultInfo.setDiscoveryTime(dateTimeFormat.format(new Date()));
+        faultInfo.setFillinTime(dateTimeFormat.format(new Date()));
     }
 
     public String queryNowUser(String userCode) {

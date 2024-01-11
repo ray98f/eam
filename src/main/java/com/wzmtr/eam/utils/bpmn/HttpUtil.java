@@ -2,6 +2,7 @@ package com.wzmtr.eam.utils.bpmn;
 
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -14,6 +15,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+@Slf4j
 public class HttpUtil {
 
 
@@ -108,7 +110,7 @@ public class HttpUtil {
             conn.disconnect();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         } finally {
             try {
                 if (out != null) {
@@ -118,7 +120,7 @@ public class HttpUtil {
                     br.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("exception message", e);
             }
         }
 
@@ -209,14 +211,14 @@ public class HttpUtil {
             //断开连接，disconnect是在底层tcp socket链接空闲时才切断，如果正在被其他线程使用就不切断。
             conn.disconnect();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         } finally {
             try {
                 if (br != null) {
                     br.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("exception message", e);
             }
         }
         return result;

@@ -38,7 +38,7 @@ public class OverTodoServiceImpl implements OverTodoService {
         }
         try {
             List<QueryNotWorkFlowResDTO> list = overTodoMapper.queryNotWorkFlow(businessRecId);
-            if (list != null && !list.isEmpty()) {
+            if (StringUtils.isNotEmpty(list)) {
                 for (QueryNotWorkFlowResDTO l : list) {
                     EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
                     BeanUtils.copyProperties(l, eipMsgPushReq);
@@ -56,7 +56,7 @@ public class OverTodoServiceImpl implements OverTodoService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "完成失败");
         }
     }
@@ -90,7 +90,7 @@ public class OverTodoServiceImpl implements OverTodoService {
             overTodoMapper.insert(sLog);
             EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "新增失败");
         }
     }

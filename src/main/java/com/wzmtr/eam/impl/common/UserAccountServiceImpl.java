@@ -5,7 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.shiro.model.TPerson;
+import com.wzmtr.eam.shiro.model.Person;
 import com.wzmtr.eam.shiro.service.IPersonService;
 import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -62,7 +62,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         //     person.setOfficeId("A02");
         //     person.setOfficeName("办公室");
         // } else {
-            TPerson p = personService.searchPersonByNo(userId);
+            Person p = personService.searchPersonByNo(userId);
             if (p != null) {
                 person.setPersonId(p.getId());
                 person.setPersonNo(p.getNo());

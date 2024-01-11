@@ -62,10 +62,10 @@ public class FaultReportServiceImpl implements FaultReportService {
         // FaultReportServiceImpl aop = (FaultReportServiceImpl) AopContext.currentProxy();
         FaultInfoDO faultInfoDO = reqDTO.toFaultInfoInsertDO(reqDTO);
         String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-        _insertToFaultInfo(faultInfoDO, nextFaultNo);
+        insertToFaultInfo(faultInfoDO, nextFaultNo);
         FaultOrderDO faultOrderDO = reqDTO.toFaultOrderInsertDO(reqDTO);
         String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
-        _insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
+        insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
         return nextFaultNo;
         // TODO: 2023/8/24 知会OCC调度
         // if ("Y".equals(maintenance)) {
@@ -79,7 +79,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         //     /*      */           }
     }
 
-    public void _insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {
+    public void insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {
         faultInfoDO.setFaultNo(nextFaultNo);
         faultInfoDO.setRecId(TokenUtil.getUuId());
         faultInfoDO.setDeleteFlag("0");
@@ -91,7 +91,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultReportMapper.addToFaultInfo(faultInfoDO);
     }
 
-    public void _insertToFaultOrder(FaultOrderDO faultOrderDO, String nextFaultNo, String nextFaultWorkNo) {
+    public void insertToFaultOrder(FaultOrderDO faultOrderDO, String nextFaultNo, String nextFaultWorkNo) {
         faultOrderDO.setFaultWorkNo(nextFaultWorkNo);
         faultOrderDO.setFaultNo(nextFaultNo);
         faultOrderDO.setDeleteFlag("0");
@@ -112,7 +112,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-       _buildRes(records);
+        buildRes(records);
         return list;
     }
 
@@ -129,13 +129,13 @@ public class FaultReportServiceImpl implements FaultReportService {
         }
         // (SELECT distinct db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d.POSITION_CODE) as "positionName",
         //         (select d3.NODE_NAME from SYS_REGION d3 where d3.NODE_CODE=d.EXT1) as "stationCode",
-        _buildRes(records);
+        buildRes(records);
         return list;
     }
-    private void _buildRes(List<FaultReportResDTO> records) {
+    private void buildRes(List<FaultReportResDTO> records) {
         Set<String> positionCodes = StreamUtil.mapToSet(records, FaultReportResDTO::getPositionCode);
-        List<RegionResDTO> regionResDTOS = regionMapper.selectByNodeCodes(positionCodes);
-        Map<String, RegionResDTO> regionMap = StreamUtil.toMap(regionResDTOS, RegionResDTO::getNodeCode);
+        List<RegionResDTO> regionRes = regionMapper.selectByNodeCodes(positionCodes);
+        Map<String, RegionResDTO> regionMap = StreamUtil.toMap(regionRes, RegionResDTO::getNodeCode);
         records.forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
             if (StringUtils.isNotEmpty(a.getDocId())) {
@@ -145,7 +145,7 @@ public class FaultReportServiceImpl implements FaultReportService {
             if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
                 a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
             }
-            if (regionMap.containsKey(a.getPositionCode())){
+            if (regionMap.containsKey(a.getPositionCode())) {
                 a.setPositionName(regionMap.get(a.getPositionCode()).getNodeName());
             }
             if (StringUtils.isNotEmpty(a.getFillinDeptCode())) {
@@ -191,6 +191,7 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public void update(FaultReportReqDTO reqDTO) {
+        Assert.isNotEmpty(reqDTO.getFaultNo(), "参数缺失[故障编号]不能为空!");
         // 修改已提报故障单  修改时间 修改人， 各属性的值
         FaultInfoDO infoUpdate = BeanUtils.convert(reqDTO, FaultInfoDO.class);
         infoUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -202,6 +203,9 @@ public class FaultReportServiceImpl implements FaultReportService {
             // 前端传的是个空值，特殊处理下
             infoUpdate.setDocId(" ");
             orderUpdate.setDocId(" ");
+        }
+        if (null != reqDTO.getMaintenance()){
+             infoUpdate.setExt4(reqDTO.getMaintenance().toString());
         }
         faultReportMapper.updateFaultInfo(infoUpdate);
         faultReportMapper.updateFaultOrder(orderUpdate);

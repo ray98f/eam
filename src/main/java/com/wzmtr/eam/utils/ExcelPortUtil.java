@@ -175,7 +175,7 @@ public class ExcelPortUtil {
             wb.write(response.getOutputStream());
             wb.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
     }
 }

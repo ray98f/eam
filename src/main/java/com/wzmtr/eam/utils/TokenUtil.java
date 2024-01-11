@@ -7,6 +7,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.enums.TokenStatus;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.SecretKey;
@@ -21,6 +22,7 @@ import java.util.UUID;
  * @version 1.0
  * @date 2020/12/23 15:42
  */
+@Slf4j
 public class TokenUtil {
 
     private static final String SIMPLE_TOKEN_SECRET = "ZTE96952f774ce244fcb42af56062e519b3lFOGZ3YaWuCZS";
@@ -156,7 +158,7 @@ public class TokenUtil {
         try {
             currentLoginUser = simpleParseToken(token);
         } catch (JwtException e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
         // 401
         if (token == null || CommonConstants.EMPTY.equals(token) || currentLoginUser == null) {

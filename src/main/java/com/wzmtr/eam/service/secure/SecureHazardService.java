@@ -27,5 +27,4 @@ public interface SecureHazardService {
 
     void update(SecureHazardAddReqDTO reqDTO);
 
-    void finalExam(SecureHazardReqDTO reqDTO);
 }

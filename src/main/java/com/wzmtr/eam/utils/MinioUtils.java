@@ -2,6 +2,7 @@ package com.wzmtr.eam.utils;
 
 import io.minio.*;
 import io.minio.errors.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
  * @version 1.0
  * @date 2021/7/5 9:24
  */
+@Slf4j
 @Component
 public class MinioUtils {
 
@@ -54,7 +56,7 @@ public class MinioUtils {
         try {
             return instance.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
         return false;
     }
@@ -69,7 +71,7 @@ public class MinioUtils {
             instance.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             setPolicy(bucketName, "default");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
     }
 
@@ -77,7 +79,7 @@ public class MinioUtils {
         try {
             instance.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
     }
 
@@ -97,7 +99,7 @@ public class MinioUtils {
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                  | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException
                  | IllegalArgumentException | IOException e) {
-            e.printStackTrace();
+            log.error("exception message", e);
         }
     }
 

@@ -134,7 +134,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                 req.setEquipCode(unitNo);
                 temp.add(req);
             }
-            if (temp.size() > 0) {
+            if (!temp.isEmpty()) {
                 equipmentMapper.importEquipment(temp);
             }
         } catch (Exception e) {
@@ -161,7 +161,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public List<EquipmentQrResDTO> generateQr(BaseIdsEntity baseIdsEntity) throws ParseException {
         List<EquipmentQrResDTO> list = new ArrayList<>();
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 EquipmentQrResDTO res = new EquipmentQrResDTO();
                 EquipmentResDTO resDTO = equipmentMapper.getEquipmentDetail(id);

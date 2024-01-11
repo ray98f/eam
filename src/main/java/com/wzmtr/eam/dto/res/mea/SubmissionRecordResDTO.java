@@ -31,6 +31,9 @@ public class SubmissionRecordResDTO {
     
     @ApiModelProperty(value = "检测校准单位")
     private String verifyDept;
+
+    @ApiModelProperty(value = "检测校准单位名称")
+    private String verifyDeptName;
     
     @ApiModelProperty(value = "备注")
     private String verifyNote;

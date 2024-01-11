@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.SpareAndCarVideo;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.wzmtr.eam.bizobject.export.CarVideoExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.CarVideoDO;
@@ -10,6 +11,7 @@ import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoExportReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoOperateReqDTO;
 import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoReqDTO;
+import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -19,11 +21,13 @@ import com.wzmtr.eam.enums.VideoApplyStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.SpareAndCarVideo.CarVideoMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.carVideoCall.CarVideoService;
 import com.wzmtr.eam.utils.*;
+import jdk.nashorn.internal.AssertsEnabled;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,7 +54,6 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     OverTodoService overTodoService;
     @Autowired
     DictionariesMapper dictionariesMapper;
-
     @Override
     public Page<CarVideoResDTO> list(CarVideoReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
@@ -77,7 +80,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             return null;
         }
         if (StringUtils.isNotEmpty(detail.getApplyDeptCode())) {
-            detail.setApplyDeptName(organizationMapper.getOrgById(detail.getApplyDeptCode()));
+            detail.setApplyDeptName(organizationMapper.getNamesById(detail.getApplyDeptCode()));
         }
         return detail;
     }
@@ -137,28 +140,30 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void operate(CarVideoOperateReqDTO reqDTO) {
+        Assert.notNull(reqDTO.getRecId(),ErrorCode.PARAM_ERROR);
         // 这里的recId传生成的uuid
         CarVideoResDTO detail = carVideoMapper.detail(reqDTO.getRecId());
         if (detail == null) {
             log.error("该记录不存在-{}", reqDTO.getRecId());
             return;
         }
-        CarVideoDO carVideoDO = new CarVideoDO();
+        CarVideoDO carVideoDO = BeanUtils.convert(detail, CarVideoDO.class);
+        // 下达
         if (CommonConstants.TWENTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.TEN_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可下达!");
             }
-            if (StringUtils.isBlank(detail.getDispatchUserId())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,检修调度不能为空");
-            }
+            Assert.notNull(reqDTO.getDispatchUserId(),ErrorCode.NORMAL_ERROR, "失败,检修调度不能为空");
             carVideoDO.setDispatchUserId(reqDTO.getDispatchUserId());
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
             overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getApplyNo(), reqDTO.getDispatchUserId(), "视频调阅下达", "DMBR0022", TokenUtil.getCurrentPersonId());
         }
+        // 派工
         if (CommonConstants.THIRTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.TWENTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非下达状态下不可派工");
             }
+            Assert.isTrue(StringUtils.isNotEmpty(reqDTO.getWorkerId()) && StringUtils.isNotEmpty(reqDTO.getWorkClass()), ErrorCode.PARAM_ERROR, "派工人信息不能为空");
             overTodoService.overTodo(reqDTO.getRecId(), "");
             String[] split = reqDTO.getWorkerId().split(",");
             for (int i = 0; i < split.length; i++) {
@@ -169,6 +174,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             carVideoDO.setWorkerId(reqDTO.getWorkerId());
             carVideoDO.setWorkClass(reqDTO.getWorkClass());
         }
+        // 完工
         if (CommonConstants.FORTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.THIRTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非派工状态下不可完工");
@@ -186,9 +192,11 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             //     eiInfo.set("content", content);
             //     ISendMessage.sendMessageByPhoneList(eiInfo);
             // }
-            carVideoDO.setRecCreator(reqDTO.getRecStatus());
+            carVideoDO.setRecStatus(reqDTO.getRecStatus());
+            carVideoDO.setRecCreator(TokenUtil.getCurrentPersonId());
             carVideoDO.setWorkTime(DateUtil.getCurrentTime());
         }
+        // 关闭
         if (CommonConstants.FIFTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.FORTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非完工状态下不可关闭");
@@ -227,7 +235,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         try {
             EasyExcelUtils.export(response, "检调视频调阅", exportList);
         } catch (Exception e) {
-            log.error("导出失败",e);
+            log.error("导出失败", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR);
         }
     }

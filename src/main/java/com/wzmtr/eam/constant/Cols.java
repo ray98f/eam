@@ -9,5 +9,5 @@ public interface Cols {
     String FAULT_TRACK_NO = "FAULT_TRACK_NO";
     String FAULT_NO = "FAULT_NO";
     String FAULT_WORK_NO = "FAULT_WORK_NO";
-    String FAULT_ANALIZE_NO = "FAULT_ANALIZE_NO";
+    String FAULT_ANALYSIS_NO = "FAULT_ANALYSIS_NO";
 }

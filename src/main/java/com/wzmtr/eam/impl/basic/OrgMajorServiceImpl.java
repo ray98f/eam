@@ -108,7 +108,7 @@ public class OrgMajorServiceImpl implements OrgMajorService {
 
     @Override
     public void deleteOrgMajor(BaseIdsEntity baseIdsEntity) {
-        if (baseIdsEntity.getIds() != null && !baseIdsEntity.getIds().isEmpty()) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             orgMajorMapper.deleteOrgMajor(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

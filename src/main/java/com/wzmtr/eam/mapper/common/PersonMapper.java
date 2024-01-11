@@ -1,6 +1,6 @@
 package com.wzmtr.eam.mapper.common;
 
-import com.wzmtr.eam.shiro.model.TPerson;
+import com.wzmtr.eam.shiro.model.Person;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PersonMapper {
 
-    TPerson searchPersonByNo(@Param("no") String no);
+    Person searchPersonByNo(@Param("no") String no);
 
 }
