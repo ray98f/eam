@@ -487,7 +487,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public void upState(OverhaulUpStateReqDTO overhaulUpStateReqDTO) {
         String currentUser = TokenUtil.getCurrentPerson().getPersonName();
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String orderCode = overhaulUpStateReqDTO.getOrderCode();
         String objectCode = overhaulUpStateReqDTO.getObjectCode();
         OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
@@ -500,25 +499,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         FaultInfoReqDTO dmfm01 = new FaultInfoReqDTO();
         org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm01);
         String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
-        dmfm01.setExt2(queryNowUser(fillinUserId));
-        dmfm01.setRecId(UUID.randomUUID().toString());
-        if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith(CommonConstants.NINE_STRING)) {
-            dmfm01.setObjectName(list2.get(0).getObjectName());
-            dmfm01.setObjectCode(list2.get(0).getObjectCode());
-        }
-        dmfm01.setFaultType("30");
-        dmfm01.setMajorCode(list.get(0).getSubjectCode());
-        dmfm01.setMajorName(list.get(0).getSubjectName());
-        dmfm01.setSystemCode(list.get(0).getSystemCode());
-        dmfm01.setSystemName(list.get(0).getSystemName());
-        dmfm01.setEquipTypeCode(list.get(0).getEquipTypeCode());
-        dmfm01.setEquipTypeName(list.get(0).getEquipTypeName());
-        dmfm01.setPositionName(list.get(0).getPosition1Name());
-        dmfm01.setPositionCode(list.get(0).getPosition1Code());
-        dmfm01.setRecCreator(currentUser);
-        dmfm01.setRecCreateTime(dateTimeFormat.format(new Date()));
-        dmfm01.setDiscoveryTime(dateTimeFormat.format(new Date()));
-        dmfm01.setFillinTime(dateTimeFormat.format(new Date()));
+        buildFaultInfo(dmfm01, fillinUserId, objectCode, list2, list);
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         String faultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
@@ -540,6 +521,38 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         // ServiceDMER0205 insertUpFaultMessage
         overTodoService.insertTodoWithUserGroupAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + "】故障管理流程",
                 dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content);
+    }
+
+    /**
+     * 故障信息拼装
+     * @param faultInfo 故障信息
+     * @param fillinUserId 提报人
+     * @param objectCode 对象编号
+     * @param overhaulOrderDetailList 检修对象列表
+     * @param overhaulOrderList 检修工单列表
+     */
+    public void buildFaultInfo(FaultInfoReqDTO faultInfo, String fillinUserId, String objectCode,
+                               List<OverhaulOrderDetailResDTO> overhaulOrderDetailList, List<OverhaulOrderResDTO> overhaulOrderList) {
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        faultInfo.setExt2(queryNowUser(fillinUserId));
+        faultInfo.setRecId(UUID.randomUUID().toString());
+        if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith(CommonConstants.NINE_STRING)) {
+            faultInfo.setObjectName(overhaulOrderDetailList.get(0).getObjectName());
+            faultInfo.setObjectCode(overhaulOrderDetailList.get(0).getObjectCode());
+        }
+        faultInfo.setFaultType("30");
+        faultInfo.setMajorCode(overhaulOrderList.get(0).getSubjectCode());
+        faultInfo.setMajorName(overhaulOrderList.get(0).getSubjectName());
+        faultInfo.setSystemCode(overhaulOrderList.get(0).getSystemCode());
+        faultInfo.setSystemName(overhaulOrderList.get(0).getSystemName());
+        faultInfo.setEquipTypeCode(overhaulOrderList.get(0).getEquipTypeCode());
+        faultInfo.setEquipTypeName(overhaulOrderList.get(0).getEquipTypeName());
+        faultInfo.setPositionName(overhaulOrderList.get(0).getPosition1Name());
+        faultInfo.setPositionCode(overhaulOrderList.get(0).getPosition1Code());
+        faultInfo.setRecCreator(TokenUtil.getCurrentPerson().getPersonName());
+        faultInfo.setRecCreateTime(dateTimeFormat.format(new Date()));
+        faultInfo.setDiscoveryTime(dateTimeFormat.format(new Date()));
+        faultInfo.setFillinTime(dateTimeFormat.format(new Date()));
     }
 
     public String queryNowUser(String userCode) {

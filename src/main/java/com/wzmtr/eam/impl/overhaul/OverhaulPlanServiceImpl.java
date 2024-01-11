@@ -467,16 +467,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             insertMap.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
             insertMap.setWorkerCode(TokenUtil.getCurrentPersonId());
             insertMap.setWorkerName(TokenUtil.getCurrentPerson().getPersonName());
-            OverhaulOrderReqDTO dmer21 = new OverhaulOrderReqDTO();
-            dmer21.setOrderCode(orderCode);
-            dmer21.setPlanCode(planCode);
-            dmer21.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
-            dmer21.setWorkerCode(TokenUtil.getCurrentPersonId());
-            dmer21.setWorkerName(TokenUtil.getCurrentPerson().getPersonName());
-            dmer21.setRecId(dmer21.getOrderCode());
-            dmer21.setWorkStatus("1");
-            dmer21.setSubjectCode(list11.get(0).getSubjectCode());
-            dmer21.setLineNo(list11.get(0).getLineNo());
+            OverhaulOrderReqDTO dmer21 = buildOverhaulOrder(planCode, orderCode, list11);
             try {
                 overhaulWorkRecordService.insertRepair(dmer21);
             } catch (Exception e) {
@@ -486,16 +477,51 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         insertMap.setRealStartTime(" ");
         insertMap.setRealEndTime(" ");
         insertMap.setExt1(" ");
+        buildOverhaulOrderPlanStartTime(planCode, orderCodes, insertMap, trigerTime);
+        addOverhaulOrder(queryMap1, insertMap);
+    }
+
+    /**
+     * 组装检修工单信息
+     * @param planCode 检修计划号
+     * @param orderCode 检修工单号
+     * @param list11 检修计划信息
+     * @return 检修工单信息
+     */
+    @NotNull
+    private OverhaulOrderReqDTO buildOverhaulOrder(String planCode, String orderCode, List<OverhaulPlanResDTO> list11) {
+        OverhaulOrderReqDTO dmer21 = new OverhaulOrderReqDTO();
+        dmer21.setOrderCode(orderCode);
+        dmer21.setPlanCode(planCode);
+        dmer21.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
+        dmer21.setWorkerCode(TokenUtil.getCurrentPersonId());
+        dmer21.setWorkerName(TokenUtil.getCurrentPerson().getPersonName());
+        dmer21.setRecId(dmer21.getOrderCode());
+        dmer21.setWorkStatus("1");
+        dmer21.setSubjectCode(list11.get(0).getSubjectCode());
+        dmer21.setLineNo(list11.get(0).getLineNo());
+        return dmer21;
+    }
+
+    /**
+     * 组装检修工单计划开始时间
+     * @param planCode 检修计划号
+     * @param orderCodes 检修工单号数组
+     * @param insertMap 检修工单信息
+     * @param trigerTime 触发时间
+     * @throws ParseException 异常
+     */
+    private void buildOverhaulOrderPlanStartTime(String planCode, String[] orderCodes, OverhaulOrderReqDTO insertMap, String trigerTime) throws ParseException {
         if (orderCodes.length > 1) {
             if (CommonConstants.ONE_STRING.equals(orderCodes[1])) {
-                insertMap.setPlanStartTime(orderCode.substring(CommonConstants.TWO, CommonConstants.TEN));
+                insertMap.setPlanStartTime(orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN));
             } else {
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
                 String nowDate = dateTimeFormat.format(new Date());
                 List<WoRuleResDTO.WoRuleDetail> ruleList = woRuleMapper.queryRuleList(planCode, nowDate.substring(nowDate.length() - 4));
                 int beforeDay = ruleList.get(0).getBeforeTime();
                 if (StringUtils.isEmpty(trigerTime) || CommonConstants.ZERO_STRING.equals(trigerTime)) {
-                    trigerTime = orderCode.substring(CommonConstants.TWO, CommonConstants.TEN);
+                    trigerTime = orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN);
                 } else {
                     trigerTime = trigerTime.substring(0, 8);
                 }
@@ -506,9 +532,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 insertMap.setPlanStartTime(dateTimeFormat.format(ca.getTime()));
             }
         } else {
-            insertMap.setPlanStartTime(orderCode.substring(CommonConstants.TWO, CommonConstants.TEN));
+            insertMap.setPlanStartTime(orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN));
         }
-        addOverhaulOrder(queryMap1, insertMap);
     }
 
     /**
@@ -666,7 +691,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanListReqDTO.setPlanCode(overhaulObjectReqDTO.getPlanCode());
         overhaulPlanListReqDTO.setTrialStatus("'10'");
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (list.size() <= 0) {
+        if (StringUtils.isEmpty(list)) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
         overhaulObjectReqDTO.setRecId(TokenUtil.getUuId());
@@ -684,7 +709,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanListReqDTO.setPlanCode(overhaulObjectReqDTO.getPlanCode());
         overhaulPlanListReqDTO.setTrialStatus("'10'");
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (list.size() <= 0) {
+        if (StringUtils.isEmpty(list)) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
         overhaulObjectReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -701,7 +726,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 overhaulPlanListReqDTO.setPlanCode(resDTO.getPlanCode());
                 overhaulPlanListReqDTO.setTrialStatus("'10'");
                 List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-                if (list.size() <= 0) {
+                if (StringUtils.isEmpty(list)) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
                 }
                 overhaulPlanMapper.deleteOverhaulObject(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));

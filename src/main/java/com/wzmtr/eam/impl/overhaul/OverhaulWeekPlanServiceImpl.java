@@ -345,7 +345,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setWeekPlanCode(weekPlanCode);
         List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (planList == null || planList.size() <= 0) {
+        if (StringUtils.isEmpty(planList)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "您选择触发的周计划中没有检修项！");
         }
         for (OverhaulPlanResDTO plan : planList) {
@@ -388,7 +388,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO = new OverhaulWeekPlanListReqDTO();
         overhaulWeekPlanListReqDTO.setWeekPlanCode(weekPlanCode);
         List<OverhaulWeekPlanResDTO> weekPlan = overhaulWeekPlanMapper.listOverhaulWeekPlan(overhaulWeekPlanListReqDTO);
-        if (Objects.isNull(weekPlan) || weekPlan.isEmpty()) {
+        if (StringUtils.isEmpty(weekPlan)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         String orgCode = weekPlan.get(0).getWorkerGroupCode();
@@ -439,7 +439,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
     }
 
-    public void sendConstrctioOrderMsg(OverhaulPlanResDTO dmer11) throws Exception {
+    public void sendConstrctioOrderMsg(OverhaulPlanResDTO dmer11) {
         OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
         overhaulOrderListReqDTO.setOrderCode(dmer11.getExt1());
         List<OverhaulOrderResDTO> recIdList = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
