@@ -184,7 +184,8 @@
         SELECT TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
         TEMPLATE_NAME	as "templateName"  <!-- 模板名称 -->
         FROM T_OVERHAUL_TPL_DETAIL
-        WHERE TEMPLATE_ID IN (SELECT TEMPLATE_ID
+        WHERE TEMPLATE_ID IN
+        (SELECT TEMPLATE_ID
         FROM T_OVERHAUL_OBJECT
         WHERE PLAN_CODE=#{planCode})
     </select>

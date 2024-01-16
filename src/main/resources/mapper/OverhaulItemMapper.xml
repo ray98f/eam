@@ -60,6 +60,52 @@
         order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
     </select>
 
+    <select id="listOverhaulItemModel" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO">
+        SELECT MODEL_NAME, WORK_USER_ID, WORK_USER_NAME, WORK_RESULT
+        FROM T_OVERHAUL_ITEM WHERE OBJECT_CODE=#{objectCode} and ORDER_CODE=#{orderCode}
+        GROUP BY MODEL_NAME, WORK_USER_ID, WORK_USER_NAME, WORK_RESULT
+        ORDER BY MODEL_NAME ASC
+    </select>
+
+    <select id="listOverhaulItemByModel" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO">
+        SELECT
+        OBJECT_ID as "objectId",<!--DMER22表主键-->
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ITEM_NAME	as "itemName",  <!-- 条目 -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        MODEL_NAME	as "modelName",  <!-- 模块名称 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        WORK_USER_ID	as "workUserId",  <!-- 用户工号 -->
+        WORK_USER_NAME	as "workUserName",  <!-- 用户姓名 -->
+        ITEM_TYPE	as "itemType",  <!-- 类型 -->
+        TRAIN_NUMBER	as "trainNumber",  <!-- 车组号 -->
+        WORK_RESULT	as "workResult",  <!-- 结果 -->
+        INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 条目值 -->
+        WORK_TIME	as "workTime",  <!-- 时间 -->
+        WORK_DETAIL	as "workDetail",  <!-- 工作说明 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        ERROR_FLAG	as "errorFlag",  <!-- 异常标识 -->
+        ITEM_UNIT	as "itemUnit",  <!-- 单位 -->
+        DEFAULT_VALUE	as "defaultValue",  <!-- 默认值 -->
+        MAX_VALUE	as "maxValue",  <!-- 最大参考值 -->
+        MIN_VALUE	as "minValue",  <!-- 最小参考值 -->
+        MUTUAL_INSPECTION_PEOPLE	as "mutualInspectionPeople",  <!-- 互检人 -->
+        MUTUAL_INSPECTION_PEOPLE_ID	as "mutualInspectionPeopleId",  <!-- 互检人工号 -->
+        SPECIAL_INSPECTION_PEOPLE	as "specialInspectionPeople",  <!-- 专检人 -->
+        SPECIAL_INSPECTION_PEOPLE_ID	as "specialInspectionPeopleId",  <!-- 专检人工号 -->
+        MODEL_SEQUENCE	as "modelSequence",  <!-- 模块顺序 -->
+        SEQUENCE_ID	as "sequenceId",  <!-- 检修项顺序 -->
+        TDMER02_ID	as "tdmer02Id",  <!-- 模板巡检项主键 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_ITEM WHERE OBJECT_CODE=#{objectCode} and ORDER_CODE=#{orderCode} and MODEL_NAME=#{modelName}
+        order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
+    </select>
+
     <select id="getOverhaulItemDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO">
         SELECT
         OBJECT_ID as "objectId",<!--DMER22表主键-->

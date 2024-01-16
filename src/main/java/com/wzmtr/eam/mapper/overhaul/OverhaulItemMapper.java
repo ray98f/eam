@@ -19,6 +19,23 @@ public interface OverhaulItemMapper {
 
     Page<OverhaulItemResDTO> pageOverhaulItem(Page<OverhaulOrderDetailResDTO> page, OverhaulItemListReqDTO req);
 
+    /**
+     * 获取检修项检修模块列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @return 检修模块列表
+     */
+    List<OverhaulItemResDTO> listOverhaulItemModel(String objectCode, String orderCode);
+
+    /**
+     * 根据检修模块获取检修项列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @param modelName 模块名称
+     * @return 检修项列表
+     */
+    List<OverhaulItemResDTO> listOverhaulItemByModel(String objectCode, String orderCode, String modelName);
+
     OverhaulItemResDTO getOverhaulItemDetail(String id);
 
     List<OverhaulItemResDTO> listOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO);

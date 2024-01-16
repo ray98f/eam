@@ -1,10 +1,7 @@
 package com.wzmtr.eam.controller.overhaul;
 
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
-import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
-import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
-import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
-import com.wzmtr.eam.dto.req.overhaul.OverhaulUpStateReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
@@ -174,6 +171,34 @@ public class OverhaulOrderController {
     public PageResponse<OverhaulItemResDTO> pageOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO,
                                                              @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(overhaulOrderService.pageOverhaulItem(overhaulItemListReqDTO, pageReqDTO));
+    }
+
+    /**
+     * 获取检修项检修模块列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @return 检修模块列表
+     */
+    @GetMapping("/item/listModel")
+    @ApiOperation(value = "获取检修项检修模块列表")
+    public DataResponse<List<OverhaulItemResDTO>> listOverhaulItemModel(@RequestParam @ApiParam("对象编号") String objectCode,
+                                                                        @RequestParam @ApiParam("工单编号") String orderCode) {
+        return DataResponse.of(overhaulOrderService.listOverhaulItemModel(objectCode, orderCode));
+    }
+
+    /**
+     * 根据检修模块获取检修项列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @param modelName 模块名称
+     * @return 检修项列表
+     */
+    @GetMapping("/item/list")
+    @ApiOperation(value = "根据检修模块获取检修项列表")
+    public DataResponse<List<OverhaulItemResDTO>> listOverhaulItem(@RequestParam @ApiParam("对象编号") String objectCode,
+                                                                   @RequestParam @ApiParam("工单编号") String orderCode,
+                                                                   @RequestParam @ApiParam("模块名称") String modelName) {
+        return DataResponse.of(overhaulOrderService.listOverhaulItem(objectCode, orderCode, modelName));
     }
 
     @GetMapping("/item/detail")
