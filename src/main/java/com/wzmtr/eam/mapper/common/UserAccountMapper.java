@@ -3,6 +3,7 @@ package com.wzmtr.eam.mapper.common;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
+import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.entity.SysOrgUser;
 import com.wzmtr.eam.entity.SysUser;
 import com.wzmtr.eam.entity.SysUserAccount;
@@ -65,6 +66,6 @@ public interface UserAccountMapper {
 
     UserCenterInfoResDTO userCenterInfo(@Param("userId") String userId);
 
-    List<String> getUserRoles(@Param("userId") String userId);
+    List<UserRoleResDTO> getUserRoles(@Param("userId") String userId);
 
 }

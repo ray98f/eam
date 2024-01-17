@@ -10,6 +10,7 @@ import com.wzmtr.eam.dto.req.fault.FaultOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulOrderResDTO;
@@ -22,6 +23,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
@@ -87,6 +89,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Autowired
     private UserGroupMemberService userGroupMemberService;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
@@ -207,11 +212,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         // ServiceDMER0201  auditWorkers
         overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
-        // todo 根据角色获取用户列表
-//        List<Map<String, String>> userList = InterfaceHelper.getUserHelpe().getUserBySubjectAndLineAndGroup(dmer21.getSubjectCode(), dmer21.getLineNo(), "DM_007");
-        List<Map<String, String>> userList = new ArrayList<>();
-        for (Map<String, String> map2 : userList) {
-            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), map2.get("userId"), "检修工单完工确认", "DMER0200", TokenUtil.getCurrentPersonId());
+        // 根据角色获取用户列表
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");
+        for (BpmnExaminePersonRes map2 : userList) {
+            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
+                    map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtil.getCurrentPersonId());
         }
     }
 

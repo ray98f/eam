@@ -74,5 +74,5 @@ public class UserCenterInfoResDTO {
     private String operationManual;
 
     @ApiModelProperty(value = "用户权限")
-    private List<String> userRoles;
+    private List<UserRoleResDTO> userRoles;
 }
