@@ -201,6 +201,19 @@ public class OverhaulOrderController {
         return DataResponse.of(overhaulOrderService.listOverhaulItem(objectCode, orderCode, modelName));
     }
 
+    /**
+     * 获取检修项检修模块与检修项列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @return 检修项列表
+     */
+    @GetMapping("/item/listTree")
+    @ApiOperation(value = "获取检修项检修模块与检修项列表")
+    public DataResponse<List<OverhaulItemTreeResDTO>> listOverhaulItemTree(@RequestParam @ApiParam("对象编号") String objectCode,
+                                                                           @RequestParam @ApiParam("工单编号") String orderCode) {
+        return DataResponse.of(overhaulOrderService.listOverhaulItemTree(objectCode, orderCode));
+    }
+
     @GetMapping("/item/detail")
     @ApiOperation(value = "获取检修项详情")
     public DataResponse<OverhaulItemResDTO> getOverhaulItemDetail(@RequestParam @ApiParam("id") String id) {
@@ -212,6 +225,18 @@ public class OverhaulOrderController {
     public void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO,
                                    HttpServletResponse response) throws IOException {
         overhaulOrderService.exportOverhaulItem(overhaulItemListReqDTO, response);
+    }
+
+    /**
+     * 排查检修项
+     * @param troubleshootReqDTO 排查检修项信息
+     * @return 操作成功/失败
+     */
+    @PostMapping("/item/troubleshoot")
+    @ApiOperation(value = "排查检修项")
+    public DataResponse<T> troubleshootOverhaulItem(@RequestBody OverhaulItemTroubleshootReqDTO troubleshootReqDTO) {
+        overhaulOrderService.troubleshootOverhaulItem(troubleshootReqDTO);
+        return DataResponse.success();
     }
 
     @GetMapping("/state/page")

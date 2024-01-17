@@ -1,32 +1,35 @@
 package com.wzmtr.eam.dto.req.overhaul;
 
+import com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
- * @author frp
+ * 检修项排查请求类
+ * @author  Ray
+ * @version 1.0
+ * @date 2024/01/17
  */
 @Data
 @ApiModel
-public class OverhaulItemListReqDTO {
+public class OverhaulItemTroubleshootReqDTO {
 
-    @ApiModelProperty(value = "标记")
-    private String objectFlag;
+    /**
+     * 作业人员ids
+     */
+    private String userIds;
 
-    @ApiModelProperty(value = "工单编号")
-    private String objectCode;
+    /**
+     * 作业人员名称
+     */
+    private String userNames;
 
-    @ApiModelProperty(value = "计划编号")
-    private String itemName;
-
-    @ApiModelProperty(value = "计划名称")
-    private String orderCode;
-
-    @ApiModelProperty(value = "线路编码")
-    private String objectId;
-
-    @ApiModelProperty(value = "位置1代码")
-    private String modelName;
+    /**
+     * 检修项列表
+     */
+    private List<OverhaulItemResDTO> overhaulItemList;
 
 }

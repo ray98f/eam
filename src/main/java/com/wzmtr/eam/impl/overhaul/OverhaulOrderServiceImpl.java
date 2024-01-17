@@ -436,6 +436,27 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         return overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, modelName);
     }
 
+    /**
+     * 获取检修项检修模块与检修项列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @return 检修项列表
+     */
+    @Override
+    public List<OverhaulItemTreeResDTO> listOverhaulItemTree(String objectCode, String orderCode) {
+        List<OverhaulItemResDTO> modelList = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
+        List<OverhaulItemTreeResDTO> models = new ArrayList<>();
+        if (StringUtils.isNotEmpty(modelList)) {
+            for (OverhaulItemResDTO model : modelList) {
+                OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
+                org.springframework.beans.BeanUtils.copyProperties(model, res);
+                res.setItemList(overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, model.getModelName()));
+                models.add(res);
+            }
+        }
+        return models;
+    }
+
     @Override
     public OverhaulItemResDTO getOverhaulItemDetail(String id) {
         return overhaulItemMapper.getOverhaulItemDetail(id);
@@ -452,6 +473,19 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 list.add(res);
             }
             EasyExcelUtils.export(response, "检修项信息", list);
+        }
+    }
+
+    /**
+     * 排查检修项
+     * @param troubleshootReqDTO 排查检修项信息
+     */
+    @Override
+    public void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO) {
+        if (StringUtils.isNotEmpty(troubleshootReqDTO.getOverhaulItemList())) {
+            overhaulItemMapper.troubleshootOverhaulItem(troubleshootReqDTO);
+        } else {
+            throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
     }
 

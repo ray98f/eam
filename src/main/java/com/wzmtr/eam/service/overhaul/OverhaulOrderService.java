@@ -72,9 +72,23 @@ public interface OverhaulOrderService {
      */
     List<OverhaulItemResDTO> listOverhaulItem(String objectCode, String orderCode, String modelName);
 
+    /**
+     * 获取检修项检修模块与检修项列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @return 检修项列表
+     */
+    List<OverhaulItemTreeResDTO> listOverhaulItemTree(String objectCode, String orderCode);
+
     OverhaulItemResDTO getOverhaulItemDetail(String id);
 
     void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, HttpServletResponse response) throws IOException;
+
+    /**
+     * 排查检修项
+     * @param troubleshootReqDTO 排查检修项信息
+     */
+    void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO);
 
     Page<OverhaulStateResDTO> pageOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId, PageReqDTO pageReqDTO);
 

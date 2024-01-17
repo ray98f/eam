@@ -3,6 +3,7 @@ package com.wzmtr.eam.mapper.overhaul;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulItemReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulItemTroubleshootReqDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -39,6 +40,12 @@ public interface OverhaulItemMapper {
     OverhaulItemResDTO getOverhaulItemDetail(String id);
 
     List<OverhaulItemResDTO> listOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO);
+
+    /**
+     * 排查检修项
+     * @param troubleshootReqDTO 排查检修项信息
+     */
+    void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO);
 
     void insert(OverhaulItemReqDTO overhaulItemReqDTO);
 
