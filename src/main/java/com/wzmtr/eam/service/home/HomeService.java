@@ -11,5 +11,5 @@ public interface HomeService {
 
     HomeCountResDTO count();
 
-    EChartResDTO queryEChart();
+    EChartResDTO queryChart();
 }

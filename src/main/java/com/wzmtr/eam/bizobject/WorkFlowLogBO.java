@@ -17,13 +17,16 @@ import java.util.List;
 @NoArgsConstructor
 public class WorkFlowLogBO {
     private String workFlowInstId;
-    //提交流程时选择的下一步人员
+    /**
+     * 提交流程时选择的下一步人员
+     */
     private List<String> userIds;
-    //记录当前操作的行为状态
+    /**
+     * 记录当前操作的行为状态
+     */
     private String status;
     private String remark;
 
-//    --------不必填--------
     /**
      * 转换成逗号分割的userId
      */

@@ -56,7 +56,6 @@ public class FaultAnalyzeController {
         return DataResponse.success();
     }
 
-    // fault_analize9
     @ApiOperation(value = "故障分析流程提交送审")
     @PostMapping("/submit")
     public DataResponse<String> submit(@RequestBody FaultExamineReqDTO reqDTO) {

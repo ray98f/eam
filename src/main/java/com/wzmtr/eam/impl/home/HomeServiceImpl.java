@@ -63,7 +63,7 @@ public class HomeServiceImpl implements HomeService {
     }
 
     @Override
-    public EChartResDTO queryEChart() {
+    public EChartResDTO queryChart() {
         //最近3月
         List<ShowBCResDTO> listB = homeMapper.queryB();
         //最近7天

@@ -252,7 +252,7 @@ public class TransferServiceImpl implements TransferService {
             map.put("remark", equipmentResDTO.getRemark());
             map.put("recId2", equipmentResDTO.getSourceRecId());
             map.put("ext1", equipmentResDTO.getStartUseDate());
-        } else if (transferSplitReqDTO.getType() == 2) {
+        } else if (transferSplitReqDTO.getType() == CommonConstants.TWO) {
 //            if (j == 0) {
 //                Map<String, String> query16Map = new HashMap<>();
 //                query16Map.put("recId", equipmentResDTO.getSourceRecId());

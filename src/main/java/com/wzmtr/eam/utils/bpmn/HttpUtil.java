@@ -18,19 +18,6 @@ import java.net.URL;
 @Slf4j
 public class HttpUtil {
 
-
-    public static void main(String[] args) {
-     /*   MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setFullname("lz");
-        memberDTO.setAccount("lz");
-        memberDTO.setUserNo("998");
-        String data = JSONObject.toJSONString(memberDTO);
-        String result = doPost(REGISTER, data);*/
-
-        String result = doGet(FastFlowPathUrl.FLOW_LIST + "?name=&modelKey=&createTime=&pageNum=1&limit=10&pageSize=10&status=&whereSql=&typeKey=&type=2");
-        System.out.println(result);
-    }
-
     /**
      * 以post方式调用对方接口方法
      *

@@ -7,11 +7,10 @@ import lombok.*;
  * Author: Li.Wang
  * Date: 2023/12/13 13:52
  */
-@Getter
-@Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Builder
 public class FaultTrackWorkExportBO {
     @ExcelProperty(value = "跟踪单工单号")
     private String faultTrackWorkNo;

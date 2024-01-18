@@ -12,23 +12,35 @@ import lombok.Data;
 @Data
 @TableName("T_FAULT_ORDER")
 public class FaultOrderDO {
-    // notnull
+    /**
+     * notnull
+     */
     @TableId(value = "REC_ID")
     private String recId = " ";
-    // notnull
+    /**
+     * notnull
+     */
     private String companyCode;
-    // notnull
+    /**
+     * notnull
+     */
     private String companyName;
-    // notnull
+    /**
+     * notnull
+     */
     private String faultNo;
-    // notnull
+    /**
+     * notnull
+     */
     private String faultWorkNo;
     private String dispatchUserId;
     private String dispatchTime;
     private String workClass;
     private String repairRespUserId;
     private String workArea;
-    // notnull 如果为空则默认提报状态
+    /**
+     * notnull 如果为空则默认提报状态
+     */
     private String orderStatus;
     private String planRecoveryTime;
     private String faultAffect;
@@ -60,12 +72,18 @@ public class FaultOrderDO {
     private String cancelTime;
     private String workFlowInstId;
     private String workFlowInstStatus;
-    // notnull
+    /**
+     * notnull
+     */
     private String docId;
     private String remark;
-    // notnull
+    /**
+     * notnull
+     */
     private String recCreator;
-    // notnull
+    /**
+     * notnull
+     */
     private String recCreateTime;
     private String recRevisor;
     private String recReviseTime;
@@ -73,7 +91,9 @@ public class FaultOrderDO {
     private String recDeleteTime;
     private String deleteFlag;
     private String archiveFlag;
-    // notnull
+    /**
+     * notnull
+     */
     private String recStatus;
     private String ext1;
     private String ext2;

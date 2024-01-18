@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wzmtr.eam.mapper.SpareAndCarVideo.CarVideoMapper">
+<mapper namespace="com.wzmtr.eam.mapper.video.CarVideoMapper">
     <insert id="add">
         INSERT INTO T_VIDEO_ACCESS (REC_ID,
                                     COMPANY_CODE,
@@ -144,7 +144,7 @@
         </if>
         WHERE REC_ID=#{recId}
     </update>
-    <select id="query" resultType="com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO">
+    <select id="query" resultType="com.wzmtr.eam.dto.res.video.CarVideoResDTO">
         SELECT
         REC_ID as "recId",
         COMPANY_CODE as "companyCode",
@@ -203,7 +203,7 @@
             and DELETE_FLAG = '0'
         </trim>
     </select>
-    <select id="detail" resultType="com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO">
+    <select id="detail" resultType="com.wzmtr.eam.dto.res.video.CarVideoResDTO">
         SELECT
         REC_ID as "recId",
         COMPANY_CODE as "companyCode",
@@ -252,7 +252,7 @@
             </if>
         </trim>
     </select>
-    <select id="list" resultType="com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO">
+    <select id="list" resultType="com.wzmtr.eam.dto.res.video.CarVideoResDTO">
         SELECT
         REC_ID	as "recId",
         COMPANY_CODE	as "companyCode",

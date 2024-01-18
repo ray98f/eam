@@ -54,7 +54,6 @@ public class FaultReportServiceImpl implements FaultReportService {
     private RegionMapper regionMapper;
 
     @Override
-    // @Transactional(rollbackFor = Exception.class)
     public String addToFault(FaultReportReqDTO reqDTO) {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
