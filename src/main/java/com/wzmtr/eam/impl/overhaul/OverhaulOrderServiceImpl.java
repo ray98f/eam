@@ -19,6 +19,7 @@ import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulStateResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.Role;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author frp
@@ -151,15 +153,31 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (Objects.isNull(order)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        return faultQueryMapper.queryDeptCode(order.getLineNo(), order.getSubjectCode(), "20");
+        String userId = TokenUtil.getCurrentPersonId();
+        List<Role> roleList = roleMapper.getLoginRole(userId);
+        if (StringUtils.isNotEmpty(roleList)) {
+            List<String> roles = roleList.stream().map(Role::getRoleCode).collect(Collectors.toList());
+            if (CommonConstants.ONE_STRING.equals(order.getWorkStatus())) {
+                if (!roles.contains("DM_007") && !CommonConstants.ADMIN.equals(userId) && !roles.contains("DM_037")) {
+                    throw new CommonException(ErrorCode.NORMAL_ERROR, "首次派工必须是调度派工给工班长！");
+                }
+            } else if (!roles.contains("DM_012") && !CommonConstants.ADMIN.equals(userId)) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "已下达、已分配状态必须由工班长派工！");
+            }
+        }
+        return faultQueryMapper.queryDeptCode(order.getLineNo(), order.getSubjectCode(), "10");
     }
 
     @Override
-    public List<OrganMajorLineType> queryWorker(String workerGroupCode) {
+    public List<OrganMajorLineType> queryWorker(String workStatus, String workerGroupCode) {
         if (StringUtils.isEmpty(workerGroupCode)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
-        return userGroupMemberService.getDepartmentUserByGroupName(workerGroupCode, "DM_012");
+        String groupCname = "DM_013";
+        if (CommonConstants.ONE_STRING.equals(workStatus)) {
+            groupCname = "DM_012";
+        }
+        return userGroupMemberService.getDepartmentUserByGroupName(groupCname, workerGroupCode);
     }
 
     @Override

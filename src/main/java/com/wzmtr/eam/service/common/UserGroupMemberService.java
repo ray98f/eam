@@ -14,7 +14,13 @@ public interface UserGroupMemberService {
 
     List<OrganMajorLineType> getDepartmentUserByGroupName(String groupCode);
 
-    List<OrganMajorLineType> getDepartmentUserByGroupName(String groupCode, String dptCode);
+    /**
+     * 根据部门及角色获取人员列表
+     * @param groupCname 角色编号
+     * @param dptCode 部门编号
+     * @return 人员列表
+     */
+    List<OrganMajorLineType> getDepartmentUserByGroupName(String groupCname, String dptCode);
 
     List<BpmnExaminePersonRes> getZcOverhaulPlanExamineUser(String subjectCode, String lineCode);
 

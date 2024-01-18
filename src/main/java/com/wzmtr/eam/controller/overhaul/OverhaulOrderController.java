@@ -65,10 +65,17 @@ public class OverhaulOrderController {
         return DataResponse.of(overhaulOrderService.queryDept(id));
     }
 
+    /**
+     * 获取工单派工作业人员
+     * @param workStatus 工单状态
+     * @param workerGroupCode 作业工班编号
+     * @return 用户信息
+     */
     @GetMapping("/queryWorker")
     @ApiOperation(value = "获取作业人员")
-    public DataResponse<List<OrganMajorLineType>> queryWorker(@RequestParam String workerGroupCode) {
-        return DataResponse.of(overhaulOrderService.queryWorker(workerGroupCode));
+    public DataResponse<List<OrganMajorLineType>> queryWorker(@RequestParam String workStatus,
+                                                              @RequestParam String workerGroupCode) {
+        return DataResponse.of(overhaulOrderService.queryWorker(workStatus, workerGroupCode));
     }
 
     @PostMapping("/dispatchWorkers")

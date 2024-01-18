@@ -25,7 +25,13 @@ public interface OverhaulOrderService {
 
     List<FaultRepairDeptResDTO> queryDept(String id);
 
-    List<OrganMajorLineType> queryWorker(String workerGroupCode);
+    /**
+     * 获取工单派工作业人员
+     * @param workStatus 工单状态
+     * @param workerGroupCode 作业工班编号
+     * @return 用户信息
+     */
+    List<OrganMajorLineType> queryWorker(String workStatus, String workerGroupCode);
 
     void dispatchWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 

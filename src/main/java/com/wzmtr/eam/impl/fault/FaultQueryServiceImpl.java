@@ -521,7 +521,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isEmpty(workerGroupCode)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
-        return userGroupMemberService.getDepartmentUserByGroupName(workerGroupCode, "DM_012");
+        return userGroupMemberService.getDepartmentUserByGroupName("DM_012", workerGroupCode);
     }
 
 
