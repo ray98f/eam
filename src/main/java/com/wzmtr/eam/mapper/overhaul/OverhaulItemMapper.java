@@ -47,6 +47,13 @@ public interface OverhaulItemMapper {
      */
     void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO);
 
+    /**
+     * 检修工单完工
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     */
+    void finishedOverhaulOrder(String objectCode, String orderCode);
+
     void insert(OverhaulItemReqDTO overhaulItemReqDTO);
 
 }

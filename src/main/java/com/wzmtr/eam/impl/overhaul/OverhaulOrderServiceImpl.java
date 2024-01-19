@@ -199,7 +199,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             overhaulOrderReqDTO.setSendPersonId(TokenUtil.getCurrentPersonId());
             overhaulOrderReqDTO.setSendPersonName(TokenUtil.getCurrentPerson().getPersonName());
             overhaulOrderReqDTO.setSendTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-            overhaulOrderReqDTO.setWorkStatus(TokenUtil.getCurrentPersonId());
+            overhaulOrderReqDTO.setWorkStatus("3");
         }
         overhaulOrderReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -502,6 +502,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     public void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO) {
         if (StringUtils.isNotEmpty(troubleshootReqDTO.getOverhaulItemList())) {
             overhaulItemMapper.troubleshootOverhaulItem(troubleshootReqDTO);
+            overhaulItemMapper.finishedOverhaulOrder(troubleshootReqDTO.getObjectCode(), troubleshootReqDTO.getOrderCode());
         } else {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }

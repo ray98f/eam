@@ -119,7 +119,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isEmpty(lineNo) || StringUtils.isEmpty(subjectCode)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
-        return faultQueryMapper.queryDeptCode(lineNo, subjectCode, "20");
+        return faultQueryMapper.queryDeptCode(lineNo, subjectCode, "10");
     }
 
     @Override

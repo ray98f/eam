@@ -28,6 +28,16 @@ public class OverhaulItemTroubleshootReqDTO {
     private String userNames;
 
     /**
+     * 对象编号
+     */
+    private String objectCode;
+
+    /**
+     * 工单编号
+     */
+    private String orderCode;
+
+    /**
      * 检修项列表
      */
     private List<OverhaulItemResDTO> overhaulItemList;

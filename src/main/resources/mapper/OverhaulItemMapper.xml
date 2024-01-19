@@ -237,6 +237,14 @@
             WHERE REC_ID=#{recId}
         </foreach>
     </update>
+    
+    <update id="finishedOverhaulOrder">
+        UPDATE T_OVERHAUL_ORDER SET
+        WORK_STATUS=4
+        WHERE NOT EXISTS (SELECT REC_ID FROM T_OVERHAUL_ITEM
+        WHERE ORDER_CODE=#{orderCode} AND OBJECT_CODE=#{objectCode}
+        AND WORK_RESULT IS NOT NULL)
+    </update>
 
     <insert id="insert">
         INSERT INTO T_OVERHAUL_ITEM (
