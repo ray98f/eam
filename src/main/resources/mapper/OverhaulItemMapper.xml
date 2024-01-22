@@ -213,29 +213,27 @@
     </select>
 
     <update id="troubleshootOverhaulItem">
-        <foreach collection="overhaulItemList" index="index" item="overhaulItem" separator=";">
-            UPDATE T_OVERHAUL_ITEM SET
-            <if test="userIds!=null">
-                WORK_USER_ID=#{userIds},
-            </if>
-            <if test="userNames!=null">
-                WORK_USER_NAME=#{userNames},
-            </if>
-            <if test="overhaulItem.workResult!=null">
-                WORK_RESULT=#{overhaulItem.workResult},
-            </if>
-            <if test="overhaulItem.docId!=null">
-                DOC_ID=#{overhaulItem.docId},
-            </if>
-            <if test="overhaulItem.workDetail!=null">
-                WORK_DETAIL=#{overhaulItem.workDetail},
-            </if>
-            <if test="overhaulItem.remark!=null">
-                REMARK=#{overhaulItem.remark},
-            </if>
-            WORK_TIME=to_char(sysdate,'yyyy-MM-dd HH24:mi:ss')
-            WHERE REC_ID=#{recId}
-        </foreach>
+        UPDATE T_OVERHAUL_ITEM SET
+        <if test="workUserId!=null">
+            WORK_USER_ID=#{workUserId},
+        </if>
+        <if test="workUserName!=null">
+            WORK_USER_NAME=#{workUserName},
+        </if>
+        <if test="overhaulItem.workResult!=null">
+            WORK_RESULT=#{overhaulItem.workResult},
+        </if>
+        <if test="overhaulItem.docId!=null">
+            DOC_ID=#{overhaulItem.docId},
+        </if>
+        <if test="overhaulItem.workDetail!=null">
+            WORK_DETAIL=#{overhaulItem.workDetail},
+        </if>
+        <if test="overhaulItem.remark!=null">
+            REMARK=#{overhaulItem.remark},
+        </if>
+        WORK_TIME=to_char(sysdate,'yyyy-MM-dd HH24:mi:ss')
+        WHERE REC_ID=#{overhaulItem.recId}
     </update>
     
     <update id="finishedOverhaulOrder">

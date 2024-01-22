@@ -43,9 +43,11 @@ public interface OverhaulItemMapper {
 
     /**
      * 排查检修项
-     * @param troubleshootReqDTO 排查检修项信息
+     * @param overhaulItem 检修项信息
+     * @param workUserId 作业人员ids
+     * @param workUserName 作业人员名称s
      */
-    void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO);
+    void troubleshootOverhaulItem(OverhaulItemResDTO overhaulItem, String workUserId, String workUserName);
 
     /**
      * 检修工单完工

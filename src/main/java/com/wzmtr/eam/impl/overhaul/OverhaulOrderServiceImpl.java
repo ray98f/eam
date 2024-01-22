@@ -433,7 +433,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 req.setObjectCode(res.getObjectCode());
                 List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(req);
                 if (StringUtils.isNotEmpty(overhaulItem)) {
-                    Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).collect(Collectors.toSet());
+                    Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).filter(Objects::nonNull).collect(Collectors.toSet());
                     String result = Joiner.on(",").join(nameSet);
                     List<String> names = Arrays.stream(result.split(",")).distinct().filter(Objects::nonNull).collect(Collectors.toList());
                     result = Joiner.on(",").join(names);
@@ -549,7 +549,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO) {
         if (StringUtils.isNotEmpty(troubleshootReqDTO.getOverhaulItemList())) {
-            overhaulItemMapper.troubleshootOverhaulItem(troubleshootReqDTO);
+            for (OverhaulItemResDTO res : troubleshootReqDTO.getOverhaulItemList()) {
+                overhaulItemMapper.troubleshootOverhaulItem(res, troubleshootReqDTO.getWorkUserId(), troubleshootReqDTO.getWorkUserName());
+            }
             overhaulItemMapper.finishedOverhaulOrder(troubleshootReqDTO.getObjectCode(), troubleshootReqDTO.getOrderCode());
         } else {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);

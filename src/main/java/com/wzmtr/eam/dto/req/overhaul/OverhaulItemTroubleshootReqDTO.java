@@ -20,12 +20,12 @@ public class OverhaulItemTroubleshootReqDTO {
     /**
      * 作业人员ids
      */
-    private String userIds;
+    private String workUserId;
 
     /**
      * 作业人员名称
      */
-    private String userNames;
+    private String workUserName;
 
     /**
      * 对象编号
