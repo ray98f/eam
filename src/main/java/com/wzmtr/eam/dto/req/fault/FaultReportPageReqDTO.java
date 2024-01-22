@@ -90,4 +90,8 @@ public class FaultReportPageReqDTO extends PageReqDTO {
     private String docId;
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
+    /**
+     * 外部调用标识
+     */
+    private String tenant;
 }

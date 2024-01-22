@@ -9,8 +9,10 @@ import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
+import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.enums.OrderStatus;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
@@ -113,6 +115,26 @@ public class FaultReportServiceImpl implements FaultReportService {
         }
         buildRes(records);
         return list;
+    }
+
+    @Override
+    public Page<FaultReportResDTO> openApiList(FaultReportPageReqDTO reqDTO) {
+        String csm = "NCSM";
+        if (reqDTO.getTenant().contains(csm)) {
+            PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+            // and d.MAJOR_CODE NOT IN('07','06');
+            long startTime = System.nanoTime();
+            Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode());
+            log.info("已提报故障查询耗时{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
+            List<FaultReportResDTO> records = list.getRecords();
+            if (CollectionUtil.isEmpty(records)) {
+                return new Page<>();
+            }
+            buildRes(records);
+            return list;
+        } else {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权访问这个接口");
+        }
     }
 
     @Override

@@ -44,6 +44,18 @@ public class OverhaulOrderController {
         return PageResponse.of(overhaulOrderService.pageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO));
     }
 
+    /**
+     * 获取检修工单列表-开放接口
+     * @param overhaulOrderListReqDTO 检修工单返回信息
+     * @param pageReqDTO 分页参数
+     * @return 检修工单列表
+     */
+    @GetMapping("/page/open")
+    @ApiOperation(value = "获取检修工单列表-开放接口")
+    public PageResponse<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(overhaulOrderService.openApiPageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO));
+    }
+
     @GetMapping("/detail")
     @ApiOperation(value = "获取检修工单详情")
     public DataResponse<OverhaulOrderResDTO> getOverhaulOrderDetail(@RequestParam @ApiParam("id") String id) {

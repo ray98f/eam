@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -18,6 +19,14 @@ import java.util.List;
 public interface OverhaulOrderService {
 
     Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO);
+
+    /**
+     * 获取检修工单列表-开放接口
+     * @param overhaulOrderListReqDTO 检修工单返回信息
+     * @param pageReqDTO 分页参数
+     * @return 检修工单列表
+     */
+    Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO);
 
     OverhaulOrderResDTO getOverhaulOrderDetail(String id);
 

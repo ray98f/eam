@@ -103,6 +103,17 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
+    public Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
+        String csm = "NCSM";
+        if (overhaulOrderListReqDTO.getTenant().contains(csm)) {
+            PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+            return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
+        } else {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权访问这个接口");
+        }
+    }
+
+    @Override
     public OverhaulOrderResDTO getOverhaulOrderDetail(String id) {
         return overhaulOrderMapper.getOrder(id, "1");
     }

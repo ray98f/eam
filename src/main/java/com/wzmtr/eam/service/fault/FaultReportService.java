@@ -25,6 +25,13 @@ public interface FaultReportService {
      */
 
     Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO);
+
+    /**
+     * 已提报故障-开放接口
+     * @param reqDTO 请求参数
+     * @return 已提报故障列表
+     */
+    Page<FaultReportResDTO> openApiList(FaultReportPageReqDTO reqDTO);
     Page<FaultReportResDTO> carReportList(FaultReportPageReqDTO reqDTO);
 
     FaultDetailResDTO detail(FaultDetailReqDTO reqDTO);
