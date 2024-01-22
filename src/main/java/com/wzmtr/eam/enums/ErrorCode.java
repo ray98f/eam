@@ -127,7 +127,11 @@ public enum ErrorCode {
     EXAMINE_NOT_DONE(32000048, "examine.not.done"),
     REJECT_ERROR(32000049, "reject.error"),
     BPMN_ERROR(32000050, "bpmn.error"),
-    NOT_REVIEWER(32000051, "not.reviewer");
+    NOT_REVIEWER(32000051, "not.reviewer"),
+    /**
+     * 当日列车里程及能耗已存在
+     */
+    TRAIN_MILE_DAILY_EXIST(32000052, "train.mile.daily.exist");
 
     private Integer code;
 
