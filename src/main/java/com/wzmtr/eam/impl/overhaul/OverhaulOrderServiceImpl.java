@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.base.Joiner;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
@@ -388,12 +389,48 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public Page<OverhaulOrderDetailResDTO> pageOverhaulObject(String orderCode, String planCode, String planName, String objectCode, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return overhaulOrderMapper.pageOverhaulObject(pageReqDTO.of(), orderCode, planCode, planName, objectCode);
+        Page<OverhaulOrderDetailResDTO> page = overhaulOrderMapper.pageOverhaulObject(pageReqDTO.of(), orderCode, planCode, planName, objectCode);
+        List<OverhaulOrderDetailResDTO> list = page.getRecords();
+        if (StringUtils.isNotEmpty(list)) {
+            for (OverhaulOrderDetailResDTO res : list) {
+                if (StringUtils.isEmpty(res.getTaskPersonName())) {
+                    OverhaulItemListReqDTO req = new OverhaulItemListReqDTO();
+                    req.setObjectCode(res.getObjectCode());
+                    req.setObjectCode(res.getObjectCode());
+                    List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(req);
+                    if (StringUtils.isNotEmpty(overhaulItem)) {
+                        Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).collect(Collectors.toSet());
+                        String result = Joiner.on(",").join(nameSet);
+                        List<String> names = Arrays.stream(result.split(",")).distinct().filter(Objects::nonNull).collect(Collectors.toList());
+                        result = Joiner.on(",").join(names);
+                        res.setTaskPersonName(result);
+                    }
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id) {
-        return overhaulOrderMapper.getOverhaulObjectDetail(id);
+        OverhaulOrderDetailResDTO res = overhaulOrderMapper.getOverhaulObjectDetail(id);
+        if (!Objects.isNull(res)) {
+            if (StringUtils.isEmpty(res.getTaskPersonName())) {
+                OverhaulItemListReqDTO req = new OverhaulItemListReqDTO();
+                req.setObjectCode(res.getObjectCode());
+                req.setObjectCode(res.getObjectCode());
+                List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(req);
+                if (StringUtils.isNotEmpty(overhaulItem)) {
+                    Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).collect(Collectors.toSet());
+                    String result = Joiner.on(",").join(nameSet);
+                    List<String> names = Arrays.stream(result.split(",")).distinct().filter(Objects::nonNull).collect(Collectors.toList());
+                    result = Joiner.on(",").join(names);
+                    res.setTaskPersonName(result);
+                }
+            }
+        }
+        return res;
     }
 
     @Override
@@ -483,7 +520,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, HttpServletResponse response) throws IOException {
         List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(overhaulItemListReqDTO);
-        if (overhaulItem != null && !overhaulItem.isEmpty()) {
+        if (StringUtils.isNotEmpty(overhaulItem)) {
             List<ExcelOverhaulItemResDTO> list = new ArrayList<>();
             for (OverhaulItemResDTO resDTO : overhaulItem) {
                 ExcelOverhaulItemResDTO res = new ExcelOverhaulItemResDTO();
