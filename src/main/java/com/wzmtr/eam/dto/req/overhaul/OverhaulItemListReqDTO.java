@@ -14,6 +14,9 @@ public class OverhaulItemListReqDTO {
     @ApiModelProperty(value = "标记")
     private String objectFlag;
 
+    @ApiModelProperty(value = "主键id")
+    private String recId;
+
     @ApiModelProperty(value = "工单编号")
     private String objectCode;
 
