@@ -1,8 +1,11 @@
 package com.wzmtr.eam.controller.equipment;
 
+import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
+import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -84,6 +87,83 @@ public class TrainMileController {
                                    @RequestParam(required = false) @ApiParam("设备编号") String equipCode,
                                    HttpServletResponse response) throws IOException {
         trainMileService.exportTrainMileage(startTime, endTime, equipCode, response);
+    }
+
+    /**
+     * 获取每日列车里程及能耗列表
+     * @param day 时间
+     * @param equipCode 设备编号
+     * @param pageReqDTO 分页参数
+     * @return 每日列车里程及能耗列表
+     */
+    @GetMapping("/mile/daily/page")
+    @ApiOperation(value = "获取每日列车里程及能耗列表")
+    public PageResponse<TrainMileDailyResDTO> pageTrainDailyMile(@RequestParam(required = false) @ApiParam("时间") String day,
+                                                                 @RequestParam(required = false) @ApiParam("设备编号") String equipCode,
+                                                                 @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(trainMileService.pageTrainDailyMile(day, equipCode, pageReqDTO));
+    }
+
+    /**
+     * 获取每日列车里程及能耗详情
+     * @param id 主键id
+     * @return 每日列车里程及能耗详情
+     */
+    @GetMapping("/mile/daily/detail")
+    @ApiOperation(value = "获取每日列车里程及能耗详情")
+    public DataResponse<TrainMileDailyResDTO> getTrainDailyMileDetail(@RequestParam @ApiParam("id") String id) {
+        return DataResponse.of(trainMileService.getTrainDailyMileDetail(id));
+    }
+
+    /**
+     * 新增当日列车里程及能耗
+     * @param trainMileDailyReqDTO 当日列车里程及能耗返回类
+     * @return 执行状态
+     */
+    @PostMapping("/mile/daily/add")
+    @ApiOperation(value = "新增当日列车里程及能耗")
+    public DataResponse<T> addTrainDailyMile(@RequestBody TrainMileDailyReqDTO trainMileDailyReqDTO) {
+        trainMileService.addTrainDailyMile(trainMileDailyReqDTO);
+        return DataResponse.success();
+    }
+
+    /**
+     * 修改当日列车里程及能耗
+     * @param trainMileDailyReqDTO 当日列车里程及能耗返回类
+     * @return 执行状态
+     */
+    @PostMapping("/mile/daily/modify")
+    @ApiOperation(value = "修改当日列车里程及能耗")
+    public DataResponse<T> modifyTrainDailyMile(@RequestBody TrainMileDailyReqDTO trainMileDailyReqDTO) {
+        trainMileService.modifyTrainDailyMile(trainMileDailyReqDTO);
+        return DataResponse.success();
+    }
+
+    /**
+     * 删除当日列车里程及能耗
+     * @param baseIdsEntity ids
+     * @return 执行状态
+     */
+    @PostMapping("/mile/daily/delete")
+    @ApiOperation(value = "删除当日列车里程及能耗")
+    public DataResponse<T> deleteTrainDailyMile(@RequestBody BaseIdsEntity baseIdsEntity) {
+        trainMileService.deleteTrainDailyMile(baseIdsEntity);
+        return DataResponse.success();
+    }
+
+    /**
+     * 导出每日列车里程及能耗列表
+     * @param day 时间
+     * @param equipCode 设备编号
+     * @param response res
+     * @throws IOException 流异常
+     */
+    @GetMapping("/mile/daily/export")
+    @ApiOperation(value = "导出每日列车里程及能耗列表")
+    public void exportTrainDailyMile(@RequestParam(required = false) @ApiParam("时间") String day,
+                                     @RequestParam(required = false) @ApiParam("设备编号") String equipCode,
+                                     HttpServletResponse response) throws IOException {
+        trainMileService.exportTrainDailyMile(day, equipCode, response);
     }
 
 }
