@@ -86,8 +86,8 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserCenterInfoResDTO getUserDetail() {
         UserCenterInfoResDTO res = userAccountMapper.userCenterInfo(TokenUtil.getCurrentPersonId());
-        // todo 获取登录用户角色权限
-//        res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
+        // 获取登录用户角色权限
+        res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
         return res;
     }
 }

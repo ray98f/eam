@@ -43,10 +43,23 @@ public interface RoleMapper {
 
     List<BpmnExaminePersonRes> getBpmnExaminePerson(BpmnExaminePersonIdReq req);
 
+    /**
+     * 根据专业、线别、角色获取用户列表
+     * @param subjectCode 专业编码
+     * @param lineCode 线别编码
+     * @param roleCode 角色编码
+     * @return 用户列表
+     */
     List<BpmnExaminePersonRes> getUserBySubjectAndLineAndRole(@Param("subjectCode") String subjectCode,
                                                               @Param("lineCode") String lineCode,
                                                               @Param("roleCode") String roleCode);
 
+    /**
+     * 根据部门、角色获取用户列表
+     * @param orgId 部门编号
+     * @param roleCode 角色编号
+     * @return 用户列表
+     */
     List<BpmnExaminePersonRes> getUserByOrgAndRole(@Param("orgId") String orgId,
                                                    @Param("roleCode") String roleCode);
 

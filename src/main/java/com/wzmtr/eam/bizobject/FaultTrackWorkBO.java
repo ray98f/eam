@@ -43,8 +43,6 @@ public class FaultTrackWorkBO {
     private String ext5;
     private String trackStartDate;
     private String trackEndDate;
-    // @ApiModelProperty(value = "跟踪期限")
     private Integer trackPeriod =0;
-    // @ApiModelProperty(value = "跟踪周期")
     private Integer trackCycle =0;
 }

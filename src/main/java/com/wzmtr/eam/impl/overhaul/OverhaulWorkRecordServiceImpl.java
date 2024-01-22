@@ -3,6 +3,8 @@ package com.wzmtr.eam.impl.overhaul;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulWorkRecordReqDTO;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulWorkRecordMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
@@ -28,6 +30,9 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
 
     @Autowired
     private OverTodoService overTodoService;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Override
     public void insertRepair(OverhaulOrderReqDTO overhaulOrderReqDTO) {
@@ -62,11 +67,11 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
                         if (CommonConstants.TWO_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
                             overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), dmer24.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtil.getCurrentPersonId());
                         } else if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
-                            // todo 根据角色获取用户列表
-//                            List<Map<String, String>> userList = InterfaceHelper.getUserHelpe().getUserBySubjectAndLineAndGroup(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");
-                            List<Map<String, String>> userList = new ArrayList<>();
-                            for (Map<String, String> map : userList) {
-                                overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), map.get("userId"), "检修工单下达", "DMER0200", TokenUtil.getCurrentPersonId());
+                            // 根据角色获取用户列表
+                            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");
+                            for (BpmnExaminePersonRes map : userList) {
+                                overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(),
+                                        overhaulOrderReqDTO.getOrderCode(), map.getUserId(), "检修工单下达", "DMER0200", TokenUtil.getCurrentPersonId());
                             }
                         }
                     } catch (Exception e) {

@@ -1,4 +1,4 @@
-package com.wzmtr.eam.dto.req.spareAndCarVideo;
+package com.wzmtr.eam.dto.req.video;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

@@ -25,7 +25,7 @@ public class ExcelPortUtil {
      */
     public static void excelPort(String sheetName, List<String> listName, List<Map<String, String>> list, List<Map<Integer, String>> listBottom, HttpServletResponse response) {
         try {
-            if (list.size() == 0) {
+            if (list.isEmpty()) {
                 log.error("数据为空，无导出数据");
                 return;
             }
@@ -168,7 +168,6 @@ public class ExcelPortUtil {
                     ind++;
                 }
             }
-//            response.reset();
             response.setContentType("application/vnd.ms-excel");
             response.setHeader("Content-Disposition",
                     "attchement;filename=" + new String((sheetName + ".xls").getBytes(StandardCharsets.UTF_8), "ISO8859-1"));

@@ -1,11 +1,11 @@
-package com.wzmtr.eam.service.carVideoCall;
+package com.wzmtr.eam.service.video;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
-import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoExportReqDTO;
-import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoOperateReqDTO;
-import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoReqDTO;
-import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
+import com.wzmtr.eam.dto.req.video.CarVideoAddReqDTO;
+import com.wzmtr.eam.dto.req.video.CarVideoExportReqDTO;
+import com.wzmtr.eam.dto.req.video.CarVideoOperateReqDTO;
+import com.wzmtr.eam.dto.req.video.CarVideoReqDTO;
+import com.wzmtr.eam.dto.res.video.CarVideoResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.SidEntity;
 

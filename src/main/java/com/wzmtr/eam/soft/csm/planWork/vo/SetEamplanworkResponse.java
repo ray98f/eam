@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
 @Data
 public class SetEamplanworkResponse {
     @XmlElement(name = "return")
-    protected ResponseMessage _return;
+    protected ResponseMessage returnMessage;
 
 }
 

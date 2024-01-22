@@ -61,4 +61,8 @@ public class OverhaulOrderListReqDTO {
 
     @ApiModelProperty(value = "删除人")
     private String newTime;
+    /**
+     * 外部调用标识
+     */
+    private String tenant;
 }

@@ -7,11 +7,10 @@ import lombok.*;
  * Author: Li.Wang
  * Date: 2023/12/13 15:33
  */
-@Getter
-@Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Builder
 public class SecureCheckExportBO {
     @ExcelProperty(value = "检查问题单号")
     private String secRiskId;

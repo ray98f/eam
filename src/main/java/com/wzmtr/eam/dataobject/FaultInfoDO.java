@@ -15,16 +15,22 @@ import lombok.Data;
 public class FaultInfoDO {
     @TableId(value = "REC_ID")
     private String recId;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "公司代码")
-    //not null
     private String companyCode;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "公司名称")
-    //not null
     private String companyName;
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "故障标识（1-标准故障；2-快速故障）")
-    //not null
     private String faultFlag;
     @ApiModelProperty(value = "对象编码")
     private String objectCode;
@@ -32,11 +38,15 @@ public class FaultInfoDO {
     private String objectName;
     @ApiModelProperty(value = "车底号/车厢号")
     private String trainTrunk;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "线路编码")
-    //not null
     private String lineCode;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "位置编码")
-    //not null
     private String positionCode;
     @TableField(exist = false)
     @ApiModelProperty(value = "位置")
@@ -64,41 +74,61 @@ public class FaultInfoDO {
     private String equipTypeCode;
     @ApiModelProperty(value = "故障模块")
     private String faultModule;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "故障分类（10-运营故障；20-自检故障；30-新线调试；40-正线故障；50-出库故障）")
-    //not null
     private String faultType;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "来源编号")
-    //not null
     private String sourceCode;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "故障现象")
-    //not null
     private String faultDisplayCode;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "故障现象")
-    //not null
     private String faultDisplayDetail;
     @ApiModelProperty(value = "故障详情")
     private String faultDetail;
     @ApiModelProperty(value = "发现人工号")
     private String discovererId;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "发现人姓名")
-    //not null
     private String discovererName;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "发现时间")
-    //not null
     private String discoveryTime;
     @ApiModelProperty(value = "发现人联系方式")
     private String discovererPhone;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "提报人工号")
-    //not null
     private String fillinUserId;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "提报部门")
-    //not null
     private String fillinDeptCode;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "提报时间")
-    //not null
     private String fillinTime;
+    /**
+     * not null
+     */
     @TableField(exist = false)
-    //not null
     private String fillinUserName;
     @ApiModelProperty(value = "主责部门")
     private String respDeptCode;
@@ -110,26 +140,36 @@ public class FaultInfoDO {
     private String publishUserId;
     @ApiModelProperty(value = "下发时间")
     private String publishTime;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "故障等级")
-    //not null
     private String faultLevel;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "故障状态")
-    //not null
     private String faultStatus;
     @ApiModelProperty(value = "工作流实例ID")
     private String workFlowInstId;
     @ApiModelProperty(value = "工作流实例状态")
     private String workFlowInstStatus;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "附件编号")
-    //not null
     private String docId;
     @ApiModelProperty(value = "备注")
     private String remark;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "创建者")
-    //not null
     private String recCreator;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "创建时间")
-    //not null
     private String recCreateTime;
     @ApiModelProperty(value = "修改者")
     private String recRevisor;
@@ -143,8 +183,10 @@ public class FaultInfoDO {
     private String deleteFlag;
     @ApiModelProperty(value = "归档标记")
     private String archiveFlag;
+    /**
+     * not null
+     */
     @ApiModelProperty(value = "状态")
-    //not null
     private String recStatus;
     @ApiModelProperty(value = "扩展字段1")
     private String ext1;
