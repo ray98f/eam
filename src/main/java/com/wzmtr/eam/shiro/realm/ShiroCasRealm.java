@@ -1,12 +1,12 @@
 package com.wzmtr.eam.shiro.realm;
 
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.shiro.model.Person;
 import com.wzmtr.eam.shiro.service.IPersonService;
+import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationInfo;

@@ -18,7 +18,9 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.special.equip.SpecialEquipMapper;
 import com.wzmtr.eam.service.special.equip.SpecialEquipService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author frp

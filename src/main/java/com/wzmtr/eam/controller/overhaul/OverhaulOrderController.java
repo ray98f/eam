@@ -1,6 +1,5 @@
 package com.wzmtr.eam.controller.overhaul;
 
-import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;

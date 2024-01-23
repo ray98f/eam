@@ -1,10 +1,10 @@
 package com.wzmtr.eam.mapper.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.res.basic.OrgParentResDTO;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.entity.CompanyStructureTree;
 import com.wzmtr.eam.entity.SysOffice;
-import com.wzmtr.eam.dto.res.basic.OrgParentResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

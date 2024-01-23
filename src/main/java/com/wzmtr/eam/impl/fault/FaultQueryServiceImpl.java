@@ -258,7 +258,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         Set<String> faultNos = req.getFaultNos();
         List<FaultInfoDO> list = faultInfoMapper.selectList(new QueryWrapper<FaultInfoDO>().in("FAULT_NO", faultNos));
         // 不为null且长度大于1。如果满足条件，则返回1，表示为真；否则返回0，表示为假
-        if ((((list != null) ? 1 : 0) & ((list.size() > 1) ? 1 : 0)) != 0) {
+        if (StringUtils.isNotEmpty(list)) {
             Set<String> majorCodelist = list.stream().map(FaultInfoDO::getMajorCode).collect(Collectors.toSet());
             Set<String> lineCodelist = list.stream().map(FaultInfoDO::getLineCode).collect(Collectors.toSet());
             // 检查majorCodelist和lineCodelist的大小是否都为1则为相同的major和lineCode

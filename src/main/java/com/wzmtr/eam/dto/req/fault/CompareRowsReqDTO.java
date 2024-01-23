@@ -3,7 +3,6 @@ package com.wzmtr.eam.dto.req.fault;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
-import java.util.List;
 import java.util.Set;
 
 /**

@@ -2,8 +2,8 @@ package com.wzmtr.eam.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.wzmtr.eam.config.RequestHeaderContext;
-import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.enums.TokenStatus;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -12,7 +12,6 @@ import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -37,51 +36,6 @@ public class TokenUtil {
         String uuid = UUID.randomUUID().toString();
         //去掉“-”符号
         return uuid.replaceAll("-", CommonConstants.EMPTY);
-    }
-
-    /**
-     * 生成随机字符
-     *
-     * @param length 字符长度
-     * @return String
-     */
-    public static String getRandomString(int length) {
-        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        Random random = new Random();
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(62);
-            sb.append(str.charAt(number));
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 生成时间戳
-     *
-     * @return String
-     */
-    public static String getTimestamp() {
-        Date date = new Date();
-        long time = date.getTime();
-        return (time + CommonConstants.EMPTY);
-    }
-
-    /**
-     * 完成Unicode到String格式转换
-     *
-     * @param unicode 待转换字符串
-     */
-    public static String unicodeToString(String unicode) {
-        StringBuffer string = new StringBuffer();
-        String[] hex = unicode.split("\\\\u");
-        for (int i = 1; i < hex.length; i++) {
-            // 转换出每一个代码点
-            int data = Integer.parseInt(hex[i], 16);
-            // 追加成string
-            string.append((char) data);
-        }
-        return string.toString();
     }
 
     /**

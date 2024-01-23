@@ -1,14 +1,9 @@
 package com.wzmtr.eam.controller.bpmn;
 
-import com.wzmtr.eam.dto.req.bpmn.ExamineListReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
+import com.wzmtr.eam.dto.req.bpmn.ExamineListReq;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
-import com.wzmtr.eam.dto.res.bpmn.ExamineListRes;
-import com.wzmtr.eam.dto.res.bpmn.ExaminedListRes;
-import com.wzmtr.eam.dto.res.bpmn.HisListRes;
-import com.wzmtr.eam.dto.res.bpmn.RunningListRes;
-import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
-import com.wzmtr.eam.dto.res.bpmn.FlowRes;
+import com.wzmtr.eam.dto.res.bpmn.*;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.bpmn.BpmnService;

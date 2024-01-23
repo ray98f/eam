@@ -1,6 +1,5 @@
 package com.wzmtr.eam.dto.res.basic;
 
-import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 

@@ -1,6 +1,9 @@
 package com.wzmtr.eam.controller.fault;
 
-import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;

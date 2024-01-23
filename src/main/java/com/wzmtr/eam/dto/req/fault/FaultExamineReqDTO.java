@@ -1,12 +1,9 @@
 package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
-import com.wzmtr.eam.enums.SubmitType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * Author: Li.Wang

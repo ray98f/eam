@@ -4,7 +4,6 @@ package com.wzmtr.eam.utils.bpmn;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @Author lize

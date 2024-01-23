@@ -1,8 +1,8 @@
 package com.wzmtr.eam.advice;
 
 import com.wzmtr.eam.entity.response.BaseResponse;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -21,6 +21,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @RestControllerAdvice(annotations = {RestController.class, Controller.class})
@@ -58,7 +59,7 @@ public class DefaultControllerAdvice {
         Locale locale = LocaleContextHolder.getLocale();
         if (null != defaultMessage) {
             Integer code = Integer.valueOf(defaultMessage);
-            Object[] arguments = fieldError.getArguments();
+            Object[] arguments = Objects.requireNonNull(fieldError).getArguments();
             String field = fieldError.getField();
             if (null != arguments) {
                 String message = null;
@@ -85,11 +86,15 @@ public class DefaultControllerAdvice {
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse handMethodArgumentNotValidAndBindException(ConstraintViolationException e) {
         Locale locale = LocaleContextHolder.getLocale();
-        ConstraintViolation<?> violation = e.getConstraintViolations().stream().findFirst().get();
-        Integer code = Integer.valueOf(violation.getMessageTemplate());
-        String field = e.getMessage().split(":")[0].split("\\.")[ONE];
-        String message = messageSource.getMessage(ErrorCode.messageOf(code),
-                new Object[]{field}, locale);
-        return new BaseResponse().code(code).message(message);
+        Optional<ConstraintViolation<?>> optional = e.getConstraintViolations().stream().findFirst();
+        if (optional.isPresent()) {
+            ConstraintViolation<?> violation = optional.get();
+            Integer code = Integer.valueOf(violation.getMessageTemplate());
+            String field = e.getMessage().split(":")[0].split("\\.")[ONE];
+            String message = messageSource.getMessage(ErrorCode.messageOf(code),
+                    new Object[]{field}, locale);
+            return new BaseResponse().code(code).message(message);
+        }
+        return null;
     }
 }
