@@ -38,4 +38,4 @@ src/main/resources/templates/
 
 ### IntelliJ IDEA ###
 .idea
-
+/src/test
