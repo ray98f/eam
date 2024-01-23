@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
@@ -180,6 +181,7 @@ public class BpmnServiceImpl implements BpmnService {
         String xml = jsonObject.getString("xml");
         // 创建DOM解析器工厂
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputStream xmlStream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
         Document document = builder.parse(xmlStream);
@@ -200,6 +202,7 @@ public class BpmnServiceImpl implements BpmnService {
         String xml = jsonObject.getString("xml");
         // 创建DOM解析器工厂
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputStream xmlStream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
         Document document = builder.parse(xmlStream);

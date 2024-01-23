@@ -1,14 +1,16 @@
-package com.wzmtr.eam.dto.res.spareAndCarVideo;
+package com.wzmtr.eam.dto.req.video;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
  * Author: Li.Wang
- * Date: 2023/8/7 11:03
+ * Date: 2023/8/7 11:06
  */
 @Data
-public class CarVideoResDTO {
+@ApiModel
+public class CarVideoAddReqDTO {
     @ApiModelProperty(value = "调阅记录号")
     private String recId;
     @ApiModelProperty(value = "申请ID")
@@ -25,8 +27,6 @@ public class CarVideoResDTO {
     private String applierMobPhone;
     @ApiModelProperty(value = "申请部门")
     private String applyDeptCode;
-    @ApiModelProperty(value = "申请部门名称")
-    private String applyDeptName;
     @ApiModelProperty(value = "申请部门负责人")
     private String applyDeptLeader;
     @ApiModelProperty(value = "申请时间")
@@ -41,11 +41,11 @@ public class CarVideoResDTO {
     private String repairManagerId;
     @ApiModelProperty(value = "调度人")
     private String dispatchUserId;
-    @ApiModelProperty(value = "派工时间")
+    @ApiModelProperty(value = "检修调度时间")
     private String dispatchTime;
-    @ApiModelProperty(value = "下载视频人员")
+    @ApiModelProperty(value = "派工人")
     private String workerId;
-    @ApiModelProperty(value = "完工时间")
+    @ApiModelProperty(value = "派工时间")
     private String workTime;
     @ApiModelProperty(value = "关闭人")
     private String closerId;
@@ -55,6 +55,24 @@ public class CarVideoResDTO {
     private String remark;
     @ApiModelProperty(value = "状态")
     private String recStatus;
-    @ApiModelProperty(value = "工班")
+    private String companyCode;
+    private String companyName;
+    private String equipCode;
+    private String workFlowInstId;
+    private String workFlowInstStatus;
+    private String recCreator;
+    private String recCreateTime;
+    private String recRevisor;
+    private String recReviseTime;
+    private String recDeletor;
+    private String recDeleteTime;
+    private String deleteFlag;
+    private String archiveFlag;
+    private String ext1;
+    private String ext2;
+    private String ext3;
+    private String ext4;
+    private String ext5;
     private String workClass;
+
 }

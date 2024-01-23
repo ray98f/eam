@@ -8,7 +8,9 @@ import lombok.Data;
  */
 @Data
 public class PartBO {
-    //更换配件名称
+    /**
+     * 更换配件名称
+     */
     private String replacementName;
     private String oldRepNo;
     private String newRepNo;

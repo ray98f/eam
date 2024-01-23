@@ -38,7 +38,13 @@ public interface OrgMajorMapper {
 
     List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(@Param("subjectCode") String subjectCode, @Param("line") String line, @Param("orgType") String orgType);
 
-    List<OrganMajorLineType> getDepartmentUserByGroupName(@Param("dptCode") String dptCode, @Param("groupCname") String groupCname);
+    /**
+     * 根据部门及角色获取人员列表
+     * @param groupCname 角色编号
+     * @param dptCode 部门编号
+     * @return 人员列表
+     */
+    List<OrganMajorLineType> getDepartmentUserByGroupName(@Param("groupCname") String groupCname, @Param("dptCode") String dptCode);
 
 
     List<DispatchResDTO> queryDispatch();

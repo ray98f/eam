@@ -119,7 +119,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isEmpty(lineNo) || StringUtils.isEmpty(subjectCode)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
-        return faultQueryMapper.queryDeptCode(lineNo, subjectCode, "20");
+        return faultQueryMapper.queryDeptCode(lineNo, subjectCode, "10");
     }
 
     @Override
@@ -400,7 +400,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulOrderListReqDTO.setPlanCode(planCode);
         overhaulOrderListReqDTO.setNewTime("flag");
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
-        return list == null || list.size() <= 0;
+        return StringUtils.isEmpty(list);
     }
 
     public void triggerOne(String planCode) {
@@ -431,7 +431,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
         String planCode = planCodes[0];
         List<OverhaulTplDetailResDTO> tplDetailList = overhaulPlanMapper.getOrderIsValid(planCode);
-        if (tplDetailList == null || tplDetailList.size() <= 0) {
+        if (StringUtils.isEmpty(tplDetailList)) {
             return;
         }
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");

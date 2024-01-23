@@ -1,10 +1,10 @@
-package com.wzmtr.eam.mapper.SpareAndCarVideo;
+package com.wzmtr.eam.mapper.video;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.CarVideoDO;
-import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoAddReqDTO;
-import com.wzmtr.eam.dto.req.spareAndCarVideo.CarVideoExportReqDTO;
-import com.wzmtr.eam.dto.res.spareAndCarVideo.CarVideoResDTO;
+import com.wzmtr.eam.dto.req.video.CarVideoAddReqDTO;
+import com.wzmtr.eam.dto.req.video.CarVideoExportReqDTO;
+import com.wzmtr.eam.dto.res.video.CarVideoResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

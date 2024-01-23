@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.base.Joiner;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
@@ -10,6 +11,7 @@ import com.wzmtr.eam.dto.req.fault.FaultOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulOrderResDTO;
@@ -18,10 +20,12 @@ import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulStateResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.Role;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
@@ -44,6 +48,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author frp
@@ -88,10 +93,24 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Autowired
     private UserGroupMemberService userGroupMemberService;
 
+    @Autowired
+    private RoleMapper roleMapper;
+
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
+    }
+
+    @Override
+    public Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
+        String csm = "NCSM";
+        if (overhaulOrderListReqDTO.getTenant().contains(csm)) {
+            PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+            return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
+        } else {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权访问这个接口");
+        }
     }
 
     @Override
@@ -146,15 +165,31 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (Objects.isNull(order)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        return faultQueryMapper.queryDeptCode(order.getLineNo(), order.getSubjectCode(), "20");
+        String userId = TokenUtil.getCurrentPersonId();
+        List<Role> roleList = roleMapper.getLoginRole(userId);
+        if (StringUtils.isNotEmpty(roleList)) {
+            List<String> roles = roleList.stream().map(Role::getRoleCode).collect(Collectors.toList());
+            if (CommonConstants.ONE_STRING.equals(order.getWorkStatus())) {
+                if (!roles.contains("DM_007") && !CommonConstants.ADMIN.equals(userId) && !roles.contains("DM_037")) {
+                    throw new CommonException(ErrorCode.NORMAL_ERROR, "首次派工必须是调度派工给工班长！");
+                }
+            } else if (!roles.contains("DM_012") && !CommonConstants.ADMIN.equals(userId)) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "已下达、已分配状态必须由工班长派工！");
+            }
+        }
+        return faultQueryMapper.queryDeptCode(order.getLineNo(), order.getSubjectCode(), "10");
     }
 
     @Override
-    public List<OrganMajorLineType> queryWorker(String workerGroupCode) {
+    public List<OrganMajorLineType> queryWorker(String workStatus, String workerGroupCode) {
         if (StringUtils.isEmpty(workerGroupCode)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
-        return userGroupMemberService.getDepartmentUserByGroupName(workerGroupCode, "DM_012");
+        String groupCname = "DM_013";
+        if (CommonConstants.ONE_STRING.equals(workStatus)) {
+            groupCname = "DM_012";
+        }
+        return userGroupMemberService.getDepartmentUserByGroupName(groupCname, workerGroupCode);
     }
 
     @Override
@@ -176,7 +211,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             overhaulOrderReqDTO.setSendPersonId(TokenUtil.getCurrentPersonId());
             overhaulOrderReqDTO.setSendPersonName(TokenUtil.getCurrentPerson().getPersonName());
             overhaulOrderReqDTO.setSendTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-            overhaulOrderReqDTO.setWorkStatus(TokenUtil.getCurrentPersonId());
+            overhaulOrderReqDTO.setWorkStatus("3");
         }
         overhaulOrderReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -207,11 +242,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         // ServiceDMER0201  auditWorkers
         overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
-        // todo 根据角色获取用户列表
-//        List<Map<String, String>> userList = InterfaceHelper.getUserHelpe().getUserBySubjectAndLineAndGroup(dmer21.getSubjectCode(), dmer21.getLineNo(), "DM_007");
-        List<Map<String, String>> userList = new ArrayList<>();
-        for (Map<String, String> map2 : userList) {
-            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), map2.get("userId"), "检修工单完工确认", "DMER0200", TokenUtil.getCurrentPersonId());
+        // 根据角色获取用户列表
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");
+        for (BpmnExaminePersonRes map2 : userList) {
+            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
+                    map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtil.getCurrentPersonId());
         }
     }
 
@@ -365,12 +400,48 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public Page<OverhaulOrderDetailResDTO> pageOverhaulObject(String orderCode, String planCode, String planName, String objectCode, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return overhaulOrderMapper.pageOverhaulObject(pageReqDTO.of(), orderCode, planCode, planName, objectCode);
+        Page<OverhaulOrderDetailResDTO> page = overhaulOrderMapper.pageOverhaulObject(pageReqDTO.of(), orderCode, planCode, planName, objectCode);
+        List<OverhaulOrderDetailResDTO> list = page.getRecords();
+        if (StringUtils.isNotEmpty(list)) {
+            for (OverhaulOrderDetailResDTO res : list) {
+                if (StringUtils.isEmpty(res.getTaskPersonName())) {
+                    OverhaulItemListReqDTO req = new OverhaulItemListReqDTO();
+                    req.setObjectCode(res.getObjectCode());
+                    req.setObjectCode(res.getObjectCode());
+                    List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(req);
+                    if (StringUtils.isNotEmpty(overhaulItem)) {
+                        Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).filter(Objects::nonNull).collect(Collectors.toSet());
+                        String result = Joiner.on(",").join(nameSet);
+                        List<String> names = Arrays.stream(result.split(",")).distinct().filter(Objects::nonNull).collect(Collectors.toList());
+                        result = Joiner.on(",").join(names);
+                        res.setTaskPersonName(result);
+                    }
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id) {
-        return overhaulOrderMapper.getOverhaulObjectDetail(id);
+        OverhaulOrderDetailResDTO res = overhaulOrderMapper.getOverhaulObjectDetail(id);
+        if (!Objects.isNull(res)) {
+            if (StringUtils.isEmpty(res.getTaskPersonName())) {
+                OverhaulItemListReqDTO req = new OverhaulItemListReqDTO();
+                req.setObjectCode(res.getObjectCode());
+                req.setObjectCode(res.getObjectCode());
+                List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(req);
+                if (StringUtils.isNotEmpty(overhaulItem)) {
+                    Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).filter(Objects::nonNull).collect(Collectors.toSet());
+                    String result = Joiner.on(",").join(nameSet);
+                    List<String> names = Arrays.stream(result.split(",")).distinct().filter(Objects::nonNull).collect(Collectors.toList());
+                    result = Joiner.on(",").join(names);
+                    res.setTaskPersonName(result);
+                }
+            }
+        }
+        return res;
     }
 
     @Override
@@ -408,6 +479,50 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         return overhaulItemMapper.pageOverhaulItem(pageReqDTO.of(), overhaulItemListReqDTO);
     }
 
+    /**
+     * 获取检修项检修模块列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @return 检修模块列表
+     */
+    @Override
+    public List<OverhaulItemResDTO> listOverhaulItemModel(String objectCode, String orderCode) {
+        return overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
+    }
+
+    /**
+     * 根据检修模块获取检修项列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @param modelName 模块名称
+     * @return 检修项列表
+     */
+    @Override
+    public List<OverhaulItemResDTO> listOverhaulItem(String objectCode, String orderCode, String modelName) {
+        return overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, modelName);
+    }
+
+    /**
+     * 获取检修项检修模块与检修项列表
+     * @param objectCode 对象编号
+     * @param orderCode 工单编号
+     * @return 检修项列表
+     */
+    @Override
+    public List<OverhaulItemTreeResDTO> listOverhaulItemTree(String objectCode, String orderCode) {
+        List<OverhaulItemResDTO> modelList = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
+        List<OverhaulItemTreeResDTO> models = new ArrayList<>();
+        if (StringUtils.isNotEmpty(modelList)) {
+            for (OverhaulItemResDTO model : modelList) {
+                OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
+                org.springframework.beans.BeanUtils.copyProperties(model, res);
+                res.setItemList(overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, model.getModelName()));
+                models.add(res);
+            }
+        }
+        return models;
+    }
+
     @Override
     public OverhaulItemResDTO getOverhaulItemDetail(String id) {
         return overhaulItemMapper.getOverhaulItemDetail(id);
@@ -416,7 +531,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, HttpServletResponse response) throws IOException {
         List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(overhaulItemListReqDTO);
-        if (overhaulItem != null && !overhaulItem.isEmpty()) {
+        if (StringUtils.isNotEmpty(overhaulItem)) {
             List<ExcelOverhaulItemResDTO> list = new ArrayList<>();
             for (OverhaulItemResDTO resDTO : overhaulItem) {
                 ExcelOverhaulItemResDTO res = new ExcelOverhaulItemResDTO();
@@ -424,6 +539,22 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 list.add(res);
             }
             EasyExcelUtils.export(response, "检修项信息", list);
+        }
+    }
+
+    /**
+     * 排查检修项
+     * @param troubleshootReqDTO 排查检修项信息
+     */
+    @Override
+    public void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO) {
+        if (StringUtils.isNotEmpty(troubleshootReqDTO.getOverhaulItemList())) {
+            for (OverhaulItemResDTO res : troubleshootReqDTO.getOverhaulItemList()) {
+                overhaulItemMapper.troubleshootOverhaulItem(res, troubleshootReqDTO.getWorkUserId(), troubleshootReqDTO.getWorkUserName());
+            }
+            overhaulItemMapper.finishedOverhaulOrder(troubleshootReqDTO.getObjectCode(), troubleshootReqDTO.getOrderCode());
+        } else {
+            throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
     }
 

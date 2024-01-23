@@ -8,11 +8,10 @@ import lombok.*;
  * Author: Li.Wang
  * Date: 2023/12/13 8:55
  */
-@Getter
-@Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Builder
 public class FaultAnalizeExportBO {
     @ExcelProperty(value = "故障分析编号")
     private String faultAnalysisNo;

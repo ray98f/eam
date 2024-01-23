@@ -30,7 +30,7 @@ public class HomeController {
 
     @ApiOperation(value = "图表查询")
     @PostMapping("/queryEChart")
-    public DataResponse<EChartResDTO> queryEChart() {
-        return DataResponse.of(homeService.queryEChart());
+    public DataResponse<EChartResDTO> queryChart() {
+        return DataResponse.of(homeService.queryChart());
     }
 }

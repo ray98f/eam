@@ -2,12 +2,14 @@ package com.wzmtr.eam.impl.bpmn;
 
 import com.wzmtr.eam.bizobject.QueryNotWorkFlowBO;
 import com.wzmtr.eam.dto.req.common.EipMsgPushReq;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.overTodo.QueryNotWorkFlowResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.StatusWorkFlowLog;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.bpmn.OverTodoMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.utils.EipMsgPushUtils;
@@ -30,6 +32,9 @@ public class OverTodoServiceImpl implements OverTodoService {
 
     @Autowired
     private DictionariesMapper dictionariesMapper;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Override
     public void overTodo(String businessRecId, String auditOpinion) {
@@ -97,18 +102,17 @@ public class OverTodoServiceImpl implements OverTodoService {
 
     @Override
     public void insertTodoWithUserGroupAndOrg(String taskTitle, String businessRecId, String businessNo, String stepUserGroup, String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content) {
-        // todo 根据角色获取用户列表
-//        List<Map<String, String>> userList = InterfaceHelper.getUserHelpe().getUserByGroupNameAndOrg(stepUserGroup, stepOrg);
-        List<Map<String, String>> userList = new ArrayList<>();
-        if (userList != null && userList.size() > 0 && StringUtils.isNotEmpty(content)) {
+        // 根据角色获取用户列表
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(stepOrg, stepUserGroup);
+        if (StringUtils.isNotEmpty(userList) && StringUtils.isNotEmpty(content)) {
             // todo 发送短信
 //            eiInfo.set("contacts", userList);
 //            eiInfo.set("content", content);
 //            ISendMessage.sendMessageByPhoneList(eiInfo);
         }
-        if (userList.size() != 0) {
-            for (Map<String, String> user : userList) {
-                insertTodo(taskTitle, businessRecId, businessNo, (String) ((Map) user).get("userCode"), stepName, taskUrl, lastStepUserId);
+        if (StringUtils.isNotEmpty(userList)) {
+            for (BpmnExaminePersonRes user : userList) {
+                insertTodo(taskTitle, businessRecId, businessNo, user.getUserId(), stepName, taskUrl, lastStepUserId);
             }
         }
     }
@@ -117,15 +121,10 @@ public class OverTodoServiceImpl implements OverTodoService {
     public void cancelTodo(String businessRecId) {
         List<QueryNotWorkFlowResDTO> queryNotWorkFlowRes = overTodoMapper.queryNotWorkFlow(businessRecId);
         for (QueryNotWorkFlowResDTO l : queryNotWorkFlowRes) {
-            /* 476 */
             QueryNotWorkFlowBO queryNotWorkFlowBO = new QueryNotWorkFlowBO();
-            /* 477 */
             queryNotWorkFlowBO.setUserId(l.getUserId());
-            /* 478 */
             queryNotWorkFlowBO.setWorkFlowInstId(businessRecId);
-            /* 479 */
             queryNotWorkFlowBO.setTodoId(businessRecId);
-            /* 480 */
             overTodoMapper.delete(queryNotWorkFlowBO);
         }
     }

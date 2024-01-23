@@ -65,7 +65,8 @@ public class ExcelTemplateUtil {
         response.setHeader("Content-Disposition", "attachmentuan;filename=" + fileName);
         // response.setContentType("application/x-msdownload;charset=utf-8");
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        ServletOutputStream outputStream = response.getOutputStream();// 不同类型的文件对应不同的MIME类型
+        // 不同类型的文件对应不同的MIME类型
+        ServletOutputStream outputStream = response.getOutputStream();
         save(workbook, outputStream);
     }
 

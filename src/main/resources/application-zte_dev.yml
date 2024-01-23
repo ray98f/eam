@@ -29,7 +29,7 @@ spring:
 
 excluded:
   swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
-  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout
+  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout,/eam/overhaul/order/page/open,/eam/fault/report/list/open
 
 sso:
   url: http://zxgd.softether.net:4443/cas

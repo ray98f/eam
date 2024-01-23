@@ -47,6 +47,17 @@ public class FaultReportController {
         return PageResponse.of(reportService.list(reqDTO));
     }
 
+    /**
+     * 已提报故障-开放接口
+     * @param reqDTO 请求参数
+     * @return 已提报故障列表
+     */
+    @ApiOperation(value = "已提报故障-开放接口")
+    @PostMapping("/list/open")
+    public PageResponse<FaultReportResDTO> openApiList(@RequestBody FaultReportPageReqDTO reqDTO) {
+        return PageResponse.of(reportService.openApiList(reqDTO));
+    }
+
     @ApiOperation(value = "已提报故障单作废")
     @PostMapping("/fault/cancel")
     public DataResponse<String> cancel(@RequestBody FaultCancelReqDTO reqDTO) {

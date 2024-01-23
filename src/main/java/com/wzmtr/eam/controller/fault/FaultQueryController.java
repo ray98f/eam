@@ -130,14 +130,6 @@ public class FaultQueryController {
         // faultWorkNo
         return DataResponse.of(faultQueryService.compareRows(reqDTO));
     }
-
-    // @ApiOperation(value = "故障对象确认")
-    // @PostMapping("/fault/track/cancel")
-    // public DataResponse<String> cancel(@RequestBody FaultSubmitReqDTO reqDTO) {
-    //     // faultWorkNo
-    //     faultQueryService.returns(reqDTO);
-    //     return DataResponse.success();
-    // }
     @ApiOperation(value = "获取维修部门")
     @GetMapping("querydept")
     public DataResponse<List<FaultRepairDeptResDTO>> querydept(@RequestParam String faultNo) {
