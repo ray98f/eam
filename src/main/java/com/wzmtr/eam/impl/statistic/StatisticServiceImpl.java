@@ -16,6 +16,7 @@ import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.dto.res.statistic.excel.*;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
@@ -25,13 +26,15 @@ import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
-import com.wzmtr.eam.utils.ExcelPortUtil;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -391,18 +394,17 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void queryER5Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
-        List<InspectionJobListResDTO> inspectionJobListResDTOS = oneCarOneGearMapper.queryER5(equipName, startTime, endTime);
-        List<String> listName = Arrays.asList("当天总公里数", "日期");
-        List<Map<String, String>> list = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(inspectionJobListResDTOS)) {
-            for (InspectionJobListResDTO res : inspectionJobListResDTOS) {
-                Map<String, String> map = new HashMap<>();
-                map.put("当天总公里数", res.getDmer3km());
-                map.put("日期", res.getDmer3date());
+    public void queryER5Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
+        List<InspectionJobListResDTO> inspectionJobListRes = oneCarOneGearMapper.queryER5(equipName, startTime, endTime);
+        List<ExcelInspectionJobListResDTO> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(inspectionJobListRes)) {
+            for (InspectionJobListResDTO resDTO : inspectionJobListRes) {
+                ExcelInspectionJobListResDTO res = new ExcelInspectionJobListResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "二级修(360天)", list);
         }
-        ExcelPortUtil.excelPort("二级修(360天)", listName, list, null, response);
     }
 
     @Override
@@ -412,23 +414,18 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) {
+    public void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<FaultDetailResDTO> faultDetailResDTOS = oneCarOneGearMapper.queryFMHistory(equipName, startTime, endTime);
-        List<String> listName = Arrays.asList("故障编号", "发现时间", "故障影响", "故障系统", "故障描述", "处理过程", "处理人员", "故障分析", "处理时间");
-        List<Map<String, String>> list = new ArrayList<>();
+        List<ExcelFaultDetailResDTO> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
-            for (FaultDetailResDTO res : faultDetailResDTOS) {
-                Map<String, String> map = new HashMap<>();
-                map.put("故障编号", res.getFaultNo());
-                map.put("发现时间", res.getDiscoveryTime());
-                map.put("故障影响", res.getFaultAffect());
-                map.put("故障系统", res.getSystemName());
-                map.put("故障描述", res.getFaultDisplayDetail());
-                map.put("处理人员", res.getDealerUnit());
-                map.put("处理时间", res.getRepairTime().toString());
+            for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
+                ExcelFaultDetailResDTO res = new ExcelFaultDetailResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setRepairTime(String.valueOf(resDTO.getRepairTime()));
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "故障列表", list);
         }
-        ExcelPortUtil.excelPort("故障列表", listName, list, null, response);
     }
 
     @Override
@@ -447,26 +444,17 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void querydmdm20Export(String equipName, String startTime, String endTime, HttpServletResponse response) {
-        List<PartReplaceResDTO> resDTOS = oneCarOneGearMapper.querydmdm20(equipName, startTime, endTime);
-        List<String> listName = Arrays.asList("故障工单编号", "作业单位", "作业人员", "更换配件名称", "更换原因", "旧配件编号", "新配件编号", "更换所用时间", "处理日期", "备注");
-        List<Map<String, String>> list = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(resDTOS)) {
-            for (PartReplaceResDTO res : resDTOS) {
-                Map<String, String> map = new HashMap<>();
-                map.put("故障工单编号", res.getFaultWorkNo());
-                map.put("作业单位", res.getOrgType());
-                map.put("作业人员", res.getOperator());
-                map.put("更换配件名称", res.getReplacementNo());
-                map.put("更换原因", res.getReplaceReason());
-                map.put("旧配件编号", res.getOldRepNo());
-                map.put("新配件编号", res.getNewRepNo());
-                map.put("更换所用时间", res.getOperateCostTime());
-                map.put("处理日期", res.getReplaceDate());
-                map.put("备注", res.getRemark());
+    public void querydmdm20Export(String equipName, String startTime, String endTime, HttpServletResponse response) throws IOException {
+        List<PartReplaceResDTO> partReplaceList = oneCarOneGearMapper.querydmdm20(equipName, startTime, endTime);
+        if (CollectionUtil.isNotEmpty(partReplaceList)) {
+            List<ExcelStatisticPartReplaceResDTO> list = new ArrayList<>();
+            for (PartReplaceResDTO resDTO : partReplaceList) {
+                ExcelStatisticPartReplaceResDTO res = new ExcelStatisticPartReplaceResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "部件更换", list);
         }
-        ExcelPortUtil.excelPort("齿轮箱换油", listName, list, null, response);
     }
 
 
@@ -477,87 +465,74 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void pageGearboxChangeOilExport(String equipName, HttpServletResponse response) {
-        List<GearboxChangeOilResDTO> resDTOS = gearboxChangeOilMapper.listGearboxChangeOil(equipName);
-        List<String> listName = Arrays.asList("完成日期", "作业单位", "作业人员", "确认人员", "备注");
-        List<Map<String, String>> list = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(resDTOS)) {
-            for (GearboxChangeOilResDTO res : resDTOS) {
-                Map<String, String> map = new HashMap<>();
-                map.put("处理时间", res.getCompleteDate());
-                map.put("作业单位", res.getOrgType());
-                map.put("作业人员", res.getOperator());
-                map.put("确认人员", res.getConfirmor());
-                map.put("备注", res.getRemark());
+    public void pageGearboxChangeOilExport(String equipName, HttpServletResponse response) throws IOException {
+        List<GearboxChangeOilResDTO> gearboxChangeOilList = gearboxChangeOilMapper.listGearboxChangeOil(equipName);
+        if (CollectionUtil.isNotEmpty(gearboxChangeOilList)) {
+            List<ExcelStatisticGearboxChangeOilResDTO> list = new ArrayList<>();
+            for (GearboxChangeOilResDTO resDTO : gearboxChangeOilList) {
+                ExcelStatisticGearboxChangeOilResDTO res = new ExcelStatisticGearboxChangeOilResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "齿轮箱换油", list);
         }
-        ExcelPortUtil.excelPort("齿轮箱换油", listName, list, null, response);
     }
 
     @Override
-    public void querydmer3Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
+    public void querydmer3Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<InspectionJobListResDTO> resList = oneCarOneGearMapper.querydmer3(equipName, startTime, endTime);
-        List<String> listName = Arrays.asList("当天总公里数", "日期");
-        List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(resList)) {
-            for (InspectionJobListResDTO res : resList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("当天总公里数", res.getDmer3km());
-                map.put("日期", res.getDmer3date());
+            List<ExcelInspectionJobListResDTO> list = new ArrayList<>();
+            for (InspectionJobListResDTO resDTO : resList) {
+                ExcelInspectionJobListResDTO res = new ExcelInspectionJobListResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "2级修90天包", list);
         }
-        ExcelPortUtil.excelPort("2级修90天包", listName, list, null, response);
     }
 
     @Override
-    public void queryER4Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
+    public void queryER4Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         // 2级修180天
         List<InspectionJobListResDTO> resList = oneCarOneGearMapper.queryER4(equipName, startTime, endTime);
-        List<String> listName = Arrays.asList("当天总公里数", "日期");
-        List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(resList)) {
-            for (InspectionJobListResDTO res : resList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("当天总公里数", res.getDmer3km());
-                map.put("日期", res.getDmer3date());
+            List<InspectionJobListResDTO> list = new ArrayList<>();
+            for (InspectionJobListResDTO resDTO : resList) {
+                InspectionJobListResDTO res = new InspectionJobListResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "2级修180天", list);
         }
-        ExcelPortUtil.excelPort("2级修180天", listName, list, null, response);
     }
 
     @Override
-    public void queryER1Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
+    public void queryER1Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<InspectionJobListResDTO> resList = oneCarOneGearMapper.queryER1(equipName, startTime, endTime);
-        List<String> listName = Arrays.asList("当天总公里数", "日期");
-        List<Map<String, String>> list = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(resList)) {
-            for (InspectionJobListResDTO res : resList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("当天总公里数", res.getDmer3km());
-                map.put("日期", res.getDmer3date());
+            List<InspectionJobListResDTO> list = new ArrayList<>();
+            for (InspectionJobListResDTO resDTO : resList) {
+                InspectionJobListResDTO res = new InspectionJobListResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "1级修", list);
         }
-        ExcelPortUtil.excelPort("1级修", listName, list, null, response);
     }
 
     @Override
-    public void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) {
-        List<WheelsetLathingResDTO> wheelsetLathingResDTOS = wheelsetLathingMapper.listWheelsetLathing(equipName, null, null, null);
-        List<String> listName = Arrays.asList("车厢号", "镟修轮对车轴","镟修详情","开始日期","完成日期","负责人","备注");
-        List<Map<String, String>> list = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(wheelsetLathingResDTOS)) {
-            for (WheelsetLathingResDTO res : wheelsetLathingResDTOS) {
-                Map<String, String> map = new HashMap<>();
-                map.put("车厢号", res.getCarriageNo());
-                map.put("镟修轮对车轴", res.getAxleNo());
-                map.put("镟修详情", res.getRepairDetail());
-                map.put("开始日期", res.getStartDate());
-                map.put("完成日期", res.getCompleteDate());
-                map.put("负责人", res.getRespPeople());
-                map.put("备注", res.getRemark());
+    public void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
+        List<WheelsetLathingResDTO> wheelsetLathingList = wheelsetLathingMapper.listWheelsetLathing(equipName, null, null, null);
+        if (CollectionUtil.isNotEmpty(wheelsetLathingList)) {
+            List<ExcelStatisticWheelsetLathingResDTO> list = new ArrayList<>();
+            for (WheelsetLathingResDTO resDTO : wheelsetLathingList) {
+                ExcelStatisticWheelsetLathingResDTO res = new ExcelStatisticWheelsetLathingResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "轮对镟修记录", list);
         }
-        ExcelPortUtil.excelPort("轮对镟修记录", listName, list, null, response);
     }
 
     @Override
@@ -584,22 +559,17 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void pageGeneralSurveyExport(String equipName, HttpServletResponse response) {
-        List<GeneralSurveyResDTO> resDTOS = generalSurveyMapper.listGeneralSurvey(equipName, null, null, null);
-        List<String> listName = Arrays.asList("类别", "技术通知单编号","项目内容","完成时间","作业单位","备注");
-        List<Map<String, String>> list = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(resDTOS)) {
-            for (GeneralSurveyResDTO res : resDTOS) {
-                Map<String, String> map = new HashMap<>();
-                map.put("类别", res.getRecType());
-                map.put("技术通知单编号", res.getRecNotifyNo());
-                map.put("项目内容", res.getRecDetail());
-                map.put("完成时间", res.getCompleteDate());
-                map.put("作业单位", res.getOrgType());
-                map.put("备注", res.getRemark());
+    public void pageGeneralSurveyExport(String equipName, HttpServletResponse response) throws IOException {
+        List<GeneralSurveyResDTO> generalSurveyList = generalSurveyMapper.listGeneralSurvey(equipName, null, null, null);
+        if (CollectionUtil.isNotEmpty(generalSurveyList)) {
+            List<ExcelStatisticGeneralSurveyResDTO> list = new ArrayList<>();
+            for (GeneralSurveyResDTO resDTO : generalSurveyList) {
+                ExcelStatisticGeneralSurveyResDTO res = new ExcelStatisticGeneralSurveyResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "普查与技改", list);
         }
-        ExcelPortUtil.excelPort("普查与技改", listName, list, null, response);
     }
 
 
@@ -968,46 +938,32 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response) {
-        List<String> listName = Arrays.asList("检修作业时间", "对象号", "工单名称", "物资名称", "物资编码", "规格型号", "领用数量", "计量单位");
+    public void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response) throws IOException {
         List<MaterialResDTO> exportList = materialMapper.exportList(reqDTO);
-        List<Map<String, String>> list = new ArrayList<>();
         if (exportList != null && !exportList.isEmpty()) {
+            List<ExcelMaterialResDTO> list = new ArrayList<>();
             for (MaterialResDTO resDTO : exportList) {
-                Map<String, String> map = new HashMap<>();
-                map.put("检修作业时间", resDTO.getRealTime());
-                map.put("对象号", resDTO.getObjectName());
-                map.put("工单名称", resDTO.getPlanName());
-                map.put("物资名称", resDTO.getMatname());
-                map.put("物资编码", resDTO.getMatcode());
-                map.put("规格型号", resDTO.getSpecifi());
-                map.put("领用数量", resDTO.getDeliveryNum());
-                map.put("计量单位", resDTO.getUnit());
-                list.add(map);
+                ExcelMaterialResDTO res = new ExcelMaterialResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "物料统计", list);
         }
-        ExcelPortUtil.excelPort("物料统计", listName, list, null, response);
     }
 
     @Override
-    public void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response) {
+    public void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<TrackQueryResDTO> trackQueryResDTOS = oneCarOneGearMapper.queryDMFM21(startTime, endTime, equipName);
-        List<String> listName = Arrays.asList("故障描述", "跟踪原因", "跟踪开始时间", "跟踪结束时间", "跟踪周期", "跟踪结果", "跟踪人员", "是否结束跟踪");
-        List<Map<String, String>> list = new ArrayList<>();
         if (trackQueryResDTOS != null && !trackQueryResDTOS.isEmpty()) {
+            List<ExcelTrackQueryResDTO> list = new ArrayList<>();
             for (TrackQueryResDTO resDTO : trackQueryResDTOS) {
-                Map<String, String> map = new HashMap<>();
-                map.put("故障描述", resDTO.getFaultDisplayDetail());
-                map.put("跟踪原因", resDTO.getTrackReason());
-                map.put("跟踪开始时间", resDTO.getTrackStartDate());
-                map.put("跟踪结束时间", resDTO.getTrackEndDate());
-                map.put("跟踪周期", String.valueOf(resDTO.getTrackCycle()));
-                map.put("跟踪结果", resDTO.getTrackResult());
-                map.put("跟踪人员", resDTO.getTrackUserName());
-                list.add(map);
+                ExcelTrackQueryResDTO res = new ExcelTrackQueryResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                res.setTrackCycle(String.valueOf(resDTO.getTrackCycle()));
+                list.add(res);
             }
+            EasyExcelUtils.export(response, "物料统计", list);
         }
-        ExcelPortUtil.excelPort("物料统计", listName, list, null, response);
     }
 
     public void rebuildBlock4SP(RAMSSysPerformResDTO map, Set<String> module, String moduleName, String contractZB_LATE, String contractZB_NOS) {

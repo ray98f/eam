@@ -13,6 +13,7 @@ import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public interface StatisticService {
 
     Page<InspectionJobListResDTO> queryER5(OneCarOneGearQueryReqDTO reqDTO);
 
-    void queryER5Export(String startTime, String endTime, String equipName, HttpServletResponse response);
+    void queryER5Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
     /**
      * 故障列表
@@ -48,7 +49,7 @@ public interface StatisticService {
      */
     Page<FaultDetailResDTO> queryFMHistory(OneCarOneGearQueryReqDTO reqDTO);
 
-    void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response);
+    void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
     /**
      * 故障跟踪
@@ -67,7 +68,7 @@ public interface StatisticService {
 
     Page<PartReplaceResDTO> querydmdm20(OneCarOneGearQueryReqDTO reqDTO);
 
-    void querydmdm20Export(String equipName, String startTime, String endTime, HttpServletResponse response);
+    void querydmdm20Export(String equipName, String startTime, String endTime, HttpServletResponse response) throws IOException;
 
     /**
      * 齿轮箱换油
@@ -81,7 +82,7 @@ public interface StatisticService {
 
     Page<GeneralSurveyResDTO> pageGeneralSurvey(OneCarOneGearQueryReqDTO reqDTO);
 
-    void pageGeneralSurveyExport(String equipName, HttpServletResponse response);
+    void pageGeneralSurveyExport(String equipName, HttpServletResponse response) throws IOException;
 
     Page<InspectionJobListResDTO> queryER2(OneCarOneGearQueryReqDTO reqDTO);
 
@@ -99,19 +100,19 @@ public interface StatisticService {
 
     Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO);
 
-    void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response);
+    void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
-    void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response);
+    void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
-    void pageGearboxChangeOilExport(String equipName, HttpServletResponse response);
+    void pageGearboxChangeOilExport(String equipName, HttpServletResponse response) throws IOException;
 
-    void querydmer3Export(String startTime, String endTime, String equipName, HttpServletResponse response);
+    void querydmer3Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
-    void queryER4Export(String startTime, String endTime, String equipName, HttpServletResponse response);
+    void queryER4Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
-    void queryER1Export(String startTime, String endTime, String equipName, HttpServletResponse response);
+    void queryER1Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
-    void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response);
+    void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
     void faultListExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response);
 }

@@ -114,7 +114,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } catch (Exception e) {
             log.info("错误信息:" + e.getMessage());
         }
-        if (personList.size() > 0) {
+        if (!personList.isEmpty()) {
             doPersonInsertBatch(personList, "org");
         }
     }
@@ -146,7 +146,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } catch (Exception e) {
             log.info("错误信息:" + e.getMessage());
         }
-        if (personList.size() > 0) {
+        if (!personList.isEmpty()) {
             doPersonInsertBatch(personList, "supp");
         }
     }
@@ -183,7 +183,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } catch (Exception e) {
             log.info("错误信息:" + e.getMessage());
         }
-        if (plusList.size() > 0) {
+        if (!plusList.isEmpty()) {
             doPersonPlusUpdateBatch(plusList);
         }
     }
@@ -216,7 +216,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } catch (Exception e) {
             log.info("错误信息:" + e.getMessage());
         }
-        if (orgList.size() > 0) {
+        if (!orgList.isEmpty()) {
             doOrgInsertBatch(orgList, "org");
         }
     }
@@ -248,7 +248,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } catch (Exception e) {
             log.info("错误信息:" + e.getMessage());
         }
-        if (orgList.size() > 0) {
+        if (!orgList.isEmpty()) {
             doOrgInsertBatch(orgList, "supp");
         }
     }
@@ -281,7 +281,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } catch (Exception e) {
             log.info("错误信息:" + e.getMessage());
         }
-        if (orgList.size() > 0) {
+        if (!orgList.isEmpty()) {
             doOrgInsertBatch(orgList, "extra");
         }
     }
@@ -314,7 +314,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } catch (Exception e) {
             log.info("错误信息:" + e.getMessage());
         }
-        if (empJobList.size() > 0) {
+        if (!empJobList.isEmpty()) {
             doEmpJobInsertBatch(empJobList);
         }
     }
@@ -546,7 +546,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
             }
             sqlSession.commit();
             sqlSession.clearCache();
-            if (uList.size() > 0) {
+            if (!uList.isEmpty()) {
                 for (SysUser user : uList) {
                     if (user.getId() != null) {
                         mapper.updateUserCompany(user);
