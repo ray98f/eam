@@ -57,7 +57,10 @@
             AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &lt; TO_DATE(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="planName != null and planName != ''">
-            AND D.PLAN_NAME = #{planName}
+            AND D.PLAN_NAME in
+            <foreach collection="planName" open="(" close=")" separator="," index="index" item="plan">
+                #{plan}
+            </foreach>
         </if>
         <if test="matName != null and matName != ''">
             AND B.MAT_NAME LIKE CONCAT('%', #{matName}, '%')

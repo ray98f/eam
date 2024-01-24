@@ -17,13 +17,16 @@ import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import com.wzmtr.eam.dto.res.statistic.excel.*;
+import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
+import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -39,6 +42,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Author: Li.Wang
@@ -67,9 +71,13 @@ public class StatisticServiceImpl implements StatisticService {
     @Autowired
     private GeneralSurveyMapper generalSurveyMapper;
     @Autowired
+    private OverhaulOrderMapper overhaulOrderMapper;
+    @Autowired
     private RAMSMapper ramsMapper;
     @Autowired
     private FaultExportComponent exportComponent;
+    @Autowired
+    private DictionariesMapper dictionariesMapper;
     private static final List<String> IGNORE = Arrays.asList("NOYF", "SC", "moduleName", "contractZB", "ZB");
 
     @Override
@@ -160,7 +168,16 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<MaterialResDTO> query(MaterialQueryReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<MaterialResDTO> page = materialMapper.query(reqDTO.of(), reqDTO.getPlanName(), reqDTO.getMatName(), reqDTO.getStartTime(), reqDTO.getEndTime(), reqDTO.getTrainNo());
+        String[] cos = reqDTO.getPlanName().split(",");
+        List<String> planNameList = new ArrayList<>();
+        for (String c : cos) {
+            Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.OrderType", c);
+            if (!Objects.isNull(dictionaries)) {
+                planNameList.addAll(overhaulOrderMapper.queryPlan(dictionaries.getItemCname()));
+            }
+        }
+        planNameList = planNameList.stream().distinct().filter(Objects::nonNull).collect(Collectors.toList());
+        Page<MaterialResDTO> page = materialMapper.query(reqDTO.of(), planNameList, reqDTO.getMatName(), reqDTO.getStartTime(), reqDTO.getEndTime(), reqDTO.getTrainNo());
         if (CollectionUtil.isEmpty(page.getRecords())) {
             return new Page<>();
         }

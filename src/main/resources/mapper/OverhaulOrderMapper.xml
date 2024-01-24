@@ -1378,4 +1378,9 @@
         WHERE REC_ID=#{recId}
     </update>
 
+    <select id="queryPlan" resultType="java.lang.String">
+        select distinct PLAN_NAME as "planName"
+        from T_OVERHAUL_ORDER where 1=1 and PLAN_NAME like '%' || #{planName} || '%'
+    </select>
+
 </mapper>

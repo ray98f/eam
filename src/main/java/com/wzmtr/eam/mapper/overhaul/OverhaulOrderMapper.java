@@ -51,4 +51,11 @@ public interface OverhaulOrderMapper {
     List<OverhaulOrderDetailResDTO> listOverhaulObject(String orderCode, String planCode, String planName, String objectCode);
 
     void updateone(String faultCode, String faultStatus, String recId);
+
+    /**
+     * 根据计划名称获取计划名称
+     * @param planName 计划名称
+     * @return 计划名称列表
+     */
+    List<String> queryPlan(String planName);
 }
