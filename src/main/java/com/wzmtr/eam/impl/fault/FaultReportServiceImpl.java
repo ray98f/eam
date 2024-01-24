@@ -72,15 +72,15 @@ public class FaultReportServiceImpl implements FaultReportService {
         insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
         return nextFaultNo;
         // TODO: 2023/8/24 知会OCC调度
-        // if ("Y".equals(maintenance)) {
-        //     /* 1756 */             String groupName = "DM_021";
-        //     /* 1757 */             String content2 = userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "提报了一条" + majorName + "故障，工单号：" + faultWorkNo + "的故障，请知晓。";
-        //     /* 1758 */             EiInfo eiInfo1 = new EiInfo();
-        //     /* 1759 */             eiInfo1.set("group", groupName);
-        //     /* 1760 */             eiInfo1.set("content", content2);
-        //     /* 1761 */             ISendMessage.sendMessageByGroup(eiInfo1);
-        //     /* 1762 */             ISendMessage.sendMoblieMessageByGroup(eiInfo1);
-        //     /*      */           }
+//        if ("Y".equals(maintenance)) {
+//            String groupName = "DM_021";
+//            String content2 = userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "提报了一条" + majorName + "故障，工单号：" + faultWorkNo + "的故障，请知晓。";
+//            EiInfo eiInfo1 = new EiInfo();
+//            eiInfo1.set("group", groupName);
+//            eiInfo1.set("content", content2);
+//            ISendMessage.sendMessageByGroup(eiInfo1);
+//            ISendMessage.sendMoblieMessageByGroup(eiInfo1);
+//        }
     }
 
     public void insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {

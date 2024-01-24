@@ -297,7 +297,7 @@
         <if test="day!=null and day!=''">
             AND "DAY"=#{day}
         </if>
-        <if test="equipCode!=nukk and equipCode!=''">
+        <if test="equipCode!=null and equipCode!=''">
             AND EQUIP_CODE=#{equipCode}
         </if>
         order by "DAY" desc

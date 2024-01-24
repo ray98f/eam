@@ -104,6 +104,8 @@ public class FaultReportReqDTO {
     private String partCode;
     @ApiModelProperty(value = "部件名称")
     private String partName;
+    @ApiModelProperty(value = "故障状态")
+    private String faultStatus;
 
     /**
      * 数据库非空字段兜底赋值，初始化为空字符串
@@ -130,7 +132,9 @@ public class FaultReportReqDTO {
         convert.setFaultWorkNo(" ");
         convert.setRecCreateTime(DateUtil.getCurrentTime());
         convert.setDeleteFlag("0");
-        convert.setOrderStatus("10");
+        if (StringUtils.isEmpty(req.getOrderStatus())) {
+            convert.setOrderStatus("10");
+        }
         return convert;
     }
 
@@ -175,10 +179,12 @@ public class FaultReportReqDTO {
         if (StringUtils.isEmpty(req.getCompanyName())){
             convert.setCompanyName(" ");
         }
+        if (StringUtils.isEmpty(req.getFaultStatus())){
+            convert.setFaultStatus(" ");
+        }
         convert.setFaultFlag(" ");
         convert.setFaultLevel(" ");
         convert.setRecStatus(" ");
-        convert.setFaultStatus(" ");
         convert.setFaultDisplayCode(" ");
         convert.setDeleteFlag("0");
         return convert;

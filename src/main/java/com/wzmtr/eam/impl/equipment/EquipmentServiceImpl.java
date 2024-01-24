@@ -66,7 +66,7 @@ public class EquipmentServiceImpl implements EquipmentService {
             res.setLine(equipmentMapper.listLine());
         } else {
             List<RegionResDTO> region = equipmentMapper.listRegion(lineCode, regionCode, recId);
-            boolean bool = StringUtils.isEmpty(equipmentCategoryCode) && region != null && !region.isEmpty();
+            boolean bool = StringUtils.isEmpty(equipmentCategoryCode) && StringUtils.isNotEmpty(region);
             if (bool) {
                 if (StringUtils.isEmpty(regionCode)) {
                     RegionResDTO regionResDTO = new RegionResDTO();
