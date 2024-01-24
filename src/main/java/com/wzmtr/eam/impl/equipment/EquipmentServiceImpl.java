@@ -54,6 +54,7 @@ import static com.wzmtr.eam.constant.CommonConstants.XLSX;
 @Slf4j
 public class EquipmentServiceImpl implements EquipmentService {
 
+    private static final String ES = "ES";
     private static final String REGION_CODE_ES1 = "ES1";
     private static final String REGION_CODE_ES2 = "ES2";
 
@@ -73,6 +74,9 @@ public class EquipmentServiceImpl implements EquipmentService {
         } else {
             List<RegionResDTO> region = equipmentMapper.listRegion(lineCode, regionCode, recId);
             boolean bool = StringUtils.isEmpty(equipmentCategoryCode) && region != null && !region.isEmpty();
+            // 判断是否为车辆层级
+            boolean carBool = (CommonConstants.LINE_CODE_ONE.equals(parentNodeRecId) && REGION_CODE_ES1.equals(recId) && CommonConstants.LINE_CODE_ONE.equals(lineCode)) ||
+                            (CommonConstants.LINE_CODE_TWO.equals(parentNodeRecId) && REGION_CODE_ES2.equals(recId) && CommonConstants.LINE_CODE_TWO.equals(lineCode));
             if (bool) {
                 if (StringUtils.isEmpty(regionCode)) {
                     RegionResDTO regionResDTO = new RegionResDTO();
@@ -87,9 +91,9 @@ public class EquipmentServiceImpl implements EquipmentService {
                     region = equipmentMapper.listCarRegion(lineCode, recId);
                 }
                 res.setRegion(region);
-            } else if (CommonConstants.LINE_CODE_ONE.equals(parentNodeRecId) && REGION_CODE_ES1.equals(recId) && CommonConstants.LINE_CODE_ONE.equals(lineCode)) {
+            } else if (carBool) {
                 res.setRegion(equipmentMapper.listCarRegion(lineCode, recId));
-            } else if (!REGION_CODE_ES1.equals(parentNodeRecId) && !REGION_CODE_ES2.equals(parentNodeRecId)) {
+            } else if (StringUtils.isNotEmpty(parentNodeRecId) && !REGION_CODE_ES1.equals(parentNodeRecId) && !REGION_CODE_ES2.equals(parentNodeRecId)) {
                 res.setEquipment(equipmentMapper.listEquipmentCategory(equipmentCategoryCode, lineCode, recId, regionCode));
             }
         }
@@ -100,6 +104,10 @@ public class EquipmentServiceImpl implements EquipmentService {
     public Page<EquipmentResDTO> pageEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                                String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        if (StringUtils.isNotEmpty(position1Code) && position1Code.contains(ES)) {
+            majorCode = "07";
+            position1Code = null;
+        }
         return equipmentMapper.pageEquipment(pageReqDTO.of(), equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
                 systemCode, equipTypeCode, brand, startTime, endTime, manufacture);
     }
