@@ -205,7 +205,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultReportMapper.updateFaultOrder(faultOrderDO);
         String faultNo = reqDTO.getFaultNo();
         // info表更新
-        FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo);
+        FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo, faultWorkNo);
         faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
         faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultReportMapper.updateFaultInfo(faultInfoDO);

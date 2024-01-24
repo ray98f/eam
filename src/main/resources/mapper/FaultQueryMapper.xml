@@ -536,6 +536,7 @@
         d.PART_NAME AS "partName",
         ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName_textField",
         ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
+        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION2_CODE ) AS "position2Name",
         ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
         ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
         ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
@@ -583,11 +584,13 @@
         d.EXT4 AS "ext4",
         d.EXT5 AS "ext5",
         d.TRAIN_TAG AS "traintag"
-        FROM
-        T_FAULT_INFO d
+        FROM T_FAULT_INFO d
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="faultNo!=null">
-                and d.FAULT_NO LIKE '%' || #{faultNo} || '%'
+            <if test="faultWorkNo!=null and faultWorkNo!=''">
+                AND d.FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
+            </if>
+            <if test="faultNo!=null and faultNo!=''">
+                AND d.FAULT_NO LIKE '%' || #{faultNo} || '%'
             </if>
         </trim>
     </select>

@@ -152,6 +152,23 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
         faultInfoDO.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         faultReportMapper.updateFaultInfo(faultInfoDO);
+        // ServiceDMFM0001 update
+        FaultInfoDO faultInfo1 = faultQueryMapper.queryOneFaultInfo(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        overTodoService.overTodo(faultOrderDO.getRecId(), "提报成功，准备下发");
+        String content = "【市铁投集团】" + TokenUtil.getCurrentPerson().getOfficeName() + "的" + TokenUtil.getCurrentPerson().getPersonName() +
+                "下发一条" + faultInfo1.getMajorName() + "故障，工单号：" + reqDTO.getFaultWorkNo() + "，尽快派工。";
+        Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+        String codeName = dictionaries.getItemEname();
+        List<String> cos = Arrays.asList(codeName.split(","));
+        if (cos.contains(faultInfo1.getMajorCode())) {
+            dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
+        } else {
+            dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
+        }
+        String zcStepOrg = dictionaries.getItemEname();
+        overTodoService.insertTodoWithUserGroupAndAllOrg("【" + faultInfo1.getMajorName() + "】故障管理流程", faultOrderDO.getRecId(),
+                reqDTO.getFaultWorkNo(), "DM_007", zcStepOrg, "故障派工", "DMFM0001", TokenUtil.getCurrentPersonId(),
+                faultInfo1.getMajorCode(), faultInfo1.getLineCode(), "20", content);
     }
 
     @Override
@@ -273,7 +290,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void sendWork(FaultSendWorkReqDTO reqDTO) {
-        // 派工 com.baosight.wzplat.dm.fm.service.ServiceDMFM0002#update
+        // 派工 ServiceDMFM0002 update
         if (StringUtils.isEmpty(reqDTO.getWorkerGroupCode())) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
@@ -289,7 +306,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultOrder1.setRecReviseTime(DateUtil.getCurrentTime());
                 faultOrder1.setOrderStatus(OrderStatus.PAI_GONG.getCode());
                 faultReportMapper.updateFaultOrder(faultOrder1);
-                FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultOrder1.getFaultNo());
+                FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultOrder1.getFaultNo(), faultOrder1.getFaultWorkNo());
                 faultInfoDO.setRepairDeptCode(workerGroupCode);
                 if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) && IS_TIKAI_CODE.equals(reqDTO.getIsTiKai())) {
                     faultInfoDO.setExt3("08");
@@ -299,9 +316,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultInfoDO.setFaultNo(faultOrder1.getFaultNo());
                 faultReportMapper.updateFaultInfo(faultInfoDO);
                 overTodoService.overTodo(faultOrder1.getRecId(), "故障维修");
-                // todo 发短信
-                // String content = "【市铁投集团】" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "向您指派了一条故障工单，故障位置：" + positionName + "," + position2Name + "，设备名称：" + objectName + ",故障现象：" + faultDisplayDetail + "请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
-                overTodoService.insertTodoWithUserGroupAndOrg("【" + reqDTO.getMajorCode() + "】故障管理流程", faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), "DM_013", workerGroupCode, "故障维修", "DMFM0001", TokenUtil.getCurrentPersonId(), null);
+                String content = "【市铁投集团】" + TokenUtil.getCurrentPerson().getOfficeName() + "的" + TokenUtil.getCurrentPerson().getPersonName() +
+                        "向您指派了一条故障工单，故障位置：" + faultInfoDO.getPositionName() + "," + faultInfoDO.getPosition2Code() +
+                        "，设备名称：" + faultInfoDO.getObjectName() + ",故障现象：" + faultInfoDO.getFaultDisplayDetail() +
+                        "请及时处理并在EAM系统填写维修报告，工单号：" + faultOrder1.getFaultWorkNo() + "，请知晓。";
+                overTodoService.insertTodoWithUserGroupAndOrg("【" + reqDTO.getMajorCode() + "】故障管理流程",
+                        faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), "DM_013", workerGroupCode, "故障维修",
+                        "DMFM0001", TokenUtil.getCurrentPersonId(), content);
                 Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "01");
                 String zcStepOrg = dictionaries.getItemEname();
                 if (!faultOrder1.getWorkClass().contains(zcStepOrg)) {
@@ -318,7 +339,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String faultWorkNo = reqDTO.getFaultWorkNo();
         String currentUser = TokenUtil.getCurrentPersonId();
         String faultNo = reqDTO.getFaultNo();
-        FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo);
+        FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo, faultWorkNo);
         String majorCode = faultInfoDO.getMajorCode();
         String majorName = faultInfoDO.getMajorName();
         String stationCode = faultInfoDO.getExt1();
@@ -512,7 +533,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isEmpty(faultNo)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
-        FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo);
+        FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo, null);
         return faultQueryMapper.queryDeptCode(faultInfoDO.getLineCode(), faultInfoDO.getMajorCode(), "20");
     }
 
@@ -538,7 +559,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultOrderDO.setRecReviseTime(current);
             faultReportMapper.updateFaultOrder(faultOrderDO);
             // 更新info表
-            FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(a.getFaultNo());
+            FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo, faultWorkNo);
             faultInfoDO.setRecRevisor(currentUser);
             faultInfoDO.setRecReviseTime(current);
             faultReportMapper.updateFaultInfo(faultInfoDO);
@@ -550,7 +571,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private void finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current) {
         list.forEach(a -> {
             String faultWorkNo = a.getFaultWorkNo();
-            FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(a.getFaultNo());
+            FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(a.getFaultNo(), a.getFaultWorkNo());
             FaultOrderDO dmfm02 = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
             String stationCode = dmfm02.getExt1();
             String majorName = faultInfo.getMajorName();
@@ -657,7 +678,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultOrderDO.setOrderStatus(OrderStatus.GUAN_BI.getCode());
             faultOrderDO.setCloseTime(DateUtil.getCurrentTime());
             faultReportMapper.updateFaultOrder(faultOrderDO);
-            FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(a.getFaultNo());
+            FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(a.getFaultNo(), a.getFaultWorkNo());
             faultInfoDO.setFaultNo(a.getFaultNo());
             faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
             faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
@@ -682,7 +703,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultOrderDO.setRecReviseTime(current);
             faultOrderDO.setRecRevisor(currentUser);
             faultReportMapper.updateFaultOrder(faultOrderDO);
-            FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo);
+            FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo, faultWorkNo);
             faultInfoDO.setFaultNo(faultNo);
             faultInfoDO.setRecReviseTime(current);
             faultInfoDO.setRecRevisor(currentUser);

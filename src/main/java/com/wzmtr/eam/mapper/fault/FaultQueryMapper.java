@@ -30,7 +30,7 @@ public interface FaultQueryMapper {
 
     List<FaultDetailResDTO> list(@Param("req") FaultQueryDetailReqDTO req);
 
-    FaultInfoDO queryOneFaultInfo(String faultNo);
+    FaultInfoDO queryOneFaultInfo(String faultNo, String faultWorkNo);
 
     FaultOrderDO queryOneFaultOrder(String faultNo, String faultWorkNo);
 

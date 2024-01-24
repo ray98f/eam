@@ -204,4 +204,20 @@
         select NAMES from SYS_OFFICE where (ID=#{id} or AREA_ID=#{id})
     </select>
 
+    <select id="getParentCodeByCode" resultType="java.lang.String">
+        SELECT o2.AREA_ID
+        FROM SYS_OFFICE o1
+        left join SYS_OFFICE o2 on o1.PARENT_ID=o2.ID and o2.DEL_FLAG='0'
+        WHERE o1.AREA_ID=#{orgCode} AND o1.DEL_FLAG='0'
+    </select>
+
+    <select id="getChildCodeByCodeAndMajorLineType" resultType="java.lang.String">
+        SELECT tw.AREA_ID
+        FROM SYS_OFFICE tw,SYS_ORG_MAJOR d5,SYS_ORG_LINE d6,SYS_ORG_TYPE d7
+        WHERE d5.ORG_CODE=d6.ORG_CODE
+        AND d6.ORG_CODE=d7.ORG_CODE
+        AND d7.ORG_CODE=tw.AREA_ID
+        AND d5.MAJOR_CODE=#{majorCode} AND d6.LINE_CODE=#{lineCode} AND d7.ORG_TYPE=#{orgType}
+        AND (select o.AREA_ID from SYS_OFFICE o where o.ID=tw.PARENT_ID and o.DEL_FLAG='0')=#{orgCode}
+    </select>
 </mapper>

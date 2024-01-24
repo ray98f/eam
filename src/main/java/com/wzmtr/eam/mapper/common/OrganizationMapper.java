@@ -61,4 +61,21 @@ public interface OrganizationMapper {
 
     String getNamesById(@Param("id") String id);
 
+    /**
+     * 获取父级组织机构编号
+     * @param orgCode 组织机构编号
+     * @return 父级组织机构编号
+     */
+    String getParentCodeByCode(String orgCode);
+
+    /**
+     * 获取子级组织机构编号
+     * @param orgCode 组织机构编号
+     * @param majorCode 专业编号
+     * @param lineCode 线路编号
+     * @param orgType 组织机构类型编号
+     * @return 子级组织机构编号
+     */
+    String getChildCodeByCodeAndMajorLineType(String orgCode, String majorCode, String lineCode, String orgType);
+
 }
