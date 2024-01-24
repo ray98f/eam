@@ -17,10 +17,10 @@ import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.VideoApplyStatus;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.video.CarVideoMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
+import com.wzmtr.eam.mapper.video.CarVideoMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.video.CarVideoService;
 import com.wzmtr.eam.utils.*;
@@ -31,7 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Author: Li.Wang

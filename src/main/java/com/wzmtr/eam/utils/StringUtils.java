@@ -7,7 +7,6 @@ import org.springframework.util.AntPathMatcher;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -391,28 +390,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static <T> T cast(Object obj)
     {
         return (T) obj;
-    }
-
-    public static String getRandomString(Integer num) {
-        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < num; i++) {
-            int number = random.nextInt(base.length());
-            sb.append(base.charAt(number));
-        }
-        return sb.toString();
-    }
-
-    public static String getRandomNum(Integer num) {
-        String base = "0123456789";
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < num; i++) {
-            int number = random.nextInt(base.length());
-            sb.append(base.charAt(number));
-        }
-        return sb.toString();
     }
 
     /**

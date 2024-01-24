@@ -4,9 +4,7 @@ import com.wzmtr.eam.dto.req.common.MenuAddReqDTO;
 import com.wzmtr.eam.dto.req.common.MenuModifyReqDTO;
 import com.wzmtr.eam.dto.res.common.MenuDetailResDTO;
 import com.wzmtr.eam.dto.res.common.MenuListResDTO;
-import com.wzmtr.eam.dto.res.common.SuperMenuResDTO;
 import com.wzmtr.eam.entity.BaseIdEntity;
-import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.service.common.MenuService;
 import io.swagger.annotations.Api;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @CrossOrigin

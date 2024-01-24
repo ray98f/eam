@@ -1,13 +1,11 @@
 package com.wzmtr.eam.impl.secure;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bizobject.export.SecureHazardExportBO;
-import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.SecureHazardDO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardDetailReqDTO;
@@ -27,11 +25,12 @@ import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**

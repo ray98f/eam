@@ -2,9 +2,9 @@ package com.wzmtr.eam.impl.dict;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.mapper.dict.DictionariesTypeMapper;
 import com.wzmtr.eam.entity.DictionariesType;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.mapper.dict.DictionariesTypeMapper;
 import com.wzmtr.eam.service.dict.IDictionariesTypeService;
 import com.wzmtr.eam.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,5 @@
 package com.wzmtr.eam.dto.req.fault;
 
-import com.wzmtr.eam.enums.SubmitType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
-import com.wzmtr.eam.dto.res.basic.*;
+import com.wzmtr.eam.dto.res.basic.FaultResDTO;
+import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
+import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelOrgMajorResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -24,7 +26,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author frp

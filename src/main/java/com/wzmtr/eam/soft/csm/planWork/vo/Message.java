@@ -3,7 +3,6 @@ package com.wzmtr.eam.soft.csm.planWork.vo;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * description:

@@ -3,7 +3,6 @@ package com.wzmtr.eam.dto.req.fault;
 import com.wzmtr.eam.bizobject.FaultTrackBO;
 import com.wzmtr.eam.bizobject.FaultTrackWorkBO;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.dataobject.FaultTrackWorkDO;
 import com.wzmtr.eam.utils.BeanUtils;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;

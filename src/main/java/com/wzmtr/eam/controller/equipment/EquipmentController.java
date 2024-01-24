@@ -1,10 +1,9 @@
 package com.wzmtr.eam.controller.equipment;
 
-import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
-import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;

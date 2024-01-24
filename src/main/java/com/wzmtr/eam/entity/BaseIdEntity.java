@@ -3,7 +3,6 @@ package com.wzmtr.eam.entity;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * @author frp

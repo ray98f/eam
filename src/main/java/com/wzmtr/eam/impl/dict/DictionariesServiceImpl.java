@@ -2,10 +2,10 @@ package com.wzmtr.eam.impl.dict;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
+import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

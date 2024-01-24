@@ -2,9 +2,9 @@ package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
+import com.wzmtr.eam.utils.BeanUtils;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.BeanUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

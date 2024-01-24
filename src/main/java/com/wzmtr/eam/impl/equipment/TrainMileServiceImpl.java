@@ -2,18 +2,23 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
+import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
+import com.wzmtr.eam.dto.res.equipment.excel.ExcelTrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelTrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelTrainMileageResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.TrainMileMapper;
 import com.wzmtr.eam.service.equipment.TrainMileService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +29,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author frp
@@ -144,6 +152,85 @@ public class TrainMileServiceImpl implements TrainMileService {
                 list.add(res);
             }
             EasyExcelUtils.export(response, "车辆走行里程历史信息", list);
+        }
+    }
+
+    @Override
+    public Page<TrainMileDailyResDTO> pageTrainDailyMile(String day, String equipCode, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return trainMileMapper.pageTrainDailyMile(pageReqDTO.of(), day, equipCode);
+    }
+
+    @Override
+    public TrainMileDailyResDTO getTrainDailyMileDetail(String id) {
+        return trainMileMapper.getTrainDailyMileDetail(id);
+    }
+
+    @Override
+    public void addTrainDailyMile(TrainMileDailyReqDTO trainMileDailyReqDTO) {
+        List<TrainMileDailyResDTO> list = trainMileMapper.listTrainDailyMile(trainMileDailyReqDTO.getDay(), trainMileDailyReqDTO.getEquipCode());
+        if (StringUtils.isNotEmpty(list)) {
+            throw new CommonException(ErrorCode.TRAIN_MILE_DAILY_EXIST, trainMileDailyReqDTO.getEquipName());
+        }
+        trainMileDailyReqDTO.setRecId(TokenUtil.getUuId());
+        trainMileDailyReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        trainMileDailyReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        // todo 获取车辆PHM系统数据
+
+        trainMileMapper.addTrainDailyMile(trainMileDailyReqDTO);
+        // 修改设备表相关数据
+        TrainMileReqDTO trainMileReqDTO = new TrainMileReqDTO();
+        BeanUtils.copyProperties(trainMileDailyReqDTO, trainMileReqDTO);
+        trainMileReqDTO.setRecId(null);
+        trainMileMapper.updateTrainMile(trainMileReqDTO);
+    }
+
+    @Override
+    public void modifyTrainDailyMile(TrainMileDailyReqDTO trainMileDailyReqDTO) {
+        trainMileDailyReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        trainMileDailyReqDTO.setRecReviseTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        // todo 获取车辆PHM系统数据
+
+        trainMileMapper.modifyTrainDailyMile(trainMileDailyReqDTO);
+        // 修改设备表相关数据
+        TrainMileReqDTO trainMileReqDTO = new TrainMileReqDTO();
+        BeanUtils.copyProperties(trainMileDailyReqDTO, trainMileReqDTO);
+        trainMileReqDTO.setRecId(null);
+        trainMileMapper.updateTrainMile(trainMileReqDTO);
+    }
+
+    @Override
+    public void deleteTrainDailyMile(BaseIdsEntity baseIdsEntity) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
+            trainMileMapper.deleteTrainDailyMile(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            for (String id : baseIdsEntity.getIds()) {
+                TrainMileDailyResDTO trainCodeRes = trainMileMapper.getTrainDailyMileDetail(id);
+                if (!Objects.isNull(trainCodeRes)) {
+                    List<TrainMileDailyResDTO> list = trainMileMapper.listTrainDailyMile(null, trainCodeRes.getEquipCode());
+                    if (StringUtils.isNotEmpty(list)) {
+                        TrainMileReqDTO trainMileReqDTO = new TrainMileReqDTO();
+                        BeanUtils.copyProperties(list.get(0), trainMileReqDTO);
+                        trainMileReqDTO.setRecId(null);
+                        trainMileMapper.updateTrainMile(trainMileReqDTO);
+                    }
+                }
+            }
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
+        }
+    }
+
+    @Override
+    public void exportTrainDailyMile(String day, String equipCode, HttpServletResponse response) throws IOException {
+        List<TrainMileDailyResDTO> trainMileageResDTOList = trainMileMapper.listTrainDailyMile(day, equipCode);
+        if (trainMileageResDTOList != null && !trainMileageResDTOList.isEmpty()) {
+            List<ExcelTrainMileDailyResDTO> list = new ArrayList<>();
+            for (TrainMileDailyResDTO resDTO : trainMileageResDTOList) {
+                ExcelTrainMileDailyResDTO res = new ExcelTrainMileDailyResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
+            }
+            EasyExcelUtils.export(response, "每日列车里程及能耗", list);
         }
     }
 

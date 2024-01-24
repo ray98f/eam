@@ -2,7 +2,6 @@ package com.wzmtr.eam.mapper.fault;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dataobject.FaultTrackDO;
 import com.wzmtr.eam.dataobject.FaultTrackWorkDO;
 import com.wzmtr.eam.dto.req.fault.TrackCloseReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackExportReqDTO;

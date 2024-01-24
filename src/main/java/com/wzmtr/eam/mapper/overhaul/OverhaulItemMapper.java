@@ -3,7 +3,6 @@ package com.wzmtr.eam.mapper.overhaul;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulItemReqDTO;
-import com.wzmtr.eam.dto.req.overhaul.OverhaulItemTroubleshootReqDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import org.apache.ibatis.annotations.Mapper;

@@ -1,10 +1,10 @@
 package com.wzmtr.eam.mapper.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.res.basic.OrgParentResDTO;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.entity.CompanyStructureTree;
 import com.wzmtr.eam.entity.SysOffice;
-import com.wzmtr.eam.dto.res.basic.OrgParentResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -60,5 +60,22 @@ public interface OrganizationMapper {
     SysOffice getByNames(@Param("names") String names);
 
     String getNamesById(@Param("id") String id);
+
+    /**
+     * 获取父级组织机构编号
+     * @param orgCode 组织机构编号
+     * @return 父级组织机构编号
+     */
+    String getParentCodeByCode(String orgCode);
+
+    /**
+     * 获取子级组织机构编号
+     * @param orgCode 组织机构编号
+     * @param majorCode 专业编号
+     * @param lineCode 线路编号
+     * @param orgType 组织机构类型编号
+     * @return 子级组织机构编号
+     */
+    String getChildCodeByCodeAndMajorLineType(String orgCode, String majorCode, String lineCode, String orgType);
 
 }

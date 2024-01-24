@@ -1,7 +1,6 @@
 package com.wzmtr.eam.mapper.fault;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;

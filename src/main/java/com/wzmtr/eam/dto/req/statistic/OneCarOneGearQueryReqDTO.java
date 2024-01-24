@@ -5,9 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apache.cxf.common.injection.NoJSR250Annotations;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * Author: Li.Wang

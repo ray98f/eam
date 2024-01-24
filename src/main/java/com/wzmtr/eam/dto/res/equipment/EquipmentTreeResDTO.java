@@ -1,7 +1,7 @@
 package com.wzmtr.eam.dto.res.equipment;
 
-import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

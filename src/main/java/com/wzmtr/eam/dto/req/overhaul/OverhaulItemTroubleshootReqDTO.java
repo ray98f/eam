@@ -2,7 +2,6 @@ package com.wzmtr.eam.dto.req.overhaul;
 
 import com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
