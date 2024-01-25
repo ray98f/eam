@@ -20,7 +20,7 @@ public interface FaultReportMapper {
      */
     Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName,
                                  String faultModuleId, String majorCode, String systemCode, String equipTypeCode,
-                                 String fillinTimeStart, String fillinTimeEnd, String positionCode, String orderStatus);
+                                 String fillinTimeStart, String fillinTimeEnd, String positionCode, String orderStatus,String faultWorkNo,String lineCode);
 
     void addToFaultInfo(FaultInfoDO faultInfo);
 

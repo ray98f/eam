@@ -587,6 +587,12 @@
         <if test="faultNo!=null and faultNo!=''">
            and d.FAULT_NO=#{faultNo}
         </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            and df.FAULT_WORK_NO=#{faultWorkNo}
+        </if>
+        <if test="lineCode!=null and lineCode!=''">
+            and d.LINE_CODE=#{lineCode}
+        </if>
         <if test="objectCode!=null and objectCode!=''">
            and d.OBJECT_CODE=#{objectCode}
         </if>

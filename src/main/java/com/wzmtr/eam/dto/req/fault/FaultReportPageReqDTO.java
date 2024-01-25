@@ -94,4 +94,5 @@ public class FaultReportPageReqDTO extends PageReqDTO {
      * 外部调用标识
      */
     private String tenant;
+    private String faultWorkNo;
 }
