@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Author: Li.Wang
@@ -108,10 +107,16 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     public Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(),
-                reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
+        Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(),
+                reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                 reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                 reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),reqDTO.getFaultWorkNo(), reqDTO.getLineCode());
+        List<FaultReportResDTO> records = list.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
+            return new Page<>();
+        }
+        buildRes(records);
+        return list;
     }
 
     @Override
@@ -119,13 +124,10 @@ public class FaultReportServiceImpl implements FaultReportService {
         String csm = "NCSM";
         if (reqDTO.getTenant().contains(csm)) {
             PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-            // and d.MAJOR_CODE NOT IN('07','06');
-            long startTime = System.nanoTime();
             Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(),
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
-                    reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),reqDTO.getFaultWorkNo(), reqDTO.getLineCode());
-            log.info("已提报故障查询耗时{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
+                    reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus());
             List<FaultReportResDTO> records = list.getRecords();
             if (CollectionUtil.isEmpty(records)) {
                 return new Page<>();
@@ -140,16 +142,14 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     public Page<FaultReportResDTO> carReportList(FaultReportPageReqDTO reqDTO) {
         PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        // and d.MAJOR_CODE  IN('07','06');
-        long startTime = System.nanoTime();
-        Page<FaultReportResDTO> list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(), reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(), reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode());
-        log.info("车辆故障查询耗时-------{}s", TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime));
+        Page<FaultReportResDTO> list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(),
+                reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
+                reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
+                reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus());
         List<FaultReportResDTO> records = list.getRecords();
         if (CollectionUtil.isEmpty(records)) {
             return new Page<>();
         }
-        // (SELECT distinct db.NODE_NAME from SYS_REGION db where db.NODE_CODE=d.POSITION_CODE) as "positionName",
-        //         (select d3.NODE_NAME from SYS_REGION d3 where d3.NODE_CODE=d.EXT1) as "stationCode",
         buildRes(records);
         return list;
     }

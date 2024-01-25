@@ -48,5 +48,8 @@ public interface FaultReportMapper {
 
     void cancelInfo(FaultCancelReqDTO reqDTO);
 
-    Page<FaultReportResDTO> carFaultReportList(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId, String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart, String fillinTimeEnd, String positionCode);
+    Page<FaultReportResDTO> carFaultReportList(Page<Object> of, String faultNo, String objectCode, String objectName,
+                                               String faultModuleId, String majorCode, String systemCode,
+                                               String equipTypeCode, String fillinTimeStart, String fillinTimeEnd,
+                                               String positionCode, String orderStatus);
 }
