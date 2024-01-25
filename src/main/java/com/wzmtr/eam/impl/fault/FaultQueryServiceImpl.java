@@ -457,14 +457,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     public void sendContractFault(FaultOrderDO dmfm02) {
-        // /* 557 */
         // Map<Object, Object> map = new HashMap<>();
-        // /* 558 */
         // map.put("faultNo", dmfm02.getFaultNo());
-        // /* 559 */
         // List<Map> listFm01 = this.dao.query("DMFM01.query", map, 0, -999999);
         //
-        // /* 560 */
         // if (listFm01 != null && listFm01.size() > 0) {
         //     FaultOrderDO dmfm01 = new FaultOrderDO();
         //     // dmfm01.fromMap(listFm01.get(0));
