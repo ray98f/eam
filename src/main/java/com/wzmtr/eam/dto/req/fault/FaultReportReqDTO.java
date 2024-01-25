@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/15 17:18
@@ -141,7 +143,9 @@ public class FaultReportReqDTO {
     public FaultInfoDO toFaultInfoInsertDO(FaultReportReqDTO req) {
         FaultInfoDO convert = BeanUtils.convert(req, FaultInfoDO.class);
         // String Toocc = (String)((Map)faultinfo.get(0)).get("ext4");
-        convert.setExt4(req.getMaintenance().toString());
+        if (!Objects.isNull(req.getMaintenance())) {
+            convert.setExt4(req.getMaintenance().toString());
+        }
         convert.setTrainTag(req.getTraintag());
         if (StringUtils.isEmpty(req.getFillinDeptCode())) {
             convert.setFillinDeptCode(" ");

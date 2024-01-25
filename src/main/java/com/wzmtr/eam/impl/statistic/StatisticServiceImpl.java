@@ -32,6 +32,7 @@ import com.wzmtr.eam.service.statistic.StatisticService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,7 +79,6 @@ public class StatisticServiceImpl implements StatisticService {
     private FaultExportComponent exportComponent;
     @Autowired
     private DictionariesMapper dictionariesMapper;
-    private static final List<String> IGNORE = Arrays.asList("NOYF", "SC", "moduleName", "contractZB", "ZB");
 
     @Override
     public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
@@ -217,19 +217,7 @@ public class StatisticServiceImpl implements StatisticService {
             monthData.add(a.getFillinTime());
         });
         for (String title : titleData) {
-            List<Integer> endData = new ArrayList<>();
-            for (String date1 : monthData) {
-                int flag = 0;
-                for (CarFaultQueryResDTO res : query) {
-                    if (title.equals(res.getObjectName()) && date1.equals(res.getFillinTime())) {
-                        endData.add(res.getFaultCount());
-                        flag = 1;
-                    }
-                }
-                if (flag == 0) {
-                    endData.add(0);
-                }
-            }
+            List<Integer> endData = getEndDataList(query, title, monthData);
             tableData1.put(title, endData);
         }
         List<Map<String, Object>> tableData = new ArrayList<>();
@@ -250,6 +238,31 @@ public class StatisticServiceImpl implements StatisticService {
         carFaultQueryResDTO.setMonthData(monthData);
         carFaultQueryResDTO.setTitleData(titleData);
         return carFaultQueryResDTO;
+    }
+
+    /**
+     * 获取结束时间列表
+     * @param query 列表
+     * @param title 标题
+     * @param monthData 月份数据
+     * @return 结束时间列表
+     */
+    @NotNull
+    private static List<Integer> getEndDataList(List<CarFaultQueryResDTO> query, String title, TreeSet<String> monthData) {
+        List<Integer> endData = new ArrayList<>();
+        for (String date1 : monthData) {
+            int flag = 0;
+            for (CarFaultQueryResDTO res : query) {
+                if (title.equals(res.getObjectName()) && date1.equals(res.getFillinTime())) {
+                    endData.add(res.getFaultCount());
+                    flag = 1;
+                }
+            }
+            if (flag == 0) {
+                endData.add(0);
+            }
+        }
+        return endData;
     }
 
     @Override

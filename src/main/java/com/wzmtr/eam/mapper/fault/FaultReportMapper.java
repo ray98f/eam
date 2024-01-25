@@ -18,7 +18,9 @@ public interface FaultReportMapper {
     /**
      * queryNoCar 已提报故障不包含车辆专业
      */
-    Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId, String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart, String fillinTimeEnd, String positionCode);
+    Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName,
+                                 String faultModuleId, String majorCode, String systemCode, String equipTypeCode,
+                                 String fillinTimeStart, String fillinTimeEnd, String positionCode, String orderStatus);
 
     void addToFaultInfo(FaultInfoDO faultInfo);
 
