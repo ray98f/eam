@@ -458,9 +458,36 @@
         <if test="day!=null and day!=''">
             AND "DAY"=TO_DATE(#{day}, 'yyyy-mm-dd hh24:mi:ss')
         </if>
-        <if test="equipCode!=nukk and equipCode!=''">
+        <if test="equipCode!=null and equipCode!=''">
             AND EQUIP_CODE=#{equipCode}
         </if>
         order by "DAY" desc
     </select>
+
+    <insert id="importTrainDailyMile">
+        insert ALL
+        <foreach collection="list" index="index" item="part" separator=" ">
+            INTO T_TARIN_MILE (
+            REC_ID,
+            EQUIP_CODE,
+            EQUIP_NAME,
+            "DAY",
+            DAILY_WORK_MILE,
+            TOTAL_WORK_MILE,
+            REMARK,
+            REC_CREATOR,
+            REC_CREATE_TIME)
+            VALUES (
+            #{recId,jdbcType=VARCHAR},
+            #{equipCode,jdbcType=VARCHAR},
+            #{equipName,jdbcType=VARCHAR},
+            #{day,jdbcType=VARCHAR},
+            #{dailyWorkMile,jdbcType=DECIMAL},
+            #{totalWorkMile,jdbcType=DECIMAL},
+            #{remark,jdbcType=VARCHAR},
+            #{recCreator,jdbcType=VARCHAR},
+            #{recCreateTime,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 </mapper>

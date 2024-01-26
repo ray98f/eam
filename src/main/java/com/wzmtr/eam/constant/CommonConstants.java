@@ -90,4 +90,9 @@ public class CommonConstants {
     public static final String LINE_CODE_ONE = "01";
     public static final String LINE_CODE_TWO = "02";
 
+    /**
+     * 设备分类编号
+     */
+    public static final String EQUIP_CATE_ENGINEER_CAR_CODE = "17";
+
 }

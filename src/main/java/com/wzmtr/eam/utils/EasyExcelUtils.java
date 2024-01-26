@@ -110,10 +110,10 @@ public class EasyExcelUtils {
 
     /**
      * 文件导入数据读取
-     * @param file
-     * @param head
-     * @return
-     * @throws IOException
+     * @param file 文件
+     * @param head 头部
+     * @return 列表
+     * @throws IOException 读写流异常
      */
     public static <T> List<T> read(MultipartFile file, Class<T> head) throws IOException {
         return EasyExcel.read(file.getInputStream(), head, null).doReadAllSync();

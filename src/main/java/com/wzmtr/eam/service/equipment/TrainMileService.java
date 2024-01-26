@@ -8,10 +8,10 @@ import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 public interface TrainMileService {
 
@@ -71,5 +71,11 @@ public interface TrainMileService {
      * @throws IOException 流异常
      */
     void exportTrainDailyMile(String day, String equipCode, HttpServletResponse response) throws IOException;
+
+    /**
+     * 导入每日列车里程及能耗列表
+     * @param file 文件
+     */
+    void importTrainDailyMile(MultipartFile file);
 
 }

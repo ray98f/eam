@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
+import com.wzmtr.eam.dto.req.equipment.excel.ExcelTrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
@@ -15,6 +16,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.TrainMileMapper;
 import com.wzmtr.eam.service.equipment.TrainMileService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -24,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -43,6 +46,9 @@ public class TrainMileServiceImpl implements TrainMileService {
 
     @Autowired
     private TrainMileMapper trainMileMapper;
+
+    @Autowired
+    private EquipmentMapper equipmentMapper;
 
     @Override
     public Page<TrainMileResDTO> pageTrainMile(String equipCode, String equipName, String originLineNo, PageReqDTO pageReqDTO) {
@@ -231,6 +237,32 @@ public class TrainMileServiceImpl implements TrainMileService {
                 list.add(res);
             }
             EasyExcelUtils.export(response, "每日列车里程及能耗", list);
+        }
+    }
+
+    /**
+     * 导入每日列车里程及能耗列表
+     * @param file 文件
+     */
+    @Override
+    public void importTrainDailyMile(MultipartFile file) {
+        try {
+            List<ExcelTrainMileDailyReqDTO> list = EasyExcelUtils.read(file, ExcelTrainMileDailyReqDTO.class);
+            List<TrainMileDailyReqDTO> temp = new ArrayList<>();
+            for (ExcelTrainMileDailyReqDTO reqDTO : list) {
+                TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setRecId(TokenUtil.getUuId());
+                req.setEquipCode(equipmentMapper.getEquipCodeByName(req.getEquipName()));
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                temp.add(req);
+            }
+            if (!temp.isEmpty()) {
+                trainMileMapper.importTrainDailyMile(temp);
+            }
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.IMPORT_ERROR);
         }
     }
 

@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -163,6 +164,18 @@ public class TrainMileController {
                                      @RequestParam(required = false) @ApiParam("设备编号") String equipCode,
                                      HttpServletResponse response) throws IOException {
         trainMileService.exportTrainDailyMile(day, equipCode, response);
+    }
+
+    /**
+     * 导入每日列车里程及能耗列表
+     * @param file 导入文件
+     * @return 导入成功状态
+     */
+    @GetMapping("/mile/daily/import")
+    @ApiOperation(value = "导入每日列车里程及能耗列表")
+    public DataResponse<T> importTrainDailyMile(@RequestParam MultipartFile file) {
+        trainMileService.importTrainDailyMile(file);
+        return DataResponse.success();
     }
 
 }

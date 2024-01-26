@@ -19,6 +19,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -76,5 +77,22 @@ public class FaultController {
                             @RequestParam(required = false) @ApiParam("设备分类编号") String equipmentCategoryCode,
                             HttpServletResponse response) throws IOException {
         faultService.exportFault(code, type, lineCode, equipmentCategoryCode, response);
+    }
+
+    /**
+     * 故障查询获取码值列表
+     * @param code 故障码
+     * @param type 故障类型
+     * @param lineCode 线路编号
+     * @param equipmentCategoryCode 设备类别编号
+     * @return 码值列表
+     */
+    @GetMapping("/query/list")
+    @ApiOperation(value = "故障查询获取码值列表")
+    public DataResponse<List<FaultResDTO>> listQueryFault(@RequestParam(required = false) @ApiParam("码值编号") String code,
+                                                          @RequestParam(required = false) @ApiParam("码值类型") Integer type,
+                                                          @RequestParam(required = false) @ApiParam("线路") String lineCode,
+                                                          @RequestParam(required = false) @ApiParam("对象编码") String equipmentCategoryCode) {
+        return DataResponse.of(faultService.listQueryFault(code, type, lineCode, equipmentCategoryCode));
     }
 }

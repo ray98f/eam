@@ -8,6 +8,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public interface FaultService {
 
@@ -22,4 +23,14 @@ public interface FaultService {
     void deleteFault(BaseIdsEntity baseIdsEntity);
 
     void exportFault(String code, Integer type, String lineCode, String equipmentCategoryCode, HttpServletResponse response) throws IOException;
+
+    /**
+     * 故障查询获取码值列表
+     * @param code 故障码
+     * @param type 故障类型
+     * @param lineCode 线路编号
+     * @param equipmentCategoryCode 设备类别编号
+     * @return 码值列表
+     */
+    List<FaultResDTO> listQueryFault(String code, Integer type, String lineCode, String equipmentCategoryCode);
 }

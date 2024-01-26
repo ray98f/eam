@@ -601,13 +601,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             // 根据处理结果类型进行消息推送
             switch (reqDTO.getFaultProcessResult()) {
                 case "02":
-                    unProcessSend(faultWorkNo, reqDTO, cos, order);
+                    observeSend(faultWorkNo, reqDTO, cos, order);
                     break;
                 case "03":
                     untreatedSend(faultWorkNo, reqDTO, cos, order);
                     break;
                 case "04":
-                    observeSend(faultWorkNo, reqDTO, cos, order);
+                    unProcessSend(faultWorkNo, reqDTO, cos, order);
                     break;
                 default:
                     processedSend(faultWorkNo, reqDTO, cos, order);
@@ -653,13 +653,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 default:
                     break;
             }
-        } else if ("17".equals(reqDTO.getMajorCode())) {
+        } else if (CommonConstants.EQUIP_CATE_ENGINEER_CAR_CODE.equals(reqDTO.getMajorCode())) {
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.matchControl", "07");
             String zttStepOrg = dictionaries.getItemEname();
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + "】故障管理流程", order.getRecId(),
                     faultWorkNo, "DM_045", zttStepOrg, "故障完工确认", "DMFM0001",
                     userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content);
-        } else if (StringUtils.isNotEmpty(reqDTO.getIsToSubmit()) && "1".equals(reqDTO.getIsToSubmit())) {
+        } else if (StringUtils.isNotEmpty(reqDTO.getIsToSubmit()) && CommonConstants.ONE_STRING.equals(reqDTO.getIsToSubmit())) {
             if (StringUtils.isNotEmpty(reqDTO.getUserIds())) {
                 overTodoService.insertTodoWithUserList(reqDTO.getUserIds(), "【" + reqDTO.getMajorName() + "】故障管理流程",
                         queryFaultWorkRecId(faultWorkNo), faultWorkNo, "故障验收", "DMFM0001", userId, content);
@@ -679,13 +679,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     /**
-     * 处理结果（无法处理）消息推送
+     * 处理结果（跟踪观察）消息推送
      * @param faultWorkNo 工单编号
      * @param reqDTO 故障完工返回类
      * @param cos cos
      * @param order 工单信息
      */
-    public void unProcessSend(String faultWorkNo, FaultFinishWorkReqDTO reqDTO, List<String> cos, FaultOrderResDTO order) {
+    public void observeSend(String faultWorkNo, FaultFinishWorkReqDTO reqDTO, List<String> cos, FaultOrderResDTO order) {
         // 基础参数
         String content;
         String userId = TokenUtil.getCurrentPersonId();
@@ -723,7 +723,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 default:
                     break;
             }
-        } else if ("17".equals(reqDTO.getMajorCode())) {
+        } else if (CommonConstants.EQUIP_CATE_ENGINEER_CAR_CODE.equals(reqDTO.getMajorCode())) {
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.matchControl", "07");
             String zttStepOrg = dictionaries.getItemEname();
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + "】故障管理流程", bussId, faultWorkNo,
@@ -732,7 +732,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + "】故障管理流程", order.getRecId(), faultWorkNo,
                     "DM_045", zttStepOrg, "故障完工确认", "DMFM0001", userId,
                     reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content);
-        } else if (StringUtils.isNotEmpty(reqDTO.getIsToSubmit()) && "1".equals(reqDTO.getIsToSubmit())) {
+        } else if (StringUtils.isNotEmpty(reqDTO.getIsToSubmit()) && CommonConstants.ONE_STRING.equals(reqDTO.getIsToSubmit())) {
             if (StringUtils.isNotEmpty(reqDTO.getUserIds())) {
                 overTodoService.insertTodoWithUserList(reqDTO.getUserIds(), "【" + reqDTO.getMajorName() + "】故障管理流程",
                         queryFaultWorkRecId(faultWorkNo), faultWorkNo, "故障验收", "DMFM0001", userId, content);
@@ -795,7 +795,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 default:
                     break;
             }
-        } else if ("17".equals(reqDTO.getMajorCode())) {
+        } else if (CommonConstants.EQUIP_CATE_ENGINEER_CAR_CODE.equals(reqDTO.getMajorCode())) {
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.matchControl", "07");
             String zttStepOrg = dictionaries.getItemEname();
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + "】故障管理流程", order.getRecId(),
@@ -812,13 +812,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     /**
-     * 处理结果（跟踪观察）消息推送
+     * 处理结果（无法处理）消息推送
      * @param faultWorkNo 工单编号
      * @param reqDTO 故障完工返回类
      * @param cos cos
      * @param order 工单信息
      */
-    public void observeSend(String faultWorkNo, FaultFinishWorkReqDTO reqDTO, List<String> cos, FaultOrderResDTO order) {
+    public void unProcessSend(String faultWorkNo, FaultFinishWorkReqDTO reqDTO, List<String> cos, FaultOrderResDTO order) {
         // 基础参数
         String content;
         String userId = TokenUtil.getCurrentPersonId();
@@ -862,7 +862,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 default:
                     break;
             }
-        } else if ("17".equals(reqDTO.getMajorCode())) {
+        } else if (CommonConstants.EQUIP_CATE_ENGINEER_CAR_CODE.equals(reqDTO.getMajorCode())) {
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.matchControl", "07");
             String zttStepOrg = dictionaries.getItemEname();
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + "】故障管理流程", order.getRecId(),
