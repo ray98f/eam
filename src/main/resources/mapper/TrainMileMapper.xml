@@ -466,7 +466,7 @@
 
     <insert id="importTrainDailyMile">
         insert ALL
-        <foreach collection="list" index="index" item="part" separator=" ">
+        <foreach collection="list" index="index" item="mile" separator=" ">
             INTO T_TARIN_MILE (
             REC_ID,
             EQUIP_CODE,
@@ -478,15 +478,15 @@
             REC_CREATOR,
             REC_CREATE_TIME)
             VALUES (
-            #{recId,jdbcType=VARCHAR},
-            #{equipCode,jdbcType=VARCHAR},
-            #{equipName,jdbcType=VARCHAR},
-            #{day,jdbcType=VARCHAR},
-            #{dailyWorkMile,jdbcType=DECIMAL},
-            #{totalWorkMile,jdbcType=DECIMAL},
-            #{remark,jdbcType=VARCHAR},
-            #{recCreator,jdbcType=VARCHAR},
-            #{recCreateTime,jdbcType=VARCHAR})
+            #{mile.recId,jdbcType=VARCHAR},
+            #{mile.equipCode,jdbcType=VARCHAR},
+            #{mile.equipName,jdbcType=VARCHAR},
+            #{mile.day,jdbcType=VARCHAR},
+            #{mile.dailyWorkMile,jdbcType=DECIMAL},
+            #{mile.totalWorkMile,jdbcType=DECIMAL},
+            #{mile.remark,jdbcType=VARCHAR},
+            #{mile.recCreator,jdbcType=VARCHAR},
+            #{mile.recCreateTime,jdbcType=VARCHAR})
         </foreach>
         SELECT * FROM dual
     </insert>

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -204,7 +205,16 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
         System.out.println(current("yyyy-MM-dd HH:mm:ss"));
     }
 
-
+    /**
+     * 获取当前时间加减月份后的日期
+     * @return 日期
+     */
+    public static String getDayByMonth(int monthNum) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, monthNum);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(cal.getTime());
+    }
 
 
 }

@@ -18,6 +18,7 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.special.equip.SpecialEquipMapper;
 import com.wzmtr.eam.service.special.equip.SpecialEquipService;
+import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtil;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,15 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                 }
                 if (StringUtils.isNotEmpty(resDTO.getSecOrg())) {
                     resDTO.setSecOrgName(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()));
+                }
+                if (StringUtils.isNotEmpty(resDTO.getVerifyValidityDate())) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String day = DateUtil.getDayByMonth(3);
+                    try {
+                        resDTO.setIsWarn(sdf.parse(day).getTime() <= sdf.parse(resDTO.getVerifyValidityDate()).getTime() ? 0 : 1);
+                    } catch (ParseException e) {
+                        log.error("设备编码为" + resDTO.getEquipCode() + "的特种设备检测有效期时间异常");
+                    }
                 }
             }
         }

@@ -40,10 +40,15 @@ public class EquipmentController {
     @Resource
     private EquipmentService equipmentService;
 
+    /**
+     * 获取列车列表
+     * @param lineCode 线路编号
+     * @return 列车列表
+     */
     @GetMapping("/train")
     @ApiOperation(value = "获取列车号")
-    public DataResponse<List<RegionResDTO>> listTrainRegion() {
-        return DataResponse.of(equipmentService.listTrainRegion());
+    public DataResponse<List<RegionResDTO>> listTrainRegion(@RequestParam(required = false) String lineCode) {
+        return DataResponse.of(equipmentService.listTrainRegion(lineCode));
     }
 
     @GetMapping("/listTree")

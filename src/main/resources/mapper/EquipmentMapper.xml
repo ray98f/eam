@@ -6,6 +6,9 @@
         SELECT REC_ID, EQUIP_CODE as NODE_CODE, EQUIP_NAME as NODE_NAME
         FROM T_EQUIPMENT
         WHERE MAJOR_CODE='07' and APPROVAL_STATUS ='30'
+        <if test="lineCode!=null and lineCode!=''">
+            AND USE_LINE_NO=#{lineCode}
+        </if>
         order by EQUIP_CODE asc
     </select>
 

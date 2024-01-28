@@ -56,8 +56,8 @@ public class EquipmentServiceImpl implements EquipmentService {
     private EquipmentMapper equipmentMapper;
 
     @Override
-    public List<RegionResDTO> listTrainRegion() {
-        return equipmentMapper.listTrainRegion();
+    public List<RegionResDTO> listTrainRegion(String lineCode) {
+        return equipmentMapper.listTrainRegion(lineCode);
     }
 
     @Override
