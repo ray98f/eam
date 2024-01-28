@@ -584,9 +584,10 @@
         d.EXT5 AS "ext5",
         d.TRAIN_TAG AS "traintag"
         FROM T_FAULT_INFO d
+        left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultWorkNo!=null and faultWorkNo!=''">
-                AND d.FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
+                AND df.FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
             </if>
             <if test="faultNo!=null and faultNo!=''">
                 AND d.FAULT_NO LIKE '%' || #{faultNo} || '%'

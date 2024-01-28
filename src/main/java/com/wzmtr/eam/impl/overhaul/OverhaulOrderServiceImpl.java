@@ -493,7 +493,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     @Override
     public List<OverhaulItemResDTO> listOverhaulItemModel(String objectCode, String orderCode) {
-        return overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
+        List<OverhaulItemResDTO> list = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
+        return list.stream().distinct().collect(Collectors.toList());
     }
 
     /**
@@ -519,6 +520,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         List<OverhaulItemResDTO> modelList = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
         List<OverhaulItemTreeResDTO> models = new ArrayList<>();
         if (StringUtils.isNotEmpty(modelList)) {
+            modelList = modelList.stream().distinct().collect(Collectors.toList());
             for (OverhaulItemResDTO model : modelList) {
                 OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
                 org.springframework.beans.BeanUtils.copyProperties(model, res);

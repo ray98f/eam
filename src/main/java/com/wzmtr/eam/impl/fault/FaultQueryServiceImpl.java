@@ -348,8 +348,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             orderUpdate.setReportFinishUserId(TokenUtil.getCurrentPersonId());
             orderUpdate.setReportFinishUserName(TokenUtil.getCurrentPerson().getPersonName());
             orderUpdate.setReportFinishTime(dateTimeFormat.format(new Date()));
+            orderUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
+            orderUpdate.setRecReviseTime(DateUtil.getCurrentTime());
+            orderUpdate.setOrderStatus("50");
             faultReportMapper.updateFaultOrder(orderUpdate);
             FaultInfoDO infoUpdate = BeanUtils.convert(reqDTO, FaultInfoDO.class);
+            infoUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
+            infoUpdate.setRecReviseTime(DateUtil.getCurrentTime());
             faultReportMapper.updateFaultInfo(infoUpdate);
         }
         finishWorkSendMessage(reqDTO);
