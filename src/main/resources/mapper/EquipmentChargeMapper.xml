@@ -169,29 +169,12 @@
         a.EXT4	as "ext4",
         a.EXT5	as "ext5"
         FROM T_EQUIPMENT_CHARGE a , T_EQUIPMENT b
-        WHERE 1=1 AND a.DELETE_FLAG='0'
-        and a.EQUIP_CODE = b.EQUIP_CODE
-        <if test="equipCode!=null and equipCode!=''">
-            and a.EQUIP_CODE like '%' || #{equipCode} || '%'
-        </if>
-        <if test="equipName!=null and equipName!=''">
-            and b.EQUIP_NAME like '%' || #{equipName} || '%'
-        </if>
-        <if test="chargeDate!=null and chargeDate!=''">
-            and a.CHARGE_DATE=#{chargeDate}
-        </if>
-        <if test="position1Name!=null and position1Name!=''">
-            and b.POSITION1_NAME=#{position1Name}
-        </if>
-        <if test="subjectCode!=null and subjectCode!=''">
-            and b.MAJOR_CODE=#{subjectCode}
-        </if>
-        <if test="systemCode!=null and systemCode!=''">
-            and b.SYSTEM_CODE=#{systemCode}
-        </if>
-        <if test="equipTypeCode!=null and equipTypeCode!=''">
-            and b.EQUIP_TYPE_CODE=#{equipTypeCode}
-        </if>
+        WHERE 1=1 AND a.DELETE_FLAG='0' AND a.EQUIP_CODE = b.EQUIP_CODE
+        AND a.REC_ID IN (
+        <foreach collection="list" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         ORDER BY a.CHARGE_DATE desc, a.EQUIP_CODE asc
     </select>
 

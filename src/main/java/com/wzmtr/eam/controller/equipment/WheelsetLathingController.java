@@ -6,6 +6,8 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.WheelsetLathingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -68,14 +70,13 @@ public class WheelsetLathingController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出轮对镟修台账")
-    public void exportWheelsetLathing(@RequestParam(required = false) @ApiParam("列车号") String trainNo,
-                                      @RequestParam(required = false) @ApiParam("车厢号") String carriageNo,
-                                      @RequestParam(required = false) @ApiParam("镟修轮对车轴") String axleNo,
-                                      @RequestParam(required = false) @ApiParam("镟修轮对号") String wheelNo,
-                                      HttpServletResponse response) throws IOException {
-        wheelsetLathingService.exportWheelsetLathing(trainNo, carriageNo, axleNo, wheelNo, response);
+    public void exportWheelsetLathing(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        wheelsetLathingService.exportWheelsetLathing(baseIdsEntity.getIds(), response);
     }
 
 }

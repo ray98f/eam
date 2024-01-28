@@ -280,4 +280,45 @@
         ORDER BY REC_CREATE_TIME desc
     </select>
 
+    <select id="exportWheelsetLathing" resultType="com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        TRAIN_NO	as "trainNo",  <!-- 列车号 -->
+        CARRIAGE_NO	as "carriageNo",  <!-- 车厢号 -->
+        AXLE_NO	as "axleNo",  <!-- 镟修轮对车轴 -->
+        WHEEL_NO  as "wheelNo",  <!-- 镟修轮对号 -->
+        WHEEL_HEIGHT  as "wheelHeight",  <!-- 轮高 -->
+        WHEEL_THICK  as "wheelThick",  <!-- 轮厚 -->
+        WHEEL_DIAMETER  as "wheelDiameter",  <!-- 轮径 -->
+        REPAIR_DETAIL	as "repairDetail",  <!-- 镟修详情 -->
+        START_DATE	as "startDate",  <!-- 开始日期 -->
+        COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
+        RESP_PEOPLE	as "respPeople",  <!-- 负责人 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7" <!-- 扩展字段7 -->
+        FROM T_WHEELSET_LATHING
+        WHERE 1=1 and DELETE_FLAG='0'
+        AND REC_ID IN (
+        <foreach collection="list" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY REC_CREATE_TIME desc
+    </select>
 </mapper>

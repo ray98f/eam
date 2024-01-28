@@ -30,6 +30,6 @@ public interface PartReplaceMapper {
 
     void importPartReplace(List<PartReplaceReqDTO> list);
 
-    List<PartReplaceResDTO> listPartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason);
+    List<PartReplaceResDTO> listPartReplace(List<String> ids);
 
 }

@@ -128,7 +128,7 @@ public class FaultServiceImpl implements FaultService {
                 break;
         }
         faultResDTO.setFaultDescr("其他");
-        list.add(1, faultResDTO);
+        list.add(0, faultResDTO);
         return list;
     }
 

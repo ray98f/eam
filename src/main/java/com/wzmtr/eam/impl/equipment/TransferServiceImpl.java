@@ -285,8 +285,8 @@ public class TransferServiceImpl implements TransferService {
             for (EquipmentResDTO resDTO : equipmentResDTOList) {
                 ExcelEquipmentResDTO res = new ExcelEquipmentResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                res.setQuantity(String.valueOf(resDTO.getQuantity()));
                 res.setTotalMiles(String.valueOf(resDTO.getTotalMiles()));
+                res.setSpecialEquipFlag(CommonConstants.TEN_STRING.equals(resDTO.getSpecialEquipFlag()) ? "非特殊设备" : "特殊设备");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "设备拆分信息", list);

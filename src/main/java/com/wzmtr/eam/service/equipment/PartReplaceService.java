@@ -6,8 +6,6 @@ import com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +26,6 @@ public interface PartReplaceService {
 
     void importPartReplace(MultipartFile file);
 
-    void exportPartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason, HttpServletResponse response) throws IOException;
+    void exportPartReplace(List<String> ids, HttpServletResponse response) throws IOException;
 
 }

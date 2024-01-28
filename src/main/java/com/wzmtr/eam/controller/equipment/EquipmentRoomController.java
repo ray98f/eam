@@ -6,6 +6,8 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.EquipmentRoomService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,15 +71,12 @@ public class EquipmentRoomController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出设备房")
-    public void exportEquipmentRoom(@RequestParam(required = false) @ApiParam("设备房编码") String equipRoomCode,
-                                    @RequestParam(required = false) @ApiParam("设备房名称") String equipRoomName,
-                                    @RequestParam(required = false) @ApiParam("线路") String lineCode,
-                                    @RequestParam(required = false) @ApiParam("位置一编码") String position1Code,
-                                    @RequestParam(required = false) @ApiParam("位置一名称") String position1Name,
-                                    @RequestParam(required = false) @ApiParam("专业") String subjectCode,
-                                    HttpServletResponse response) throws IOException {
-        equipmentRoomService.exportEquipmentRoom(equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode, response);
+    public void exportEquipmentRoom(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        equipmentRoomService.exportEquipmentRoom(baseIdsEntity.getIds(), response);
     }
 }

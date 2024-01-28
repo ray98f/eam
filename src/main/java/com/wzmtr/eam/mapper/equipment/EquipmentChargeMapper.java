@@ -29,7 +29,6 @@ public interface EquipmentChargeMapper {
 
     void deleteEquipmentCharge(List<String> ids, String userId, String time);
 
-    List<EquipmentChargeResDTO> listEquipmentCharge(String equipCode, String equipName, String chargeDate,
-                                                    String position1Name, String subjectCode, String systemCode, String equipTypeCode);
+    List<EquipmentChargeResDTO> listEquipmentCharge(List<String> ids);
 
 }

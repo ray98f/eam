@@ -102,8 +102,8 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
     }
 
     @Override
-    public void exportWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo, HttpServletResponse response) throws IOException {
-        List<WheelsetLathingResDTO> wheelsetLathingResDTOList = wheelsetLathingMapper.listWheelsetLathing(trainNo, carriageNo, axleNo, wheelNo);
+    public void exportWheelsetLathing(List<String> ids, HttpServletResponse response) throws IOException {
+        List<WheelsetLathingResDTO> wheelsetLathingResDTOList = wheelsetLathingMapper.exportWheelsetLathing(ids);
         if (wheelsetLathingResDTOList != null && !wheelsetLathingResDTOList.isEmpty()) {
             List<ExcelWheelsetLathingResDTO> list = new ArrayList<>();
             for (WheelsetLathingResDTO resDTO : wheelsetLathingResDTOList) {

@@ -17,25 +17,24 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class ExcelPartReplaceResDTO {
-
-    @ExcelProperty(value = "记录编号")
-    private String recId;
     @ExcelProperty(value = "故障工单编号")
     private String faultWorkNo;
     @ExcelProperty(value = "设备编码")
     private String equipCode;
     @ExcelProperty(value = "设备名称")
     private String equipName;
+    @ExcelProperty(value = "部件编码")
+    private String replacementNo;
+    @ExcelProperty(value = "部件名称")
+    private String replacementName;
     @ExcelProperty(value = "作业单位")
     private String orgType;
     @ExcelProperty(value = "作业人员")
     private String operator;
-    @ExcelProperty(value = "更换配件代码")
-    private String replacementNo;
-    @ExcelProperty(value = "更换配件名称")
-    private String replacementName;
     @ExcelProperty(value = "更换原因")
     private String replaceReason;
+    @ExcelProperty(value = "更换数量")
+    private String ext1;
     @ExcelProperty(value = "旧配件编号")
     private String oldRepNo;
     @ExcelProperty(value = "新配件编号")
@@ -46,8 +45,4 @@ public class ExcelPartReplaceResDTO {
     private String replaceDate;
     @ExcelProperty(value = "备注")
     private String remark;
-    @ExcelProperty(value = "创建者")
-    private String recCreator;
-    @ExcelProperty(value = "创建时间")
-    private String recCreateTime;
 }
