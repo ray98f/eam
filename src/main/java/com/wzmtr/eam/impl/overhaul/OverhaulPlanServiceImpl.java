@@ -127,12 +127,12 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void addOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws ParseException {
+        if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) || StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
+        }
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         if (df.parse(df.format(new Date())).getTime() >= df.parse(overhaulPlanReqDTO.getFirstBeginTime()).getTime()) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "首次开始时间必须大于当前时间！");
-        }
-        if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) || StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {

@@ -62,6 +62,13 @@ public interface OrganizationMapper {
     String getNamesById(@Param("id") String id);
 
     /**
+     * 根据组织机构id获取组织机构名称
+     * @param id 组织机构id
+     * @return 组织机构名称
+     */
+    String getNameById(@Param("id") String id);
+
+    /**
      * 获取父级组织机构编号
      * @param orgCode 组织机构编号
      * @return 父级组织机构编号

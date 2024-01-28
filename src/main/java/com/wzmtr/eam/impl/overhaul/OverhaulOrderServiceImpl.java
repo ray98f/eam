@@ -25,6 +25,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
@@ -96,9 +97,13 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Autowired
     private RoleMapper roleMapper;
 
+    @Autowired
+    private OrganizationMapper organizationMapper;
+
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        overhaulOrderListReqDTO.setObjectFlag("1");
         return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
     }
 
@@ -107,6 +112,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         String csm = "NCSM";
         if (overhaulOrderListReqDTO.getTenant().contains(csm)) {
             PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+            overhaulOrderListReqDTO.setObjectFlag("1");
             return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         } else {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权访问这个接口");
@@ -136,7 +142,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                         .tools(resDTO.getRecDeletor())
                         .planStartTime(resDTO.getPlanStartTime())
                         .planEndTime(resDTO.getPlanEndTime())
-                        .workGroupName(resDTO.getWorkGroupName())
+                        .workGroupName(organizationMapper.getNameById(resDTO.getWorkerGroupCode()))
                         .workerName(resDTO.getWorkerName())
                         .realStartTime(resDTO.getRealStartTime())
                         .realEndTime(resDTO.getRealEndTime())

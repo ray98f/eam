@@ -743,7 +743,7 @@
         EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
         EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
         WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
-        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        (select NAME from SYS_OFFICE where (ID=WORKER_GROUP_CODE or AREA_ID=WORKER_GROUP_CODE))	as "workGroupName",  <!-- 作业工班名称 -->
         (select tog.ORG_NAME  from RPLAT60.T_WW_ORG tog WHERE  tog.ORG_CODE=WORKER_GROUP_CODE) as "workerOrgName",
         WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
         WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
@@ -1078,7 +1078,7 @@
         EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
         (SELECT t3.NODE_NAME FROM T_EQUIPMENT_CATEGORY t3 WHERE t3.NODE_CODE=EQUIP_TYPE_CODE AND t3.DELETE_FLAG='0' AND t3.REC_STATUS='10')	as "equipTypeName",  <!-- 设备类别名称 -->
         WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
-        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        (select NAME from SYS_OFFICE where (ID=WORKER_GROUP_CODE or AREA_ID=WORKER_GROUP_CODE))	as "workGroupName",  <!-- 作业工班名称 -->
         (select tog.ORG_NAME  from RPLAT60.T_WW_ORG tog WHERE  tog.ORG_CODE=WORKER_GROUP_CODE) as "workerOrgName",
         WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
         WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->

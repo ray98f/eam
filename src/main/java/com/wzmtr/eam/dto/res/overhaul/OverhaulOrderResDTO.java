@@ -58,6 +58,9 @@ public class OverhaulOrderResDTO {
     
     @ApiModelProperty(value = "作业工班名称")
     private String workGroupName;
+
+    @ApiModelProperty(value = "作业工班名称")
+    private String workerOrgName;
     
     @ApiModelProperty(value = "作业人员姓名")
     private String workerName;
