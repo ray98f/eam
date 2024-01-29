@@ -58,14 +58,17 @@ public class WoRuleResDTO {
         @ApiModelProperty(value = "结束日期")
         private String endDate;
 
-        @ApiModelProperty(value = "周期(小时)")
-        private Integer period;
+        @ApiModelProperty(value = "时间周期（小时）")
+        private Long period;
 
-        @ApiModelProperty(value = "里程周期")
+        @ApiModelProperty(value = "里程周期（公里）")
         private String ext1;
 
-        @ApiModelProperty(value = "提前天数")
-        private Integer beforeTime;
+        @ApiModelProperty(value = "提前小时数")
+        private Long beforeTime;
+
+        @ApiModelProperty(value = "提前公里数")
+        private Long ext2;
 
         @ApiModelProperty(value = "规则排序")
         private Integer ruleSort;
@@ -102,9 +105,6 @@ public class WoRuleResDTO {
         
         @ApiModelProperty(value = "归档标记")
         private String archiveFlag;
-        
-        @ApiModelProperty(value = "拓展字段2")
-        private String ext2;
         
         @ApiModelProperty(value = "拓展字段3")
         private String ext3;

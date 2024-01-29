@@ -343,14 +343,14 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (j == 0) {
             reqDTO.setCountFlag(1);
         } else {
-            int max = dmer21TopOrder.get(j - 1).getPeriod();
-            int min = dmer21TopOrder.get(j).getPeriod();
+            long max = dmer21TopOrder.get(j - 1).getPeriod();
+            long min = dmer21TopOrder.get(j).getPeriod();
             if (max % min != 0 || max == min) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "所有关联计划之间的规则周期必须为倍数关系");
             }
-            int max1 = dmer21TopOrder.get(j - 1).getPeriod();
-            int min1 = dmer21TopOrder.get(j).getPeriod();
-            reqDTO.setCountFlag(max1 / min1 - 1);
+            long max1 = dmer21TopOrder.get(j - 1).getPeriod();
+            long min1 = dmer21TopOrder.get(j).getPeriod();
+            reqDTO.setCountFlag(Math.toIntExact(max1 / min1 - 1));
             reqDTO.setParentNodeRecId(dmer21TopOrder.get(j - 1).getExt1());
         }
         return reqDTO;
@@ -522,7 +522,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
                 String nowDate = dateTimeFormat.format(new Date());
                 List<WoRuleResDTO.WoRuleDetail> ruleList = woRuleMapper.queryRuleList(planCode, nowDate.substring(nowDate.length() - 4));
-                int beforeDay = ruleList.get(0).getBeforeTime();
+                long beforeDay = ruleList.get(0).getBeforeTime();
                 if (StringUtils.isEmpty(trigerTime) || CommonConstants.ZERO_STRING.equals(trigerTime)) {
                     trigerTime = orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN);
                 } else {
@@ -531,7 +531,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 Date date = dateTimeFormat.parse(trigerTime);
                 Calendar ca = Calendar.getInstance();
                 ca.setTime(date);
-                ca.add(Calendar.DAY_OF_YEAR, beforeDay);
+                ca.add(Calendar.DAY_OF_YEAR, Math.toIntExact(beforeDay));
                 insertMap.setPlanStartTime(dateTimeFormat.format(ca.getTime()));
             }
         } else {

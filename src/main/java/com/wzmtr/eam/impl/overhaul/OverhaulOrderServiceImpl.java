@@ -340,14 +340,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     @NotNull
     private static Date getRealEndTime(OverhaulOrderReqDTO overhaulOrderReqDTO, List<WoRuleResDTO.WoRuleDetail> rules) throws ParseException {
-        int period = rules.get(0).getPeriod();
-        int beforeTime = rules.get(0).getBeforeTime();
+        long period = rules.get(0).getPeriod();
+        long beforeTime = rules.get(0).getBeforeTime();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
         Date realEndTime1 = format.parse(overhaulOrderReqDTO.getRealEndTime().substring(0, 13));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(realEndTime1);
-        calendar.add(Calendar.HOUR_OF_DAY, period);
-        calendar.add(Calendar.DAY_OF_YEAR, -beforeTime);
+        calendar.add(Calendar.HOUR_OF_DAY, Math.toIntExact(period));
+        calendar.add(Calendar.DAY_OF_YEAR, Math.toIntExact(-beforeTime));
         return calendar.getTime();
     }
 

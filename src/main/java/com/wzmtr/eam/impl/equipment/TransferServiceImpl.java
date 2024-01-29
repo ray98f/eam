@@ -205,22 +205,21 @@ public class TransferServiceImpl implements TransferService {
                 }
             }
             List<Map<String, String>> list = new ArrayList<>();
-            for (int j = 0; j < transferSplitReqDTO.getEquipmentList().size(); j++) {
-                EquipmentResDTO equipmentResDTO = transferSplitReqDTO.getEquipmentList().get(j);
-                String sourceRecId = equipmentResDTO.getSourceRecId();
+            for (EquipmentResDTO resDTO : transferSplitReqDTO.getEquipmentList()) {
+                String sourceRecId = resDTO.getSourceRecId();
                 if (StringUtils.isNotEmpty(sourceRecId.trim())) {
                     EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
                     equipmentReqDTO.setSourceRecId(sourceRecId);
                     equipmentReqDTO.setApprovalStatus("10");
                     List<EquipmentResDTO> queryState = equipmentMapper.siftEquipment(equipmentReqDTO);
-                    if (queryState == null || queryState.size() <= 0) {
+                    if (StringUtils.isEmpty(queryState)) {
                         overTodoService.overTodo(sourceRecId, "");
                     }
-                    equipmentResDTO.setApprovalStatus("30");
-                    buildPart(equipmentResDTO);
-                    updateTransfer(equipmentResDTO);
+                    resDTO.setApprovalStatus("30");
+                    buildPart(resDTO);
+                    updateTransfer(resDTO);
                 }
-                Map<String, String> map = getMap(transferSplitReqDTO, equipmentResDTO);
+                Map<String, String> map = getMap(transferSplitReqDTO, resDTO);
                 list.add(map);
             }
             if (StringUtils.isNotEmpty(list)) {
