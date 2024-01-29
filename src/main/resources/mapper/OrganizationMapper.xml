@@ -224,4 +224,27 @@
         AND d5.MAJOR_CODE=#{majorCode} AND d6.LINE_CODE=#{lineCode} AND d7.ORG_TYPE=#{orgType}
         AND (select o.AREA_ID from SYS_OFFICE o where o.ID=tw.PARENT_ID and o.DEL_FLAG='0')=#{orgCode}
     </select>
+
+    <select id="getZttRoot" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where PARENT_ID='root' and USEABLE=1 and DEL_FLAG=0 and NAME LIKE '%中铁通%'
+        order by ID asc
+    </select>
+
+    <select id="downRecursionId" resultType="java.lang.String">
+        SELECT ID FROM SYS_OFFICE
+        START WITH ID=#{id}
+        CONNECT BY PRIOR ID=PARENT_ID
+    </select>
+
+    <select id="listZttExtraBodyList" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        ) order by SORT asc
+    </select>
 </mapper>

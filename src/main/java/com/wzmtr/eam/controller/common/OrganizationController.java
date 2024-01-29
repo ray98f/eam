@@ -56,4 +56,14 @@ public class OrganizationController {
         return DataResponse.of(organizationService.listMember(id));
     }
 
+    /**
+     * 获取中铁通组织层级结构
+     * @return 中铁通组织层级结构
+     */
+    @GetMapping("/ztt/listTree")
+    @ApiOperation(value = "获取中铁通组织层级结构")
+    public DataResponse<List<CompanyStructureTree>> listZttCompanyStructure() {
+        return DataResponse.of(organizationService.listZttCompanyStructure());
+    }
+
 }
