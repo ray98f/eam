@@ -315,7 +315,7 @@
         FROM T_WHEELSET_LATHING
         WHERE 1=1 and DELETE_FLAG='0'
         AND REC_ID IN (
-        <foreach collection="list" index="index" item="id" separator=",">
+        <foreach collection="ids" index="index" item="id" separator=",">
             #{id}
         </foreach>
         )

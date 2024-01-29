@@ -68,7 +68,7 @@ public class WoRuleResDTO {
         private Long beforeTime;
 
         @ApiModelProperty(value = "提前公里数")
-        private Long ext2;
+        private String ext2;
 
         @ApiModelProperty(value = "规则排序")
         private Integer ruleSort;

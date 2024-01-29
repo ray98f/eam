@@ -51,7 +51,7 @@ public interface EquipmentMapper {
 
     void insertEquipment(EquipmentReqDTO equipmentReqDTO);
 
-    List<EquipmentResDTO> listEquipment(List<String> list);
+    List<EquipmentResDTO> listEquipment(List<String> ids);
 
     List<EquipmentResDTO> siftEquipment(EquipmentSiftReqDTO equipmentSiftReqDTO);
 

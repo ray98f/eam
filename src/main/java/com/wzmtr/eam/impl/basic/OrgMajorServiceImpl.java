@@ -121,12 +121,8 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     }
 
     @Override
-    public void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response) throws IOException {
-        List<String> orgCodes = new ArrayList<>();
-        if (StringUtils.isNotEmpty(orgCode)) {
-            orgCodes = organizationMapper.downRecursion(orgCode);
-        }
-        List<OrgMajorResDTO> orgMajors = orgMajorMapper.listOrgMajor(StringUtils.getSumArrayList(orgCodes), majorCode);
+    public void exportOrgMajor(List<String> ids, HttpServletResponse response) throws IOException {
+        List<OrgMajorResDTO> orgMajors = orgMajorMapper.listOrgMajor(ids);
         if (orgMajors != null && !orgMajors.isEmpty()) {
             List<ExcelOrgMajorResDTO> resList = new ArrayList<>();
             for (OrgMajorResDTO resDTO : orgMajors) {

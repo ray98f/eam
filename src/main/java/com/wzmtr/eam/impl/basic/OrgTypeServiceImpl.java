@@ -97,12 +97,8 @@ public class OrgTypeServiceImpl implements OrgTypeService {
     }
 
     @Override
-    public void exportOrgType(String orgCode, String orgType, HttpServletResponse response) throws IOException {
-        List<String> orgCodes = new ArrayList<>();
-        if (StringUtils.isNotEmpty(orgCode)) {
-            orgCodes = organizationMapper.downRecursion(orgCode);
-        }
-        List<OrgTypeResDTO> orgTypeList = orgTypeMapper.listOrgType(StringUtils.getSumArrayList(orgCodes), orgType);
+    public void exportOrgType(List<String> ids, HttpServletResponse response) throws IOException {
+        List<OrgTypeResDTO> orgTypeList = orgTypeMapper.listOrgType(ids);
         if (orgTypeList != null && !orgTypeList.isEmpty()) {
             List<ExcelOrgTypeResDTO> resList = new ArrayList<>();
             for (OrgTypeResDTO resDTO : orgTypeList) {

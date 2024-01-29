@@ -77,5 +77,12 @@ public interface FaultMapper {
      */
     List<FaultResDTO> listFault(String code, Integer type, String lineCode, String equipmentCategoryCode);
 
+    /**
+     * 导出故障库列表
+     * @param ids ids
+     * @return 故障库列表
+     */
+    List<FaultResDTO> exportFault(List<String> ids);
+
 
 }

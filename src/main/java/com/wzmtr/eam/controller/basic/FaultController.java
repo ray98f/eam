@@ -6,6 +6,8 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.basic.FaultService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,14 +71,13 @@ public class FaultController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出故障库")
-    public void exportFault(@RequestParam(required = false) @ApiParam("码值编号") String code,
-                            @RequestParam(required = false) @ApiParam("码值类型") Integer type,
-                            @RequestParam(required = false) @ApiParam("线路") String lineCode,
-                            @RequestParam(required = false) @ApiParam("设备分类编号") String equipmentCategoryCode,
-                            HttpServletResponse response) throws IOException {
-        faultService.exportFault(code, type, lineCode, equipmentCategoryCode, response);
+    public void exportFault(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        faultService.exportFault(baseIdsEntity.getIds(), response);
     }
 
     /**

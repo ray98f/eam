@@ -6,6 +6,8 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.basic.OrgTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -65,11 +67,12 @@ public class OrgTypeController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出组织机构类别")
-    public void exportOrgType(@RequestParam(required = false) @ApiParam("组织机构") String orgCode,
-                              @RequestParam(required = false) @ApiParam("类别") String orgType,
-                              HttpServletResponse response) throws IOException {
-        orgTypeService.exportOrgType(orgCode, orgType, response);
+    public void exportOrgType(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        orgTypeService.exportOrgType(baseIdsEntity.getIds(), response);
     }
 }

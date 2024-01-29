@@ -32,7 +32,7 @@
     <select id="selectFileInfo" resultType="com.wzmtr.eam.entity.File">
         select * from T_FILE
         where id in (
-        <foreach collection="list" index="index" item="id" separator=",">
+        <foreach collection="ids" index="index" item="id" separator=",">
             #{id}
         </foreach>
         )

@@ -684,7 +684,7 @@
         EXT5	as "ext5" <!-- 扩展字段5 -->
         FROM T_EQUIPMENT WHERE
         REC_ID IN (
-        <foreach collection="list" index="index" item="id" separator=",">
+        <foreach collection="ids" index="index" item="id" separator=",">
             #{id}
         </foreach>
         )

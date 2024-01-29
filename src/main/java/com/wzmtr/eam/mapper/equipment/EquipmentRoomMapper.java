@@ -36,10 +36,10 @@ public interface EquipmentRoomMapper {
 
     /**
      * 导出筛选设备房台账信息
-     * @param list ids
+     * @param ids ids
      * @return 设备房台账列表
      */
-    List<EquipmentRoomResDTO> exportEquipmentRoom(List<String> list);
+    List<EquipmentRoomResDTO> exportEquipmentRoom(List<String> ids);
 
 
 }

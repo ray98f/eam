@@ -224,6 +224,35 @@
         ORDER BY wd.RULE_SORT ASC
     </select>
 
+    <select id="exportWoRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO">
+        SELECT wr.REC_ID, wr.RULE_CODE, wr.RULE_NAME, wr.RULE_USEAGE,
+        wr.REC_STATUS, wr.REMARK, u1.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, u2.NAME AS REC_REVISOR, wr.REC_REVISE_TIME
+        FROM T_WO_RULE wr
+        LEFT JOIN SYS_USER u1 ON wr.REC_CREATOR=u1.ID
+        LEFT JOIN SYS_USER u2 ON wr.REC_REVISOR=u2.ID
+        where wr.DELETE_FLAG='0'
+        AND wr.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY wr.RULE_CODE ASC
+    </select>
+
+    <select id="exportWoRuleDetail" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
+        SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
+        wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.EXT2, wd.BEFORE_TIME
+        FROM T_WO_RULE_DETAIL wd
+        LEFT JOIN SYS_USER u ON wd.REC_CREATOR=u.ID
+        where wd.DELETE_FLAG='0'
+        AND wd.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY wd.RULE_SORT ASC
+    </select>
+
     <select id="queryRuleList" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
         SELECT
         d.REC_ID as "recId",

@@ -22,7 +22,7 @@ public interface FaultService {
 
     void deleteFault(BaseIdsEntity baseIdsEntity);
 
-    void exportFault(String code, Integer type, String lineCode, String equipmentCategoryCode, HttpServletResponse response) throws IOException;
+    void exportFault(List<String> ids, HttpServletResponse response) throws IOException;
 
     /**
      * 故障查询获取码值列表

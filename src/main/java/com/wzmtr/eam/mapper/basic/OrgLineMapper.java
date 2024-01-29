@@ -65,12 +65,10 @@ public interface OrgLineMapper {
 
     /**
      * 获取组织机构线别列表
-     *
-     * @param orgCodes
-     * @param lineCode
-     * @return
+     * @param ids ids
+     * @return 组织机构线别列表
      */
-    List<OrgLineResDTO> listOrgLine(List<List<String>> orgCodes, String lineCode);
+    List<OrgLineResDTO> listOrgLine(List<String> ids);
 
 
 }

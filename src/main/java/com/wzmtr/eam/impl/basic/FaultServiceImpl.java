@@ -79,8 +79,8 @@ public class FaultServiceImpl implements FaultService {
     }
 
     @Override
-    public void exportFault(String code, Integer type, String lineCode, String equipmentCategoryCode, HttpServletResponse response) throws IOException {
-        List<FaultResDTO> faultResDTOList = faultMapper.listFault(code, type, lineCode, equipmentCategoryCode);
+    public void exportFault(List<String> ids, HttpServletResponse response) throws IOException {
+        List<FaultResDTO> faultResDTOList = faultMapper.exportFault(ids);
         if (faultResDTOList != null && !faultResDTOList.isEmpty()) {
             List<ExcelFaultResDTO> resList = new ArrayList<>();
             for (FaultResDTO fault : faultResDTOList) {

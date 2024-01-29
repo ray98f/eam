@@ -33,7 +33,6 @@ import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.UserGroupMemberService;
-import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +72,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Autowired
     private OverTodoService overTodoService;
     @Autowired
-    private IDictionariesService dictService;
+    private DictionariesMapper dictionariesMapper;
     @Autowired
     private FaultAnalyzeMapper faultAnalyzeMapper;
     @Autowired
@@ -86,8 +85,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private FaultInfoMapper faultInfoMapper;
     @Autowired
     private UserGroupMemberService userGroupMemberService;
-    @Autowired
-    private DictionariesMapper dictionariesMapper;
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
@@ -162,13 +159,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         overTodoService.overTodo(faultOrderDO.getRecId(), "提报成功，准备下发");
         String content = "【市铁投集团】" + TokenUtil.getCurrentPerson().getOfficeName() + "的" + TokenUtil.getCurrentPerson().getPersonName() +
                 "下发一条" + faultInfo1.getMajorName() + "故障，工单号：" + reqDTO.getFaultWorkNo() + "，尽快派工。";
-        Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
         String codeName = dictionaries.getItemEname();
         List<String> cos = Arrays.asList(codeName.split(","));
         if (cos.contains(faultInfo1.getMajorCode())) {
-            dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
+            dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
         } else {
-            dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
+            dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
         }
         String zcStepOrg = dictionaries.getItemEname();
         overTodoService.insertTodoWithUserGroupAndAllOrg("【" + faultInfo1.getMajorName() + "】故障管理流程", faultOrderDO.getRecId(),
@@ -202,7 +199,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         DealerUnit dealerUnit = DealerUnit.getByCode(resDTO.getDealerUnit());
         LineCode lineCode = LineCode.getByCode(resDTO.getLineCode());
         FaultType faultType = FaultType.getByCode(resDTO.getFaultType());
-        Dictionaries position2 = dictService.queryOneByItemCodeAndCodesetCode("dm.station2", resDTO.getPosition2Code());
+        Dictionaries position2 = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.station2", Objects.isNull(resDTO.getPosition2Code()) ? "" : resDTO.getPosition2Code());
         String repairDept = null;
         String fillinDept = null;
         if (StringUtils.isNotEmpty(resDTO.getRepairDeptCode())) {
@@ -212,9 +209,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             fillinDept = organizationMapper.getNamesById(resDTO.getFillinDeptCode());
         }
         exportBO.setDealerUnit(dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
-        exportBO.setFillinDept(Optional.ofNullable(fillinDept).orElse(CommonConstants.EMPTY));
-        exportBO.setRepairDept(Optional.ofNullable(repairDept).orElse(CommonConstants.EMPTY));
-        exportBO.setPosition2Name(Optional.ofNullable(position2.getItemCname()).orElse(CommonConstants.EMPTY));
+        if (StringUtils.isNotEmpty(fillinDept)) {
+            exportBO.setFillinDept(Optional.ofNullable(fillinDept).orElse(CommonConstants.EMPTY));
+            exportBO.setRepairDept(Optional.ofNullable(repairDept).orElse(CommonConstants.EMPTY));
+        }
+        if (!Objects.isNull(position2)) {
+            exportBO.setPosition2Name(Optional.ofNullable(position2.getItemCname()).orElse(CommonConstants.EMPTY));
+        }
         exportBO.setOrderStatus(orderStatus != null ? orderStatus.getDesc() : resDTO.getOrderStatus());
         exportBO.setFaultType(faultType == null ? resDTO.getFaultType() : faultType.getDesc());
         exportBO.setFaultLevel(faultLevel == null ? resDTO.getFaultLevel() : faultLevel.getDesc());
@@ -328,9 +329,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 overTodoService.insertTodoWithUserGroupAndOrg("【" + reqDTO.getMajorCode() + "】故障管理流程",
                         faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), "DM_013", workerGroupCode, "故障维修",
                         "DMFM0001", TokenUtil.getCurrentPersonId(), content);
-                Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "01");
+                Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.matchControl", "01");
                 String zcStepOrg = dictionaries.getItemEname();
-                if (!faultOrder1.getWorkClass().contains(zcStepOrg)) {
+                if (StringUtils.isNotEmpty(faultOrder1.getWorkClass()) && !faultOrder1.getWorkClass().contains(zcStepOrg)) {
                     // todo 调用施工调度接口
                     sendContractFault(faultOrder1);
                 }
@@ -375,7 +376,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
         String workClass = faultOrderDO.getWorkClass();
         overTodoService.overTodo(faultOrderDO.getRecId(), "故障设调确认");
-        Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
         String itemEname = dictionaries.getItemEname();
         String[] cos01 = itemEname.split(",");
         List<String> cos = Arrays.asList(cos01);
@@ -524,7 +525,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             log.error("未查询到数据，丢弃修改!");
             return;
         }
-        Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
         String itemEname = dictionaries.getItemEname();
         List<String> cos = Arrays.asList(itemEname.split(","));
         String currentUser = TokenUtil.getCurrentPersonId();

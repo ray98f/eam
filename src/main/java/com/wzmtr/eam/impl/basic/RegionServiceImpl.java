@@ -91,8 +91,8 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public void exportRegion(String name, String no, String parentId, HttpServletResponse response) throws IOException {
-        List<RegionResDTO> categoryResDTOList = regionMapper.listRegion(name, no, parentId);
+    public void exportRegion(List<String> ids, HttpServletResponse response) throws IOException {
+        List<RegionResDTO> categoryResDTOList = regionMapper.listRegion(ids);
         if (categoryResDTOList != null && !categoryResDTOList.isEmpty()) {
             List<ExcelRegionResDTO> list = new ArrayList<>();
             for (RegionResDTO resDTO : categoryResDTOList) {

@@ -96,12 +96,8 @@ public class OrgLineServiceImpl implements OrgLineService {
     }
 
     @Override
-    public void exportOrgLine(String orgCode, String lineCode, HttpServletResponse response) throws IOException {
-        List<String> orgCodes = new ArrayList<>();
-        if (StringUtils.isNotEmpty(orgCode)) {
-            orgCodes = organizationMapper.downRecursion(orgCode);
-        }
-        List<OrgLineResDTO> orgLines = orgLineMapper.listOrgLine(StringUtils.getSumArrayList(orgCodes), lineCode);
+    public void exportOrgLine(List<String> ids, HttpServletResponse response) throws IOException {
+        List<OrgLineResDTO> orgLines = orgLineMapper.listOrgLine(ids);
         if (orgLines != null && !orgLines.isEmpty()) {
             List<ExcelOrgLineResDTO> resList = new ArrayList<>();
             for (OrgLineResDTO resDTO : orgLines) {

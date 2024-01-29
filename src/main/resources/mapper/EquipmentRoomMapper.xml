@@ -300,7 +300,7 @@
         FROM T_EQUIPMENT_ROOM
         WHERE 1=1 AND DELETE_FLAG='0'
         AND REC_ID IN (
-        <foreach collection="list" index="index" item="id" separator=",">
+        <foreach collection="ids" index="index" item="id" separator=",">
             #{id}
         </foreach>
         )

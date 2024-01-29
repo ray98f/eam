@@ -83,13 +83,10 @@ public interface RegionMapper extends BaseMapper<RegionDO> {
 
     /**
      * 获取位置分类列表
-     *
-     * @param name
-     * @param code
-     * @param parentId
-     * @return
+     * @param ids ids
+     * @return 位置分类列表
      */
-    List<RegionResDTO> listRegion(String name, String code, String parentId);
+    List<RegionResDTO> listRegion(List<String> ids);
 
     List<RegionResDTO> selectByNodeCodes(Set<String> nodeCodes);
 }

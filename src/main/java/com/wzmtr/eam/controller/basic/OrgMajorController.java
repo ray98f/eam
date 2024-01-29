@@ -6,6 +6,8 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.basic.OrgMajorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -72,11 +74,12 @@ public class OrgMajorController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出组织机构专业")
-    public void exportOrgMajor(@RequestParam(required = false) @ApiParam("组织机构") String orgCode,
-                               @RequestParam(required = false) @ApiParam("专业") String majorCode,
-                               HttpServletResponse response) throws IOException {
-        orgMajorService.exportOrgMajor(orgCode, majorCode, response);
+    public void exportOrgMajor(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        orgMajorService.exportOrgMajor(baseIdsEntity.getIds(), response);
     }
 }
