@@ -14,6 +14,7 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.EquipmentService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,6 +30,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -96,7 +98,7 @@ public class EquipmentController {
     @PostMapping("/export")
     @ApiOperation(value = "导出设备台账")
     public void exportEquipment(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
-        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
         }
         equipmentService.exportEquipment(baseIdsEntity.getIds(), response);

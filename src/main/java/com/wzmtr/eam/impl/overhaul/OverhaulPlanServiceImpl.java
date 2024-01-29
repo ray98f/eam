@@ -440,7 +440,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String orderCode = overhaulOrderMapper.getMaxCode();
         if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(day.format(System.currentTimeMillis()))) {
-            orderCode = "JX" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+            orderCode = "JX" + day.format(System.currentTimeMillis()) + "0001";
         } else {
             orderCode = CodeUtils.getNextCode(orderCode, 10);
         }
@@ -548,6 +548,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         try {
             List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(overhaulPlanList);
             if (StringUtils.isNotEmpty(planList)) {
+                int i = 0;
                 for (OverhaulPlanResDTO plan : planList) {
                     plan.setRecCreator(TokenUtil.getCurrentPersonId());
                     plan.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -555,7 +556,11 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                     plan.setRecReviseTime("");
                     BeanUtils.copyProperties(plan, overhaulOrder);
                     overhaulOrder.setRecId(TokenUtil.getUuId());
+                    if (i > 0) {
+                        overhaulOrder.setOrderCode(CodeUtils.getNextCode(overhaulOrder.getOrderCode(), 10));
+                    }
                     overhaulOrderMapper.addOverhaulOrder(overhaulOrder);
+                    i++;
                 }
             }
         } catch (Exception e) {

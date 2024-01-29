@@ -36,13 +36,14 @@ public interface TrainMileMapper {
     List<TrainMileageResDTO> listTrainMileage(String startTime, String endTime, String equipCode);
 
     /**
-     * 分页获取每日列车里程及能耗列表
-     * @param page 分页
+     * 获取每日列车里程及能耗列表
+     * * @param pageReqDTO 分页参数
      * @param day 时间
      * @param equipCode 设备编号
+     * @param equipName 车号
      * @return 每日列车里程及能耗列表
      */
-    Page<TrainMileDailyResDTO> pageTrainDailyMile(Page<TrainMileDailyResDTO> page, String day, String equipCode);
+    Page<TrainMileDailyResDTO> pageTrainDailyMile(Page<TrainMileDailyResDTO> page, String day, String equipCode, String equipName);
 
     /**
      * 获取每日列车里程及能耗详情
@@ -78,6 +79,13 @@ public interface TrainMileMapper {
      * @return 每日列车里程及能耗列表
      */
     List<TrainMileDailyResDTO> listTrainDailyMile(String day, String equipCode);
+
+    /**
+     * 导出每日列车里程及能耗列表
+     * @param ids ids
+     * @return 每日列车里程及能耗列表
+     */
+    List<TrainMileDailyResDTO> exportTrainDailyMile(List<String> ids);
 
     /**
      * 导入每日列车里程及能耗列表

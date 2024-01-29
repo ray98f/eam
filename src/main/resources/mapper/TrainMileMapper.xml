@@ -300,6 +300,9 @@
         <if test="equipCode!=null and equipCode!=''">
             AND EQUIP_CODE=#{equipCode}
         </if>
+        <if test="equipName!=null and equipName!=''">
+            AND EQUIP_NAME=#{equipName}
+        </if>
         order by "DAY" desc
     </select>
 
@@ -461,6 +464,40 @@
         <if test="equipCode!=null and equipCode!=''">
             AND EQUIP_CODE=#{equipCode}
         </if>
+        order by "DAY" desc
+    </select>
+
+    <select id="exportTrainDailyMile" resultType="com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO">
+        SELECT
+        REC_ID,
+        EQUIP_CODE,
+        EQUIP_NAME,
+        "DAY",
+        DAILY_WORK_MILE,
+        TOTAL_WORK_MILE,
+        DAILY_MILE,
+        TOTAL_MILE,
+        TRACTION_INCREMENT,
+        TOTAL_TRACTION_ENERGY,
+        AUXILIARY_INCREMENT,
+        TOTAL_AUXILIARY_ENERGY,
+        REGENRATED_INCREMENT,
+        TOTAL_REGENRATED_ELECTRICITY,
+        REC_CREATOR,
+        REC_CREATE_TIME,
+        REC_REVISOR,
+        REC_REVISE_TIME,
+        REC_DELETOR,
+        REC_DELETE_TIME,
+        DELETE_FLAG,
+        REMARK
+        FROM T_TARIN_MILE
+        WHERE DELETE_FLAG='0'
+        AND REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         order by "DAY" desc
     </select>
 

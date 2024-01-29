@@ -362,7 +362,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
             String orderCode = overhaulOrderMapper.getMaxCode();
             if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(day.format(System.currentTimeMillis()))) {
-                orderCode = "JX" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+                orderCode = "JX" + day.format(System.currentTimeMillis()) + "0001";
             } else {
                 orderCode = CodeUtils.getNextCode(orderCode, 10);
             }
@@ -423,6 +423,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulPlanListReqDTO.setPlanCode(planCode);
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
         if (!Objects.isNull(list) && !list.isEmpty()) {
+            int i = 0;
             for (OverhaulPlanResDTO res : list) {
                 res.setRecCreator(TokenUtil.getCurrentPersonId());
                 res.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -440,7 +441,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 reqDTO.setExt1(" ");
                 reqDTO.setPlanStartTime(firstBeginTime);
                 reqDTO.setRecId(TokenUtil.getUuId());
+                if (i > 0) {
+                    reqDTO.setOrderCode(CodeUtils.getNextCode(orderCode, 10));
+                }
                 overhaulOrderMapper.addOverhaulOrder(reqDTO);
+                i++;
             }
         }
     }

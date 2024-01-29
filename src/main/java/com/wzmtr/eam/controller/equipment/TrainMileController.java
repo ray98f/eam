@@ -9,7 +9,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.TrainMileService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -23,6 +26,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -93,6 +97,7 @@ public class TrainMileController {
      * 获取每日列车里程及能耗列表
      * @param day 时间
      * @param equipCode 设备编号
+     * @param equipName 车号
      * @param pageReqDTO 分页参数
      * @return 每日列车里程及能耗列表
      */
@@ -100,8 +105,9 @@ public class TrainMileController {
     @ApiOperation(value = "获取每日列车里程及能耗列表")
     public PageResponse<TrainMileDailyResDTO> pageTrainDailyMile(@RequestParam(required = false) @ApiParam("时间") String day,
                                                                  @RequestParam(required = false) @ApiParam("设备编号") String equipCode,
+                                                                 @RequestParam(required = false) @ApiParam("车号") String equipName,
                                                                  @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(trainMileService.pageTrainDailyMile(day, equipCode, pageReqDTO));
+        return PageResponse.of(trainMileService.pageTrainDailyMile(day, equipCode, equipName, pageReqDTO));
     }
 
     /**
@@ -153,17 +159,17 @@ public class TrainMileController {
 
     /**
      * 导出每日列车里程及能耗列表
-     * @param day 时间
-     * @param equipCode 设备编号
+     * @param baseIdsEntity ids
      * @param response res
      * @throws IOException 流异常
      */
-    @GetMapping("/mile/daily/export")
+    @PostMapping("/mile/daily/export")
     @ApiOperation(value = "导出每日列车里程及能耗列表")
-    public void exportTrainDailyMile(@RequestParam(required = false) @ApiParam("时间") String day,
-                                     @RequestParam(required = false) @ApiParam("设备编号") String equipCode,
-                                     HttpServletResponse response) throws IOException {
-        trainMileService.exportTrainDailyMile(day, equipCode, response);
+    public void exportTrainDailyMile(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        trainMileService.exportTrainDailyMile(baseIdsEntity.getIds(), response);
     }
 
     /**
@@ -171,7 +177,7 @@ public class TrainMileController {
      * @param file 导入文件
      * @return 导入成功状态
      */
-    @GetMapping("/mile/daily/import")
+    @PostMapping("/mile/daily/import")
     @ApiOperation(value = "导入每日列车里程及能耗列表")
     public DataResponse<T> importTrainDailyMile(@RequestParam MultipartFile file) {
         trainMileService.importTrainDailyMile(file);

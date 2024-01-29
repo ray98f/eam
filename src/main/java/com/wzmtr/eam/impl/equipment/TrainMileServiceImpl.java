@@ -162,9 +162,9 @@ public class TrainMileServiceImpl implements TrainMileService {
     }
 
     @Override
-    public Page<TrainMileDailyResDTO> pageTrainDailyMile(String day, String equipCode, PageReqDTO pageReqDTO) {
+    public Page<TrainMileDailyResDTO> pageTrainDailyMile(String day, String equipCode, String equipName, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return trainMileMapper.pageTrainDailyMile(pageReqDTO.of(), day, equipCode);
+        return trainMileMapper.pageTrainDailyMile(pageReqDTO.of(), day, equipCode, equipName);
     }
 
     @Override
@@ -227,8 +227,8 @@ public class TrainMileServiceImpl implements TrainMileService {
     }
 
     @Override
-    public void exportTrainDailyMile(String day, String equipCode, HttpServletResponse response) throws IOException {
-        List<TrainMileDailyResDTO> trainMileageResDTOList = trainMileMapper.listTrainDailyMile(day, equipCode);
+    public void exportTrainDailyMile(List<String> ids, HttpServletResponse response) throws IOException {
+        List<TrainMileDailyResDTO> trainMileageResDTOList = trainMileMapper.exportTrainDailyMile(ids);
         if (trainMileageResDTOList != null && !trainMileageResDTOList.isEmpty()) {
             List<ExcelTrainMileDailyResDTO> list = new ArrayList<>();
             for (TrainMileDailyResDTO resDTO : trainMileageResDTOList) {
