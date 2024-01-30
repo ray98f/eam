@@ -557,7 +557,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                     BeanUtils.copyProperties(plan, overhaulOrder);
                     overhaulOrder.setRecId(TokenUtil.getUuId());
                     if (i > 0) {
-                        overhaulOrder.setOrderCode(CodeUtils.getNextCode(overhaulOrder.getOrderCode(), 10));
+                        overhaulOrder.setOrderCode(CodeUtils.getNextCodeByAddNum(overhaulOrder.getOrderCode(), 10, i));
                     }
                     overhaulOrderMapper.addOverhaulOrder(overhaulOrder);
                     i++;

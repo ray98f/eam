@@ -33,6 +33,10 @@ public interface OverhaulTplService {
 
     void examineOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO);
 
+    /**
+     * 检修模板导入
+     * @param file excel文件
+     */
     void importOverhaulTpl(MultipartFile file);
 
     void exportOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,

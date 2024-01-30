@@ -442,7 +442,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 reqDTO.setPlanStartTime(firstBeginTime);
                 reqDTO.setRecId(TokenUtil.getUuId());
                 if (i > 0) {
-                    reqDTO.setOrderCode(CodeUtils.getNextCode(orderCode, 10));
+                    reqDTO.setOrderCode(CodeUtils.getNextCodeByAddNum(orderCode, 10, i));
                 }
                 overhaulOrderMapper.addOverhaulOrder(reqDTO);
                 i++;
