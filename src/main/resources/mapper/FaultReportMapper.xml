@@ -583,7 +583,7 @@
         FROM T_FAULT_INFO d
         LEFT JOIN IPLAT60.XS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
-        WHERE d.MAJOR_CODE NOT IN ('07','06')
+        WHERE (d.MAJOR_CODE IS NULL OR d.MAJOR_CODE NOT IN ('07', '06'))
         <if test="faultNo!=null and faultNo!=''">
            and d.FAULT_NO=#{faultNo}
         </if>
@@ -703,7 +703,7 @@
         df.EXT1 as "levelfault"  <!-- 派工状态 -->
         FROM T_FAULT_INFO d,IPLAT60.XS_USER u,T_FAULT_ORDER df
         WHERE d.FILLIN_USER_ID=u.LOGIN_NAME and d.FAULT_NO=df.FAULT_NO
-        and d.MAJOR_CODE in('07', '06')
+        and d.MAJOR_CODE in ('07', '06')
         <if test="faultNo!=null and faultNo!=''">
            and d.FAULT_NO=#{faultNo}
         </if>

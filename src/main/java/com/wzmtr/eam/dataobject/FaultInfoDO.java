@@ -151,7 +151,7 @@ public class FaultInfoDO {
     /**
      * not null
      */
-    @ApiModelProperty(value = "故障状态")
+    @ApiModelProperty(value = "故障状态 10 草稿 20 提报")
     private String faultStatus;
     @ApiModelProperty(value = "工作流实例ID")
     private String workFlowInstId;

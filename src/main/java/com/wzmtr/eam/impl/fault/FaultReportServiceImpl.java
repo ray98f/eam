@@ -231,7 +231,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         }
         if (CommonConstants.ZERO_STRING.equals(orderUpdate.getOrderStatus())) {
             orderUpdate.setOrderStatus("10");
-            infoUpdate.setFaultStatus("10");
+            infoUpdate.setFaultStatus("20");
         }
         faultReportMapper.updateFaultInfo(infoUpdate);
         faultReportMapper.updateFaultOrder(orderUpdate);

@@ -106,7 +106,7 @@ public class FaultReportReqDTO {
     private String partCode;
     @ApiModelProperty(value = "部件名称")
     private String partName;
-    @ApiModelProperty(value = "故障状态")
+    @ApiModelProperty(value = "故障状态 10 草稿 20 提报")
     private String faultStatus;
 
     /**
