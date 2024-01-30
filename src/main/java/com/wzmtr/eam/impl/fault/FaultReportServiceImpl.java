@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.fault;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
@@ -227,6 +228,10 @@ public class FaultReportServiceImpl implements FaultReportService {
         }
         if (null != reqDTO.getMaintenance()){
              infoUpdate.setExt4(reqDTO.getMaintenance().toString());
+        }
+        if (CommonConstants.ZERO_STRING.equals(orderUpdate.getOrderStatus())) {
+            orderUpdate.setOrderStatus("10");
+            infoUpdate.setFaultStatus("10");
         }
         faultReportMapper.updateFaultInfo(infoUpdate);
         faultReportMapper.updateFaultOrder(orderUpdate);

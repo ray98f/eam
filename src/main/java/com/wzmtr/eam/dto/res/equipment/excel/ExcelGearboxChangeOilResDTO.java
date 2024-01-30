@@ -17,9 +17,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class ExcelGearboxChangeOilResDTO {
-
-    @ExcelProperty(value = "记录编号")
-    private String recId;
     @ExcelProperty(value = "列车号")
     private String trainNo;
     @ExcelProperty(value = "列车公里数")

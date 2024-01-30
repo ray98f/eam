@@ -370,35 +370,37 @@ public class TransferServiceImpl implements TransferService {
     }
 
     public void buildPart(EquipmentResDTO resDTO) {
-        List<Bom> bomList = transferMapper.queryBomTree(resDTO.getBomType());
-        if (StringUtils.isNotEmpty(bomList)) {
-            for (Bom bom : bomList) {
-                if (bom.getQuantity() != null) {
-                    for (int i = 0; i < bom.getQuantity().intValue(); i++) {
-                        EquipmentPartReqDTO equipmentPartReqDTO = new EquipmentPartReqDTO();
-                        equipmentPartReqDTO.setRecId(TokenUtil.getUuId());
-                        equipmentPartReqDTO.setEquipCode(resDTO.getEquipCode());
-                        equipmentPartReqDTO.setEquipName(resDTO.getEquipName());
-                        equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode(), 1));
-                        equipmentPartReqDTO.setPartName(bom.getCname());
-                        equipmentPartReqDTO.setBomEname(bom.getEname());
-                        equipmentPartReqDTO.setInAccountTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                        equipmentPartReqDTO.setDeleteFlag(" ");
-                        equipmentPartReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                        equipmentPartReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                        equipmentPartReqDTO.setRecStatus("0");
-                        equipmentPartReqDTO.setEquipStatus("10");
-                        equipmentPartReqDTO.setQuantity(new BigDecimal("1"));
-                        equipmentPartMapper.insertEquipmentPart(equipmentPartReqDTO);
-                        PartFaultReqDTO partFaultReqDTO = new PartFaultReqDTO();
-                        BeanUtils.copyProperties(equipmentPartReqDTO, partFaultReqDTO);
-                        partFaultReqDTO.setRecId(TokenUtil.getUuId());
-                        partFaultReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                        partFaultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                        partFaultReqDTO.setOperateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                        partFaultReqDTO.setLogType("10");
-                        partFaultReqDTO.setRemark("设备移交的部件！");
-                        partFaultMapper.insertPartFault(partFaultReqDTO);
+        if (StringUtils.isNotEmpty(resDTO.getBomType())) {
+            List<Bom> bomList = transferMapper.queryBomTree(resDTO.getBomType());
+            if (StringUtils.isNotEmpty(bomList)) {
+                for (Bom bom : bomList) {
+                    if (bom.getQuantity() != null) {
+                        for (int i = 0; i < bom.getQuantity().intValue(); i++) {
+                            EquipmentPartReqDTO equipmentPartReqDTO = new EquipmentPartReqDTO();
+                            equipmentPartReqDTO.setRecId(TokenUtil.getUuId());
+                            equipmentPartReqDTO.setEquipCode(resDTO.getEquipCode());
+                            equipmentPartReqDTO.setEquipName(resDTO.getEquipName());
+                            equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode(), 1));
+                            equipmentPartReqDTO.setPartName(bom.getCname());
+                            equipmentPartReqDTO.setBomEname(bom.getEname());
+                            equipmentPartReqDTO.setInAccountTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            equipmentPartReqDTO.setDeleteFlag(" ");
+                            equipmentPartReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                            equipmentPartReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            equipmentPartReqDTO.setRecStatus("0");
+                            equipmentPartReqDTO.setEquipStatus("10");
+                            equipmentPartReqDTO.setQuantity(new BigDecimal("1"));
+                            equipmentPartMapper.insertEquipmentPart(equipmentPartReqDTO);
+                            PartFaultReqDTO partFaultReqDTO = new PartFaultReqDTO();
+                            BeanUtils.copyProperties(equipmentPartReqDTO, partFaultReqDTO);
+                            partFaultReqDTO.setRecId(TokenUtil.getUuId());
+                            partFaultReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                            partFaultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            partFaultReqDTO.setOperateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            partFaultReqDTO.setLogType("10");
+                            partFaultReqDTO.setRemark("设备移交的部件！");
+                            partFaultMapper.insertPartFault(partFaultReqDTO);
+                        }
                     }
                 }
             }

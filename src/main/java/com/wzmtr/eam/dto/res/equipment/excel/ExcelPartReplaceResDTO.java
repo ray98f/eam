@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class ExcelPartReplaceResDTO {
-    @ExcelProperty(value = "故障工单编号")
-    private String faultWorkNo;
     @ExcelProperty(value = "设备编码")
     private String equipCode;
     @ExcelProperty(value = "设备名称")
