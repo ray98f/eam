@@ -83,7 +83,7 @@ public class OverTodoServiceImpl implements OverTodoService {
                 throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
             }
             String contextPath = dictionaries.getItemEname();
-            String fullPath = contextPath + taskUrl + "?inqu_status-0-workFlowInstId=" + businessRecId;
+            String fullPath = contextPath + taskUrl + "?workFlowInstId" + businessRecId;
             EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
             eipMsgPushReq.add();
             eipMsgPushReq.setUserId(stepUserId);

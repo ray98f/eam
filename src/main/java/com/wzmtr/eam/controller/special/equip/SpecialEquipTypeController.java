@@ -125,7 +125,7 @@ public class SpecialEquipTypeController {
      * @param response response
      * @throws IOException 流异常
      */
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出特种设备分类")
     public void exportSpecialEquipType(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
         if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {

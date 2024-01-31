@@ -135,10 +135,8 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
     }
 
     @Override
-    public void exportSpecialEquip(String equipCode, String equipName, String specialEquipCode, String factNo,
-                                   String useLineNo, String position1Code, String specialEquipType, String equipStatus, HttpServletResponse response) throws IOException {
-        List<SpecialEquipResDTO> specialEquipResDTOList = specialEquipMapper.listSpecialEquip(equipCode, equipName, specialEquipCode, factNo, useLineNo,
-                position1Code, specialEquipType, equipStatus);
+    public void exportSpecialEquip(List<String> ids, HttpServletResponse response) throws IOException {
+        List<SpecialEquipResDTO> specialEquipResDTOList = specialEquipMapper.listSpecialEquip(ids);
         if (specialEquipResDTOList != null && !specialEquipResDTOList.isEmpty()) {
             List<ExcelSpecialEquipResDTO> list = new ArrayList<>();
             for (SpecialEquipResDTO resDTO : specialEquipResDTOList) {

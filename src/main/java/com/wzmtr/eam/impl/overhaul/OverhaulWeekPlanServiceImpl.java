@@ -356,7 +356,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
         for (OverhaulPlanResDTO plan : planList) {
             List<OverhaulTplDetailResDTO> orderIsValid = overhaulPlanMapper.getOrderIsValid(plan.getPlanCode());
-            if (orderIsValid == null || orderIsValid.size() <= 0) {
+            if (StringUtils.isEmpty(orderIsValid)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您选择触发的周计划中没有检修项！");
             }
             SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");

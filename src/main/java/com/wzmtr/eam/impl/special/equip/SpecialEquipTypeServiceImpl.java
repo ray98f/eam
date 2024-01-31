@@ -71,6 +71,7 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
 
     @Override
     public void addSpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO) {
+        specialEquipTypeReqDTO.setRecId(TokenUtil.getUuId());
         specialEquipTypeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         specialEquipTypeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         specialEquipTypeMapper.addSpecialEquipType(specialEquipTypeReqDTO);

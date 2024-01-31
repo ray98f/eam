@@ -3,10 +3,14 @@ package com.wzmtr.eam.controller.special.equip;
 import com.wzmtr.eam.dto.req.special.equip.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.special.equip.SpecialEquipHistoryResDTO;
 import com.wzmtr.eam.dto.res.special.equip.SpecialEquipResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.special.equip.SpecialEquipService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,6 +24,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -66,19 +71,13 @@ public class SpecialEquipController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出特种设备台账")
-    public void exportSpecialEquip(@RequestParam(required = false) @ApiParam("设备编码") String equipCode,
-                                   @RequestParam(required = false) @ApiParam("设备名称") String equipName,
-                                   @RequestParam(required = false) @ApiParam("特种设备代码") String specialEquipCode,
-                                   @RequestParam(required = false) @ApiParam("出厂编号") String factNo,
-                                   @RequestParam(required = false) @ApiParam("线路") String useLineNo,
-                                   @RequestParam(required = false) @ApiParam("位置一") String position1Code,
-                                   @RequestParam(required = false) @ApiParam("特种设备类别") String specialEquipType,
-                                   @RequestParam(required = false) @ApiParam("设备状态") String equipStatus,
-                                   HttpServletResponse response) throws IOException {
-        specialEquipService.exportSpecialEquip(equipCode, equipName, specialEquipCode, factNo, useLineNo,
-                position1Code, specialEquipType, equipStatus, response);
+    public void exportSpecialEquip(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        specialEquipService.exportSpecialEquip(baseIdsEntity.getIds(), response);
     }
 
     @GetMapping("/history/list")
