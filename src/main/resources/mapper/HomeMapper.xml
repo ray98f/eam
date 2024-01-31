@@ -140,4 +140,33 @@
         ORDER BY A.startTime DESC
     </select>
 
+    <select id="todoList" resultType="com.wzmtr.eam.entity.StatusWorkFlowLog">
+        select * from
+        IPLAT60.STATUS_WORK_FLOW_LOG
+        where USER_ID=#{userId} and TODO_STATUS=#{type}
+        order by KIND_TYPE asc
+        <if test="type=='1'">
+            , TASK_RCV_TIME desc
+        </if>
+        <if test="type=='2'">
+            , TODO_DATE desc
+        </if>
+    </select>
+
+    <select id="todoCount" resultType="com.wzmtr.eam.dto.res.home.HomeCountResDTO">
+        with todoSize AS (select count(*) as todoSize from
+        IPLAT60.STATUS_WORK_FLOW_LOG
+        where USER_ID=#{userId} and TODO_STATUS='1'),
+        overSize as (select count(*) as overSize from
+        IPLAT60.STATUS_WORK_FLOW_LOG
+        where USER_ID=#{userId} and TODO_STATUS='2')
+        SELECT * FROM todoSize, overSize
+    </select>
+
+    <update id="urgingTodo">
+        update IPLAT60.STATUS_WORK_FLOW_LOG set
+        KIND_TYPE='1'
+        where TODO_ID=#{todoId} and TODO_STATUS='1'
+    </update>
+
 </mapper>
