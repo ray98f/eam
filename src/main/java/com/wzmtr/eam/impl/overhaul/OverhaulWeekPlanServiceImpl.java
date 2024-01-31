@@ -406,29 +406,12 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         if (StringUtils.isEmpty(userCode)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该周计划中没有填写工班长！");
         }
-        OverhaulOrderReqDTO overhaulOrderReqDTO = new OverhaulOrderReqDTO();
-        overhaulOrderReqDTO.setOrderCode(orderCode);
-        overhaulOrderReqDTO.setPlanCode(planCode);
-        overhaulOrderReqDTO.setWorkerGroupCode(orgCode);
-        overhaulOrderReqDTO.setWorkerCode(userCode);
-        overhaulOrderReqDTO.setWorkerName(userName);
-        overhaulOrderReqDTO.setRecId("qwert");
-        overhaulOrderReqDTO.setWorkStatus("2");
-        try {
-            overhaulWorkRecordService.insertRepair(overhaulOrderReqDTO);
-        } catch (Exception e) {
-            log.error("exception message", e);
-        }
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(planCode);
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
         if (!Objects.isNull(list) && !list.isEmpty()) {
             int i = 0;
             for (OverhaulPlanResDTO res : list) {
-                res.setRecCreator(TokenUtil.getCurrentPersonId());
-                res.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                res.setRecRevisor("");
-                res.setRecReviseTime("");
                 OverhaulOrderReqDTO reqDTO = new OverhaulOrderReqDTO();
                 BeanUtils.copyProperties(res, reqDTO);
                 reqDTO.setOrderCode(orderCode);
@@ -441,11 +424,20 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 reqDTO.setExt1(" ");
                 reqDTO.setPlanStartTime(firstBeginTime);
                 reqDTO.setRecId(TokenUtil.getUuId());
+                reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                reqDTO.setRecRevisor("");
+                reqDTO.setRecReviseTime("");
                 if (i > 0) {
                     reqDTO.setOrderCode(CodeUtils.getNextCodeByAddNum(orderCode, 10, i));
                 }
                 overhaulOrderMapper.addOverhaulOrder(reqDTO);
                 i++;
+                try {
+                    overhaulWorkRecordService.insertRepair(reqDTO);
+                } catch (Exception e) {
+                    log.error("exception message", e);
+                }
             }
         }
     }
