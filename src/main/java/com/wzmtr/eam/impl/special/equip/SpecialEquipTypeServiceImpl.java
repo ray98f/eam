@@ -60,7 +60,7 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
                 BeanUtils.copyProperties(reqDTO, req);
                 req.setRecId(TokenUtil.getUuId());
                 req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
                 temp.add(req);
             }
             specialEquipTypeMapper.importSpecialEquipType(temp);
@@ -73,20 +73,20 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
     public void addSpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO) {
         specialEquipTypeReqDTO.setRecId(TokenUtil.getUuId());
         specialEquipTypeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        specialEquipTypeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        specialEquipTypeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
         specialEquipTypeMapper.addSpecialEquipType(specialEquipTypeReqDTO);
     }
 
     @Override
     public void modifySpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO) {
         specialEquipTypeReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        specialEquipTypeReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        specialEquipTypeReqDTO.setRecReviseTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
         specialEquipTypeMapper.modifySpecialEquipType(specialEquipTypeReqDTO);
     }
 
     @Override
     public void deleteSpecialEquipType(List<String> ids) {
-        specialEquipTypeMapper.deleteSpecialEquipType(ids, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        specialEquipTypeMapper.deleteSpecialEquipType(ids, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
     }
 
     @Override
