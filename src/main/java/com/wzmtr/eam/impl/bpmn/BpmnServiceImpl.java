@@ -519,5 +519,28 @@ public class BpmnServiceImpl implements BpmnService {
         return null;
     }
 
+    @Override
+    public FlowChartRes getFlowChartByProcessId(String processId) {
+//        try {
+            log.info("getFlowChartByProcessId调用入参：[{}]", FastFlowPathUrl.GET_FLOW_CHART_BY_PROCESS_ID + processId);
+            JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.GET_FLOW_CHART_BY_PROCESS_ID + processId, null));
+            log.info("getFlowChartByProcessId调用结果：[{}]", JSONObject.toJSONString(jsonObject));
+            if (!CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "流程图查询失败");
+            }
+            FlowChartRes res = new FlowChartRes();
+            String xml = jsonObject.getString("xml");
+            if (StringUtils.isNotEmpty(xml)) {
+                xml = xml.replaceAll("\n", "");
+            }
+            res.setXml(xml);
+            res.setCompleted(jsonObject.getJSONArray("completed").toJavaList(String.class));
+            res.setRuning(jsonObject.getJSONArray("runing").toJavaList(String.class));
+            res.setFlowDetails(jsonObject.getJSONArray("data").toJavaList(FlowChartRes.FlowDetail.class));
+            return res;
+//        } catch (Exception e) {
+//            throw new CommonException(ErrorCode.NORMAL_ERROR, "流程图查询失败");
+//        }
+    }
 
 }

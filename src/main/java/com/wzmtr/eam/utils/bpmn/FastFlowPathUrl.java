@@ -80,4 +80,9 @@ public class FastFlowPathUrl {
      */
     public static final String GET_DEF_KEY = BASE_URL + "/a1bpmn/api/runtime/getTaskBtn/";
 
+    /**
+     * 根据流程实例id获取最新流程图
+     */
+    public static final String GET_FLOW_CHART_BY_PROCESS_ID = BASE_URL + "/a1bpmn/api/runtime/task/v1/getSpeed/";
+
 }
