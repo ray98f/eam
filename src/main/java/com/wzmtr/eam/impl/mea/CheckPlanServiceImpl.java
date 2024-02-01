@@ -259,8 +259,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
     }
 
     @Override
-    public void exportCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, HttpServletResponse response) throws IOException {
-        List<CheckPlanResDTO> checkPlanList = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
+    public void exportCheckPlan(List<String> ids, HttpServletResponse response) throws IOException {
+        List<CheckPlanResDTO> checkPlanList = checkPlanMapper.exportCheckPlan(ids);
         if (checkPlanList != null && !checkPlanList.isEmpty()) {
             List<ExcelCheckPlanResDTO> list = new ArrayList<>();
             for (CheckPlanResDTO resDTO : checkPlanList) {
@@ -353,8 +353,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
     }
 
     @Override
-    public void exportCheckPlanInfo(String equipCode, String instrmPlanNo, HttpServletResponse response) throws IOException {
-        List<MeaInfoResDTO> meaInfoList = checkPlanMapper.listInfo(equipCode, instrmPlanNo);
+    public void exportCheckPlanInfo(List<String> ids, HttpServletResponse response) throws IOException {
+        List<MeaInfoResDTO> meaInfoList = checkPlanMapper.exportInfo(ids);
         if (meaInfoList != null && !meaInfoList.isEmpty()) {
             List<ExcelMeaInfoResDTO> list = new ArrayList<>();
             for (MeaInfoResDTO resDTO : meaInfoList) {

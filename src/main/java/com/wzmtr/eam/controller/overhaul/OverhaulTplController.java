@@ -10,7 +10,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.overhaul.OverhaulTplService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -24,6 +27,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -107,17 +111,13 @@ public class OverhaulTplController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出检修模板")
-    public void exportOverhaulTpl(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
-                                  @RequestParam(required = false) @ApiParam("模版名称") String templateName,
-                                  @RequestParam(required = false) @ApiParam("线路编号") String lineNo,
-                                  @RequestParam(required = false) @ApiParam("位置一") String position1Code,
-                                  @RequestParam(required = false) @ApiParam("专业编号") String majorCode,
-                                  @RequestParam(required = false) @ApiParam("系统编号") String systemCode,
-                                  @RequestParam(required = false) @ApiParam("设备分类编号") String equipTypeCode,
-                                  HttpServletResponse response) throws IOException {
-        overhaulTplService.exportOverhaulTpl(templateId, templateName, lineNo, position1Code, majorCode, systemCode, equipTypeCode, response);
+    public void exportOverhaulTpl(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        overhaulTplService.exportOverhaulTpl(baseIdsEntity.getIds(), response);
     }
 
     @GetMapping("/detail/page")

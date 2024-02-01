@@ -212,8 +212,8 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
 
     @Override
-    public void exportSubmission(SubmissionListReqDTO checkPlanListReqDTO, HttpServletResponse response) throws IOException {
-        List<SubmissionResDTO> checkPlanList = submissionMapper.listSubmission(checkPlanListReqDTO);
+    public void exportSubmission(List<String> ids, HttpServletResponse response) throws IOException {
+        List<SubmissionResDTO> checkPlanList = submissionMapper.exportSubmission(ids);
         if (checkPlanList != null && !checkPlanList.isEmpty()) {
             List<ExcelSubmissionResDTO> list = new ArrayList<>();
             for (SubmissionResDTO resDTO : checkPlanList) {

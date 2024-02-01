@@ -74,8 +74,8 @@ public class MeaServiceImpl implements MeaService {
     }
 
     @Override
-    public void exportMea(MeaListReqDTO meaListReqDTO, HttpServletResponse response) throws IOException {
-        List<MeaResDTO> meaList = meaMapper.listMea(meaListReqDTO);
+    public void exportMea(List<String> ids, HttpServletResponse response) throws IOException {
+        List<MeaResDTO> meaList = meaMapper.listMea(ids);
         if (meaList != null && !meaList.isEmpty()) {
             List<ExcelMeaResDTO> list = new ArrayList<>();
             for (MeaResDTO resDTO : meaList) {

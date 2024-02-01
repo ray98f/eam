@@ -257,8 +257,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     }
 
     @Override
-    public void exportSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, HttpServletResponse response) throws IOException {
-        List<SubmissionRecordResDTO> checkPlanList = submissionRecordMapper.listSubmissionRecord(null, checkNo, instrmPlanNo, recStatus, workFlowInstId);
+    public void exportSubmissionRecord(List<String> ids, HttpServletResponse response) throws IOException {
+        List<SubmissionRecordResDTO> checkPlanList = submissionRecordMapper.exportSubmissionRecord(ids);
         if (checkPlanList != null && !checkPlanList.isEmpty()) {
             List<ExcelSubmissionRecordResDTO> list = new ArrayList<>();
             for (SubmissionRecordResDTO resDTO : checkPlanList) {

@@ -49,6 +49,13 @@ public interface OverhaulTplMapper {
     List<OverhaulTplResDTO> listOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
                                             String majorCode, String systemCode, String equipTypeCode, String trialStatus);
 
+    /**
+     * 导出搜索检修模板列表
+     * @param ids ids
+     * @return 检修模板列表
+     */
+    List<OverhaulTplResDTO> exportOverhaulTpl(List<String> ids);
+
     Page<OverhaulTplDetailResDTO> pageOverhaulDetailTpl(Page<OverhaulTplDetailResDTO> page, String templateId);
 
     /**

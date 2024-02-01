@@ -235,6 +235,17 @@
         order by a.CHECK_NO desc
     </select>
 
+    <select id="exportSubmissionRecord" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO">
+        <include refid="submission-record-cols"/>
+        WHERE 1=1 and a.DELETE_FLAG='0'
+        and a.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        order by a.CHECK_NO desc
+    </select>
+
     <sql id="submission-record-detail-cols">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->

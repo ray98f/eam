@@ -34,6 +34,13 @@ public interface SubmissionMapper {
 
     List<SubmissionResDTO> listSubmission(SubmissionListReqDTO submissionListReqDTO);
 
+    /**
+     * 导出搜索送检单列表
+     * @param ids ids
+     * @return 送检单列表
+     */
+    List<SubmissionResDTO> exportSubmission(List<String> ids);
+
     List<SubmissionDetailResDTO> listSubmissionDetail(String sendVerifyNo);
 
     Page<SubmissionDetailResDTO> pageSubmissionDetail(Page<SubmissionResDTO> page, String sendVerifyNo);
