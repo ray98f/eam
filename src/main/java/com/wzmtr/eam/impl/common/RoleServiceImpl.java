@@ -55,11 +55,8 @@ public class RoleServiceImpl implements RoleService {
         if (Objects.isNull(id)) {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
-        Integer deleteRole = roleMapper.deleteRole(id);
-        Integer deleteRoleMenu = roleMapper.deleteRoleMenu(id);
-        if (deleteRole < 0 || deleteRoleMenu < 0) {
-            throw new CommonException(ErrorCode.DELETE_ERROR);
-        }
+        roleMapper.deleteRole(id);
+        roleMapper.deleteRoleMenu(id);
     }
 
     @Override
@@ -69,10 +66,7 @@ public class RoleServiceImpl implements RoleService {
         }
         role.setCreatedBy(TokenUtil.getCurrentPersonId());
         role.setId(TokenUtil.getUuId());
-        Integer insertRole = roleMapper.insertRole(role);
-        if (insertRole < 0) {
-            throw new CommonException(ErrorCode.INSERT_ERROR);
-        }
+        roleMapper.insertRole(role);
     }
 
     @Override
@@ -81,10 +75,7 @@ public class RoleServiceImpl implements RoleService {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
         role.setCreatedBy(TokenUtil.getCurrentPersonId());
-        Integer updateRole = roleMapper.updateRole(role);
-        if (updateRole < 0) {
-            throw new CommonException(ErrorCode.UPDATE_ERROR);
-        }
+        roleMapper.updateRole(role);
     }
 
     @Override
@@ -101,26 +92,16 @@ public class RoleServiceImpl implements RoleService {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
         role.setCreatedBy(TokenUtil.getCurrentPersonId());
-        Integer result = roleMapper.deleteRoleMenu(role.getId());
-        if (result < 0) {
-            throw new CommonException(ErrorCode.UPDATE_ERROR);
-        }
-        Integer updateRole = roleMapper.insertRoleMenu(role);
-        if (updateRole < 0) {
-            throw new CommonException(ErrorCode.UPDATE_ERROR);
+        roleMapper.deleteRoleMenu(role.getId());
+        if (StringUtils.isNotEmpty(role.getMenuIds())) {
+            roleMapper.insertRoleMenu(role);
         }
     }
 
     @Override
     public void bindUser(UserRoleReqDTO userRoleReqDTO) {
-        Integer result = roleMapper.deleteUserRole(userRoleReqDTO);
-        if (result < 0) {
-            throw new CommonException(ErrorCode.UPDATE_ERROR);
-        }
-        Integer updateRole = roleMapper.addUserRole(userRoleReqDTO);
-        if (updateRole < 0) {
-            throw new CommonException(ErrorCode.UPDATE_ERROR);
-        }
+        roleMapper.deleteUserRole(userRoleReqDTO);
+        roleMapper.addUserRole(userRoleReqDTO);
     }
 
     @Override
