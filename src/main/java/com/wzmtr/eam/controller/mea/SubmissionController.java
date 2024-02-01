@@ -94,41 +94,41 @@ public class SubmissionController {
     }
 
     @GetMapping("/detail/page")
-    @ApiOperation(value = "获取送检单列表")
+    @ApiOperation(value = "获取送检单明细列表")
     public PageResponse<SubmissionDetailResDTO> pageSubmissionDetail(@RequestParam(required = false) @ApiParam("检测单号") String sendVerifyNo,
                                                                      @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(submissionService.pageSubmissionDetail(sendVerifyNo, pageReqDTO));
     }
 
     @GetMapping("/detail/detail")
-    @ApiOperation(value = "获取送检单详情")
+    @ApiOperation(value = "获取送检单明细详情")
     public DataResponse<SubmissionDetailResDTO> getSubmissionDetailDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(submissionService.getSubmissionDetailDetail(id));
     }
 
     @PostMapping("/detail/add")
-    @ApiOperation(value = "新增送检单")
+    @ApiOperation(value = "新增送检单明细")
     public DataResponse<T> addSubmissionDetail(@RequestBody SubmissionDetailReqDTO submissionDetailReqDTO) {
         submissionService.addSubmissionDetail(submissionDetailReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/detail/modify")
-    @ApiOperation(value = "编辑送检单")
+    @ApiOperation(value = "编辑送检单明细")
     public DataResponse<T> modifySubmissionDetail(@RequestBody SubmissionDetailReqDTO submissionDetailReqDTO) {
         submissionService.modifySubmissionDetail(submissionDetailReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/detail/delete")
-    @ApiOperation(value = "删除送检单")
+    @ApiOperation(value = "删除送检单明细")
     public DataResponse<T> deleteSubmissionDetail(@RequestBody BaseIdsEntity baseIdsEntity) {
         submissionService.deleteSubmissionDetail(baseIdsEntity);
         return DataResponse.success();
     }
 
     @GetMapping("/detail/export")
-    @ApiOperation(value = "导出送检单")
+    @ApiOperation(value = "导出送检单明细")
     public void exportSubmissionDetail(@RequestParam(required = false) @ApiParam("检测单号") String sendVerifyNo,
                                        HttpServletResponse response) throws IOException {
         submissionService.exportSubmissionDetail(sendVerifyNo, response);

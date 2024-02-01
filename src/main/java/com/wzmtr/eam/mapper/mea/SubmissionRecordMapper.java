@@ -49,4 +49,11 @@ public interface SubmissionRecordMapper {
     void modifySubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO);
 
     List<SubmissionRecordDetailResDTO> listSubmissionRecordDetail(String testRecId);
+
+    /**
+     * 导出检定记录明细
+     * @param ids ids
+     * @return 检定记录明细
+     */
+    List<SubmissionRecordDetailResDTO> exportSubmissionRecordDetail(List<String> ids);
 }

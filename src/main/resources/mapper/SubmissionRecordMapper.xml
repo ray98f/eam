@@ -562,4 +562,15 @@
         order by a.REC_CREATE_TIME desc
     </select>
 
+    <select id="exportSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO">
+        <include refid="submission-record-detail-cols"/>
+        WHERE 1=1
+        and a.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        order by a.REC_CREATE_TIME desc
+    </select>
+
 </mapper>

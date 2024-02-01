@@ -40,6 +40,6 @@ public interface SubmissionRecordService {
 
     void deleteSubmissionRecordDetail(BaseIdsEntity baseIdsEntity);
 
-    void exportSubmissionRecordDetail(String testRecId, HttpServletResponse response) throws IOException;
+    void exportSubmissionRecordDetail(List<String> ids, HttpServletResponse response) throws IOException;
 
 }

@@ -130,10 +130,12 @@ public class SubmissionRecordController {
         return DataResponse.success();
     }
 
-    @GetMapping("/detail/export")
+    @PostMapping("/detail/export")
     @ApiOperation(value = "导出检定记录明细")
-    public void exportSubmissionRecordDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
-                                             HttpServletResponse response) throws IOException {
-        submissionRecordService.exportSubmissionRecordDetail(testRecId, response);
+    public void exportSubmissionRecordDetail(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        submissionRecordService.exportSubmissionRecordDetail(baseIdsEntity.getIds(), response);
     }
 }

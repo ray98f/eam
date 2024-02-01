@@ -250,6 +250,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             }
         }
         submissionDetailReqDTO.setRecId(TokenUtil.getUuId());
+        submissionDetailReqDTO.setPlanDetailRecId(TokenUtil.getUuId());
         submissionDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
         submissionDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionDetailReqDTO.setArchiveFlag("0");

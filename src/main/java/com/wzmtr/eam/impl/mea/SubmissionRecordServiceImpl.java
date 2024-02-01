@@ -359,8 +359,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     }
 
     @Override
-    public void exportSubmissionRecordDetail(String testRecId, HttpServletResponse response) throws IOException {
-        List<SubmissionRecordDetailResDTO> meaInfoList = submissionRecordMapper.listSubmissionRecordDetail(testRecId);
+    public void exportSubmissionRecordDetail(List<String> ids, HttpServletResponse response) throws IOException {
+        List<SubmissionRecordDetailResDTO> meaInfoList = submissionRecordMapper.exportSubmissionRecordDetail(ids);
         if (meaInfoList != null && !meaInfoList.isEmpty()) {
             List<ExcelSubmissionRecordDetailResDTO> list = new ArrayList<>();
             for (SubmissionRecordDetailResDTO resDTO : meaInfoList) {
