@@ -353,6 +353,9 @@ public class TransferServiceImpl implements TransferService {
     }
 
     public void updateTransfer(EquipmentResDTO resDTO) {
+        if (StringUtils.isEmpty(resDTO.getMajorCode()) || StringUtils.isEmpty(resDTO.getSystemCode()) || StringUtils.isEmpty(resDTO.getEquipTypeCode())) {
+            throw new CommonException(ErrorCode.REQUIRED_NULL, "设备拆分" + resDTO.getEquipCode());
+        }
         resDTO.setSpecialEquipFlag("10");
         List<EquipmentCategoryResDTO> msgList = equipmentCategoryMapper.listEquipmentCategory(null,
                 resDTO.getEquipTypeCode(), null);
