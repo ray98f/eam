@@ -25,6 +25,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
@@ -96,9 +97,13 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Autowired
     private RoleMapper roleMapper;
 
+    @Autowired
+    private OrganizationMapper organizationMapper;
+
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        overhaulOrderListReqDTO.setObjectFlag("1");
         return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
     }
 
@@ -107,6 +112,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         String csm = "NCSM";
         if (overhaulOrderListReqDTO.getTenant().contains(csm)) {
             PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+            overhaulOrderListReqDTO.setObjectFlag("1");
             return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         } else {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权访问这个接口");
@@ -136,7 +142,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                         .tools(resDTO.getRecDeletor())
                         .planStartTime(resDTO.getPlanStartTime())
                         .planEndTime(resDTO.getPlanEndTime())
-                        .workGroupName(resDTO.getWorkGroupName())
+                        .workGroupName(organizationMapper.getNameById(resDTO.getWorkerGroupCode()))
                         .workerName(resDTO.getWorkerName())
                         .realStartTime(resDTO.getRealStartTime())
                         .realEndTime(resDTO.getRealEndTime())
@@ -334,14 +340,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     @NotNull
     private static Date getRealEndTime(OverhaulOrderReqDTO overhaulOrderReqDTO, List<WoRuleResDTO.WoRuleDetail> rules) throws ParseException {
-        int period = rules.get(0).getPeriod();
-        int beforeTime = rules.get(0).getBeforeTime();
+        long period = rules.get(0).getPeriod();
+        long beforeTime = rules.get(0).getBeforeTime();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
         Date realEndTime1 = format.parse(overhaulOrderReqDTO.getRealEndTime().substring(0, 13));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(realEndTime1);
-        calendar.add(Calendar.HOUR_OF_DAY, period);
-        calendar.add(Calendar.DAY_OF_YEAR, -beforeTime);
+        calendar.add(Calendar.HOUR_OF_DAY, Math.toIntExact(period));
+        calendar.add(Calendar.DAY_OF_YEAR, Math.toIntExact(-beforeTime));
         return calendar.getTime();
     }
 
@@ -487,7 +493,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     @Override
     public List<OverhaulItemResDTO> listOverhaulItemModel(String objectCode, String orderCode) {
-        return overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
+        List<OverhaulItemResDTO> list = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
+        return list.stream().distinct().collect(Collectors.toList());
     }
 
     /**
@@ -513,6 +520,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         List<OverhaulItemResDTO> modelList = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
         List<OverhaulItemTreeResDTO> models = new ArrayList<>();
         if (StringUtils.isNotEmpty(modelList)) {
+            modelList = modelList.stream().distinct().collect(Collectors.toList());
             for (OverhaulItemResDTO model : modelList) {
                 OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
                 org.springframework.beans.BeanUtils.copyProperties(model, res);

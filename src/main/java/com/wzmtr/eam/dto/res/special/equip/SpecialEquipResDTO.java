@@ -145,4 +145,10 @@ public class SpecialEquipResDTO {
 
     @ApiModelProperty(value = "维管部门名称")
     private String secOrgName;
+
+    /**
+     * 是否预警 0 否 1 是
+     */
+    @ApiModelProperty(value = "是否预警 0 否 1 是")
+    private Integer isWarn;
 }

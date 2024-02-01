@@ -15,5 +15,5 @@ public interface FileMapper {
 
     void insertFile(FileReqDTO dto);
 
-    List<File> selectFileInfo(List<String> list);
+    List<File> selectFileInfo(List<String> ids);
 }

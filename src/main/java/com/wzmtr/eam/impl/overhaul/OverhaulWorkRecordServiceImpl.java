@@ -44,26 +44,25 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
             String[] workerNames = workName.split(",");
             if (workerCodes.length > 0) {
                 for (int i = 0; i < workerCodes.length; i++) {
-                    OverhaulWorkRecordReqDTO dmer24 = new OverhaulWorkRecordReqDTO();
-                    dmer24.setRecId(TokenUtil.getUuId());
-                    dmer24.setOrderCode(overhaulOrderReqDTO.getOrderCode());
-                    dmer24.setPlanCode(overhaulOrderReqDTO.getPlanCode());
-                    dmer24.setWorkerGroupCode(overhaulOrderReqDTO.getWorkerGroupCode());
-                    dmer24.setWorkerCode(workerCodes[i]);
-                    dmer24.setUploadTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                    dmer24.setDownloadTime(overhaulOrderReqDTO.getSendPersonId());
-                    dmer24.setExt5(overhaulOrderReqDTO.getSendTime());
-                    String[] workerMsgs;
-                    workerMsgs = workerNames[i].split("-");
-                    dmer24.setWorkerName(workerMsgs[0]);
-                    if (workerMsgs.length > 1) {
-                        dmer24.setExt1(workerMsgs[1]);
+                    OverhaulWorkRecordReqDTO workRecord = new OverhaulWorkRecordReqDTO();
+                    workRecord.setRecId(TokenUtil.getUuId());
+                    workRecord.setOrderCode(overhaulOrderReqDTO.getOrderCode());
+                    workRecord.setPlanCode(overhaulOrderReqDTO.getPlanCode());
+                    workRecord.setWorkerGroupCode(overhaulOrderReqDTO.getWorkerGroupCode());
+                    workRecord.setWorkerCode(workerCodes[i]);
+                    workRecord.setUploadTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    workRecord.setDownloadTime(overhaulOrderReqDTO.getSendPersonId());
+                    workRecord.setExt5(overhaulOrderReqDTO.getSendTime());
+                    String[] workerMsg = workerNames[i].split("-");
+                    workRecord.setWorkerName(workerMsg[0]);
+                    if (workerMsg.length > 1) {
+                        workRecord.setExt1(workerMsg[1]);
                     }
-                    overhaulWorkRecordMapper.insert(dmer24);
+                    overhaulWorkRecordMapper.insert(workRecord);
                     // 流程流转
                     try {
                         if (CommonConstants.TWO_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
-                            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), dmer24.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtil.getCurrentPersonId());
+                            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workRecord.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtil.getCurrentPersonId());
                         } else if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
                             // 根据角色获取用户列表
                             List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");

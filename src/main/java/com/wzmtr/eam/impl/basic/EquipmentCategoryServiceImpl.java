@@ -88,8 +88,8 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     }
 
     @Override
-    public void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response) throws IOException {
-        List<EquipmentCategoryResDTO> categoryResDTOList = equipmentCategoryMapper.listEquipmentCategory(name, no, parentId);
+    public void exportEquipmentCategory(List<String> ids, HttpServletResponse response) throws IOException {
+        List<EquipmentCategoryResDTO> categoryResDTOList = equipmentCategoryMapper.exportEquipmentCategory(ids);
         if (categoryResDTOList != null && !categoryResDTOList.isEmpty()) {
             List<ExcelEquipmentCategoryResDTO> resList = new ArrayList<>();
             for (EquipmentCategoryResDTO categoryResDTO : categoryResDTOList) {

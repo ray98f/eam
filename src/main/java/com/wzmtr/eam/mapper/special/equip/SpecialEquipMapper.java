@@ -27,8 +27,7 @@ public interface SpecialEquipMapper {
 
     void modifySpecialEquip(SpecialEquipReqDTO specialEquipReqDTO);
 
-    List<SpecialEquipResDTO> listSpecialEquip(String equipCode, String equipName, String specialEquipCode, String factNo,
-                                              String useLineNo, String position1Code, String specialEquipType, String equipStatus);
+    List<SpecialEquipResDTO> listSpecialEquip(List<String> ids);
 
     Page<SpecialEquipHistoryResDTO> pageSpecialEquipHistory(Page<SpecialEquipHistoryResDTO> page, String equipCode);
 

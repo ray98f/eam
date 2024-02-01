@@ -6,7 +6,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.basic.OrgLineService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -65,11 +69,12 @@ public class OrgLineController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出组织机构线别")
-    public void exportOrgLine(@RequestParam(required = false) @ApiParam("组织机构") String orgCode,
-                              @RequestParam(required = false) @ApiParam("线别") String lineCode,
-                              HttpServletResponse response) throws IOException {
-        orgLineService.exportOrgLine(orgCode, lineCode, response);
+    public void exportOrgLine(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        orgLineService.exportOrgLine(baseIdsEntity.getIds(), response);
     }
 }

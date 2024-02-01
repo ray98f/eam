@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author frp
  */
@@ -82,4 +84,10 @@ public class GearboxChangeOilReqDTO {
 
     @ApiModelProperty(value = "扩展字段7")
     private String ext7;
+
+    /**
+     * 里程(公里)
+     */
+    @ApiModelProperty(value = "里程(公里)")
+    private BigDecimal totalMiles;
 }

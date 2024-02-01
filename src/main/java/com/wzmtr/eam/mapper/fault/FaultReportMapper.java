@@ -4,9 +4,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
+import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Author: Li.Wang
@@ -20,7 +23,7 @@ public interface FaultReportMapper {
      */
     Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName,
                                  String faultModuleId, String majorCode, String systemCode, String equipTypeCode,
-                                 String fillinTimeStart, String fillinTimeEnd, String positionCode, String orderStatus);
+                                 String fillinTimeStart, String fillinTimeEnd, String positionCode, String orderStatus,String faultWorkNo,String lineCode);
 
     void addToFaultInfo(FaultInfoDO faultInfo);
 
@@ -48,5 +51,16 @@ public interface FaultReportMapper {
 
     void cancelInfo(FaultCancelReqDTO reqDTO);
 
-    Page<FaultReportResDTO> carFaultReportList(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId, String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart, String fillinTimeEnd, String positionCode);
+    Page<FaultReportResDTO> carFaultReportList(Page<Object> of, String faultNo, String objectCode, String objectName,
+                                               String faultModuleId, String majorCode, String systemCode,
+                                               String equipTypeCode, String fillinTimeStart, String fillinTimeEnd,
+                                               String positionCode, String orderStatus);
+
+    /**
+     * 根据故障编号和工单编号查询工单列表
+     * @param faultNo 故障编号
+     * @param faultWorkNo 工单编号
+     * @return 工单列表
+     */
+    List<FaultOrderResDTO> listOrderByNoAndWorkNo(String faultNo, String faultWorkNo);
 }

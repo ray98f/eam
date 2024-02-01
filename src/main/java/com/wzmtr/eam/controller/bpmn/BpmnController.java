@@ -157,4 +157,15 @@ public class BpmnController {
         bpmnService.reject(taskId, opinion);
         return DataResponse.success();
     }
+
+    /**
+     * 根据流程实例id获取最新流程图
+     * @param processId 流程实例id
+     * @return 流程图信息
+     */
+    @ApiOperation(value = "根据流程实例id获取最新流程图")
+    @GetMapping("/getFlowChart")
+    public DataResponse<FlowChartRes> getFlowChartByProcessId(@RequestParam("processId") String processId) {;
+        return DataResponse.of(bpmnService.getFlowChartByProcessId(processId));
+    }
 }

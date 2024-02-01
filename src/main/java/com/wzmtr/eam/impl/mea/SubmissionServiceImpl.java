@@ -180,7 +180,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.agree(taskId, submissionReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getSendVerifyNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus("已完成");
-                reqDTO.setRecStatus("30");
+                reqDTO.setSendVerifyStatus("30");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()
                         .status(BpmnStatus.PASS.getDesc())
@@ -189,7 +189,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                         .build());
             }
         } else {
-            if (!CommonConstants.TWENTY_STRING.equals(res.getRecStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(res.getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = res.getWorkFlowInstId();
@@ -197,7 +197,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 bpmnService.reject(taskId, submissionReqDTO.getExamineReqDTO().getOpinion());
                 reqDTO.setWorkFlowInstId("");
                 reqDTO.setWorkFlowInstStatus("");
-                reqDTO.setRecStatus("10");
+                reqDTO.setSendVerifyStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()
                         .status(BpmnStatus.REJECT.getDesc())

@@ -83,7 +83,7 @@ public class OverTodoServiceImpl implements OverTodoService {
                 throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
             }
             String contextPath = dictionaries.getItemEname();
-            String fullPath = contextPath + taskUrl + "?inqu_status-0-workFlowInstId=" + businessRecId;
+            String fullPath = contextPath + taskUrl + "?workFlowInstId" + businessRecId;
             EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
             eipMsgPushReq.add();
             eipMsgPushReq.setUserId(stepUserId);
@@ -107,8 +107,23 @@ public class OverTodoServiceImpl implements OverTodoService {
     }
 
     @Override
-    public void insertTodoWithUserGroupAndOrg(String taskTitle, String businessRecId, String businessNo, String stepUserGroup, String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content) {
+    public void insertTodoWithUserGroup(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
+                                  String stepName, String taskUrl, String lastStepUserId) {
         // 根据角色获取用户列表
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(null, stepUserGroup);
+        List<String> userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        if (StringUtils.isNotEmpty(userIds)) {
+            for (String userId : userIds) {
+                insertTodo(taskTitle, businessRecId, businessNo, userId, stepName, taskUrl, lastStepUserId);
+            }
+        }
+    }
+
+
+    @Override
+    public void insertTodoWithUserGroupAndOrg(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
+                                              String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content) {
+        // 根据角色和部门获取用户列表
         List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(stepOrg, stepUserGroup);
         List<String> userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
         insertTodoWithUserList(userIds, taskTitle, businessRecId, businessNo, stepName, taskUrl, lastStepUserId, content);
@@ -163,7 +178,7 @@ public class OverTodoServiceImpl implements OverTodoService {
     public List<String> queryUserByParent(String groupId, String orgCode) {
         String parentCode = organizationMapper.getParentCodeByCode(orgCode);
         if (StringUtils.isNotEmpty(parentCode)) {
-            // 根据角色获取用户列表
+            // 根据角色和部门获取用户列表
             List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(orgCode, groupId);
             if (StringUtils.isNotEmpty(userList)) {
                 return userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
@@ -185,7 +200,7 @@ public class OverTodoServiceImpl implements OverTodoService {
     public List<String> queryUserByChild(String groupId, String orgCode, String majorCode, String lineCode, String orgType) {
         String childCode = organizationMapper.getChildCodeByCodeAndMajorLineType(orgCode, majorCode, lineCode, orgType);
         if (StringUtils.isNotEmpty(childCode)) {
-            // 根据角色获取用户列表
+            // 根据角色和部门获取用户列表
             List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(orgCode, groupId);
             if (StringUtils.isNotEmpty(userList)) {
                 return userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
@@ -194,19 +209,9 @@ public class OverTodoServiceImpl implements OverTodoService {
         }
         return null;
     }
-
-    /**
-     * 根据用户列表发送消息（包含短信和待办推送）
-     * @param userIds 用户ids
-     * @param taskTitle 标题
-     * @param businessRecId recId
-     * @param businessNo 编号
-     * @param stepName 阶段名称
-     * @param taskUrl url
-     * @param lastStepUserId 上一步用户id
-     * @param content 内容
-     */
-    public void insertTodoWithUserList(List<String> userIds, String taskTitle, String businessRecId, String businessNo, String stepName, String taskUrl, String lastStepUserId, String content) {
+    @Override
+    public void insertTodoWithUserList(List<String> userIds, String taskTitle, String businessRecId, String businessNo,
+                                       String stepName, String taskUrl, String lastStepUserId, String content) {
         if (StringUtils.isNotEmpty(userIds) && StringUtils.isNotEmpty(content)) {
 //            // todo 发送短信
 //            eiInfo.set("contacts", userIds);

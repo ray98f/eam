@@ -342,7 +342,7 @@
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
         FROM T_WEEKLY_PLAN WHERE DELETE_FLAG='0' and REC_ID IN (
-        <foreach collection="list" index="index" item="id" separator=",">
+        <foreach collection="ids" index="index" item="id" separator=",">
             #{id}
         </foreach>
         )

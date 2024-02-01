@@ -63,8 +63,8 @@
     <select id="listOverhaulItemModel" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO">
         SELECT MODEL_NAME, WORK_USER_ID, WORK_USER_NAME, WORK_RESULT
         FROM T_OVERHAUL_ITEM WHERE OBJECT_CODE=#{objectCode} and ORDER_CODE=#{orderCode}
-        GROUP BY MODEL_NAME, WORK_USER_ID, WORK_USER_NAME, WORK_RESULT
-        ORDER BY MODEL_NAME ASC
+        GROUP BY MODEL_NAME, WORK_USER_ID, WORK_USER_NAME, WORK_RESULT, MODEL_SEQUENCE, SEQUENCE_ID, ITEM_NAME
+        order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
     </select>
 
     <select id="listOverhaulItemByModel" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO">

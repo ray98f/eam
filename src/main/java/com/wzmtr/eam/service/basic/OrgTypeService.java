@@ -8,6 +8,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public interface OrgTypeService {
 
@@ -21,5 +22,5 @@ public interface OrgTypeService {
 
     void deleteOrgType(BaseIdsEntity baseIdsEntity);
 
-    void exportOrgType(String orgCode, String orgType, HttpServletResponse response) throws IOException;
+    void exportOrgType(List<String> ids, HttpServletResponse response) throws IOException;
 }

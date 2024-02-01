@@ -99,18 +99,11 @@
         FROM SYS_ORG_MAJOR om
         LEFT JOIN SYS_USER u ON om.REC_CREATOR=u.ID
         where om.DELETE_FLAG='0'
-        <if test="orgCodes!=null and orgCodes.size()>0">
-            and
-            <foreach collection="orgCodes" item="orgCode" separator="or">
-                om.ORG_CODE in
-                <foreach collection="orgCode" item="x" separator="," open="(" close=")">
-                    #{x}
-                </foreach>
-            </foreach>
-        </if>
-        <if test="majorCode!=null and majorCode!=''">
-            and om.MAJOR_CODE=#{majorCode}
-        </if>
+        AND om.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         ORDER BY om.REC_CREATE_TIME ASC
     </select>
 

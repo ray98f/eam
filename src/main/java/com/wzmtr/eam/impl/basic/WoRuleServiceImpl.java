@@ -127,8 +127,8 @@ public class WoRuleServiceImpl implements WoRuleService {
     }
 
     @Override
-    public void exportWoRule(String ruleCode, String ruleName, String ruleUseage, HttpServletResponse response) throws IOException {
-        List<WoRuleResDTO> woRules = woRuleMapper.listWoRule(ruleCode, ruleName, ruleUseage);
+    public void exportWoRule(List<String> ids, HttpServletResponse response) throws IOException {
+        List<WoRuleResDTO> woRules = woRuleMapper.exportWoRule(ids);
         if (StringUtils.isNotEmpty(woRules)) {
             List<ExcelWoRuleResDTO> list = new ArrayList<>();
             for (WoRuleResDTO resDTO : woRules) {
@@ -149,8 +149,8 @@ public class WoRuleServiceImpl implements WoRuleService {
     }
 
     @Override
-    public void exportWoRuleDetail(String ruleCode, HttpServletResponse response) throws IOException {
-        List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.listWoRuleDetail(ruleCode, null, null);
+    public void exportWoRuleDetail(List<String> ids, HttpServletResponse response) throws IOException {
+        List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.exportWoRuleDetail(ids);
         if (StringUtils.isNotEmpty(woRuleDetails)) {
             List<ExcelWoRuleDetailResDTO> list = new ArrayList<>();
             for (WoRuleResDTO.WoRuleDetail resDTO : woRuleDetails) {

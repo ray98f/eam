@@ -366,30 +366,11 @@
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
         where 1=1
         and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
-        <if test="equipCode!=null and equipCode!=''">
-            and b.EQUIP_CODE like '%' || #{equipCode} || '%'
-        </if>
-        <if test="equipName!=null and equipName!=''">
-            and b.EQUIP_NAME like '%' || #{equipName} || '%'
-        </if>
-        <if test="specialEquipCode!=null and specialEquipCode!=''">
-            and a.SPECIAL_EQUIP_CODE like '%' || #{specialEquipCode} || '%'
-        </if>
-        <if test="factNo!=null and factNo!=''">
-            and a.FACT_NO like '%' || #{factNo} || '%'
-        </if>
-        <if test="useLineNo!=null and useLineNo!=''">
-            and b.USE_LINE_NO=#{useLineNo}
-        </if>
-        <if test="position1Code!=null and position1Code!=''">
-            and b.POSITION1_CODE=#{position1Code}
-        </if>
-        <if test="specialEquipType!=null and specialEquipType!=''">
-            and a.SPECIAL_EQUIP_TYPE like '%' || #{specialEquipType} || '%'
-        </if>
-        <if test="equipStatus!=null and equipStatus!=''">
-            and b.EQUIP_STATUS=#{equipStatus}
-        </if>
+        AND a.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         ORDER BY
         CASE
         WHEN b.VERIFY_VALIDITY_DATE =' '

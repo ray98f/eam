@@ -110,8 +110,8 @@ public class PartReplaceServiceImpl implements PartReplaceService {
     }
 
     @Override
-    public void exportPartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason, HttpServletResponse response) throws IOException {
-        List<PartReplaceResDTO> partReplaceResDTOList = partReplaceMapper.listPartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason);
+    public void exportPartReplace(List<String> ids, HttpServletResponse response) throws IOException {
+        List<PartReplaceResDTO> partReplaceResDTOList = partReplaceMapper.listPartReplace(ids);
         if (partReplaceResDTOList != null && !partReplaceResDTOList.isEmpty()) {
             List<ExcelPartReplaceResDTO> list = new ArrayList<>();
             for (PartReplaceResDTO resDTO : partReplaceResDTOList) {

@@ -280,6 +280,79 @@
         WHERE REC_ID=#{id}
     </update>
 
+    <insert id="importOverhaulTpl">
+        insert ALL
+        <foreach collection="list" index="index" item="tpl" separator=" ">
+            INTO T_OVERHAUL_TPL (
+            REC_ID,  <!-- 记录ID -->
+            TEMPLATE_ID,  <!-- 模板编号 -->
+            TEMPLATE_NAME,  <!-- 模板名称 -->
+            LINE_NO,  <!-- 线路编码 -->
+            LINE_NAME,  <!-- 线路名称 -->
+            POSITION1_NAME,  <!-- 位置1  -->
+            POSITION1_CODE,  <!-- 位置1代码 -->
+            SUBJECT_CODE,  <!-- 设备专业编码 -->
+            SUBJECT_NAME,  <!-- 设备专业名称 -->
+            SYSTEM_CODE,  <!-- 系统编码 -->
+            SYSTEM_NAME,  <!-- 系统名称 -->
+            EQUIP_TYPE_CODE,  <!-- 设备类别编码 -->
+            EQUIP_TYPE_NAME,  <!-- 设备类别名称 -->
+            TRIAL_STATUS,  <!-- 审批状态 -->
+            WORK_FLOW_INST_ID,  <!-- 工作流实例ID -->
+            WORK_FLOW_INST_STATUS,  <!-- 工作流实例状态 -->
+            REMARK,  <!-- 说明 -->
+            COMPANY_CODE,  <!-- 公司代码 -->
+            COMPANY_NAME,  <!-- 公司名称 -->
+            REC_CREATOR,  <!-- 记录创建者 -->
+            REC_CREATE_TIME,  <!-- 记录创建时间 -->
+            REC_REVISOR,  <!-- 记录修改者 -->
+            REC_REVISE_TIME,  <!-- 记录修改时间 -->
+            REC_DELETOR,  <!-- 记录删除者 -->
+            REC_DELETE_TIME,  <!-- 记录删除时间 -->
+            DELETE_FLAG,  <!-- 删除标记 -->
+            ARCHIVE_FLAG,  <!-- 归档标记 -->
+            EXT1,  <!-- 扩展字段1 -->
+            EXT2,  <!-- 扩展字段2 -->
+            EXT3,  <!-- 扩展字段3 -->
+            EXT4,  <!-- 扩展字段4 -->
+            EXT5  <!-- 扩展字段5 -->)
+            VALUES (
+            #{tpl.recId,jdbcType=VARCHAR},
+            #{tpl.templateId,jdbcType=VARCHAR},
+            #{tpl.templateName,jdbcType=VARCHAR},
+            #{tpl.lineNo,jdbcType=VARCHAR},
+            #{tpl.lineName,jdbcType=VARCHAR},
+            ' ',
+            ' ',
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{tpl.subjectName} and NODE_LEVEL=1),
+            #{tpl.subjectName,jdbcType=VARCHAR},
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{tpl.systemName} and NODE_LEVEL=2),
+            #{tpl.systemName,jdbcType=VARCHAR},
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{tpl.equipTypeName} and NODE_LEVEL=3),
+            #{tpl.equipTypeName,jdbcType=VARCHAR},
+            #{tpl.trialStatus,jdbcType=VARCHAR},
+            #{tpl.workFlowInstId,jdbcType=VARCHAR},
+            #{tpl.workFlowInstStatus,jdbcType=VARCHAR},
+            #{tpl.remark,jdbcType=VARCHAR},
+            #{tpl.companyCode,jdbcType=VARCHAR},
+            #{tpl.companyName,jdbcType=VARCHAR},
+            #{tpl.recCreator,jdbcType=VARCHAR},
+            #{tpl.recCreateTime,jdbcType=VARCHAR},
+            #{tpl.recRevisor,jdbcType=VARCHAR},
+            #{tpl.recReviseTime,jdbcType=VARCHAR},
+            #{tpl.recDeletor,jdbcType=VARCHAR},
+            #{tpl.recDeleteTime,jdbcType=VARCHAR},
+            '0',
+            #{tpl.archiveFlag,jdbcType=VARCHAR},
+            #{tpl.ext1,jdbcType=VARCHAR},
+            #{tpl.ext2,jdbcType=VARCHAR},
+            #{tpl.ext3,jdbcType=VARCHAR},
+            #{tpl.ext4,jdbcType=VARCHAR},
+            #{tpl.ext5,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
     <update id="changeOverhaulTpl">
         UPDATE T_OVERHAUL_TPL SET
         TRIAL_STATUS	=#{trialStatus},   <!-- 审批状态 -->
@@ -430,6 +503,13 @@
         FROM T_OVERHAUL_TPL_DETAIL
         WHERE 1=1 AND TEMPLATE_ID=#{templateId} and DELETE_FLAG='0'
         order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
+    </select>
+
+    <select id="getTemplateId" resultType="java.lang.String">
+        SELECT TEMPLATE_ID	as "templateId"
+        FROM T_OVERHAUL_TPL
+        WHERE TEMPLATE_NAME=#{templateName} AND LINE_NAME=#{lineName} AND
+        SUBJECT_NAME=#{subjectName} AND SYSTEM_NAME=#{systemName} AND EQUIP_TYPE_NAME=#{equipTypeName}
     </select>
 
     <select id="getOverhaulTplDetailDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO">
@@ -624,6 +704,81 @@
         WHERE REC_ID =#{recId}
     </update>
 
+    <insert id="importOverhaulTplDetail">
+        insert ALL
+        <foreach collection="list" index="index" item="tplDetail" separator=" ">
+            INTO T_OVERHAUL_TPL_DETAIL (
+            REC_ID,  <!-- 记录ID -->
+            TEMPLATE_ID,  <!-- 模板编号 -->
+            TEMPLATE_NAME,  <!-- 模板名称 -->
+            MODEL_SEQUENCE,  <!-- 模块顺序 -->
+            MODEL_NAME,  <!-- 模块名称 -->
+            TRAIN_NUMBER,  <!-- 车组号 -->
+            ITEM_NAME,  <!-- 检修项 -->
+            ITEM_TYPE,  <!-- 项目类型 -->
+            INSPECT_ITEM_VALUE,  <!-- 项目值 -->
+            MAX_VALUE,  <!-- 最大参考值 -->
+            MIN_VALUE,  <!-- 最小参考值 -->
+            ITEM_UNIT,  <!-- 参考值单位 -->
+            DEFAULT_VALUE,  <!-- 默认值 -->
+            ITEM_STATE,  <!-- 启用状态 -->
+            DEFAULT_FLAG,  <!-- 默认标识 -->
+            SEQUENCE_ID,  <!-- 顺序号 -->
+            REPAIR_TYPE,  <!-- 修程 -->
+            TIME_PERIOD,  <!-- 时间周期 -->
+            MILEAGE_PERIOD,  <!-- 里程周期 -->
+            REC_CREATOR,  <!-- 记录创建者 -->
+            REC_CREATE_TIME,  <!-- 记录创建时间 -->
+            REC_REVISOR,  <!-- 记录修改者 -->
+            REC_REVISE_TIME,  <!-- 记录修改时间 -->
+            REC_DELETOR,  <!-- 记录删除者 -->
+            REC_DELETE_TIME,  <!-- 记录删除时间 -->
+            DELETE_FLAG,  <!-- 删除标记 -->
+            ARCHIVE_FLAG,  <!-- 归档标记 -->
+            REMARK,  <!-- 说明 -->
+            EXT1,  <!-- 扩展字段1 -->
+            EXT2,  <!-- 扩展字段2 -->
+            EXT3,  <!-- 扩展字段3 -->
+            EXT4,  <!-- 扩展字段4 -->
+            EXT5  <!-- 扩展字段5 -->)
+            VALUES (
+            #{tplDetail.recId,jdbcType=VARCHAR},
+            #{tplDetail.templateId,jdbcType=VARCHAR},
+            #{tplDetail.templateName,jdbcType=VARCHAR},
+            #{tplDetail.modelSequence,jdbcType=VARCHAR},
+            #{tplDetail.modelName,jdbcType=VARCHAR},
+            #{tplDetail.trainNumber,jdbcType=VARCHAR},
+            #{tplDetail.itemName,jdbcType=VARCHAR},
+            #{tplDetail.itemType,jdbcType=VARCHAR},
+            #{tplDetail.inspectItemValue,jdbcType=VARCHAR},
+            #{tplDetail.maxValue,jdbcType=VARCHAR},
+            #{tplDetail.minValue,jdbcType=VARCHAR},
+            #{tplDetail.itemUnit,jdbcType=VARCHAR},
+            #{tplDetail.defaultValue,jdbcType=VARCHAR},
+            #{tplDetail.itemState,jdbcType=VARCHAR},
+            #{tplDetail.defaultFlag,jdbcType=VARCHAR},
+            #{tplDetail.sequenceId,jdbcType=VARCHAR},
+            #{tplDetail.repairType,jdbcType=VARCHAR},
+            #{tplDetail.timePeriod,jdbcType=VARCHAR},
+            #{tplDetail.mileagePeriod,jdbcType=VARCHAR},
+            #{tplDetail.recCreator,jdbcType=VARCHAR},
+            #{tplDetail.recCreateTime,jdbcType=VARCHAR},
+            #{tplDetail.recRevisor,jdbcType=VARCHAR},
+            #{tplDetail.recReviseTime,jdbcType=VARCHAR},
+            #{tplDetail.recDeletor,jdbcType=VARCHAR},
+            #{tplDetail.recDeleteTime,jdbcType=VARCHAR},
+            '0',
+            #{tplDetail.archiveFlag,jdbcType=VARCHAR},
+            #{tplDetail.remark,jdbcType=VARCHAR},
+            #{tplDetail.ext1,jdbcType=VARCHAR},
+            #{tplDetail.ext2,jdbcType=VARCHAR},
+            #{tplDetail.ext3,jdbcType=VARCHAR},
+            #{tplDetail.ext4,jdbcType=VARCHAR},
+            #{tplDetail.ext5,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
     <select id="pageOverhaulMaterial" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO">
         SELECT
         REC_ID	as "recId",
@@ -815,6 +970,59 @@
         </foreach>
         )
     </update>
+
+    <insert id="importOverhaulMaterial">
+        insert ALL
+        <foreach collection="list" index="index" item="material" separator=" ">
+            INTO T_OVERHAUL_MATERIAL (
+            REC_ID,
+            TEMPLATE_ID,
+            TEMPLATE_NAME,
+            MATERIAL_CODE,
+            MATERIAL_NAME,
+            MATERIAL_SPEC,
+            UNIT_NAME,
+            QUANTITY,
+            REMARK,
+            REC_CREATOR,
+            REC_CREATE_TIME,
+            REC_REVISOR,
+            REC_REVISE_TIME,
+            REC_DELETOR,
+            REC_DELETE_TIME,
+            DELETE_FLAG,
+            ARCHIVE_FLAG,
+            EXT1,
+            EXT2,
+            EXT3,
+            EXT4,
+            EXT5)
+            VALUES (
+            #{material.recId,jdbcType=VARCHAR},
+            #{material.templateId,jdbcType=VARCHAR},
+            #{material.templateName,jdbcType=VARCHAR},
+            #{material.materialCode,jdbcType=VARCHAR},
+            #{material.materialName,jdbcType=VARCHAR},
+            #{material.materialSpec,jdbcType=VARCHAR},
+            #{material.unitName,jdbcType=VARCHAR},
+            #{material.quantity,jdbcType=NUMERIC},
+            #{material.remark,jdbcType=VARCHAR},
+            #{material.recCreator,jdbcType=VARCHAR},
+            #{material.recCreateTime,jdbcType=VARCHAR},
+            #{material.recRevisor,jdbcType=VARCHAR},
+            #{material.recReviseTime,jdbcType=VARCHAR},
+            #{material.recDeletor,jdbcType=VARCHAR},
+            #{material.recDeleteTime,jdbcType=VARCHAR},
+            '0',
+            #{material.archiveFlag,jdbcType=VARCHAR},
+            #{material.ext1,jdbcType=VARCHAR},
+            #{material.ext2,jdbcType=VARCHAR},
+            #{material.ext3,jdbcType=VARCHAR},
+            #{material.ext4,jdbcType=VARCHAR},
+            #{material.ext5,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 
     <select id="listOverhaulMaterial" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO">
         SELECT

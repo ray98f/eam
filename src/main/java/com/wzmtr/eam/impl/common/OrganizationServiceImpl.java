@@ -123,4 +123,19 @@ public class OrganizationServiceImpl implements OrganizationService {
         return orgMajorMapper.getWorkerGroupBySubjectAndLine(equipmentResDTO.getMajorCode(),equipmentResDTO.getUseLineNo(),"10");
     }
 
+    @Override
+    public List<CompanyStructureTree> listZttCompanyStructure() {
+        CompanyStructureTree companyStructureTree = organizationMapper.getZttRoot();
+        if (Objects.isNull(companyStructureTree)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        List<CompanyStructureTree> extraRootList = new ArrayList<>();
+        extraRootList.add(companyStructureTree);
+        List<String> ids = organizationMapper.downRecursionId(companyStructureTree.getId());
+        ids.remove(companyStructureTree.getId());
+        List<CompanyStructureTree> extraBodyList = organizationMapper.listZttExtraBodyList(ids);
+        CompanyTreeUtils extraTree = new CompanyTreeUtils(extraRootList, extraBodyList);
+        return extraTree.getTree();
+    }
+
 }

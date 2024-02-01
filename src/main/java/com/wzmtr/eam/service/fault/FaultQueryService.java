@@ -37,6 +37,12 @@ public interface FaultQueryService {
 
     void sendWork(FaultSendWorkReqDTO reqDTO);
 
+    /**
+     * 完工
+     * @param reqDTO 完工返回数据
+     */
+    void finishWork(FaultFinishWorkReqDTO reqDTO);
+
     void eqCheck(FaultEqCheckReqDTO reqDTO) throws Exception;
 
     void updateHandler(FaultNosFaultWorkNosReqDTO reqDTO);

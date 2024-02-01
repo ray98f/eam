@@ -79,8 +79,8 @@ public class FaultServiceImpl implements FaultService {
     }
 
     @Override
-    public void exportFault(String code, Integer type, String lineCode, String equipmentCategoryCode, HttpServletResponse response) throws IOException {
-        List<FaultResDTO> faultResDTOList = faultMapper.listFault(code, type, lineCode, equipmentCategoryCode);
+    public void exportFault(List<String> ids, HttpServletResponse response) throws IOException {
+        List<FaultResDTO> faultResDTOList = faultMapper.exportFault(ids);
         if (faultResDTOList != null && !faultResDTOList.isEmpty()) {
             List<ExcelFaultResDTO> resList = new ArrayList<>();
             for (FaultResDTO fault : faultResDTOList) {
@@ -102,6 +102,34 @@ public class FaultServiceImpl implements FaultService {
             }
             EasyExcelUtils.export(response, "故障码信息", resList);
         }
+    }
+
+    /**
+     * 故障查询获取码值列表
+     * @param code 故障码
+     * @param type 故障类型
+     * @param lineCode 线路编号
+     * @param equipmentCategoryCode 设备类别编号
+     * @return 码值列表
+     */
+    @Override
+    public List<FaultResDTO> listQueryFault(String code, Integer type, String lineCode, String equipmentCategoryCode) {
+        List<FaultResDTO> list = faultMapper.listFault(code, type, lineCode, equipmentCategoryCode);
+        FaultResDTO faultResDTO = new FaultResDTO();
+        switch (type) {
+            case 1:
+                faultResDTO.setFaultCode("E999");
+                break;
+            case 2:
+                faultResDTO.setFaultCode("R999");
+                break;
+            default:
+                faultResDTO.setFaultCode("A999");
+                break;
+        }
+        faultResDTO.setFaultDescr("其他");
+        list.add(0, faultResDTO);
+        return list;
     }
 
 }

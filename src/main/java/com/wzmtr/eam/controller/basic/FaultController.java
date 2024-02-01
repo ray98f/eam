@@ -6,7 +6,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.basic.FaultService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +22,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -68,13 +73,29 @@ public class FaultController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出故障库")
-    public void exportFault(@RequestParam(required = false) @ApiParam("码值编号") String code,
-                            @RequestParam(required = false) @ApiParam("码值类型") Integer type,
-                            @RequestParam(required = false) @ApiParam("线路") String lineCode,
-                            @RequestParam(required = false) @ApiParam("设备分类编号") String equipmentCategoryCode,
-                            HttpServletResponse response) throws IOException {
-        faultService.exportFault(code, type, lineCode, equipmentCategoryCode, response);
+    public void exportFault(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        faultService.exportFault(baseIdsEntity.getIds(), response);
+    }
+
+    /**
+     * 故障查询获取码值列表
+     * @param code 故障码
+     * @param type 故障类型
+     * @param lineCode 线路编号
+     * @param equipmentCategoryCode 设备类别编号
+     * @return 码值列表
+     */
+    @GetMapping("/query/list")
+    @ApiOperation(value = "故障查询获取码值列表")
+    public DataResponse<List<FaultResDTO>> listQueryFault(@RequestParam(required = false) @ApiParam("码值编号") String code,
+                                                          @RequestParam(required = false) @ApiParam("码值类型") Integer type,
+                                                          @RequestParam(required = false) @ApiParam("线路") String lineCode,
+                                                          @RequestParam(required = false) @ApiParam("对象编码") String equipmentCategoryCode) {
+        return DataResponse.of(faultService.listQueryFault(code, type, lineCode, equipmentCategoryCode));
     }
 }

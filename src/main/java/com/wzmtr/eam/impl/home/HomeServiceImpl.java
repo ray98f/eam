@@ -1,6 +1,8 @@
 package com.wzmtr.eam.impl.home;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.wzmtr.eam.bizobject.HomeCountBO;
@@ -8,6 +10,8 @@ import com.wzmtr.eam.dto.res.home.EChartResDTO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 import com.wzmtr.eam.dto.res.home.ShowAResDTO;
 import com.wzmtr.eam.dto.res.home.ShowBCResDTO;
+import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.StatusWorkFlowLog;
 import com.wzmtr.eam.mapper.home.HomeMapper;
 import com.wzmtr.eam.service.home.HomeService;
 import com.wzmtr.eam.utils.StreamUtil;
@@ -60,6 +64,22 @@ public class HomeServiceImpl implements HomeService {
         homeCountResDTO.setReadSize(readSize.toString());
         homeCountResDTO.setMessageSize(messageSize.toString());
         return homeCountResDTO;
+    }
+
+    @Override
+    public Page<StatusWorkFlowLog> todoList(String type, PageReqDTO pageReqDTO) {
+        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return homeMapper.todoList(pageReqDTO.of(), type, TokenUtil.getCurrentPersonId());
+    }
+
+    @Override
+    public HomeCountResDTO todoCount() {
+        return homeMapper.todoCount(TokenUtil.getCurrentPersonId());
+    }
+
+    @Override
+    public void urgingTodo(String todoId) {
+        homeMapper.urgingTodo(todoId);
     }
 
     @Override

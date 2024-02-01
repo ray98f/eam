@@ -71,7 +71,6 @@ public class EasyExcelUtils {
 
     /**
      * 导出设置响应信息
-     *
      * @param response 响应
      * @param fileName 文件名称
      * @throws UnsupportedEncodingException
@@ -89,7 +88,6 @@ public class EasyExcelUtils {
 
     /**
      * 普通导出
-     *
      * @param response 响应
      * @param name     名称
      * @param list     数据集合
@@ -110,12 +108,24 @@ public class EasyExcelUtils {
 
     /**
      * 文件导入数据读取
-     * @param file
-     * @param head
-     * @return
-     * @throws IOException
+     * @param file 文件
+     * @param head 头部
+     * @return 列表
+     * @throws IOException 读写流异常
      */
     public static <T> List<T> read(MultipartFile file, Class<T> head) throws IOException {
         return EasyExcel.read(file.getInputStream(), head, null).doReadAllSync();
+    }
+
+    /**
+     * 文件导入数据读取(多sheet)
+     * @param file 文件
+     * @param head 头部
+     * @param sheetNo sheet编号
+     * @return 列表
+     * @throws IOException 读写流异常
+     */
+    public static <T> List<T> read(MultipartFile file, Class<T> head, Integer sheetNo) throws IOException {
+        return EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync();
     }
 }

@@ -76,9 +76,8 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
     }
 
     @Override
-    public void exportEquipmentCharge(String equipCode, String equipName, String chargeDate, String position1Name,
-                                      String subjectCode, String systemCode, String equipTypeCode, HttpServletResponse response) throws IOException {
-        List<EquipmentChargeResDTO> equipmentChargeResDTOList = equipmentChargeMapper.listEquipmentCharge(equipCode, equipName, chargeDate, position1Name, subjectCode, systemCode, equipTypeCode);
+    public void exportEquipmentCharge(List<String> ids, HttpServletResponse response) throws IOException {
+        List<EquipmentChargeResDTO> equipmentChargeResDTOList = equipmentChargeMapper.listEquipmentCharge(ids);
         if (equipmentChargeResDTOList != null && !equipmentChargeResDTOList.isEmpty()) {
             List<ExcelEquipChargeResDTO> list = new ArrayList<>();
             for (EquipmentChargeResDTO resDTO : equipmentChargeResDTOList) {

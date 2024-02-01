@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,10 +34,11 @@ public interface TrainMileService {
      * 获取每日列车里程及能耗列表
      * @param day 时间
      * @param equipCode 设备编号
+     * @param equipName 车号
      * @param pageReqDTO 分页参数
      * @return 每日列车里程及能耗列表
      */
-    Page<TrainMileDailyResDTO> pageTrainDailyMile(String day, String equipCode, PageReqDTO pageReqDTO);
+    Page<TrainMileDailyResDTO> pageTrainDailyMile(String day, String equipCode, String equipName, PageReqDTO pageReqDTO);
 
     /**
      * 获取每日列车里程及能耗详情
@@ -65,11 +67,16 @@ public interface TrainMileService {
 
     /**
      * 导出每日列车里程及能耗列表
-     * @param day 时间
-     * @param equipCode 设备编号
+     * @param ids ids
      * @param response res
      * @throws IOException 流异常
      */
-    void exportTrainDailyMile(String day, String equipCode, HttpServletResponse response) throws IOException;
+    void exportTrainDailyMile(List<String> ids, HttpServletResponse response) throws IOException;
+
+    /**
+     * 导入每日列车里程及能耗列表
+     * @param file 文件
+     */
+    void importTrainDailyMile(MultipartFile file);
 
 }

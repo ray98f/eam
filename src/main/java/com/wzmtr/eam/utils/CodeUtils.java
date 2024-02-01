@@ -6,14 +6,34 @@ import java.text.SimpleDateFormat;
 
 public class CodeUtils {
 
-    public static String getNextCode(String code, Integer num) {
-        String prefix = code.substring(0, num);
-        long suffix = Long.parseLong(code.substring(num));
+    /**
+     * 根据code 获取递增code
+     * @param code code
+     * @param codeNum code前缀长度
+     * @return 递增code
+     */
+    public static String getNextCode(String code, Integer codeNum) {
+        String prefix = code.substring(0, codeNum);
+        long suffix = Long.parseLong(code.substring(codeNum));
         suffix += 1;
-        return prefix + String.format("%0" + (code.length() - num) +"d", suffix);
+        return prefix + String.format("%0" + (code.length() - codeNum) + "d", suffix);
     }
 
-    public static String getNextCode(String code,String head) {
+    /**
+     * 根据code及递增长度 获取递增code
+     * @param code code
+     * @param codeNum code前缀长度
+     * @param addNum 递增的长度
+     * @return 递增code
+     */
+    public static String getNextCodeByAddNum(String code, Integer codeNum, Integer addNum) {
+        String prefix = code.substring(0, codeNum);
+        long suffix = Long.parseLong(code.substring(codeNum));
+        suffix += addNum;
+        return prefix + String.format("%0" + (code.length() - codeNum) + "d", suffix);
+    }
+
+    public static String getNextCode(String code, String head) {
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         if (StringUtils.isEmpty(code) || !(CommonConstants.TWENTY_STRING + code.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
             code = head + day.format(System.currentTimeMillis()).substring(2) + "0001";
@@ -24,7 +44,7 @@ public class CodeUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(getNextCode("YH23080912345","YH"));
+        System.out.println(getNextCode("YH23080912345", "YH"));
     }
 
 

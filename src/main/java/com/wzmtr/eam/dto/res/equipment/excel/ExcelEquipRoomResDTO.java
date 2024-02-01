@@ -18,24 +18,16 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ExcelEquipRoomResDTO {
 
-    @ExcelProperty(value = "记录编号")
-    private String recId;
     @ExcelProperty(value = "设备房编码")
     private String equipRoomCode;
     @ExcelProperty(value = "设备房名称")
     private String equipRoomName;
-    @ExcelProperty(value = "专业编码")
-    private String subjectCode;
     @ExcelProperty(value = "专业名称")
     private String subjectName;
     @ExcelProperty(value = "线别编码")
     private String lineCode;
-    @ExcelProperty(value = "位置一编码")
-    private String position1Code;
     @ExcelProperty(value = "位置一名称")
     private String position1Name;
-    @ExcelProperty(value = "位置二编码")
-    private String position2Code;
     @ExcelProperty(value = "位置二名称")
     private String position2Name;
     @ExcelProperty(value = "备注")

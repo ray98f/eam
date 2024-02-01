@@ -96,6 +96,10 @@ public class OverhaulTplController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修模板导入
+     * @param file excel文件
+     */
     @PostMapping("/import")
     @ApiOperation(value = "导入检修模板")
     public DataResponse<T> importOverhaulTpl(@RequestParam MultipartFile file) {

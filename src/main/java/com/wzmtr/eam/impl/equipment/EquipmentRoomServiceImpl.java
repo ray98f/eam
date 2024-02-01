@@ -75,9 +75,8 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
     }
 
     @Override
-    public void exportEquipmentRoom(String equipRoomCode, String equipRoomName, String lineCode, String position1Code,
-                                    String position1Name, String subjectCode, HttpServletResponse response) throws IOException {
-        List<EquipmentRoomResDTO> equipmentRoomResDTOList = equipmentRoomMapper.listEquipmentRoom(equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode);
+    public void exportEquipmentRoom(List<String> ids, HttpServletResponse response) throws IOException {
+        List<EquipmentRoomResDTO> equipmentRoomResDTOList = equipmentRoomMapper.exportEquipmentRoom(ids);
         if (StringUtils.isNotEmpty(equipmentRoomResDTOList)) {
             List<ExcelEquipRoomResDTO> list = new ArrayList<>();
             for (EquipmentRoomResDTO resDTO : equipmentRoomResDTOList) {

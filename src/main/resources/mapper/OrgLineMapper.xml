@@ -90,18 +90,11 @@
         FROM SYS_ORG_LINE ol
         LEFT JOIN SYS_USER u ON ol.REC_CREATOR=u.ID
         where ol.DELETE_FLAG='0'
-        <if test="orgCodes!=null and orgCodes.size()>0">
-            and
-            <foreach collection="orgCodes" item="orgCode" separator="or">
-                ol.ORG_CODE in
-                <foreach collection="orgCode" item="x" separator="," open="(" close=")">
-                    #{x}
-                </foreach>
-            </foreach>
-        </if>
-        <if test="lineCode!=null and lineCode!=''">
-            and ol.LINE_CODE=#{lineCode}
-        </if>
+        AND ol.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         ORDER BY ol.REC_CREATE_TIME ASC
     </select>
 

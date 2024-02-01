@@ -270,4 +270,41 @@
         ORDER BY EQUIP_ROOM_CODE desc
     </select>
 
+    <select id="exportEquipmentRoom" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 统一编号 -->
+        EQUIP_ROOM_CODE	as "equipRoomCode",  <!-- 设备房编码 -->
+        EQUIP_ROOM_NAME	as "equipRoomName",  <!-- 设备房名称 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 专业名称 -->
+        LINE_CODE	as "lineCode",  <!-- 线别编码 -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置一编码 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        POSITION2_CODE	as "position2Code",  <!-- 位置二编码 -->
+        POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_EQUIPMENT_ROOM
+        WHERE 1=1 AND DELETE_FLAG='0'
+        AND REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY EQUIP_ROOM_CODE desc
+    </select>
+
 </mapper>

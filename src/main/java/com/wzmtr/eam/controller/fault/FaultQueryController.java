@@ -12,6 +12,7 @@ import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +55,18 @@ public class FaultQueryController {
     public DataResponse<String> sendWork(@RequestBody FaultSendWorkReqDTO reqDTO) {
         // faultWorkNo
         faultQueryService.sendWork(reqDTO);
+        return DataResponse.success();
+    }
+
+    /**
+     * 完工
+     * @param reqDTO 完工返回数据
+     * @return 成功状态
+     */
+    @ApiOperation(value = "完工")
+    @PostMapping("/finish/work")
+    public DataResponse<T> finishWork(@RequestBody FaultFinishWorkReqDTO reqDTO) {
+        faultQueryService.finishWork(reqDTO);
         return DataResponse.success();
     }
 

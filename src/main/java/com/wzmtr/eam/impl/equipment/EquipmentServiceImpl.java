@@ -56,8 +56,8 @@ public class EquipmentServiceImpl implements EquipmentService {
     private EquipmentMapper equipmentMapper;
 
     @Override
-    public List<RegionResDTO> listTrainRegion() {
-        return equipmentMapper.listTrainRegion();
+    public List<RegionResDTO> listTrainRegion(String lineCode) {
+        return equipmentMapper.listTrainRegion(lineCode);
     }
 
     @Override
@@ -152,8 +152,8 @@ public class EquipmentServiceImpl implements EquipmentService {
             for (EquipmentResDTO resDTO : equipmentResDTOList) {
                 ExcelEquipmentResDTO res = new ExcelEquipmentResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                res.setQuantity(String.valueOf(resDTO.getQuantity()));
                 res.setTotalMiles(String.valueOf(resDTO.getTotalMiles()));
+                res.setSpecialEquipFlag(CommonConstants.TEN_STRING.equals(resDTO.getSpecialEquipFlag()) ? "非特殊设备" : "特殊设备");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "设备台账信息", list);

@@ -7,6 +7,9 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulMaterialReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulTplDetailReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulTplReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.excel.ExcelOverhaulMaterialReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.excel.ExcelOverhaulTplDetailReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.excel.ExcelOverhaulTplReqDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulMaterialResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulTplResDTO;
@@ -252,7 +255,98 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void importOverhaulTpl(MultipartFile file) {
-        // todo excel导入
+        try {
+            List<ExcelOverhaulTplReqDTO> listTpl = EasyExcelUtils.read(file, ExcelOverhaulTplReqDTO.class, 0);
+            List<ExcelOverhaulTplDetailReqDTO> listTplDetail = EasyExcelUtils.read(file, ExcelOverhaulTplDetailReqDTO.class, 1);
+            List<ExcelOverhaulMaterialReqDTO> listMaterial = EasyExcelUtils.read(file, ExcelOverhaulMaterialReqDTO.class, 2);
+            if (StringUtils.isNotEmpty(listTpl)) {
+                importOverhaulTpl(listTpl);
+            }
+            if (StringUtils.isNotEmpty(listTplDetail)) {
+                importOverhaulTplDetail(listTplDetail);
+            }
+            if (StringUtils.isNotEmpty(listMaterial)) {
+                importOverhaulTplMaterial(listMaterial);
+            }
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        }
+    }
+
+    /**
+     * 导入检修模板
+     * @param listTpl 检修模板导入列表
+     */
+    private void importOverhaulTpl(List<ExcelOverhaulTplReqDTO> listTpl) {
+        List<OverhaulTplReqDTO> temp = new ArrayList<>();
+        if (!Objects.isNull(listTpl) && !listTpl.isEmpty()) {
+            for (ExcelOverhaulTplReqDTO reqDTO : listTpl) {
+                OverhaulTplReqDTO req = new OverhaulTplReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setLineNo("S1线".equals(req.getLineName()) ? "01" : "02");
+                String templateId = CodeUtils.getNextCode(overhaulTplMapper.getMaxCode(), 2);
+                req.setTemplateId(templateId);
+                req.setRecId(TokenUtil.getUuId());
+                req.setTrialStatus("10");
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(req);
+            }
+        }
+        if (StringUtils.isNotEmpty(temp)) {
+            overhaulTplMapper.importOverhaulTpl(temp);
+        }
+    }
+
+    /**
+     * 导入检修模板检修项
+     * @param listTplDetail 检修模板检修项导入列表
+     */
+    private void importOverhaulTplDetail(List<ExcelOverhaulTplDetailReqDTO> listTplDetail) {
+        List<OverhaulTplDetailReqDTO> temp = new ArrayList<>();
+        if (!Objects.isNull(listTplDetail) && !listTplDetail.isEmpty()) {
+            for (ExcelOverhaulTplDetailReqDTO reqDTO : listTplDetail) {
+                // 校验导入数据，删除无效数据
+                if (checkImportOverhaulTplDetail(reqDTO)) {
+                    continue;
+                }
+                OverhaulTplDetailReqDTO req = new OverhaulTplDetailReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setItemType("列表".equals(req.getItemType()) ? "10" : "数值".equals(req.getItemType()) ? "20" : "30");
+                req.setTemplateId(overhaulTplMapper.getTemplateId(reqDTO.getTemplateName(), reqDTO.getLineName(),
+                        reqDTO.getSubjectName(), reqDTO.getSystemName(), reqDTO.getEquipTypeName()));
+                req.setRecId(TokenUtil.getUuId());
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(req);
+            }
+        }
+        if (StringUtils.isNotEmpty(temp)) {
+            overhaulTplMapper.importOverhaulTplDetail(temp);
+        }
+    }
+
+    /**
+     * 导入检修模板物料
+     * @param listMaterial 检修模板物料导入模板
+     */
+    private void importOverhaulTplMaterial(List<ExcelOverhaulMaterialReqDTO> listMaterial) {
+        List<OverhaulMaterialReqDTO> temp = new ArrayList<>();
+        if (!Objects.isNull(listMaterial) && !listMaterial.isEmpty()) {
+            for (ExcelOverhaulMaterialReqDTO reqDTO : listMaterial) {
+                OverhaulMaterialReqDTO req = new OverhaulMaterialReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setTemplateId(overhaulTplMapper.getTemplateId(reqDTO.getTemplateName(), reqDTO.getLineName(),
+                        reqDTO.getSubjectName(), reqDTO.getSystemName(), reqDTO.getEquipTypeName()));
+                req.setRecId(TokenUtil.getUuId());
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(req);
+            }
+        }
+        if (StringUtils.isNotEmpty(temp)) {
+            overhaulTplMapper.importOverhaulMaterial(temp);
+        }
     }
 
     @Override
@@ -284,31 +378,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void addOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
-        Pattern pattern = RegularUtils.getNumberPattern();
-        if (CommonConstants.TEN_STRING.equals(overhaulTplDetailReqDTO.getItemType()) && Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
-        }
-        if (CommonConstants.TWENTY_STRING.equals(overhaulTplDetailReqDTO.getItemType())) {
-            if (StringUtils.isBlank(overhaulTplDetailReqDTO.getDefaultValue()) || !pattern.matcher(overhaulTplDetailReqDTO.getDefaultValue()).matches()) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
-            }
-        }
-        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
-        if (Objects.isNull(list) || list.isEmpty()) {
-            throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
-        }
-        if (StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMinValue()) && !pattern.matcher(overhaulTplDetailReqDTO.getMinValue()).matches()) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限必须填数字！");
-        }
-        if (StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMaxValue()) && !pattern.matcher(overhaulTplDetailReqDTO.getMaxValue()).matches()) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "上限必须填数字！");
-        }
-        if (StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMinValue()) && StringUtils.isNotBlank(overhaulTplDetailReqDTO.getMaxValue())) {
-            if (CommonConstants.TWENTY_STRING.equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
-            }
-        }
-        list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, null);
+        // 校验新增数据
+        checkOverhaulTplDetail(overhaulTplDetailReqDTO);
+        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(),
+                null, null, null, null, null, null, null);
         if (!Objects.isNull(list) && !list.isEmpty()) {
             overhaulTplDetailReqDTO.setTemplateName(list.get(0).getTemplateName());
         }
@@ -320,29 +393,69 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void modifyOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
-        Pattern pattern = RegularUtils.getNumberPattern();
-        if (CommonConstants.TEN_STRING.equals(overhaulTplDetailReqDTO.getItemType())) {
-            if (Objects.isNull(overhaulTplDetailReqDTO.getInspectItemValue())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
-            }
-        } else if (CommonConstants.TWENTY_STRING.equals(overhaulTplDetailReqDTO.getItemType()) && !pattern.matcher(overhaulTplDetailReqDTO.getDefaultValue()).matches()) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
-        }
-        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulTplDetailReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
-        if (Objects.isNull(list) || list.isEmpty()) {
-            throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
-        }
-        if (overhaulTplDetailReqDTO.getMaxValue() != null && overhaulTplDetailReqDTO.getMinValue() != null) {
-            if (!pattern.matcher(overhaulTplDetailReqDTO.getMaxValue()).matches() || !pattern.matcher(overhaulTplDetailReqDTO.getMinValue()).matches()) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限、上限必须填数字！");
-            }
-            if (CommonConstants.TWENTY_STRING.equals(overhaulTplDetailReqDTO.getItemType()) && Integer.parseInt(overhaulTplDetailReqDTO.getMaxValue()) <= Integer.parseInt(overhaulTplDetailReqDTO.getMinValue())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
-            }
-        }
+        // 校验修改数据
+        checkOverhaulTplDetail(overhaulTplDetailReqDTO);
         overhaulTplDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
         overhaulTplDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         overhaulTplMapper.modifyOverhaulTplDetail(overhaulTplDetailReqDTO);
+    }
+
+    /**
+     * 校验检修项参数
+     * @param reqDTO 检修项参数
+     */
+    private void checkOverhaulTplDetail(OverhaulTplDetailReqDTO reqDTO) {
+        Pattern pattern = RegularUtils.getNumberPattern();
+        if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
+        }
+        if (CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType())) {
+            if (StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches()) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
+            }
+        }
+        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(reqDTO.getTemplateId(), null, null, null, null, null, null, "10");
+        if (StringUtils.isEmpty(list)) {
+            throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
+        }
+        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && !pattern.matcher(reqDTO.getMinValue()).matches()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限必须填数字！");
+        }
+        if (StringUtils.isNotBlank(reqDTO.getMaxValue()) && !pattern.matcher(reqDTO.getMaxValue()).matches()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "上限必须填数字！");
+        }
+        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue())) {
+            if (CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) && Integer.parseInt(reqDTO.getMaxValue()) <= Integer.parseInt(reqDTO.getMinValue())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
+            }
+        }
+    }
+
+    /**
+     * 导入时校验检修项参数
+     * @param reqDTO 检修项参数
+     * @return 是否校验通过
+     */
+    private boolean checkImportOverhaulTplDetail(ExcelOverhaulTplDetailReqDTO reqDTO) {
+        Pattern pattern = RegularUtils.getNumberPattern();
+        if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
+            return true;
+        }
+        if (CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType())) {
+            if (StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches()) {
+                return true;
+            }
+        }
+        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && !pattern.matcher(reqDTO.getMinValue()).matches()) {
+            return true;
+        }
+        if (StringUtils.isNotBlank(reqDTO.getMaxValue()) && !pattern.matcher(reqDTO.getMaxValue()).matches()) {
+            return true;
+        }
+        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue())) {
+            return CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) && Integer.parseInt(reqDTO.getMaxValue()) <= Integer.parseInt(reqDTO.getMinValue());
+        }
+        return false;
     }
 
     @Override
@@ -392,11 +505,11 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     @Override
     public void addOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO) {
         List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulMaterialReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
-        if (Objects.isNull(list) || list.isEmpty()) {
+        if (StringUtils.isEmpty(list)) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
         List<OverhaulTplResDTO> listStatus = overhaulTplMapper.listOverhaulTplStatus(overhaulMaterialReqDTO.getTemplateId(), null);
-        if (!Objects.isNull(listStatus) && !listStatus.isEmpty()) {
+        if (StringUtils.isNotEmpty(listStatus)) {
             overhaulMaterialReqDTO.setTemplateName(listStatus.get(0).getTemplateName());
         }
         overhaulMaterialReqDTO.setRecId(TokenUtil.getUuId());
