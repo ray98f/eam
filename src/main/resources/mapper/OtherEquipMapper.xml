@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wzmtr.eam.mapper.detection.SpecialEquipMapper">
+<mapper namespace="com.wzmtr.eam.mapper.detection.OtherEquipMapper">
 
-    <select id="pageSpecialEquip" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
+    <select id="pageOtherEquip" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
         a.REG_NO	as "regNo",  <!-- 登记证编号 -->
         b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        a.SPECIAL_EQUIP_TYPE	as "specialEquipType",  <!-- 特种设备类别 -->
-        a.SPECIAL_EQUIP_CODE	as "specialEquipCode",  <!-- 设备代码 -->
+        a.OTHER_EQUIP_TYPE	as "otherEquipType",  <!-- 其他设备类别 -->
+        a.OTHER_EQUIP_CODE	as "otherEquipCode",  <!-- 设备代码 -->
         a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
         a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
         a.EQUIP_POSITION	as "equipPosition",  <!-- 设备所在地点 -->
@@ -45,11 +45,11 @@
         b.SPECIAL_EQUIP_FLAG,
         b.APPROVAL_STATUS,
         b.POSITION1_NAME as "position1Name",
-        b.VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
-        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
+        b.VERIFY_DATE	as "verifyDate",  <!-- 其他设备检测日期 -->
+        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 其他设备检测有效期 -->
         c.NAME as "manageOrgName",
         d.NAME as "secOrgName"
-        FROM T_EQUIPMENT b right join T_SPECIAL_EQUIP_EXT a
+        FROM T_EQUIPMENT b right join T_OTHER_EQUIP_EXT a
         on a.EQUIP_CODE=b.EQUIP_CODE
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
@@ -61,8 +61,8 @@
         <if test="equipName!=null and equipName!=''">
             and b.EQUIP_NAME like '%' || #{equipName} || '%'
         </if>
-        <if test="specialEquipCode!=null and specialEquipCode!=''">
-            and a.SPECIAL_EQUIP_CODE like '%' || #{specialEquipCode} || '%'
+        <if test="otherEquipCode!=null and otherEquipCode!=''">
+            and a.OTHER_EQUIP_CODE like '%' || #{otherEquipCode} || '%'
         </if>
         <if test="factNo!=null and factNo!=''">
             and a.FACT_NO like '%' || #{factNo} || '%'
@@ -73,8 +73,8 @@
         <if test="position1Code!=null and position1Code!=''">
             and b.POSITION1_CODE=#{position1Code}
         </if>
-        <if test="specialEquipType!=null and specialEquipType!=''">
-            and a.SPECIAL_EQUIP_TYPE like '%' || #{specialEquipType} || '%'
+        <if test="otherEquipType!=null and otherEquipType!=''">
+            and a.OTHER_EQUIP_TYPE like '%' || #{otherEquipType} || '%'
         </if>
         <if test="equipStatus!=null and equipStatus!=''">
             and b.EQUIP_STATUS=#{equipStatus}
@@ -89,14 +89,14 @@
         a.EQUIP_CODE asc
     </select>
 
-    <select id="getSpecialEquipDetail" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
+    <select id="getOtherEquipDetail" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
         a.REG_NO	as "regNo",  <!-- 登记证编号 -->
         b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        a.SPECIAL_EQUIP_TYPE	as "specialEquipType",  <!-- 特种设备类别 -->
-        a.SPECIAL_EQUIP_CODE	as "specialEquipCode",  <!-- 设备代码 -->
+        a.OTHER_EQUIP_TYPE	as "otherEquipType",  <!-- 其他设备类别 -->
+        a.OTHER_EQUIP_CODE	as "otherEquipCode",  <!-- 设备代码 -->
         a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
         a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
         a.EQUIP_POSITION	as "equipPosition",  <!-- 设备所在地点 -->
@@ -132,11 +132,11 @@
         b.SPECIAL_EQUIP_FLAG,
         b.APPROVAL_STATUS,
         b.POSITION1_NAME as "position1Name",
-        b.VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
-        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
+        b.VERIFY_DATE	as "verifyDate",  <!-- 其他设备检测日期 -->
+        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 其他设备检测有效期 -->
         c.NAME as "manageOrgName",
         d.NAME as "secOrgName"
-        FROM T_EQUIPMENT b right join T_SPECIAL_EQUIP_EXT a
+        FROM T_EQUIPMENT b right join T_OTHER_EQUIP_EXT a
         on a.EQUIP_CODE=b.EQUIP_CODE
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
@@ -151,8 +151,8 @@
         WHERE EQUIP_CODE=#{equipCode}
     </update>
     
-    <update id="modifySpecialEquip">
-        UPDATE T_SPECIAL_EQUIP_EXT SET
+    <update id="modifyOtherEquip">
+        UPDATE T_OTHER_EQUIP_EXT SET
         <if test="regOrg!=null">
             REG_ORG=#{regOrg},   <!-- 使用登记机构 -->
         </if>
@@ -162,11 +162,11 @@
         <if test="equipCode!=null">
             EQUIP_CODE=#{equipCode},   <!-- 设备编码 -->
         </if>
-        <if test="specialEquipType!=null">
-            SPECIAL_EQUIP_TYPE=#{specialEquipType},   <!-- 特种设备类别 -->
+        <if test="otherEquipType!=null">
+            OTHER_EQUIP_TYPE=#{otherEquipType},   <!-- 其他设备类别 -->
         </if>
-        <if test="specialEquipCode!=null">
-            SPECIAL_EQUIP_CODE=#{specialEquipCode},   <!-- 设备代码 -->
+        <if test="otherEquipCode!=null">
+            OTHER_EQUIP_CODE=#{otherEquipCode},   <!-- 设备代码 -->
         </if>
         <if test="factNo!=null">
             FACT_NO=#{factNo},   <!-- 出厂编号 -->
@@ -236,14 +236,14 @@
         WHERE EQUIP_CODE=#{equipCode}
     </update>
 
-    <select id="listSpecialEquip" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
+    <select id="listOtherEquip" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
         a.REG_NO	as "regNo",  <!-- 登记证编号 -->
         b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        a.SPECIAL_EQUIP_TYPE	as "specialEquipType",  <!-- 特种设备类别 -->
-        a.SPECIAL_EQUIP_CODE	as "specialEquipCode",  <!-- 设备代码 -->
+        a.OTHER_EQUIP_TYPE	as "otherEquipType",  <!-- 其他设备类别 -->
+        a.OTHER_EQUIP_CODE	as "otherEquipCode",  <!-- 设备代码 -->
         a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
         a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
         a.EQUIP_POSITION	as "equipPosition",  <!-- 设备所在地点 -->
@@ -279,11 +279,11 @@
         b.SPECIAL_EQUIP_FLAG,
         b.APPROVAL_STATUS,
         b.POSITION1_NAME as "position1Name",
-        b.VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
-        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
+        b.VERIFY_DATE	as "verifyDate",  <!-- 其他设备检测日期 -->
+        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 其他设备检测有效期 -->
         c.NAME as "manageOrgName",
         d.NAME as "secOrgName"
-        FROM T_EQUIPMENT b right join T_SPECIAL_EQUIP_EXT a
+        FROM T_EQUIPMENT b right join T_OTHER_EQUIP_EXT a
         on a.EQUIP_CODE=b.EQUIP_CODE
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
@@ -304,7 +304,7 @@
         a.EQUIP_CODE asc
     </select>
 
-    <select id="pageSpecialEquipHistory" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipHistoryResDTO">
+    <select id="pageOtherEquipHistory" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipHistoryResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
@@ -368,7 +368,7 @@
         order by a.VERIFY_VALIDITY_DATE desc
     </select>
 
-    <select id="getSpecialEquipHistoryDetail" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipHistoryResDTO">
+    <select id="getOtherEquipHistoryDetail" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipHistoryResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
@@ -431,7 +431,7 @@
         WHERE 1=1 and a.REC_ID=#{id}
     </select>
 
-    <select id="listSpecialEquipHistory" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipHistoryResDTO">
+    <select id="listOtherEquipHistory" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipHistoryResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->

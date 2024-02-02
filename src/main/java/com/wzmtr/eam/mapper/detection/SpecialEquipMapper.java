@@ -23,8 +23,6 @@ public interface SpecialEquipMapper {
 
     void updateEquip(SpecialEquipReqDTO specialEquipReqDTO);
 
-    void importSpecialEquip(List<SpecialEquipReqDTO> list);
-
     void modifySpecialEquip(SpecialEquipReqDTO specialEquipReqDTO);
 
     List<SpecialEquipResDTO> listSpecialEquip(List<String> ids);
@@ -33,5 +31,5 @@ public interface SpecialEquipMapper {
 
     SpecialEquipHistoryResDTO getSpecialEquipHistoryDetail(String id);
 
-    List<SpecialEquipHistoryResDTO> listSpecialEquiHistory(String equipCode);
+    List<SpecialEquipHistoryResDTO> listSpecialEquipHistory(String equipCode);
 }
