@@ -117,14 +117,17 @@
         )
         ORDER BY r.NODE_CODE ASC
     </select>
-    <select id="selectByNodeCodes" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
+    <select id="selectByQuery" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
         SELECT * from SYS_REGION
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="nodeCodes!=null and nodeCodes.size() > 0">
+            <if test="query.nodeCodes!=null and query.nodeCodes.size() > 0">
                 AND NODE_CODE IN
-                <foreach collection="nodeCodes" item="code" open="(" close=")" separator=",">
+                <foreach collection="query.nodeCodes" item="code" open="(" close=")" separator=",">
                     #{code}
                 </foreach>
+            </if>
+            <if test="query.nodeName!=null and query.nodeName!=''">
+               and NODE_NAME = #{query.nodeName}
             </if>
         </trim>
     </select>
