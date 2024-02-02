@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wzmtr.eam.mapper.special.equip.SpecialEquipMapper">
+<mapper namespace="com.wzmtr.eam.mapper.detection.SpecialEquipMapper">
 
-    <select id="pageSpecialEquip" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipResDTO">
+    <select id="pageSpecialEquip" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
@@ -89,7 +89,7 @@
         a.EQUIP_CODE asc
     </select>
 
-    <select id="getSpecialEquipDetail" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipResDTO">
+    <select id="getSpecialEquipDetail" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
@@ -313,7 +313,7 @@
         WHERE EQUIP_CODE=#{equipCode}
     </update>
 
-    <select id="listSpecialEquip" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipResDTO">
+    <select id="listSpecialEquip" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
@@ -381,7 +381,7 @@
         a.EQUIP_CODE asc
     </select>
 
-    <select id="pageSpecialEquipHistory" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipHistoryResDTO">
+    <select id="pageSpecialEquipHistory" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipHistoryResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
@@ -445,7 +445,7 @@
         order by a.VERIFY_VALIDITY_DATE desc
     </select>
 
-    <select id="getSpecialEquipHistoryDetail" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipHistoryResDTO">
+    <select id="getSpecialEquipHistoryDetail" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipHistoryResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
@@ -508,7 +508,7 @@
         WHERE 1=1 and a.REC_ID=#{id}
     </select>
 
-    <select id="listSpecialEquiHistory" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipHistoryResDTO">
+    <select id="listSpecialEquiHistory" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipHistoryResDTO">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->

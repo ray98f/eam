@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wzmtr.eam.mapper.special.equip.DetectionPlanMapper">
+<mapper namespace="com.wzmtr.eam.mapper.detection.DetectionPlanMapper">
 
-    <select id="pageDetectionPlan" resultType="com.wzmtr.eam.dto.res.special.equip.DetectionPlanResDTO">
+    <select id="pageDetectionPlan" resultType="com.wzmtr.eam.dto.res.detection.DetectionPlanResDTO">
         SELECT
         a.REC_ID as "recId",  <!-- 记录编号 -->
         a.INSTRM_PLAN_NO as "instrmPlanNo",  <!-- 特种设备定检计划号 -->
@@ -64,7 +64,7 @@
         ORDER BY a.INSTRM_PLAN_NO desc
     </select>
 
-    <select id="getDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.special.equip.DetectionPlanResDTO">
+    <select id="getDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.detection.DetectionPlanResDTO">
         SELECT
         a.REC_ID as "recId",  <!-- 记录编号 -->
         a.INSTRM_PLAN_NO as "instrmPlanNo",  <!-- 特种设备定检计划号 -->
@@ -313,7 +313,7 @@
         WHERE REC_ID = #{id}
     </update>
 
-    <select id="listDetectionPlan" resultType="com.wzmtr.eam.dto.res.special.equip.DetectionPlanResDTO">
+    <select id="listDetectionPlan" resultType="com.wzmtr.eam.dto.res.detection.DetectionPlanResDTO">
         SELECT
         a.REC_ID as "recId",  <!-- 记录编号 -->
         a.INSTRM_PLAN_NO as "instrmPlanNo",  <!-- 特种设备定检计划号 -->
@@ -375,7 +375,7 @@
         ORDER BY a.INSTRM_PLAN_NO desc
     </select>
 
-    <select id="pageDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.special.equip.DetectionPlanDetailResDTO">
+    <select id="pageDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.detection.DetectionPlanDetailResDTO">
         SELECT
         a.REC_ID as "recId",  <!-- 记录编号 -->
         a.INSTRM_PLAN_NO as "instrmPlanNo",  <!-- 特种设备检测计划号 -->
@@ -432,7 +432,7 @@
         order by a.EQUIP_CODE asc
     </select>
 
-    <select id="getDetectionPlanDetailDetail" resultType="com.wzmtr.eam.dto.res.special.equip.DetectionPlanDetailResDTO">
+    <select id="getDetectionPlanDetailDetail" resultType="com.wzmtr.eam.dto.res.detection.DetectionPlanDetailResDTO">
         SELECT
         a.REC_ID as "recId",  <!-- 记录编号 -->
         a.INSTRM_PLAN_NO as "instrmPlanNo",  <!-- 特种设备检测计划号 -->
@@ -664,7 +664,7 @@
         WHERE REC_ID=#{recId}
     </update>
 
-    <select id="listDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.special.equip.DetectionPlanDetailResDTO">
+    <select id="listDetectionPlanDetail" resultType="com.wzmtr.eam.dto.res.detection.DetectionPlanDetailResDTO">
         SELECT
         a.REC_ID as "recId",  <!-- 记录编号 -->
         a.INSTRM_PLAN_NO as "instrmPlanNo",  <!-- 特种设备检测计划号 -->

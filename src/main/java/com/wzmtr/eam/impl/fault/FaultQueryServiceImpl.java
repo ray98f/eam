@@ -37,7 +37,6 @@ import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,8 +119,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void issue(FaultDetailReqDTO reqDTO) {
-        FaultQueryServiceImpl aop = (FaultQueryServiceImpl) AopContext.currentProxy();
-        String status = aop.queryOrderStatus(SidEntity.builder().id(reqDTO.getFaultWorkNo()).build());
+        String status = queryOrderStatus(SidEntity.builder().id(reqDTO.getFaultWorkNo()).build());
         FaultOrderDO faultOrderDO = BeanUtils.convert(reqDTO, FaultOrderDO.class);
         switch (status) {
             case "40":
@@ -156,6 +154,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         faultReportMapper.updateFaultInfo(faultInfoDO);
         // ServiceDMFM0001 update
         FaultInfoDO faultInfo1 = faultQueryMapper.queryOneFaultInfo(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        List<FaultOrderResDTO> faultOrder = faultReportMapper.listOrderByNoAndWorkNo(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        if (StringUtils.isNotEmpty(faultOrder)) {
+            BeanUtils.copy(faultOrder.get(0), faultOrderDO);
+        }
         overTodoService.overTodo(faultOrderDO.getRecId(), "提报成功，准备下发");
         String content = "【市铁投集团】" + TokenUtil.getCurrentPerson().getOfficeName() + "的" + TokenUtil.getCurrentPerson().getPersonName() +
                 "下发一条" + faultInfo1.getMajorName() + "故障，工单号：" + reqDTO.getFaultWorkNo() + "，尽快派工。";
@@ -351,7 +353,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             orderUpdate.setReportFinishTime(dateTimeFormat.format(new Date()));
             orderUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
             orderUpdate.setRecReviseTime(DateUtil.getCurrentTime());
-            orderUpdate.setOrderStatus("50");
+            orderUpdate.setOrderStatus(OrderStatus.WAN_GONG.getCode());
             faultReportMapper.updateFaultOrder(orderUpdate);
             FaultInfoDO infoUpdate = BeanUtils.convert(reqDTO, FaultInfoDO.class);
             infoUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());

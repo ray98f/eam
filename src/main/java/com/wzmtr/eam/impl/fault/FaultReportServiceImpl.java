@@ -63,7 +63,6 @@ public class FaultReportServiceImpl implements FaultReportService {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         // 获取AOP代理对象
-        // FaultReportServiceImpl aop = (FaultReportServiceImpl) AopContext.currentProxy();
         FaultInfoDO faultInfoDO = reqDTO.toFaultInfoInsertDO(reqDTO);
         String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
         insertToFaultInfo(faultInfoDO, nextFaultNo);
