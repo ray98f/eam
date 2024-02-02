@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
+import com.wzmtr.eam.dto.req.basic.query.RegionQuery;
 import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
@@ -35,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Author: Li.Wang
@@ -123,11 +125,13 @@ public class FaultReportServiceImpl implements FaultReportService {
     public Page<FaultReportResDTO> openApiList(FaultReportPageReqDTO reqDTO) {
         String csm = "NCSM";
         if (reqDTO.getTenant().contains(csm)) {
+            if(StringUtils.isNotEmpty(reqDTO.getPositionName())){
+                List<RegionResDTO> regionResDTOS = regionMapper.selectByQuery(RegionQuery.builder().nodeName(reqDTO.getPositionName()).build());
+                Set<String> nodeCodes = regionResDTOS.stream().map(RegionResDTO::getNodeCode).collect(Collectors.toSet());
+                reqDTO.setPositionCodes(nodeCodes);
+            }
             PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-            Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(),
-                    reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
-                    reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
-                    reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),reqDTO.getFaultWorkNo(),reqDTO.getLineCode());
+            Page<FaultReportResDTO> list = faultReportMapper.openApiList(reqDTO.of(), reqDTO);
             List<FaultReportResDTO> records = list.getRecords();
             if (CollectionUtil.isEmpty(records)) {
                 return new Page<>();
@@ -155,7 +159,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
     private void buildRes(List<FaultReportResDTO> records) {
         Set<String> positionCodes = StreamUtil.mapToSet(records, FaultReportResDTO::getPositionCode);
-        List<RegionResDTO> regionRes = regionMapper.selectByNodeCodes(positionCodes);
+        List<RegionResDTO> regionRes = regionMapper.selectByQuery(RegionQuery.builder().nodeCodes(positionCodes).build());
         Map<String, RegionResDTO> regionMap = StreamUtil.toMap(regionRes, RegionResDTO::getNodeCode);
         records.forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());

@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.RegionDO;
 import com.wzmtr.eam.dto.req.basic.RegionReqDTO;
+import com.wzmtr.eam.dto.req.basic.query.RegionQuery;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -88,5 +90,5 @@ public interface RegionMapper extends BaseMapper<RegionDO> {
      */
     List<RegionResDTO> listRegion(List<String> ids);
 
-    List<RegionResDTO> selectByNodeCodes(Set<String> nodeCodes);
+    List<RegionResDTO> selectByQuery(@Param("query") RegionQuery query);
 }

@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Set;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/15 17:18
@@ -22,6 +24,8 @@ public class FaultReportPageReqDTO extends PageReqDTO {
     private String trainTrunk;
     @ApiModelProperty(value = "位置1")
     private String positionCode;
+    @ApiModelProperty(value = "位置名字")
+    private String positionName;
     @ApiModelProperty(value = "对象编码")
     private String objectCodeTextField;
     @ApiModelProperty(value = "线别姓名")
@@ -95,4 +99,5 @@ public class FaultReportPageReqDTO extends PageReqDTO {
      */
     private String tenant;
     private String faultWorkNo;
+    private Set<String> positionCodes;
 }
