@@ -2,6 +2,7 @@ package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
+import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.utils.BeanUtils;
 import com.wzmtr.eam.utils.DateUtil;
 import com.wzmtr.eam.utils.StringUtils;
@@ -135,7 +136,7 @@ public class FaultReportReqDTO {
         convert.setRecCreateTime(DateUtil.getCurrentTime());
         convert.setDeleteFlag("0");
         if (StringUtils.isEmpty(req.getOrderStatus())) {
-            convert.setOrderStatus("10");
+            convert.setOrderStatus(OrderStatus.TI_BAO.getCode());
         }
         return convert;
     }

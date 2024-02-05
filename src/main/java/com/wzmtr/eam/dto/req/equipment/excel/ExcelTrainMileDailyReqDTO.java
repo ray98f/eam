@@ -1,7 +1,10 @@
 package com.wzmtr.eam.dto.req.equipment.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -11,7 +14,10 @@ import java.math.BigDecimal;
  * @version 1.0
  * @date 2024/01/26
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
+@Builder
 public class ExcelTrainMileDailyReqDTO {
     /**
      * 车号

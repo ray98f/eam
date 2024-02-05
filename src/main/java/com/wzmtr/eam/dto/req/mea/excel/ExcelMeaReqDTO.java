@@ -1,7 +1,10 @@
 package com.wzmtr.eam.dto.req.mea.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 计量器具台账导入类
@@ -9,7 +12,10 @@ import lombok.Data;
  * @version 1.0
  * @date 2023/12/11
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
+@Builder
 public class ExcelMeaReqDTO {
 
     @ExcelProperty(value = "计量器具编码")

@@ -245,4 +245,9 @@ public class FaultDetailResDTO {
     private String trackState;
     @ApiModelProperty(value = "附件文件")
     private List<File> docFile;
+    /**
+     * 故障流程数据
+     */
+    @ApiModelProperty(value = "故障流程数据")
+    private List<FaultFlowResDTO> flows;
 }

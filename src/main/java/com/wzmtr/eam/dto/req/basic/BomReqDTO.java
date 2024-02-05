@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * Bom结构结果类
+ * Bom结构请求类
  * @author  Ray
  * @version 1.0
  * @date 2024/02/04

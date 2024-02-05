@@ -18,6 +18,7 @@ import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultTrackSaveReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultFlowResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -39,10 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Author: Li.Wang
@@ -84,10 +82,15 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
         FaultInfoDO faultInfo = faultTrackMapper.faultDetail(reqDTO);
         FaultDetailResDTO faultOrder = faultTrackMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
-        if (faultInfo == null) {
+        if (Objects.isNull(faultInfo)) {
             return faultOrder;
         }
-        return assemblyResDTO(faultInfo, faultOrder);
+        FaultDetailResDTO faultDetail = assemblyResDTO(faultInfo, faultOrder);
+        List<FaultFlowResDTO> faultFlows = faultTrackMapper.faultFlowDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        if (StringUtils.isNotEmpty(faultFlows)) {
+            faultDetail.setFlows(faultFlows);
+        }
+        return faultDetail;
     }
 
     private FaultDetailResDTO assemblyResDTO(FaultInfoDO faultInfo, FaultDetailResDTO faultOrder) {

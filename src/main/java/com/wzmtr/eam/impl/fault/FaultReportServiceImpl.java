@@ -7,10 +7,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.basic.query.RegionQuery;
-import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
+import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
@@ -32,10 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -71,6 +66,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         FaultOrderDO faultOrderDO = reqDTO.toFaultOrderInsertDO(reqDTO);
         String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
         insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
+        // 添加流程记录
+        addFaultFlow(nextFaultNo, nextFaultWorkNo);
         return nextFaultNo;
         // TODO: 2023/8/24 知会OCC调度
 //        if ("Y".equals(maintenance)) {
@@ -104,6 +101,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultOrderDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
         faultOrderDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
         faultReportMapper.addToFaultOrder(faultOrderDO);
+
     }
 
     @Override
@@ -212,6 +210,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultReportMapper.updateFaultInfo(faultInfoDO);
         // 取消待办
         overTodoService.cancelTodo(reqDTO.getOrderRecId());
+        // 添加流程记录
+        addFaultFlow(faultNo, faultWorkNo);
     }
 
     @Override
@@ -238,6 +238,26 @@ public class FaultReportServiceImpl implements FaultReportService {
         }
         faultReportMapper.updateFaultInfo(infoUpdate);
         faultReportMapper.updateFaultOrder(orderUpdate);
+    }
+
+    /**
+     * 新增工单流程
+     * @param faultNo 故障编号
+     * @param faultWorkNo 故障工单编号
+     */
+    public void addFaultFlow(String faultNo, String faultWorkNo) {
+        FaultFlowReqDTO faultFlowReqDTO = new FaultFlowReqDTO();
+        faultFlowReqDTO.setRecId(TokenUtil.getUuId());
+        faultFlowReqDTO.setFaultNo(faultNo);
+        faultFlowReqDTO.setFaultWorkNo(faultWorkNo);
+        faultFlowReqDTO.setOperateUserId(TokenUtil.getCurrentPersonId());
+        faultFlowReqDTO.setOperateUserName(TokenUtil.getCurrentPerson().getPersonName());
+        faultFlowReqDTO.setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
+        if (!Objects.isNull(faultOrderDO)) {
+            faultFlowReqDTO.setOrderStatus(faultOrderDO.getOrderStatus());
+        }
+        faultReportMapper.addFaultFlow(faultFlowReqDTO);
     }
 }
 

@@ -424,6 +424,19 @@
             </if>
         </trim>
     </select>
+    <select id="faultFlowDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultFlowResDTO">
+        SELECT REC_ID, FAULT_NO, FAULT_WORK_NO, ORDER_STATUS, OPERATE_USER_ID, OPERATE_TIME, OPERATE_USER_NAME
+        FROM T_FAULT_FLOW
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="faultNo!=null and faultNo!=''">
+                and FAULT_NO = #{faultNo}
+            </if>
+            <if test="faultWorkNo!=null and faultWorkNo!=''">
+                and FAULT_WORK_NO = #{faultWorkNo}
+            </if>
+        </trim>
+        group by OPERATE_TIME asc
+    </select>
     <select id="selectMaxCode" resultType="string">
         select max(FAULT_TRACK_NO)
         FROM T_FAULT_TRACK
