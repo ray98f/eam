@@ -941,7 +941,7 @@
         INSERT INTO T_FAULT_FLOW
         (REC_ID, FAULT_NO, FAULT_WORK_NO, ORDER_STATUS, OPERATE_USER_ID, OPERATE_TIME, OPERATE_USER_NAME)
         VALUES (#{recId,jdbcType=VARCHAR}, #{faultNo,jdbcType=VARCHAR}, #{faultWorkNo,jdbcType=VARCHAR},
-        #{orderStatus,jdbcType=VARCHAR}, #{operateUserId,jdbcType=VARCHAR}, #{operateUserName,jdbcType=VARCHAR}, #{operateTime,jdbcType=VARCHAR})
+        #{orderStatus,jdbcType=VARCHAR}, #{operateUserId,jdbcType=VARCHAR}, #{operateTime,jdbcType=VARCHAR}, #{operateUserName,jdbcType=VARCHAR})
     </insert>
 
 </mapper>
