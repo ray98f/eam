@@ -435,7 +435,7 @@
                 and FAULT_WORK_NO = #{faultWorkNo}
             </if>
         </trim>
-        group by OPERATE_TIME asc
+        order by OPERATE_TIME asc
     </select>
     <select id="selectMaxCode" resultType="string">
         select max(FAULT_TRACK_NO)
