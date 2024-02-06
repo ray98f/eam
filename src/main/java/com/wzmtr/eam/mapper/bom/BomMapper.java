@@ -82,4 +82,10 @@ public interface BomMapper extends BaseMapper<BomDO> {
      * @param time 时间
      */
     void deleteBom(List<String> ids, String userId, String time);
+
+    /**
+     * 导入Bom结构
+     * @param list
+     */
+    void importBom(List<BomReqDTO> list);
 }

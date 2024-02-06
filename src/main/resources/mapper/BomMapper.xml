@@ -528,7 +528,7 @@
         <if test="name!=null and name!=''">
             and CNAME LIKE '%' || #{name} || '%'
         </if>
-        order by SORT_INDEX asc
+        order by SORT_INDEX, ENAME asc
     </select>
 
     <select id="getBomDetail" resultType="com.wzmtr.eam.dto.res.basic.BomResDTO">
@@ -631,4 +631,33 @@
         </foreach>
         )
     </update>
+
+    <insert id="importBom">
+        insert ALL
+        <foreach collection="list" index="index" item="bom" separator=" ">
+            INTO T_BOM (
+            REC_ID,
+            ENAME,
+            CNAME,
+            PARENT_ID,
+            IS_LEAF,
+            STATUS,
+            SORT_INDEX,
+            QUANTITY,
+            REC_CREATOR,
+            REC_CREATE_TIME)
+            VALUES
+            (#{bom.ename,jdbcType=VARCHAR},
+            #{bom.ename,jdbcType=VARCHAR},
+            #{bom.cname,jdbcType=VARCHAR},
+            #{bom.parentId,jdbcType=VARCHAR},
+            '0',
+            '0',
+            '0',
+            '1',
+            #{bom.recCreator,jdbcType=VARCHAR},
+            #{bom.recCreateTime,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 </mapper>
