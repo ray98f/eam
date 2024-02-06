@@ -6,6 +6,9 @@ import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.wzmtr.eam.config.CustomCellWriteHeightConfig;
 import com.wzmtr.eam.config.CustomCellWriteWidthConfig;
+import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -18,6 +21,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * EasyExcel导入导出工具类
@@ -114,7 +118,8 @@ public class EasyExcelUtils {
      * @throws IOException 读写流异常
      */
     public static <T> List<T> read(MultipartFile file, Class<T> head) throws IOException {
-        return EasyExcel.read(file.getInputStream(), head, null).doReadAllSync();
+        checkFileFormat(file);
+        return checkData(EasyExcel.read(file.getInputStream(), head, null).doReadAllSync());
     }
 
     /**
@@ -126,6 +131,32 @@ public class EasyExcelUtils {
      * @throws IOException 读写流异常
      */
     public static <T> List<T> read(MultipartFile file, Class<T> head, Integer sheetNo) throws IOException {
-        return EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync();
+        checkFileFormat(file);
+        return checkData(EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync());
+    }
+
+    /**
+     * 导入文件格式校验
+     * @param file 文件
+     */
+    private static void checkFileFormat(MultipartFile file) {
+        boolean fileBool = Objects.isNull(file.getOriginalFilename()) ||
+                (!file.getOriginalFilename().endsWith(CommonConstants.XLSX) && !file.getOriginalFilename().endsWith(CommonConstants.XLS));
+        if (fileBool) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "文件格式有误，请检查上传文件格式!");
+        }
+    }
+
+    /**
+     * 导入数据校验
+     * @param list 导入数据
+     * @return 导入数据
+     * @param <T> 泛型
+     */
+    private static <T> List<T> checkData(List<T> list) {
+        if (StringUtils.isEmpty(list)) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "模板错误或导入空模板，请检查");
+        }
+        return list;
     }
 }
