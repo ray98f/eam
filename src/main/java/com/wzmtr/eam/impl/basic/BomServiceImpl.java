@@ -3,7 +3,9 @@ package com.wzmtr.eam.impl.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.dto.req.basic.BomReqDTO;
+import com.wzmtr.eam.dto.req.basic.BomTrainReqDTO;
 import com.wzmtr.eam.dto.req.basic.Excel.ExcelBomReqDTO;
+import com.wzmtr.eam.dto.req.basic.Excel.ExcelBomTrainReqDTO;
 import com.wzmtr.eam.dto.res.basic.BomResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -11,11 +13,9 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.bom.BomMapper;
 import com.wzmtr.eam.service.basic.BomService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -167,6 +167,25 @@ public class BomServiceImpl implements BomService {
             }
             if (!temp.isEmpty()) {
                 bomMapper.importBom(temp);
+            }
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        }
+    }
+
+    @Override
+    public void importBomTrain(MultipartFile file) {
+        try {
+            List<ExcelBomTrainReqDTO> list = EasyExcelUtils.read(file, ExcelBomTrainReqDTO.class);
+            List<BomTrainReqDTO> temp = new ArrayList<>();
+            for (ExcelBomTrainReqDTO reqDTO : list) {
+                BomTrainReqDTO req = new BomTrainReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setRecId(TokenUtil.getUuId());
+                temp.add(req);
+            }
+            if (!temp.isEmpty()) {
+                bomMapper.importBomTrain(temp);
             }
         } catch (Exception e) {
             throw new CommonException(ErrorCode.IMPORT_ERROR);

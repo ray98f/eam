@@ -55,4 +55,10 @@ public interface BomService {
      * @param file 文件
      */
     void importBom(MultipartFile file);
+
+    /**
+     * 导入车辆与Bom关联关系
+     * @param file 文件
+     */
+    void importBomTrain(MultipartFile file);
 }

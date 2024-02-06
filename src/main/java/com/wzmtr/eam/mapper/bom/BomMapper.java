@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.BomDO;
 import com.wzmtr.eam.dto.req.basic.BomReqDTO;
+import com.wzmtr.eam.dto.req.basic.BomTrainReqDTO;
 import com.wzmtr.eam.dto.req.fault.ObjectReqDTO;
 import com.wzmtr.eam.dto.res.basic.BomResDTO;
 import com.wzmtr.eam.dto.res.fault.ObjectResDTO;
@@ -85,7 +86,13 @@ public interface BomMapper extends BaseMapper<BomDO> {
 
     /**
      * 导入Bom结构
-     * @param list
+     * @param list Bom结构
      */
     void importBom(List<BomReqDTO> list);
+
+    /**
+     * 导入车辆与Bom关联关系
+     * @param list 车辆与Bom关联关系
+     */
+    void importBomTrain(List<BomTrainReqDTO> list);
 }

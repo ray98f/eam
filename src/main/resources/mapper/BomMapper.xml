@@ -660,4 +660,25 @@
         </foreach>
         SELECT * FROM dual
     </insert>
+
+    <insert id="importBomTrain">
+        insert ALL
+        <foreach collection="list" index="index" item="bomTrain" separator=" ">
+            INTO T_BOM_TRAIN (
+            REC_ID,
+            BOM_PARENT_CODE,
+            BOM_PARENT_NAME,
+            EQUIP_CODE,
+            EQUIP_NAME)
+            VALUES
+            (#{bomTrain.recId,jdbcType=VARCHAR},
+            (SELECT ENAME FROM T_BOM_TEST WHERE CNAME=#{bomTrain.bomParenName,jdbcType=VARCHAR}
+            AND DELETE_FLAG='0' AND PARENT_ID='1'),
+            #{bomTrain.bomParenName,jdbcType=VARCHAR},
+            (SELECT EQUIP_CODE FROM T_EQUIPMENT WHERE EQUIP_NAME=#{bomTrain.equipName,jdbcType=VARCHAR}
+            AND DELETE_FLAG='0' AND MAJOR_CODE='07'),
+            #{bomTrain.equipName,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 </mapper>

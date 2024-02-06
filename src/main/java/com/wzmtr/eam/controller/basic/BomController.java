@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.io.IOException;
 
 /**
  * Bom结构管理
@@ -109,6 +108,18 @@ public class BomController {
     @ApiOperation(value = "导入Bom结构")
     public DataResponse<T> importBom(@RequestParam MultipartFile file) {
         bomService.importBom(file);
+        return DataResponse.success();
+    }
+
+    /**
+     * 导入车辆与Bom关联关系
+     * @param file 文件
+     * @return 成功标识
+     */
+    @PostMapping("/train/import")
+    @ApiOperation(value = "导入车辆与Bom关联关系")
+    public DataResponse<T> importBomTrain(@RequestParam MultipartFile file) {
+        bomService.importBomTrain(file);
         return DataResponse.success();
     }
 }
