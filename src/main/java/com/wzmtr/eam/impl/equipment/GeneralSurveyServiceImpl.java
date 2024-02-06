@@ -109,25 +109,21 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
 
     @Override
     public void importGeneralSurvey(MultipartFile file) {
-        try {
-            List<ExcelGeneralSurveyReqDTO> list = EasyExcelUtils.read(file, ExcelGeneralSurveyReqDTO.class);
-            List<GeneralSurveyReqDTO> temp = new ArrayList<>();
-            for (ExcelGeneralSurveyReqDTO reqDTO : list) {
-                GeneralSurveyReqDTO req = new GeneralSurveyReqDTO();
-                BeanUtils.copyProperties(reqDTO, req);
-                req.setRecType(Objects.isNull(reqDTO.getRecType()) ? "" : "普查".equals(reqDTO.getRecType()) ? "10" : "20");
-                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
-                req.setRecId(TokenUtil.getUuId());
-                req.setDeleteFlag("0");
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                temp.add(req);
-            }
-            if (!temp.isEmpty()) {
-                generalSurveyMapper.importGeneralSurvey(temp);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        List<ExcelGeneralSurveyReqDTO> list = EasyExcelUtils.read(file, ExcelGeneralSurveyReqDTO.class);
+        List<GeneralSurveyReqDTO> temp = new ArrayList<>();
+        for (ExcelGeneralSurveyReqDTO reqDTO : list) {
+            GeneralSurveyReqDTO req = new GeneralSurveyReqDTO();
+            BeanUtils.copyProperties(reqDTO, req);
+            req.setRecType(Objects.isNull(reqDTO.getRecType()) ? "" : "普查".equals(reqDTO.getRecType()) ? "10" : "20");
+            req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+            req.setRecId(TokenUtil.getUuId());
+            req.setDeleteFlag("0");
+            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            temp.add(req);
+        }
+        if (!temp.isEmpty()) {
+            generalSurveyMapper.importGeneralSurvey(temp);
         }
     }
 

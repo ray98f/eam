@@ -246,23 +246,19 @@ public class TrainMileServiceImpl implements TrainMileService {
      */
     @Override
     public void importTrainDailyMile(MultipartFile file) {
-        try {
-            List<ExcelTrainMileDailyReqDTO> list = EasyExcelUtils.read(file, ExcelTrainMileDailyReqDTO.class);
-            List<TrainMileDailyReqDTO> temp = new ArrayList<>();
-            for (ExcelTrainMileDailyReqDTO reqDTO : list) {
-                TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
-                BeanUtils.copyProperties(reqDTO, req);
-                req.setRecId(TokenUtil.getUuId());
-                req.setEquipCode(equipmentMapper.getEquipCodeByName(req.getEquipName()));
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                temp.add(req);
-            }
-            if (!temp.isEmpty()) {
-                trainMileMapper.importTrainDailyMile(temp);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        List<ExcelTrainMileDailyReqDTO> list = EasyExcelUtils.read(file, ExcelTrainMileDailyReqDTO.class);
+        List<TrainMileDailyReqDTO> temp = new ArrayList<>();
+        for (ExcelTrainMileDailyReqDTO reqDTO : list) {
+            TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
+            BeanUtils.copyProperties(reqDTO, req);
+            req.setRecId(TokenUtil.getUuId());
+            req.setEquipCode(equipmentMapper.getEquipCodeByName(req.getEquipName()));
+            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            temp.add(req);
+        }
+        if (!temp.isEmpty()) {
+            trainMileMapper.importTrainDailyMile(temp);
         }
     }
 

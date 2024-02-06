@@ -18,8 +18,6 @@ import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.equipment.EquipmentService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -113,34 +111,30 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public void importEquipment(MultipartFile file) {
-        try {
-            List<ExcelEquipmentReqDTO> list = EasyExcelUtils.read(file, ExcelEquipmentReqDTO.class);
-            List<EquipmentReqDTO> temp = new ArrayList<>();
-            for (ExcelEquipmentReqDTO reqDTO : list) {
-                EquipmentReqDTO req = new EquipmentReqDTO();
-                BeanUtils.copyProperties(reqDTO, req);
-                req.setUseLineNo(Objects.isNull(reqDTO.getUseLineName()) ? "" : "S1线".equals(reqDTO.getUseLineName()) ? "01" : "02");
-                req.setUseSegNo(Objects.isNull(reqDTO.getUseSegName()) ? "" : "一期".equals(reqDTO.getUseSegName()) ? "01" : "二期".equals(reqDTO.getUseSegName()) ? "二期" : "三期");
-                req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" : "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
-                req.setRecId(TokenUtil.getUuId());
-                req.setApprovalStatus("30");
-                req.setQuantity(new BigDecimal("1"));
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                CurrentLoginUser user = TokenUtil.getCurrentPerson();
-                req.setCompanyCode(user.getCompanyAreaId());
-                req.setCompanyName(user.getCompanyName());
-                req.setDeptCode(user.getOfficeAreaId());
-                req.setDeptName(user.getOfficeName());
-                String unitNo = insertUnitCode(req, user);
-                req.setEquipCode(unitNo);
-                temp.add(req);
-            }
-            if (!temp.isEmpty()) {
-                equipmentMapper.importEquipment(temp);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        List<ExcelEquipmentReqDTO> list = EasyExcelUtils.read(file, ExcelEquipmentReqDTO.class);
+        List<EquipmentReqDTO> temp = new ArrayList<>();
+        for (ExcelEquipmentReqDTO reqDTO : list) {
+            EquipmentReqDTO req = new EquipmentReqDTO();
+            BeanUtils.copyProperties(reqDTO, req);
+            req.setUseLineNo(Objects.isNull(reqDTO.getUseLineName()) ? "" : "S1线".equals(reqDTO.getUseLineName()) ? "01" : "02");
+            req.setUseSegNo(Objects.isNull(reqDTO.getUseSegName()) ? "" : "一期".equals(reqDTO.getUseSegName()) ? "01" : "二期".equals(reqDTO.getUseSegName()) ? "二期" : "三期");
+            req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" : "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
+            req.setRecId(TokenUtil.getUuId());
+            req.setApprovalStatus("30");
+            req.setQuantity(new BigDecimal("1"));
+            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            CurrentLoginUser user = TokenUtil.getCurrentPerson();
+            req.setCompanyCode(user.getCompanyAreaId());
+            req.setCompanyName(user.getCompanyName());
+            req.setDeptCode(user.getOfficeAreaId());
+            req.setDeptName(user.getOfficeName());
+            String unitNo = insertUnitCode(req, user);
+            req.setEquipCode(unitNo);
+            temp.add(req);
+        }
+        if (!temp.isEmpty()) {
+            equipmentMapper.importEquipment(temp);
         }
     }
 

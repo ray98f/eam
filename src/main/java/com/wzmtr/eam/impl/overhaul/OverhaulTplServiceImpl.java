@@ -255,21 +255,17 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void importOverhaulTpl(MultipartFile file) {
-        try {
-            List<ExcelOverhaulTplReqDTO> listTpl = EasyExcelUtils.read(file, ExcelOverhaulTplReqDTO.class, 0);
-            List<ExcelOverhaulTplDetailReqDTO> listTplDetail = EasyExcelUtils.read(file, ExcelOverhaulTplDetailReqDTO.class, 1);
-            List<ExcelOverhaulMaterialReqDTO> listMaterial = EasyExcelUtils.read(file, ExcelOverhaulMaterialReqDTO.class, 2);
-            if (StringUtils.isNotEmpty(listTpl)) {
-                importOverhaulTpl(listTpl);
-            }
-            if (StringUtils.isNotEmpty(listTplDetail)) {
-                importOverhaulTplDetail(listTplDetail);
-            }
-            if (StringUtils.isNotEmpty(listMaterial)) {
-                importOverhaulTplMaterial(listMaterial);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        List<ExcelOverhaulTplReqDTO> listTpl = EasyExcelUtils.read(file, ExcelOverhaulTplReqDTO.class, 0);
+        List<ExcelOverhaulTplDetailReqDTO> listTplDetail = EasyExcelUtils.read(file, ExcelOverhaulTplDetailReqDTO.class, 1);
+        List<ExcelOverhaulMaterialReqDTO> listMaterial = EasyExcelUtils.read(file, ExcelOverhaulMaterialReqDTO.class, 2);
+        if (StringUtils.isNotEmpty(listTpl)) {
+            importOverhaulTpl(listTpl);
+        }
+        if (StringUtils.isNotEmpty(listTplDetail)) {
+            importOverhaulTplDetail(listTplDetail);
+        }
+        if (StringUtils.isNotEmpty(listMaterial)) {
+            importOverhaulTplMaterial(listMaterial);
         }
     }
 

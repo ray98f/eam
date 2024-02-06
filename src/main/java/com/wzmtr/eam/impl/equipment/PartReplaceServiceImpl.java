@@ -86,26 +86,22 @@ public class PartReplaceServiceImpl implements PartReplaceService {
 
     @Override
     public void importPartReplace(MultipartFile file) {
-        try {
-            List<ExcelPartReplaceReqDTO> list = EasyExcelUtils.read(file, ExcelPartReplaceReqDTO.class);
-            List<PartReplaceReqDTO> temp = new ArrayList<>();
-            if (!Objects.isNull(list) && !list.isEmpty()) {
-                for (ExcelPartReplaceReqDTO reqDTO : list) {
-                    PartReplaceReqDTO req = new PartReplaceReqDTO();
-                    BeanUtils.copyProperties(reqDTO, req);
-                    req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
-                    req.setRecId(TokenUtil.getUuId());
-                    req.setDeleteFlag("0");
-                    req.setRecCreator(TokenUtil.getCurrentPersonId());
-                    req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                    temp.add(req);
-                }
+        List<ExcelPartReplaceReqDTO> list = EasyExcelUtils.read(file, ExcelPartReplaceReqDTO.class);
+        List<PartReplaceReqDTO> temp = new ArrayList<>();
+        if (!Objects.isNull(list) && !list.isEmpty()) {
+            for (ExcelPartReplaceReqDTO reqDTO : list) {
+                PartReplaceReqDTO req = new PartReplaceReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+                req.setRecId(TokenUtil.getUuId());
+                req.setDeleteFlag("0");
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(req);
             }
-            if (StringUtils.isNotEmpty(temp)) {
-                partReplaceMapper.importPartReplace(temp);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        }
+        if (StringUtils.isNotEmpty(temp)) {
+            partReplaceMapper.importPartReplace(temp);
         }
     }
 

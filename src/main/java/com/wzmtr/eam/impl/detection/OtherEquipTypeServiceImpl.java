@@ -7,8 +7,6 @@ import com.wzmtr.eam.dto.req.detection.excel.ExcelOtherEquipTypeReqDTO;
 import com.wzmtr.eam.dto.res.detection.OtherEquipTypeResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelOtherEquipTypeResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.detection.OtherEquipTypeMapper;
 import com.wzmtr.eam.service.detection.OtherEquipTypeService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -53,21 +51,17 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
 
     @Override
     public void importOtherEquipType(MultipartFile file) {
-        try {
-            List<OtherEquipTypeReqDTO> temp = new ArrayList<>();
-            List<ExcelOtherEquipTypeReqDTO> list = EasyExcelUtils.read(file, ExcelOtherEquipTypeReqDTO.class);
-            for (ExcelOtherEquipTypeReqDTO reqDTO : list) {
-                OtherEquipTypeReqDTO req = new OtherEquipTypeReqDTO();
-                BeanUtils.copyProperties(reqDTO, req);
-                req.setRecId(TokenUtil.getUuId());
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
-                temp.add(req);
-            }
-            otherEquipTypeMapper.importOtherEquipType(temp);
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        List<OtherEquipTypeReqDTO> temp = new ArrayList<>();
+        List<ExcelOtherEquipTypeReqDTO> list = EasyExcelUtils.read(file, ExcelOtherEquipTypeReqDTO.class);
+        for (ExcelOtherEquipTypeReqDTO reqDTO : list) {
+            OtherEquipTypeReqDTO req = new OtherEquipTypeReqDTO();
+            BeanUtils.copyProperties(reqDTO, req);
+            req.setRecId(TokenUtil.getUuId());
+            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+            temp.add(req);
         }
+        otherEquipTypeMapper.importOtherEquipType(temp);
     }
 
     @Override

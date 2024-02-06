@@ -74,30 +74,26 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
 
     @Override
     public void importWheelsetLathing(MultipartFile file) {
-        try {
-            List<ExcelWheelsetLathingReqDTO> list = EasyExcelUtils.read(file, ExcelWheelsetLathingReqDTO.class);
-            List<WheelsetLathingReqDTO> temp = new ArrayList<>();
-            if (!Objects.isNull(list) && !list.isEmpty()) {
-                for (ExcelWheelsetLathingReqDTO reqDTO : list) {
-                    WheelsetLathingReqDTO req = new WheelsetLathingReqDTO();
-                    BeanUtils.copyProperties(reqDTO, req);
-                    if (StringUtils.isNotEmpty(reqDTO.getAxleNo())) {
-                        req.setAxleNo("一轴".equals(reqDTO.getAxleNo()) ? "01" : "二轴".equals(reqDTO.getAxleNo()) ? "02" : "三轴".equals(reqDTO.getAxleNo()) ? "03" : "04");
-                    } else {
-                        req.setAxleNo(reqDTO.getAxleNo());
-                    }
-                    req.setRecId(TokenUtil.getUuId());
-                    req.setDeleteFlag("0");
-                    req.setRecCreator(TokenUtil.getCurrentPersonId());
-                    req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                    temp.add(req);
+        List<ExcelWheelsetLathingReqDTO> list = EasyExcelUtils.read(file, ExcelWheelsetLathingReqDTO.class);
+        List<WheelsetLathingReqDTO> temp = new ArrayList<>();
+        if (!Objects.isNull(list) && !list.isEmpty()) {
+            for (ExcelWheelsetLathingReqDTO reqDTO : list) {
+                WheelsetLathingReqDTO req = new WheelsetLathingReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                if (StringUtils.isNotEmpty(reqDTO.getAxleNo())) {
+                    req.setAxleNo("一轴".equals(reqDTO.getAxleNo()) ? "01" : "二轴".equals(reqDTO.getAxleNo()) ? "02" : "三轴".equals(reqDTO.getAxleNo()) ? "03" : "04");
+                } else {
+                    req.setAxleNo(reqDTO.getAxleNo());
                 }
+                req.setRecId(TokenUtil.getUuId());
+                req.setDeleteFlag("0");
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(req);
             }
-            if (StringUtils.isNotEmpty(temp)) {
-                wheelsetLathingMapper.importWheelsetLathing(temp);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        }
+        if (StringUtils.isNotEmpty(temp)) {
+            wheelsetLathingMapper.importWheelsetLathing(temp);
         }
     }
 

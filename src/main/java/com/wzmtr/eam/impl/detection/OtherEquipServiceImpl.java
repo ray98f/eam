@@ -102,31 +102,27 @@ public class OtherEquipServiceImpl implements OtherEquipService {
 
     @Override
     public void importOtherEquip(MultipartFile file) {
-        try {
-            List<ExcelOtherEquipReqDTO> list = EasyExcelUtils.read(file, ExcelOtherEquipReqDTO.class);
-            for (ExcelOtherEquipReqDTO reqDTO : list) {
-                OtherEquipReqDTO req = new OtherEquipReqDTO();
-                BeanUtils.copyProperties(reqDTO, req);
-                req.setRecId(TokenUtil.getUuId());
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                req.setRecRevisor(TokenUtil.getCurrentPersonId());
-                req.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                if (StringUtils.isNotEmpty(reqDTO.getOtherEquipType())) {
-                    req.setOtherEquipType("电梯".equals(reqDTO.getOtherEquipType()) ? "10" : "起重机".equals(reqDTO.getOtherEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getOtherEquipType()) ? "30" : "40");
-                }
-                SysOffice manageOrg = organizationMapper.getByNames(reqDTO.getManageOrg());
-                SysOffice secOrg = organizationMapper.getByNames(reqDTO.getSecOrg());
-                if (Objects.isNull(manageOrg) || Objects.isNull(secOrg)) {
-                    continue;
-                }
-                req.setManageOrg(manageOrg.getId());
-                req.setSecOrg(secOrg.getId());
-                otherEquipMapper.updateEquip(req);
-                otherEquipMapper.modifyOtherEquip(req);
+        List<ExcelOtherEquipReqDTO> list = EasyExcelUtils.read(file, ExcelOtherEquipReqDTO.class);
+        for (ExcelOtherEquipReqDTO reqDTO : list) {
+            OtherEquipReqDTO req = new OtherEquipReqDTO();
+            BeanUtils.copyProperties(reqDTO, req);
+            req.setRecId(TokenUtil.getUuId());
+            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            req.setRecRevisor(TokenUtil.getCurrentPersonId());
+            req.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            if (StringUtils.isNotEmpty(reqDTO.getOtherEquipType())) {
+                req.setOtherEquipType("电梯".equals(reqDTO.getOtherEquipType()) ? "10" : "起重机".equals(reqDTO.getOtherEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getOtherEquipType()) ? "30" : "40");
             }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+            SysOffice manageOrg = organizationMapper.getByNames(reqDTO.getManageOrg());
+            SysOffice secOrg = organizationMapper.getByNames(reqDTO.getSecOrg());
+            if (Objects.isNull(manageOrg) || Objects.isNull(secOrg)) {
+                continue;
+            }
+            req.setManageOrg(manageOrg.getId());
+            req.setSecOrg(secOrg.getId());
+            otherEquipMapper.updateEquip(req);
+            otherEquipMapper.modifyOtherEquip(req);
         }
     }
 

@@ -7,8 +7,6 @@ import com.wzmtr.eam.dto.req.detection.excel.ExcelSpecialEquipTypeReqDTO;
 import com.wzmtr.eam.dto.res.detection.SpecialEquipTypeResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelSpecialEquipTypeResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.detection.SpecialEquipTypeMapper;
 import com.wzmtr.eam.service.detection.SpecialEquipTypeService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -52,21 +50,17 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
 
     @Override
     public void importSpecialEquipType(MultipartFile file) {
-        try {
-            List<SpecialEquipTypeReqDTO> temp = new ArrayList<>();
-            List<ExcelSpecialEquipTypeReqDTO> list = EasyExcelUtils.read(file, ExcelSpecialEquipTypeReqDTO.class);
-            for (ExcelSpecialEquipTypeReqDTO reqDTO : list) {
-                SpecialEquipTypeReqDTO req = new SpecialEquipTypeReqDTO();
-                BeanUtils.copyProperties(reqDTO, req);
-                req.setRecId(TokenUtil.getUuId());
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
-                temp.add(req);
-            }
-            specialEquipTypeMapper.importSpecialEquipType(temp);
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        List<SpecialEquipTypeReqDTO> temp = new ArrayList<>();
+        List<ExcelSpecialEquipTypeReqDTO> list = EasyExcelUtils.read(file, ExcelSpecialEquipTypeReqDTO.class);
+        for (ExcelSpecialEquipTypeReqDTO reqDTO : list) {
+            SpecialEquipTypeReqDTO req = new SpecialEquipTypeReqDTO();
+            BeanUtils.copyProperties(reqDTO, req);
+            req.setRecId(TokenUtil.getUuId());
+            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+            temp.add(req);
         }
+        specialEquipTypeMapper.importSpecialEquipType(temp);
     }
 
     @Override

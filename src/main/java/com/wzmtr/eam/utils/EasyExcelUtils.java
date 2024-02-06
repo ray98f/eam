@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Objects;
@@ -111,15 +112,19 @@ public class EasyExcelUtils {
     }
 
     /**
+     /**
      * 文件导入数据读取
      * @param file 文件
      * @param head 头部
      * @return 列表
-     * @throws IOException 读写流异常
      */
-    public static <T> List<T> read(MultipartFile file, Class<T> head) throws IOException {
+    public static <T> List<T> read(MultipartFile file, Class<T> head) {
         checkFileFormat(file);
-        return checkData(EasyExcel.read(file.getInputStream(), head, null).doReadAllSync());
+        try {
+            return checkData(EasyExcel.read(file.getInputStream(), head, null).doReadAllSync());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -128,11 +133,14 @@ public class EasyExcelUtils {
      * @param head 头部
      * @param sheetNo sheet编号
      * @return 列表
-     * @throws IOException 读写流异常
      */
-    public static <T> List<T> read(MultipartFile file, Class<T> head, Integer sheetNo) throws IOException {
+    public static <T> List<T> read(MultipartFile file, Class<T> head, Integer sheetNo) {
         checkFileFormat(file);
-        return checkData(EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync());
+        try {
+            return checkData(EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -155,8 +163,37 @@ public class EasyExcelUtils {
      */
     private static <T> List<T> checkData(List<T> list) {
         if (StringUtils.isEmpty(list)) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "模板错误或导入空模板，请检查");
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "导入空模板，请填写数据后导入");
+        }
+        boolean bool = true;
+        for (T t : list) {
+            bool = allFieldsNull(t);
+            if (!bool) {
+                break;
+            }
+        }
+        if (bool) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "导入模板错误，请检查模板");
         }
         return list;
+    }
+
+    /**
+     * 判断对象元素是否都为null
+     * @param obj 对象
+     * @return 是否都为null
+     */
+    private static boolean allFieldsNull(Object obj) {
+        for (Field field : obj.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                if (field.get(obj) != null) {
+                    return false;
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
     }
 }
