@@ -1,7 +1,10 @@
 package com.wzmtr.eam.dto.req.equipment.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 部件更换台账导入类
@@ -9,7 +12,10 @@ import lombok.Data;
  * @version 1.0
  * @date 2023/12/11
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
+@Builder
 public class ExcelPartReplaceReqDTO {
 
     @ExcelProperty(value = "设备编码")

@@ -9,7 +9,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.mea.SubmissionService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -22,6 +25,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -80,48 +84,51 @@ public class SubmissionController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出送检单")
-    public void exportSubmission(SubmissionListReqDTO submissionListReqDTO, HttpServletResponse response) throws IOException {
-        submissionService.exportSubmission(submissionListReqDTO, response);
+    public void exportSubmission(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        submissionService.exportSubmission(baseIdsEntity.getIds(), response);
     }
 
     @GetMapping("/detail/page")
-    @ApiOperation(value = "获取送检单列表")
+    @ApiOperation(value = "获取送检单明细列表")
     public PageResponse<SubmissionDetailResDTO> pageSubmissionDetail(@RequestParam(required = false) @ApiParam("检测单号") String sendVerifyNo,
                                                                      @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(submissionService.pageSubmissionDetail(sendVerifyNo, pageReqDTO));
     }
 
     @GetMapping("/detail/detail")
-    @ApiOperation(value = "获取送检单详情")
+    @ApiOperation(value = "获取送检单明细详情")
     public DataResponse<SubmissionDetailResDTO> getSubmissionDetailDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(submissionService.getSubmissionDetailDetail(id));
     }
 
     @PostMapping("/detail/add")
-    @ApiOperation(value = "新增送检单")
+    @ApiOperation(value = "新增送检单明细")
     public DataResponse<T> addSubmissionDetail(@RequestBody SubmissionDetailReqDTO submissionDetailReqDTO) {
         submissionService.addSubmissionDetail(submissionDetailReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/detail/modify")
-    @ApiOperation(value = "编辑送检单")
+    @ApiOperation(value = "编辑送检单明细")
     public DataResponse<T> modifySubmissionDetail(@RequestBody SubmissionDetailReqDTO submissionDetailReqDTO) {
         submissionService.modifySubmissionDetail(submissionDetailReqDTO);
         return DataResponse.success();
     }
 
     @PostMapping("/detail/delete")
-    @ApiOperation(value = "删除送检单")
+    @ApiOperation(value = "删除送检单明细")
     public DataResponse<T> deleteSubmissionDetail(@RequestBody BaseIdsEntity baseIdsEntity) {
         submissionService.deleteSubmissionDetail(baseIdsEntity);
         return DataResponse.success();
     }
 
     @GetMapping("/detail/export")
-    @ApiOperation(value = "导出送检单")
+    @ApiOperation(value = "导出送检单明细")
     public void exportSubmissionDetail(@RequestParam(required = false) @ApiParam("检测单号") String sendVerifyNo,
                                        HttpServletResponse response) throws IOException {
         submissionService.exportSubmissionDetail(sendVerifyNo, response);

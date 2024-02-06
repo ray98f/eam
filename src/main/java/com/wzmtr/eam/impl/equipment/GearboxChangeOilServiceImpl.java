@@ -74,26 +74,22 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
 
     @Override
     public void importGearboxChangeOil(MultipartFile file) {
-        try {
-            List<ExcelGearboxChangeOilReqDTO> list = EasyExcelUtils.read(file, ExcelGearboxChangeOilReqDTO.class);
-            List<GearboxChangeOilReqDTO> temp = new ArrayList<>();
-            if (!Objects.isNull(list) && !list.isEmpty()) {
-                for (ExcelGearboxChangeOilReqDTO reqDTO : list) {
-                    GearboxChangeOilReqDTO req = new GearboxChangeOilReqDTO();
-                    BeanUtils.copyProperties(reqDTO, req);
-                    req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
-                    req.setRecId(TokenUtil.getUuId());
-                    req.setDeleteFlag("0");
-                    req.setRecCreator(TokenUtil.getCurrentPersonId());
-                    req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                    temp.add(req);
-                }
+        List<ExcelGearboxChangeOilReqDTO> list = EasyExcelUtils.read(file, ExcelGearboxChangeOilReqDTO.class);
+        List<GearboxChangeOilReqDTO> temp = new ArrayList<>();
+        if (!Objects.isNull(list) && !list.isEmpty()) {
+            for (ExcelGearboxChangeOilReqDTO reqDTO : list) {
+                GearboxChangeOilReqDTO req = new GearboxChangeOilReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+                req.setRecId(TokenUtil.getUuId());
+                req.setDeleteFlag("0");
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(req);
             }
-            if (!temp.isEmpty()) {
-                gearboxChangeOilMapper.importGearboxChangeOil(temp);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        }
+        if (!temp.isEmpty()) {
+            gearboxChangeOilMapper.importGearboxChangeOil(temp);
         }
     }
 

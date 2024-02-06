@@ -279,6 +279,17 @@
         order by a.INSTRM_PLAN_NO desc
     </select>
 
+    <select id="exportCheckPlan" resultType="com.wzmtr.eam.dto.res.mea.CheckPlanResDTO">
+        <include refid="checkPlan-instrument-cols"/>
+        FROM T_MEA_CHECK_PLAN a WHERE 1=1 and a.DELETE_FLAG='0'
+        and a.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        order by a.INSTRM_PLAN_NO desc
+    </select>
+
     <sql id="info-cols">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
@@ -542,6 +553,17 @@
         <if test="instrmPlanNo!=null and instrmPlanNo!=''">
             and a.INSTRM_PLAN_NO=#{instrmPlanNo}
         </if>
+        order by a.REC_CREATE_TIME desc
+    </select>
+
+    <select id="listInfo" resultType="com.wzmtr.eam.dto.res.mea.MeaInfoResDTO">
+        <include refid="info-cols"/>
+        WHERE 1=1 and a.DELETE_FLAG='0'
+        and a.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         order by a.REC_CREATE_TIME desc
     </select>
 

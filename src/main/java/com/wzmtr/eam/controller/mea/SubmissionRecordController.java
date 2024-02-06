@@ -8,7 +8,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.mea.SubmissionRecordService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -21,6 +24,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -83,14 +87,13 @@ public class SubmissionRecordController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出检定记录")
-    public void exportSubmissionRecord(@RequestParam(required = false) @ApiParam("检测单号") String checkNo,
-                                       @RequestParam(required = false) @ApiParam("计量器具检验计划号") String instrmPlanNo,
-                                       @RequestParam(required = false) @ApiParam("记录状态") String recStatus,
-                                       @RequestParam(required = false) @ApiParam("工作流实例ID") String workFlowInstId,
-                                       HttpServletResponse response) throws IOException {
-        submissionRecordService.exportSubmissionRecord(checkNo, instrmPlanNo, recStatus, workFlowInstId, response);
+    public void exportSubmissionRecord(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        submissionRecordService.exportSubmissionRecord(baseIdsEntity.getIds(), response);
     }
 
     @GetMapping("/detail/page")
@@ -127,10 +130,12 @@ public class SubmissionRecordController {
         return DataResponse.success();
     }
 
-    @GetMapping("/detail/export")
+    @PostMapping("/detail/export")
     @ApiOperation(value = "导出检定记录明细")
-    public void exportSubmissionRecordDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
-                                             HttpServletResponse response) throws IOException {
-        submissionRecordService.exportSubmissionRecordDetail(testRecId, response);
+    public void exportSubmissionRecordDetail(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        submissionRecordService.exportSubmissionRecordDetail(baseIdsEntity.getIds(), response);
     }
 }

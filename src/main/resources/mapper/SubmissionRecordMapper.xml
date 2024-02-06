@@ -235,6 +235,17 @@
         order by a.CHECK_NO desc
     </select>
 
+    <select id="exportSubmissionRecord" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO">
+        <include refid="submission-record-cols"/>
+        WHERE 1=1 and a.DELETE_FLAG='0'
+        and a.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        order by a.CHECK_NO desc
+    </select>
+
     <sql id="submission-record-detail-cols">
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
@@ -548,6 +559,17 @@
     <select id="listSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO">
         <include refid="submission-record-detail-cols"/>
         WHERE 1=1 AND a.TEST_REC_ID=#{testRecId}
+        order by a.REC_CREATE_TIME desc
+    </select>
+
+    <select id="exportSubmissionRecordDetail" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO">
+        <include refid="submission-record-detail-cols"/>
+        WHERE 1=1
+        and a.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         order by a.REC_CREATE_TIME desc
     </select>
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wzmtr.eam.mapper.special.equip.SpecialEquipTypeMapper">
+<mapper namespace="com.wzmtr.eam.mapper.detection.SpecialEquipTypeMapper">
 
-    <select id="pageSpecialEquipType" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipTypeResDTO">
+    <select id="pageSpecialEquipType" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipTypeResDTO">
         SELECT
         REC_ID,
         TYPE_CODE,
@@ -26,7 +26,7 @@
         ORDER BY TYPE_CODE asc
     </select>
 
-    <select id="getSpecialEquipTypeDetail" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipTypeResDTO">
+    <select id="getSpecialEquipTypeDetail" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipTypeResDTO">
         SELECT
         REC_ID,
         TYPE_CODE,
@@ -111,7 +111,7 @@
         )
     </update>
 
-    <select id="exportSpecialEquipType" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipTypeResDTO">
+    <select id="exportSpecialEquipType" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipTypeResDTO">
         SELECT
         REC_ID,
         TYPE_CODE,
@@ -134,7 +134,7 @@
         ORDER BY TYPE_CODE asc
     </select>
 
-    <select id="listSpecialEquipType" resultType="com.wzmtr.eam.dto.res.special.equip.SpecialEquipTypeResDTO">
+    <select id="listSpecialEquipType" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipTypeResDTO">
         SELECT
         REC_ID,
         TYPE_CODE,

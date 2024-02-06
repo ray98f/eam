@@ -255,21 +255,17 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void importOverhaulTpl(MultipartFile file) {
-        try {
-            List<ExcelOverhaulTplReqDTO> listTpl = EasyExcelUtils.read(file, ExcelOverhaulTplReqDTO.class, 0);
-            List<ExcelOverhaulTplDetailReqDTO> listTplDetail = EasyExcelUtils.read(file, ExcelOverhaulTplDetailReqDTO.class, 1);
-            List<ExcelOverhaulMaterialReqDTO> listMaterial = EasyExcelUtils.read(file, ExcelOverhaulMaterialReqDTO.class, 2);
-            if (StringUtils.isNotEmpty(listTpl)) {
-                importOverhaulTpl(listTpl);
-            }
-            if (StringUtils.isNotEmpty(listTplDetail)) {
-                importOverhaulTplDetail(listTplDetail);
-            }
-            if (StringUtils.isNotEmpty(listMaterial)) {
-                importOverhaulTplMaterial(listMaterial);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        List<ExcelOverhaulTplReqDTO> listTpl = EasyExcelUtils.read(file, ExcelOverhaulTplReqDTO.class, 0);
+        List<ExcelOverhaulTplDetailReqDTO> listTplDetail = EasyExcelUtils.read(file, ExcelOverhaulTplDetailReqDTO.class, 1);
+        List<ExcelOverhaulMaterialReqDTO> listMaterial = EasyExcelUtils.read(file, ExcelOverhaulMaterialReqDTO.class, 2);
+        if (StringUtils.isNotEmpty(listTpl)) {
+            importOverhaulTpl(listTpl);
+        }
+        if (StringUtils.isNotEmpty(listTplDetail)) {
+            importOverhaulTplDetail(listTplDetail);
+        }
+        if (StringUtils.isNotEmpty(listMaterial)) {
+            importOverhaulTplMaterial(listMaterial);
         }
     }
 
@@ -350,9 +346,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public void exportOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
-                                  String majorCode, String systemCode, String equipTypeCode, HttpServletResponse response) throws IOException {
-        List<OverhaulTplResDTO> overhaulTplResDTOList = overhaulTplMapper.listOverhaulTpl(templateId, templateName, lineNo, position1Code, majorCode, systemCode, equipTypeCode, null);
+    public void exportOverhaulTpl(List<String> ids, HttpServletResponse response) throws IOException {
+        List<OverhaulTplResDTO> overhaulTplResDTOList = overhaulTplMapper.exportOverhaulTpl(ids);
         if (overhaulTplResDTOList != null && !overhaulTplResDTOList.isEmpty()) {
             List<ExcelOverhaulTplResDTO> list = new ArrayList<>();
             for (OverhaulTplResDTO resDTO : overhaulTplResDTOList) {

@@ -1,7 +1,10 @@
 package com.wzmtr.eam.bizobject.export;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Author: Li.Wang
@@ -12,36 +15,26 @@ import lombok.*;
 @Data
 @Builder
 public class SecureDangerSourceExportBO {
-    @ExcelProperty(value = "检查问题单号")
-    private String secRiskId;
-
-    @ExcelProperty(value = "发现日期")
-    private String inspectDate;
-
-    @ExcelProperty(value = "检查问题")
-    private String secRiskDetail;
-
-    @ExcelProperty(value = "检查部门")
-    private String inspectDept;
-
-    @ExcelProperty(value = "检查人")
-    private String inspectorCode;
-
+    @ExcelProperty(value = "危险源排查单号")
+    private String dangerRiskId;
+    @ExcelProperty(value = "危险源")
+    private String dangerRisk;
+    @ExcelProperty(value = "危险源级别")
+    private String dangerRiskRank;
+    @ExcelProperty(value = "危险源内容")
+    private String dangerRiskDetail;
+    @ExcelProperty(value = "发现部门")
+    private String recDeptName;
+    @ExcelProperty(value = "后果")
+    private String consequense;
     @ExcelProperty(value = "地点")
     private String positionDesc;
-
-    @ExcelProperty(value = "整改措施")
-    private String restoreDetail;
-
-    @ExcelProperty(value = "计划完成日期")
-    private String planDate;
-
-    @ExcelProperty(value = "整改部门")
-    private String restoreDept;
-
-    @ExcelProperty(value = "整改情况")
-    private String isRestoredName;
-
-    @ExcelProperty(value = "记录状态")
-    private String recStatus;
+    @ExcelProperty(value = "防范措施")
+    private String controlDetail;
+    @ExcelProperty(value = "责任部门")
+    private String respDeptName;
+    @ExcelProperty(value = "责任人")
+    private String respCode;
+    @ExcelProperty(value = "危险源照片")
+    private String dangerRiskPic;
 }

@@ -284,36 +284,11 @@
     <select id="listMea" resultType="com.wzmtr.eam.dto.res.mea.MeaResDTO">
         <include refid="mea-instrument-cols"/>
         FROM T_MEA_INSTRUMENT WHERE 1=1
-        <if test="equipName!=null and equipName!=''">
-            and EQUIP_NAME like '%' || #{equipName} || '%'
-        </if>
-        <if test="equipCode!=null and equipCode!=''">
-            and EQUIP_CODE like '%' || #{equipCode} || '%'
-        </if>
-        <if test="matSpecifi!=null and matSpecifi!=''">
-            and MAT_SPECIFI like '%' || #{matSpecifi} || '%'
-        </if>
-        <if test="useDeptCname!=null and useDeptCname!=''">
-            and USE_DEPT_CNAME like '%' || #{useDeptCname} || '%'
-        </if>
-        <if test="useName!=null and useName!=''">
-            and USE_NAME like '%' || #{useName} || '%'
-        </if>
-        <if test="lineNo!=null and lineNo!=''">
-            and LINE_NO=#{lineNo}
-        </if>
-        <if test="manufactureNo!=null and manufactureNo!=''">
-            and MANUFACTURE_NO like '%' || #{manufactureNo} || '%'
-        </if>
-        <if test="sendVerifyFlag!=null and sendVerifyFlag!=''">
-            and SEND_VERIFY_FLAG=#{sendVerifyFlag}
-        </if>
-        <if test="useBeginBeginDate!=null and useBeginBeginDate!=''">
-            and USE_BEGIN_DATE>=#{useBeginBeginDate}
-        </if>
-        <if test="useBeginEndDate!=null and useBeginEndDate!=''">
-            and #{useBeginEndDate}>=USE_BEGIN_DATE
-        </if>
+        and REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         order by REC_ID asc
     </select>
 

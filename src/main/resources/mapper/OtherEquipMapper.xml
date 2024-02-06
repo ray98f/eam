@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.detection.OtherEquipMapper">
+
+    <select id="pageOtherEquip" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 统一编号 -->
+        a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
+        a.REG_NO	as "regNo",  <!-- 登记证编号 -->
+        b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
+        a.OTHER_EQUIP_TYPE	as "otherEquipType",  <!-- 其他设备类别 -->
+        a.OTHER_EQUIP_CODE	as "otherEquipCode",  <!-- 设备代码 -->
+        a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
+        a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
+        a.EQUIP_POSITION	as "equipPosition",  <!-- 设备所在地点 -->
+        a.EQUIP_DETAILED_POSITION	as "equipDetailedPosition",  <!-- 设备详细地址 -->
+        a.EQUIP_PARAMETER	as "equipParameter",  <!-- 设备主要参数 -->
+        a.MANAGE_ORG	as "manageOrg",  <!-- 管理部门 -->
+        a.SEC_ORG	as "secOrg",  <!-- 维管部门 -->
+        a.SEC_STAFF_NAME	as "secStaffName",  <!-- 安管人员 -->
+        a.SEC_STAFF_PHONE	as "secStaffPhone",  <!-- 安管人员电话 -->
+        a.SEC_STAFF_MOBILE	as "secStaffMobile",  <!-- 安管人员手机 -->
+        a.LINKMAN_NAME	as "linkmanName",  <!-- 联系人 -->
+        a.LINKMAN_PHONE	as "linkmanPhone",  <!-- 联系人电话 -->
+        a.LINKMAN_MOBILE	as "linkmanMobile",  <!-- 联系人手机 -->
+        a.REMARK	as "remark",  <!-- 备注 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        b.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        b.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
+        b.POSITION1_CODE	as "position1Code",
+        b.EQUIP_STATUS	as "equipStatus",
+        b.SPECIAL_EQUIP_FLAG,
+        b.APPROVAL_STATUS,
+        b.POSITION1_NAME as "position1Name",
+        b.VERIFY_DATE	as "verifyDate",  <!-- 其他设备检测日期 -->
+        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 其他设备检测有效期 -->
+        c.NAME as "manageOrgName",
+        d.NAME as "secOrgName"
+        FROM T_EQUIPMENT b right join T_OTHER_EQUIP_EXT a
+        on a.EQUIP_CODE=b.EQUIP_CODE
+        left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
+        left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
+        where 1=1
+        and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
+        <if test="equipCode!=null and equipCode!=''">
+            and b.EQUIP_CODE like '%' || #{equipCode} || '%'
+        </if>
+        <if test="equipName!=null and equipName!=''">
+            and b.EQUIP_NAME like '%' || #{equipName} || '%'
+        </if>
+        <if test="otherEquipCode!=null and otherEquipCode!=''">
+            and a.OTHER_EQUIP_CODE like '%' || #{otherEquipCode} || '%'
+        </if>
+        <if test="factNo!=null and factNo!=''">
+            and a.FACT_NO like '%' || #{factNo} || '%'
+        </if>
+        <if test="useLineNo!=null and useLineNo!=''">
+            and b.USE_LINE_NO=#{useLineNo}
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            and b.POSITION1_CODE=#{position1Code}
+        </if>
+        <if test="otherEquipType!=null and otherEquipType!=''">
+            and a.OTHER_EQUIP_TYPE like '%' || #{otherEquipType} || '%'
+        </if>
+        <if test="equipStatus!=null and equipStatus!=''">
+            and b.EQUIP_STATUS=#{equipStatus}
+        </if>
+        ORDER BY
+        CASE
+        WHEN b.VERIFY_VALIDITY_DATE =' '
+        THEN null
+        ELSE b.VERIFY_VALIDITY_DATE
+        END
+        ASC nulls last,
+        a.EQUIP_CODE asc
+    </select>
+
+    <select id="getOtherEquipDetail" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 统一编号 -->
+        a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
+        a.REG_NO	as "regNo",  <!-- 登记证编号 -->
+        b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
+        a.OTHER_EQUIP_TYPE	as "otherEquipType",  <!-- 其他设备类别 -->
+        a.OTHER_EQUIP_CODE	as "otherEquipCode",  <!-- 设备代码 -->
+        a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
+        a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
+        a.EQUIP_POSITION	as "equipPosition",  <!-- 设备所在地点 -->
+        a.EQUIP_DETAILED_POSITION	as "equipDetailedPosition",  <!-- 设备详细地址 -->
+        a.EQUIP_PARAMETER	as "equipParameter",  <!-- 设备主要参数 -->
+        a.MANAGE_ORG	as "manageOrg",  <!-- 管理部门 -->
+        a.SEC_ORG	as "secOrg",  <!-- 维管部门 -->
+        a.SEC_STAFF_NAME	as "secStaffName",  <!-- 安管人员 -->
+        a.SEC_STAFF_PHONE	as "secStaffPhone",  <!-- 安管人员电话 -->
+        a.SEC_STAFF_MOBILE	as "secStaffMobile",  <!-- 安管人员手机 -->
+        a.LINKMAN_NAME	as "linkmanName",  <!-- 联系人 -->
+        a.LINKMAN_PHONE	as "linkmanPhone",  <!-- 联系人电话 -->
+        a.LINKMAN_MOBILE	as "linkmanMobile",  <!-- 联系人手机 -->
+        a.REMARK	as "remark",  <!-- 备注 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        b.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        b.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
+        b.POSITION1_CODE	as "position1Code",
+        b.EQUIP_STATUS	as "equipStatus",
+        b.SPECIAL_EQUIP_FLAG,
+        b.APPROVAL_STATUS,
+        b.POSITION1_NAME as "position1Name",
+        b.VERIFY_DATE	as "verifyDate",  <!-- 其他设备检测日期 -->
+        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 其他设备检测有效期 -->
+        c.NAME as "manageOrgName",
+        d.NAME as "secOrgName"
+        FROM T_EQUIPMENT b right join T_OTHER_EQUIP_EXT a
+        on a.EQUIP_CODE=b.EQUIP_CODE
+        left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
+        left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
+        where 1=1 and a.REC_ID=#{id}
+        and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
+    </select>
+
+    <update id="updateEquip">
+        UPDATE T_EQUIPMENT SET
+        VERIFY_DATE=#{verifyDate},
+        VERIFY_VALIDITY_DATE=#{verifyValidityDate}
+        WHERE EQUIP_CODE=#{equipCode}
+    </update>
+    
+    <update id="modifyOtherEquip">
+        UPDATE T_OTHER_EQUIP_EXT SET
+        <if test="regOrg!=null">
+            REG_ORG=#{regOrg},   <!-- 使用登记机构 -->
+        </if>
+        <if test="regNo!=null">
+            REG_NO=#{regNo},   <!-- 登记证编号 -->
+        </if>
+        <if test="equipCode!=null">
+            EQUIP_CODE=#{equipCode},   <!-- 设备编码 -->
+        </if>
+        <if test="otherEquipType!=null">
+            OTHER_EQUIP_TYPE=#{otherEquipType},   <!-- 其他设备类别 -->
+        </if>
+        <if test="otherEquipCode!=null">
+            OTHER_EQUIP_CODE=#{otherEquipCode},   <!-- 设备代码 -->
+        </if>
+        <if test="factNo!=null">
+            FACT_NO=#{factNo},   <!-- 出厂编号 -->
+        </if>
+        <if test="equipInnerNo!=null">
+            EQUIP_INNER_NO=#{equipInnerNo},   <!-- 设备内部编号 -->
+        </if>
+        <if test="equipPosition!=null">
+            EQUIP_POSITION=#{equipPosition},   <!-- 设备所在地点 -->
+        </if>
+        <if test="equipDetailedPosition!=null">
+            EQUIP_DETAILED_POSITION=#{equipDetailedPosition},   <!-- 设备详细地址 -->
+        </if>
+        <if test="equipParameter!=null">
+            EQUIP_PARAMETER=#{equipParameter},   <!-- 设备主要参数 -->
+        </if>
+        <if test="manageOrg!=null">
+            MANAGE_ORG=#{manageOrg},   <!-- 管理部门 -->
+        </if>
+        <if test="secOrg!=null">
+            SEC_ORG=#{secOrg},   <!-- 维管部门 -->
+        </if>
+        <if test="secStaffName!=null">
+            SEC_STAFF_NAME=#{secStaffName},   <!-- 安管人员 -->
+        </if>
+        <if test="secStaffPhone!=null">
+            SEC_STAFF_PHONE=#{secStaffPhone},   <!-- 安管人员电话 -->
+        </if>
+        <if test="secStaffMobile!=null">
+            SEC_STAFF_MOBILE=#{secStaffMobile},   <!-- 安管人员手机 -->
+        </if>
+        <if test="linkmanName!=null">
+            LINKMAN_NAME=#{linkmanName},   <!-- 联系人 -->
+        </if>
+        <if test="linkmanPhone!=null">
+            LINKMAN_PHONE=#{linkmanPhone},   <!-- 联系人电话 -->
+        </if>
+        <if test="linkmanMobile!=null">
+            LINKMAN_MOBILE=#{linkmanMobile},   <!-- 联系人手机 -->
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},   <!-- 备注 -->
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
+        </if>
+        <if test="recStatus!=null">
+            REC_STATUS=#{recStatus},   <!-- 记录状态 -->
+        </if>
+        <if test="ext1!=null">
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
+        </if>
+        <if test="ext2!=null">
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
+        </if>
+        <if test="ext3!=null">
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
+        </if>
+        <if test="ext4!=null">
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
+        </if>
+        <if test="ext5!=null">
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
+        </if>
+        REC_REVISOR=#{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 修改时间 -->
+        WHERE EQUIP_CODE=#{equipCode}
+    </update>
+
+    <select id="listOtherEquip" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 统一编号 -->
+        a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
+        a.REG_NO	as "regNo",  <!-- 登记证编号 -->
+        b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
+        a.OTHER_EQUIP_TYPE	as "otherEquipType",  <!-- 其他设备类别 -->
+        a.OTHER_EQUIP_CODE	as "otherEquipCode",  <!-- 设备代码 -->
+        a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
+        a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
+        a.EQUIP_POSITION	as "equipPosition",  <!-- 设备所在地点 -->
+        a.EQUIP_DETAILED_POSITION	as "equipDetailedPosition",  <!-- 设备详细地址 -->
+        a.EQUIP_PARAMETER	as "equipParameter",  <!-- 设备主要参数 -->
+        a.MANAGE_ORG	as "manageOrg",  <!-- 管理部门 -->
+        a.SEC_ORG	as "secOrg",  <!-- 维管部门 -->
+        a.SEC_STAFF_NAME	as "secStaffName",  <!-- 安管人员 -->
+        a.SEC_STAFF_PHONE	as "secStaffPhone",  <!-- 安管人员电话 -->
+        a.SEC_STAFF_MOBILE	as "secStaffMobile",  <!-- 安管人员手机 -->
+        a.LINKMAN_NAME	as "linkmanName",  <!-- 联系人 -->
+        a.LINKMAN_PHONE	as "linkmanPhone",  <!-- 联系人电话 -->
+        a.LINKMAN_MOBILE	as "linkmanMobile",  <!-- 联系人手机 -->
+        a.REMARK	as "remark",  <!-- 备注 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        b.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        b.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
+        b.POSITION1_CODE	as "position1Code",
+        b.EQUIP_STATUS	as "equipStatus",
+        b.SPECIAL_EQUIP_FLAG,
+        b.APPROVAL_STATUS,
+        b.POSITION1_NAME as "position1Name",
+        b.VERIFY_DATE	as "verifyDate",  <!-- 其他设备检测日期 -->
+        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 其他设备检测有效期 -->
+        c.NAME as "manageOrgName",
+        d.NAME as "secOrgName"
+        FROM T_EQUIPMENT b right join T_OTHER_EQUIP_EXT a
+        on a.EQUIP_CODE=b.EQUIP_CODE
+        left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
+        left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
+        where 1=1
+        and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
+        AND a.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY
+        CASE
+        WHEN b.VERIFY_VALIDITY_DATE =' '
+        THEN null
+        ELSE b.VERIFY_VALIDITY_DATE
+        END
+        ASC nulls last,
+        a.EQUIP_CODE asc
+    </select>
+
+    <select id="pageOtherEquipHistory" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipHistoryResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
+        a.TESTLIST_DETAIL_REC_ID	as "testlistDetailRecId",  <!-- 检测单明细表REC_ID -->
+        a.EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        a.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
+        a.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
+        a.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
+        a.INSTALLATION_UNIT	as "installationUnit",  <!-- 安装单位 -->
+        a.VERIFY_DATE	as "verifyDate",  <!-- 检测日期 -->
+        a.VERIFICATION_NO	as "verificationNo",  <!-- 证书编号 -->
+        a.VERIFICATION_TYPE	as "verificationType",  <!-- 证书类型 -->
+        a.VERIFY_PROOF	as "verifyProof",  <!-- 检测依据 -->
+        a.VERIFY_REPORT_NO	as "verifyReportNo",  <!-- 检测报告编号 -->
+        a.VERIFY_REPORT_TYPE	as "verifyReportType",  <!-- 检测报告类型 0:检测证书;1:校准证书;2:检测结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
+        a.VERIFY_REPORT_NAME	as "verifyReportName",  <!-- 检测报告名称 -->
+        a.VERIFY_REPORT_DATE	as "verifyReportDate",  <!-- 检测报告日期 -->
+        a.VERIFY_FEE	as "verifyFee",  <!-- 检测费用 -->
+        a.VERIFY_RESULT	as "verifyResult",  <!-- 检测结果（0：合格；1：不合格） -->
+        a.VERIFY_CONCLUSION	as "verifyConclusion",  <!-- 检测结果说明 -->
+        a.VERIFY_REPORT_ATT	as "verifyReportAtt",  <!-- 检测报告附件 -->
+        a.LAST_VERIFY_DATE	as "lastVerifyDate",  <!-- 上次检测日期 -->
+        a.NEXT_VERIFY_DATE	as "nextVerifyDate",  <!-- 下次检测日期 -->
+        a.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
+        a.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
+        a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        a.POSITION3	as "position3",  <!-- 位置三 -->
+        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        a.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
+        a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
+        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        b.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        b.SEND_VERIFY_NO as "sendVerifyNo",
+        b.CHECK_NO as "checkNo",
+        b.VERIFY_DEPT as "verifyDept",
+        a.VERIFY_VALIDITY_DATE as "verifyValidityDate",
+        b.EDIT_DEPT_CODE	as "editDeptCode",
+        <!--b.REC_STATUS	as "recStatus",-->
+        a.DOC_ID as "docId"
+        <!--d.PLAN_STATUS as "planStatus"-->
+        FROM T_DETECTION_DETAIL a
+        LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
+        LEFT JOIN T_EQUIPMENT c ON c.EQUIP_CODE=a.EQUIP_CODE
+        WHERE 1=1 and a.EQUIP_CODE=#{equipCode}
+        order by a.VERIFY_VALIDITY_DATE desc
+    </select>
+
+    <select id="getOtherEquipHistoryDetail" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipHistoryResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
+        a.TESTLIST_DETAIL_REC_ID	as "testlistDetailRecId",  <!-- 检测单明细表REC_ID -->
+        a.EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        a.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
+        a.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
+        a.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
+        a.INSTALLATION_UNIT	as "installationUnit",  <!-- 安装单位 -->
+        a.VERIFY_DATE	as "verifyDate",  <!-- 检测日期 -->
+        a.VERIFICATION_NO	as "verificationNo",  <!-- 证书编号 -->
+        a.VERIFICATION_TYPE	as "verificationType",  <!-- 证书类型 -->
+        a.VERIFY_PROOF	as "verifyProof",  <!-- 检测依据 -->
+        a.VERIFY_REPORT_NO	as "verifyReportNo",  <!-- 检测报告编号 -->
+        a.VERIFY_REPORT_TYPE	as "verifyReportType",  <!-- 检测报告类型 0:检测证书;1:校准证书;2:检测结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
+        a.VERIFY_REPORT_NAME	as "verifyReportName",  <!-- 检测报告名称 -->
+        a.VERIFY_REPORT_DATE	as "verifyReportDate",  <!-- 检测报告日期 -->
+        a.VERIFY_FEE	as "verifyFee",  <!-- 检测费用 -->
+        a.VERIFY_RESULT	as "verifyResult",  <!-- 检测结果（0：合格；1：不合格） -->
+        a.VERIFY_CONCLUSION	as "verifyConclusion",  <!-- 检测结果说明 -->
+        a.VERIFY_REPORT_ATT	as "verifyReportAtt",  <!-- 检测报告附件 -->
+        a.LAST_VERIFY_DATE	as "lastVerifyDate",  <!-- 上次检测日期 -->
+        a.NEXT_VERIFY_DATE	as "nextVerifyDate",  <!-- 下次检测日期 -->
+        a.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
+        a.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
+        a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        a.POSITION3	as "position3",  <!-- 位置三 -->
+        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        a.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
+        a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
+        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        b.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        b.SEND_VERIFY_NO as "sendVerifyNo",
+        b.CHECK_NO as "checkNo",
+        b.VERIFY_DEPT as "verifyDept",
+        a.VERIFY_VALIDITY_DATE as "verifyValidityDate",
+        b.EDIT_DEPT_CODE	as "editDeptCode",
+        <!--b.REC_STATUS	as "recStatus",-->
+        a.DOC_ID as "docId"
+        <!--d.PLAN_STATUS as "planStatus"-->
+        FROM T_DETECTION_DETAIL a
+        LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
+        LEFT JOIN T_EQUIPMENT c ON c.EQUIP_CODE=a.EQUIP_CODE
+        WHERE 1=1 and a.REC_ID=#{id}
+    </select>
+
+    <select id="listOtherEquipHistory" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipHistoryResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.TEST_REC_ID	as "testRecId",  <!-- 检测记录表REC_ID -->
+        a.TESTLIST_DETAIL_REC_ID	as "testlistDetailRecId",  <!-- 检测单明细表REC_ID -->
+        a.EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        a.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        a.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
+        a.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
+        a.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
+        a.INSTALLATION_UNIT	as "installationUnit",  <!-- 安装单位 -->
+        a.VERIFY_DATE	as "verifyDate",  <!-- 检测日期 -->
+        a.VERIFICATION_NO	as "verificationNo",  <!-- 证书编号 -->
+        a.VERIFICATION_TYPE	as "verificationType",  <!-- 证书类型 -->
+        a.VERIFY_PROOF	as "verifyProof",  <!-- 检测依据 -->
+        a.VERIFY_REPORT_NO	as "verifyReportNo",  <!-- 检测报告编号 -->
+        a.VERIFY_REPORT_TYPE	as "verifyReportType",  <!-- 检测报告类型 0:检测证书;1:校准证书;2:检测结果通知书;3:检测证书;4:测试报告;5:测试证书;6:无证书7:校验证书; -->
+        a.VERIFY_REPORT_NAME	as "verifyReportName",  <!-- 检测报告名称 -->
+        a.VERIFY_REPORT_DATE	as "verifyReportDate",  <!-- 检测报告日期 -->
+        a.VERIFY_FEE	as "verifyFee",  <!-- 检测费用 -->
+        a.VERIFY_RESULT	as "verifyResult",  <!-- 检测结果（0：合格；1：不合格） -->
+        a.VERIFY_CONCLUSION	as "verifyConclusion",  <!-- 检测结果说明 -->
+        a.VERIFY_REPORT_ATT	as "verifyReportAtt",  <!-- 检测报告附件 -->
+        a.LAST_VERIFY_DATE	as "lastVerifyDate",  <!-- 上次检测日期 -->
+        a.NEXT_VERIFY_DATE	as "nextVerifyDate",  <!-- 下次检测日期 -->
+        a.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
+        a.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
+        a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        a.POSITION3	as "position3",  <!-- 位置三 -->
+        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        a.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
+        a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
+        a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        a.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        b.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5", <!-- 扩展字段5 -->
+        b.SEND_VERIFY_NO as "sendVerifyNo",
+        b.CHECK_NO as "checkNo",
+        b.VERIFY_DEPT as "verifyDept",
+        a.VERIFY_VALIDITY_DATE as "verifyValidityDate",
+        b.EDIT_DEPT_CODE	as "editDeptCode",
+        <!--b.REC_STATUS	as "recStatus",-->
+        a.DOC_ID as "docId"
+        <!--d.PLAN_STATUS as "planStatus"-->
+        FROM T_DETECTION_DETAIL a
+        LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
+        LEFT JOIN T_EQUIPMENT c ON c.EQUIP_CODE=a.EQUIP_CODE
+        WHERE 1=1 and a.EQUIP_CODE=#{equipCode}
+        order by a.VERIFY_VALIDITY_DATE desc
+    </select>
+</mapper>

@@ -9,8 +9,6 @@ import com.wzmtr.eam.dto.res.mea.MeaResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.dto.res.mea.excel.ExcelMeaResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.service.mea.MeaService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -51,31 +49,27 @@ public class MeaServiceImpl implements MeaService {
 
     @Override
     public void importMea(MultipartFile file) {
-        try {
-            List<ExcelMeaReqDTO> list = EasyExcelUtils.read(file, ExcelMeaReqDTO.class);
-            List<MeaReqDTO> temp = new ArrayList<>();
-            if (!Objects.isNull(list) && !list.isEmpty()) {
-                for (ExcelMeaReqDTO reqDTO : list) {
-                    MeaReqDTO req = new MeaReqDTO();
-                    BeanUtils.copyProperties(reqDTO, req);
-                    req.setVerifyPeriod(Integer.valueOf(reqDTO.getVerifyPeriod()));
-                    req.setRecId(TokenUtil.getUuId());
-                    req.setRecCreator(TokenUtil.getCurrentPersonId());
-                    req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                    temp.add(req);
-                }
+        List<ExcelMeaReqDTO> list = EasyExcelUtils.read(file, ExcelMeaReqDTO.class);
+        List<MeaReqDTO> temp = new ArrayList<>();
+        if (!Objects.isNull(list) && !list.isEmpty()) {
+            for (ExcelMeaReqDTO reqDTO : list) {
+                MeaReqDTO req = new MeaReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setVerifyPeriod(Integer.valueOf(reqDTO.getVerifyPeriod()));
+                req.setRecId(TokenUtil.getUuId());
+                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                temp.add(req);
             }
-            if (!temp.isEmpty()) {
-                meaMapper.importMea(temp);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        }
+        if (!temp.isEmpty()) {
+            meaMapper.importMea(temp);
         }
     }
 
     @Override
-    public void exportMea(MeaListReqDTO meaListReqDTO, HttpServletResponse response) throws IOException {
-        List<MeaResDTO> meaList = meaMapper.listMea(meaListReqDTO);
+    public void exportMea(List<String> ids, HttpServletResponse response) throws IOException {
+        List<MeaResDTO> meaList = meaMapper.listMea(ids);
         if (meaList != null && !meaList.isEmpty()) {
             List<ExcelMeaResDTO> list = new ArrayList<>();
             for (MeaResDTO resDTO : meaList) {

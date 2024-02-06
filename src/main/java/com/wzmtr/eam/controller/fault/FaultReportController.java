@@ -33,8 +33,14 @@ public class FaultReportController {
     private OrgMajorService orgMajorService;
 
     @ApiOperation(value = "故障提报（到设备）")
-    @PostMapping("/insert/epuip")
-    public DataResponse<String> add(@RequestBody @Valid FaultReportReqDTO reqDTO) {
+    @PostMapping("/insert/equip")
+    public DataResponse<String> addToEquip(@RequestBody @Valid FaultReportReqDTO reqDTO) {
+        return DataResponse.of(reportService.addToFault(reqDTO));
+    }
+
+    @ApiOperation(value = "故障提报（到设备）")
+    @PostMapping("/insert/equip/open")
+    public DataResponse<String> addToEquipOpen(@RequestBody @Valid FaultReportReqDTO reqDTO) {
         return DataResponse.of(reportService.addToFault(reqDTO));
     }
 

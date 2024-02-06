@@ -13,7 +13,6 @@ public interface FaultReportService {
 
     /**
      * 提报
-     *
      * @param reqDTO
      */
     String addToFault(FaultReportReqDTO reqDTO);

@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.TrackQueryReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultFlowResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,14 @@ public interface FaultTrackMapper extends BaseMapper<FaultTrackDO> {
     FaultInfoDO faultDetail(FaultDetailReqDTO reqDTO);
 
     FaultDetailResDTO faultOrderDetail(String faultNo, String faultWorkNo);
+
+    /**
+     * 根据故障编号、工单编号获取故障流程信息
+     * @param faultNo 故障编号
+     * @param faultWorkNo 故障工单编号
+     * @return 故障流程信息
+     */
+    List<FaultFlowResDTO> faultFlowDetail(String faultNo, String faultWorkNo);
 
     void cancellGenZ(TrackQueryResDTO bo);
 

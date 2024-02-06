@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public interface MeaService {
 
@@ -18,7 +19,7 @@ public interface MeaService {
 
     void importMea(MultipartFile file);
 
-    void exportMea(MeaListReqDTO meaListReqDTO, HttpServletResponse response) throws IOException;
+    void exportMea(List<String> ids, HttpServletResponse response) throws IOException;
 
     Page<SubmissionRecordDetailResDTO> pageMeaRecord(String equipCode, PageReqDTO pageReqDTO);
     

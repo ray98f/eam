@@ -257,8 +257,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     }
 
     @Override
-    public void exportSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, HttpServletResponse response) throws IOException {
-        List<SubmissionRecordResDTO> checkPlanList = submissionRecordMapper.listSubmissionRecord(null, checkNo, instrmPlanNo, recStatus, workFlowInstId);
+    public void exportSubmissionRecord(List<String> ids, HttpServletResponse response) throws IOException {
+        List<SubmissionRecordResDTO> checkPlanList = submissionRecordMapper.exportSubmissionRecord(ids);
         if (checkPlanList != null && !checkPlanList.isEmpty()) {
             List<ExcelSubmissionRecordResDTO> list = new ArrayList<>();
             for (SubmissionRecordResDTO resDTO : checkPlanList) {
@@ -359,8 +359,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     }
 
     @Override
-    public void exportSubmissionRecordDetail(String testRecId, HttpServletResponse response) throws IOException {
-        List<SubmissionRecordDetailResDTO> meaInfoList = submissionRecordMapper.listSubmissionRecordDetail(testRecId);
+    public void exportSubmissionRecordDetail(List<String> ids, HttpServletResponse response) throws IOException {
+        List<SubmissionRecordDetailResDTO> meaInfoList = submissionRecordMapper.exportSubmissionRecordDetail(ids);
         if (meaInfoList != null && !meaInfoList.isEmpty()) {
             List<ExcelSubmissionRecordDetailResDTO> list = new ArrayList<>();
             for (SubmissionRecordDetailResDTO resDTO : meaInfoList) {
