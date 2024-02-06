@@ -87,8 +87,10 @@ public interface BomMapper extends BaseMapper<BomDO> {
     /**
      * 导入Bom结构
      * @param list Bom结构
+     * @param userId 用户id
+     * @param time 时间
      */
-    void importBom(List<BomReqDTO> list);
+    void importBom(List<BomReqDTO> list, String userId, String time);
 
     /**
      * 导入车辆与Bom关联关系

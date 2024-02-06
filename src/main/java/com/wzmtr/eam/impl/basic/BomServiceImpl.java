@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.BomReqDTO;
 import com.wzmtr.eam.dto.req.basic.BomTrainReqDTO;
 import com.wzmtr.eam.dto.req.basic.Excel.ExcelBomReqDTO;
@@ -97,15 +98,10 @@ public class BomServiceImpl implements BomService {
                 secondSysBomCode = "";
                 secondComBomCode = "";
                 thirdComBomCode = "";
-                if (StringUtils.isEmpty(firstSysBomCode)) {
-                    firstSysBomCode = "B00";
-                }
-                firstSysBomCode = CodeUtils.getNextCode(firstSysBomCode, 1);
+                firstSysBomCode = getTreeCode(firstSysBomCode, null, 1);
                 firstSysBom.setEname(firstSysBomCode);
                 firstSysBom.setCname(reqDTO.getFirstSysName());
                 firstSysBom.setParentId("1");
-                firstSysBom.setRecCreator(TokenUtil.getCurrentPersonId());
-                firstSysBom.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 temp.add(firstSysBom);
             }
             if (StringUtils.isNotEmpty(reqDTO.getFirstComName())) {
@@ -113,62 +109,73 @@ public class BomServiceImpl implements BomService {
                 secondSysBomCode = "";
                 secondComBomCode = "";
                 thirdComBomCode = "";
-                if (StringUtils.isEmpty(firstComBomCode)) {
-                    firstComBomCode = firstSysBomCode + "00";
-                }
-                firstComBomCode = CodeUtils.getNextCode(firstComBomCode, 3);
+                firstComBomCode = getTreeCode(firstComBomCode, firstSysBomCode, 2);
                 firstComBom.setEname(firstComBomCode);
                 firstComBom.setCname(reqDTO.getFirstComName());
                 firstComBom.setParentId(firstSysBom.getEname());
-                firstComBom.setRecCreator(TokenUtil.getCurrentPersonId());
-                firstComBom.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 temp.add(firstComBom);
             }
             if (StringUtils.isNotEmpty(reqDTO.getSecondSysName())) {
                 secondSysBom = new BomReqDTO();
                 secondComBomCode = "";
                 thirdComBomCode = "";
-                if (StringUtils.isEmpty(secondSysBomCode)) {
-                    secondSysBomCode = firstComBomCode + "00";
-                }
-                secondSysBomCode = CodeUtils.getNextCode(secondSysBomCode, 5);
+                secondSysBomCode = getTreeCode(secondSysBomCode, firstComBomCode, 3);
                 secondSysBom.setEname(secondSysBomCode);
                 secondSysBom.setCname(reqDTO.getSecondSysName());
                 secondSysBom.setParentId(firstComBom.getEname());
-                secondSysBom.setRecCreator(TokenUtil.getCurrentPersonId());
-                secondSysBom.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 temp.add(secondSysBom);
             }
             if (StringUtils.isNotEmpty(reqDTO.getSecondComName())) {
                 secondComBom = new BomReqDTO();
                 thirdComBomCode = "";
-                if (StringUtils.isEmpty(secondComBomCode)) {
-                    secondComBomCode = secondSysBomCode + "00";
-                }
-                secondComBomCode = CodeUtils.getNextCode(secondComBomCode, 7);
+                secondComBomCode = getTreeCode(secondComBomCode, secondSysBomCode, 4);
                 secondComBom.setEname(secondComBomCode);
                 secondComBom.setCname(reqDTO.getSecondComName());
                 secondComBom.setParentId(secondSysBom.getEname());
-                secondComBom.setRecCreator(TokenUtil.getCurrentPersonId());
-                secondComBom.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 temp.add(secondComBom);
             }
             if (StringUtils.isNotEmpty(reqDTO.getThirdComName())) {
                 thirdComBom = new BomReqDTO();
-                if (StringUtils.isEmpty(thirdComBomCode)) {
-                    thirdComBomCode = secondComBomCode + "00";
-                }
-                thirdComBomCode = CodeUtils.getNextCode(thirdComBomCode, 9);
+                thirdComBomCode = getTreeCode(thirdComBomCode, secondComBomCode, 5);
                 thirdComBom.setEname(thirdComBomCode);
                 thirdComBom.setCname(reqDTO.getThirdComName());
                 thirdComBom.setParentId(secondComBom.getEname());
-                thirdComBom.setRecCreator(TokenUtil.getCurrentPersonId());
-                thirdComBom.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 temp.add(thirdComBom);
             }
         }
         if (!temp.isEmpty()) {
-            bomMapper.importBom(temp);
+            bomMapper.importBom(temp, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        }
+    }
+
+    /**
+     * 获取树状code
+     * @param nowCode 当前code
+     * @param laseCode 上一层code
+     * @param type 类型
+     * @return code
+     */
+    private String getTreeCode(String nowCode, String laseCode, int type) {
+        if (type == CommonConstants.ONE) {
+            if (StringUtils.isEmpty(nowCode)) {
+                nowCode = "B00";
+            }
+        } else {
+            if (StringUtils.isEmpty(nowCode)) {
+                nowCode = laseCode + "00";
+            }
+        }
+        switch (type) {
+            case CommonConstants.ONE:
+                return CodeUtils.getNextCode(nowCode, 1);
+            case CommonConstants.TWO:
+                return CodeUtils.getNextCode(nowCode, 3);
+            case CommonConstants.THREE:
+                return CodeUtils.getNextCode(nowCode, 5);
+            case CommonConstants.FOUR:
+                return CodeUtils.getNextCode(nowCode, 7);
+            default:
+                return CodeUtils.getNextCode(nowCode, 9);
         }
     }
 

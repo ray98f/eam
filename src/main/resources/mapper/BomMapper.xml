@@ -655,8 +655,8 @@
             '0',
             '0',
             '1',
-            #{bom.recCreator,jdbcType=VARCHAR},
-            #{bom.recCreateTime,jdbcType=VARCHAR})
+            #{userId,jdbcType=VARCHAR},
+            #{time,jdbcType=VARCHAR})
         </foreach>
         SELECT * FROM dual
     </insert>
