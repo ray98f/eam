@@ -131,7 +131,11 @@ public enum ErrorCode {
     /**
      * 当日列车里程及能耗已存在
      */
-    TRAIN_MILE_DAILY_EXIST(32000052, "train.mile.daily.exist");
+    TRAIN_MILE_DAILY_EXIST(32000052, "train.mile.daily.exist"),
+    /**
+     * 导出失败
+     */
+    EXPORT_ERROR(32100053, "export.error");
 
     private Integer code;
 

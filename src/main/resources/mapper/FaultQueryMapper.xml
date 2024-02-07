@@ -132,6 +132,18 @@
             <if test="req.fillinTimeEnd!=null and req.fillinTimeEnd!=''">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'yyyy-mm-dd hh24:mi:ss') + 1
             </if>
+            <if test="req.listType==null">
+                AND (d.FILLIN_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
+                d.RESP_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
+                d.ASSIST_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
+                d.REPAIR_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))
+            </if>
+            <if test="req.listType!=null">
+                AND (d.FILLIN_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
+                d.RESP_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
+                d.ASSIST_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
+                d.REPAIR_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))
+            </if>
             AND d.FILLIN_USER_ID=u.LOGIN_NAME
             AND d.FAULT_NO=df.FAULT_NO
             AND d.FAULT_FLAG <![CDATA[!=]]> '2'
@@ -139,7 +151,7 @@
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
-    <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <sql id="fault-export-sql">
         SELECT
         d.REC_ID AS "recId",
         df.REC_ID AS "workId",
@@ -222,68 +234,85 @@
         T_FAULT_INFO d,
         IPLAT60.XS_USER u,
         T_FAULT_ORDER df
-        <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="req.faultType!=null">
-                AND d.FAULT_TYPE=#{req.faultType}
-            </if>
-            <if test="req.positionCode!=null">
-                AND d.POSITION_CODE=#{req.positionCode}
-            </if>
-            <if test="req.levelfault!=null">
-                AND df.EXT1=#{req.levelfault}
-            </if>
-            <if test="req.faultNo!=null">
-                AND d.FAULT_NO LIKE '%' || #{req.faultNo} || '%'
-            </if>
-            <if test="req.faultWorkNo!=null">
-                AND df.FAULT_WORK_NO LIKE '%' || #{req.faultWorkNo} || '%'
-            </if>
-            <if test="req.orderStatus!=null and req.orderStatus!=''">
-                AND df.ORDER_STATUS=#{req.orderStatus}
-            </if>
-            <if test="req.recStatus!=null and req.recStatus!=''">
-                AND df.ORDER_STATUS <![CDATA[!=]]> #{req.recStatus}
-            </if>
-            <if test="req.objectCode!=null">
-                AND d.OBJECT_CODE=#{req.objectCode}
-            </if>
-            <if test="req.objectName!=null">
-                AND d.OBJECT_NAME=#{req.objectName}
-            </if>
-            <if test="req.majorCode!=null and req.majorCode!=''">
-                AND d.MAJOR_CODE=#{req.majorCode}
-            </if>
-            <if test="req.systemCode!=null and req.systemCode!=''">
-                AND d.SYSTEM_CODE=#{req.systemCode}
-            </if>
-            <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
-                AND d.EQUIP_TYPE_CODE=#{req.equipTypeCode}
-            </if>
-            <if test="req.faultDetail!=null">
-                AND d.FAULT_DETAIL LIKE '%' || #{req.faultDetail} || '%'
-            </if>
-            <if test="req.fillinTimeStart!=null">
-                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD
-                HH24:MI:SS')
-            </if>
-            <if test="req.fillinTimeEnd!=null">
-                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD
-                HH24:MI:SS') + 1
-            </if>
-            <if test="req.typeCode!=null and req.typeCode!=''">
-                AND df.FAULT_PROCESS_RESULT=#{req.typeCode}
-            </if>
-            <if test="req.faultNos!=null and req.faultNos.size() > 0">
-                AND d.FAULT_NO IN
-                <foreach collection="req.faultNos" item="code" open="(" close=")" separator=",">
-                    #{code}
-                </foreach>
-            </if>
-            AND d.FILLIN_USER_ID=u.LOGIN_NAME
-            AND d.FAULT_NO=df.FAULT_NO
-            AND d.FAULT_FLAG <![CDATA[!=]]> '2'
-            and d.DELETE_FLAG = '0'
-        </trim>
+        WHERE d.FILLIN_USER_ID=u.LOGIN_NAME
+        AND d.FAULT_NO=df.FAULT_NO
+        AND d.FAULT_FLAG <![CDATA[!=]]> '2'
+        and d.DELETE_FLAG = '0'
+        <if test="req.faultType!=null">
+            AND d.FAULT_TYPE=#{req.faultType}
+        </if>
+        <if test="req.positionCode!=null">
+            AND d.POSITION_CODE=#{req.positionCode}
+        </if>
+        <if test="req.levelfault!=null">
+            AND df.EXT1=#{req.levelfault}
+        </if>
+        <if test="req.faultNo!=null">
+            AND d.FAULT_NO LIKE '%' || #{req.faultNo} || '%'
+        </if>
+        <if test="req.faultWorkNo!=null">
+            AND df.FAULT_WORK_NO LIKE '%' || #{req.faultWorkNo} || '%'
+        </if>
+        <if test="req.orderStatus!=null and req.orderStatus!=''">
+            AND df.ORDER_STATUS=#{req.orderStatus}
+        </if>
+        <if test="req.recStatus!=null and req.recStatus!=''">
+            AND df.ORDER_STATUS <![CDATA[!=]]> #{req.recStatus}
+        </if>
+        <if test="req.objectCode!=null">
+            AND d.OBJECT_CODE=#{req.objectCode}
+        </if>
+        <if test="req.objectName!=null">
+            AND d.OBJECT_NAME=#{req.objectName}
+        </if>
+        <if test="req.majorCode!=null and req.majorCode!=''">
+            AND d.MAJOR_CODE=#{req.majorCode}
+        </if>
+        <if test="req.systemCode!=null and req.systemCode!=''">
+            AND d.SYSTEM_CODE=#{req.systemCode}
+        </if>
+        <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
+            AND d.EQUIP_TYPE_CODE=#{req.equipTypeCode}
+        </if>
+        <if test="req.faultDetail!=null">
+            AND d.FAULT_DETAIL LIKE '%' || #{req.faultDetail} || '%'
+        </if>
+        <if test="req.fillinTimeStart!=null">
+            AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD
+            HH24:MI:SS')
+        </if>
+        <if test="req.fillinTimeEnd!=null">
+            AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD
+            HH24:MI:SS') + 1
+        </if>
+        <if test="req.typeCode!=null and req.typeCode!=''">
+            AND df.FAULT_PROCESS_RESULT=#{req.typeCode}
+        </if>
+        <if test="req.faultNos!=null and req.faultNos.size() > 0">
+            AND d.FAULT_NO IN
+            <foreach collection="req.faultNos" item="code" open="(" close=")" separator=",">
+                #{code}
+            </foreach>
+        </if>
+    </sql>
+    <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        <include refid="fault-export-sql"/>
+        ORDER BY df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
+    </select>
+    <select id="listExcludeZtt" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        <include refid="fault-export-sql"/>
+        AND (d.FILLIN_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
+        d.RESP_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
+        d.ASSIST_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
+        d.REPAIR_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))
+        ORDER BY df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
+    </select>
+    <select id="listZtt" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        <include refid="fault-export-sql"/>
+        AND (d.FILLIN_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
+        d.RESP_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
+        d.ASSIST_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
+        d.REPAIR_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))
         ORDER BY df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
     <select id="queryOrderStatus" resultType="java.lang.String">
