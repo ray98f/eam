@@ -56,7 +56,7 @@ public class TokenUtil {
      */
     public static String createSimpleToken(CurrentLoginUser item) {
         //默认token有效时间为2小时
-        return createSimpleToken(item, 60 * 60 * 24 * 7 * 1000);
+        return createSimpleToken(item, 60L * 60L * 24L * 7L * 1000L);
     }
 
     /**

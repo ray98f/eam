@@ -1,7 +1,6 @@
 package com.wzmtr.eam.service.common;
 
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +8,7 @@ import org.springframework.data.redis.core.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -95,7 +95,7 @@ public class RedisService {
 
     public boolean containsKey(String key) {
         try {
-            return redisTemplate.hasKey(key);
+            return Boolean.TRUE.equals(redisTemplate.hasKey(key));
         } catch (Throwable t) {
             logger.error("判断缓存存在失败key[" + key + ", error[" + t + "]");
         }
@@ -112,9 +112,11 @@ public class RedisService {
         try {
             ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
             String value = valueOps.get(proName + keyPrefix + KEY_PREFIX_VALUE + k);
-            if (StringUtils.isNotNull(value) && value.contains(CommonConstants.DOUBLE_QUOTATION_MARKS)) {
-                // 去掉之前jaskson序列化多余产生的空格
-                return value.replaceAll("\"", "");
+            if (!Objects.isNull(value)) {
+                if (value.contains(CommonConstants.DOUBLE_QUOTATION_MARKS)) {
+                    // 去掉之前jaskson序列化多余产生的空格
+                    return value.replaceAll("\"", "");
+                }
             }
             return value;
         } catch (Throwable t) {

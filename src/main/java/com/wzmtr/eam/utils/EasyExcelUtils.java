@@ -148,8 +148,8 @@ public class EasyExcelUtils {
      * @param file 文件
      */
     private static void checkFileFormat(MultipartFile file) {
-        boolean fileBool = Objects.isNull(file.getOriginalFilename()) ||
-                (!file.getOriginalFilename().endsWith(CommonConstants.XLSX) && !file.getOriginalFilename().endsWith(CommonConstants.XLS));
+        boolean fileBool = Objects.isNull(file.getOriginalFilename()) || (!Objects.isNull(file.getOriginalFilename())
+                && !file.getOriginalFilename().endsWith(CommonConstants.XLSX) && !file.getOriginalFilename().endsWith(CommonConstants.XLS));
         if (fileBool) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "文件格式有误，请检查上传文件格式!");
         }

@@ -2,6 +2,11 @@ package com.wzmtr.eam.constant;
 
 public class CommonConstants {
 
+    /**
+     * id
+     */
+    public static final String ID = "id";
+
     public static final String WSDL_SUCCESS = "0";
 
     public static final String EMPTY = "";

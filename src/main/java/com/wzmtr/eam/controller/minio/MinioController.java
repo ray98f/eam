@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Api(tags = "文件上传")
 public class MinioController {
 
-    private static final long NUM = 50 * 1024 * 1024;
+    private static final long NUM = 50L * 1024L * 1024L;
 
     @Autowired
     private MinioService minioService;

@@ -122,9 +122,9 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
      * 计算两个时间差
      */
     public static String getDatePoor(Date endDate, Date nowDate) {
-        long nd = 1000 * 24 * 60 * 60;
-        long nh = 1000 * 60 * 60;
-        long nm = 1000 * 60;
+        long nd = 1000L * 24L * 60L * 60L;
+        long nh = 1000L * 60L * 60L;
+        long nm = 1000L * 60L;
         // long ns = 1000;
         // 获得两个时间的毫秒时间差异
         long diff = endDate.getTime() - nowDate.getTime();
