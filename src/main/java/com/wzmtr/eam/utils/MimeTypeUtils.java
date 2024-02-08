@@ -7,8 +7,7 @@ package com.wzmtr.eam.utils;
  * @version 1.0
  * @date 2021/7/5 9:24
  */
-public class MimeTypeUtils
-{
+public class MimeTypeUtils {
     public static final String IMAGE_PNG = "image/png";
 
     public static final String IMAGE_JPG = "image/jpg";

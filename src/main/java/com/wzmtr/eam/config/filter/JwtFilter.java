@@ -41,6 +41,7 @@ public class JwtFilter implements Filter {
             String jsessionid = uri.replace(newUri+";jsessionid=","");
             httpRequest.getSession();
             Cookie cookie = new Cookie("JSESSIONID", jsessionid);
+            cookie.setHttpOnly(true);
             httpResponse.addCookie(cookie);
             httpResponse.sendRedirect(newUri);
             return;
