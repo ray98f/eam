@@ -11,7 +11,7 @@ import com.wzmtr.eam.mapper.detection.OtherEquipTypeMapper;
 import com.wzmtr.eam.service.detection.OtherEquipTypeService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +56,8 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
         for (ExcelOtherEquipTypeReqDTO reqDTO : list) {
             OtherEquipTypeReqDTO req = new OtherEquipTypeReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtil.getUuId());
-            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecId(TokenUtils.getUuId());
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
             temp.add(req);
         }
@@ -66,22 +66,22 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
 
     @Override
     public void addOtherEquipType(OtherEquipTypeReqDTO otherEquipTypeReqDTO) {
-        otherEquipTypeReqDTO.setRecId(TokenUtil.getUuId());
-        otherEquipTypeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        otherEquipTypeReqDTO.setRecId(TokenUtils.getUuId());
+        otherEquipTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         otherEquipTypeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
         otherEquipTypeMapper.addOtherEquipType(otherEquipTypeReqDTO);
     }
 
     @Override
     public void modifyOtherEquipType(OtherEquipTypeReqDTO otherEquipTypeReqDTO) {
-        otherEquipTypeReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        otherEquipTypeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         otherEquipTypeReqDTO.setRecReviseTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
         otherEquipTypeMapper.modifyOtherEquipType(otherEquipTypeReqDTO);
     }
 
     @Override
     public void deleteOtherEquipType(List<String> ids) {
-        otherEquipTypeMapper.deleteOtherEquipType(ids, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+        otherEquipTypeMapper.deleteOtherEquipType(ids, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
     }
 
     @Override

@@ -15,7 +15,7 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.service.basic.OrgTypeService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,8 +70,8 @@ public class OrgTypeServiceImpl implements OrgTypeService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        orgTypeReqDTO.setRecId(TokenUtil.getUuId());
-        orgTypeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        orgTypeReqDTO.setRecId(TokenUtils.getUuId());
+        orgTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         orgTypeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         orgTypeMapper.addOrgType(orgTypeReqDTO);
     }
@@ -82,7 +82,7 @@ public class OrgTypeServiceImpl implements OrgTypeService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        orgTypeReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        orgTypeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         orgTypeReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         orgTypeMapper.modifyOrgType(orgTypeReqDTO);
     }
@@ -90,7 +90,7 @@ public class OrgTypeServiceImpl implements OrgTypeService {
     @Override
     public void deleteOrgType(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            orgTypeMapper.deleteOrgType(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            orgTypeMapper.deleteOrgType(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

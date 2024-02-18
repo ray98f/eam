@@ -15,7 +15,7 @@ import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.service.basic.RegionService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import com.wzmtr.eam.utils.tree.RegionTreeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +62,8 @@ public class RegionServiceImpl implements RegionService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        regionReqDTO.setRecId(TokenUtil.getUuId());
-        regionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        regionReqDTO.setRecId(TokenUtils.getUuId());
+        regionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         regionReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         regionMapper.addRegion(regionReqDTO);
         // RegionDO regionDO = BeanUtils.convert(regionReqDTO, RegionDO.class);
@@ -76,7 +76,7 @@ public class RegionServiceImpl implements RegionService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        regionReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        regionReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         regionReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         regionMapper.modifyRegion(regionReqDTO);
     }
@@ -84,7 +84,7 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public void deleteRegion(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            regionMapper.deleteRegion(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            regionMapper.deleteRegion(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

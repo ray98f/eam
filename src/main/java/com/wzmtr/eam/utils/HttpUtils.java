@@ -1,7 +1,6 @@
-package com.wzmtr.eam.utils.bpmn;
+package com.wzmtr.eam.utils;
 
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +11,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-public class HttpUtil {
+public class HttpUtils {
 
     /**
      * 以post方式调用对方接口方法

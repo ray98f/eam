@@ -5,7 +5,7 @@ import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.TokenStatus;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,11 +56,11 @@ public class JwtFilter implements Filter {
                 request.getRequestDispatcher("/error/exthrow").forward(request, response);
                 return;
             }
-            TokenStatus tokenStatus = TokenUtil.verifySimpleToken(token);
+            TokenStatus tokenStatus = TokenUtils.verifySimpleToken(token);
             switch (Objects.requireNonNull(tokenStatus)) {
                 //有效
                 case VALID:
-                    CurrentLoginUser simpleTokenInfo = TokenUtil.getSimpleTokenInfo(token);
+                    CurrentLoginUser simpleTokenInfo = TokenUtils.getSimpleTokenInfo(token);
                     if (simpleTokenInfo == null) {
                         request.setAttribute("filter.error", new CommonException(ErrorCode.AUTHORIZATION_CHECK_FAIL));
                         request.getRequestDispatcher("/error/exthrow").forward(request, response);

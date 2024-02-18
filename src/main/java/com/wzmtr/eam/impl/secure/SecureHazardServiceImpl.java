@@ -133,16 +133,16 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         if (CollectionUtil.isEmpty(reqDTO.getIds())) {
             return;
         }
-        hazardMapper.deleteByIds(reqDTO.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        hazardMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
     }
 
     @Override
     public void add(SecureHazardAddReqDTO reqDTO) {
         String maxCode = hazardMapper.getMaxCode();
         reqDTO.setRiskId(CodeUtils.getNextCode(maxCode, "YH"));
-        reqDTO.setRecId(TokenUtil.getUuId());
+        reqDTO.setRecId(TokenUtils.getUuId());
         reqDTO.setDeleteFlag("0");
-        reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         reqDTO.setArchiveFlag("0");
         reqDTO.setRecStatus("10");
@@ -155,7 +155,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         String riskId = Assert.notNull(reqDTO.getRiskId(), ErrorCode.PARAM_ERROR);
         SecureHazardDO secureHazardDO = hazardMapper.selectOne(new QueryWrapper<SecureHazardDO>().eq("RISK_ID", riskId));
         Assert.notNull(secureHazardDO, ErrorCode.RESOURCE_NOT_EXIST);
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         SecureHazardDO convert = BeanUtils.convert(reqDTO, SecureHazardDO.class);
         hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID", riskId));

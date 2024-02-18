@@ -21,7 +21,7 @@ import com.wzmtr.eam.mapper.equipment.TrainMileMapper;
 import com.wzmtr.eam.service.equipment.TrainMileService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,10 +119,10 @@ public class TrainMileServiceImpl implements TrainMileService {
         trainMileageReqDTO.setTractionIncrement(tractionIncrement);
         trainMileageReqDTO.setAuxiliaryIncrement(auxiliaryIncrement);
         trainMileageReqDTO.setRegenratedIncrement(regenratedIncrement);
-        trainMileageReqDTO.setRecId(TokenUtil.getUuId());
-        trainMileageReqDTO.setFillinUserId(TokenUtil.getCurrentPersonId());
+        trainMileageReqDTO.setRecId(TokenUtils.getUuId());
+        trainMileageReqDTO.setFillinUserId(TokenUtils.getCurrentPersonId());
         trainMileageReqDTO.setFillinTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        trainMileageReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        trainMileageReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         trainMileageReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         trainMileageReqDTO.setRecStatus("0");
         trainMileMapper.insertTrainMileage(trainMileageReqDTO);
@@ -178,8 +178,8 @@ public class TrainMileServiceImpl implements TrainMileService {
         if (StringUtils.isNotEmpty(list)) {
             throw new CommonException(ErrorCode.TRAIN_MILE_DAILY_EXIST, trainMileDailyReqDTO.getEquipName());
         }
-        trainMileDailyReqDTO.setRecId(TokenUtil.getUuId());
-        trainMileDailyReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        trainMileDailyReqDTO.setRecId(TokenUtils.getUuId());
+        trainMileDailyReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         trainMileDailyReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         // todo 获取车辆PHM系统数据
 
@@ -193,7 +193,7 @@ public class TrainMileServiceImpl implements TrainMileService {
 
     @Override
     public void modifyTrainDailyMile(TrainMileDailyReqDTO trainMileDailyReqDTO) {
-        trainMileDailyReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        trainMileDailyReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         trainMileDailyReqDTO.setRecReviseTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         // todo 获取车辆PHM系统数据
 
@@ -208,7 +208,7 @@ public class TrainMileServiceImpl implements TrainMileService {
     @Override
     public void deleteTrainDailyMile(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            trainMileMapper.deleteTrainDailyMile(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            trainMileMapper.deleteTrainDailyMile(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             for (String id : baseIdsEntity.getIds()) {
                 TrainMileDailyResDTO trainCodeRes = trainMileMapper.getTrainDailyMileDetail(id);
                 if (!Objects.isNull(trainCodeRes)) {
@@ -251,9 +251,9 @@ public class TrainMileServiceImpl implements TrainMileService {
         for (ExcelTrainMileDailyReqDTO reqDTO : list) {
             TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtil.getUuId());
+            req.setRecId(TokenUtils.getUuId());
             req.setEquipCode(equipmentMapper.getEquipCodeByName(req.getEquipName()));
-            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             temp.add(req);
         }

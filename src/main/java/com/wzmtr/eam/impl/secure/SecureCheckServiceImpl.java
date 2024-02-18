@@ -55,7 +55,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO.getSecRiskId(), reqDTO.getInspectDateStart(), reqDTO.getInspectDateEnd(), reqDTO.getIsRestoredCode(), reqDTO.getRecStatus());
         if (CollectionUtil.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
-            // StreamUtil.map(records,SecureCheckRecordListResDTO::create);
+            // StreamUtils.map(records,SecureCheckRecordListResDTO::create);
             records.forEach(this::assembly);
             return list;
         }
@@ -153,7 +153,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     public void delete(BaseIdsEntity reqDTO) {
         if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
-            secureMapper.deleteByIds(reqDTO.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            secureMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -162,8 +162,8 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SecureCheckAddReqDTO reqDTO) {
-        reqDTO.setRecId(TokenUtil.getUuId());
-        reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecId(TokenUtils.getUuId());
+        reqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         String secRiskId = CodeUtils.getNextCode(secureMapper.getMaxCode(), "AQ");
         reqDTO.setSecRiskId(secRiskId);
         // 默认初始为0
@@ -182,8 +182,8 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SecureCheckAddReqDTO reqDTO) {
-        reqDTO.setRecReviseTime(DateUtil.dateTimeNow("yyyyMMddHHmmss"));
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecReviseTime(DateUtils.dateTimeNow("yyyyMMddHHmmss"));
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         secureMapper.update(reqDTO);
     }
 

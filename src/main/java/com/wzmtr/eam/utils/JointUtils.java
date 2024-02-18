@@ -1,4 +1,4 @@
-package com.wzmtr.eam.utils.bpmn;
+package com.wzmtr.eam.utils;
 
 
 import java.io.UnsupportedEncodingException;

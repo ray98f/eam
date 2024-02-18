@@ -25,7 +25,13 @@ public class CommonConstants {
 
     public static final String ROOT = "root";
 
+    /**
+     * 权限
+     */
     public static final String ADMIN = "admin";
+    public static final String DM_007 = "DM_007";
+    public static final String DM_012 = "DM_012";
+    public static final String DM_037 = "DM_037";
 
     /**
      * 故障分析流程--部长审核节点

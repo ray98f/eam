@@ -94,11 +94,11 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
     public void addDetectionPlan(DetectionPlanReqDTO specialEquipReqDTO) {
         SimpleDateFormat min = new SimpleDateFormat("yyyyMMddHHmmss");
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
-        specialEquipReqDTO.setRecId(TokenUtil.getUuId());
+        specialEquipReqDTO.setRecId(TokenUtils.getUuId());
         specialEquipReqDTO.setArchiveFlag("0");
         specialEquipReqDTO.setPlanStatus("10");
-        specialEquipReqDTO.setEditDeptCode(TokenUtil.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtil.getCurrentPerson().getOfficeAreaId());
-        specialEquipReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        specialEquipReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtils.getCurrentPerson().getOfficeAreaId());
+        specialEquipReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         specialEquipReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String instrmPlanNo = detectionPlanMapper.getMaxCode();
         if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
@@ -119,7 +119,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
@@ -130,7 +130,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 throw new CommonException(ErrorCode.PLAN_HAS_DETAIL);
             }
         }
-        specialEquipReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        specialEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         specialEquipReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         detectionPlanMapper.modifyDetectionPlan(specialEquipReqDTO);
     }
@@ -140,14 +140,14 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 DetectionPlanResDTO resDTO = detectionPlanMapper.getDetectionPlanDetail(id);
-                if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                detectionPlanMapper.deleteDetectionPlan(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                detectionPlanMapper.deleteDetectionPlan(id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -177,7 +177,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             reqDTO.setWorkFlowInstId(processId);
             reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null));
             reqDTO.setPlanStatus("20");
-            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             detectionPlanMapper.modifyDetectionPlan(reqDTO);
             // 记录日志
@@ -238,7 +238,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                         .build());
             }
         }
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         detectionPlanMapper.modifyDetectionPlan(reqDTO);
     }
@@ -279,15 +279,15 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         DetectionPlanResDTO resDTO = list.get(0);
-        if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
-        detectionPlanDetailReqDTO.setRecId(TokenUtil.getUuId());
+        detectionPlanDetailReqDTO.setRecId(TokenUtils.getUuId());
         detectionPlanDetailReqDTO.setArchiveFlag("0");
-        detectionPlanDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        detectionPlanDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         detectionPlanDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         detectionPlanMapper.addDetectionPlanDetail(detectionPlanDetailReqDTO);
     }
@@ -299,13 +299,13 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         DetectionPlanResDTO resDTO = list.get(0);
-        if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
-        detectionPlanDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        detectionPlanDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         detectionPlanDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         detectionPlanMapper.modifyDetectionPlanDetail(detectionPlanDetailReqDTO);
     }
@@ -323,16 +323,16 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
                 DetectionPlanResDTO resDTO = list.get(0);
-                if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 DetectionPlanDetailDO detectionPlanDetailDO = new DetectionPlanDetailDO();
-                detectionPlanDetailDO.setRecId(id).setDeleteFlag(CommonConstants.ONE_STRING).setRecDeletor(TokenUtil.getCurrentPersonId()).setRecDeleteTime(DateUtil.dateTimeNow());
+                detectionPlanDetailDO.setRecId(id).setDeleteFlag(CommonConstants.ONE_STRING).setRecDeletor(TokenUtils.getCurrentPersonId()).setRecDeleteTime(DateUtils.dateTimeNow());
                 detectionPlanDetailMapper.updateById(detectionPlanDetailDO);
-                // detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                // detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

@@ -6,7 +6,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.shiro.model.Person;
 import com.wzmtr.eam.shiro.service.IPersonService;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -74,7 +74,7 @@ public class ShiroCasRealm extends CasRealm {
                 throw new CommonException(ErrorCode.USER_NOT_EXIST);
             }
         }
-        String jwtToken = TokenUtil.createSimpleToken(person);
+        String jwtToken = TokenUtils.createSimpleToken(person);
         SecurityUtils.getSubject().getSession().setAttribute("jwtToken", jwtToken);
         return authenticationInfo;
     }

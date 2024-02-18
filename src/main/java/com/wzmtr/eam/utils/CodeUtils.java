@@ -43,9 +43,4 @@ public class CodeUtils {
         return code;
     }
 
-    public static void main(String[] args) {
-        System.out.println(getNextCode("YH23080912345", "YH"));
-    }
-
-
 }

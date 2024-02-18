@@ -16,7 +16,7 @@ import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.equipment.GeneralSurveyService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,15 +80,15 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
 
     @Override
     public void addGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO) {
-        generalSurveyReqDTO.setRecId(TokenUtil.getUuId());
-        generalSurveyReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        generalSurveyReqDTO.setRecId(TokenUtils.getUuId());
+        generalSurveyReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         generalSurveyReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         generalSurveyMapper.addGeneralSurvey(generalSurveyReqDTO);
     }
 
     @Override
     public void modifyGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO) {
-        generalSurveyReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        generalSurveyReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         generalSurveyReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         generalSurveyMapper.modifyGeneralSurvey(generalSurveyReqDTO);
     }
@@ -97,11 +97,11 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     public void deleteGeneralSurvey(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
-                if (!generalSurveyMapper.getGeneralSurveyDetail(id).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!generalSurveyMapper.getGeneralSurveyDetail(id).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
             }
-            generalSurveyMapper.deleteGeneralSurvey(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            generalSurveyMapper.deleteGeneralSurvey(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -116,9 +116,9 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
             BeanUtils.copyProperties(reqDTO, req);
             req.setRecType(Objects.isNull(reqDTO.getRecType()) ? "" : "普查".equals(reqDTO.getRecType()) ? "10" : "20");
             req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
-            req.setRecId(TokenUtil.getUuId());
+            req.setRecId(TokenUtils.getUuId());
             req.setDeleteFlag("0");
-            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             temp.add(req);
         }

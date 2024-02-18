@@ -130,8 +130,8 @@ public class TrackQueryServiceImpl implements TrackQueryService {
                 TrackQueryResDTO bo = new TrackQueryResDTO();
                 bo.setFaultTrackNo(a);
                 bo.setRecStatus("99");
-                bo.setRecRevisor(TokenUtil.getCurrentPersonId());
-                bo.setRecReviseTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+                bo.setRecRevisor(TokenUtils.getCurrentPersonId());
+                bo.setRecReviseTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
                 bo.setExt1("");
                 faultTrackMapper.cancellGenZ(bo);
             });
@@ -190,8 +190,8 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             String maxCodeFaultTrackWorkNo = faultTrackWorkMapper.selectMaxCode();
             String nextFaultTrackWorkNo = CodeUtils.getNextCode(maxCodeFaultTrackWorkNo, "GTW");
             faultTrackWorkBO.setFaultTrackWorkNo(nextFaultTrackWorkNo);
-            faultTrackWorkBO.setRecCreator(TokenUtil.getCurrentPersonId());
-            faultTrackWorkBO.setRecCreateTime(DateUtil.getDate());
+            faultTrackWorkBO.setRecCreator(TokenUtils.getCurrentPersonId());
+            faultTrackWorkBO.setRecCreateTime(DateUtils.getDate());
             faultTrackWorkBO.setRecId(UUID.randomUUID().toString());
             faultTrackWorkBO.setDispatchUserId(CommonConstants.BLANK);
             faultTrackWorkBO.setDispatchTime(CommonConstants.BLANK);
@@ -240,8 +240,8 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             String maxCode = faultTrackWorkMapper.selectMaxCode();
             String nextCode = CodeUtils.getNextCode(maxCode, "GTW");
             faultTrackWorkBO.setFaultTrackWorkNo(nextCode);
-            faultTrackWorkBO.setRecCreator(TokenUtil.getCurrentPersonId());
-            faultTrackWorkBO.setRecCreateTime(DateUtil.getDate());
+            faultTrackWorkBO.setRecCreator(TokenUtils.getCurrentPersonId());
+            faultTrackWorkBO.setRecCreateTime(DateUtils.getDate());
             faultTrackWorkBO.setRecId(UUID.randomUUID().toString());
             faultTrackWorkBO.setDispatchUserId(CommonConstants.BLANK);
             faultTrackWorkBO.setDispatchTime(CommonConstants.BLANK);

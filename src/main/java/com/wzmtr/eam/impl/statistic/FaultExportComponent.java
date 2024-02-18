@@ -9,7 +9,7 @@ import com.wzmtr.eam.entity.DynamicSource;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
-import com.wzmtr.eam.utils.ExcelTemplateUtil;
+import com.wzmtr.eam.utils.ExcelTemplateUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -64,9 +64,9 @@ public class FaultExportComponent {
             // 从resources下加载模板并替换
             InputStream resourceAsStream = getClass().getResourceAsStream("/excel_template/faulttemplate.xlsx");
             // 遍历所有的sheet
-            Workbook workbook = ExcelTemplateUtil.buildByTemplate(resourceAsStream, staticSource, dynamicSourceList);
+            Workbook workbook = ExcelTemplateUtils.buildByTemplate(resourceAsStream, staticSource, dynamicSourceList);
             // 2.保存到本地
-            ExcelTemplateUtil.save(workbook, Objects.isNull(reqDTO.getExportType()) ? "故障列表" : "中铁通故障列表", response);
+            ExcelTemplateUtils.save(workbook, Objects.isNull(reqDTO.getExportType()) ? "故障列表" : "中铁通故障列表", response);
         } catch (Exception e) {
             throw new CommonException(ErrorCode.IMPORT_ERROR);
         }
@@ -103,7 +103,7 @@ public class FaultExportComponent {
         InputStream resourceAsStream = getClass().getResourceAsStream("/excel_template/faulttemplate.xlsx");
         Map<String, String> map = buildSingleMap();
         Map<String, List<?>> sheetAndDataMap = buildSheetAndDataMap(data);
-        ExcelTemplateUtil.fillReportWithEasyExcel(response, sheetAndDataMap, map, "test.xls", resourceAsStream);
+        ExcelTemplateUtils.fillReportWithEasyExcel(response, sheetAndDataMap, map, "test.xls", resourceAsStream);
     }
 
     private Map<String, List<?>> buildSheetAndDataMap(List<FaultDetailResDTO> data) {

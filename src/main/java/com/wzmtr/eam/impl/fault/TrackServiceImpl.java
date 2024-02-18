@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -86,16 +85,16 @@ public class TrackServiceImpl implements TrackService {
     @Transactional(rollbackFor = Exception.class)
     public void report(TrackReportReqDTO reqDTO) {
         // EAM/service/DMFM0011/ReportRow
-        reqDTO.setTrackReportTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
-        reqDTO.setTrackReporterId(TokenUtil.getCurrentPersonId());
+        reqDTO.setTrackReportTime(DateUtils.current("yyyy-MM-dd HH:mm:ss"));
+        reqDTO.setTrackReporterId(TokenUtils.getCurrentPersonId());
         reqDTO.setRecStatus("30");
         faultTrackWorkMapper.report(reqDTO);
     }
 
     @Override
     public void close(TrackCloseReqDTO reqDTO) {
-        reqDTO.setTrackCloseTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
-        reqDTO.setTrackCloserId(TokenUtil.getCurrentPersonId());
+        reqDTO.setTrackCloseTime(DateUtils.current("yyyy-MM-dd HH:mm:ss"));
+        reqDTO.setTrackCloserId(TokenUtils.getCurrentPersonId());
         reqDTO.setRecStatus("40");
         // /* 136 */       DMUtil.overTODO((String)((Map)dm03List.get(0)).get("recId"), "关闭");
         faultTrackWorkMapper.close(reqDTO);
@@ -105,8 +104,8 @@ public class TrackServiceImpl implements TrackService {
     @Transactional(rollbackFor = Exception.class)
     public void repair(TrackRepairReqDTO reqDTO) {
         // /* 107 */     dmfm22.setWorkerGroupCode(repairDeptCode);
-        reqDTO.setDispatchUserId(TokenUtil.getCurrentPersonId());
-        reqDTO.setDispatchTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
+        reqDTO.setDispatchUserId(TokenUtils.getCurrentPersonId());
+        reqDTO.setDispatchTime(DateUtils.current("yyyy-MM-dd HH:mm:ss"));
         overTodoService.overTodo(reqDTO.getRecId(), "派工完毕");
         reqDTO.setRecStatus("20");
         faultTrackWorkMapper.repair(reqDTO);
@@ -274,8 +273,8 @@ public class TrackServiceImpl implements TrackService {
                 faultTrackDO.setWorkFlowInstStatus(nodeId);
                 faultTrackDO.setExt5(nextNode.getLine());
             }
-            faultTrackDO.setRecRevisor(TokenUtil.getCurrentPersonId());
-            faultTrackDO.setRecReviseTime(DateUtil.getCurrentTime());
+            faultTrackDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+            faultTrackDO.setRecReviseTime(DateUtils.getCurrentTime());
             faultTrackMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         } catch (Exception e) {
             log.error("agree error", e);
@@ -302,13 +301,5 @@ public class TrackServiceImpl implements TrackService {
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(processId)
                 .build());
-    }
-
-    public static void main(String[] args) {
-        String userId = "";
-        ArrayList<String> userIds = new ArrayList<>();
-        userIds.add(userId);
-        boolean empty = CollectionUtil.isEmpty(userIds);
-        System.out.println(empty);
     }
 }

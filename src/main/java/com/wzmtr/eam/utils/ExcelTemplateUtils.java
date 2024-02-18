@@ -32,7 +32,7 @@ import java.util.Map;
  * Date: 2023/9/25 11:30
  */
 @Slf4j
-public class ExcelTemplateUtil {
+public class ExcelTemplateUtils {
 
     public static Workbook buildByTemplate(InputStream inputStream, Map<String, String> staticSource, List<DynamicSource> dynamicSourceList) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook(inputStream);

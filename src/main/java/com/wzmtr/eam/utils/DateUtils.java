@@ -15,7 +15,7 @@ import java.util.Date;
  * Date: 2023/8/7 16:57
  */
 @Slf4j
-public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
+public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
     public static String YYYY = "yyyy";
 
@@ -198,11 +198,6 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
     public static String current(String format) {
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat(format);
         return dateTimeFormat.format(new Date());
-    }
-
-
-    public static void main(String[] args) throws ParseException {
-        System.out.println(current("yyyy-MM-dd HH:mm:ss"));
     }
 
     /**

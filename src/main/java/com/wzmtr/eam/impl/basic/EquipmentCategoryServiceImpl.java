@@ -14,7 +14,7 @@ import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.service.basic.EquipmentCategoryService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import com.wzmtr.eam.utils.tree.EquipmentCategoryTreeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +61,8 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        equipmentCategoryReqDTO.setRecId(TokenUtil.getUuId());
-        equipmentCategoryReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        equipmentCategoryReqDTO.setRecId(TokenUtils.getUuId());
+        equipmentCategoryReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         equipmentCategoryReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         equipmentCategoryMapper.addEquipmentCategory(equipmentCategoryReqDTO);
     }
@@ -73,7 +73,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        equipmentCategoryReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        equipmentCategoryReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         equipmentCategoryReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         equipmentCategoryMapper.modifyEquipmentCategory(equipmentCategoryReqDTO);
     }
@@ -81,7 +81,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     @Override
     public void deleteEquipmentCategory(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            equipmentCategoryMapper.deleteEquipmentCategory(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            equipmentCategoryMapper.deleteEquipmentCategory(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

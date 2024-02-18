@@ -19,7 +19,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.service.common.RoleService;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> getLoginRole() {
-        return roleMapper.getLoginRole(TokenUtil.getCurrentPersonId());
+        return roleMapper.getLoginRole(TokenUtils.getCurrentPersonId());
     }
 
     @Override
@@ -64,8 +64,8 @@ public class RoleServiceImpl implements RoleService {
         if (Objects.isNull(role)) {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
-        role.setCreatedBy(TokenUtil.getCurrentPersonId());
-        role.setId(TokenUtil.getUuId());
+        role.setCreatedBy(TokenUtils.getCurrentPersonId());
+        role.setId(TokenUtils.getUuId());
         roleMapper.insertRole(role);
     }
 
@@ -74,7 +74,7 @@ public class RoleServiceImpl implements RoleService {
         if (Objects.isNull(role)) {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
-        role.setCreatedBy(TokenUtil.getCurrentPersonId());
+        role.setCreatedBy(TokenUtils.getCurrentPersonId());
         roleMapper.updateRole(role);
     }
 
@@ -91,7 +91,7 @@ public class RoleServiceImpl implements RoleService {
         if (Objects.isNull(role)) {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
-        role.setCreatedBy(TokenUtil.getCurrentPersonId());
+        role.setCreatedBy(TokenUtils.getCurrentPersonId());
         roleMapper.deleteRoleMenu(role.getId());
         if (StringUtils.isNotEmpty(role.getMenuIds())) {
             roleMapper.insertRoleMenu(role);

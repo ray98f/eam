@@ -22,7 +22,7 @@ import java.util.UUID;
  * @date 2020/12/23 15:42
  */
 @Slf4j
-public class TokenUtil {
+public class TokenUtils {
 
     private static final String SIMPLE_TOKEN_SECRET = "ZTE96952f774ce244fcb42af56062e519b3lFOGZ3YaWuCZS";
 
@@ -168,8 +168,4 @@ public class TokenUtil {
         return result;
     }
 
-    public static void main(String[] args) {
-        CurrentLoginUser currentLoginUser = simpleParseToken("");
-        System.out.println(currentLoginUser);
-    }
 }

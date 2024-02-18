@@ -6,7 +6,7 @@ import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.service.dict.IDictionariesService;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,14 +41,14 @@ public class DictionariesServiceImpl implements IDictionariesService {
 
     @Override
     public void add(Dictionaries dictionaries) {
-        dictionaries.setRecCreator(TokenUtil.getCurrentPersonId());
+        dictionaries.setRecCreator(TokenUtils.getCurrentPersonId());
         dictionaries.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         dictionariesMapper.add(dictionaries);
     }
 
     @Override
     public void modify(Dictionaries dictionaries) {
-        dictionaries.setRecRevisor(TokenUtil.getCurrentPersonId());
+        dictionaries.setRecRevisor(TokenUtils.getCurrentPersonId());
         dictionaries.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         dictionariesMapper.modify(dictionaries);
     }
@@ -56,7 +56,7 @@ public class DictionariesServiceImpl implements IDictionariesService {
     @Override
     public void delete(List<String> ids) {
         if (ids != null && !ids.isEmpty()) {
-            dictionariesMapper.delete(ids, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            dictionariesMapper.delete(ids, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         }
     }
 

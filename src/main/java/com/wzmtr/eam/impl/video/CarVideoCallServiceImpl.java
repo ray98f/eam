@@ -86,7 +86,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     public void delete(BaseIdsEntity reqDTO) {
         if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
-            carVideoMapper.deleteByIds(reqDTO.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            carVideoMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -95,13 +95,13 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(CarVideoAddReqDTO reqDTO) {
-        if (DateUtil.dateCompare(reqDTO.getVideoEndTime(), reqDTO.getVideoStartTime(), CommonConstants.TIME) != 1) {
+        if (DateUtils.dateCompare(reqDTO.getVideoEndTime(), reqDTO.getVideoStartTime(), CommonConstants.TIME) != 1) {
             log.error("视频截止时间必须大于视频开始时间!");
             throw new CommonException(ErrorCode.VERIFY_DATE_ERROR);
         }
-        reqDTO.setRecId(TokenUtil.getUuId());
-        reqDTO.setRecCreator(TokenUtil.getCurrentPerson().getPersonName());
-        reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecId(TokenUtils.getUuId());
+        reqDTO.setRecCreator(TokenUtils.getCurrentPerson().getPersonName());
+        reqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         reqDTO.setArchiveFlag("0");
         reqDTO.setDeleteFlag("0");
@@ -127,7 +127,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         assert !Objects.equals(res.getRecStatus(), "10") : "非编辑状态不可修改";
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         if (StringUtils.isNotEmpty(reqDTO.getTrainNo())) {
             reqDTO.setEquipCode(equipmentMapper.selectByEquipName(reqDTO.getTrainNo()).get(0).getEquipCode());
         }
@@ -154,7 +154,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             Assert.notNull(reqDTO.getDispatchUserId(),ErrorCode.NORMAL_ERROR, "失败,检修调度不能为空");
             carVideoDO.setDispatchUserId(reqDTO.getDispatchUserId());
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
-            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getApplyNo(), reqDTO.getDispatchUserId(), "视频调阅下达", "DMBR0022", TokenUtil.getCurrentPersonId());
+            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getApplyNo(), reqDTO.getDispatchUserId(), "视频调阅下达", "DMBR0022", TokenUtils.getCurrentPersonId());
         }
         // 派工
         if (CommonConstants.THIRTY_STRING.equals(reqDTO.getRecStatus())) {
@@ -165,10 +165,10 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             overTodoService.overTodo(reqDTO.getRecId(), "");
             String[] split = reqDTO.getWorkerId().split(",");
             for (int i = 0; i < split.length; i++) {
-                overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), split[i], "视频调阅派工", "DMBR0022", TokenUtil.getCurrentPersonId());
+                overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), split[i], "视频调阅派工", "DMBR0022", TokenUtils.getCurrentPersonId());
             }
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
-            carVideoDO.setDispatchTime(DateUtil.getCurrentTime());
+            carVideoDO.setDispatchTime(DateUtils.getCurrentTime());
             carVideoDO.setWorkerId(reqDTO.getWorkerId());
             carVideoDO.setWorkClass(reqDTO.getWorkClass());
         }
@@ -178,7 +178,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非派工状态下不可完工");
             }
             overTodoService.overTodo(reqDTO.getRecId(), "");
-            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getRecId(), reqDTO.getDispatchUserId(), "视频调阅完工", "DMBR0022", TokenUtil.getCurrentPersonId());
+            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getRecId(), reqDTO.getDispatchUserId(), "视频调阅完工", "DMBR0022", TokenUtils.getCurrentPersonId());
             // TODO: 2023/9/14 发短信
             // Map<Object, Object> User = new HashMap<>();
             // User.put("loginName", (detail.getDispatchUserId()));
@@ -191,8 +191,8 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             //     ISendMessage.sendMessageByPhoneList(eiInfo);
             // }
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
-            carVideoDO.setRecCreator(TokenUtil.getCurrentPersonId());
-            carVideoDO.setWorkTime(DateUtil.getCurrentTime());
+            carVideoDO.setRecCreator(TokenUtils.getCurrentPersonId());
+            carVideoDO.setWorkTime(DateUtils.getCurrentTime());
         }
         // 关闭
         if (CommonConstants.FIFTY_STRING.equals(reqDTO.getRecStatus())) {
@@ -201,8 +201,8 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             }
             overTodoService.overTodo(reqDTO.getRecId(), "");
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
-            carVideoDO.setCloseTime(DateUtil.getCurrentTime());
-            carVideoDO.setCloserId(TokenUtil.getCurrentPersonId());
+            carVideoDO.setCloseTime(DateUtils.getCurrentTime());
+            carVideoDO.setCloserId(TokenUtils.getCurrentPersonId());
         }
         carVideoMapper.operate(carVideoDO);
     }

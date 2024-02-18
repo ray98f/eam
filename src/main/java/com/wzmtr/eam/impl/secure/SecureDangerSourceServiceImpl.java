@@ -107,8 +107,8 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SecureDangerSourceAddReqDTO reqDTO) {
-        reqDTO.setRecId(TokenUtil.getUuId());
-        reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecId(TokenUtils.getUuId());
+        reqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         reqDTO.setDeleteFlag("0");
         String maxCode = secureDangerSourceMapper.getMaxCode();
         reqDTO.setDangerRiskId(CodeUtils.getNextCode(maxCode, "WX"));
@@ -122,7 +122,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
         if (CollectionUtil.isEmpty(reqDTO.getIds())) {
             return;
         }
-        secureDangerSourceMapper.deleteByIds(reqDTO.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        secureDangerSourceMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
     }
 
 
@@ -133,7 +133,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
             log.warn("危险源记录单号为空!");
             return;
         }
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         secureDangerSourceMapper.update(reqDTO);
     }

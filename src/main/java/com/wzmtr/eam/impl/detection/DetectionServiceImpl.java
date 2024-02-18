@@ -26,7 +26,7 @@ import com.wzmtr.eam.service.detection.DetectionService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,11 +94,11 @@ public class DetectionServiceImpl implements DetectionService {
     public void addDetection(DetectionReqDTO detectionReqDTO) {
         SimpleDateFormat min = new SimpleDateFormat("yyyyMMddHHmmss");
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
-        detectionReqDTO.setRecId(TokenUtil.getUuId());
+        detectionReqDTO.setRecId(TokenUtils.getUuId());
         detectionReqDTO.setArchiveFlag("0");
         detectionReqDTO.setRecStatus("10");
-        detectionReqDTO.setEditDeptCode(TokenUtil.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtil.getCurrentPerson().getOfficeAreaId());
-        detectionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        detectionReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtils.getCurrentPerson().getOfficeAreaId());
+        detectionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         detectionReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
         String checkNo = detectionMapper.getMaxCode();
         if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
@@ -116,7 +116,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
@@ -127,7 +127,7 @@ public class DetectionServiceImpl implements DetectionService {
                 throw new CommonException(ErrorCode.PLAN_HAS_DETAIL);
             }
         }
-        detectionReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        detectionReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         detectionReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         detectionMapper.modifyDetection(detectionReqDTO);
     }
@@ -137,14 +137,14 @@ public class DetectionServiceImpl implements DetectionService {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 DetectionResDTO resDTO = detectionMapper.getDetectionDetail(id);
-                if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                detectionMapper.deleteDetectionDetail(resDTO.getRecId(), null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                detectionMapper.deleteDetection(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                detectionMapper.deleteDetectionDetail(resDTO.getRecId(), null, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                detectionMapper.deleteDetection(id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -181,7 +181,7 @@ public class DetectionServiceImpl implements DetectionService {
             reqDTO.setWorkFlowInstId(processId);
             reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.DETECTION_SUBMIT.value(), null));
             reqDTO.setRecStatus("20");
-            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             detectionMapper.modifyDetection(reqDTO);
             // 记录日志
@@ -247,7 +247,7 @@ public class DetectionServiceImpl implements DetectionService {
                         .build());
             }
         }
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         detectionMapper.modifyDetection(reqDTO);
     }
@@ -291,7 +291,7 @@ public class DetectionServiceImpl implements DetectionService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         DetectionResDTO resDTO = list.get(0);
-        if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
@@ -301,9 +301,9 @@ public class DetectionServiceImpl implements DetectionService {
         if (sdf.parse(detectionDetailReqDTO.getVerifyValidityDate()).before(sdf.parse(detectionDetailReqDTO.getVerifyDate()))) {
             throw new CommonException(ErrorCode.VERIFY_DATE_ERROR);
         }
-        detectionDetailReqDTO.setRecId(TokenUtil.getUuId());
+        detectionDetailReqDTO.setRecId(TokenUtils.getUuId());
         detectionDetailReqDTO.setArchiveFlag("0");
-        detectionDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        detectionDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         detectionDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         detectionMapper.addDetectionDetail(detectionDetailReqDTO);
     }
@@ -315,7 +315,7 @@ public class DetectionServiceImpl implements DetectionService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         DetectionResDTO resDTO = list.get(0);
-        if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
@@ -325,7 +325,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (sdf.parse(detectionDetailReqDTO.getVerifyValidityDate()).before(sdf.parse(detectionDetailReqDTO.getVerifyDate()))) {
             throw new CommonException(ErrorCode.VERIFY_DATE_ERROR);
         }
-        detectionDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        detectionDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         detectionDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         detectionMapper.modifyDetectionDetail(detectionDetailReqDTO);
     }
@@ -343,13 +343,13 @@ public class DetectionServiceImpl implements DetectionService {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
                 DetectionResDTO resDTO = list.get(0);
-                if (!resDTO.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!resDTO.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                detectionMapper.deleteDetectionDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                detectionMapper.deleteDetectionDetail(null, id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

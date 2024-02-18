@@ -14,7 +14,7 @@ import com.wzmtr.eam.mapper.basic.FaultMapper;
 import com.wzmtr.eam.service.basic.FaultService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,8 +52,8 @@ public class FaultServiceImpl implements FaultService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        faultReqDTO.setRecId(TokenUtil.getUuId());
-        faultReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        faultReqDTO.setRecId(TokenUtils.getUuId());
+        faultReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         faultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         faultMapper.addFault(faultReqDTO);
     }
@@ -64,7 +64,7 @@ public class FaultServiceImpl implements FaultService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        faultReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        faultReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         faultMapper.modifyFault(faultReqDTO);
     }
@@ -72,7 +72,7 @@ public class FaultServiceImpl implements FaultService {
     @Override
     public void deleteFault(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            faultMapper.deleteFault(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            faultMapper.deleteFault(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

@@ -18,10 +18,10 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.detection.SpecialEquipMapper;
 import com.wzmtr.eam.service.detection.SpecialEquipService;
-import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                 }
                 if (StringUtils.isNotEmpty(resDTO.getVerifyValidityDate())) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    String day = DateUtil.getDayByMonth(3);
+                    String day = DateUtils.getDayByMonth(3);
                     try {
                         resDTO.setIsWarn(sdf.parse(day).getTime() <= sdf.parse(resDTO.getVerifyValidityDate()).getTime() ? 0 : 1);
                     } catch (ParseException e) {
@@ -103,10 +103,10 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
         for (ExcelSpecialEquipReqDTO reqDTO : list) {
             SpecialEquipReqDTO req = new SpecialEquipReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtil.getUuId());
-            req.setRecCreator(TokenUtil.getCurrentPersonId());
+            req.setRecId(TokenUtils.getUuId());
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-            req.setRecRevisor(TokenUtil.getCurrentPersonId());
+            req.setRecRevisor(TokenUtils.getCurrentPersonId());
             req.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             if (StringUtils.isNotEmpty(reqDTO.getSpecialEquipType())) {
                 req.setSpecialEquipType("电梯".equals(reqDTO.getSpecialEquipType()) ? "10" : "起重机".equals(reqDTO.getSpecialEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getSpecialEquipType()) ? "30" : "40");
@@ -125,7 +125,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
 
     @Override
     public void modifySpecialEquip(SpecialEquipReqDTO specialEquipReqDTO) {
-        specialEquipReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        specialEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         specialEquipReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         specialEquipMapper.modifySpecialEquip(specialEquipReqDTO);
     }

@@ -1,12 +1,10 @@
-package com.wzmtr.eam.utils.bpmn;
-
-import com.wzmtr.eam.constant.BpmnConstants;
+package com.wzmtr.eam.constant;
 
 /**
  * @Author lize
  * @Date 2023/3/28
  */
-public class FastFlowPathUrl {
+public class FastFlowConstants {
     public static final String BASE_URL = BpmnConstants.BPMN_URL;
     public static final String REGISTER = BASE_URL + "/uc/api/user/v2/save";
     public static final String LOGIN = BASE_URL + "/sys/getJwt";

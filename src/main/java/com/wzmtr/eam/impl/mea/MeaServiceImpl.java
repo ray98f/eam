@@ -12,7 +12,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.service.mea.MeaService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +56,8 @@ public class MeaServiceImpl implements MeaService {
                 MeaReqDTO req = new MeaReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
                 req.setVerifyPeriod(Integer.valueOf(reqDTO.getVerifyPeriod()));
-                req.setRecId(TokenUtil.getUuId());
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecId(TokenUtils.getUuId());
+                req.setRecCreator(TokenUtils.getCurrentPersonId());
                 req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 temp.add(req);
             }

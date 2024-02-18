@@ -15,7 +15,7 @@ import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.service.equipment.GearboxChangeOilService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +52,8 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
 
     @Override
     public void addGearboxChangeOil(GearboxChangeOilReqDTO gearboxChangeOilReqDTO) {
-        gearboxChangeOilReqDTO.setRecId(TokenUtil.getUuId());
-        gearboxChangeOilReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        gearboxChangeOilReqDTO.setRecId(TokenUtils.getUuId());
+        gearboxChangeOilReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         gearboxChangeOilReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         gearboxChangeOilMapper.addGearboxChangeOil(gearboxChangeOilReqDTO);
     }
@@ -62,11 +62,11 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
     public void deleteGearboxChangeOil(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
-                if (!gearboxChangeOilMapper.getRecCreator(id).equals(TokenUtil.getCurrentPersonId())) {
+                if (!gearboxChangeOilMapper.getRecCreator(id).equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
             }
-            gearboxChangeOilMapper.deleteGearboxChangeOil(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            gearboxChangeOilMapper.deleteGearboxChangeOil(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -81,9 +81,9 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
                 GearboxChangeOilReqDTO req = new GearboxChangeOilReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
                 req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
-                req.setRecId(TokenUtil.getUuId());
+                req.setRecId(TokenUtils.getUuId());
                 req.setDeleteFlag("0");
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
+                req.setRecCreator(TokenUtils.getCurrentPersonId());
                 req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 temp.add(req);
             }

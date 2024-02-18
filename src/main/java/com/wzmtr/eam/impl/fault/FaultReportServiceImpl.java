@@ -83,13 +83,13 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     public void insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {
         faultInfoDO.setFaultNo(nextFaultNo);
-        faultInfoDO.setRecId(TokenUtil.getUuId());
+        faultInfoDO.setRecId(TokenUtils.getUuId());
         faultInfoDO.setDeleteFlag("0");
-        faultInfoDO.setFillinTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
-        faultInfoDO.setFillinUserId(TokenUtil.getCurrentPerson().getPersonId());
-        faultInfoDO.setFillinDeptCode(TokenUtil.getCurrentPerson().getOfficeId());
-        faultInfoDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        faultInfoDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        faultInfoDO.setFillinTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultInfoDO.setFillinUserId(TokenUtils.getCurrentPerson().getPersonId());
+        faultInfoDO.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
+        faultInfoDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
+        faultInfoDO.setRecCreateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
         faultReportMapper.addToFaultInfo(faultInfoDO);
     }
 
@@ -97,9 +97,9 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultOrderDO.setFaultWorkNo(nextFaultWorkNo);
         faultOrderDO.setFaultNo(nextFaultNo);
         faultOrderDO.setDeleteFlag("0");
-        faultOrderDO.setRecId(TokenUtil.getUuId());
-        faultOrderDO.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        faultOrderDO.setRecCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS));
+        faultOrderDO.setRecId(TokenUtils.getUuId());
+        faultOrderDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
+        faultOrderDO.setRecCreateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
         faultReportMapper.addToFaultOrder(faultOrderDO);
 
     }
@@ -156,9 +156,9 @@ public class FaultReportServiceImpl implements FaultReportService {
         return list;
     }
     private void buildRes(List<FaultReportResDTO> records) {
-        Set<String> positionCodes = StreamUtil.mapToSet(records, FaultReportResDTO::getPositionCode);
+        Set<String> positionCodes = StreamUtils.mapToSet(records, FaultReportResDTO::getPositionCode);
         List<RegionResDTO> regionRes = regionMapper.selectByQuery(RegionQuery.builder().nodeCodes(positionCodes).build());
-        Map<String, RegionResDTO> regionMap = StreamUtil.toMap(regionRes, RegionResDTO::getNodeCode);
+        Map<String, RegionResDTO> regionMap = StreamUtils.toMap(regionRes, RegionResDTO::getNodeCode);
         records.forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
             if (StringUtils.isNotEmpty(a.getDocId())) {
@@ -197,16 +197,16 @@ public class FaultReportServiceImpl implements FaultReportService {
         // faultWorkNo的recId
         String faultWorkNo = reqDTO.getFaultWorkNo();
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
-        faultOrderDO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        faultOrderDO.setRecReviseTime(DateUtil.getCurrentTime());
+        faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
         // order表作废状态
         faultOrderDO.setOrderStatus(OrderStatus.ZUO_FEI.getCode());
         faultReportMapper.updateFaultOrder(faultOrderDO);
         String faultNo = reqDTO.getFaultNo();
         // info表更新
         FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo, faultWorkNo);
-        faultInfoDO.setRecReviseTime(DateUtil.getCurrentTime());
-        faultInfoDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
+        faultInfoDO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultReportMapper.updateFaultInfo(faultInfoDO);
         // 取消待办
         overTodoService.cancelTodo(reqDTO.getOrderRecId());
@@ -219,11 +219,11 @@ public class FaultReportServiceImpl implements FaultReportService {
         Assert.isNotEmpty(reqDTO.getFaultNo(), "参数缺失[故障编号]不能为空!");
         // 修改已提报故障单  修改时间 修改人， 各属性的值
         FaultInfoDO infoUpdate = BeanUtils.convert(reqDTO, FaultInfoDO.class);
-        infoUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
-        infoUpdate.setRecReviseTime(DateUtil.getCurrentTime());
+        infoUpdate.setRecRevisor(TokenUtils.getCurrentPersonId());
+        infoUpdate.setRecReviseTime(DateUtils.getCurrentTime());
         FaultOrderDO orderUpdate = BeanUtils.convert(reqDTO, FaultOrderDO.class);
-        orderUpdate.setRecRevisor(TokenUtil.getCurrentPersonId());
-        orderUpdate.setRecReviseTime(DateUtil.getCurrentTime());
+        orderUpdate.setRecRevisor(TokenUtils.getCurrentPersonId());
+        orderUpdate.setRecReviseTime(DateUtils.getCurrentTime());
         if (StringUtils.isEmpty(reqDTO.getDocId())) {
             // 前端传的是个空值，特殊处理下
             infoUpdate.setDocId(" ");
@@ -247,11 +247,11 @@ public class FaultReportServiceImpl implements FaultReportService {
      */
     public void addFaultFlow(String faultNo, String faultWorkNo) {
         FaultFlowReqDTO faultFlowReqDTO = new FaultFlowReqDTO();
-        faultFlowReqDTO.setRecId(TokenUtil.getUuId());
+        faultFlowReqDTO.setRecId(TokenUtils.getUuId());
         faultFlowReqDTO.setFaultNo(faultNo);
         faultFlowReqDTO.setFaultWorkNo(faultWorkNo);
-        faultFlowReqDTO.setOperateUserId(TokenUtil.getCurrentPersonId());
-        faultFlowReqDTO.setOperateUserName(TokenUtil.getCurrentPerson().getPersonName());
+        faultFlowReqDTO.setOperateUserId(TokenUtils.getCurrentPersonId());
+        faultFlowReqDTO.setOperateUserName(TokenUtils.getCurrentPerson().getPersonName());
         faultFlowReqDTO.setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
         if (!Objects.isNull(faultOrderDO)) {

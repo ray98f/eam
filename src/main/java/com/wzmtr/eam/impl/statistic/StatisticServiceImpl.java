@@ -767,7 +767,6 @@ public class StatisticServiceImpl implements StatisticService {
         List<RAMSSysPerformResDTO> ramsResDTOS = ramsMapper.querySysPerform();
         List<RAMSResDTO> totalMilesList = ramsMapper.querytotalMiles();
         RAMSResDTO totalMiles = totalMilesList.get(0);
-        System.out.println(ramsResDTOS);
         Map<String, RAMSSysPerformResDTO> map = Maps.newHashMap();
         Set<String> names = Sets.newHashSet();
         ramsResDTOS.forEach(a -> {
@@ -840,6 +839,15 @@ public class StatisticServiceImpl implements StatisticService {
                 map.put(a.getModuleName(), a);
             }
         });
+        buildSysPerformIsCompliance(map);
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * 各系统可靠性统计-构建是否达标标识
+     * @param map 集合
+     */
+    private void buildSysPerformIsCompliance(Map<String, RAMSSysPerformResDTO> map) {
         map.values().forEach(a -> {
             if (Double.parseDouble(a.getMTBF_LATE()) >= Double.parseDouble(a.getContractZBLATE())) {
                 a.setIsDB_LATE("达标");
@@ -852,7 +860,6 @@ public class StatisticServiceImpl implements StatisticService {
                 a.setIsDB_NOS("未达标");
             }
         });
-        return new ArrayList<>(map.values());
     }
 
     /**
@@ -923,22 +930,31 @@ public class StatisticServiceImpl implements StatisticService {
                 map.put(a.getModuleName(), a);
             }
         }
+        buildFaultTypeIsCompliance(map, ramsResDTO);
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * 各系统故障情况统计-构建是否达标标识
+     * @param map 集合
+     * @param ramsRes ram
+     */
+    private void buildFaultTypeIsCompliance(Map<String, FaultConditionResDTO> map, RAMSResDTO ramsRes) {
         map.values().forEach(a -> {
             DecimalFormat df = new DecimalFormat("#0");
-            double ZB;
+            double zb;
             if (Double.parseDouble(a.getNOYF()) == ZERO) {
-                ZB = Double.parseDouble(ramsResDTO.getTotalMiles()) * 4.0D / 55.0D;
+                zb = Double.parseDouble(ramsRes.getTotalMiles()) * 4.0D / 55.0D;
             } else {
-                ZB = Double.parseDouble(ramsResDTO.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNOYF());
+                zb = Double.parseDouble(ramsRes.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNOYF());
             }
-            a.setZB(df.format(ZB));
-            if (ZB >= Double.parseDouble(a.getContractZB())) {
+            a.setZB(df.format(zb));
+            if (zb >= Double.parseDouble(a.getContractZB())) {
                 a.setIsDB("达标");
             } else {
                 a.setIsDB("未达标");
             }
         });
-        return new ArrayList<>(map.values());
     }
 
     /**

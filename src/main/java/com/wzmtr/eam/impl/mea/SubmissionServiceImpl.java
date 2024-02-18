@@ -26,7 +26,7 @@ import com.wzmtr.eam.service.mea.SubmissionService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,10 +78,10 @@ public class SubmissionServiceImpl implements SubmissionService {
         } else {
             sendVerifyNo = CodeUtils.getNextCode(sendVerifyNo, 8);
         }
-        submissionReqDTO.setRecId(TokenUtil.getUuId());
+        submissionReqDTO.setRecId(TokenUtils.getUuId());
         submissionReqDTO.setSendVerifyNo(sendVerifyNo);
         submissionReqDTO.setSendVerifyStatus("10");
-        submissionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        submissionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         submissionReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionReqDTO.setArchiveFlag("0");
         submissionMapper.addSubmission(submissionReqDTO);
@@ -93,13 +93,13 @@ public class SubmissionServiceImpl implements SubmissionService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!res.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(res.getSendVerifyStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
-        submissionReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        submissionReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         submissionReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionMapper.modifySubmission(submissionReqDTO);
     }
@@ -112,19 +112,19 @@ public class SubmissionServiceImpl implements SubmissionService {
                 if (Objects.isNull(res)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!res.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!CommonConstants.TEN_STRING.equals(res.getSendVerifyStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                submissionMapper.deleteSubmissionDetail(null, res.getSendVerifyNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionMapper.deleteSubmissionDetail(null, res.getSendVerifyNo(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
                     BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
                     bpmnExamineDTO.setTaskId(res.getWorkFlowInstId());
                     bpmnService.rejectInstance(bpmnExamineDTO);
                 }
-                submissionMapper.deleteSubmission(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionMapper.deleteSubmission(id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -154,7 +154,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             reqDTO.setWorkFlowInstId(processId);
             reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.SUBMISSION_SUBMIT.value(),null));
             reqDTO.setSendVerifyStatus("20");
-            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             submissionMapper.modifySubmission(reqDTO);
             // 记录日志
@@ -206,7 +206,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                         .build());
             }
         }
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionMapper.modifySubmission(reqDTO);
     }
@@ -242,16 +242,16 @@ public class SubmissionServiceImpl implements SubmissionService {
         submissionListReqDTO.setSendVerifyNo(submissionDetailReqDTO.getSendVerifyNo());
         List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
         if (!list.isEmpty()) {
-            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+            if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
             if (!CommonConstants.TEN_STRING.equals(list.get(0).getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "新增");
             }
         }
-        submissionDetailReqDTO.setRecId(TokenUtil.getUuId());
-        submissionDetailReqDTO.setPlanDetailRecId(TokenUtil.getUuId());
-        submissionDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        submissionDetailReqDTO.setRecId(TokenUtils.getUuId());
+        submissionDetailReqDTO.setPlanDetailRecId(TokenUtils.getUuId());
+        submissionDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         submissionDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionDetailReqDTO.setArchiveFlag("0");
         submissionMapper.addSubmissionDetail(submissionDetailReqDTO);
@@ -263,14 +263,14 @@ public class SubmissionServiceImpl implements SubmissionService {
         submissionListReqDTO.setSendVerifyNo(submissionDetailReqDTO.getSendVerifyNo());
         List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
         if (!list.isEmpty()) {
-            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+            if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
             if (!CommonConstants.TEN_STRING.equals(list.get(0).getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
-        submissionDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        submissionDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         submissionDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionMapper.modifySubmissionDetail(submissionDetailReqDTO);
     }
@@ -287,14 +287,14 @@ public class SubmissionServiceImpl implements SubmissionService {
                 submissionListReqDTO.setSendVerifyNo(id);
                 List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
                 if (!list.isEmpty()) {
-                    if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                    if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }
                     if (!CommonConstants.TEN_STRING.equals(list.get(0).getSendVerifyStatus())) {
                         throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
                     }
                 }
-                submissionMapper.deleteSubmissionDetail(id, null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionMapper.deleteSubmissionDetail(id, null, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

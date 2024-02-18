@@ -13,7 +13,7 @@ public class FileUploadUtils {
      */
     public static String extractFilename(MultipartFile file) {
         String extension = getExtension(file);
-        return DateUtil.datePath() + "/" + UUID.randomUUID() + "." + extension;
+        return DateUtils.datePath() + "/" + UUID.randomUUID() + "." + extension;
     }
 
     /**

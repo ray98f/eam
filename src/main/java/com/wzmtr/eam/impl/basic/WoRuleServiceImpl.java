@@ -16,7 +16,7 @@ import com.wzmtr.eam.service.basic.WoRuleService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,16 +73,16 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void addWoRule(WoRuleReqDTO woRuleReqDTO) {
         woRuleReqDTO.setRuleCode(CodeUtils.getNextCode(woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage()), 1));
-        woRuleReqDTO.setRecId(TokenUtil.getUuId());
-        woRuleReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        woRuleReqDTO.setRecId(TokenUtils.getUuId());
+        woRuleReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         woRuleReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         woRuleMapper.addWoRule(woRuleReqDTO);
     }
 
     @Override
     public void addWoRuleDetail(WoRuleReqDTO.WoRuleDetail woRuleDetail) {
-        woRuleDetail.setRecId(TokenUtil.getUuId());
-        woRuleDetail.setRecCreator(TokenUtil.getCurrentPersonId());
+        woRuleDetail.setRecId(TokenUtils.getUuId());
+        woRuleDetail.setRecCreator(TokenUtils.getCurrentPersonId());
         woRuleDetail.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         woRuleDetail.setPeriod(Optional.ofNullable(woRuleDetail.getPeriod()).orElse(CommonConstants.ZERO_LONG));
         woRuleMapper.addWoRuleDetail(woRuleDetail);
@@ -95,14 +95,14 @@ public class WoRuleServiceImpl implements WoRuleService {
             woRuleMapper.modifyWoRuleDetailCode(woRuleReqDTO.getRuleCode(), newCode);
             woRuleReqDTO.setRuleCode(newCode);
         }
-        woRuleReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        woRuleReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         woRuleReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         woRuleMapper.modifyWoRule(woRuleReqDTO);
     }
 
     @Override
     public void modifyWoRuleDetail(WoRuleReqDTO.WoRuleDetail woRuleDetail) {
-        woRuleDetail.setRecRevisor(TokenUtil.getCurrentPersonId());
+        woRuleDetail.setRecRevisor(TokenUtils.getCurrentPersonId());
         woRuleDetail.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         woRuleMapper.modifyWoRuleDetail(woRuleDetail);
     }
@@ -110,8 +110,8 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void deleteWoRule(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            woRuleMapper.deleteWoRule(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-            woRuleMapper.deleteWoRuleDetailByCode(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            woRuleMapper.deleteWoRule(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            woRuleMapper.deleteWoRuleDetailByCode(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -120,7 +120,7 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void deleteWoRuleDetail(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            woRuleMapper.deleteWoRuleDetail(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            woRuleMapper.deleteWoRuleDetail(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

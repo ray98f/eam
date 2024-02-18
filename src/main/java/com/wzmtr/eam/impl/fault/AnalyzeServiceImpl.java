@@ -203,8 +203,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 // 保存当前属于哪条流程线
                 faultAnalyzeDO.setExt5(nextNode.getLine());
             }
-            faultAnalyzeDO.setRecReviseTime(DateUtil.getCurrentTime());
-            faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            faultAnalyzeDO.setRecReviseTime(DateUtils.getCurrentTime());
+            faultAnalyzeDO.setRecRevisor(TokenUtils.getCurrentPersonId());
             faultAnalyzeMapper.update(faultAnalyzeDO);
         } catch (Exception e) {
             log.error("pass error", e);
@@ -240,8 +240,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         Assert.notNull(reqDTO.getFaultAnalysisNo(),ErrorCode.PARAM_ERROR);
         FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALYSIS_NO, reqDTO.getFaultAnalysisNo()));
         faultAnalyzeDO.setDocId(reqDTO.getDocId());
-        faultAnalyzeDO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        faultAnalyzeDO.setRecReviseTime(DateUtil.getCurrentTime());
+        faultAnalyzeDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        faultAnalyzeDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultAnalyzeMapper.update(faultAnalyzeDO);
     }
 }

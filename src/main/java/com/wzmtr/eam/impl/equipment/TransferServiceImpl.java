@@ -133,12 +133,12 @@ public class TransferServiceImpl implements TransferService {
                 if (CommonConstants.TWENTY_STRING.equals(transferResDTO.getEamProcessStatus())) {
                     throw new CommonException(ErrorCode.TRANSFER_HAS_HANDLE, transferResDTO.getTransferNo());
                 }
-                CurrentLoginUser user = TokenUtil.getCurrentPerson();
+                CurrentLoginUser user = TokenUtils.getCurrentPerson();
                 for (int i = 0; i < transferResDTO.getQuantity(); i++) {
                     String unitNo = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(1)) + 1);
                     String equipCode = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(4)) + 1);
                     UnitCodeReqDTO unitCodeReqDTO = new UnitCodeReqDTO();
-                    unitCodeReqDTO.setRecId(TokenUtil.getUuId());
+                    unitCodeReqDTO.setRecId(TokenUtils.getUuId());
                     unitCodeReqDTO.setUnitNo(unitNo);
                     unitCodeReqDTO.setRecCreator(user.getPersonId());
                     unitCodeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
@@ -320,7 +320,7 @@ public class TransferServiceImpl implements TransferService {
                 equipmentReqDTO.setEquipTypeName(listEquipType.get(0).getNodeName());
             }
         }
-        equipmentReqDTO.setRecId(TokenUtil.getUuId());
+        equipmentReqDTO.setRecId(TokenUtils.getUuId());
         equipmentReqDTO.setEquipName(transferResDTO.getItemName());
         equipmentReqDTO.setApprovalStatus("10");
         equipmentReqDTO.setSpecialEquipFlag("10");
@@ -367,7 +367,7 @@ public class TransferServiceImpl implements TransferService {
         resDTO.setEquipTypeName(equipmentCategoryMapper.getIndexByIndex(resDTO.getEquipTypeCode(), null, null).getNodeName());
         EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
         BeanUtils.copyProperties(resDTO, equipmentReqDTO);
-        equipmentReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        equipmentReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         equipmentReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         equipmentMapper.updateEquipment(equipmentReqDTO);
     }
@@ -380,7 +380,7 @@ public class TransferServiceImpl implements TransferService {
                     if (bom.getQuantity() != null) {
                         for (int i = 0; i < bom.getQuantity().intValue(); i++) {
                             EquipmentPartReqDTO equipmentPartReqDTO = new EquipmentPartReqDTO();
-                            equipmentPartReqDTO.setRecId(TokenUtil.getUuId());
+                            equipmentPartReqDTO.setRecId(TokenUtils.getUuId());
                             equipmentPartReqDTO.setEquipCode(resDTO.getEquipCode());
                             equipmentPartReqDTO.setEquipName(resDTO.getEquipName());
                             equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode(), 1));
@@ -388,7 +388,7 @@ public class TransferServiceImpl implements TransferService {
                             equipmentPartReqDTO.setBomEname(bom.getEname());
                             equipmentPartReqDTO.setInAccountTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                             equipmentPartReqDTO.setDeleteFlag(" ");
-                            equipmentPartReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                            equipmentPartReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
                             equipmentPartReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                             equipmentPartReqDTO.setRecStatus("0");
                             equipmentPartReqDTO.setEquipStatus("10");
@@ -396,8 +396,8 @@ public class TransferServiceImpl implements TransferService {
                             equipmentPartMapper.insertEquipmentPart(equipmentPartReqDTO);
                             PartFaultReqDTO partFaultReqDTO = new PartFaultReqDTO();
                             BeanUtils.copyProperties(equipmentPartReqDTO, partFaultReqDTO);
-                            partFaultReqDTO.setRecId(TokenUtil.getUuId());
-                            partFaultReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+                            partFaultReqDTO.setRecId(TokenUtils.getUuId());
+                            partFaultReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
                             partFaultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                             partFaultReqDTO.setOperateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                             partFaultReqDTO.setLogType("10");
@@ -422,7 +422,7 @@ public class TransferServiceImpl implements TransferService {
 //        String systemName = "DM";
 //        String url = ServiceDMDM4AT.path;
 //        String json = JSONArray.fromObject(list).toString();
-//        CurrentLoginUser user = TokenUtil.getCurrentPerson();
+//        CurrentLoginUser user = TokenUtils.getCurrentPerson();
 //        OSBGetMessage osbGetMessage = new OSBGetMessage();
 //        String orgCode = user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId();
 //        String result = osbGetMessage.getMessage(method, user.getPersonId(), orgCode, systemName, json, url, methodName, "set", "Data", 0);

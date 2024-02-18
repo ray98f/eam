@@ -13,7 +13,7 @@ import com.wzmtr.eam.mapper.equipment.EquipmentChargeMapper;
 import com.wzmtr.eam.service.equipment.EquipmentChargeService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,15 +53,15 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
         if (StringUtils.isEmpty(equipName)) {
             throw new CommonException(ErrorCode.EQUIP_CODE_ERROR);
         }
-        equipmentChargeReqDTO.setRecId(TokenUtil.getUuId());
-        equipmentChargeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        equipmentChargeReqDTO.setRecId(TokenUtils.getUuId());
+        equipmentChargeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         equipmentChargeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         equipmentChargeMapper.addEquipmentCharge(equipmentChargeReqDTO);
     }
 
     @Override
     public void modifyEquipmentCharge(EquipmentChargeReqDTO equipmentChargeReqDTO) {
-        equipmentChargeReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        equipmentChargeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         equipmentChargeReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         equipmentChargeMapper.modifyEquipmentCharge(equipmentChargeReqDTO);
     }
@@ -69,7 +69,7 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
     @Override
     public void deleteEquipmentCharge(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            equipmentChargeMapper.deleteEquipmentCharge(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            equipmentChargeMapper.deleteEquipmentCharge(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

@@ -4,7 +4,7 @@ import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.utils.BeanUtils;
-import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -133,7 +133,7 @@ public class FaultReportReqDTO {
         convert.setRecCreator(" ");
         convert.setFaultNo(" ");
         convert.setFaultWorkNo(" ");
-        convert.setRecCreateTime(DateUtil.getCurrentTime());
+        convert.setRecCreateTime(DateUtils.getCurrentTime());
         convert.setDeleteFlag("0");
         if (StringUtils.isEmpty(req.getOrderStatus())) {
             convert.setOrderStatus(OrderStatus.TI_BAO.getCode());

@@ -13,7 +13,7 @@ import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.shiro.model.Person;
 import com.wzmtr.eam.shiro.service.IPersonService;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,12 +80,12 @@ public class UserAccountServiceImpl implements UserAccountService {
             } else {
                 throw new CommonException(ErrorCode.USER_NOT_EXIST);
             }
-        return TokenUtil.createSimpleToken(person);
+        return TokenUtils.createSimpleToken(person);
     }
 
     @Override
     public UserCenterInfoResDTO getUserDetail() {
-        UserCenterInfoResDTO res = userAccountMapper.userCenterInfo(TokenUtil.getCurrentPersonId());
+        UserCenterInfoResDTO res = userAccountMapper.userCenterInfo(TokenUtils.getCurrentPersonId());
         // 获取登录用户角色权限
         res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
         return res;

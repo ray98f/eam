@@ -31,7 +31,7 @@ import com.wzmtr.eam.service.mea.SubmissionRecordService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,8 +110,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     @Override
     public void addSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO) {
         SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
-        String recCreator = TokenUtil.getCurrentPersonId();
-        CurrentLoginUser user = TokenUtil.getCurrentPerson();
+        String recCreator = TokenUtils.getCurrentPersonId();
+        CurrentLoginUser user = TokenUtils.getCurrentPerson();
         String editDeptCode = user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId();
         String recCreateTime = new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis());
         String archiveFlag = "0";
@@ -122,7 +122,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
         }
-        submissionRecordReqDTO.setRecId(TokenUtil.getUuId());
+        submissionRecordReqDTO.setRecId(TokenUtils.getUuId());
         submissionRecordReqDTO.setCheckNo(checkNo);
         submissionRecordReqDTO.setRecCreator(recCreator);
         submissionRecordReqDTO.setRecCreateTime(recCreateTime);
@@ -138,13 +138,13 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!res.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(res.getRecStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
-        submissionRecordReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        submissionRecordReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         submissionRecordReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionRecordMapper.modifySubmissionRecord(submissionRecordReqDTO);
     }
@@ -157,19 +157,19 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 if (Objects.isNull(res)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!res.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!CommonConstants.TEN_STRING.equals(res.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                submissionRecordMapper.deleteSubmissionRecordDetail(null, res.getRecId(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionRecordMapper.deleteSubmissionRecordDetail(null, res.getRecId(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
                     BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
                     bpmnExamineDTO.setTaskId(res.getWorkFlowInstId());
                     bpmnService.rejectInstance(bpmnExamineDTO);
                 }
-                submissionRecordMapper.deleteSubmissionRecord(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionRecordMapper.deleteSubmissionRecord(id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -199,7 +199,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             reqDTO.setWorkFlowInstId(processId);
             reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.value(),null));
             reqDTO.setRecStatus("20");
-            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+            reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
             reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             submissionRecordMapper.modifySubmissionRecord(reqDTO);
             // 记录日志
@@ -251,7 +251,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                         .build());
             }
         }
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionRecordMapper.modifySubmissionRecord(reqDTO);
     }
@@ -287,8 +287,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
-        submissionRecordDetailReqDTO.setRecId(TokenUtil.getUuId());
-        submissionRecordDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        submissionRecordDetailReqDTO.setRecId(TokenUtils.getUuId());
+        submissionRecordDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionRecordDetailReqDTO.setArchiveFlag("0");
         if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
@@ -322,14 +322,14 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     public void modifySubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
         List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(submissionRecordDetailReqDTO.getTestRecId(), null, null, null, null);
         if (!list.isEmpty()) {
-            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+            if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
             if (!CommonConstants.TEN_STRING.equals(list.get(0).getRecStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
-        submissionRecordDetailReqDTO.setRecRevisor(TokenUtil.getUuId());
+        submissionRecordDetailReqDTO.setRecRevisor(TokenUtils.getUuId());
         submissionRecordDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         submissionRecordMapper.modifySubmissionRecordDetail(submissionRecordDetailReqDTO);
     }
@@ -344,14 +344,14 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 }
                 List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(res.getTestRecId(), null, null, null, null);
                 if (!list.isEmpty()) {
-                    if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                    if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }
                     if (!CommonConstants.TEN_STRING.equals(list.get(0).getRecStatus())) {
                         throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                     }
                 }
-                submissionRecordMapper.deleteSubmissionRecordDetail(id, null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionRecordMapper.deleteSubmissionRecordDetail(id, null, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

@@ -17,7 +17,7 @@ import com.wzmtr.eam.service.basic.BomService;
 import com.wzmtr.eam.utils.CodeUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +55,8 @@ public class BomServiceImpl implements BomService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        bomReqDTO.setRecId(TokenUtil.getUuId());
-        bomReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        bomReqDTO.setRecId(TokenUtils.getUuId());
+        bomReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         bomReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         bomMapper.addBom(bomReqDTO);
     }
@@ -67,7 +67,7 @@ public class BomServiceImpl implements BomService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        bomReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        bomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         bomReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         bomMapper.modifyBom(bomReqDTO);
     }
@@ -75,7 +75,7 @@ public class BomServiceImpl implements BomService {
     @Override
     public void deleteBom(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            bomMapper.deleteBom(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            bomMapper.deleteBom(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -144,7 +144,7 @@ public class BomServiceImpl implements BomService {
             }
         }
         if (!temp.isEmpty()) {
-            bomMapper.importBom(temp, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            bomMapper.importBom(temp, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
         }
     }
 
@@ -186,7 +186,7 @@ public class BomServiceImpl implements BomService {
         for (ExcelBomTrainReqDTO reqDTO : list) {
             BomTrainReqDTO req = new BomTrainReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtil.getUuId());
+            req.setRecId(TokenUtils.getUuId());
             temp.add(req);
         }
         if (!temp.isEmpty()) {
