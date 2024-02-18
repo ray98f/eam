@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.bizobject.export.FaultAnalizeExportBO;
-import com.wzmtr.eam.constant.Cols;
+import com.wzmtr.eam.constant.ColsConstants;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultAnalyzeDO;
 import com.wzmtr.eam.dto.req.bpmn.ExamineReqDTO;
@@ -159,7 +159,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Override
     public void pass(FaultExamineReqDTO reqDTO) {
         String faultAnalysisNo = Assert.notNull(reqDTO.getFaultAnalysisNo(), "faultAnalysisNo can not be null!");
-        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALYSIS_NO, faultAnalysisNo));
+        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(ColsConstants.FAULT_ANALYSIS_NO, faultAnalysisNo));
         workFlowLogService.ifReviewer(faultAnalyzeDO.getWorkFlowInstId());
         String taskId = bpmnService.queryTaskIdByProcId(faultAnalyzeDO.getWorkFlowInstId());
         AnalyzeServiceImpl aop = (AnalyzeServiceImpl) AopContext.currentProxy();
@@ -238,7 +238,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Override
     public void upload(FaultAnalyzeUploadReqDTO reqDTO) {
         Assert.notNull(reqDTO.getFaultAnalysisNo(),ErrorCode.PARAM_ERROR);
-        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(Cols.FAULT_ANALYSIS_NO, reqDTO.getFaultAnalysisNo()));
+        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(ColsConstants.FAULT_ANALYSIS_NO, reqDTO.getFaultAnalysisNo()));
         faultAnalyzeDO.setDocId(reqDTO.getDocId());
         faultAnalyzeDO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultAnalyzeDO.setRecReviseTime(DateUtils.getCurrentTime());

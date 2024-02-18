@@ -8,7 +8,7 @@ import com.github.pagehelper.PageHelper;
 import com.wzmtr.eam.bizobject.FaultTrackBO;
 import com.wzmtr.eam.bizobject.FaultTrackWorkBO;
 import com.wzmtr.eam.bizobject.export.FaultTrackExportBO;
-import com.wzmtr.eam.constant.Cols;
+import com.wzmtr.eam.constant.ColsConstants;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
@@ -169,7 +169,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         FaultTrackBO faultTrackBO = req.toFaultTrackBO(req);
         FaultTrackWorkBO faultTrackWorkBO = req.toFaultTrackWorkBO(req);
 
-        FaultTrackDO exist = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo));
+        FaultTrackDO exist = faultTrackMapper.selectOne(new QueryWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_NO, faultNo));
         TrackQueryServiceImpl proxy = (TrackQueryServiceImpl) AopContext.currentProxy();
         proxy.save(exist, faultTrackBO, faultTrackWorkBO, faultNo);
     }
@@ -210,8 +210,8 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             return;
         }
         // 更新两张表
-        faultTrackMapper.update(BeanUtils.convert(faultTrackBO, FaultTrackDO.class), new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_NO, faultNo).eq(Cols.FAULT_TRACK_NO, exist.getFaultTrackNo()));
-        faultTrackWorkMapper.update(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class), new UpdateWrapper<FaultTrackWorkDO>().eq(Cols.FAULT_TRACK_NO, exist.getFaultTrackNo()));
+        faultTrackMapper.update(BeanUtils.convert(faultTrackBO, FaultTrackDO.class), new UpdateWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_NO, faultNo).eq(ColsConstants.FAULT_TRACK_NO, exist.getFaultTrackNo()));
+        faultTrackWorkMapper.update(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class), new UpdateWrapper<FaultTrackWorkDO>().eq(ColsConstants.FAULT_TRACK_NO, exist.getFaultTrackNo()));
     }
 
 

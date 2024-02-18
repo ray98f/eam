@@ -8,7 +8,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.bizobject.export.FaultTrackWorkExportBO;
-import com.wzmtr.eam.constant.Cols;
+import com.wzmtr.eam.constant.ColsConstants;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
@@ -214,7 +214,7 @@ public class TrackServiceImpl implements TrackService {
             }
         }
         faultTrackMapper.update(faultTrackDO,
-                new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+                new UpdateWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         return processId;
     }
 
@@ -275,7 +275,7 @@ public class TrackServiceImpl implements TrackService {
             }
             faultTrackDO.setRecRevisor(TokenUtils.getCurrentPersonId());
             faultTrackDO.setRecReviseTime(DateUtils.getCurrentTime());
-            faultTrackMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+            faultTrackMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         } catch (Exception e) {
             log.error("agree error", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "agree error");
@@ -295,7 +295,7 @@ public class TrackServiceImpl implements TrackService {
         dmfm09.setRecStatus("10");
         dmfm09.setWorkFlowInstId("");
         dmfm09.setWorkFlowInstStatus("");
-        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.REJECT.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())

@@ -43,6 +43,13 @@ public interface EquipmentMapper {
 
     EquipmentResDTO getEquipmentDetail(String id);
 
+    /**
+     * 根据设备编号获取设备详情
+     * @param code 设备编号
+     * @return 设备详情
+     */
+    EquipmentResDTO getEquipmentDetailByCode(String code);
+
     String getMaxCode(Integer type);
 
     void insertUnitCode(UnitCodeReqDTO unitCodeReqDTO);

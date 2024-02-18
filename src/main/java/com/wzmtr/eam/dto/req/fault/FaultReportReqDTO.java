@@ -2,6 +2,7 @@ package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.utils.BeanUtils;
 import com.wzmtr.eam.utils.DateUtils;
@@ -192,6 +193,27 @@ public class FaultReportReqDTO {
         convert.setRecStatus(" ");
         convert.setFaultDisplayCode(" ");
         convert.setDeleteFlag("0");
+        return convert;
+    }
+
+    /**
+     * 根据设备编号查询的设备数据填充故障提报入参
+     */
+    public FaultReportReqDTO toReportReqFromEquipment(EquipmentResDTO req) {
+        FaultReportReqDTO convert = new FaultReportReqDTO();
+        convert.setObjectCode(req.getEquipCode());
+        convert.setObjectName(req.getEquipName());
+        convert.setMajorCode(req.getMajorCode());
+        convert.setMajorName(req.getMajorName());
+        convert.setSystemCode(req.getSystemCode());
+        convert.setSystemName(req.getSystemName());
+        convert.setEquipTypeCode(req.getEquipTypeCode());
+        convert.setEquipTypeName(req.getEquipTypeName());
+        convert.setLineCode(req.getUseLineNo());
+        convert.setLineName(req.getUseLineName());
+        convert.setPositionCode(req.getPosition1Code());
+        convert.setPosition2Code(req.getPosition2Code());
+        convert.setPosition2Name(req.getPosition2Name());
         return convert;
     }
 

@@ -5,7 +5,7 @@ package com.wzmtr.eam.constant;
  * Author: Li.Wang
  * Date: 2023/11/23 13:49
  */
-public interface Cols {
+public interface ColsConstants {
     String FAULT_TRACK_NO = "FAULT_TRACK_NO";
     String FAULT_NO = "FAULT_NO";
     String FAULT_WORK_NO = "FAULT_WORK_NO";

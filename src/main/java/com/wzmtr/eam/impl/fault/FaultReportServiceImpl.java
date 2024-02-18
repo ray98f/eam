@@ -9,6 +9,7 @@ import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.basic.query.RegionQuery;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -17,6 +18,7 @@ import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
@@ -54,6 +56,8 @@ public class FaultReportServiceImpl implements FaultReportService {
     private FileMapper fileMapper;
     @Autowired
     private RegionMapper regionMapper;
+    @Autowired
+    private EquipmentMapper equipmentMapper;
 
     @Override
     public String addToFault(FaultReportReqDTO reqDTO) {
@@ -79,6 +83,21 @@ public class FaultReportServiceImpl implements FaultReportService {
 //            ISendMessage.sendMessageByGroup(eiInfo1);
 //            ISendMessage.sendMoblieMessageByGroup(eiInfo1);
 //        }
+    }
+
+    @Override
+    public String addToFaultOpen(FaultReportOpenReqDTO reqDTO) {
+        FaultReportReqDTO req = new FaultReportReqDTO();
+        if (StringUtils.isNotEmpty(reqDTO.getEquipCode())) {
+            EquipmentResDTO equipment = equipmentMapper.getEquipmentDetailByCode(reqDTO.getEquipCode());
+            req = req.toReportReqFromEquipment(equipment);
+        }
+        req.setFaultDetail("故障等级：" + reqDTO.getFaultLevel() + "，故障详情：" + reqDTO.getFaultDetail());
+        req.setDiscoveryTime(reqDTO.getAlamTime());
+        req.setFaultType(reqDTO.getFaultType());
+        req.setFaultStatus(reqDTO.getFaultStatus());
+        req.setPartCode(reqDTO.getPartCode());
+        return addToFault(req);
     }
 
     public void insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {

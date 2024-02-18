@@ -1,9 +1,6 @@
 package com.wzmtr.eam.controller.fault;
 
-import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
+import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
@@ -38,10 +35,15 @@ public class FaultReportController {
         return DataResponse.of(reportService.addToFault(reqDTO));
     }
 
-    @ApiOperation(value = "故障提报（到设备）")
+    /**
+     * 故障提报（到设备）-开放接口
+     * @param reqDTO 入参
+     * @return 故障编号
+     */
+    @ApiOperation(value = "故障提报（到设备）-开放接口")
     @PostMapping("/insert/equip/open")
-    public DataResponse<String> addToEquipOpen(@RequestBody @Valid FaultReportReqDTO reqDTO) {
-        return DataResponse.of(reportService.addToFault(reqDTO));
+    public DataResponse<String> addToEquipOpen(@RequestBody @Valid FaultReportOpenReqDTO reqDTO) {
+        return DataResponse.of(reportService.addToFaultOpen(reqDTO));
     }
 
     @ApiOperation(value = "故障提报（到专业）")
