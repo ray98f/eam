@@ -32,7 +32,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("//statistic")
+@RequestMapping("/statistic")
 @Api(tags = "统计分析")
 @Validated
 public class StatisticController {
