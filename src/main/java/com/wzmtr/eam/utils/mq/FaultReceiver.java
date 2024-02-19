@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -41,21 +40,6 @@ public class FaultReceiver {
 
     @Autowired
     private FaultReportMapper faultReportMapper;
-
-    /**
-     * 默认字符串队列消费
-     * @param message 消息
-     */
-    @RabbitListener(queues = RabbitMqConfig.STRING_QUEUE)
-    @RabbitHandler
-    @Async
-    public void process(String message) {
-        try {
-            Thread.sleep(5000);
-        } catch (Exception e) {
-            log.info("错误信息:" + e.getMessage());
-        }
-    }
 
     /**
      * 故障队列消费

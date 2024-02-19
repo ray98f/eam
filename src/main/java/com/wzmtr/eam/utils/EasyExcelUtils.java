@@ -151,7 +151,8 @@ public class EasyExcelUtils {
         if (Objects.isNull(file.getOriginalFilename())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "文件格式有误，请检查上传文件格式!");
         }
-        if (!file.getOriginalFilename().endsWith(CommonConstants.XLSX) && !file.getOriginalFilename().endsWith(CommonConstants.XLS)) {
+        if (!Objects.requireNonNull(file.getOriginalFilename()).endsWith(CommonConstants.XLSX) &&
+                !Objects.requireNonNull(file.getOriginalFilename()).endsWith(CommonConstants.XLS)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "文件格式有误，请检查上传文件格式!");
         }
     }

@@ -12,13 +12,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RabbitMqConfig {
-    public static final String STRING_QUEUE = "EAM_STRING_QUEUE";
     public static final String FAULT_QUEUE = "EAM_FAULT_QUEUE";
-
-    @Bean
-    public Queue stringQueue() {
-        return QueueBuilder.durable(STRING_QUEUE).build();
-    }
 
     @Bean
     public Queue alarmQueue() {
