@@ -944,4 +944,12 @@
         #{orderStatus,jdbcType=VARCHAR}, #{operateUserId,jdbcType=VARCHAR}, #{operateTime,jdbcType=VARCHAR}, #{operateUserName,jdbcType=VARCHAR})
     </insert>
 
+    <insert id="addFaultError">
+        INSERT INTO T_FAULT_ERROR
+        (REC_ID, FAULT_NO, FAULT_WORK_NO, FAULT_INFO, REC_CREATOR, REC_CREATE_TIME)
+        VALUES(#{recId}, #{faultNo,jdbcType=VARCHAR}, #{faultWorkNo,jdbcType=VARCHAR}, #{faultInfo,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR}, #{recCreateTime,jdbcType=VARCHAR})
+
+    </insert>
+
 </mapper>

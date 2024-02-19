@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultErrorReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultFlowReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
@@ -74,4 +75,10 @@ public interface FaultReportMapper {
      * @param faultFlowReqDTO 故障流程数据
      */
     void addFaultFlow(FaultFlowReqDTO faultFlowReqDTO);
+
+    /**
+     * 新增故障错误
+     * @param faultError 故障错误信息
+     */
+    void addFaultError(FaultErrorReqDTO faultError);
 }

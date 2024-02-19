@@ -9,7 +9,6 @@ import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.basic.query.RegionQuery;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
-import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -18,7 +17,6 @@ import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
-import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
@@ -26,6 +24,7 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.mq.FaultSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,7 +56,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Autowired
     private RegionMapper regionMapper;
     @Autowired
-    private EquipmentMapper equipmentMapper;
+    FaultSender faultSender;
 
     @Override
     public String addToFault(FaultReportReqDTO reqDTO) {
@@ -87,17 +86,15 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public String addToFaultOpen(FaultReportOpenReqDTO reqDTO) {
-        FaultReportReqDTO req = new FaultReportReqDTO();
-        if (StringUtils.isNotEmpty(reqDTO.getEquipCode())) {
-            EquipmentResDTO equipment = equipmentMapper.getEquipmentDetailByCode(reqDTO.getEquipCode());
-            req = req.toReportReqFromEquipment(equipment);
-        }
-        req.setFaultDetail("故障等级：" + reqDTO.getFaultLevel() + "，故障详情：" + reqDTO.getFaultDetail());
-        req.setDiscoveryTime(reqDTO.getAlamTime());
-        req.setFaultType(reqDTO.getFaultType());
-        req.setFaultStatus(reqDTO.getFaultStatus());
-        req.setPartCode(reqDTO.getPartCode());
-        return addToFault(req);
+        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
+        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+        reqDTO.setFaultNo(nextFaultNo);
+        reqDTO.setFaultWorkNo(nextFaultWorkNo);
+        // 推送消息至mq
+        faultSender.sendFault(reqDTO);
+        return nextFaultNo;
     }
 
     public void insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {
@@ -120,7 +117,6 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultOrderDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
         faultOrderDO.setRecCreateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
         faultReportMapper.addToFaultOrder(faultOrderDO);
-
     }
 
     @Override

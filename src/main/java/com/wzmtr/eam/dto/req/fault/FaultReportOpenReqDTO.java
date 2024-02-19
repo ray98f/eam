@@ -2,14 +2,16 @@ package com.wzmtr.eam.dto.req.fault;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
- * 故障提报-开放 入参类
+ * 故障提报-开放 入参
  * @author  Ray
  * @version 1.0
  * @date 2023/12/11
  */
 @Data
-public class FaultReportOpenReqDTO {
+public class FaultReportOpenReqDTO implements Serializable {
     /**
      * 设备编码
      */
@@ -46,5 +48,13 @@ public class FaultReportOpenReqDTO {
      * 部件编码
      */
     private String partCode;
+    /**
+     * 故障编号
+     */
+    private String faultNo;
+    /**
+     * 故障工单编号
+     */
+    private String faultWorkNo;
 
 }
