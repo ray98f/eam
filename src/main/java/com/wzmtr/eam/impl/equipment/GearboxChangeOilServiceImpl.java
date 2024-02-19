@@ -13,6 +13,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.service.equipment.GearboxChangeOilService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -24,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +54,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
     public void addGearboxChangeOil(GearboxChangeOilReqDTO gearboxChangeOilReqDTO) {
         gearboxChangeOilReqDTO.setRecId(TokenUtils.getUuId());
         gearboxChangeOilReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        gearboxChangeOilReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        gearboxChangeOilReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         gearboxChangeOilMapper.addGearboxChangeOil(gearboxChangeOilReqDTO);
     }
 
@@ -66,7 +66,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
             }
-            gearboxChangeOilMapper.deleteGearboxChangeOil(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            gearboxChangeOilMapper.deleteGearboxChangeOil(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -84,7 +84,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
                 req.setRecId(TokenUtils.getUuId());
                 req.setDeleteFlag("0");
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }

@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -153,7 +152,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     public void delete(BaseIdsEntity reqDTO) {
         if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
-            secureMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            secureMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -170,7 +169,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
         reqDTO.setDeleteFlag("0");
         reqDTO.setSecRiskId(secRiskId);
         reqDTO.setRecStatus("10");
-        reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         if (AREA_ID.equals(reqDTO.getRestoreDeptCode().trim())) {
             reqDTO.setExt5("0103705");
         } else {
@@ -182,7 +181,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SecureCheckAddReqDTO reqDTO) {
-        reqDTO.setRecReviseTime(DateUtils.dateTimeNow("yyyyMMddHHmmss"));
+        reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         secureMapper.update(reqDTO);
     }

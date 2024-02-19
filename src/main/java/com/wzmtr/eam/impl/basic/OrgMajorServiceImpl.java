@@ -16,6 +16,7 @@ import com.wzmtr.eam.mapper.basic.FaultMapper;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.service.basic.OrgMajorService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -25,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +96,7 @@ public class OrgMajorServiceImpl implements OrgMajorService {
         }
         orgMajorReqDTO.setRecId(TokenUtils.getUuId());
         orgMajorReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        orgMajorReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        orgMajorReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         orgMajorMapper.addOrgMajor(orgMajorReqDTO);
     }
 
@@ -107,14 +107,14 @@ public class OrgMajorServiceImpl implements OrgMajorService {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         orgMajorReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        orgMajorReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        orgMajorReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         orgMajorMapper.modifyOrgMajor(orgMajorReqDTO);
     }
 
     @Override
     public void deleteOrgMajor(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            orgMajorMapper.deleteOrgMajor(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            orgMajorMapper.deleteOrgMajor(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

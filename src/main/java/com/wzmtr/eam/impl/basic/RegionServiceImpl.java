@@ -13,6 +13,7 @@ import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.service.basic.RegionService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class RegionServiceImpl implements RegionService {
         }
         regionReqDTO.setRecId(TokenUtils.getUuId());
         regionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        regionReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        regionReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         regionMapper.addRegion(regionReqDTO);
         // RegionDO regionDO = BeanUtils.convert(regionReqDTO, RegionDO.class);
         // regionMapper.insert(regionDO);
@@ -77,14 +77,14 @@ public class RegionServiceImpl implements RegionService {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         regionReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        regionReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        regionReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         regionMapper.modifyRegion(regionReqDTO);
     }
 
     @Override
     public void deleteRegion(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            regionMapper.deleteRegion(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            regionMapper.deleteRegion(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

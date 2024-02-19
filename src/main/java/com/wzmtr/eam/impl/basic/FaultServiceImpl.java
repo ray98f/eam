@@ -12,6 +12,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.FaultMapper;
 import com.wzmtr.eam.service.basic.FaultService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class FaultServiceImpl implements FaultService {
         }
         faultReqDTO.setRecId(TokenUtils.getUuId());
         faultReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        faultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        faultReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         faultMapper.addFault(faultReqDTO);
     }
 
@@ -65,14 +65,14 @@ public class FaultServiceImpl implements FaultService {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         faultReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        faultReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        faultReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         faultMapper.modifyFault(faultReqDTO);
     }
 
     @Override
     public void deleteFault(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            faultMapper.deleteFault(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            faultMapper.deleteFault(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

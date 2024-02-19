@@ -97,11 +97,11 @@ public class FaultReceiver {
         faultInfo.setFaultNo(faultNo);
         faultInfo.setRecId(TokenUtils.getUuId());
         faultInfo.setDeleteFlag("0");
-        faultInfo.setFillinTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultInfo.setFillinTime(DateUtils.getCurrentTime());
         faultInfo.setFillinUserId(TokenUtils.getCurrentPerson().getPersonId());
         faultInfo.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
         faultInfo.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
-        faultInfo.setRecCreateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultInfo.setRecCreateTime(DateUtils.getCurrentTime());
         faultReportMapper.addToFaultInfo(faultInfo);
     }
 
@@ -117,7 +117,7 @@ public class FaultReceiver {
         faultOrder.setDeleteFlag("0");
         faultOrder.setRecId(TokenUtils.getUuId());
         faultOrder.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
-        faultOrder.setRecCreateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultOrder.setRecCreateTime(DateUtils.getCurrentTime());
         faultReportMapper.addToFaultOrder(faultOrder);
 
     }
@@ -134,7 +134,7 @@ public class FaultReceiver {
         faultFlowReqDTO.setFaultWorkNo(faultWorkNo);
         faultFlowReqDTO.setOperateUserId(TokenUtils.getCurrentPersonId());
         faultFlowReqDTO.setOperateUserName(TokenUtils.getCurrentPerson().getPersonName());
-        faultFlowReqDTO.setOperateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultFlowReqDTO.setOperateTime(DateUtils.getCurrentTime());
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
         if (!Objects.isNull(faultOrderDO)) {
             faultFlowReqDTO.setOrderStatus(faultOrderDO.getOrderStatus());
@@ -155,7 +155,7 @@ public class FaultReceiver {
         faultError.setFaultInfo(JSONObject.toJSONString(fault));
         faultError.setErrorMsg(msg);
         faultError.setRecCreator(TokenUtils.getCurrentPersonId());
-        faultError.setRecCreateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultError.setRecCreateTime(DateUtils.getCurrentTime());
         return faultError;
     }
 

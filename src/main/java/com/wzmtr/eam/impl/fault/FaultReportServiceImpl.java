@@ -101,11 +101,11 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultInfoDO.setFaultNo(nextFaultNo);
         faultInfoDO.setRecId(TokenUtils.getUuId());
         faultInfoDO.setDeleteFlag("0");
-        faultInfoDO.setFillinTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultInfoDO.setFillinTime(DateUtils.getCurrentTime());
         faultInfoDO.setFillinUserId(TokenUtils.getCurrentPerson().getPersonId());
         faultInfoDO.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
         faultInfoDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
-        faultInfoDO.setRecCreateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultInfoDO.setRecCreateTime(DateUtils.getCurrentTime());
         faultReportMapper.addToFaultInfo(faultInfoDO);
     }
 
@@ -115,7 +115,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultOrderDO.setDeleteFlag("0");
         faultOrderDO.setRecId(TokenUtils.getUuId());
         faultOrderDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
-        faultOrderDO.setRecCreateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultOrderDO.setRecCreateTime(DateUtils.getCurrentTime());
         faultReportMapper.addToFaultOrder(faultOrderDO);
     }
 

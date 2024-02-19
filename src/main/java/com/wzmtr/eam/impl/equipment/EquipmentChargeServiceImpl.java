@@ -11,6 +11,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentChargeMapper;
 import com.wzmtr.eam.service.equipment.EquipmentChargeService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,21 +55,21 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
         }
         equipmentChargeReqDTO.setRecId(TokenUtils.getUuId());
         equipmentChargeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        equipmentChargeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentChargeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentChargeMapper.addEquipmentCharge(equipmentChargeReqDTO);
     }
 
     @Override
     public void modifyEquipmentCharge(EquipmentChargeReqDTO equipmentChargeReqDTO) {
         equipmentChargeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        equipmentChargeReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentChargeReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         equipmentChargeMapper.modifyEquipmentCharge(equipmentChargeReqDTO);
     }
 
     @Override
     public void deleteEquipmentCharge(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            equipmentChargeMapper.deleteEquipmentCharge(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            equipmentChargeMapper.deleteEquipmentCharge(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

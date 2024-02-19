@@ -19,6 +19,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.TrainMileMapper;
 import com.wzmtr.eam.service.equipment.TrainMileService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -208,7 +209,7 @@ public class TrainMileServiceImpl implements TrainMileService {
     @Override
     public void deleteTrainDailyMile(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            trainMileMapper.deleteTrainDailyMile(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            trainMileMapper.deleteTrainDailyMile(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             for (String id : baseIdsEntity.getIds()) {
                 TrainMileDailyResDTO trainCodeRes = trainMileMapper.getTrainDailyMileDetail(id);
                 if (!Objects.isNull(trainCodeRes)) {

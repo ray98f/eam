@@ -112,7 +112,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
         reqDTO.setDeleteFlag("0");
         String maxCode = secureDangerSourceMapper.getMaxCode();
         reqDTO.setDangerRiskId(CodeUtils.getNextCode(maxCode, "WX"));
-        reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         secureDangerSourceMapper.add(reqDTO);
     }
 
@@ -122,7 +122,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
         if (CollectionUtil.isEmpty(reqDTO.getIds())) {
             return;
         }
-        secureDangerSourceMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        secureDangerSourceMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
     }
 
 
@@ -134,7 +134,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
             return;
         }
         reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         secureDangerSourceMapper.update(reqDTO);
     }
     // public void upload(){

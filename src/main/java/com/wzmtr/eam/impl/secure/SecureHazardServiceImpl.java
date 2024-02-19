@@ -133,7 +133,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         if (CollectionUtil.isEmpty(reqDTO.getIds())) {
             return;
         }
-        hazardMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        hazardMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
     }
 
     @Override
@@ -143,7 +143,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         reqDTO.setRecId(TokenUtils.getUuId());
         reqDTO.setDeleteFlag("0");
         reqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         reqDTO.setArchiveFlag("0");
         reqDTO.setRecStatus("10");
         reqDTO.setIsRestored(ReformCase.IN_REF0RM.getCode());
@@ -156,7 +156,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
         SecureHazardDO secureHazardDO = hazardMapper.selectOne(new QueryWrapper<SecureHazardDO>().eq("RISK_ID", riskId));
         Assert.notNull(secureHazardDO, ErrorCode.RESOURCE_NOT_EXIST);
         reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         SecureHazardDO convert = BeanUtils.convert(reqDTO, SecureHazardDO.class);
         hazardMapper.update(convert, new UpdateWrapper<SecureHazardDO>().eq("RISK_ID", riskId));
     }

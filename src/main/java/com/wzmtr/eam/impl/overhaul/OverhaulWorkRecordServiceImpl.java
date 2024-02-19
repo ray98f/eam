@@ -8,12 +8,12 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulWorkRecordMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -50,7 +50,7 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
                     workRecord.setPlanCode(overhaulOrderReqDTO.getPlanCode());
                     workRecord.setWorkerGroupCode(overhaulOrderReqDTO.getWorkerGroupCode());
                     workRecord.setWorkerCode(workerCodes[i]);
-                    workRecord.setUploadTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    workRecord.setUploadTime(DateUtils.getCurrentTime());
                     workRecord.setDownloadTime(overhaulOrderReqDTO.getSendPersonId());
                     workRecord.setExt5(overhaulOrderReqDTO.getSendTime());
                     String[] workerMsg = workerNames[i].split("-");

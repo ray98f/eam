@@ -86,7 +86,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     public void delete(BaseIdsEntity reqDTO) {
         if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
-            carVideoMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            carVideoMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -102,7 +102,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         reqDTO.setRecId(TokenUtils.getUuId());
         reqDTO.setRecCreator(TokenUtils.getCurrentPerson().getPersonName());
         reqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         reqDTO.setArchiveFlag("0");
         reqDTO.setDeleteFlag("0");
         String maxCode = carVideoMapper.selectMaxCode();
@@ -131,7 +131,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         if (StringUtils.isNotEmpty(reqDTO.getTrainNo())) {
             reqDTO.setEquipCode(equipmentMapper.selectByEquipName(reqDTO.getTrainNo()).get(0).getEquipCode());
         }
-        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         carVideoMapper.update(reqDTO);
     }
 

@@ -12,10 +12,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
 import com.wzmtr.eam.service.equipment.EquipmentRoomService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtils;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,21 +50,21 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
         equipmentRoomReqDTO.setRecId(TokenUtils.getUuId());
         equipmentRoomReqDTO.setEquipRoomCode(CodeUtils.getNextCode(equipmentRoomMapper.selectMaxEquipmentRoomCode(), 1));
         equipmentRoomReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        equipmentRoomReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentRoomReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentRoomMapper.addEquipmentRoom(equipmentRoomReqDTO);
     }
 
     @Override
     public void modifyEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
         equipmentRoomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        equipmentRoomReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentRoomReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         equipmentRoomMapper.modifyEquipmentRoom(equipmentRoomReqDTO);
     }
 
     @Override
     public void deleteEquipmentRoom(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            equipmentRoomMapper.deleteEquipmentRoom(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            equipmentRoomMapper.deleteEquipmentRoom(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

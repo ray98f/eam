@@ -13,6 +13,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
 import com.wzmtr.eam.service.equipment.WheelsetLathingService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -24,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +54,7 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
     public void addWheelsetLathing(WheelsetLathingReqDTO wheelsetLathingReqDTO) {
         wheelsetLathingReqDTO.setRecId(TokenUtils.getUuId());
         wheelsetLathingReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        wheelsetLathingReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        wheelsetLathingReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         wheelsetLathingMapper.addWheelsetLathing(wheelsetLathingReqDTO);
     }
 
@@ -66,7 +66,7 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
             }
-            wheelsetLathingMapper.deleteWheelsetLathing(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            wheelsetLathingMapper.deleteWheelsetLathing(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -88,7 +88,7 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                 req.setRecId(TokenUtils.getUuId());
                 req.setDeleteFlag("0");
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }

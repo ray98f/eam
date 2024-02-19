@@ -105,9 +105,9 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
             BeanUtils.copyProperties(reqDTO, req);
             req.setRecId(TokenUtils.getUuId());
             req.setRecCreator(TokenUtils.getCurrentPersonId());
-            req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            req.setRecCreateTime(DateUtils.getCurrentTime());
             req.setRecRevisor(TokenUtils.getCurrentPersonId());
-            req.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            req.setRecReviseTime(DateUtils.getCurrentTime());
             if (StringUtils.isNotEmpty(reqDTO.getSpecialEquipType())) {
                 req.setSpecialEquipType("电梯".equals(reqDTO.getSpecialEquipType()) ? "10" : "起重机".equals(reqDTO.getSpecialEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getSpecialEquipType()) ? "30" : "40");
             }
@@ -126,7 +126,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
     @Override
     public void modifySpecialEquip(SpecialEquipReqDTO specialEquipReqDTO) {
         specialEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        specialEquipReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        specialEquipReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         specialEquipMapper.modifySpecialEquip(specialEquipReqDTO);
     }
 

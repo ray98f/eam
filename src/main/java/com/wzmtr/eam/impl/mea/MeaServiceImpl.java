@@ -11,6 +11,7 @@ import com.wzmtr.eam.dto.res.mea.excel.ExcelMeaResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.service.mea.MeaService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -58,7 +58,7 @@ public class MeaServiceImpl implements MeaService {
                 req.setVerifyPeriod(Integer.valueOf(reqDTO.getVerifyPeriod()));
                 req.setRecId(TokenUtils.getUuId());
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }

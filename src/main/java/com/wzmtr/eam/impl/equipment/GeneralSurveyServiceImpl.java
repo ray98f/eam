@@ -14,6 +14,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.equipment.GeneralSurveyService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -25,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,14 +82,14 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     public void addGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO) {
         generalSurveyReqDTO.setRecId(TokenUtils.getUuId());
         generalSurveyReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        generalSurveyReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        generalSurveyReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         generalSurveyMapper.addGeneralSurvey(generalSurveyReqDTO);
     }
 
     @Override
     public void modifyGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO) {
         generalSurveyReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        generalSurveyReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        generalSurveyReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         generalSurveyMapper.modifyGeneralSurvey(generalSurveyReqDTO);
     }
 
@@ -101,7 +101,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
             }
-            generalSurveyMapper.deleteGeneralSurvey(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            generalSurveyMapper.deleteGeneralSurvey(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -119,7 +119,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
             req.setRecId(TokenUtils.getUuId());
             req.setDeleteFlag("0");
             req.setRecCreator(TokenUtils.getCurrentPersonId());
-            req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            req.setRecCreateTime(DateUtils.getCurrentTime());
             temp.add(req);
         }
         if (!temp.isEmpty()) {

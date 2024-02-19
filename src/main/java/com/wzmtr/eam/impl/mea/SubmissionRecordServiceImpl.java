@@ -28,10 +28,7 @@ import com.wzmtr.eam.mapper.mea.SubmissionRecordMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.mea.SubmissionRecordService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtils;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +110,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         String recCreator = TokenUtils.getCurrentPersonId();
         CurrentLoginUser user = TokenUtils.getCurrentPerson();
         String editDeptCode = user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId();
-        String recCreateTime = new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis());
+        String recCreateTime = DateUtils.getCurrentTime();
         String archiveFlag = "0";
         String recStatus = "10";
         String checkNo = submissionRecordMapper.getMaxCode();
@@ -145,7 +142,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         submissionRecordReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        submissionRecordReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionRecordReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         submissionRecordMapper.modifySubmissionRecord(submissionRecordReqDTO);
     }
 
@@ -163,13 +160,13 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 if (!CommonConstants.TEN_STRING.equals(res.getRecStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                submissionRecordMapper.deleteSubmissionRecordDetail(null, res.getRecId(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionRecordMapper.deleteSubmissionRecordDetail(null, res.getRecId(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
                     BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
                     bpmnExamineDTO.setTaskId(res.getWorkFlowInstId());
                     bpmnService.rejectInstance(bpmnExamineDTO);
                 }
-                submissionRecordMapper.deleteSubmissionRecord(id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionRecordMapper.deleteSubmissionRecord(id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -200,7 +197,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.SUBMISSION_RECORD_SUBMIT.value(),null));
             reqDTO.setRecStatus("20");
             reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-            reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
             submissionRecordMapper.modifySubmissionRecord(reqDTO);
             // 记录日志
             workFlowLogService.add(WorkFlowLogBO.builder()
@@ -252,7 +249,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             }
         }
         reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         submissionRecordMapper.modifySubmissionRecord(reqDTO);
     }
 
@@ -289,7 +286,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     public void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
         submissionRecordDetailReqDTO.setRecId(TokenUtils.getUuId());
         submissionRecordDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        submissionRecordDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionRecordDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         submissionRecordDetailReqDTO.setArchiveFlag("0");
         if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
             String equipCode = equipmentMapper.getEquipCodeByName(submissionRecordDetailReqDTO.getEquipName());
@@ -330,7 +327,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             }
         }
         submissionRecordDetailReqDTO.setRecRevisor(TokenUtils.getUuId());
-        submissionRecordDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionRecordDetailReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         submissionRecordMapper.modifySubmissionRecordDetail(submissionRecordDetailReqDTO);
     }
 
@@ -351,7 +348,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                         throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                     }
                 }
-                submissionRecordMapper.deleteSubmissionRecordDetail(id, null, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionRecordMapper.deleteSubmissionRecordDetail(id, null, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

@@ -129,33 +129,33 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         switch (status) {
             case "40":
                 faultOrderDO.setReportStartUserId(TokenUtils.getCurrentPersonId());
-                faultOrderDO.setReportStartTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                faultOrderDO.setReportStartTime(DateUtils.getCurrentTime());
                 break;
             // 完工
             case "50":
                 faultOrderDO.setReportFinishUserId(TokenUtils.getCurrentPersonId());
-                faultOrderDO.setReportFinishTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                faultOrderDO.setReportFinishTime(DateUtils.getCurrentTime());
                 break;
             // 完工确认
             case "60":
                 faultOrderDO.setConfirmUserId(TokenUtils.getCurrentPersonId());
-                faultOrderDO.setConfirmTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                faultOrderDO.setConfirmTime(DateUtils.getCurrentTime());
                 break;
             // 验收
             case "55":
                 faultOrderDO.setCheckUserId(TokenUtils.getCurrentPersonId());
-                faultOrderDO.setCheckTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                faultOrderDO.setCheckTime(DateUtils.getCurrentTime());
                 break;
             default:
                 break;
         }
         faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        faultOrderDO.setRecReviseTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultOrderDO.setOrderStatus(OrderStatus.XIA_FA.getCode());
         faultReportMapper.updateFaultOrder(faultOrderDO);
         FaultInfoDO faultInfoDO = BeanUtils.convert(reqDTO, FaultInfoDO.class);
         faultInfoDO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        faultInfoDO.setRecReviseTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS));
+        faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultReportMapper.updateFaultInfo(faultInfoDO);
         // ServiceDMFM0001 update
         FaultInfoDO faultInfo1 = faultQueryMapper.queryOneFaultInfo(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());

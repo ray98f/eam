@@ -88,7 +88,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         overhaulTplReqDTO.setRecId(TokenUtils.getUuId());
         overhaulTplReqDTO.setTrialStatus("10");
         overhaulTplReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        overhaulTplReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String templateId = CodeUtils.getNextCode(overhaulTplMapper.getMaxCode(), 2);
         overhaulTplReqDTO.setTemplateId(templateId);
         overhaulTplMapper.addOverhaulTpl(overhaulTplReqDTO);
@@ -113,7 +113,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
         overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
     }
 
@@ -133,8 +133,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
                 }
-                overhaulTplMapper.deleteOverhaulTplDetail(null, id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                overhaulTplMapper.deleteOverhaulTpl(id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                overhaulTplMapper.deleteOverhaulTplDetail(null, id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+                overhaulTplMapper.deleteOverhaulTpl(id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -156,7 +156,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         overhaulTplReqDTO.setWorkFlowInstId("");
         overhaulTplReqDTO.setWorkFlowInstStatus("");
         overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.changeOverhaulTpl(overhaulTplReqDTO);
     }
 
@@ -205,7 +205,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                     .build());
         }
         overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
     }
 
@@ -249,7 +249,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
         }
         overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
     }
 
@@ -285,7 +285,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 req.setRecId(TokenUtils.getUuId());
                 req.setTrialStatus("10");
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }
@@ -313,7 +313,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                         reqDTO.getSubjectName(), reqDTO.getSystemName(), reqDTO.getEquipTypeName()));
                 req.setRecId(TokenUtils.getUuId());
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }
@@ -336,7 +336,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                         reqDTO.getSubjectName(), reqDTO.getSystemName(), reqDTO.getEquipTypeName()));
                 req.setRecId(TokenUtils.getUuId());
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }
@@ -382,7 +382,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         }
         overhaulTplDetailReqDTO.setRecId(TokenUtils.getUuId());
         overhaulTplDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        overhaulTplDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         overhaulTplMapper.addOverhaulTplDetail(overhaulTplDetailReqDTO);
     }
 
@@ -391,7 +391,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         // 校验修改数据
         checkOverhaulTplDetail(overhaulTplDetailReqDTO);
         overhaulTplDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulTplDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplDetailReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulTplDetail(overhaulTplDetailReqDTO);
     }
 
@@ -465,7 +465,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 if (Objects.isNull(list) || list.isEmpty()) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
                 }
-                overhaulTplMapper.deleteOverhaulTplDetail(id, null, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                overhaulTplMapper.deleteOverhaulTplDetail(id, null, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         }
     }
@@ -509,21 +509,21 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         }
         overhaulMaterialReqDTO.setRecId(TokenUtils.getUuId());
         overhaulMaterialReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        overhaulMaterialReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulMaterialReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         overhaulTplMapper.addOverhaulMaterial(overhaulMaterialReqDTO);
     }
 
     @Override
     public void modifyOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO) {
         overhaulMaterialReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulMaterialReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulMaterialReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulMaterial(overhaulMaterialReqDTO);
     }
 
     @Override
     public void deleteOverhaulMaterial(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            overhaulTplMapper.deleteOverhaulMaterial(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            overhaulTplMapper.deleteOverhaulMaterial(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         }
     }
 

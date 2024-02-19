@@ -13,17 +13,13 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.service.basic.WoRuleService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtils;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -75,7 +71,7 @@ public class WoRuleServiceImpl implements WoRuleService {
         woRuleReqDTO.setRuleCode(CodeUtils.getNextCode(woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage()), 1));
         woRuleReqDTO.setRecId(TokenUtils.getUuId());
         woRuleReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        woRuleReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        woRuleReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         woRuleMapper.addWoRule(woRuleReqDTO);
     }
 
@@ -83,7 +79,7 @@ public class WoRuleServiceImpl implements WoRuleService {
     public void addWoRuleDetail(WoRuleReqDTO.WoRuleDetail woRuleDetail) {
         woRuleDetail.setRecId(TokenUtils.getUuId());
         woRuleDetail.setRecCreator(TokenUtils.getCurrentPersonId());
-        woRuleDetail.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        woRuleDetail.setRecCreateTime(DateUtils.getCurrentTime());
         woRuleDetail.setPeriod(Optional.ofNullable(woRuleDetail.getPeriod()).orElse(CommonConstants.ZERO_LONG));
         woRuleMapper.addWoRuleDetail(woRuleDetail);
     }
@@ -96,22 +92,22 @@ public class WoRuleServiceImpl implements WoRuleService {
             woRuleReqDTO.setRuleCode(newCode);
         }
         woRuleReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        woRuleReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        woRuleReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         woRuleMapper.modifyWoRule(woRuleReqDTO);
     }
 
     @Override
     public void modifyWoRuleDetail(WoRuleReqDTO.WoRuleDetail woRuleDetail) {
         woRuleDetail.setRecRevisor(TokenUtils.getCurrentPersonId());
-        woRuleDetail.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        woRuleDetail.setRecReviseTime(DateUtils.getCurrentTime());
         woRuleMapper.modifyWoRuleDetail(woRuleDetail);
     }
 
     @Override
     public void deleteWoRule(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            woRuleMapper.deleteWoRule(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-            woRuleMapper.deleteWoRuleDetailByCode(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            woRuleMapper.deleteWoRule(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+            woRuleMapper.deleteWoRuleDetailByCode(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -120,7 +116,7 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void deleteWoRuleDetail(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            woRuleMapper.deleteWoRuleDetail(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            woRuleMapper.deleteWoRuleDetail(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

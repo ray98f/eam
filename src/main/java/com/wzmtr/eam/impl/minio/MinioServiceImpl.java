@@ -68,7 +68,7 @@ public class MinioServiceImpl implements MinioService {
                 .id(TokenUtils.getUuId())
                 .oldName(oldName)
                 .url(url)
-                .recCreateTime(DateUtils.current(DateUtils.YYYY_MM_DD_HH_MM_SS))
+                .recCreateTime(DateUtils.getCurrentTime())
                 .recCreator(TokenUtils.getCurrentPersonId())
                 .build();
         fileMapper.insertFile(build);

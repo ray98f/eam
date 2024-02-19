@@ -29,10 +29,7 @@ import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.overhaul.OverhaulPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtils;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
@@ -147,7 +144,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanReqDTO.setTrialStatus("10");
         overhaulPlanReqDTO.setPlanStatus("10");
         overhaulPlanReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        overhaulPlanReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulPlanReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String planCode = CodeUtils.getNextCode(overhaulPlanMapper.getMaxCode(), 2);
         overhaulPlanReqDTO.setPlanCode(planCode);
         overhaulPlanReqDTO.setExt1(" ");
@@ -183,7 +180,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
     }
@@ -205,8 +202,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) && !"90".equals(resDTO.getTrialStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                overhaulPlanMapper.deleteOverhaulPlanDetail(null, id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                overhaulPlanMapper.deleteOverhaulPlan(id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                overhaulPlanMapper.deleteOverhaulPlanDetail(null, id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+                overhaulPlanMapper.deleteOverhaulPlan(id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
                 if (StringUtils.isNotBlank(resDTO.getWorkFlowInstId())) {
                     BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
                     bpmnExamineDTO.setTaskId(resDTO.getWorkFlowInstId());
@@ -301,7 +298,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             }
         }
         overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
     }
@@ -451,7 +448,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         } catch (Exception e) {
             log.error("exception message", e);
         }
-        overhaulPlanMapper.updateTrigerTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()), planCode);
+        overhaulPlanMapper.updateTrigerTime(DateUtils.getCurrentTime(), planCode);
     }
 
     public void insertInspectPlan1(String planCode, String[] orderCodes) throws Exception {
@@ -551,7 +548,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 int i = 0;
                 for (OverhaulPlanResDTO plan : planList) {
                     plan.setRecCreator(TokenUtils.getCurrentPersonId());
-                    plan.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    plan.setRecCreateTime(DateUtils.getCurrentTime());
                     plan.setRecRevisor("");
                     plan.setRecReviseTime("");
                     BeanUtils.copyProperties(plan, overhaulOrder);
@@ -583,7 +580,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                     if (StringUtils.isNotEmpty(list)) {
                         for (OverhaulObjectResDTO resDTO : list) {
                             resDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-                            resDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            resDTO.setRecCreateTime(DateUtils.getCurrentTime());
                             resDTO.setRecRevisor("");
                             resDTO.setRecReviseTime("");
                             OverhaulOrderDetailReqDTO reqDTO = new OverhaulOrderDetailReqDTO();
@@ -658,7 +655,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(),null));
         overhaulPlanReqDTO.setTrialStatus("20");
         overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
         // 记录日志
@@ -704,7 +701,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
         overhaulObjectReqDTO.setRecId(TokenUtils.getUuId());
         overhaulObjectReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        overhaulObjectReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulObjectReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         if ("".equals(overhaulObjectReqDTO.getObjectCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "在" + overhaulObjectReqDTO.getPlanName() + "计划中，有对象编号为空");
         }
@@ -721,7 +718,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
         overhaulObjectReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulObjectReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulObjectReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanMapper.modifyOverhaulObject(overhaulObjectReqDTO);
     }
 
@@ -737,7 +734,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 if (StringUtils.isEmpty(list)) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
                 }
-                overhaulPlanMapper.deleteOverhaulObject(id, TokenUtils.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                overhaulPlanMapper.deleteOverhaulObject(id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         }
     }

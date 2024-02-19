@@ -13,6 +13,7 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EipMsgPushUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -21,7 +22,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -61,7 +61,7 @@ public class OverTodoServiceImpl implements OverTodoService {
                     sLog.setAuditOpinion(auditOpinion);
                     sLog.setTodoStatus("2");
                     sLog.setProcessUserId(TokenUtils.getCurrentPersonId());
-                    sLog.setTodoDate(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    sLog.setTodoDate(DateUtils.getCurrentTime());
                     overTodoMapper.updateStatus(sLog);
                     EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
                 }
@@ -96,7 +96,7 @@ public class OverTodoServiceImpl implements OverTodoService {
             sLog.setStepName(stepName);
             sLog.setSyscode("DM");
             sLog.setLastStepUserId(TokenUtils.getCurrentPersonId());
-            sLog.setTaskRcvTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            sLog.setTaskRcvTime(DateUtils.getCurrentTime());
             sLog.setExt1(" ");
             overTodoMapper.insert(sLog);
             EipMsgPushUtils.invokeTodoList(eipMsgPushReq);

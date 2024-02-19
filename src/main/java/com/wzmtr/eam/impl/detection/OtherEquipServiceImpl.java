@@ -108,9 +108,9 @@ public class OtherEquipServiceImpl implements OtherEquipService {
             BeanUtils.copyProperties(reqDTO, req);
             req.setRecId(TokenUtils.getUuId());
             req.setRecCreator(TokenUtils.getCurrentPersonId());
-            req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            req.setRecCreateTime(DateUtils.getCurrentTime());
             req.setRecRevisor(TokenUtils.getCurrentPersonId());
-            req.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            req.setRecReviseTime(DateUtils.getCurrentTime());
             if (StringUtils.isNotEmpty(reqDTO.getOtherEquipType())) {
                 req.setOtherEquipType("电梯".equals(reqDTO.getOtherEquipType()) ? "10" : "起重机".equals(reqDTO.getOtherEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getOtherEquipType()) ? "30" : "40");
             }
@@ -129,7 +129,7 @@ public class OtherEquipServiceImpl implements OtherEquipService {
     @Override
     public void modifyOtherEquip(OtherEquipReqDTO otherEquipReqDTO) {
         otherEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        otherEquipReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        otherEquipReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         otherEquipMapper.modifyOtherEquip(otherEquipReqDTO);
     }
 

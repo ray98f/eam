@@ -212,15 +212,15 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         checkOrderState(overhaulOrderReqDTO, "1,2,3", "请求、已下达、已分配");
         if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
             overhaulOrderReqDTO.setWorkStatus("2");
-            overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
         } else {
             overhaulOrderReqDTO.setSendPersonId(TokenUtils.getCurrentPersonId());
             overhaulOrderReqDTO.setSendPersonName(TokenUtils.getCurrentPerson().getPersonName());
-            overhaulOrderReqDTO.setSendTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            overhaulOrderReqDTO.setSendTime(DateUtils.getCurrentTime());
             overhaulOrderReqDTO.setWorkStatus("3");
         }
         overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulWorkRecordService.insertRepair(overhaulOrderReqDTO);
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
     }
@@ -241,9 +241,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         }
         checkOrderState(overhaulOrderReqDTO, "4", "完工");
         overhaulOrderReqDTO.setWorkStatus("6");
-        overhaulOrderReqDTO.setRecDeleteTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setRecDeleteTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         // ServiceDMER0201  auditWorkers
@@ -278,9 +278,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setWorkStatus("5");
         overhaulOrderReqDTO.setAckPersonId(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setAckPersonName(TokenUtils.getCurrentPerson().getPersonName());
-        overhaulOrderReqDTO.setConfirTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setConfirTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         modifyOverhaulPlanByOrder(overhaulOrderReqDTO);
@@ -324,7 +324,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                     overhaulPlanReqDTO.setTrigerTime(realEndTimeStr);
                     overhaulPlanReqDTO.setLastActionTime(String.valueOf(trigerMiles));
                     overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-                    overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
                     overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
                 }
             }
@@ -356,9 +356,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setWorkStatus("8");
         overhaulOrderReqDTO.setCancelPersonId(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setCancelPersonName(TokenUtils.getCurrentPerson().getPersonName());
-        overhaulOrderReqDTO.setCancelTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setCancelTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
     }

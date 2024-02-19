@@ -141,7 +141,7 @@ public class TransferServiceImpl implements TransferService {
                     unitCodeReqDTO.setRecId(TokenUtils.getUuId());
                     unitCodeReqDTO.setUnitNo(unitNo);
                     unitCodeReqDTO.setRecCreator(user.getPersonId());
-                    unitCodeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    unitCodeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
                     unitCodeReqDTO.setDevNo(equipCode);
                     unitCodeReqDTO.setBatchNo(" ");
                     unitCodeReqDTO.setAssetNo(" ");
@@ -328,7 +328,7 @@ public class TransferServiceImpl implements TransferService {
         equipmentReqDTO.setSourceSubNo(transferResDTO.getItemCode());
         equipmentReqDTO.setSourceRecId(transferResDTO.getRecId());
         equipmentReqDTO.setRecCreator(user.getPersonId());
-        equipmentReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentReqDTO.setQuantity(new BigDecimal("1"));
         equipmentReqDTO.setCompanyCode(user.getCompanyAreaId() == null ? user.getCompanyId() : user.getCompanyAreaId());
         equipmentReqDTO.setCompanyName(user.getCompanyName());
@@ -368,7 +368,7 @@ public class TransferServiceImpl implements TransferService {
         EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
         BeanUtils.copyProperties(resDTO, equipmentReqDTO);
         equipmentReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        equipmentReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         equipmentMapper.updateEquipment(equipmentReqDTO);
     }
 
@@ -386,10 +386,10 @@ public class TransferServiceImpl implements TransferService {
                             equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode(), 1));
                             equipmentPartReqDTO.setPartName(bom.getCname());
                             equipmentPartReqDTO.setBomEname(bom.getEname());
-                            equipmentPartReqDTO.setInAccountTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            equipmentPartReqDTO.setInAccountTime(DateUtils.getCurrentTime());
                             equipmentPartReqDTO.setDeleteFlag(" ");
                             equipmentPartReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-                            equipmentPartReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            equipmentPartReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
                             equipmentPartReqDTO.setRecStatus("0");
                             equipmentPartReqDTO.setEquipStatus("10");
                             equipmentPartReqDTO.setQuantity(new BigDecimal("1"));
@@ -398,8 +398,8 @@ public class TransferServiceImpl implements TransferService {
                             BeanUtils.copyProperties(equipmentPartReqDTO, partFaultReqDTO);
                             partFaultReqDTO.setRecId(TokenUtils.getUuId());
                             partFaultReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-                            partFaultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                            partFaultReqDTO.setOperateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            partFaultReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+                            partFaultReqDTO.setOperateTime(DateUtils.getCurrentTime());
                             partFaultReqDTO.setLogType("10");
                             partFaultReqDTO.setRemark("设备移交的部件！");
                             partFaultMapper.insertPartFault(partFaultReqDTO);
