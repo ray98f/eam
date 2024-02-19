@@ -32,7 +32,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -92,17 +91,15 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Override
     public void addDetectionPlan(DetectionPlanReqDTO specialEquipReqDTO) {
-        SimpleDateFormat min = new SimpleDateFormat("yyyyMMddHHmmss");
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         specialEquipReqDTO.setRecId(TokenUtils.getUuId());
         specialEquipReqDTO.setArchiveFlag("0");
         specialEquipReqDTO.setPlanStatus("10");
         specialEquipReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtils.getCurrentPerson().getOfficeAreaId());
         specialEquipReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        specialEquipReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
+        specialEquipReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String instrmPlanNo = detectionPlanMapper.getMaxCode();
-        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
-            instrmPlanNo = "TP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+            instrmPlanNo = "TP" + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
         }

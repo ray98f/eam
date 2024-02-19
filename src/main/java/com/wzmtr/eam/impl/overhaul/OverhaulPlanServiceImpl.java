@@ -434,10 +434,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isEmpty(tplDetailList)) {
             return;
         }
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String orderCode = overhaulOrderMapper.getMaxCode();
-        if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(day.format(System.currentTimeMillis()))) {
-            orderCode = "JX" + day.format(System.currentTimeMillis()) + "0001";
+        if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(DateUtils.getNoDate())) {
+            orderCode = "JX" + DateUtils.getNoDate() + "0001";
         } else {
             orderCode = CodeUtils.getNextCode(orderCode, 10);
         }

@@ -89,17 +89,15 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Override
     public void addDetection(DetectionReqDTO detectionReqDTO) {
-        SimpleDateFormat min = new SimpleDateFormat("yyyyMMddHHmmss");
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         detectionReqDTO.setRecId(TokenUtils.getUuId());
         detectionReqDTO.setArchiveFlag("0");
         detectionReqDTO.setRecStatus("10");
         detectionReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtils.getCurrentPerson().getOfficeAreaId());
         detectionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        detectionReqDTO.setRecCreateTime(min.format(System.currentTimeMillis()));
+        detectionReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String checkNo = detectionMapper.getMaxCode();
-        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
-            checkNo = "TJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+            checkNo = "TJ" + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
         }

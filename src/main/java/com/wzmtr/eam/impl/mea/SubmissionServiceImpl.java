@@ -68,10 +68,9 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public void addSubmission(SubmissionReqDTO submissionReqDTO) {
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String sendVerifyNo = submissionMapper.getMaxCode();
-        if (StringUtils.isEmpty(sendVerifyNo) || !(CommonConstants.TWENTY_STRING + sendVerifyNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
-            sendVerifyNo = "JW" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+        if (StringUtils.isEmpty(sendVerifyNo) || !(CommonConstants.TWENTY_STRING + sendVerifyNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+            sendVerifyNo = "JW" + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             sendVerifyNo = CodeUtils.getNextCode(sendVerifyNo, 8);
         }

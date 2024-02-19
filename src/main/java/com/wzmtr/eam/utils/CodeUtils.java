@@ -34,9 +34,8 @@ public class CodeUtils {
     }
 
     public static String getNextCode(String code, String head) {
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
-        if (StringUtils.isEmpty(code) || !(CommonConstants.TWENTY_STRING + code.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
-            code = head + day.format(System.currentTimeMillis()).substring(2) + "0001";
+        if (StringUtils.isEmpty(code) || !(CommonConstants.TWENTY_STRING + code.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+            code = head + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             code = CodeUtils.getNextCode(code, 8);
         }

@@ -85,7 +85,7 @@ public class TrackServiceImpl implements TrackService {
     @Transactional(rollbackFor = Exception.class)
     public void report(TrackReportReqDTO reqDTO) {
         // EAM/service/DMFM0011/ReportRow
-        reqDTO.setTrackReportTime(DateUtils.current("yyyy-MM-dd HH:mm:ss"));
+        reqDTO.setTrackReportTime(DateUtils.getCurrentTime());
         reqDTO.setTrackReporterId(TokenUtils.getCurrentPersonId());
         reqDTO.setRecStatus("30");
         faultTrackWorkMapper.report(reqDTO);
@@ -93,7 +93,7 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public void close(TrackCloseReqDTO reqDTO) {
-        reqDTO.setTrackCloseTime(DateUtils.current("yyyy-MM-dd HH:mm:ss"));
+        reqDTO.setTrackCloseTime(DateUtils.getCurrentTime());
         reqDTO.setTrackCloserId(TokenUtils.getCurrentPersonId());
         reqDTO.setRecStatus("40");
         // /* 136 */       DMUtil.overTODO((String)((Map)dm03List.get(0)).get("recId"), "关闭");
@@ -105,7 +105,7 @@ public class TrackServiceImpl implements TrackService {
     public void repair(TrackRepairReqDTO reqDTO) {
         // /* 107 */     dmfm22.setWorkerGroupCode(repairDeptCode);
         reqDTO.setDispatchUserId(TokenUtils.getCurrentPersonId());
-        reqDTO.setDispatchTime(DateUtils.current("yyyy-MM-dd HH:mm:ss"));
+        reqDTO.setDispatchTime(DateUtils.getCurrentTime());
         overTodoService.overTodo(reqDTO.getRecId(), "派工完毕");
         reqDTO.setRecStatus("20");
         faultTrackWorkMapper.repair(reqDTO);

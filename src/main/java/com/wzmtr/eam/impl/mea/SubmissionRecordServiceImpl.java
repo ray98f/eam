@@ -106,7 +106,6 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public void addSubmissionRecord(SubmissionRecordReqDTO submissionRecordReqDTO) {
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String recCreator = TokenUtils.getCurrentPersonId();
         CurrentLoginUser user = TokenUtils.getCurrentPerson();
         String editDeptCode = user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId();
@@ -114,8 +113,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         String archiveFlag = "0";
         String recStatus = "10";
         String checkNo = submissionRecordMapper.getMaxCode();
-        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
-            checkNo = "JJ" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+            checkNo = "JJ" + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
         }

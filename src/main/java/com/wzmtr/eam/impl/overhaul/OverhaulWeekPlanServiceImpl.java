@@ -356,10 +356,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             if (StringUtils.isEmpty(orderIsValid)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您选择触发的周计划中没有检修项！");
             }
-            SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
             String orderCode = overhaulOrderMapper.getMaxCode();
-            if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(day.format(System.currentTimeMillis()))) {
-                orderCode = "JX" + day.format(System.currentTimeMillis()) + "0001";
+            if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(DateUtils.getNoDate())) {
+                orderCode = "JX" + DateUtils.getNoDate() + "0001";
             } else {
                 orderCode = CodeUtils.getNextCode(orderCode, 10);
             }

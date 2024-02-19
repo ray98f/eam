@@ -87,7 +87,6 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public void addCheckPlan(CheckPlanReqDTO checkPlanReqDTO) {
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String recCreator = TokenUtils.getCurrentPersonId();
         CurrentLoginUser user = TokenUtils.getCurrentPerson();
         String userName = user.getPersonName();
@@ -95,8 +94,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         String recCreateTime = DateUtils.getCurrentTime();
         String archiveFlag = "0";
         String instrmPlanNo = checkPlanMapper.getMaxCode();
-        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
-            instrmPlanNo = "JP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+            instrmPlanNo = "JP" + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
         }

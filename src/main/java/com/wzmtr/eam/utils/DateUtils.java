@@ -1,10 +1,8 @@
 package com.wzmtr.eam.utils;
 
-import com.wzmtr.eam.constant.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,20 +21,13 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
     public static String YYYY_MM_DD = "yyyy-MM-dd";
 
+    public static String YYYYMMDD = "yyyyMMdd";
+
     public static String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
     public static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
     private static final String[] PARSE_PATTERNS = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM", "yyyy.MM.dd", "yyyy.MM.dd HH:mm:ss", "yyyy.MM.dd HH:mm", "yyyy.MM"};
-
-
-    /**
-     * 获取当前Date型日期
-     * @return Date() 当前日期
-     */
-    public static Date getNowDate() {
-        return new Date();
-    }
 
     /**
      * 获取当前日期, 默认格式为yyyy-MM-dd
@@ -54,7 +45,15 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return dateTimeNow(YYYY_MM_DD_HH_MM_SS);
     }
 
-    public static String dateTimeNow() {
+    /**
+     * 返回当前时间的格式为YYYYMMDD
+     * @return 当前时间
+     */
+    public static String getNoDate() {
+        return dateTimeNow(YYYYMMDD);
+    }
+
+    public static String getNoCurrentTime() {
         return dateTimeNow(YYYYMMDDHHMMSS);
     }
 
@@ -109,66 +108,11 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
     }
 
     /**
-     * 获取服务器启动时间
-     */
-    public static Date getServerStartDate() {
-        long time = ManagementFactory.getRuntimeMXBean().getStartTime();
-        return new Date(time);
-    }
-
-    /**
-     * 计算两个时间差
-     */
-    public static String getDatePoor(Date endDate, Date nowDate) {
-        long nd = 1000L * 24L * 60L * 60L;
-        long nh = 1000L * 60L * 60L;
-        long nm = 1000L * 60L;
-        // long ns = 1000;
-        // 获得两个时间的毫秒时间差异
-        long diff = endDate.getTime() - nowDate.getTime();
-        // 计算差多少天
-        long day = diff / nd;
-        // 计算差多少小时
-        long hour = diff % nd / nh;
-        // 计算差多少分钟
-        long min = diff % nd % nh / nm;
-        // 计算差多少秒//输出结果
-        // long sec = diff % nd % nh % nm / ns;
-        return day + "天" + hour + "小时" + min + "分钟";
-    }
-
-    public static Date getMonthNewDate(Date oldDate, Integer recordDate) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String data = format.format(oldDate);
-        String[] dataStr = data.split("-");
-        int year = (Integer.parseInt(dataStr[1]) + recordDate) / 12;
-        int month = (Integer.parseInt(dataStr[1]) + recordDate) % 12;
-        String a;
-        if (month < CommonConstants.TEN) {
-            if (month < 1) {
-                a = "12";
-            } else {
-                a = "0" + month;
-            }
-        } else {
-            a = month + "";
-        }
-        dataStr[0] = String.valueOf(Integer.parseInt(dataStr[0]) + year);
-        dataStr[1] = a;
-        String newData = dataStr[0] + "-" + dataStr[1] + "-" + dataStr[2];
-        return format.parse(newData);
-    }
-
-    /**
-     * -1时，firstDate<secondDate
-     * 0,二者相等
-     * 1,firstDate>secondDate
-     * -99，异常情况
-     *
-     * @param firstDate
-     * @param secondDate
-     * @param pattern
-     * @return
+     * 比较两个相同格式的字符串时间
+     * @param firstDate 第一个时间
+     * @param secondDate 第二个时间
+     * @param pattern 时间格式
+     * @return 时间大小状态
      */
     public static Integer dateCompare(String firstDate, String secondDate, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
@@ -180,22 +124,6 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
             log.error("compare err", e);
             return -99;
         }
-    }
-
-    /**
-     * 获取系统当前时间戳(秒)
-     */
-    public static final long current() {
-        return System.currentTimeMillis() / 1000;
-    }
-
-    /**
-     * @param format
-     * @return
-     */
-    public static String current(String format) {
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat(format);
-        return dateTimeFormat.format(new Date());
     }
 
     /**
