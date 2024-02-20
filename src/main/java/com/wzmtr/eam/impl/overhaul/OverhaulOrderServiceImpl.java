@@ -303,7 +303,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             List<OverhaulPlanResDTO> plans = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
             if (StringUtils.isNotEmpty(plans)) {
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
-                SimpleDateFormat dateTimeFormat1 = new SimpleDateFormat("yyyyMMddHH");
+                SimpleDateFormat dateTimeFormat1 = new SimpleDateFormat("yyyy-MM-dd HH");
                 String nowDate = dateTimeFormat.format(new Date());
                 String substring = nowDate.substring(nowDate.length() - 4);
                 List<WoRuleResDTO.WoRuleDetail> rules = woRuleMapper.listWoRuleDetail(plans.get(0).getRuleCode(), substring, substring);
