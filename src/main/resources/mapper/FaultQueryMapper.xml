@@ -132,6 +132,9 @@
             <if test="req.fillinTimeEnd!=null and req.fillinTimeEnd!=''">
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'yyyy-mm-dd hh24:mi:ss') + 1
             </if>
+            <if test="req.levelfault!=null and req.levelfault!=''">
+                AND df.EXT1=#{req.levelfault}
+            </if>
             <if test="req.listType==null">
                 AND (d.FILLIN_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
                 d.RESP_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
@@ -293,6 +296,9 @@
             <foreach collection="req.faultNos" item="code" open="(" close=")" separator=",">
                 #{code}
             </foreach>
+        </if>
+        <if test="req.levelfault!=null and req.levelfault!=''">
+            AND df.EXT1=#{req.levelfault}
         </if>
     </sql>
     <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
