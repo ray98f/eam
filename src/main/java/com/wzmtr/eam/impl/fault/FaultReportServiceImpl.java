@@ -11,10 +11,8 @@ import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
-import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.enums.OrderStatus;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
@@ -135,24 +133,19 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public Page<FaultReportResDTO> openApiList(FaultReportPageReqDTO reqDTO) {
-        String csm = "NCSM";
-        if (reqDTO.getTenant().contains(csm)) {
-            if(StringUtils.isNotEmpty(reqDTO.getPositionName())){
-                List<RegionResDTO> regionResDTOS = regionMapper.selectByQuery(RegionQuery.builder().nodeName(reqDTO.getPositionName()).build());
-                Set<String> nodeCodes = regionResDTOS.stream().map(RegionResDTO::getNodeCode).collect(Collectors.toSet());
-                reqDTO.setPositionCodes(nodeCodes);
-            }
-            PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-            Page<FaultReportResDTO> list = faultReportMapper.openApiList(reqDTO.of(), reqDTO);
-            List<FaultReportResDTO> records = list.getRecords();
-            if (CollectionUtil.isEmpty(records)) {
-                return new Page<>();
-            }
-            buildRes(records);
-            return list;
-        } else {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权访问这个接口");
+        if (StringUtils.isNotEmpty(reqDTO.getPositionName())) {
+            List<RegionResDTO> regionRes = regionMapper.selectByQuery(RegionQuery.builder().nodeName(reqDTO.getPositionName()).build());
+            Set<String> nodeCodes = regionRes.stream().map(RegionResDTO::getNodeCode).collect(Collectors.toSet());
+            reqDTO.setPositionCodes(nodeCodes);
         }
+        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        Page<FaultReportResDTO> list = faultReportMapper.openApiList(reqDTO.of(), reqDTO);
+        List<FaultReportResDTO> records = list.getRecords();
+        if (CollectionUtil.isEmpty(records)) {
+            return new Page<>();
+        }
+        buildRes(records);
+        return list;
     }
 
     @Override
