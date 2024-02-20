@@ -32,9 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -122,9 +120,9 @@ public class TrainMileServiceImpl implements TrainMileService {
         trainMileageReqDTO.setRegenratedIncrement(regenratedIncrement);
         trainMileageReqDTO.setRecId(TokenUtils.getUuId());
         trainMileageReqDTO.setFillinUserId(TokenUtils.getCurrentPersonId());
-        trainMileageReqDTO.setFillinTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        trainMileageReqDTO.setFillinTime(DateUtils.getCurrentTime());
         trainMileageReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        trainMileageReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        trainMileageReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         trainMileageReqDTO.setRecStatus("0");
         trainMileMapper.insertTrainMileage(trainMileageReqDTO);
     }
@@ -181,7 +179,7 @@ public class TrainMileServiceImpl implements TrainMileService {
         }
         trainMileDailyReqDTO.setRecId(TokenUtils.getUuId());
         trainMileDailyReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        trainMileDailyReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        trainMileDailyReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         // todo 获取车辆PHM系统数据
 
         trainMileMapper.addTrainDailyMile(trainMileDailyReqDTO);
@@ -195,7 +193,7 @@ public class TrainMileServiceImpl implements TrainMileService {
     @Override
     public void modifyTrainDailyMile(TrainMileDailyReqDTO trainMileDailyReqDTO) {
         trainMileDailyReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        trainMileDailyReqDTO.setRecReviseTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        trainMileDailyReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         // todo 获取车辆PHM系统数据
 
         trainMileMapper.modifyTrainDailyMile(trainMileDailyReqDTO);
@@ -255,7 +253,7 @@ public class TrainMileServiceImpl implements TrainMileService {
             req.setRecId(TokenUtils.getUuId());
             req.setEquipCode(equipmentMapper.getEquipCodeByName(req.getEquipName()));
             req.setRecCreator(TokenUtils.getCurrentPersonId());
-            req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            req.setRecCreateTime(DateUtils.getCurrentTime());
             temp.add(req);
         }
         if (!temp.isEmpty()) {

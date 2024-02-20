@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -267,7 +266,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultFlowReqDTO.setFaultWorkNo(faultWorkNo);
         faultFlowReqDTO.setOperateUserId(TokenUtils.getCurrentPersonId());
         faultFlowReqDTO.setOperateUserName(TokenUtils.getCurrentPerson().getPersonName());
-        faultFlowReqDTO.setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        faultFlowReqDTO.setOperateTime(DateUtils.getCurrentTime());
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
         if (!Objects.isNull(faultOrderDO)) {
             faultFlowReqDTO.setOrderStatus(faultOrderDO.getOrderStatus());

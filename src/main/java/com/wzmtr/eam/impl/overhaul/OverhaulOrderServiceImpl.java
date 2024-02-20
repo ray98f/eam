@@ -607,7 +607,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             String userName = TokenUtils.getCurrentPerson().getPersonName();
             String discovererPhone = TokenUtils.getCurrentPerson().getPhone();
             String currentUser = TokenUtils.getCurrentPerson().getPersonName();
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String orgCode = TokenUtils.getCurrentPerson().getOfficeId();
             String orgName = TokenUtils.getCurrentPerson().getOfficeName();
             res.setFillinUserId(currentUser);
@@ -615,8 +614,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             res.setDiscovererId(userName);
             res.setDiscovererName(currentUser);
             res.setDiscovererPhone(discovererPhone);
-            res.setDiscoveryTime(dateTimeFormat.format(new Date()));
-            res.setFillinTime(dateTimeFormat.format(new Date()));
+            res.setDiscoveryTime(DateUtils.getCurrentTime());
+            res.setFillinTime(DateUtils.getCurrentTime());
             res.setFillinDeptName(orgName);
             res.setFillinDeptCode(orgCode);
         }
@@ -672,7 +671,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     public void buildFaultInfo(FaultInfoReqDTO faultInfo, String fillinUserId, String objectCode,
                                List<OverhaulOrderDetailResDTO> overhaulOrderDetailList, List<OverhaulOrderResDTO> overhaulOrderList) {
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         faultInfo.setExt2(queryNowUser(fillinUserId));
         faultInfo.setRecId(UUID.randomUUID().toString());
         if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith(CommonConstants.NINE_STRING)) {
@@ -689,9 +687,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         faultInfo.setPositionName(overhaulOrderList.get(0).getPosition1Name());
         faultInfo.setPositionCode(overhaulOrderList.get(0).getPosition1Code());
         faultInfo.setRecCreator(TokenUtils.getCurrentPerson().getPersonName());
-        faultInfo.setRecCreateTime(dateTimeFormat.format(new Date()));
-        faultInfo.setDiscoveryTime(dateTimeFormat.format(new Date()));
-        faultInfo.setFillinTime(dateTimeFormat.format(new Date()));
+        faultInfo.setRecCreateTime(DateUtils.getCurrentTime());
+        faultInfo.setDiscoveryTime(DateUtils.getCurrentTime());
+        faultInfo.setFillinTime(DateUtils.getCurrentTime());
     }
 
     public String queryNowUser(String userCode) {

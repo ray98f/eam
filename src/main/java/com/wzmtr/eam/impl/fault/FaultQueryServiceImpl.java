@@ -355,11 +355,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public void finishWork(FaultFinishWorkReqDTO reqDTO) {
         // 完工 ServiceDMFM0002 finishWork
         if (StringUtils.isNotEmpty(reqDTO.getOrderStatus())) {
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             FaultOrderDO orderUpdate = BeanUtils.convert(reqDTO, FaultOrderDO.class);
             orderUpdate.setReportFinishUserId(TokenUtils.getCurrentPersonId());
             orderUpdate.setReportFinishUserName(TokenUtils.getCurrentPerson().getPersonName());
-            orderUpdate.setReportFinishTime(dateTimeFormat.format(new Date()));
+            orderUpdate.setReportFinishTime(DateUtils.getCurrentTime());
             orderUpdate.setRecRevisor(TokenUtils.getCurrentPersonId());
             orderUpdate.setRecReviseTime(DateUtils.getCurrentTime());
             orderUpdate.setOrderStatus(OrderStatus.WAN_GONG.getCode());
@@ -1060,7 +1059,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         faultFlowReqDTO.setFaultWorkNo(faultWorkNo);
         faultFlowReqDTO.setOperateUserId(TokenUtils.getCurrentPersonId());
         faultFlowReqDTO.setOperateUserName(TokenUtils.getCurrentPerson().getPersonName());
-        faultFlowReqDTO.setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        faultFlowReqDTO.setOperateTime(DateUtils.getCurrentTime());
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
         if (!Objects.isNull(faultOrderDO)) {
             faultFlowReqDTO.setOrderStatus(faultOrderDO.getOrderStatus());
