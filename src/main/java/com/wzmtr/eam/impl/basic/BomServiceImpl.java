@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.BomReqDTO;
 import com.wzmtr.eam.dto.req.basic.BomTrainReqDTO;
@@ -36,7 +36,7 @@ public class BomServiceImpl implements BomService {
 
     @Override
     public Page<BomResDTO> listBom(String parentId, String code, String name, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return bomMapper.pageBom(pageReqDTO.of(), parentId, code, name);
     }
 

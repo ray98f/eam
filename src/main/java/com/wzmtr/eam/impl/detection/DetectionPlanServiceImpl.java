@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.detection;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.DetectionPlanDetailDO;
@@ -63,7 +63,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
     @Override
     public Page<DetectionPlanResDTO> pageDetectionPlan(String instrmPlanNo, String planStatus, String editDeptCode,
                                                        String assetKindCode, String planPeriodMark, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<DetectionPlanResDTO> page = detectionPlanMapper.pageDetectionPlan(pageReqDTO.of(), instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark);
         List<DetectionPlanResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
@@ -260,7 +260,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Override
     public Page<DetectionPlanDetailResDTO> pageDetectionPlanDetail(String instrmPlanNo, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return detectionPlanMapper.pageDetectionPlanDetail(pageReqDTO.of(), instrmPlanNo);
     }
 

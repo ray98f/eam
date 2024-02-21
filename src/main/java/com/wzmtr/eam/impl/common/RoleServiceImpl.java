@@ -2,7 +2,7 @@ package com.wzmtr.eam.impl.common;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineFlowRoleReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExaminePersonIdReq;
@@ -46,7 +46,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Page<Role> listRole(String roleName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return roleMapper.listRole(pageReqDTO.of(), roleName);
     }
 

@@ -2,7 +2,7 @@ package com.wzmtr.eam.impl.home;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.wzmtr.eam.bizobject.HomeCountBO;
@@ -68,7 +68,7 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public Page<StatusWorkFlowLog> todoList(String type, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return homeMapper.todoList(pageReqDTO.of(), type, TokenUtils.getCurrentPersonId());
     }
 

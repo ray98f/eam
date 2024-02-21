@@ -2,7 +2,7 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.diboot.core.util.BeanUtils;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.*;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
@@ -67,7 +67,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Page<TransferResDTO> pageTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
                                              String majorCode, String orderNo, String orderName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         String eamProcessStatus1 = null;
         String eamProcessStatus2 = null;
         if (StringUtils.isNotEmpty(eamProcessStatus)) {
@@ -165,7 +165,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Page<EquipmentResDTO> pageSplitTransfer(String sourceRecId, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
         if (sourceRecId == null) {
             sourceRecId = "flag";

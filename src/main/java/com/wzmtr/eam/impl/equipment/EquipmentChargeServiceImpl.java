@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.equipment.EquipmentChargeReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentChargeResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelEquipChargeResDTO;
@@ -38,7 +38,7 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
     @Override
     public Page<EquipmentChargeResDTO> listEquipmentCharge(String equipCode, String equipName, String chargeDate, String position1Code,
                                                            String subjectCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentChargeMapper.pageEquipmentCharge(pageReqDTO.of(), equipCode, equipName, chargeDate, position1Code, subjectCode, systemCode, equipTypeCode);
     }
 

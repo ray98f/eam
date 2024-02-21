@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.dict;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
@@ -21,7 +21,7 @@ public class DictionariesServiceImpl implements IDictionariesService {
 
     @Override
     public Page<Dictionaries> page(String itemName, String itemCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return dictionariesMapper.page(pageReqDTO.of(), itemName, itemCode);
     }
 

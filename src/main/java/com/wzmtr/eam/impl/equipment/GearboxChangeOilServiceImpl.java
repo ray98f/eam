@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.GearboxChangeOilReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelGearboxChangeOilReqDTO;
@@ -41,7 +41,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
 
     @Override
     public Page<GearboxChangeOilResDTO> pageGearboxChangeOil(String trainNo, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return gearboxChangeOilMapper.pageGearboxChangeOil(pageReqDTO.of(), trainNo);
     }
 

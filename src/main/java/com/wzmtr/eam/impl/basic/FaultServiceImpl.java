@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.FaultReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultResDTO;
@@ -37,7 +37,7 @@ public class FaultServiceImpl implements FaultService {
 
     @Override
     public Page<FaultResDTO> listFault(String code, Integer type, String lineCode, String equipmentCategoryCode, String equipmentTypeName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return faultMapper.pageFault(pageReqDTO.of(), code, type, lineCode, equipmentCategoryCode, equipmentTypeName);
     }
 

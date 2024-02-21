@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.entity.CurrentLoginUser;
@@ -35,7 +35,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public Page<UserAccountListResDTO> listUserAccount(String searchKey, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return userAccountMapper.listUserAccount(pageReqDTO.of(), searchKey);
     }
 
@@ -46,7 +46,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public Page<SysUserAccount> listOutUserAccount(PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return userAccountMapper.listOutUserAccount(pageReqDTO.of());
     }
 

@@ -62,14 +62,14 @@ public class BpmnServiceImpl implements BpmnService {
         LoginDTO dto = new LoginDTO();
         dto.setUsername(account);
         dto.setPassword(password);
-        String data = JSONObject.toJSONString(dto);
+        String data = JSON.toJSONString(dto);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtils.doPost(FastFlowConstants.LOGIN, data), ResultEntity.class);
         return String.valueOf(resultEntity.getData());
     }
 
     @Override
     public String startInstance(StartInstanceVO startInstanceVO) {
-        String data = JSONObject.toJSONString(startInstanceVO);
+        String data = JSON.toJSONString(startInstanceVO);
         log.info("startInstance调用入参：[{}]", data);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtils.doPost(FastFlowConstants.INSTANCE_START, data, httpServletRequest.getHeader("Authorization-Flow")));
         if (CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
@@ -129,7 +129,7 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         log.info("nextTaskKey调用入参：[{}]", FastFlowConstants.NEXT_TASK_KEY + procId);
         JSONObject jsonObject = JSONObject.parseObject(HttpUtils.doGet(FastFlowConstants.NEXT_TASK_KEY + procId, authorization));
-        log.info("nextTaskKey调用结果：[{}]", JSONObject.toJSONString(jsonObject));
+        log.info("nextTaskKey调用结果：[{}]", JSON.toJSONString(jsonObject));
         JSONArray data = jsonObject.getJSONArray("data");
         return CollectionUtil.isEmpty(data) ? null : data.getJSONObject(0).getString("taskId");
     }
@@ -149,7 +149,7 @@ public class BpmnServiceImpl implements BpmnService {
         String param = FastFlowConstants.FLOW_LIST + "?name=" + URLEncoder.encode(name, "UTF-8") + "&modelkey=" + modelKey + "&page=1&limit=100000&pageSize=100000&type=2";
         log.info("queryFlowList调用入参：[{}]", param);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtils.doGet(param, authorization), ResultEntity.class);
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
         List<FlowRes> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -224,10 +224,10 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         req.setPageNo(1);
         req.setPageSize(10000);
-        String data = JSONObject.toJSONString(req);
+        String data = JSON.toJSONString(req);
         ResultEntity resultEntity = JSONObject.parseObject(HttpUtils.doPost(FastFlowConstants.EXAMINE_LIST, data, authorization), ResultEntity.class);
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
-        return JSONArray.parseArray(jsonArray.toJSONString(), ExamineListRes.class);
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
+        return JSON.parseArray(jsonArray.toJSONString(), ExamineListRes.class);
     }
 
     @Override
@@ -238,9 +238,9 @@ public class BpmnServiceImpl implements BpmnService {
         if (resultEntity.getCode() != 0) {
             throw new CommonException(ErrorCode.BPMN_ERROR, resultEntity.getMsg());
         }
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
-        List<ExaminedListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), ExaminedListRes.class);
+        List<ExaminedListRes> originalList = JSON.parseArray(jsonArray.toJSONString(), ExaminedListRes.class);
         // 总记录数
         int total = originalList.size();
         // 起始索引
@@ -268,9 +268,9 @@ public class BpmnServiceImpl implements BpmnService {
         if (resultEntity.getCode() != 0) {
             throw new CommonException(ErrorCode.BPMN_ERROR, resultEntity.getMsg());
         }
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
-        List<RunningListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), RunningListRes.class);
+        List<RunningListRes> originalList = JSON.parseArray(jsonArray.toJSONString(), RunningListRes.class);
         // 总记录数
         int total = originalList.size();
         // 起始索引
@@ -305,9 +305,9 @@ public class BpmnServiceImpl implements BpmnService {
         if (resultEntity.getCode() != 0) {
             throw new CommonException(ErrorCode.BPMN_ERROR, resultEntity.getMsg());
         }
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
-        List<HisListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), HisListRes.class);
+        List<HisListRes> originalList = JSON.parseArray(jsonArray.toJSONString(), HisListRes.class);
         // 总记录数
         int total = originalList.size();
         // 起始索引
@@ -524,7 +524,7 @@ public class BpmnServiceImpl implements BpmnService {
 //        try {
             log.info("getFlowChartByProcessId调用入参：[{}]", FastFlowConstants.GET_FLOW_CHART_BY_PROCESS_ID + processId);
             JSONObject jsonObject = JSONObject.parseObject(HttpUtils.doGet(FastFlowConstants.GET_FLOW_CHART_BY_PROCESS_ID + processId, null));
-            log.info("getFlowChartByProcessId调用结果：[{}]", JSONObject.toJSONString(jsonObject));
+            log.info("getFlowChartByProcessId调用结果：[{}]", JSON.toJSONString(jsonObject));
             if (!CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "流程图查询失败");
             }

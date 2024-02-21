@@ -3,7 +3,7 @@ package com.wzmtr.eam.impl.fault;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.wzmtr.eam.bizobject.PartBO;
 import com.wzmtr.eam.bizobject.StationBO;
@@ -89,7 +89,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<FaultDetailResDTO> page = faultQueryMapper.query(reqDTO.of(), reqDTO);
         List<FaultDetailResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
@@ -241,7 +241,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public Page<ConstructionResDTO> construction(FaultQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<ConstructionResDTO> list = faultQueryMapper.construction(reqDTO.of(), reqDTO.getFaultWorkNo());
         List<ConstructionResDTO> records = list.getRecords();
         if (CollectionUtil.isEmpty(records)) {
@@ -252,7 +252,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public Page<ConstructionResDTO> cancellation(FaultQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<ConstructionResDTO> list = faultQueryMapper.cancellation(reqDTO.of(), reqDTO.getFaultWorkNo());
         List<ConstructionResDTO> records = list.getRecords();
         if (CollectionUtil.isEmpty(records)) {

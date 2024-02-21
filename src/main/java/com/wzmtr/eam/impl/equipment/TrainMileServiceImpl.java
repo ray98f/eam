@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
@@ -51,7 +51,7 @@ public class TrainMileServiceImpl implements TrainMileService {
 
     @Override
     public Page<TrainMileResDTO> pageTrainMile(String equipCode, String equipName, String originLineNo, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return trainMileMapper.pageTrainMile(pageReqDTO.of(), equipCode, equipName, originLineNo);
     }
 
@@ -129,7 +129,7 @@ public class TrainMileServiceImpl implements TrainMileService {
 
     @Override
     public Page<TrainMileageResDTO> pageTrainMileage(String startTime, String endTime, String equipCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return trainMileMapper.pageTrainMileage(pageReqDTO.of(), startTime, endTime, equipCode);
     }
 
@@ -162,7 +162,7 @@ public class TrainMileServiceImpl implements TrainMileService {
 
     @Override
     public Page<TrainMileDailyResDTO> pageTrainDailyMile(String day, String equipCode, String equipName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return trainMileMapper.pageTrainDailyMile(pageReqDTO.of(), day, equipCode, equipName);
     }
 

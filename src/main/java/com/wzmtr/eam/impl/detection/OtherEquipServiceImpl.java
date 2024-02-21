@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.detection;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.detection.OtherEquipReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelOtherEquipReqDTO;
@@ -58,7 +58,7 @@ public class OtherEquipServiceImpl implements OtherEquipService {
     @Override
     public Page<OtherEquipResDTO> pageOtherEquip(String equipCode, String equipName, String otherEquipCode, String factNo,
                                                      String useLineNo, String position1Code, String otherEquipType, String equipStatus, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OtherEquipResDTO> page =  otherEquipMapper.pageOtherEquip(pageReqDTO.of(), equipCode, equipName, otherEquipCode, factNo, useLineNo,
                 position1Code, otherEquipType, equipStatus);
         List<OtherEquipResDTO> list = page.getRecords();
@@ -156,7 +156,7 @@ public class OtherEquipServiceImpl implements OtherEquipService {
 
     @Override
     public Page<OtherEquipHistoryResDTO> pageOtherEquipHistory(String equipCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return otherEquipMapper.pageOtherEquipHistory(pageReqDTO.of(), equipCode);
     }
 

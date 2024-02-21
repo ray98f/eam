@@ -24,6 +24,7 @@ public class CustomCellWriteHeightConfig extends AbstractRowHeightStyleStrategy 
 
     @Override
     protected void setHeadColumnHeight(Row row, int relativeRowIndex) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

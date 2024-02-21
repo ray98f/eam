@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.detection;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.detection.OtherEquipTypeReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelOtherEquipTypeReqDTO;
 import com.wzmtr.eam.dto.res.detection.OtherEquipTypeResDTO;
@@ -40,7 +40,7 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
 
     @Override
     public Page<OtherEquipTypeResDTO> pageOtherEquipType(String typeCode, String typeName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return otherEquipTypeMapper.pageOtherEquipType(pageReqDTO.of(), typeCode, typeName);
     }
 

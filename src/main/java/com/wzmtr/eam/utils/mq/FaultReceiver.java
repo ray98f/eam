@@ -1,6 +1,6 @@
 package com.wzmtr.eam.utils.mq;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.wzmtr.eam.config.RabbitMqConfig;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
@@ -137,7 +137,7 @@ public class FaultReceiver {
         faultError.setRecId(TokenUtils.getUuId());
         faultError.setFaultNo(fault.getFaultNo());
         faultError.setFaultWorkNo(fault.getFaultWorkNo());
-        faultError.setFaultInfo(JSONObject.toJSONString(fault));
+        faultError.setFaultInfo(JSON.toJSONString(fault));
         faultError.setErrorMsg(msg);
         faultError.setRecCreator(TokenUtils.getCurrentPersonId());
         faultError.setRecCreateTime(DateUtils.getCurrentTime());

@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaReqDTO;
 import com.wzmtr.eam.dto.req.mea.excel.ExcelMeaReqDTO;
@@ -38,7 +38,7 @@ public class MeaServiceImpl implements MeaService {
 
     @Override
     public Page<MeaResDTO> pageMea(MeaListReqDTO meaListReqDTO, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return meaMapper.pageMea(pageReqDTO.of(), meaListReqDTO);
     }
 
@@ -85,7 +85,7 @@ public class MeaServiceImpl implements MeaService {
 
     @Override
     public Page<SubmissionRecordDetailResDTO> pageMeaRecord(String equipCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return meaMapper.pageMeaRecord(pageReqDTO.of(), equipCode);
     }
 

@@ -24,7 +24,7 @@ public class EipMsgPushUtils {
 //        message.setKind_type(eipMsgPushReq.getKindType());
 //        message.setTodo_date(todoDate);
 //        message.setTodo_id(eipMsgPushReq.getTodoId());
-//        log.info("EIP推送对象：" + JSONObject.toJSONString(message));
+//        log.info("EIP推送对象：" + JSON.toJSONString(message));
 //        requestMessage.setMessage(message);
 //        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
 //        factory.setAddress("http://10.11.82.82:8083/iplwebservice/CREATEtodoList?wsdl");
