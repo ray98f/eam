@@ -49,6 +49,10 @@ public class FaultReportOpenReqDTO implements Serializable {
      */
     private String partCode;
     /**
+     * 来源系统
+     */
+    private String sysName;
+    /**
      * 故障编号
      */
     private String faultNo;

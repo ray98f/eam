@@ -55,6 +55,7 @@ public class FaultReceiver {
                     EquipmentResDTO equipment = equipmentMapper.getEquipmentDetailByCode(fault.getEquipCode());
                     req = req.toReportReqFromEquipment(equipment);
                 }
+                req.setCompanyName(fault.getSysName());
                 req.setFaultDetail("故障等级：" + fault.getFaultLevel() + "，故障详情：" + fault.getFaultDetail());
                 req.setDiscoveryTime(fault.getAlamTime());
                 req.setFaultType(fault.getFaultType());
