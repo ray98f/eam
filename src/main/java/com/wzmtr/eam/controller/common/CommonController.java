@@ -43,26 +43,28 @@ public class CommonController {
     @Value("${sso.home}")
     private String home;
 
+    private final String SERVICE = "?service=";
+
     @ApiOperation(value = "登出")
     @GetMapping(value = "/logout")
     public DataResponse<String> logout() {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return DataResponse.of(String.join("", casServerUrlPrefix, logoutUrlPattern,
-                "?service=", home));
+                SERVICE, home));
     }
 
     @ApiOperation(value = "登录")
     @GetMapping(value = "/login")
     public DataResponse<String> login() {
         return DataResponse.of(String.join("", casServerUrlPrefix, loginUrlPattern,
-                "?service=", casServiceUrlPrefix, casFilterUrlPattern));
+                SERVICE, casServiceUrlPrefix, casFilterUrlPattern));
     }
 
     @GetMapping(value = "/")
     public void reload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.sendRedirect(String.join("", casServerUrlPrefix, loginUrlPattern,
-                "?service=", casServiceUrlPrefix, casFilterUrlPattern));
+                SERVICE, casServiceUrlPrefix, casFilterUrlPattern));
     }
 
     @GetMapping(value = "/index")

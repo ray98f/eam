@@ -5,9 +5,9 @@ package com.wzmtr.eam.constant;
  * Author: Li.Wang
  * Date: 2023/11/23 13:49
  */
-public interface ColsConstants {
-    String FAULT_TRACK_NO = "FAULT_TRACK_NO";
-    String FAULT_NO = "FAULT_NO";
-    String FAULT_WORK_NO = "FAULT_WORK_NO";
-    String FAULT_ANALYSIS_NO = "FAULT_ANALYSIS_NO";
+public class ColsConstants {
+    public static final String FAULT_TRACK_NO = "FAULT_TRACK_NO";
+    public static final String FAULT_NO = "FAULT_NO";
+    public static final String FAULT_WORK_NO = "FAULT_WORK_NO";
+    public static final String FAULT_ANALYSIS_NO = "FAULT_ANALYSIS_NO";
 }

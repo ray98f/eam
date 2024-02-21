@@ -13,24 +13,22 @@ import javax.annotation.PostConstruct;
 public class BpmnConstants {
     @Value("${bpmn.account}")
     private String bpmnAccount;
+    public static String iBpmnAccount;
     @Value("${bpmn.password}")
     private String bpmnPassword;
-
-    public static String BPMN_ACCOUNT;
-    public static String BPMN_PASSWORD;
-
+    public static String iBpmnPassword;
     @Value("${eip.url}")
     private String eipUrl;
-    public static String EIP_URL;
+    public static String iEipUrl;
     @Value("${bpmn.url}")
     private String bpmnUrl;
-    public static String BPMN_URL;
+    public static String iBpmnUrl;
 
     @PostConstruct
     private void init() {
-        BPMN_ACCOUNT = bpmnAccount;
-        BPMN_PASSWORD = bpmnPassword;
-        EIP_URL = eipUrl;
-        BPMN_URL = bpmnUrl;
+        iBpmnAccount = bpmnAccount;
+        iBpmnPassword = bpmnPassword;
+        iEipUrl = eipUrl;
+        iBpmnUrl = bpmnUrl;
     }
 }

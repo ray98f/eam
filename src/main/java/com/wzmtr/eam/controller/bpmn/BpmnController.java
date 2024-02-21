@@ -165,7 +165,7 @@ public class BpmnController {
      */
     @ApiOperation(value = "根据流程实例id获取最新流程图")
     @GetMapping("/getFlowChart")
-    public DataResponse<FlowChartRes> getFlowChartByProcessId(@RequestParam("processId") String processId) {;
+    public DataResponse<FlowChartRes> getFlowChartByProcessId(@RequestParam("processId") String processId) {
         return DataResponse.of(bpmnService.getFlowChartByProcessId(processId));
     }
 }

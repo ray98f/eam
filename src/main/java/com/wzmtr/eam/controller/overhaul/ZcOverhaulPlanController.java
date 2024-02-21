@@ -95,7 +95,7 @@ public class ZcOverhaulPlanController {
 
     @PostMapping("/plan/examine")
     @ApiOperation(value = "审核检修计划（中车）")
-    public DataResponse<T> examineOverhaulPlan(@RequestBody OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
+    public DataResponse<T> examineOverhaulPlan(@RequestBody OverhaulPlanReqDTO overhaulPlanReqDTO) {
         overhaulPlanService.examineOverhaulPlan(overhaulPlanReqDTO);
         return DataResponse.success();
     }
