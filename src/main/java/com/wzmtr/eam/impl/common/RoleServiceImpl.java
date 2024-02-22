@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.common;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -13,7 +12,6 @@ import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
 import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
-import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
@@ -24,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -35,9 +32,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleMapper roleMapper;
-
-    private static final List<String> FLOW_SPECIAL_HAND = Arrays.asList(BpmnFlowEnum.FAULT_ANALIZE.value(), BpmnFlowEnum.FAULT_TRACK.value());
-
 
     @Override
     public List<Role> getLoginRole() {
@@ -127,7 +121,7 @@ public class RoleServiceImpl implements RoleService {
             req.setFlowId(flowId);
             req.setStep(CommonConstants.TWO_STRING);
             List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(req);
-            if (CollectionUtil.isEmpty(flowRoleRes)) {
+            if (StringUtils.isEmpty(flowRoleRes)) {
                 return null;
             }
             return buildRes(toUniqueList(flowRoleRes));
@@ -137,7 +131,7 @@ public class RoleServiceImpl implements RoleService {
         req.setNodeId(nodeId);
         // 查当前节点的信息
         List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
-        if (CollectionUtil.isEmpty(flowRoleResDTO)) {
+        if (StringUtils.isEmpty(flowRoleResDTO)) {
             return null;
         }
         FlowRoleResDTO flowRole = flowRoleResDTO.get(0);
@@ -154,7 +148,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private List<FlowRoleResDTO> buildRes(List<FlowRoleResDTO> flowRoleRes) {
-        if (CollectionUtil.isNotEmpty(flowRoleRes)) {
+        if (StringUtils.isNotEmpty(flowRoleRes)) {
             for (FlowRoleResDTO res : flowRoleRes) {
                 if (res.getRoleId() != null) {
                     res.setPerson(listRoleUsers(null, res.getRoleId()));

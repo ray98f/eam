@@ -124,7 +124,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void addOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws ParseException {
-        if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) || StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
@@ -174,9 +174,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !CommonConstants.NINETY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
-        if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) ||
-                StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime()) ||
-                StringUtils.isBlank(overhaulPlanReqDTO.getPlanStatus())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) ||
+                org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime()) ||
+                org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getPlanStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
@@ -247,7 +247,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !CommonConstants.NINETY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有编辑和驳回状态的数据才能够进行送审！");
         }
-        if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         List<OverhaulObjectResDTO> list12 = overhaulPlanMapper.listOverhaulObject(overhaulPlanReqDTO.getPlanCode(), null, null, null, null, "flag");
@@ -364,7 +364,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (StringUtils.isBlank(overhaulPlanReqDTO.getPlanStatus())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getPlanStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选的检修计划中计划状态不能为空！");
         }
         overhaulPlanMapper.updatePlanSta(overhaulPlanReqDTO);

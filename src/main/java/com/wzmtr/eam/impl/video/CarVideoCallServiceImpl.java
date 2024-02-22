@@ -55,7 +55,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     public Page<CarVideoResDTO> list(CarVideoReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<CarVideoResDTO> list = carVideoMapper.query(reqDTO.of(), reqDTO.getApplyNo(), reqDTO.getStartApplyTime(), reqDTO.getEndApplyTime(), reqDTO.getRecStatus());
-        if (CollectionUtil.isNotEmpty(list.getRecords())) {
+        if (StringUtils.isNotEmpty(list.getRecords())) {
             List<CarVideoResDTO> records = list.getRecords();
             records.forEach(a -> {
                 if (StringUtils.isNotEmpty(a.getApplyDeptCode())) {
@@ -84,7 +84,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
 
     @Override
     public void delete(BaseIdsEntity reqDTO) {
-        if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
+        if (StringUtils.isNotEmpty(reqDTO.getIds())) {
             carVideoMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -211,7 +211,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         // 2级修180天
         List<CarVideoResDTO> resList = carVideoMapper.list(reqDTO);
         List<CarVideoExportBO> exportList = new ArrayList<>();
-        if (CollectionUtil.isEmpty(resList)) {
+        if (StringUtils.isEmpty(resList)) {
             log.error("数据为空，无导出数据");
             return;
         }

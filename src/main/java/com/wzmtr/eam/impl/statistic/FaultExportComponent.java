@@ -44,7 +44,7 @@ public class FaultExportComponent {
         } else {
             data = faultQueryMapper.listZtt(reqDTO);
         }
-        if (CollectionUtil.isEmpty(data)) {
+        if (StringUtils.isEmpty(data)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该时间段内未查询到数据！");
         }
         try {

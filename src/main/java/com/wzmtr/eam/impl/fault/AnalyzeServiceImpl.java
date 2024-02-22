@@ -63,7 +63,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
         Page<AnalyzeResDTO> query = faultAnalyzeMapper.query(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getMajorCode(), reqDTO.getRecStatus(), reqDTO.getLineCode(), reqDTO.getFrequency(), reqDTO.getPositionCode(), reqDTO.getDiscoveryStartTime(), reqDTO.getDiscoveryEndTime(), reqDTO.getRespDeptCode(), reqDTO.getAffectCodes());
         List<AnalyzeResDTO> records = query.getRecords();
-        if (CollectionUtil.isEmpty(records)) {
+        if (StringUtils.isEmpty(records)) {
             return new Page<>();
         }
         records.forEach(a -> {
@@ -79,7 +79,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Override
     public void export(String faultAnalysisNo, String faultNo, String faultWorkNo, HttpServletResponse response) {
         List<AnalyzeResDTO> resList = faultAnalyzeMapper.list(faultAnalysisNo, faultNo, faultWorkNo);
-        if (CollectionUtil.isEmpty(resList)) {
+        if (StringUtils.isEmpty(resList)) {
             return;
         }
         List<FaultAnalizeExportBO> exportList = Lists.newArrayList();
@@ -125,7 +125,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         ExamineReqDTO examineReqDTO = Assert.notNull(reqDTO.getExamineReqDTO(), "ExamineReqDTO can not be null");
         // com.baosight.wzplat.dm.fm.service.ServiceDMFM0008#submit
         List<FaultAnalyzeDO> list = faultAnalyzeMapper.getFaultAnalysisList(faultAnalysisNo, reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
-        if (CollectionUtil.isEmpty(list)) {
+        if (StringUtils.isEmpty(list)) {
             return;
         }
         FaultAnalyzeDO dmfm03 = list.get(0);

@@ -195,7 +195,7 @@ public class ObjectServiceImpl implements ObjectService {
             return bomMapper.queryCarEquip(reqDTO.of(), reqDTO);
         } else if (CAR.equals(car)) {
             List<String> carChild = bomMapper.queryCarTree(reqDTO.getCarNode());
-            if (CollectionUtil.isNotEmpty(carChild)) {
+            if (StringUtils.isNotEmpty(carChild)) {
                 return bomMapper.queryCarChild(reqDTO.of(), reqDTO);
             } else {
                 return bomMapper.queryCarLastChild(reqDTO.of(), reqDTO);

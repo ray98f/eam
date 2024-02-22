@@ -65,7 +65,7 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
                             overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workRecord.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtils.getCurrentPersonId());
                         } else if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
                             // 根据角色获取用户列表
-                            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");
+                            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), CommonConstants.DM_007);
                             for (BpmnExaminePersonRes map : userList) {
                                 overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(),
                                         overhaulOrderReqDTO.getOrderCode(), map.getUserId(), "检修工单下达", "DMER0200", TokenUtils.getCurrentPersonId());

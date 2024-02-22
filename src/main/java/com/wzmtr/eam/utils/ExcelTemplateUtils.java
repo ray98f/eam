@@ -90,7 +90,7 @@ public class ExcelTemplateUtils {
     }
 
     private static DynamicSource parseDynamicRow(XSSFRow row, List<DynamicSource> dynamicSourceList) {
-        if (CollectionUtil.isEmpty(dynamicSourceList)) {
+        if (StringUtils.isEmpty(dynamicSourceList)) {
             return null;
         }
         if (row == null) {
@@ -146,7 +146,7 @@ public class ExcelTemplateUtils {
     }
 
     private static void replaceRowValue(XSSFRow row, Map<String, String> map, String prefixKey) {
-        if (CollectionUtil.isEmpty(map)) {
+        if (StringUtils.isEmpty(map)) {
             return;
         }
         if (row == null) {

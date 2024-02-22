@@ -109,9 +109,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
-        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        overhaulOrderListReqDTO.setObjectFlag("1");
-        return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
+        return pageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO);
     }
 
     @Override
@@ -244,7 +242,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         // ServiceDMER0201  auditWorkers
         overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
         // 根据角色获取用户列表
-        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), CommonConstants.DM_007);
         for (BpmnExaminePersonRes map2 : userList) {
             overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
                     map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId());
@@ -267,7 +265,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         } else {
             checkOrderState(overhaulOrderReqDTO, "6", "验收");
         }
-        if (StringUtils.isBlank(overhaulOrderReqDTO.getRealEndTime())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulOrderReqDTO.getRealEndTime())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该工单没有实际完成时间，无法完工确认！");
         }
         overhaulOrderReqDTO.setWorkStatus("5");
@@ -652,7 +650,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
         String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
         // ServiceDMER0205 insertUpFaultMessage
-        overTodoService.insertTodoWithUserGroupAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + "】故障管理流程",
+        overTodoService.insertTodoWithUserGroupAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
                 dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content);
     }
 
@@ -703,10 +701,10 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         String ext2 = "";
 //        if (groups.contains("DM_012") || groups.contains("DM_013")) {
 //            ext2 = "DM_013";
-//        } else if (groups.contains("DM_007")) {
-//            ext2 = "DM_007";
-//        } else if (groups.contains("DM_006")) {
-//            ext2 = "DM_006";
+//        } else if (groups.contains(CommonConstants.DM_007)) {
+//            ext2 = CommonConstants.DM_007;
+//        } else if (groups.contains(CommonConstants.DM_006)) {
+//            ext2 = CommonConstants.DM_006;
 //        } else {
 //            ext2 = "";
 //        }

@@ -70,7 +70,7 @@ public class TrackServiceImpl implements TrackService {
     public Page<TrackResDTO> list(TrackReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<TrackResDTO> list = faultTrackWorkMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode(), reqDTO.getMajorCode(), reqDTO.getObjectName(), reqDTO.getObjectCode(), reqDTO.getSystemCode());
-        if (CollectionUtil.isEmpty(list.getRecords())) {
+        if (StringUtils.isEmpty(list.getRecords())) {
             return new Page<>();
         }
         return list;
@@ -145,7 +145,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public void export(TrackExportReqDTO reqDTO, HttpServletResponse response) {
         List<TrackResDTO> resList = faultTrackWorkMapper.query(reqDTO);
-        if (CollectionUtil.isEmpty(resList)) {
+        if (StringUtils.isEmpty(resList)) {
             return;
         }
         List<FaultTrackWorkExportBO> exportList = Lists.newArrayList();

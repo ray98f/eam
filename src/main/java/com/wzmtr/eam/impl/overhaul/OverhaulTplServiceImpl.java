@@ -403,10 +403,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
         }
-        if (CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType())) {
-            if (StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches()) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
-            }
+        boolean bool = CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) &&
+                (org.apache.commons.lang3.StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches());
+        if (bool) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
         }
         List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(reqDTO.getTemplateId(), null, null, null, null, null, null, "10");
         if (StringUtils.isEmpty(list)) {
@@ -418,10 +418,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (StringUtils.isNotBlank(reqDTO.getMaxValue()) && !pattern.matcher(reqDTO.getMaxValue()).matches()) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "上限必须填数字！");
         }
-        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue())) {
-            if (CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) && Integer.parseInt(reqDTO.getMaxValue()) <= Integer.parseInt(reqDTO.getMinValue())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
-            }
+        bool = StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue()) &&
+                CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) && Integer.parseInt(reqDTO.getMaxValue()) <= Integer.parseInt(reqDTO.getMinValue());
+        if (bool) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
         }
     }
 
@@ -435,10 +435,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
             return true;
         }
-        if (CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType())) {
-            if (StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches()) {
-                return true;
-            }
+        boolean bool = CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) &&
+                (org.apache.commons.lang3.StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches());
+        if (bool) {
+            return true;
         }
         if (StringUtils.isNotBlank(reqDTO.getMinValue()) && !pattern.matcher(reqDTO.getMinValue()).matches()) {
             return true;

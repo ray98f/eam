@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.fault;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -67,7 +66,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<TrackQueryResDTO> list = faultTrackMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(), reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode());
         List<TrackQueryResDTO> records = list.getRecords();
-        if (CollectionUtil.isEmpty(records)) {
+        if (StringUtils.isEmpty(records)) {
             return new Page<>();
         }
         records.forEach(a -> {
@@ -124,7 +123,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public void cancellGenZ(BaseIdsEntity reqDTO) {
-        if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
+        if (StringUtils.isNotEmpty(reqDTO.getIds())) {
             List<String> ids = reqDTO.getIds();
             ids.forEach(a -> {
                 TrackQueryResDTO bo = new TrackQueryResDTO();
@@ -143,7 +142,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     public void export(TrackQueryReqDTO reqDTO, HttpServletResponse response) {
         List<TrackQueryResDTO> res = faultTrackMapper.query(reqDTO);
         List<FaultTrackExportBO> exportList = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(res)) {
+        if (StringUtils.isNotEmpty(res)) {
             res.forEach(resDTO -> {
                 FaultTrackExportBO exportBO = BeanUtils.convert(resDTO, FaultTrackExportBO.class);
                 Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackStatus", resDTO.getRecStatus());
@@ -199,14 +198,14 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             faultTrackWorkMapper.insert(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
             // 待办逻辑处理
             TrackQueryResDTO trackRes = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
-            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
             List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
             if (cos.contains(trackRes.getMajorCode())) {
-                dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
+                dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "04");
             } else {
-                dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
+                dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
             }
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + trackRes.getMajorName() + "】故障管理流程", faultTrackWorkBO.getRecId(), faultWorkNo, "DM_007", dictionaries.getItemCname(), "故障跟踪派工", "DMFM0011", "EAM", "10");
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + trackRes.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultTrackWorkBO.getRecId(), faultWorkNo, CommonConstants.DM_007, dictionaries.getItemCname(), "故障跟踪派工", "DMFM0011", "EAM", "10");
             return;
         }
         // 更新两张表
@@ -250,17 +249,17 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             faultTrackWorkMapper.insert(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
             TrackQueryResDTO dmfm09 = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
             String majorCode = dmfm09.getMajorCode();
-            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode("dm.vehicleSpecialty", "01");
+            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
             List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
             String zcStepOrg;
             if (cos.contains(majorCode)) {
-                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "04");
+                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "04");
                 zcStepOrg = matchControl.getItemCname();
             } else {
-                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode("dm.matchControl", "03");
+                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
                 zcStepOrg = matchControl.getItemCname();
             }
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + dmfm09.getMajorName() + "】故障管理流程", faultTrackWorkBO.getRecId(), faultWorkNo, "DM_007", zcStepOrg, "故障跟踪派工", "DMFM0011", "EAM", "10");
+            overTodoService.insertTodoWithUserGroupAndOrg("【" + dmfm09.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultTrackWorkBO.getRecId(), faultWorkNo, CommonConstants.DM_007, zcStepOrg, "故障跟踪派工", "DMFM0011", "EAM", "10");
         } catch (Exception e) {
             log.error("save error", e);
         }
@@ -269,7 +268,6 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public TrackQueryResDTO trackDetail(FaultBaseNoReqDTO reqDTO) {
-        // faultTrackNo //faultNo
         return faultTrackMapper.detail(reqDTO);
     }
 

@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.detection;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
@@ -117,10 +116,9 @@ public class DetectionServiceImpl implements DetectionService {
         if (!CommonConstants.TEN_STRING.equals(resDTO.getRecStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
-        if (!detectionReqDTO.getAssetKindCode().equals(resDTO.getAssetKindCode())) {
-            if (!detectionMapper.hasDetail(detectionReqDTO.getRecId()).isEmpty()) {
-                throw new CommonException(ErrorCode.PLAN_HAS_DETAIL);
-            }
+        if (!detectionReqDTO.getAssetKindCode().equals(resDTO.getAssetKindCode()) &&
+                !detectionMapper.hasDetail(detectionReqDTO.getRecId()).isEmpty()) {
+            throw new CommonException(ErrorCode.PLAN_HAS_DETAIL);
         }
         detectionReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         detectionReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
@@ -154,13 +152,13 @@ public class DetectionServiceImpl implements DetectionService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         List<DetectionDetailResDTO> result = detectionMapper.listDetectionDetail(res.getRecId());
-        if (CollectionUtil.isEmpty(result)) {
+        if (StringUtils.isEmpty(result)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "此检测单不存在检测明细，无法提交");
         }
         // todo 源代码逻辑，存在无效字段判断。先注释了
         // for (DetectionDetailResDTO temp : result) {
-        //     if (StringUtil.isBlank(temp.getVerifyResult()) || StringUtil.isBlank(temp.getVerifyDate()) ||
-        //             StringUtil.isBlank(temp.getVerifyValidityDate())) {
+        //     if (org.apache.commons.lang3.StringUtil.isBlank(temp.getVerifyResult()) || org.apache.commons.lang3.StringUtil.isBlank(temp.getVerifyDate()) ||
+        //             org.apache.commons.lang3.StringUtil.isBlank(temp.getVerifyValidityDate())) {
         //         throw new CommonException(ErrorCode.NORMAL_ERROR, "存在检测记录明细检测结果或检测日期或检测有效期为空，无法提交");
         //     }
         // }
@@ -354,7 +352,7 @@ public class DetectionServiceImpl implements DetectionService {
     @Override
     public void exportDetectionDetail(String testRecId, HttpServletResponse response) throws IOException {
         List<DetectionDetailResDTO> detectionPlanDetailResDTOList = detectionMapper.listDetectionDetail(testRecId);
-        if (CollectionUtil.isNotEmpty(detectionPlanDetailResDTOList)) {
+        if (StringUtils.isNotEmpty(detectionPlanDetailResDTOList)) {
             List<ExcelDetectionDetailResDTO> list = new ArrayList<>();
             for (DetectionDetailResDTO resDTO : detectionPlanDetailResDTOList) {
                 ExcelDetectionDetailResDTO res = new ExcelDetectionDetailResDTO();

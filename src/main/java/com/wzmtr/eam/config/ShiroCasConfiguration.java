@@ -94,15 +94,15 @@ public class ShiroCasConfiguration {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public ServletListenerRegistrationBean<?> servletListenerRegistrationBean() {
-        ServletListenerRegistrationBean  bean = new ServletListenerRegistrationBean();
+        ServletListenerRegistrationBean<SingleSignOutHttpSessionListener>  bean = new ServletListenerRegistrationBean<>();
         bean.setListener(new SingleSignOutHttpSessionListener());
         bean.setEnabled(true);
         return bean;
     }
 
     @Bean
-    public FilterRegistrationBean registrationBean() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+    public FilterRegistrationBean<?> registrationBean() {
+        FilterRegistrationBean<SingleSignOutFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setName("registrationBean");
         registrationBean.setFilter(new SingleSignOutFilter());
         //拦截所有的请求
@@ -114,8 +114,8 @@ public class ShiroCasConfiguration {
     }
 
     @Bean
-    public FilterRegistrationBean filterRegistrationBean() {
-        FilterRegistrationBean bean = new FilterRegistrationBean();
+    public FilterRegistrationBean<?> filterRegistrationBean() {
+        FilterRegistrationBean<DelegatingFilterProxy> bean = new FilterRegistrationBean<>();
         bean.setFilter(new DelegatingFilterProxy("shiroFilter"));
         bean.addInitParameter("targetFilterLifecycle", "true");
         bean.setEnabled(true);

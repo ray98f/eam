@@ -1,20 +1,15 @@
 package com.wzmtr.eam.service.common;
 
 import com.wzmtr.eam.constant.CommonConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class RedisService {
-
-    private static final Logger logger = LoggerFactory.getLogger(RedisService.class);
 
     @Value("${pro.name}")
     public String proName;
@@ -47,7 +42,7 @@ public class RedisService {
             }
             return true;
         } catch (Throwable t) {
-            logger.error("缓存[" + key + "]失败, value[" + v + "]", t);
+            log.error("缓存[" + key + "]失败, value[" + v + "]", t);
         }
         return false;
     }
@@ -97,7 +92,7 @@ public class RedisService {
         try {
             return Boolean.TRUE.equals(redisTemplate.hasKey(key));
         } catch (Throwable t) {
-            logger.error("判断缓存存在失败key[" + key + ", error[" + t + "]");
+            log.error("判断缓存存在失败key[" + key + ", error[" + t + "]");
         }
         return false;
     }
@@ -112,15 +107,13 @@ public class RedisService {
         try {
             ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
             String value = valueOps.get(proName + keyPrefix + KEY_PREFIX_VALUE + k);
-            if (!Objects.isNull(value)) {
-                if (value.contains(CommonConstants.DOUBLE_QUOTATION_MARKS)) {
-                    // 去掉之前jaskson序列化多余产生的空格
-                    return value.replaceAll("\"", "");
-                }
+            if (!Objects.isNull(value) && value.contains(CommonConstants.DOUBLE_QUOTATION_MARKS)) {
+                // 去掉之前jaskson序列化多余产生的空格
+                return value.replaceAll("\"", "");
             }
             return value;
         } catch (Throwable t) {
-            logger.error("获取缓存失败key[" + proName + keyPrefix + KEY_PREFIX_VALUE + k + ", error[" + t + "]");
+            log.error("获取缓存失败key[" + proName + keyPrefix + KEY_PREFIX_VALUE + k + ", error[" + t + "]");
         }
         return null;
     }
@@ -154,7 +147,7 @@ public class RedisService {
             redisTemplate.delete(key);
             return true;
         } catch (Throwable t) {
-            logger.error("获取缓存失败key[" + key + ", error[" + t + "]");
+            log.error("获取缓存失败key[" + key + ", error[" + t + "]");
         }
         return false;
     }
@@ -177,7 +170,7 @@ public class RedisService {
             }
             return true;
         } catch (Throwable t) {
-            logger.error("缓存[" + key + "]失败, value[" + v + "]", t);
+            log.error("缓存[" + key + "]失败, value[" + v + "]", t);
         }
         return false;
     }
@@ -211,7 +204,7 @@ public class RedisService {
             }
             return true;
         } catch (Throwable t) {
-            logger.error("缓存[" + key + "]失败, value[" + v + "]", t);
+            log.error("缓存[" + key + "]失败, value[" + v + "]", t);
         }
         return false;
     }
@@ -238,7 +231,7 @@ public class RedisService {
             SetOperations<String, String> setOps = redisTemplate.opsForSet();
             return setOps.members(proName + keyPrefix + KEY_PREFIX_SET + k);
         } catch (Throwable t) {
-            logger.error("获取set缓存失败key[" + proName + keyPrefix + KEY_PREFIX_SET + k + ", error[" + t + "]");
+            log.error("获取set缓存失败key[" + proName + keyPrefix + KEY_PREFIX_SET + k + ", error[" + t + "]");
         }
         return null;
     }
@@ -261,7 +254,7 @@ public class RedisService {
             }
             return true;
         } catch (Throwable t) {
-            logger.error("缓存[" + key + "]失败, value[" + v + "]", t);
+            log.error("缓存[" + key + "]失败, value[" + v + "]", t);
         }
         return false;
     }
@@ -295,7 +288,7 @@ public class RedisService {
             }
             return true;
         } catch (Throwable t) {
-            logger.error("缓存[" + key + "]失败, value[" + v + "]", t);
+            log.error("缓存[" + key + "]失败, value[" + v + "]", t);
         }
         return false;
     }
@@ -324,9 +317,9 @@ public class RedisService {
             ListOperations<String, String> listOps = redisTemplate.opsForList();
             return listOps.range(proName + keyPrefix + KEY_PREFIX_LIST + k, start, end);
         } catch (Throwable t) {
-            logger.error("获取list缓存失败key[" + proName + keyPrefix + KEY_PREFIX_LIST + k + ", error[" + t + "]");
+            log.error("获取list缓存失败key[" + proName + keyPrefix + KEY_PREFIX_LIST + k + ", error[" + t + "]");
         }
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -340,7 +333,7 @@ public class RedisService {
             ListOperations<String, String> listOps = redisTemplate.opsForList();
             return listOps.size(proName + keyPrefix + KEY_PREFIX_LIST + k);
         } catch (Throwable t) {
-            logger.error("获取list长度失败key[" + proName + keyPrefix + KEY_PREFIX_LIST + k + "], error[" + t + "]");
+            log.error("获取list长度失败key[" + proName + keyPrefix + KEY_PREFIX_LIST + k + "], error[" + t + "]");
         }
         return 0;
     }
@@ -356,7 +349,7 @@ public class RedisService {
         try {
             return listOps.size(proName + keyPrefix + KEY_PREFIX_LIST + k);
         } catch (Throwable t) {
-            logger.error("获取list长度失败key[" + proName + keyPrefix + KEY_PREFIX_LIST + k + "], error[" + t + "]");
+            log.error("获取list长度失败key[" + proName + keyPrefix + KEY_PREFIX_LIST + k + "], error[" + t + "]");
         }
         return 0;
     }
@@ -373,7 +366,7 @@ public class RedisService {
             listOps.rightPop(proName + keyPrefix + KEY_PREFIX_LIST + k);
             return true;
         } catch (Throwable t) {
-            logger.error("移除list缓存失败key[" + proName + keyPrefix + KEY_PREFIX_LIST + k + ", error[" + t + "]");
+            log.error("移除list缓存失败key[" + proName + keyPrefix + KEY_PREFIX_LIST + k + ", error[" + t + "]");
         }
         return false;
     }
@@ -397,7 +390,7 @@ public class RedisService {
             }
             return true;
         } catch (Throwable t) {
-            logger.error("缓存[" + key + "]失败, hashKey[" + hashKey + "] value[" + value + "]", t);
+            log.error("缓存[" + key + "]失败, hashKey[" + hashKey + "] value[" + value + "]", t);
         }
         return false;
     }
@@ -420,7 +413,7 @@ public class RedisService {
             }
             return true;
         } catch (Throwable t) {
-            logger.error("缓存[" + key + "]失败, map[" + map + "] ", t);
+            log.error("缓存[" + key + "]失败, map[" + map + "] ", t);
         }
         return false;
     }
@@ -438,7 +431,7 @@ public class RedisService {
             HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
             return hashOps.get(key, hk);
         } catch (Throwable t) {
-            logger.error("获取map缓存失败key[" + key + ", error[" + t + "]");
+            log.error("获取map缓存失败key[" + key + ", error[" + t + "]");
         }
         return null;
     }
@@ -455,7 +448,7 @@ public class RedisService {
             BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(k);
             return hashOps.entries();
         } catch (Throwable t) {
-            logger.error("获取map缓存失败key[" + key + ", error[" + t + "]");
+            log.error("获取map缓存失败key[" + key + ", error[" + t + "]");
         }
         return null;
     }

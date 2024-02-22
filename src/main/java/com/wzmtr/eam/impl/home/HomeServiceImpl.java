@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.home;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
@@ -15,6 +14,7 @@ import com.wzmtr.eam.entity.StatusWorkFlowLog;
 import com.wzmtr.eam.mapper.home.HomeMapper;
 import com.wzmtr.eam.service.home.HomeService;
 import com.wzmtr.eam.utils.StreamUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,7 +92,7 @@ public class HomeServiceImpl implements HomeService {
         List<ShowAResDTO> listA = homeMapper.queryA();
         EChartResDTO eChartResDTO = new EChartResDTO();
         Map<String, ShowBCResDTO> map = Maps.newHashMap();
-        if (CollectionUtil.isNotEmpty(listC)){
+        if (StringUtils.isNotEmpty(listC)){
             map = StreamUtils.toMap(listC, ShowBCResDTO::getMajorName);
         }
         List<ShowBCResDTO> list = Lists.newArrayList();
@@ -105,10 +105,10 @@ public class HomeServiceImpl implements HomeService {
                 list.add(showBcRes);
             }
         }
-        if (CollectionUtil.isNotEmpty(listA)){
+        if (StringUtils.isNotEmpty(listA)){
             eChartResDTO.setShowA(listA);
         }
-        if (CollectionUtil.isNotEmpty(list)){
+        if (StringUtils.isNotEmpty(list)){
             eChartResDTO.setShowCount(list);
         }
         return eChartResDTO;

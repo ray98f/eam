@@ -48,7 +48,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDateStart(), reqDTO.getDiscDateEnd());
         List<SecureDangerSourceResDTO> records = query.getRecords();
-        if (CollectionUtil.isNotEmpty(records)) {
+        if (StringUtils.isNotEmpty(records)) {
             records.forEach(this::assemble);
         }
         return query;
@@ -69,7 +69,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Override
     public void export(String dangerRiskId, String discDate, HttpServletResponse response) {
         List<SecureDangerSourceResDTO> resList = secureDangerSourceMapper.list(dangerRiskId, discDate);
-        if (CollectionUtil.isNotEmpty(resList)) {
+        if (StringUtils.isNotEmpty(resList)) {
             List<SecureDangerSourceExportBO> exportList = new ArrayList<>();
             for (SecureDangerSourceResDTO resDTO : resList) {
                 SecureDangerSourceExportBO exportBO = BeanUtils.convert(resDTO, SecureDangerSourceExportBO.class);
@@ -118,7 +118,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(BaseIdsEntity reqDTO) {
-        if (CollectionUtil.isEmpty(reqDTO.getIds())) {
+        if (StringUtils.isEmpty(reqDTO.getIds())) {
             return;
         }
         secureDangerSourceMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());

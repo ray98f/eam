@@ -52,7 +52,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     public Page<SecureCheckRecordListResDTO> list(SecureCheckRecordListReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO.getSecRiskId(), reqDTO.getInspectDateStart(), reqDTO.getInspectDateEnd(), reqDTO.getIsRestoredCode(), reqDTO.getRecStatus());
-        if (CollectionUtil.isNotEmpty(list.getRecords())) {
+        if (StringUtils.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
             // StreamUtils.map(records,SecureCheckRecordListResDTO::create);
             records.forEach(this::assembly);
@@ -108,7 +108,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     public void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, HttpServletResponse response) {
         List<SecureCheckRecordListResDTO> list = secureMapper.list(secRiskId, restoreDesc, inspectDate, workFlowInstStatus);
-        if (CollectionUtil.isEmpty(list)) {
+        if (StringUtils.isEmpty(list)) {
             log.warn("未查询到数据，丢弃导出操作!");
             return;
         }
@@ -151,7 +151,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
 
     @Override
     public void delete(BaseIdsEntity reqDTO) {
-        if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
+        if (StringUtils.isNotEmpty(reqDTO.getIds())) {
             secureMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

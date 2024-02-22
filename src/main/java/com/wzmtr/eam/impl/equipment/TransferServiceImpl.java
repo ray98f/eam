@@ -196,7 +196,7 @@ public class TransferServiceImpl implements TransferService {
         // ServiceDMDM0103 submit
         if (transferSplitReqDTO.getEquipmentList() != null && !transferSplitReqDTO.getEquipmentList().isEmpty()) {
             for (EquipmentResDTO resDTO : transferSplitReqDTO.getEquipmentList()) {
-                if (StringUtils.isBlank(resDTO.getStartUseDate()) || StringUtils.isBlank(resDTO.getSystemCode()) || StringUtils.isBlank(resDTO.getEquipTypeCode())) {
+                if (org.apache.commons.lang3.StringUtils.isBlank(resDTO.getStartUseDate()) || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getSystemCode()) || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getEquipTypeCode())) {
                     throw new CommonException(ErrorCode.REQUIRED_NULL, "设备" + resDTO.getEquipCode());
                 }
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getApprovalStatus())) {

@@ -94,11 +94,11 @@ public class StreamUtils {
 
 
     public static <F, T> List<T> map(Collection<F> from, Function<? super F, T> mapper) {
-        return CollectionUtil.isEmpty(from) ? Lists.newArrayList() : from.stream().map(mapper).collect(Collectors.toList());
+        return StringUtils.isEmpty(from) ? Lists.newArrayList() : from.stream().map(mapper).collect(Collectors.toList());
     }
 
     public static <F, T> List<T> map(Collection<F> from, Predicate<F> predicate, Function<? super F, T> mapper) {
-        return CollectionUtil.isEmpty(from) ? Lists.newArrayList() : from.stream().filter(predicate).map(mapper).collect(Collectors.toList());
+        return StringUtils.isEmpty(from) ? Lists.newArrayList() : from.stream().filter(predicate).map(mapper).collect(Collectors.toList());
     }
 
     public static <F, T> List<T> map(Stream<F> from, Function<? super F, T> mapper) {

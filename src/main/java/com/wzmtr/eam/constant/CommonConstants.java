@@ -29,9 +29,11 @@ public class CommonConstants {
      * 权限
      */
     public static final String ADMIN = "admin";
+    public static final String DM_006 = "DM_006";
     public static final String DM_007 = "DM_007";
     public static final String DM_012 = "DM_012";
     public static final String DM_037 = "DM_037";
+    public static final String DM_045 = "DM_045";
 
     /**
      * 故障分析流程--部长审核节点
@@ -105,5 +107,20 @@ public class CommonConstants {
      * 设备分类编号
      */
     public static final String EQUIP_CATE_ENGINEER_CAR_CODE = "17";
+
+    /**
+     * 字典字段code
+     */
+    public static final String DM_VEHICLE_SPECIALTY_CODE = "dm.vehicleSpecialty";
+    public static final String DM_MATCH_CONTROL_CODE = "dm.matchControl";
+
+    /**
+     * 工单推送内容相关
+     */
+    public static final String FAULT_CONTENT_BEGIN = "【市铁投集团】工单号：";
+    public static final String FAULT_CONTENT_END = "】故障管理流程";
+    public static final String FAULT_FINISHED_CONFIRM_CN = "故障完工确认";
+    public static final String FAULT_FINISHED_CONFIRM_AND_DISPATCH_CN = "工单完工确认并故障再派工";
+    public static final String FAULT_TUNING_CONFIRM_CN = "故障设调确认";
 
 }

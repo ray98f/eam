@@ -124,7 +124,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                 reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                 reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),reqDTO.getFaultWorkNo(), reqDTO.getLineCode());
         List<FaultReportResDTO> records = list.getRecords();
-        if (CollectionUtil.isEmpty(records)) {
+        if (StringUtils.isEmpty(records)) {
             return new Page<>();
         }
         buildRes(records);
@@ -141,7 +141,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<FaultReportResDTO> list = faultReportMapper.openApiList(reqDTO.of(), reqDTO);
         List<FaultReportResDTO> records = list.getRecords();
-        if (CollectionUtil.isEmpty(records)) {
+        if (StringUtils.isEmpty(records)) {
             return new Page<>();
         }
         buildRes(records);
@@ -156,7 +156,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                 reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                 reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus());
         List<FaultReportResDTO> records = list.getRecords();
-        if (CollectionUtil.isEmpty(records)) {
+        if (StringUtils.isEmpty(records)) {
             return new Page<>();
         }
         buildRes(records);
