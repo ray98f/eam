@@ -53,7 +53,7 @@ public class JwtFilter implements Filter {
             chain.doFilter(httpRequest, httpResponse);
         } else {
             String token = httpRequest.getHeader("Authorization");
-            if (token == null || StringUtils.isBlank(token)) {
+            if (token == null || org.apache.commons.lang3.StringUtils.isBlank(token)) {
                 request.setAttribute(FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_EMPTY));
                 request.getRequestDispatcher(ERROR_EXTHROW).forward(request, response);
                 return;
