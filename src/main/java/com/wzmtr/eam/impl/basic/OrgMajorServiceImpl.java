@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
-import com.wzmtr.eam.dto.res.basic.FaultResDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelOrgMajorResDTO;
@@ -146,18 +145,12 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     public FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode, String majorCode) {
         FaultRespAndRepairDeptResDTO faultRespAndRepairDeptResDTO = new FaultRespAndRepairDeptResDTO();
         String organType = "30";
-        // List<FaultResDTO> list = getEquipTypeByMajorCode(majorCode, lineCode);
         List<OrgMajorResDTO> respDept = orgMajorMapper.queryTypeAndDeptCode(organType, majorCode, lineCode);
         faultRespAndRepairDeptResDTO.setResp(respDept);
         organType = "20";
         List<OrgMajorResDTO> repairDept = orgMajorMapper.queryTypeAndDeptCode(organType, majorCode, lineCode);
         faultRespAndRepairDeptResDTO.setRepair(repairDept);
         return faultRespAndRepairDeptResDTO;
-    }
-
-
-    private List<FaultResDTO> getEquipTypeByMajorCode(String majorCode, String lineCode) {
-        return faultMapper.listFault("E", null, lineCode, null);
     }
 
 }

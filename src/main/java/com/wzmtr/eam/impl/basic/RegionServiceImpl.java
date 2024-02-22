@@ -66,8 +66,6 @@ public class RegionServiceImpl implements RegionService {
         regionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         regionReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         regionMapper.addRegion(regionReqDTO);
-        // RegionDO regionDO = BeanUtils.convert(regionReqDTO, RegionDO.class);
-        // regionMapper.insert(regionDO);
     }
 
     @Override

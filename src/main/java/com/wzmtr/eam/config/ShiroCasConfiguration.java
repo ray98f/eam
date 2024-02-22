@@ -155,7 +155,6 @@ public class ShiroCasConfiguration {
         factoryBean.setSecurityManager(securityManager);
         factoryBean.setLoginUrl(String.join("", casServerUrlPrefix, loginUrlPattern,
                 SERVICE,casServiceUrlPrefix,casFilterUrlPattern));
-        //factoryBean.setSuccessUrl(loginSuccessUrl);
         factoryBean.setUnauthorizedUrl(String.join("", casServerUrlPrefix, loginUrlPattern,
                 SERVICE,casServiceUrlPrefix,casFilterUrlPattern));
         Map<String, Filter> linkedHashMap = new LinkedHashMap<>();

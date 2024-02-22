@@ -53,15 +53,6 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public String getToken(String userId) {
         CurrentLoginUser person = new CurrentLoginUser();
-        // if (CommonConstants.ADMIN.equals(userId)) {
-        //     person.setPersonId(CommonConstants.ADMIN);
-        //     person.setPersonNo(CommonConstants.ADMIN);
-        //     person.setPersonName("系统管理员");
-        //     person.setCompanyId("A");
-        //     person.setCompanyName("集团本级");
-        //     person.setOfficeId("A02");
-        //     person.setOfficeName("办公室");
-        // } else {
             Person p = personService.searchPersonByNo(userId);
             if (p != null) {
                 person.setPersonId(p.getId());
