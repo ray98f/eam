@@ -7,7 +7,6 @@ import com.wzmtr.eam.enums.TokenStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,7 @@ public class JwtFilter implements Filter {
 
     private static final String JSESSIONID_FIX = ";jsessionid";
     private static final String FILTER_ERROR= "filter.error";
-    private static final String ERROR_EXTHROW = "error/exthrow";
+    private static final String ERROR_EXTHROW = "/error/exthrow";
 
     @Value("${excluded.swagger-pages}")
     private String[] swaggerPages;
