@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.statistic;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Maps;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;

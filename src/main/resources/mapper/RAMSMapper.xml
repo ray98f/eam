@@ -3,31 +3,30 @@
 <mapper namespace="com.wzmtr.eam.mapper.statistic.RAMSMapper">
     <select id="query4AQYYZB" resultType="com.wzmtr.eam.dto.res.statistic.RAMSCarResDTO">
         SELECT (SELECT count(1)
-                FROM T_FAULT_INFO d
-                         left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
-                WHERE 1 = 1
-                  and d.MAJOR_CODE = '07'
-                  and nvl(df.IS_FAULT, '10') = '10'
-                  and df.order_Status != '99'
-                  and d.FAULT_TYPE in ('10', '20'))       as "faultNum",
-               (SELECT count(1)
-                FROM T_FAULT_INFO d
-                         left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
-                WHERE 1 = 1
-                  and d.MAJOR_CODE = '07'
-                  and nvl(df.IS_FAULT, '10') = '10'
-                  and df.order_Status != '99'
-                  and d.EXT3 in ('02', '03', '04'))       as "affect11",
-               (SELECT count(1)
-                FROM T_FAULT_INFO d
-                         left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
-                WHERE 1 = 1
-                  and d.MAJOR_CODE = '07'
-                  and nvl(df.IS_FAULT, '10') = '10'
-                  and df.order_Status != '99'
-                  and d.EXT3 in ('05', '06', '08', '09')) as "affect21",
-               round((select sum(a.TOTAL_MILES) from T_EQUIPMENT a where a.MAJOR_CODE = '07') / 1000000,
-                     2)                                   as "millionMiles"
+            FROM T_FAULT_INFO d
+            left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
+            WHERE 1 = 1
+                and d.MAJOR_CODE = '07'
+                and nvl(df.IS_FAULT, '10') = '10'
+                and df.order_Status != '99'
+                and d.FAULT_TYPE in ('10', '20'))       as "faultNum",
+            (SELECT count(1)
+            FROM T_FAULT_INFO d
+            left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
+            WHERE 1 = 1
+                and d.MAJOR_CODE = '07'
+                and nvl(df.IS_FAULT, '10') = '10'
+                and df.order_Status != '99'
+                and d.EXT3 in ('02', '03', '04', '05'))       as "affect11",
+            (SELECT count(1)
+            FROM T_FAULT_INFO d
+            left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
+            WHERE 1 = 1
+                and d.MAJOR_CODE = '07'
+                and nvl(df.IS_FAULT, '10') = '10'
+                and df.order_Status != '99'
+                and d.EXT3 in ('05', '06', '08', '09')) as "affect21",
+                round((select sum(a.TOTAL_MILES) from T_EQUIPMENT a where a.MAJOR_CODE = '07') / 1000000, 2)   as "millionMiles"
         from dual
     </select>
     <select id="queryFautTypeByMonthBySys" resultType="com.wzmtr.eam.dto.res.statistic.SystemFaultsResDTO">
