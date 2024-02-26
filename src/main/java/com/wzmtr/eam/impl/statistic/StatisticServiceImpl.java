@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.statistic;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
@@ -618,7 +617,6 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public RAMSCarResDTO query4AQYYZB() {
-        // PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         List<RAMSCarResDTO> records = ramsMapper.query4AQYYZB();
         if (StringUtils.isEmpty(records)) {
             return null;
@@ -626,8 +624,8 @@ public class StatisticServiceImpl implements StatisticService {
         DecimalFormat df = new DecimalFormat("#0.00");
         RAMSCarResDTO ramsCarResDTO = records.get(0);
         String millionMiles = ramsCarResDTO.getMillionMiles();
-        String affect11 = ramsCarResDTO.getAffect11();// 1
-        String affect21 = ramsCarResDTO.getAffect21();// 147
+        String affect11 = ramsCarResDTO.getAffect11();
+        String affect21 = ramsCarResDTO.getAffect21();
         String faultNum = ramsCarResDTO.getFaultNum();
 
         String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles) * 4.0D);
