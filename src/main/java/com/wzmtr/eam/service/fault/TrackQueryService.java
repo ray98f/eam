@@ -1,7 +1,6 @@
 package com.wzmtr.eam.service.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.bizobject.FaultTrackBO;
 import com.wzmtr.eam.dto.req.fault.FaultBaseNoReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultTrackSaveReqDTO;
@@ -29,14 +28,4 @@ public interface TrackQueryService {
     void export(TrackQueryReqDTO reqDTO, HttpServletResponse response);
 
     void save(FaultTrackSaveReqDTO bo);
-
-
-    // TrackResDTO detail(SidEntity reqDTO);
-    //
-    //
-    // TrackResDTO report(TrackReportReqDTO reqDTO);
-    //
-    // TrackResDTO close(TrackCloseReqDTO reqDTO);
-    //
-    // void repair(TrackRepairReqDTO reqDTO);
 }

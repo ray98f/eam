@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Component
@@ -21,63 +20,59 @@ public class OrgDataSyncTask {
     @Value("${local.base-url}")
     private String localUrl;
 
-    private String SYNC_PERSON_URL = "/mdmSync/syncAllPerson";
-    private String SYNC_SUPP_CONTACT_URL = "/mdmSync/syncAllSuppContact";
-    private String SYNC_PERSON_PLUS_URL = "/mdmSync/syncPersonPlus";
-    private String SYNC_ORG_URL = "/mdmSync/syncAllOrg";
-    private String SYNC_SUPP_ORG_URL = "/mdmSync/syncSuppOrg";
-    private String SYNC_EXTRA_ORG_URL = "/mdmSync/syncAllExtraOrg";
-    private String SYNC_EMP_JOB_URL = "/mdmSync/syncAllEmpJob";
-
-    @Autowired
-    private RestTemplate restTemplate;
-
     @Scheduled(cron = "0 30 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncPerson() {
-        System.out.println("人员信息同步：" + localUrl + SYNC_PERSON_URL);
+        String syncPersonUrl = "/mdmSync/syncAllPerson";
+        log.info("人员信息同步：" + localUrl + syncPersonUrl);
         mdmSyncService.syncAllPerson();
     }
 
     @Scheduled(cron = "0 50 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncAllSuppContact() {
-        System.out.println("人员信息同步：" + localUrl + SYNC_SUPP_CONTACT_URL);
+        String syncSuppContactUrl = "/mdmSync/syncAllSuppContact";
+        log.info("人员信息同步：" + localUrl + syncSuppContactUrl);
         mdmSyncService.syncAllSuppContact();
     }
 
     @Scheduled(cron = "0 0 2 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncPersonPlus() {
-        System.out.println("人员附加信息同步：" + localUrl + SYNC_PERSON_PLUS_URL);
+        String syncPersonPlusUrl = "/mdmSync/syncPersonPlus";
+        log.info("人员附加信息同步：" + localUrl + syncPersonPlusUrl);
         mdmSyncService.syncPersonPlus();
     }
 
     @Scheduled(cron = "0 0 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncOrg() {
-        System.out.println("部门信息同步：" + localUrl + SYNC_ORG_URL);
+        String syncOrgUrl = "/mdmSync/syncAllOrg";
+        log.info("部门信息同步：" + localUrl + syncOrgUrl);
         mdmSyncService.syncAllOrg();
     }
 
     @Scheduled(cron = "0 10 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncSuppOrg() {
-        System.out.println("供应商信息同步：" + localUrl + SYNC_SUPP_ORG_URL);
+        String syncSuppOrgUrl = "/mdmSync/syncSuppOrg";
+        log.info("供应商信息同步：" + localUrl + syncSuppOrgUrl);
         mdmSyncService.syncSuppOrg();
     }
 
     @Scheduled(cron = "0 20 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncExtraOrg() {
-        System.out.println("外部部门信息同步：" + localUrl + SYNC_EXTRA_ORG_URL);
+        String syncExtraOrgUrl = "/mdmSync/syncAllExtraOrg";
+        log.info("外部部门信息同步：" + localUrl + syncExtraOrgUrl);
         mdmSyncService.syncAllExtraOrg();
     }
 
     @Scheduled(cron = "0 30 2 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncEmpJobInfo() {
-        System.out.println("人员岗位信息同步：" + localUrl + SYNC_EMP_JOB_URL);
+        String syncEmpJobUrl = "/mdmSync/syncAllEmpJob";
+        log.info("人员岗位信息同步：" + localUrl + syncEmpJobUrl);
         mdmSyncService.syncAllEmpJob();
     }
 

@@ -2,7 +2,7 @@ package com.wzmtr.eam.impl.statistic;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -84,7 +84,7 @@ public class StatisticServiceImpl implements StatisticService {
     public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
         // todo 结构后期优化
         FailureRateDetailResDTO failureRateDetailResDTO = new FailureRateDetailResDTO();
-        if (CollectionUtil.isEmpty(reqDTO.getIndex())) {
+        if (StringUtils.isEmpty(reqDTO.getIndex())) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
         if (reqDTO.getIndex().contains(RateIndex.VEHICLE_RATE)) {
@@ -167,7 +167,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Page<MaterialResDTO> query(MaterialQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         String[] cos = reqDTO.getPlanName().split(",");
         List<String> planNameList = new ArrayList<>();
         for (String c : cos) {
@@ -178,7 +178,7 @@ public class StatisticServiceImpl implements StatisticService {
         }
         planNameList = planNameList.stream().distinct().filter(Objects::nonNull).collect(Collectors.toList());
         Page<MaterialResDTO> page = materialMapper.query(reqDTO.of(), planNameList, reqDTO.getMatName(), reqDTO.getStartTime(), reqDTO.getEndTime(), reqDTO.getTrainNo());
-        if (CollectionUtil.isEmpty(page.getRecords())) {
+        if (StringUtils.isEmpty(page.getRecords())) {
             return new Page<>();
         }
         return page;
@@ -202,7 +202,7 @@ public class StatisticServiceImpl implements StatisticService {
             reqDTO.setEndTime(sdf.format(new Date()));
         }
         List<CarFaultQueryResDTO> query = carFaultMapper.query(reqDTO.getObjectCode(), reqDTO.getEndTime(), reqDTO.getStartTime());
-        if (CollectionUtil.isEmpty(query)) {
+        if (StringUtils.isEmpty(query)) {
             return new CarFaultQueryResDTO();
         }
         return getCarFaultQueryResDTO(query);
@@ -407,19 +407,19 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Page<InspectionJobListResDTO> querydmer3(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.querydmer3(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
     @Override
     public Page<InspectionJobListResDTO> queryER4(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.queryER4(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
     @Override
     public Page<InspectionJobListResDTO> queryER5(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.queryER5(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
@@ -427,7 +427,7 @@ public class StatisticServiceImpl implements StatisticService {
     public void queryER5Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<InspectionJobListResDTO> inspectionJobListRes = oneCarOneGearMapper.queryER5(equipName, startTime, endTime);
         List<ExcelInspectionJobListResDTO> list = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(inspectionJobListRes)) {
+        if (StringUtils.isNotEmpty(inspectionJobListRes)) {
             for (InspectionJobListResDTO resDTO : inspectionJobListRes) {
                 ExcelInspectionJobListResDTO res = new ExcelInspectionJobListResDTO();
                 BeanUtils.copyProperties(resDTO, res);
@@ -439,7 +439,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Page<FaultDetailResDTO> queryFMHistory(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.queryFMHistory(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
@@ -447,7 +447,7 @@ public class StatisticServiceImpl implements StatisticService {
     public void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<FaultDetailResDTO> faultDetailResDTOS = oneCarOneGearMapper.queryFMHistory(equipName, startTime, endTime);
         List<ExcelFaultDetailResDTO> list = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(faultDetailResDTOS)) {
+        if (StringUtils.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
                 ExcelFaultDetailResDTO res = new ExcelFaultDetailResDTO();
                 BeanUtils.copyProperties(resDTO, res);
@@ -460,7 +460,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Page<TrackQueryResDTO> queryDMFM21(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.queryDMFM21(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
@@ -469,14 +469,14 @@ public class StatisticServiceImpl implements StatisticService {
      */
     @Override
     public Page<PartReplaceResDTO> querydmdm20(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.querydmdm20(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
     @Override
     public void querydmdm20Export(String equipName, String startTime, String endTime, HttpServletResponse response) throws IOException {
         List<PartReplaceResDTO> partReplaceList = oneCarOneGearMapper.querydmdm20(equipName, startTime, endTime);
-        if (CollectionUtil.isNotEmpty(partReplaceList)) {
+        if (StringUtils.isNotEmpty(partReplaceList)) {
             List<ExcelStatisticPartReplaceResDTO> list = new ArrayList<>();
             for (PartReplaceResDTO resDTO : partReplaceList) {
                 ExcelStatisticPartReplaceResDTO res = new ExcelStatisticPartReplaceResDTO();
@@ -490,14 +490,14 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Page<GearboxChangeOilResDTO> pageGearboxChangeOil(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return gearboxChangeOilMapper.pageGearboxChangeOil(reqDTO.of(), reqDTO.getEquipName());
     }
 
     @Override
     public void pageGearboxChangeOilExport(String equipName, HttpServletResponse response) throws IOException {
         List<GearboxChangeOilResDTO> gearboxChangeOilList = gearboxChangeOilMapper.listGearboxChangeOil(equipName);
-        if (CollectionUtil.isNotEmpty(gearboxChangeOilList)) {
+        if (StringUtils.isNotEmpty(gearboxChangeOilList)) {
             List<ExcelStatisticGearboxChangeOilResDTO> list = new ArrayList<>();
             for (GearboxChangeOilResDTO resDTO : gearboxChangeOilList) {
                 ExcelStatisticGearboxChangeOilResDTO res = new ExcelStatisticGearboxChangeOilResDTO();
@@ -511,7 +511,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public void querydmer3Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<InspectionJobListResDTO> resList = oneCarOneGearMapper.querydmer3(equipName, startTime, endTime);
-        if (CollectionUtil.isNotEmpty(resList)) {
+        if (StringUtils.isNotEmpty(resList)) {
             List<ExcelInspectionJobListResDTO> list = new ArrayList<>();
             for (InspectionJobListResDTO resDTO : resList) {
                 ExcelInspectionJobListResDTO res = new ExcelInspectionJobListResDTO();
@@ -526,7 +526,7 @@ public class StatisticServiceImpl implements StatisticService {
     public void queryER4Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         // 2级修180天
         List<InspectionJobListResDTO> resList = oneCarOneGearMapper.queryER4(equipName, startTime, endTime);
-        if (CollectionUtil.isNotEmpty(resList)) {
+        if (StringUtils.isNotEmpty(resList)) {
             List<InspectionJobListResDTO> list = new ArrayList<>();
             for (InspectionJobListResDTO resDTO : resList) {
                 InspectionJobListResDTO res = new InspectionJobListResDTO();
@@ -540,7 +540,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public void queryER1Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<InspectionJobListResDTO> resList = oneCarOneGearMapper.queryER1(equipName, startTime, endTime);
-        if (CollectionUtil.isNotEmpty(resList)) {
+        if (StringUtils.isNotEmpty(resList)) {
             List<InspectionJobListResDTO> list = new ArrayList<>();
             for (InspectionJobListResDTO resDTO : resList) {
                 InspectionJobListResDTO res = new InspectionJobListResDTO();
@@ -554,7 +554,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<WheelsetLathingResDTO> wheelsetLathingList = wheelsetLathingMapper.listWheelsetLathing(equipName, null, null, null);
-        if (CollectionUtil.isNotEmpty(wheelsetLathingList)) {
+        if (StringUtils.isNotEmpty(wheelsetLathingList)) {
             List<ExcelStatisticWheelsetLathingResDTO> list = new ArrayList<>();
             for (WheelsetLathingResDTO resDTO : wheelsetLathingList) {
                 ExcelStatisticWheelsetLathingResDTO res = new ExcelStatisticWheelsetLathingResDTO();
@@ -575,7 +575,7 @@ public class StatisticServiceImpl implements StatisticService {
      */
     @Override
     public Page<WheelsetLathingResDTO> pageWheelsetLathing(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return wheelsetLathingMapper.pageWheelsetLathing(reqDTO.of(), reqDTO.getEquipName(), null, null, null);
     }
 
@@ -584,14 +584,14 @@ public class StatisticServiceImpl implements StatisticService {
      */
     @Override
     public Page<GeneralSurveyResDTO> pageGeneralSurvey(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return generalSurveyMapper.pageGeneralSurvey(reqDTO.of(), reqDTO.getEquipName(), null, null, null);
     }
 
     @Override
     public void pageGeneralSurveyExport(String equipName, HttpServletResponse response) throws IOException {
         List<GeneralSurveyResDTO> generalSurveyList = generalSurveyMapper.listGeneralSurvey(equipName, null, null, null);
-        if (CollectionUtil.isNotEmpty(generalSurveyList)) {
+        if (StringUtils.isNotEmpty(generalSurveyList)) {
             List<ExcelStatisticGeneralSurveyResDTO> list = new ArrayList<>();
             for (GeneralSurveyResDTO resDTO : generalSurveyList) {
                 ExcelStatisticGeneralSurveyResDTO res = new ExcelStatisticGeneralSurveyResDTO();
@@ -605,22 +605,22 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Page<InspectionJobListResDTO> queryER2(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.queryER2(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
     @Override
     public Page<InspectionJobListResDTO> queryER1(OneCarOneGearQueryReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         return oneCarOneGearMapper.queryER1(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
 
     @Override
     public RAMSCarResDTO query4AQYYZB() {
-        // PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        // PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         List<RAMSCarResDTO> records = ramsMapper.query4AQYYZB();
-        if (CollectionUtil.isEmpty(records)) {
+        if (StringUtils.isEmpty(records)) {
             return null;
         }
         DecimalFormat df = new DecimalFormat("#0.00");
@@ -767,7 +767,6 @@ public class StatisticServiceImpl implements StatisticService {
         List<RAMSSysPerformResDTO> ramsResDTOS = ramsMapper.querySysPerform();
         List<RAMSResDTO> totalMilesList = ramsMapper.querytotalMiles();
         RAMSResDTO totalMiles = totalMilesList.get(0);
-        System.out.println(ramsResDTOS);
         Map<String, RAMSSysPerformResDTO> map = Maps.newHashMap();
         Set<String> names = Sets.newHashSet();
         ramsResDTOS.forEach(a -> {
@@ -840,6 +839,15 @@ public class StatisticServiceImpl implements StatisticService {
                 map.put(a.getModuleName(), a);
             }
         });
+        buildSysPerformIsCompliance(map);
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * 各系统可靠性统计-构建是否达标标识
+     * @param map 集合
+     */
+    private void buildSysPerformIsCompliance(Map<String, RAMSSysPerformResDTO> map) {
         map.values().forEach(a -> {
             if (Double.parseDouble(a.getMTBF_LATE()) >= Double.parseDouble(a.getContractZBLATE())) {
                 a.setIsDB_LATE("达标");
@@ -852,7 +860,6 @@ public class StatisticServiceImpl implements StatisticService {
                 a.setIsDB_NOS("未达标");
             }
         });
-        return new ArrayList<>(map.values());
     }
 
     /**
@@ -923,22 +930,31 @@ public class StatisticServiceImpl implements StatisticService {
                 map.put(a.getModuleName(), a);
             }
         }
+        buildFaultTypeIsCompliance(map, ramsResDTO);
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * 各系统故障情况统计-构建是否达标标识
+     * @param map 集合
+     * @param ramsRes ram
+     */
+    private void buildFaultTypeIsCompliance(Map<String, FaultConditionResDTO> map, RAMSResDTO ramsRes) {
         map.values().forEach(a -> {
             DecimalFormat df = new DecimalFormat("#0");
-            double ZB;
+            double zb;
             if (Double.parseDouble(a.getNOYF()) == ZERO) {
-                ZB = Double.parseDouble(ramsResDTO.getTotalMiles()) * 4.0D / 55.0D;
+                zb = Double.parseDouble(ramsRes.getTotalMiles()) * 4.0D / 55.0D;
             } else {
-                ZB = Double.parseDouble(ramsResDTO.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNOYF());
+                zb = Double.parseDouble(ramsRes.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNOYF());
             }
-            a.setZB(df.format(ZB));
-            if (ZB >= Double.parseDouble(a.getContractZB())) {
+            a.setZB(df.format(zb));
+            if (zb >= Double.parseDouble(a.getContractZB())) {
                 a.setIsDB("达标");
             } else {
                 a.setIsDB("未达标");
             }
         });
-        return new ArrayList<>(map.values());
     }
 
     /**
@@ -947,7 +963,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO) {
         Page<FaultRAMSResDTO> list = ramsMapper.queryRAMSFaultList(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime());
-        if (CollectionUtil.isEmpty(list.getRecords())) {
+        if (StringUtils.isEmpty(list.getRecords())) {
             return new Page<>();
         }
         List<FaultRAMSResDTO> records = list.getRecords();

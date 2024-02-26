@@ -8,12 +8,12 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulWorkRecordMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -45,12 +45,12 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
             if (workerCodes.length > 0) {
                 for (int i = 0; i < workerCodes.length; i++) {
                     OverhaulWorkRecordReqDTO workRecord = new OverhaulWorkRecordReqDTO();
-                    workRecord.setRecId(TokenUtil.getUuId());
+                    workRecord.setRecId(TokenUtils.getUuId());
                     workRecord.setOrderCode(overhaulOrderReqDTO.getOrderCode());
                     workRecord.setPlanCode(overhaulOrderReqDTO.getPlanCode());
                     workRecord.setWorkerGroupCode(overhaulOrderReqDTO.getWorkerGroupCode());
                     workRecord.setWorkerCode(workerCodes[i]);
-                    workRecord.setUploadTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    workRecord.setUploadTime(DateUtils.getCurrentTime());
                     workRecord.setDownloadTime(overhaulOrderReqDTO.getSendPersonId());
                     workRecord.setExt5(overhaulOrderReqDTO.getSendTime());
                     String[] workerMsg = workerNames[i].split("-");
@@ -62,13 +62,13 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
                     // 流程流转
                     try {
                         if (CommonConstants.TWO_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
-                            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workRecord.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtil.getCurrentPersonId());
+                            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workRecord.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtils.getCurrentPersonId());
                         } else if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
                             // 根据角色获取用户列表
-                            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");
+                            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), CommonConstants.DM_007);
                             for (BpmnExaminePersonRes map : userList) {
                                 overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(),
-                                        overhaulOrderReqDTO.getOrderCode(), map.getUserId(), "检修工单下达", "DMER0200", TokenUtil.getCurrentPersonId());
+                                        overhaulOrderReqDTO.getOrderCode(), map.getUserId(), "检修工单下达", "DMER0200", TokenUtils.getCurrentPersonId());
                             }
                         }
                     } catch (Exception e) {

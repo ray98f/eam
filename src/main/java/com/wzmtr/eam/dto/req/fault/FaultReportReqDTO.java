@@ -2,9 +2,10 @@ package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.utils.BeanUtils;
-import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -133,7 +134,7 @@ public class FaultReportReqDTO {
         convert.setRecCreator(" ");
         convert.setFaultNo(" ");
         convert.setFaultWorkNo(" ");
-        convert.setRecCreateTime(DateUtil.getCurrentTime());
+        convert.setRecCreateTime(DateUtils.getCurrentTime());
         convert.setDeleteFlag("0");
         if (StringUtils.isEmpty(req.getOrderStatus())) {
             convert.setOrderStatus(OrderStatus.TI_BAO.getCode());
@@ -192,6 +193,27 @@ public class FaultReportReqDTO {
         convert.setRecStatus(" ");
         convert.setFaultDisplayCode(" ");
         convert.setDeleteFlag("0");
+        return convert;
+    }
+
+    /**
+     * 根据设备编号查询的设备数据填充故障提报入参
+     */
+    public FaultReportReqDTO toReportReqFromEquipment(EquipmentResDTO req) {
+        FaultReportReqDTO convert = new FaultReportReqDTO();
+        convert.setObjectCode(req.getEquipCode());
+        convert.setObjectName(req.getEquipName());
+        convert.setMajorCode(req.getMajorCode());
+        convert.setMajorName(req.getMajorName());
+        convert.setSystemCode(req.getSystemCode());
+        convert.setSystemName(req.getSystemName());
+        convert.setEquipTypeCode(req.getEquipTypeCode());
+        convert.setEquipTypeName(req.getEquipTypeName());
+        convert.setLineCode(req.getUseLineNo());
+        convert.setLineName(req.getUseLineName());
+        convert.setPositionCode(req.getPosition1Code());
+        convert.setPosition2Code(req.getPosition2Code());
+        convert.setPosition2Name(req.getPosition2Name());
         return convert;
     }
 

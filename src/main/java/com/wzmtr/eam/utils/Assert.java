@@ -261,28 +261,28 @@ public class Assert {
     }
 
     public static final <T> Collection<T> notEmpty(Collection<T> collection, ErrorCode errcode) {
-        if (CollectionUtil.isEmpty(collection)) {
+        if (StringUtils.isEmpty(collection)) {
             throw new CommonException(errcode);
         }
         return collection;
     }
 
     public static final <T> Collection<T> notEmpty(Collection<T> collection, ErrorCode errcode, String reason) {
-        if (CollectionUtil.isEmpty(collection)) {
+        if (StringUtils.isEmpty(collection)) {
             throw new CommonException(errcode, reason);
         }
         return collection;
     }
 
     public static final <T> Collection<T> notEmpty(Collection<T> collection, ErrorCode errcode, Throwable cause) {
-        if (CollectionUtil.isEmpty(collection)) {
+        if (StringUtils.isEmpty(collection)) {
             throw new CommonException(errcode, cause);
         }
         return collection;
     }
 
     public static final <T> Collection<T> notEmpty(Collection<T> collection, ErrorCode errcode, Throwable cause, String reason) {
-        if (CollectionUtil.isEmpty(collection)) {
+        if (StringUtils.isEmpty(collection)) {
             throw new CommonException(errcode, cause, reason);
         }
         return collection;
@@ -299,25 +299,25 @@ public class Assert {
     }
 
     public static final void isEmpty(Collection<?> collection, ErrorCode errcode) {
-        if (!CollectionUtil.isEmpty(collection)) {
+        if (!StringUtils.isEmpty(collection)) {
             throw new CommonException(errcode);
         }
     }
 
     public static final void isEmpty(Collection<?> collection, ErrorCode errcode, String reason) {
-        if (!CollectionUtil.isEmpty(collection)) {
+        if (!StringUtils.isEmpty(collection)) {
             throw new CommonException(errcode, reason);
         }
     }
 
     public static final void isEmpty(Collection<?> collection, ErrorCode errcode, Throwable cause) {
-        if (!CollectionUtil.isEmpty(collection)) {
+        if (!StringUtils.isEmpty(collection)) {
             throw new CommonException(errcode, cause);
         }
     }
 
     public static final void isEmpty(Collection<?> collection, ErrorCode errcode, Throwable cause, String reason) {
-        if (!CollectionUtil.isEmpty(collection)) {
+        if (!StringUtils.isEmpty(collection)) {
             throw new CommonException(errcode, cause, reason);
         }
     }
@@ -333,28 +333,28 @@ public class Assert {
     }
 
     public static final <K, V> Map<K, V> notEmpty(Map<K, V> map, ErrorCode errcode) {
-        if (CollectionUtil.isEmpty(map)) {
+        if (StringUtils.isEmpty(map)) {
             throw new CommonException(errcode);
         }
         return map;
     }
 
     public static final <K, V> Map<K, V> notEmpty(Map<K, V> map, ErrorCode errcode, String reason) {
-        if (CollectionUtil.isEmpty(map)) {
+        if (StringUtils.isEmpty(map)) {
             throw new CommonException(errcode, reason);
         }
         return map;
     }
 
     public static final <K, V> Map<K, V> notEmpty(Map<K, V> map, ErrorCode errcode, Throwable cause) {
-        if (CollectionUtil.isEmpty(map)) {
+        if (StringUtils.isEmpty(map)) {
             throw new CommonException(errcode, cause);
         }
         return map;
     }
 
     public static final <K, V> Map<K, V> notEmpty(Map<K, V> map, ErrorCode errcode, Throwable cause, String reason) {
-        if (CollectionUtil.isEmpty(map)) {
+        if (StringUtils.isEmpty(map)) {
             throw new CommonException(errcode, cause, reason);
         }
         return map;

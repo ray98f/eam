@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.PartReplaceReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelPartReplaceReqDTO;
@@ -14,9 +14,10 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.PartReplaceMapper;
 import com.wzmtr.eam.service.equipment.PartReplaceService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +42,7 @@ public class PartReplaceServiceImpl implements PartReplaceService {
 
     @Override
     public Page<PartReplaceResDTO> pagePartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return partReplaceMapper.pagePartReplace(pageReqDTO.of(), equipName, replacementName, faultWorkNo, orgType, replaceReason);
     }
 
@@ -64,9 +64,9 @@ public class PartReplaceServiceImpl implements PartReplaceService {
 
     @Override
     public void addPartReplace(PartReplaceReqDTO partReplaceReqDTO) {
-        partReplaceReqDTO.setRecId(TokenUtil.getUuId());
-        partReplaceReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        partReplaceReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        partReplaceReqDTO.setRecId(TokenUtils.getUuId());
+        partReplaceReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        partReplaceReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         partReplaceMapper.addPartReplace(partReplaceReqDTO);
     }
 
@@ -74,11 +74,11 @@ public class PartReplaceServiceImpl implements PartReplaceService {
     public void deletePartReplace(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
-                if (!partReplaceMapper.getPartReplaceDetail(id).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!partReplaceMapper.getPartReplaceDetail(id).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
             }
-            partReplaceMapper.deletePartReplace(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            partReplaceMapper.deletePartReplace(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -93,10 +93,10 @@ public class PartReplaceServiceImpl implements PartReplaceService {
                 PartReplaceReqDTO req = new PartReplaceReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
                 req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
-                req.setRecId(TokenUtil.getUuId());
+                req.setRecId(TokenUtils.getUuId());
                 req.setDeleteFlag("0");
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecCreator(TokenUtils.getCurrentPersonId());
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }

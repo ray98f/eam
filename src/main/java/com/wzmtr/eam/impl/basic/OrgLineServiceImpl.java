@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.OrgLineReqDTO;
 import com.wzmtr.eam.dto.res.basic.OrgLineResDTO;
@@ -13,16 +13,16 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.OrgLineMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.service.basic.OrgLineService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +54,7 @@ public class OrgLineServiceImpl implements OrgLineService {
         if (StringUtils.isNotEmpty(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return orgLineMapper.pageOrgLine(pageReqDTO.of(), StringUtils.getSumArrayList(orgCodes), lineCode);
     }
 
@@ -69,9 +69,9 @@ public class OrgLineServiceImpl implements OrgLineService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        orgLineReqDTO.setRecId(TokenUtil.getUuId());
-        orgLineReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        orgLineReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        orgLineReqDTO.setRecId(TokenUtils.getUuId());
+        orgLineReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        orgLineReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         orgLineMapper.addOrgLine(orgLineReqDTO);
     }
 
@@ -81,15 +81,15 @@ public class OrgLineServiceImpl implements OrgLineService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        orgLineReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        orgLineReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        orgLineReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        orgLineReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         orgLineMapper.modifyOrgLine(orgLineReqDTO);
     }
 
     @Override
     public void deleteOrgLine(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            orgLineMapper.deleteOrgLine(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            orgLineMapper.deleteOrgLine(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

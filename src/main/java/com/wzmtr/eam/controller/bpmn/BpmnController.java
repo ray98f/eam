@@ -8,7 +8,7 @@ import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,7 @@ public class BpmnController {
     public DataResponse<String> login(@RequestParam(value = "account", required = false) String account,
                                       @RequestParam(value = "password", required = false) String password) {
         if (StringUtils.isEmpty(account)) {
-            account = "eam" + TokenUtil.getCurrentPersonId();
+            account = "eam" + TokenUtils.getCurrentPersonId();
             password = account;
         }
         return DataResponse.of(bpmnService.login(account, password));
@@ -165,7 +165,7 @@ public class BpmnController {
      */
     @ApiOperation(value = "根据流程实例id获取最新流程图")
     @GetMapping("/getFlowChart")
-    public DataResponse<FlowChartRes> getFlowChartByProcessId(@RequestParam("processId") String processId) {;
+    public DataResponse<FlowChartRes> getFlowChartByProcessId(@RequestParam("processId") String processId) {
         return DataResponse.of(bpmnService.getFlowChartByProcessId(processId));
     }
 }

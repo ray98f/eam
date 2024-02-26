@@ -9,7 +9,8 @@ import com.wzmtr.eam.entity.DynamicSource;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
-import com.wzmtr.eam.utils.ExcelTemplateUtil;
+import com.wzmtr.eam.utils.ExcelTemplateUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -31,12 +33,21 @@ public class FaultExportComponent {
     private FaultQueryMapper faultQueryMapper;
 
     public void exportByTemplate(FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
+        if (StringUtils.isEmpty(reqDTO.getFillinTimeStart()) || StringUtils.isEmpty(reqDTO.getFillinTimeEnd())) {
+            reqDTO.setFillinTimeStart(getNowWeek(1));
+            reqDTO.setFillinTimeEnd(getNowWeek(2));
+        }
+        List<FaultDetailResDTO> data;
+        // 根据导出类型导出对应数据
+        if (Objects.isNull(reqDTO.getExportType())) {
+            data = faultQueryMapper.listExcludeZtt(reqDTO);
+        } else {
+            data = faultQueryMapper.listZtt(reqDTO);
+        }
+        if (StringUtils.isEmpty(data)) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "该时间段内未查询到数据！");
+        }
         try {
-            List<FaultDetailResDTO> data = faultQueryMapper.list(reqDTO);
-            if (CollectionUtil.isEmpty(data)) {
-                log.info("未查询到数据！");
-                return;
-            }
             Calendar calendar = Calendar.getInstance();
             Map<String, String> staticSource = new HashMap<>();
             calendar.setFirstDayOfWeek(Calendar.MONDAY);
@@ -51,26 +62,48 @@ public class FaultExportComponent {
             List<String> optimizedList = new ArrayList<>(list);
             List<DynamicSource> dynamicSourceList = DynamicSource.createList(optimizedList, dataList);
             // 从resources下加载模板并替换
-            // InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("/fault_template.xlsx");
             InputStream resourceAsStream = getClass().getResourceAsStream("/excel_template/faulttemplate.xlsx");
             // 遍历所有的sheet
-            Workbook workbook = ExcelTemplateUtil.buildByTemplate(resourceAsStream, staticSource, dynamicSourceList);
+            Workbook workbook = ExcelTemplateUtils.buildByTemplate(resourceAsStream, staticSource, dynamicSourceList);
             // 2.保存到本地
-            ExcelTemplateUtil.save(workbook, "故障列表", response);
-            // ExcelTemplateUtil.save(workbook, "C:/PoiExcel/" + System.currentTimeMillis() + "dynamic-poi-excel-template.xls");
+            ExcelTemplateUtils.save(workbook, Objects.isNull(reqDTO.getExportType()) ? "故障列表" : "中铁通故障列表", response);
         } catch (Exception e) {
-            log.error("导出失败", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.IMPORT_ERROR);
         }
     }
 
+    /**
+     * 根据类型获取本周开始结束时间
+     * @param type 1 开始时间 2 结束时间
+     * @return 本周开始结束时间
+     */
+    private String getNowWeek(int type) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+
+        int firstDayOfWeek = calendar.getFirstDayOfWeek();
+        while (calendar.get(Calendar.DAY_OF_WEEK) != firstDayOfWeek) {
+            calendar.add(Calendar.DATE, -1);
+        }
+        if (type == CommonConstants.ONE) {
+            // 将日期调整到本周第一天（星期一）
+            calendar.add(Calendar.DATE, 1);
+            String startTime = sdf.format(calendar.getTime());
+            return startTime.split(CommonConstants.BLANK)[0] + " 00:00:00";
+        } else {
+            // 将日期调整到下一周最后一天（星期天）
+            calendar.add(Calendar.DATE, 7);
+            String endTime = sdf.format(calendar.getTime());
+            return endTime.split(CommonConstants.BLANK)[0] + " 23:59:59";
+        }
+    }
 
     public void faultExportWithTemplateUseEasyExcel(FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
         List<FaultDetailResDTO> data = faultQueryMapper.list(reqDTO);
         InputStream resourceAsStream = getClass().getResourceAsStream("/excel_template/faulttemplate.xlsx");
         Map<String, String> map = buildSingleMap();
         Map<String, List<?>> sheetAndDataMap = buildSheetAndDataMap(data);
-        ExcelTemplateUtil.fillReportWithEasyExcel(response, sheetAndDataMap, map, "test.xls", resourceAsStream);
+        ExcelTemplateUtils.fillReportWithEasyExcel(response, sheetAndDataMap, map, "test.xls", resourceAsStream);
     }
 
     private Map<String, List<?>> buildSheetAndDataMap(List<FaultDetailResDTO> data) {

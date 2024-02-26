@@ -60,4 +60,9 @@ public class FaultQueryReqDTO extends PageReqDTO {
     private Set<String> faultNos;
     @ApiModelProperty(value = "是否包含作废")
     private Boolean invalid;
+    /**
+     * 导出类型 1 中铁通 2 其他
+     */
+    @ApiModelProperty(value = "导出类型")
+    private Integer listType;
 }

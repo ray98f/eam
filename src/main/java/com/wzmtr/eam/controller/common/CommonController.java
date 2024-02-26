@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,26 +43,28 @@ public class CommonController {
     @Value("${sso.home}")
     private String home;
 
+    private final String SERVICE = "?service=";
+
     @ApiOperation(value = "登出")
     @GetMapping(value = "/logout")
     public DataResponse<String> logout() {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return DataResponse.of(String.join("", casServerUrlPrefix, logoutUrlPattern,
-                "?service=", home));
+                SERVICE, home));
     }
 
     @ApiOperation(value = "登录")
     @GetMapping(value = "/login")
     public DataResponse<String> login() {
         return DataResponse.of(String.join("", casServerUrlPrefix, loginUrlPattern,
-                "?service=", casServiceUrlPrefix, casFilterUrlPattern));
+                SERVICE, casServiceUrlPrefix, casFilterUrlPattern));
     }
 
     @GetMapping(value = "/")
     public void reload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.sendRedirect(String.join("", casServerUrlPrefix, loginUrlPattern,
-                "?service=", casServiceUrlPrefix, casFilterUrlPattern));
+                SERVICE, casServiceUrlPrefix, casFilterUrlPattern));
     }
 
     @GetMapping(value = "/index")
@@ -77,7 +78,7 @@ public class CommonController {
         return DataResponse.of(home);
     }
 
-    @RequestMapping("/error/exthrow")
+    @GetMapping("/error/exthrow")
     public void rethrow(HttpServletRequest request) throws Throwable {
         throw (Throwable) request.getAttribute("filter.error");
     }

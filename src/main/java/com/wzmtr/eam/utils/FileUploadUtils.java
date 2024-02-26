@@ -7,23 +7,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class FileUploadUtils {
-    /**
-     * 默认大小 10M
-     */
-    public static final long DEFAULT_MAX_SIZE = 10 * 1024 * 1024;
-
-    /**
-     * 默认的文件名最大长度 100
-     */
-    public static final int DEFAULT_FILE_NAME_LENGTH = 100;
-
 
     /**
      * 编码文件名
      */
     public static String extractFilename(MultipartFile file) {
         String extension = getExtension(file);
-        return DateUtil.datePath() + "/" + UUID.randomUUID() + "." + extension;
+        return DateUtils.datePath() + "/" + UUID.randomUUID() + "." + extension;
     }
 
     /**

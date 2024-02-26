@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulMaterialReqDTO;
@@ -37,7 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -65,7 +64,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     @Override
     public Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineCode, String position1Code,
                                                    String subjectCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulTplMapper.pageOverhaulTpl(pageReqDTO.of(), templateId, templateName, lineCode, position1Code, subjectCode, systemCode, equipTypeCode, null);
     }
 
@@ -76,19 +75,19 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void addOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        overhaulTplReqDTO.setRecId(TokenUtil.getUuId());
+        overhaulTplReqDTO.setRecId(TokenUtils.getUuId());
         overhaulTplReqDTO.setTrialStatus("10");
-        overhaulTplReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        overhaulTplReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        overhaulTplReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String templateId = CodeUtils.getNextCode(overhaulTplMapper.getMaxCode(), 2);
         overhaulTplReqDTO.setTemplateId(templateId);
         overhaulTplMapper.addOverhaulTpl(overhaulTplReqDTO);
@@ -96,11 +95,11 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void modifyOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -112,8 +111,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (!CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
-        overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
     }
 
@@ -124,17 +123,17 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 OverhaulTplResDTO resDTO = overhaulTplMapper.getOverhaulTplDetail(id);
                 OverhaulTplReqDTO overhaulTplReqDTO = new OverhaulTplReqDTO();
                 BeanUtils.copyProperties(overhaulTplReqDTO, resDTO);
-                if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+                if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
                     if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
-                    List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+                    List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
                     if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
                 }
-                overhaulTplMapper.deleteOverhaulTplDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                overhaulTplMapper.deleteOverhaulTpl(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                overhaulTplMapper.deleteOverhaulTplDetail(null, id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+                overhaulTplMapper.deleteOverhaulTpl(id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -143,11 +142,11 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void changeOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -155,19 +154,19 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         overhaulTplReqDTO.setTrialStatus("10");
         overhaulTplReqDTO.setWorkFlowInstId("");
         overhaulTplReqDTO.setWorkFlowInstStatus("");
-        overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.changeOverhaulTpl(overhaulTplReqDTO);
     }
 
     @Override
     public void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) throws Exception {
         // ServiceDMER0003
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -179,15 +178,15 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (list == null || list.size() <= 0) {
             throw new CommonException(ErrorCode.NO_DETAIL, "勾选模板中没有检修项！");
         }
-        List<Role> roles = roleMapper.getLoginRole(TokenUtil.getCurrentPersonId());
+        List<Role> roles = roleMapper.getLoginRole(TokenUtils.getCurrentPersonId());
         List<String> roleCode = new ArrayList<>();
         if (!roles.isEmpty()) {
             // roleCode = roles.stream().map(Role::getRoleCode).collect(Collectors.toList());
-            roleCode = StreamUtil.mapToList(roles, r -> StringUtils.isNotEmpty(r.getRoleCode()), Role::getRoleCode);
+            roleCode = StreamUtils.mapToList(roles, r -> StringUtils.isNotEmpty(r.getRoleCode()), Role::getRoleCode);
         }
         boolean bool = !roleCode.isEmpty() && (roleCode.contains("5") || roleCode.contains("6"));
         if (bool) {
-            overhaulTplReqDTO.setWorkFlowInstStatus("运营-车辆专工：" + TokenUtil.getCurrentPersonId());
+            overhaulTplReqDTO.setWorkFlowInstStatus("运营-车辆专工：" + TokenUtils.getCurrentPersonId());
             overhaulTplReqDTO.setTrialStatus("30");
         } else {
             String processId = bpmnService.commit(overhaulTplReqDTO.getTemplateId(), BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null, overhaulTplReqDTO.getExamineReqDTO().getUserIds(), null);
@@ -204,8 +203,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                     .workFlowInstId(processId)
                     .build());
         }
-        overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
     }
 
@@ -248,8 +247,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                         .build());
             }
         }
-        overhaulTplReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulTplReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
     }
 
@@ -282,10 +281,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 req.setLineNo("S1线".equals(req.getLineName()) ? "01" : "02");
                 String templateId = CodeUtils.getNextCode(overhaulTplMapper.getMaxCode(), 2);
                 req.setTemplateId(templateId);
-                req.setRecId(TokenUtil.getUuId());
+                req.setRecId(TokenUtils.getUuId());
                 req.setTrialStatus("10");
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecCreator(TokenUtils.getCurrentPersonId());
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }
@@ -311,9 +310,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 req.setItemType("列表".equals(req.getItemType()) ? "10" : "数值".equals(req.getItemType()) ? "20" : "30");
                 req.setTemplateId(overhaulTplMapper.getTemplateId(reqDTO.getTemplateName(), reqDTO.getLineName(),
                         reqDTO.getSubjectName(), reqDTO.getSystemName(), reqDTO.getEquipTypeName()));
-                req.setRecId(TokenUtil.getUuId());
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecId(TokenUtils.getUuId());
+                req.setRecCreator(TokenUtils.getCurrentPersonId());
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }
@@ -334,9 +333,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 BeanUtils.copyProperties(reqDTO, req);
                 req.setTemplateId(overhaulTplMapper.getTemplateId(reqDTO.getTemplateName(), reqDTO.getLineName(),
                         reqDTO.getSubjectName(), reqDTO.getSystemName(), reqDTO.getEquipTypeName()));
-                req.setRecId(TokenUtil.getUuId());
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecId(TokenUtils.getUuId());
+                req.setRecCreator(TokenUtils.getCurrentPersonId());
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }
@@ -362,7 +361,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public Page<OverhaulTplDetailResDTO> pageOverhaulDetailTpl(String templateId, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulTplMapper.pageOverhaulDetailTpl(pageReqDTO.of(), templateId);
     }
 
@@ -380,9 +379,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (!Objects.isNull(list) && !list.isEmpty()) {
             overhaulTplDetailReqDTO.setTemplateName(list.get(0).getTemplateName());
         }
-        overhaulTplDetailReqDTO.setRecId(TokenUtil.getUuId());
-        overhaulTplDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        overhaulTplDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplDetailReqDTO.setRecId(TokenUtils.getUuId());
+        overhaulTplDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        overhaulTplDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         overhaulTplMapper.addOverhaulTplDetail(overhaulTplDetailReqDTO);
     }
 
@@ -390,8 +389,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     public void modifyOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO) {
         // 校验修改数据
         checkOverhaulTplDetail(overhaulTplDetailReqDTO);
-        overhaulTplDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulTplDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulTplDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulTplDetailReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulTplDetail(overhaulTplDetailReqDTO);
     }
 
@@ -404,10 +403,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
         }
-        if (CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType())) {
-            if (StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches()) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
-            }
+        boolean bool = CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) &&
+                (org.apache.commons.lang3.StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches());
+        if (bool) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
         }
         List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(reqDTO.getTemplateId(), null, null, null, null, null, null, "10");
         if (StringUtils.isEmpty(list)) {
@@ -419,10 +418,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (StringUtils.isNotBlank(reqDTO.getMaxValue()) && !pattern.matcher(reqDTO.getMaxValue()).matches()) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "上限必须填数字！");
         }
-        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue())) {
-            if (CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) && Integer.parseInt(reqDTO.getMaxValue()) <= Integer.parseInt(reqDTO.getMinValue())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
-            }
+        bool = StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue()) &&
+                CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) && Integer.parseInt(reqDTO.getMaxValue()) <= Integer.parseInt(reqDTO.getMinValue());
+        if (bool) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
         }
     }
 
@@ -436,10 +435,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
             return true;
         }
-        if (CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType())) {
-            if (StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches()) {
-                return true;
-            }
+        boolean bool = CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) &&
+                (org.apache.commons.lang3.StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches());
+        if (bool) {
+            return true;
         }
         if (StringUtils.isNotBlank(reqDTO.getMinValue()) && !pattern.matcher(reqDTO.getMinValue()).matches()) {
             return true;
@@ -465,7 +464,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 if (Objects.isNull(list) || list.isEmpty()) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
                 }
-                overhaulTplMapper.deleteOverhaulTplDetail(id, null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                overhaulTplMapper.deleteOverhaulTplDetail(id, null, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         }
     }
@@ -488,7 +487,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public Page<OverhaulMaterialResDTO> pageOverhaulMaterial(String templateId, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulTplMapper.pageOverhaulMaterial(pageReqDTO.of(), templateId);
     }
 
@@ -507,23 +506,23 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (StringUtils.isNotEmpty(listStatus)) {
             overhaulMaterialReqDTO.setTemplateName(listStatus.get(0).getTemplateName());
         }
-        overhaulMaterialReqDTO.setRecId(TokenUtil.getUuId());
-        overhaulMaterialReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        overhaulMaterialReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulMaterialReqDTO.setRecId(TokenUtils.getUuId());
+        overhaulMaterialReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        overhaulMaterialReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         overhaulTplMapper.addOverhaulMaterial(overhaulMaterialReqDTO);
     }
 
     @Override
     public void modifyOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO) {
-        overhaulMaterialReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulMaterialReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulMaterialReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulMaterialReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulMaterial(overhaulMaterialReqDTO);
     }
 
     @Override
     public void deleteOverhaulMaterial(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            overhaulTplMapper.deleteOverhaulMaterial(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            overhaulTplMapper.deleteOverhaulMaterial(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         }
     }
 

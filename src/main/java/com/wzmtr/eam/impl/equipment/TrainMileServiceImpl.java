@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
@@ -19,9 +19,10 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.TrainMileMapper;
 import com.wzmtr.eam.service.equipment.TrainMileService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,7 +51,7 @@ public class TrainMileServiceImpl implements TrainMileService {
 
     @Override
     public Page<TrainMileResDTO> pageTrainMile(String equipCode, String equipName, String originLineNo, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return trainMileMapper.pageTrainMile(pageReqDTO.of(), equipCode, equipName, originLineNo);
     }
 
@@ -119,18 +118,18 @@ public class TrainMileServiceImpl implements TrainMileService {
         trainMileageReqDTO.setTractionIncrement(tractionIncrement);
         trainMileageReqDTO.setAuxiliaryIncrement(auxiliaryIncrement);
         trainMileageReqDTO.setRegenratedIncrement(regenratedIncrement);
-        trainMileageReqDTO.setRecId(TokenUtil.getUuId());
-        trainMileageReqDTO.setFillinUserId(TokenUtil.getCurrentPersonId());
-        trainMileageReqDTO.setFillinTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        trainMileageReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        trainMileageReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        trainMileageReqDTO.setRecId(TokenUtils.getUuId());
+        trainMileageReqDTO.setFillinUserId(TokenUtils.getCurrentPersonId());
+        trainMileageReqDTO.setFillinTime(DateUtils.getCurrentTime());
+        trainMileageReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        trainMileageReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         trainMileageReqDTO.setRecStatus("0");
         trainMileMapper.insertTrainMileage(trainMileageReqDTO);
     }
 
     @Override
     public Page<TrainMileageResDTO> pageTrainMileage(String startTime, String endTime, String equipCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return trainMileMapper.pageTrainMileage(pageReqDTO.of(), startTime, endTime, equipCode);
     }
 
@@ -163,7 +162,7 @@ public class TrainMileServiceImpl implements TrainMileService {
 
     @Override
     public Page<TrainMileDailyResDTO> pageTrainDailyMile(String day, String equipCode, String equipName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return trainMileMapper.pageTrainDailyMile(pageReqDTO.of(), day, equipCode, equipName);
     }
 
@@ -178,9 +177,9 @@ public class TrainMileServiceImpl implements TrainMileService {
         if (StringUtils.isNotEmpty(list)) {
             throw new CommonException(ErrorCode.TRAIN_MILE_DAILY_EXIST, trainMileDailyReqDTO.getEquipName());
         }
-        trainMileDailyReqDTO.setRecId(TokenUtil.getUuId());
-        trainMileDailyReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        trainMileDailyReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        trainMileDailyReqDTO.setRecId(TokenUtils.getUuId());
+        trainMileDailyReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        trainMileDailyReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         // todo 获取车辆PHM系统数据
 
         trainMileMapper.addTrainDailyMile(trainMileDailyReqDTO);
@@ -193,8 +192,8 @@ public class TrainMileServiceImpl implements TrainMileService {
 
     @Override
     public void modifyTrainDailyMile(TrainMileDailyReqDTO trainMileDailyReqDTO) {
-        trainMileDailyReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        trainMileDailyReqDTO.setRecReviseTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        trainMileDailyReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        trainMileDailyReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         // todo 获取车辆PHM系统数据
 
         trainMileMapper.modifyTrainDailyMile(trainMileDailyReqDTO);
@@ -208,7 +207,7 @@ public class TrainMileServiceImpl implements TrainMileService {
     @Override
     public void deleteTrainDailyMile(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            trainMileMapper.deleteTrainDailyMile(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            trainMileMapper.deleteTrainDailyMile(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             for (String id : baseIdsEntity.getIds()) {
                 TrainMileDailyResDTO trainCodeRes = trainMileMapper.getTrainDailyMileDetail(id);
                 if (!Objects.isNull(trainCodeRes)) {
@@ -251,10 +250,10 @@ public class TrainMileServiceImpl implements TrainMileService {
         for (ExcelTrainMileDailyReqDTO reqDTO : list) {
             TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtil.getUuId());
+            req.setRecId(TokenUtils.getUuId());
             req.setEquipCode(equipmentMapper.getEquipCodeByName(req.getEquipName()));
-            req.setRecCreator(TokenUtil.getCurrentPersonId());
-            req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
+            req.setRecCreateTime(DateUtils.getCurrentTime());
             temp.add(req);
         }
         if (!temp.isEmpty()) {

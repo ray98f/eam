@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.RegionReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
@@ -13,9 +13,10 @@ import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.service.basic.RegionService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import com.wzmtr.eam.utils.tree.RegionTreeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public Page<RegionResDTO> listRegion(String name, String code, String parentId, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return regionMapper.pageRegion(pageReqDTO.of(), name, code, parentId);
     }
 
@@ -62,12 +62,10 @@ public class RegionServiceImpl implements RegionService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        regionReqDTO.setRecId(TokenUtil.getUuId());
-        regionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        regionReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        regionReqDTO.setRecId(TokenUtils.getUuId());
+        regionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        regionReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         regionMapper.addRegion(regionReqDTO);
-        // RegionDO regionDO = BeanUtils.convert(regionReqDTO, RegionDO.class);
-        // regionMapper.insert(regionDO);
     }
 
     @Override
@@ -76,15 +74,15 @@ public class RegionServiceImpl implements RegionService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        regionReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        regionReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        regionReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        regionReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         regionMapper.modifyRegion(regionReqDTO);
     }
 
     @Override
     public void deleteRegion(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            regionMapper.deleteRegion(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            regionMapper.deleteRegion(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

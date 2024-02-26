@@ -32,7 +32,7 @@ import java.util.Map;
  * Date: 2023/9/25 11:30
  */
 @Slf4j
-public class ExcelTemplateUtil {
+public class ExcelTemplateUtils {
 
     public static Workbook buildByTemplate(InputStream inputStream, Map<String, String> staticSource, List<DynamicSource> dynamicSourceList) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
@@ -90,7 +90,7 @@ public class ExcelTemplateUtil {
     }
 
     private static DynamicSource parseDynamicRow(XSSFRow row, List<DynamicSource> dynamicSourceList) {
-        if (CollectionUtil.isEmpty(dynamicSourceList)) {
+        if (StringUtils.isEmpty(dynamicSourceList)) {
             return null;
         }
         if (row == null) {
@@ -146,7 +146,7 @@ public class ExcelTemplateUtil {
     }
 
     private static void replaceRowValue(XSSFRow row, Map<String, String> map, String prefixKey) {
-        if (CollectionUtil.isEmpty(map)) {
+        if (StringUtils.isEmpty(map)) {
             return;
         }
         if (row == null) {

@@ -22,7 +22,7 @@ import java.util.UUID;
  * @date 2020/12/23 15:42
  */
 @Slf4j
-public class TokenUtil {
+public class TokenUtils {
 
     private static final String SIMPLE_TOKEN_SECRET = "ZTE96952f774ce244fcb42af56062e519b3lFOGZ3YaWuCZS";
 
@@ -56,7 +56,7 @@ public class TokenUtil {
      */
     public static String createSimpleToken(CurrentLoginUser item) {
         //默认token有效时间为2小时
-        return createSimpleToken(item, 60 * 60 * 24 * 7 * 1000);
+        return createSimpleToken(item, 60L * 60L * 24L * 7L * 1000L);
     }
 
     /**
@@ -168,8 +168,4 @@ public class TokenUtil {
         return result;
     }
 
-    public static void main(String[] args) {
-        CurrentLoginUser currentLoginUser = simpleParseToken("");
-        System.out.println(currentLoginUser);
-    }
 }

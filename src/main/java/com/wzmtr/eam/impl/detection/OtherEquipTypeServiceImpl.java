@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.detection;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.detection.OtherEquipTypeReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelOtherEquipTypeReqDTO;
 import com.wzmtr.eam.dto.res.detection.OtherEquipTypeResDTO;
@@ -9,9 +9,10 @@ import com.wzmtr.eam.dto.res.detection.excel.ExcelOtherEquipTypeResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.detection.OtherEquipTypeMapper;
 import com.wzmtr.eam.service.detection.OtherEquipTypeService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +40,7 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
 
     @Override
     public Page<OtherEquipTypeResDTO> pageOtherEquipType(String typeCode, String typeName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return otherEquipTypeMapper.pageOtherEquipType(pageReqDTO.of(), typeCode, typeName);
     }
 
@@ -56,9 +56,9 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
         for (ExcelOtherEquipTypeReqDTO reqDTO : list) {
             OtherEquipTypeReqDTO req = new OtherEquipTypeReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtil.getUuId());
-            req.setRecCreator(TokenUtil.getCurrentPersonId());
-            req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+            req.setRecId(TokenUtils.getUuId());
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
+            req.setRecCreateTime(DateUtils.getCurrentTime());
             temp.add(req);
         }
         otherEquipTypeMapper.importOtherEquipType(temp);
@@ -66,27 +66,27 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
 
     @Override
     public void addOtherEquipType(OtherEquipTypeReqDTO otherEquipTypeReqDTO) {
-        otherEquipTypeReqDTO.setRecId(TokenUtil.getUuId());
-        otherEquipTypeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        otherEquipTypeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+        otherEquipTypeReqDTO.setRecId(TokenUtils.getUuId());
+        otherEquipTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        otherEquipTypeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         otherEquipTypeMapper.addOtherEquipType(otherEquipTypeReqDTO);
     }
 
     @Override
     public void modifyOtherEquipType(OtherEquipTypeReqDTO otherEquipTypeReqDTO) {
-        otherEquipTypeReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        otherEquipTypeReqDTO.setRecReviseTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+        otherEquipTypeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        otherEquipTypeReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         otherEquipTypeMapper.modifyOtherEquipType(otherEquipTypeReqDTO);
     }
 
     @Override
     public void deleteOtherEquipType(List<String> ids) {
-        otherEquipTypeMapper.deleteOtherEquipType(ids, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+        otherEquipTypeMapper.deleteOtherEquipType(ids, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
     }
 
     @Override
     public void exportOtherEquipType(String typeCode, String typeName, String ids, HttpServletResponse response) throws IOException {
-        List<OtherEquipTypeResDTO> typeList = new ArrayList<>();
+        List<OtherEquipTypeResDTO> typeList;
         if (StringUtils.isNotEmpty(ids)) {
             typeList = otherEquipTypeMapper.exportOtherEquipType(null, null, Arrays.asList(ids.split(",")));
         } else {

@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
@@ -26,10 +26,7 @@ import com.wzmtr.eam.mapper.mea.CheckPlanMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.mea.CheckPlanService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +34,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -66,7 +62,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public Page<CheckPlanResDTO> pageCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<CheckPlanResDTO> page = checkPlanMapper.pageCheckPlan(pageReqDTO.of(), checkPlanListReqDTO);
         List<CheckPlanResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
@@ -90,20 +86,19 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public void addCheckPlan(CheckPlanReqDTO checkPlanReqDTO) {
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
-        String recCreator = TokenUtil.getCurrentPersonId();
-        CurrentLoginUser user = TokenUtil.getCurrentPerson();
+        String recCreator = TokenUtils.getCurrentPersonId();
+        CurrentLoginUser user = TokenUtils.getCurrentPerson();
         String userName = user.getPersonName();
         String editDeptCode = user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId();
-        String recCreateTime = new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis());
+        String recCreateTime = DateUtils.getCurrentTime();
         String archiveFlag = "0";
         String instrmPlanNo = checkPlanMapper.getMaxCode();
-        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
-            instrmPlanNo = "JP" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+            instrmPlanNo = "JP" + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
         }
-        checkPlanReqDTO.setRecId(TokenUtil.getUuId());
+        checkPlanReqDTO.setRecId(TokenUtils.getUuId());
         checkPlanReqDTO.setInstrmPlanNo(instrmPlanNo);
         checkPlanReqDTO.setPlanStatus("10");
         checkPlanReqDTO.setRecCreator(recCreator);
@@ -127,7 +122,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!res.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(res.getPlanStatus())) {
@@ -141,8 +136,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         if (StringUtils.isNotEmpty(planList)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该定检计划已存在");
         }
-        checkPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        checkPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        checkPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        checkPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         checkPlanMapper.modifyCheckPlan(checkPlanReqDTO);
     }
 
@@ -154,19 +149,19 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 if (Objects.isNull(res)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!res.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!CommonConstants.TEN_STRING.equals(res.getPlanStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                checkPlanMapper.deleteCheckPlanDetail(null, res.getInstrmPlanNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                checkPlanMapper.deleteCheckPlanDetail(null, res.getInstrmPlanNo(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
                     BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
                     bpmnExamineDTO.setTaskId(res.getWorkFlowInstId());
                     bpmnService.rejectInstance(bpmnExamineDTO);
                 }
-                checkPlanMapper.deleteCheckPlan(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                checkPlanMapper.deleteCheckPlan(id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -180,7 +175,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!res.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         List<MeaInfoResDTO> result = checkPlanMapper.listInfo(null, res.getInstrmPlanNo());
@@ -199,8 +194,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
             reqDTO.setWorkFlowInstId(processId);
             reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.CHECK_PLAN_SUBMIT.value(),null));
             reqDTO.setPlanStatus("20");
-            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-            reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+            reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
             checkPlanMapper.modifyCheckPlan(reqDTO);
             // 记录日志
             workFlowLogService.add(WorkFlowLogBO.builder()
@@ -253,8 +248,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                         .build());
             }
         }
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         checkPlanMapper.modifyCheckPlan(reqDTO);
     }
 
@@ -276,7 +271,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public Page<MeaInfoResDTO> pageCheckPlanInfo(String equipCode, String instrmPlanNo, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return checkPlanMapper.pageInfo(pageReqDTO.of(), equipCode, instrmPlanNo);
     }
 
@@ -291,16 +286,16 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         checkPlanListReqDTO.setInstrmPlanNo(meaInfoReqDTO.getInstrmPlanNo());
         List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
         if (StringUtils.isNotEmpty(list)) {
-            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+            if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
             if (!CommonConstants.TEN_STRING.equals(list.get(0).getPlanStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "新增");
             }
         }
-        meaInfoReqDTO.setRecId(TokenUtil.getUuId());
-        meaInfoReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        meaInfoReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        meaInfoReqDTO.setRecId(TokenUtils.getUuId());
+        meaInfoReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        meaInfoReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         meaInfoReqDTO.setArchiveFlag("0");
         if (meaInfoReqDTO.getVerifyPeriod() == 0) {
             meaInfoReqDTO.setVerifyPeriod(null);
@@ -314,15 +309,15 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         checkPlanListReqDTO.setInstrmPlanNo(meaInfoReqDTO.getInstrmPlanNo());
         List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
         if (StringUtils.isNotEmpty(list)) {
-            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+            if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
             if (!CommonConstants.TEN_STRING.equals(list.get(0).getPlanStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
-        meaInfoReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        meaInfoReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        meaInfoReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        meaInfoReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         checkPlanMapper.modifyInfo(meaInfoReqDTO);
     }
 
@@ -338,14 +333,14 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 checkPlanListReqDTO.setInstrmPlanNo(res.getInstrmPlanNo());
                 List<CheckPlanResDTO> list = checkPlanMapper.listCheckPlan(checkPlanListReqDTO);
                 if (StringUtils.isNotEmpty(list)) {
-                    if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                    if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }
                     if (!CommonConstants.TEN_STRING.equals(list.get(0).getPlanStatus())) {
                         throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                     }
                 }
-                checkPlanMapper.deleteCheckPlanDetail(id, null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                checkPlanMapper.deleteCheckPlanDetail(id, null, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -368,7 +363,7 @@ public class CheckPlanServiceImpl implements CheckPlanService {
 
     @Override
     public Page<MeaInfoResDTO> queryCheckPlanInfo(MeaInfoQueryReqDTO meaInfoQueryReqDTO, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return checkPlanMapper.queryDetail(pageReqDTO.of(), meaInfoQueryReqDTO);
     }
 

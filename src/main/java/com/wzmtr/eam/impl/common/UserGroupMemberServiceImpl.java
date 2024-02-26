@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.common;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
@@ -11,6 +10,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.service.common.UserGroupMemberService;
+import com.wzmtr.eam.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +56,7 @@ public class UserGroupMemberServiceImpl implements UserGroupMemberService {
             roleCode = "DM_004";
             nextUser.addAll(roleMapper.getUserBySubjectAndLineAndRole(subjectCode, lineCode, roleCode));
         }
-        if (nextUser.size() <= 0) {
+        if (nextUser.isEmpty()) {
             if (OPERATE_PROFESSION_ENGINE.equals(roleCode)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "专业工程师（运营）角色中没有人员，不能进行送审操作");
             }
@@ -68,7 +68,7 @@ public class UserGroupMemberServiceImpl implements UserGroupMemberService {
     @Override
     public List<DispatchResDTO> queryDispatch() {
         List<DispatchResDTO> dispatchList = orgMajorMapper.queryDispatch();
-        if (CollectionUtil.isEmpty(dispatchList)) {
+        if (StringUtils.isEmpty(dispatchList)) {
             return Lists.newArrayList();
         }
         return dispatchList;

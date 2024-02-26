@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.BomReqDTO;
 import com.wzmtr.eam.dto.req.basic.BomTrainReqDTO;
@@ -14,17 +14,13 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.bom.BomMapper;
 import com.wzmtr.eam.service.basic.BomService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +36,7 @@ public class BomServiceImpl implements BomService {
 
     @Override
     public Page<BomResDTO> listBom(String parentId, String code, String name, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return bomMapper.pageBom(pageReqDTO.of(), parentId, code, name);
     }
 
@@ -55,9 +51,9 @@ public class BomServiceImpl implements BomService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        bomReqDTO.setRecId(TokenUtil.getUuId());
-        bomReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        bomReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        bomReqDTO.setRecId(TokenUtils.getUuId());
+        bomReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        bomReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         bomMapper.addBom(bomReqDTO);
     }
 
@@ -67,15 +63,15 @@ public class BomServiceImpl implements BomService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        bomReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        bomReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        bomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        bomReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         bomMapper.modifyBom(bomReqDTO);
     }
 
     @Override
     public void deleteBom(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            bomMapper.deleteBom(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            bomMapper.deleteBom(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -144,7 +140,7 @@ public class BomServiceImpl implements BomService {
             }
         }
         if (!temp.isEmpty()) {
-            bomMapper.importBom(temp, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            bomMapper.importBom(temp, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         }
     }
 
@@ -186,7 +182,7 @@ public class BomServiceImpl implements BomService {
         for (ExcelBomTrainReqDTO reqDTO : list) {
             BomTrainReqDTO req = new BomTrainReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtil.getUuId());
+            req.setRecId(TokenUtils.getUuId());
             temp.add(req);
         }
         if (!temp.isEmpty()) {

@@ -2,7 +2,7 @@ package com.wzmtr.eam.impl.equipment;
 
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
@@ -20,10 +20,7 @@ import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.equipment.EquipmentService;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.QrUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +92,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public Page<EquipmentResDTO> pageEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                                String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         if (StringUtils.isNotEmpty(position1Code) && position1Code.contains(ES)) {
             majorCode = "07";
             position1Code = null;
@@ -119,12 +116,12 @@ public class EquipmentServiceImpl implements EquipmentService {
             req.setUseLineNo(Objects.isNull(reqDTO.getUseLineName()) ? "" : "S1线".equals(reqDTO.getUseLineName()) ? "01" : "02");
             req.setUseSegNo(Objects.isNull(reqDTO.getUseSegName()) ? "" : "一期".equals(reqDTO.getUseSegName()) ? "01" : "二期".equals(reqDTO.getUseSegName()) ? "二期" : "三期");
             req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" : "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
-            req.setRecId(TokenUtil.getUuId());
+            req.setRecId(TokenUtils.getUuId());
             req.setApprovalStatus("30");
             req.setQuantity(new BigDecimal("1"));
-            req.setRecCreator(TokenUtil.getCurrentPersonId());
-            req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-            CurrentLoginUser user = TokenUtil.getCurrentPerson();
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
+            req.setRecCreateTime(DateUtils.getCurrentTime());
+            CurrentLoginUser user = TokenUtils.getCurrentPerson();
             req.setCompanyCode(user.getCompanyAreaId());
             req.setCompanyName(user.getCompanyName());
             req.setDeptCode(user.getOfficeAreaId());
@@ -181,19 +178,19 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public Page<OverhaulOrderDetailResDTO> listOverhaul(String equipCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentMapper.listOverhaul(pageReqDTO.of(), equipCode);
     }
 
     @Override
     public Page<FaultDetailResDTO> listFault(String equipCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentMapper.listFault(pageReqDTO.of(), equipCode);
     }
 
     @Override
     public Page<PartReplaceResDTO> listPartReplace(String equipCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentMapper.listPartReplace(pageReqDTO.of(), equipCode);
     }
 
@@ -201,10 +198,10 @@ public class EquipmentServiceImpl implements EquipmentService {
         String unitNo = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(1)) + 1);
         String equipCode = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(4)) + 1);
         UnitCodeReqDTO unitCodeReqDTO = new UnitCodeReqDTO();
-        unitCodeReqDTO.setRecId(TokenUtil.getUuId());
+        unitCodeReqDTO.setRecId(TokenUtils.getUuId());
         unitCodeReqDTO.setUnitNo(unitNo);
-        unitCodeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        unitCodeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        unitCodeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        unitCodeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         unitCodeReqDTO.setDevNo(equipCode);
         unitCodeReqDTO.setBatchNo("");
         unitCodeReqDTO.setAssetNo("");

@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.detection;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.detection.SpecialEquipTypeReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelSpecialEquipTypeReqDTO;
 import com.wzmtr.eam.dto.res.detection.SpecialEquipTypeResDTO;
@@ -9,9 +9,10 @@ import com.wzmtr.eam.dto.res.detection.excel.ExcelSpecialEquipTypeResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.detection.SpecialEquipTypeMapper;
 import com.wzmtr.eam.service.detection.SpecialEquipTypeService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
 
     @Override
     public Page<SpecialEquipTypeResDTO> pageSpecialEquipType(String typeCode, String typeName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return specialEquipTypeMapper.pageSpecialEquipType(pageReqDTO.of(), typeCode, typeName);
     }
 
@@ -55,9 +55,9 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
         for (ExcelSpecialEquipTypeReqDTO reqDTO : list) {
             SpecialEquipTypeReqDTO req = new SpecialEquipTypeReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtil.getUuId());
-            req.setRecCreator(TokenUtil.getCurrentPersonId());
-            req.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+            req.setRecId(TokenUtils.getUuId());
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
+            req.setRecCreateTime(DateUtils.getCurrentTime());
             temp.add(req);
         }
         specialEquipTypeMapper.importSpecialEquipType(temp);
@@ -65,22 +65,22 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
 
     @Override
     public void addSpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO) {
-        specialEquipTypeReqDTO.setRecId(TokenUtil.getUuId());
-        specialEquipTypeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        specialEquipTypeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+        specialEquipTypeReqDTO.setRecId(TokenUtils.getUuId());
+        specialEquipTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        specialEquipTypeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         specialEquipTypeMapper.addSpecialEquipType(specialEquipTypeReqDTO);
     }
 
     @Override
     public void modifySpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO) {
-        specialEquipTypeReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        specialEquipTypeReqDTO.setRecReviseTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+        specialEquipTypeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        specialEquipTypeReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         specialEquipTypeMapper.modifySpecialEquipType(specialEquipTypeReqDTO);
     }
 
     @Override
     public void deleteSpecialEquipType(List<String> ids) {
-        specialEquipTypeMapper.deleteSpecialEquipType(ids, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+        specialEquipTypeMapper.deleteSpecialEquipType(ids, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
     }
 
     @Override

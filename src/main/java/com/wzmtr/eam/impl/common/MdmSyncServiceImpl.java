@@ -12,9 +12,6 @@ import com.wzmtr.eam.service.common.MdmSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-import org.apache.ibatis.executor.BatchResult;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -467,22 +464,10 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } else if (SUPP.equals(type)) {
             userAccountMapper.cleanSuppCon();
         }
-        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
-        try {
-            UserAccountMapper mapper = sqlSession.getMapper(UserAccountMapper.class);
-            for (SysUser sysUser : list) {
-                if (!StringUtils.isEmpty(sysUser.getId())) {
-                    mapper.createPerson(sysUser);
-                }
+        for (SysUser sysUser : list) {
+            if (!StringUtils.isEmpty(sysUser.getId())) {
+                userAccountMapper.createPerson(sysUser);
             }
-            sqlSession.commit();
-            List<BatchResult> batchResults = sqlSession.flushStatements();
-            sqlSession.clearCache();
-            sqlSession.close();
-            batchResults.clear();
-        } catch (Exception e) {
-            log.error("exception message", e);
-            log.info(e.getMessage());
         }
     }
 
@@ -497,28 +482,14 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         } else if (EXTRA.equals(type)) {
             organizationMapper.cleanExtra();
         }
-        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
-        try {
-            OrganizationMapper mapper = sqlSession.getMapper(OrganizationMapper.class);
-            for (SysOffice office : list) {
-                if (office != null && office.getName() != null) {
-                    mapper.createOrg(office);
-                }
+        for (SysOffice office : list) {
+            if (office != null && office.getName() != null) {
+                organizationMapper.createOrg(office);
             }
-            sqlSession.commit();
-            sqlSession.flushStatements();
-            sqlSession.clearCache();
-            List<OrgParentResDTO> pList = organizationMapper.searchParent();
-            for (OrgParentResDTO orgParent : pList) {
-                mapper.updateParent(orgParent);
-            }
-            sqlSession.commit();
-            sqlSession.flushStatements();
-            sqlSession.clearCache();
-            sqlSession.close();
-        } catch (Exception e) {
-            log.error("exception message", e);
-            log.info(e.getMessage());
+        }
+        List<OrgParentResDTO> pList = organizationMapper.searchParent();
+        for (OrgParentResDTO orgParent : pList) {
+            organizationMapper.updateParent(orgParent);
         }
     }
 
@@ -527,63 +498,37 @@ public class MdmSyncServiceImpl implements MdmSyncService {
      */
     private void doEmpJobInsertBatch(List<SysOrgUser> list) {
         userAccountMapper.cleanEmpJob();
-        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
-        try {
-            UserAccountMapper mapper = sqlSession.getMapper(UserAccountMapper.class);
-            List<SysUser> uList = new ArrayList<>();
-            Date now = new Date();
-            for (SysOrgUser sysOrgUser : list) {
-                boolean bool = (CommonConstants.ONE_STRING.equals(sysOrgUser.getLeavestatus()) || "11".equals(sysOrgUser.getLeavestatus()) || "12".equals(sysOrgUser.getLeavestatus()))
-                        && now.before(sysOrgUser.getLeavedate()) && !StringUtils.isEmpty(sysOrgUser.getCompanyId()) && !StringUtils.isEmpty(sysOrgUser.getOfficeId());
-                if (bool) {
-                    SysUser user = new SysUser();
-                    user.setId(sysOrgUser.getUserId());
-                    user.setCompanyId(sysOrgUser.getCompanyId());
-                    user.setOfficeId(sysOrgUser.getOfficeId());
-                    uList.add(user);
-                }
-                mapper.createEmpJob(sysOrgUser);
+        List<SysUser> uList = new ArrayList<>();
+        Date now = new Date();
+        for (SysOrgUser sysOrgUser : list) {
+            boolean bool = (CommonConstants.ONE_STRING.equals(sysOrgUser.getLeavestatus()) || "11".equals(sysOrgUser.getLeavestatus()) || "12".equals(sysOrgUser.getLeavestatus()))
+                    && now.before(sysOrgUser.getLeavedate()) && !StringUtils.isEmpty(sysOrgUser.getCompanyId()) && !StringUtils.isEmpty(sysOrgUser.getOfficeId());
+            if (bool) {
+                SysUser user = new SysUser();
+                user.setId(sysOrgUser.getUserId());
+                user.setCompanyId(sysOrgUser.getCompanyId());
+                user.setOfficeId(sysOrgUser.getOfficeId());
+                uList.add(user);
             }
-            sqlSession.commit();
-            sqlSession.clearCache();
-            if (!uList.isEmpty()) {
-                for (SysUser user : uList) {
-                    if (user.getId() != null) {
-                        mapper.updateUserCompany(user);
-                    }
-                }
-            }
-            sqlSession.commit();
-            sqlSession.flushStatements();
-            sqlSession.clearCache();
-            sqlSession.close();
-        } catch (Exception e) {
-            log.error("exception message", e);
-            log.info(e.getMessage());
+            userAccountMapper.createEmpJob(sysOrgUser);
         }
-
+        if (!uList.isEmpty()) {
+            for (SysUser user : uList) {
+                if (user.getId() != null) {
+                    userAccountMapper.updateUserCompany(user);
+                }
+            }
+        }
     }
 
     /**
      * 人员扩展信息同步
      */
     private void doPersonPlusUpdateBatch(List<Map<String, Object>> plusList) {
-        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
-        try {
-            UserAccountMapper mapper = sqlSession.getMapper(UserAccountMapper.class);
-            for (Map<String, Object> item : plusList) {
-                if (!StringUtils.isEmpty(item.get("id").toString())) {
-                    mapper.updatePersonPlus(item);
-                }
+        for (Map<String, Object> item : plusList) {
+            if (!StringUtils.isEmpty(item.get(CommonConstants.ID).toString())) {
+                userAccountMapper.updatePersonPlus(item);
             }
-            sqlSession.commit();
-            List<BatchResult> batchResults = sqlSession.flushStatements();
-            sqlSession.clearCache();
-            sqlSession.close();
-            batchResults.clear();
-        } catch (Exception e) {
-            log.error("exception message", e);
-            log.info(e.getMessage());
         }
     }
 }

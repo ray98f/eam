@@ -13,15 +13,16 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EipMsgPushUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class OverTodoServiceImpl implements OverTodoService {
 
     @Override
     public void overTodo(String businessRecId, String auditOpinion) {
-        if (StringUtils.isBlank(businessRecId)) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(businessRecId)) {
             throw new CommonException(ErrorCode.PARAM_NULL);
         }
         try {
@@ -60,8 +61,8 @@ public class OverTodoServiceImpl implements OverTodoService {
                     sLog.setTodoId(businessRecId);
                     sLog.setAuditOpinion(auditOpinion);
                     sLog.setTodoStatus("2");
-                    sLog.setProcessUserId(TokenUtil.getCurrentPersonId());
-                    sLog.setTodoDate(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    sLog.setProcessUserId(TokenUtils.getCurrentPersonId());
+                    sLog.setTodoDate(DateUtils.getCurrentTime());
                     overTodoMapper.updateStatus(sLog);
                     EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
                 }
@@ -74,7 +75,7 @@ public class OverTodoServiceImpl implements OverTodoService {
 
     @Override
     public void insertTodo(String taskTitle, String businessRecId, String businessNo, String stepUserId, String stepName, String taskUrl, String lastStepUserId) {
-        if (StringUtils.isBlank(taskTitle) || StringUtils.isBlank(businessNo) || StringUtils.isBlank(stepUserId) || StringUtils.isBlank(stepName)) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(taskTitle) || org.apache.commons.lang3.StringUtils.isBlank(businessNo) || org.apache.commons.lang3.StringUtils.isBlank(stepUserId) || org.apache.commons.lang3.StringUtils.isBlank(stepName)) {
             throw new CommonException(ErrorCode.PARAM_NULL);
         }
         try {
@@ -95,8 +96,8 @@ public class OverTodoServiceImpl implements OverTodoService {
             BeanUtils.copyProperties(eipMsgPushReq, sLog);
             sLog.setStepName(stepName);
             sLog.setSyscode("DM");
-            sLog.setLastStepUserId(TokenUtil.getCurrentPersonId());
-            sLog.setTaskRcvTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            sLog.setLastStepUserId(TokenUtils.getCurrentPersonId());
+            sLog.setTaskRcvTime(DateUtils.getCurrentTime());
             sLog.setExt1(" ");
             overTodoMapper.insert(sLog);
             EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
@@ -185,7 +186,7 @@ public class OverTodoServiceImpl implements OverTodoService {
             }
             return queryUserByParent(groupId, parentCode);
         }
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -207,7 +208,7 @@ public class OverTodoServiceImpl implements OverTodoService {
             }
             return queryUserByChild(groupId, orgCode, majorCode, lineCode, orgType);
         }
-        return null;
+        return Collections.emptyList();
     }
     @Override
     public void insertTodoWithUserList(List<String> userIds, String taskTitle, String businessRecId, String businessNo,

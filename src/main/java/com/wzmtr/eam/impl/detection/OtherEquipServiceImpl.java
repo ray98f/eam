@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.detection;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.detection.OtherEquipReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelOtherEquipReqDTO;
@@ -18,10 +18,10 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.detection.OtherEquipMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.service.detection.OtherEquipService;
-import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class OtherEquipServiceImpl implements OtherEquipService {
     @Override
     public Page<OtherEquipResDTO> pageOtherEquip(String equipCode, String equipName, String otherEquipCode, String factNo,
                                                      String useLineNo, String position1Code, String otherEquipType, String equipStatus, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OtherEquipResDTO> page =  otherEquipMapper.pageOtherEquip(pageReqDTO.of(), equipCode, equipName, otherEquipCode, factNo, useLineNo,
                 position1Code, otherEquipType, equipStatus);
         List<OtherEquipResDTO> list = page.getRecords();
@@ -72,7 +72,7 @@ public class OtherEquipServiceImpl implements OtherEquipService {
                 }
                 if (StringUtils.isNotEmpty(resDTO.getVerifyValidityDate())) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    String day = DateUtil.getDayByMonth(3);
+                    String day = DateUtils.getDayByMonth(3);
                     try {
                         resDTO.setIsWarn(sdf.parse(day).getTime() <= sdf.parse(resDTO.getVerifyValidityDate()).getTime() ? 0 : 1);
                     } catch (ParseException e) {
@@ -106,11 +106,11 @@ public class OtherEquipServiceImpl implements OtherEquipService {
         for (ExcelOtherEquipReqDTO reqDTO : list) {
             OtherEquipReqDTO req = new OtherEquipReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtil.getUuId());
-            req.setRecCreator(TokenUtil.getCurrentPersonId());
-            req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-            req.setRecRevisor(TokenUtil.getCurrentPersonId());
-            req.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            req.setRecId(TokenUtils.getUuId());
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
+            req.setRecCreateTime(DateUtils.getCurrentTime());
+            req.setRecRevisor(TokenUtils.getCurrentPersonId());
+            req.setRecReviseTime(DateUtils.getCurrentTime());
             if (StringUtils.isNotEmpty(reqDTO.getOtherEquipType())) {
                 req.setOtherEquipType("电梯".equals(reqDTO.getOtherEquipType()) ? "10" : "起重机".equals(reqDTO.getOtherEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getOtherEquipType()) ? "30" : "40");
             }
@@ -128,8 +128,8 @@ public class OtherEquipServiceImpl implements OtherEquipService {
 
     @Override
     public void modifyOtherEquip(OtherEquipReqDTO otherEquipReqDTO) {
-        otherEquipReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        otherEquipReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        otherEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        otherEquipReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         otherEquipMapper.modifyOtherEquip(otherEquipReqDTO);
     }
 
@@ -156,7 +156,7 @@ public class OtherEquipServiceImpl implements OtherEquipService {
 
     @Override
     public Page<OtherEquipHistoryResDTO> pageOtherEquipHistory(String equipCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return otherEquipMapper.pageOtherEquipHistory(pageReqDTO.of(), equipCode);
     }
 

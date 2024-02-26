@@ -2,7 +2,7 @@ package com.wzmtr.eam.impl.secure;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.export.SecureCheckExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,11 +50,11 @@ public class SecureCheckServiceImpl implements SecureCheckService {
 
     @Override
     public Page<SecureCheckRecordListResDTO> list(SecureCheckRecordListReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO.getSecRiskId(), reqDTO.getInspectDateStart(), reqDTO.getInspectDateEnd(), reqDTO.getIsRestoredCode(), reqDTO.getRecStatus());
-        if (CollectionUtil.isNotEmpty(list.getRecords())) {
+        if (StringUtils.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
-            // StreamUtil.map(records,SecureCheckRecordListResDTO::create);
+            // StreamUtils.map(records,SecureCheckRecordListResDTO::create);
             records.forEach(this::assembly);
             return list;
         }
@@ -109,7 +108,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     public void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, HttpServletResponse response) {
         List<SecureCheckRecordListResDTO> list = secureMapper.list(secRiskId, restoreDesc, inspectDate, workFlowInstStatus);
-        if (CollectionUtil.isEmpty(list)) {
+        if (StringUtils.isEmpty(list)) {
             log.warn("未查询到数据，丢弃导出操作!");
             return;
         }
@@ -152,8 +151,8 @@ public class SecureCheckServiceImpl implements SecureCheckService {
 
     @Override
     public void delete(BaseIdsEntity reqDTO) {
-        if (CollectionUtil.isNotEmpty(reqDTO.getIds())) {
-            secureMapper.deleteByIds(reqDTO.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        if (StringUtils.isNotEmpty(reqDTO.getIds())) {
+            secureMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -162,15 +161,15 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SecureCheckAddReqDTO reqDTO) {
-        reqDTO.setRecId(TokenUtil.getUuId());
-        reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecId(TokenUtils.getUuId());
+        reqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         String secRiskId = CodeUtils.getNextCode(secureMapper.getMaxCode(), "AQ");
         reqDTO.setSecRiskId(secRiskId);
         // 默认初始为0
         reqDTO.setDeleteFlag("0");
         reqDTO.setSecRiskId(secRiskId);
         reqDTO.setRecStatus("10");
-        reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         if (AREA_ID.equals(reqDTO.getRestoreDeptCode().trim())) {
             reqDTO.setExt5("0103705");
         } else {
@@ -182,8 +181,8 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SecureCheckAddReqDTO reqDTO) {
-        reqDTO.setRecReviseTime(DateUtil.dateTimeNow("yyyyMMddHHmmss"));
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         secureMapper.update(reqDTO);
     }
 

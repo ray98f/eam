@@ -2,7 +2,7 @@ package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.diboot.core.util.BeanUtils;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.*;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -68,7 +67,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Page<TransferResDTO> pageTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
                                              String majorCode, String orderNo, String orderName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         String eamProcessStatus1 = null;
         String eamProcessStatus2 = null;
         if (StringUtils.isNotEmpty(eamProcessStatus)) {
@@ -133,15 +132,15 @@ public class TransferServiceImpl implements TransferService {
                 if (CommonConstants.TWENTY_STRING.equals(transferResDTO.getEamProcessStatus())) {
                     throw new CommonException(ErrorCode.TRANSFER_HAS_HANDLE, transferResDTO.getTransferNo());
                 }
-                CurrentLoginUser user = TokenUtil.getCurrentPerson();
+                CurrentLoginUser user = TokenUtils.getCurrentPerson();
                 for (int i = 0; i < transferResDTO.getQuantity(); i++) {
                     String unitNo = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(1)) + 1);
                     String equipCode = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(4)) + 1);
                     UnitCodeReqDTO unitCodeReqDTO = new UnitCodeReqDTO();
-                    unitCodeReqDTO.setRecId(TokenUtil.getUuId());
+                    unitCodeReqDTO.setRecId(TokenUtils.getUuId());
                     unitCodeReqDTO.setUnitNo(unitNo);
                     unitCodeReqDTO.setRecCreator(user.getPersonId());
-                    unitCodeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    unitCodeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
                     unitCodeReqDTO.setDevNo(equipCode);
                     unitCodeReqDTO.setBatchNo(" ");
                     unitCodeReqDTO.setAssetNo(" ");
@@ -166,7 +165,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Page<EquipmentResDTO> pageSplitTransfer(String sourceRecId, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
         if (sourceRecId == null) {
             sourceRecId = "flag";
@@ -197,7 +196,7 @@ public class TransferServiceImpl implements TransferService {
         // ServiceDMDM0103 submit
         if (transferSplitReqDTO.getEquipmentList() != null && !transferSplitReqDTO.getEquipmentList().isEmpty()) {
             for (EquipmentResDTO resDTO : transferSplitReqDTO.getEquipmentList()) {
-                if (StringUtils.isBlank(resDTO.getStartUseDate()) || StringUtils.isBlank(resDTO.getSystemCode()) || StringUtils.isBlank(resDTO.getEquipTypeCode())) {
+                if (org.apache.commons.lang3.StringUtils.isBlank(resDTO.getStartUseDate()) || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getSystemCode()) || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getEquipTypeCode())) {
                     throw new CommonException(ErrorCode.REQUIRED_NULL, "设备" + resDTO.getEquipCode());
                 }
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getApprovalStatus())) {
@@ -320,7 +319,7 @@ public class TransferServiceImpl implements TransferService {
                 equipmentReqDTO.setEquipTypeName(listEquipType.get(0).getNodeName());
             }
         }
-        equipmentReqDTO.setRecId(TokenUtil.getUuId());
+        equipmentReqDTO.setRecId(TokenUtils.getUuId());
         equipmentReqDTO.setEquipName(transferResDTO.getItemName());
         equipmentReqDTO.setApprovalStatus("10");
         equipmentReqDTO.setSpecialEquipFlag("10");
@@ -328,7 +327,7 @@ public class TransferServiceImpl implements TransferService {
         equipmentReqDTO.setSourceSubNo(transferResDTO.getItemCode());
         equipmentReqDTO.setSourceRecId(transferResDTO.getRecId());
         equipmentReqDTO.setRecCreator(user.getPersonId());
-        equipmentReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentReqDTO.setQuantity(new BigDecimal("1"));
         equipmentReqDTO.setCompanyCode(user.getCompanyAreaId() == null ? user.getCompanyId() : user.getCompanyAreaId());
         equipmentReqDTO.setCompanyName(user.getCompanyName());
@@ -367,8 +366,8 @@ public class TransferServiceImpl implements TransferService {
         resDTO.setEquipTypeName(equipmentCategoryMapper.getIndexByIndex(resDTO.getEquipTypeCode(), null, null).getNodeName());
         EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
         BeanUtils.copyProperties(resDTO, equipmentReqDTO);
-        equipmentReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        equipmentReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        equipmentReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         equipmentMapper.updateEquipment(equipmentReqDTO);
     }
 
@@ -380,26 +379,26 @@ public class TransferServiceImpl implements TransferService {
                     if (bom.getQuantity() != null) {
                         for (int i = 0; i < bom.getQuantity().intValue(); i++) {
                             EquipmentPartReqDTO equipmentPartReqDTO = new EquipmentPartReqDTO();
-                            equipmentPartReqDTO.setRecId(TokenUtil.getUuId());
+                            equipmentPartReqDTO.setRecId(TokenUtils.getUuId());
                             equipmentPartReqDTO.setEquipCode(resDTO.getEquipCode());
                             equipmentPartReqDTO.setEquipName(resDTO.getEquipName());
                             equipmentPartReqDTO.setPartCode(CodeUtils.getNextCode(equipmentPartMapper.getMaxPartCode(), 1));
                             equipmentPartReqDTO.setPartName(bom.getCname());
                             equipmentPartReqDTO.setBomEname(bom.getEname());
-                            equipmentPartReqDTO.setInAccountTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            equipmentPartReqDTO.setInAccountTime(DateUtils.getCurrentTime());
                             equipmentPartReqDTO.setDeleteFlag(" ");
-                            equipmentPartReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                            equipmentPartReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            equipmentPartReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+                            equipmentPartReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
                             equipmentPartReqDTO.setRecStatus("0");
                             equipmentPartReqDTO.setEquipStatus("10");
                             equipmentPartReqDTO.setQuantity(new BigDecimal("1"));
                             equipmentPartMapper.insertEquipmentPart(equipmentPartReqDTO);
                             PartFaultReqDTO partFaultReqDTO = new PartFaultReqDTO();
                             BeanUtils.copyProperties(equipmentPartReqDTO, partFaultReqDTO);
-                            partFaultReqDTO.setRecId(TokenUtil.getUuId());
-                            partFaultReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                            partFaultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                            partFaultReqDTO.setOperateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            partFaultReqDTO.setRecId(TokenUtils.getUuId());
+                            partFaultReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+                            partFaultReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+                            partFaultReqDTO.setOperateTime(DateUtils.getCurrentTime());
                             partFaultReqDTO.setLogType("10");
                             partFaultReqDTO.setRemark("设备移交的部件！");
                             partFaultMapper.insertPartFault(partFaultReqDTO);
@@ -422,7 +421,7 @@ public class TransferServiceImpl implements TransferService {
 //        String systemName = "DM";
 //        String url = ServiceDMDM4AT.path;
 //        String json = JSONArray.fromObject(list).toString();
-//        CurrentLoginUser user = TokenUtil.getCurrentPerson();
+//        CurrentLoginUser user = TokenUtils.getCurrentPerson();
 //        OSBGetMessage osbGetMessage = new OSBGetMessage();
 //        String orgCode = user.getOfficeAreaId() == null ? user.getOfficeId() : user.getOfficeAreaId();
 //        String result = osbGetMessage.getMessage(method, user.getPersonId(), orgCode, systemName, json, url, methodName, "set", "Data", 0);

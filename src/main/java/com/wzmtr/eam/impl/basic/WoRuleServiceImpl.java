@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.WoRuleReqDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
@@ -13,17 +13,13 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.service.basic.WoRuleService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -50,7 +46,7 @@ public class WoRuleServiceImpl implements WoRuleService {
 
     @Override
     public Page<WoRuleResDTO> listWoRule(String ruleCode, String ruleName, String ruleUseage, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return woRuleMapper.pageWoRule(pageReqDTO.of(), ruleCode, ruleName, ruleUseage);
     }
 
@@ -61,7 +57,7 @@ public class WoRuleServiceImpl implements WoRuleService {
 
     @Override
     public Page<WoRuleResDTO.WoRuleDetail> listWoRuleDetail(String ruleCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return woRuleMapper.pageWoRuleDetail(pageReqDTO.of(), ruleCode);
     }
 
@@ -73,17 +69,17 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void addWoRule(WoRuleReqDTO woRuleReqDTO) {
         woRuleReqDTO.setRuleCode(CodeUtils.getNextCode(woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage()), 1));
-        woRuleReqDTO.setRecId(TokenUtil.getUuId());
-        woRuleReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        woRuleReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        woRuleReqDTO.setRecId(TokenUtils.getUuId());
+        woRuleReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        woRuleReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         woRuleMapper.addWoRule(woRuleReqDTO);
     }
 
     @Override
     public void addWoRuleDetail(WoRuleReqDTO.WoRuleDetail woRuleDetail) {
-        woRuleDetail.setRecId(TokenUtil.getUuId());
-        woRuleDetail.setRecCreator(TokenUtil.getCurrentPersonId());
-        woRuleDetail.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        woRuleDetail.setRecId(TokenUtils.getUuId());
+        woRuleDetail.setRecCreator(TokenUtils.getCurrentPersonId());
+        woRuleDetail.setRecCreateTime(DateUtils.getCurrentTime());
         woRuleDetail.setPeriod(Optional.ofNullable(woRuleDetail.getPeriod()).orElse(CommonConstants.ZERO_LONG));
         woRuleMapper.addWoRuleDetail(woRuleDetail);
     }
@@ -95,23 +91,23 @@ public class WoRuleServiceImpl implements WoRuleService {
             woRuleMapper.modifyWoRuleDetailCode(woRuleReqDTO.getRuleCode(), newCode);
             woRuleReqDTO.setRuleCode(newCode);
         }
-        woRuleReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        woRuleReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        woRuleReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        woRuleReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         woRuleMapper.modifyWoRule(woRuleReqDTO);
     }
 
     @Override
     public void modifyWoRuleDetail(WoRuleReqDTO.WoRuleDetail woRuleDetail) {
-        woRuleDetail.setRecRevisor(TokenUtil.getCurrentPersonId());
-        woRuleDetail.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        woRuleDetail.setRecRevisor(TokenUtils.getCurrentPersonId());
+        woRuleDetail.setRecReviseTime(DateUtils.getCurrentTime());
         woRuleMapper.modifyWoRuleDetail(woRuleDetail);
     }
 
     @Override
     public void deleteWoRule(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            woRuleMapper.deleteWoRule(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-            woRuleMapper.deleteWoRuleDetailByCode(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            woRuleMapper.deleteWoRule(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+            woRuleMapper.deleteWoRuleDetailByCode(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -120,7 +116,7 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void deleteWoRuleDetail(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            woRuleMapper.deleteWoRuleDetail(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            woRuleMapper.deleteWoRuleDetail(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

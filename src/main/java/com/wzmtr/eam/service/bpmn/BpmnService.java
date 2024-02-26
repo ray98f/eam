@@ -20,7 +20,7 @@ public interface BpmnService {
 
     String startInstance(StartInstanceVO startInstanceVO);
 
-    ResultEntity agreeInstance(BpmnExamineDTO bpmnExamineDTO);
+    ResultEntity<?> agreeInstance(BpmnExamineDTO bpmnExamineDTO);
 
     void rejectInstance(BpmnExamineDTO bpmnExamineDTO);
 

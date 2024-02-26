@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.FaultReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultResDTO;
@@ -12,16 +12,16 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.FaultMapper;
 import com.wzmtr.eam.service.basic.FaultService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class FaultServiceImpl implements FaultService {
 
     @Override
     public Page<FaultResDTO> listFault(String code, Integer type, String lineCode, String equipmentCategoryCode, String equipmentTypeName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return faultMapper.pageFault(pageReqDTO.of(), code, type, lineCode, equipmentCategoryCode, equipmentTypeName);
     }
 
@@ -52,9 +52,9 @@ public class FaultServiceImpl implements FaultService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        faultReqDTO.setRecId(TokenUtil.getUuId());
-        faultReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        faultReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        faultReqDTO.setRecId(TokenUtils.getUuId());
+        faultReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        faultReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         faultMapper.addFault(faultReqDTO);
     }
 
@@ -64,15 +64,15 @@ public class FaultServiceImpl implements FaultService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        faultReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        faultReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        faultReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        faultReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         faultMapper.modifyFault(faultReqDTO);
     }
 
     @Override
     public void deleteFault(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            faultMapper.deleteFault(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            faultMapper.deleteFault(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }

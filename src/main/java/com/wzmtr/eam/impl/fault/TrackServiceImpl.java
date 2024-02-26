@@ -4,11 +4,11 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.bizobject.export.FaultTrackWorkExportBO;
-import com.wzmtr.eam.constant.Cols;
+import com.wzmtr.eam.constant.ColsConstants;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dataobject.FaultTrackDO;
@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -69,9 +68,9 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public Page<TrackResDTO> list(TrackReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<TrackResDTO> list = faultTrackWorkMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode(), reqDTO.getMajorCode(), reqDTO.getObjectName(), reqDTO.getObjectCode(), reqDTO.getSystemCode());
-        if (CollectionUtil.isEmpty(list.getRecords())) {
+        if (StringUtils.isEmpty(list.getRecords())) {
             return new Page<>();
         }
         return list;
@@ -86,16 +85,16 @@ public class TrackServiceImpl implements TrackService {
     @Transactional(rollbackFor = Exception.class)
     public void report(TrackReportReqDTO reqDTO) {
         // EAM/service/DMFM0011/ReportRow
-        reqDTO.setTrackReportTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
-        reqDTO.setTrackReporterId(TokenUtil.getCurrentPersonId());
+        reqDTO.setTrackReportTime(DateUtils.getCurrentTime());
+        reqDTO.setTrackReporterId(TokenUtils.getCurrentPersonId());
         reqDTO.setRecStatus("30");
         faultTrackWorkMapper.report(reqDTO);
     }
 
     @Override
     public void close(TrackCloseReqDTO reqDTO) {
-        reqDTO.setTrackCloseTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
-        reqDTO.setTrackCloserId(TokenUtil.getCurrentPersonId());
+        reqDTO.setTrackCloseTime(DateUtils.getCurrentTime());
+        reqDTO.setTrackCloserId(TokenUtils.getCurrentPersonId());
         reqDTO.setRecStatus("40");
         // /* 136 */       DMUtil.overTODO((String)((Map)dm03List.get(0)).get("recId"), "关闭");
         faultTrackWorkMapper.close(reqDTO);
@@ -105,8 +104,8 @@ public class TrackServiceImpl implements TrackService {
     @Transactional(rollbackFor = Exception.class)
     public void repair(TrackRepairReqDTO reqDTO) {
         // /* 107 */     dmfm22.setWorkerGroupCode(repairDeptCode);
-        reqDTO.setDispatchUserId(TokenUtil.getCurrentPersonId());
-        reqDTO.setDispatchTime(DateUtil.current("yyyy-MM-dd HH:mm:ss"));
+        reqDTO.setDispatchUserId(TokenUtils.getCurrentPersonId());
+        reqDTO.setDispatchTime(DateUtils.getCurrentTime());
         overTodoService.overTodo(reqDTO.getRecId(), "派工完毕");
         reqDTO.setRecStatus("20");
         faultTrackWorkMapper.repair(reqDTO);
@@ -146,7 +145,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public void export(TrackExportReqDTO reqDTO, HttpServletResponse response) {
         List<TrackResDTO> resList = faultTrackWorkMapper.query(reqDTO);
-        if (CollectionUtil.isEmpty(resList)) {
+        if (StringUtils.isEmpty(resList)) {
             return;
         }
         List<FaultTrackWorkExportBO> exportList = Lists.newArrayList();
@@ -215,7 +214,7 @@ public class TrackServiceImpl implements TrackService {
             }
         }
         faultTrackMapper.update(faultTrackDO,
-                new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+                new UpdateWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         return processId;
     }
 
@@ -274,9 +273,9 @@ public class TrackServiceImpl implements TrackService {
                 faultTrackDO.setWorkFlowInstStatus(nodeId);
                 faultTrackDO.setExt5(nextNode.getLine());
             }
-            faultTrackDO.setRecRevisor(TokenUtil.getCurrentPersonId());
-            faultTrackDO.setRecReviseTime(DateUtil.getCurrentTime());
-            faultTrackMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+            faultTrackDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+            faultTrackDO.setRecReviseTime(DateUtils.getCurrentTime());
+            faultTrackMapper.update(faultTrackDO, new UpdateWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         } catch (Exception e) {
             log.error("agree error", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "agree error");
@@ -296,19 +295,11 @@ public class TrackServiceImpl implements TrackService {
         dmfm09.setRecStatus("10");
         dmfm09.setWorkFlowInstId("");
         dmfm09.setWorkFlowInstStatus("");
-        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(Cols.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
+        faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.REJECT.getDesc())
                 .userIds(reqDTO.getExamineReqDTO().getUserIds())
                 .workFlowInstId(processId)
                 .build());
-    }
-
-    public static void main(String[] args) {
-        String userId = "";
-        ArrayList<String> userIds = new ArrayList<>();
-        userIds.add(userId);
-        boolean empty = CollectionUtil.isEmpty(userIds);
-        System.out.println(empty);
     }
 }

@@ -2,7 +2,7 @@ package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.BomDO;
@@ -188,14 +188,14 @@ public class ObjectServiceImpl implements ObjectService {
 
     @Override
     public Page<ObjectResDTO> queryForObject(ObjectReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         String positionCode = (reqDTO.getPosition1Code() == null) ? "" : reqDTO.getPosition1Code();
         String car = reqDTO.getCar() == null ? "" : reqDTO.getCar();
         if (positionCode.contains(ES) && car.trim().isEmpty()) {
             return bomMapper.queryCarEquip(reqDTO.of(), reqDTO);
         } else if (CAR.equals(car)) {
             List<String> carChild = bomMapper.queryCarTree(reqDTO.getCarNode());
-            if (CollectionUtil.isNotEmpty(carChild)) {
+            if (StringUtils.isNotEmpty(carChild)) {
                 return bomMapper.queryCarChild(reqDTO.of(), reqDTO);
             } else {
                 return bomMapper.queryCarLastChild(reqDTO.of(), reqDTO);

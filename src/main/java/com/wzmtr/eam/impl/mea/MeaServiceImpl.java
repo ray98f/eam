@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaReqDTO;
 import com.wzmtr.eam.dto.req.mea.excel.ExcelMeaReqDTO;
@@ -11,8 +11,9 @@ import com.wzmtr.eam.dto.res.mea.excel.ExcelMeaResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.service.mea.MeaService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,7 +38,7 @@ public class MeaServiceImpl implements MeaService {
 
     @Override
     public Page<MeaResDTO> pageMea(MeaListReqDTO meaListReqDTO, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return meaMapper.pageMea(pageReqDTO.of(), meaListReqDTO);
     }
 
@@ -56,9 +56,9 @@ public class MeaServiceImpl implements MeaService {
                 MeaReqDTO req = new MeaReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
                 req.setVerifyPeriod(Integer.valueOf(reqDTO.getVerifyPeriod()));
-                req.setRecId(TokenUtil.getUuId());
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                req.setRecId(TokenUtils.getUuId());
+                req.setRecCreator(TokenUtils.getCurrentPersonId());
+                req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
         }
@@ -85,7 +85,7 @@ public class MeaServiceImpl implements MeaService {
 
     @Override
     public Page<SubmissionRecordDetailResDTO> pageMeaRecord(String equipCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return meaMapper.pageMeaRecord(pageReqDTO.of(), equipCode);
     }
 

@@ -1,9 +1,7 @@
 package com.wzmtr.eam.utils;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
 
 import java.util.*;
 import java.util.function.Function;
@@ -17,7 +15,7 @@ import static java.util.stream.Collectors.groupingBy;
  * Author: Li.Wang
  * Date: 2023/8/4 10:12
  */
-public class StreamUtil {
+public class StreamUtils {
     /**
      * 将集合按特定的键转换成map，满足一对一关系，若key重复则后者覆盖前者
      *
@@ -96,11 +94,11 @@ public class StreamUtil {
 
 
     public static <F, T> List<T> map(Collection<F> from, Function<? super F, T> mapper) {
-        return CollectionUtil.isEmpty(from) ? Lists.newArrayList() : from.stream().map(mapper).collect(Collectors.toList());
+        return StringUtils.isEmpty(from) ? Lists.newArrayList() : from.stream().map(mapper).collect(Collectors.toList());
     }
 
     public static <F, T> List<T> map(Collection<F> from, Predicate<F> predicate, Function<? super F, T> mapper) {
-        return CollectionUtil.isEmpty(from) ? Lists.newArrayList() : from.stream().filter(predicate).map(mapper).collect(Collectors.toList());
+        return StringUtils.isEmpty(from) ? Lists.newArrayList() : from.stream().filter(predicate).map(mapper).collect(Collectors.toList());
     }
 
     public static <F, T> List<T> map(Stream<F> from, Function<? super F, T> mapper) {
@@ -115,15 +113,4 @@ public class StreamUtil {
         return from.stream().filter(predicate).map(mapper).collect(Collectors.toList());
     }
 
-
-    public static void main(String[] args) {
-        List<SecureCheckAddReqDTO> list = new ArrayList<>();
-        // list.add(SecureCheckAddReqDTO.builder().recId("1").build());
-        // list.add(SecureCheckAddReqDTO.builder().recId("2").build());
-        // list.add(SecureCheckAddReqDTO.builder().recId("1").build());
-        Set<String> strings = StreamUtil.mapToSet(list, SecureCheckAddReqDTO::getRecId);
-        System.out.println(JSON.toJSONString(strings));
-        Map<String, SecureCheckAddReqDTO> map = StreamUtil.toMap(list, SecureCheckAddReqDTO::getRecId);
-        System.out.println(JSON.toJSONString(map));
-    }
 }

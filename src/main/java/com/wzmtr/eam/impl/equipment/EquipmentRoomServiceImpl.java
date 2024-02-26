@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.EquipmentRoomReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
@@ -12,10 +12,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
 import com.wzmtr.eam.service.equipment.EquipmentRoomService;
-import com.wzmtr.eam.utils.CodeUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +36,7 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
     @Override
     public Page<EquipmentRoomResDTO> listEquipmentRoom(String equipRoomCode, String equipRoomName, String lineCode, String position1Code,
                                                        String position1Name, String subjectCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentRoomMapper.pageEquipmentRoom(pageReqDTO.of(), equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode);
     }
 
@@ -51,24 +47,24 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void addEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
-        equipmentRoomReqDTO.setRecId(TokenUtil.getUuId());
+        equipmentRoomReqDTO.setRecId(TokenUtils.getUuId());
         equipmentRoomReqDTO.setEquipRoomCode(CodeUtils.getNextCode(equipmentRoomMapper.selectMaxEquipmentRoomCode(), 1));
-        equipmentRoomReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        equipmentRoomReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentRoomReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        equipmentRoomReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentRoomMapper.addEquipmentRoom(equipmentRoomReqDTO);
     }
 
     @Override
     public void modifyEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
-        equipmentRoomReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        equipmentRoomReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentRoomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        equipmentRoomReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         equipmentRoomMapper.modifyEquipmentRoom(equipmentRoomReqDTO);
     }
 
     @Override
     public void deleteEquipmentRoom(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            equipmentRoomMapper.deleteEquipmentRoom(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            equipmentRoomMapper.deleteEquipmentRoom(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
