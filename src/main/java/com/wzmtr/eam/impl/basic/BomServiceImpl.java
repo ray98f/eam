@@ -21,8 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author frp
@@ -54,6 +56,9 @@ public class BomServiceImpl implements BomService {
         bomReqDTO.setRecId(TokenUtils.getUuId());
         bomReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         bomReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+        if (Objects.isNull(bomReqDTO.getSortIndex())) {
+            bomReqDTO.setSortIndex(new BigDecimal(0));
+        }
         bomMapper.addBom(bomReqDTO);
     }
 
@@ -65,6 +70,9 @@ public class BomServiceImpl implements BomService {
         }
         bomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         bomReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
+        if (Objects.isNull(bomReqDTO.getSortIndex())) {
+            bomReqDTO.setSortIndex(new BigDecimal(0));
+        }
         bomMapper.modifyBom(bomReqDTO);
     }
 
