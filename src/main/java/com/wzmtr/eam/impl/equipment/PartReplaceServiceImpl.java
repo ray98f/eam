@@ -113,7 +113,9 @@ public class PartReplaceServiceImpl implements PartReplaceService {
             for (PartReplaceResDTO resDTO : partReplaceResDTOList) {
                 ExcelPartReplaceResDTO res = new ExcelPartReplaceResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
+                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" :
+                        CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" :
+                                CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "部件更换台账信息", list);

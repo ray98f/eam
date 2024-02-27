@@ -136,7 +136,9 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
                 ExcelGeneralSurveyResDTO res = new ExcelGeneralSurveyResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setRecType(CommonConstants.TEN_STRING.equals(resDTO.getRecType()) ? "普查" : "技改");
-                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
+                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" :
+                        CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" :
+                                CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "普查与技改台账信息", list);
