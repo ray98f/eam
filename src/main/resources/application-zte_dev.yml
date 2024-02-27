@@ -101,6 +101,7 @@ mdm:
 
 local:
   base-url: http://192.168.30.140:8002/eam
+  data-sync: off
 
 minio:
   url: http://192.168.30.113:9000
