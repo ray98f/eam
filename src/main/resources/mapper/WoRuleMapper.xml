@@ -81,17 +81,19 @@
             REMARK,
         </if>
         BEFORE_TIME, REC_CREATOR, REC_CREATE_TIME)
-        VALUES (#{recId}, #{ruleCode}, #{ruleDetalName}, #{startDate}, #{endDate}, #{period}, #{ruleSort},
+        VALUES (#{recId}, #{ruleCode,jdbcType=VARCHAR}, #{ruleDetalName,jdbcType=VARCHAR},
+        #{startDate,jdbcType=VARCHAR}, #{endDate,jdbcType=VARCHAR},
+        #{period,jdbcType=BIGINT}, #{ruleSort,jdbcType=INTEGER},
         <if test="ext1!=null and ext1!=''">
-            #{ext1},
+            #{ext1,jdbcType=VARCHAR},
         </if>
         <if test="ext2!=null and ext2!=''">
-            #{ext2},
+            #{ext2,jdbcType=VARCHAR},
         </if>
         <if test="remark!=null and remark!=''">
-            #{remark},
+            #{remark,jdbcType=VARCHAR},
         </if>
-        #{beforeTime}, #{recCreator}, #{recCreateTime})
+        #{beforeTime,jdbcType=BIGINT}, #{recCreator}, #{recCreateTime})
     </insert>
 
     <update id="modifyWoRule">

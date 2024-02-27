@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -21,10 +22,13 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
+import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
@@ -78,6 +82,12 @@ public class StatisticServiceImpl implements StatisticService {
     private FaultExportComponent exportComponent;
     @Autowired
     private DictionariesMapper dictionariesMapper;
+    @Autowired
+    private FaultQueryMapper faultQueryMapper;
+    @Autowired
+    private FileMapper fileMapper;
+    @Autowired
+    private OrganizationMapper organizationMapper;
 
     @Override
     public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
@@ -565,7 +575,21 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void faultListExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response) {
+    public void faultListExport(FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<FaultDetailResDTO> faultDetailList = faultQueryMapper.getByIds(reqDTO);
+        if (StringUtils.isNotEmpty(faultDetailList)) {
+            List<ExcelFaultDetailResDTO> list = new ArrayList<>();
+            for (FaultDetailResDTO resDTO : faultDetailList) {
+                ExcelFaultDetailResDTO res = new ExcelFaultDetailResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
+            }
+            EasyExcelUtils.export(response, "故障统计报表列表信息", list);
+        }
+    }
+
+    @Override
+    public void faultExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response) {
         exportComponent.exportByTemplate(reqDTO,response);
     }
 

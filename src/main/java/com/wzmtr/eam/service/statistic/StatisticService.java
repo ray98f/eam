@@ -2,6 +2,7 @@ package com.wzmtr.eam.service.statistic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -113,5 +114,18 @@ public interface StatisticService {
 
     void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
-    void faultListExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response);
+    /**
+     * 故障统计报表列表导出
+     * @param reqDTO 入参
+     * @param response response
+     * @throws IOException 流异常
+     */
+    void faultListExport(FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException;
+
+    /**
+     * 故障统计报表导出
+     * @param reqDTO 入参
+     * @param response response
+     */
+    void faultExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response);
 }

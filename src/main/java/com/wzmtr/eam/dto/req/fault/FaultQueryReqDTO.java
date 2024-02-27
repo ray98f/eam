@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -65,4 +66,10 @@ public class FaultQueryReqDTO extends PageReqDTO {
      */
     @ApiModelProperty(value = "导出类型")
     private Integer listType;
+
+    /**
+     * ids
+     */
+    @ApiModelProperty(value = "ids")
+    private List<String> ids;
 }

@@ -5,8 +5,6 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.DynamicSource;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.utils.ExcelTemplateUtils;
 import com.wzmtr.eam.utils.StringUtils;
@@ -44,7 +42,8 @@ public class FaultExportComponent {
             data = faultQueryMapper.listZtt(reqDTO);
         }
         if (StringUtils.isEmpty(data)) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "该时间段内未查询到数据！");
+            log.error("该时间段内未查询到数据！");
+            return;
         }
         try {
             Calendar calendar = Calendar.getInstance();
@@ -67,7 +66,7 @@ public class FaultExportComponent {
             // 2.保存到本地
             ExcelTemplateUtils.save(workbook, Objects.isNull(reqDTO.getExportType()) ? "故障列表" : "中铁通故障列表", response);
         } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+            log.error("数据导出失败");
         }
     }
 

@@ -53,10 +53,21 @@ public class StatisticController {
         return PageResponse.of(faultQueryService.list(reqDTO));
     }
 
-    @ApiOperation(value = "故障统计报表导出")
+    /**
+     * 故障统计报表列表导出
+     * @param reqDTO 入参
+     * @param response response
+     */
+    @ApiOperation(value = "故障统计报表列表导出")
     @PostMapping("/fault/list/export")
-    public void faultListExport(@RequestBody FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
+    public void faultListExport(@RequestBody FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
         statisticService.faultListExport(reqDTO, response);
+    }
+
+    @ApiOperation(value = "故障统计报表导出")
+    @PostMapping("/fault/export")
+    public void faultExport(@RequestBody FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
+        statisticService.faultExport(reqDTO, response);
     }
 
     @PostMapping("/material/query")

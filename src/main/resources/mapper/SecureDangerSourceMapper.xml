@@ -46,37 +46,84 @@
         #{ext2,jdbcType=VARCHAR}, #{ext3,jdbcType=VARCHAR}, #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR})
     </insert>
     <update id="update">
-        UPDATE T_DANGER_RISK
-        SET
+        UPDATE T_DANGER_RISK SET
+        <if test="recDept!=null">
             REC_DEPT           = #{recDept,jdbcType=VARCHAR},
+        </if>
+        <if test="dangerRisk!=null">
             DANGER_RISK        = #{dangerRisk,jdbcType=VARCHAR},
+        </if>
+        <if test="dangerRiskRank!=null">
             DANGER_RISK_RANK   = #{dangerRiskRank,jdbcType=VARCHAR},
+        </if>
+        <if test="dangerRiskDetail!=null">
             DANGER_RISK_DETAIL = #{dangerRiskDetail,jdbcType=VARCHAR},
+        </if>
+        <if test="consequense!=null">
             CONSEQUENSE        = #{consequense,jdbcType=VARCHAR},
+        </if>
+        <if test="respDeptCode!=null">
             RESP_DEPT_CODE     = #{respDeptCode,jdbcType=VARCHAR},
+        </if>
+        <if test="respCode!=null">
             RESP_CODE          = #{respCode,jdbcType=VARCHAR},
+        </if>
+        <if test="positionDesc!=null">
             POSITION_DESC      = #{positionDesc,jdbcType=VARCHAR},
+        </if>
+        <if test="position1Code!=null">
             POSITION1_CODE     = #{position1Code,jdbcType=VARCHAR},
+        </if>
+        <if test="position2Code!=null">
             POSITION2_CODE     = #{position2Code,jdbcType=VARCHAR},
+        </if>
+        <if test="position3!=null">
             POSITION3          = #{position3,jdbcType=VARCHAR},
+        </if>
+        <if test="positionRemark!=null">
             POSITION_REMARK    = #{positionRemark,jdbcType=VARCHAR},
+        </if>
+        <if test="dangerRiskPic!=null">
             DANGER_RISK_PIC    = #{dangerRiskPic,jdbcType=VARCHAR},
+        </if>
+        <if test="controlDetail!=null">
             CONTROL_DETAIL     = #{controlDetail,jdbcType=VARCHAR},
+        </if>
+        <if test="discDate!=null">
             DISC_DATE          = #{discDate,jdbcType=VARCHAR},
+        </if>
+        <if test="remark!=null">
             REMARK             = #{remark,jdbcType=VARCHAR},
-            REC_CREATOR        = #{recCreator,jdbcType=VARCHAR},
-            REC_CREATE_TIME    = #{recCreateTime,jdbcType=VARCHAR},
-            REC_REVISOR        = #{recRevisor,jdbcType=VARCHAR},
-            REC_REVISE_TIME    = #{recReviseTime,jdbcType=VARCHAR},
+        </if>
+        <if test="recDeletor!=null">
             REC_DELETOR        = #{recDeletor,jdbcType=VARCHAR},
+        </if>
+        <if test="recDeleteTime!=null">
             REC_DELETE_TIME    = #{recDeleteTime,jdbcType=VARCHAR},
+        </if>
+        <if test="deleteFlag!=null">
             DELETE_FLAG        = #{deleteFlag,jdbcType=VARCHAR},
+        </if>
+        <if test="archiveFlag!=null">
             ARCHIVE_FLAG       = #{archiveFlag,jdbcType=VARCHAR},
+        </if>
+        <if test="ext1!=null">
             EXT1               = #{ext1,jdbcType=VARCHAR},
+        </if>
+        <if test="ext2!=null">
             EXT2               = #{ext2,jdbcType=VARCHAR},
+        </if>
+        <if test="ext3!=null">
             EXT3               = #{ext3,jdbcType=VARCHAR},
+        </if>
+        <if test="ext4!=null">
             EXT4               = #{ext4,jdbcType=VARCHAR},
-            EXT5               = #{ext5,jdbcType=VARCHAR}
+        </if>
+        <if test="ext5!=null">
+            EXT5               = #{ext5,jdbcType=VARCHAR},
+        </if>
+        REC_REVISOR        = #{recRevisor,jdbcType=VARCHAR},
+        REC_REVISE_TIME    = #{recReviseTime,jdbcType=VARCHAR}
         WHERE DANGER_RISK_ID = #{dangerRiskId,jdbcType=VARCHAR}
     </update>
 
