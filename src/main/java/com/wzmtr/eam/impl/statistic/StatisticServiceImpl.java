@@ -201,7 +201,7 @@ public class StatisticServiceImpl implements StatisticService {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             String starDate = calendar.get(Calendar.YEAR) + "-01-01";
-            Date parse = null;
+            Date parse;
             try {
                 parse = sdf.parse(starDate);
             } catch (ParseException e) {
