@@ -1,17 +1,14 @@
 package com.wzmtr.eam.service.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
@@ -29,6 +26,16 @@ public interface OverhaulOrderService {
     Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO);
 
     OverhaulOrderResDTO getOverhaulOrderDetail(String id);
+
+    /**
+     * 获取工器具分页列表
+     * @param orderCode 检修工单
+     * @param mateCode 物资编码
+     * @param mateName 物资名称
+     * @param pageReqDTO 分页参数
+     * @return 工器具分页列表
+     */
+    Page<MateBorrowResDTO> pageMateBorrow(String orderCode, String mateCode, String mateName, PageReqDTO pageReqDTO);
 
     void exportOverhaulOrder(List<String> ids, HttpServletResponse response) throws IOException;
 

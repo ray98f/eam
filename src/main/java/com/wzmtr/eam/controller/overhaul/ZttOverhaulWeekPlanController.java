@@ -1,6 +1,7 @@
 package com.wzmtr.eam.controller.overhaul;
 
 import com.wzmtr.eam.dto.req.overhaul.*;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
@@ -51,6 +52,19 @@ public class ZttOverhaulWeekPlanController {
     @ApiOperation(value = "获取检修周计划（中铁通）详情")
     public DataResponse<OverhaulWeekPlanResDTO> getOverhaulWeekPlanDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(overhaulWeekPlanService.getOverhaulWeekPlanDetail(id));
+    }
+
+    /**
+     * 检修周计划（中铁通）获取作业工班
+     * @param lineNo 线路编号
+     * @param subjectCode 系统编号
+     * @return 作业工班列表
+     */
+    @GetMapping("/weekPlan/queryDept")
+    @ApiOperation(value = "检修周计划（中铁通）获取作业工班")
+    public DataResponse<List<FaultRepairDeptResDTO>> queryDept(@RequestParam String lineNo,
+                                                               @RequestParam String subjectCode) {
+        return DataResponse.of(overhaulWeekPlanService.queryDept(lineNo, subjectCode));
     }
 
     @PostMapping("/weekPlan/add")

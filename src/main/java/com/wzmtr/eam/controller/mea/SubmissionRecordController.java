@@ -39,11 +39,9 @@ public class SubmissionRecordController {
     @GetMapping("/page")
     @ApiOperation(value = "获取检定记录列表")
     public PageResponse<SubmissionRecordResDTO> listSubmissionRecord(@RequestParam(required = false) @ApiParam("检测单号") String checkNo,
-                                                                     @RequestParam(required = false) @ApiParam("计量器具检验计划号") String instrmPlanNo,
-                                                                     @RequestParam(required = false) @ApiParam("记录状态") String recStatus,
-                                                                     @RequestParam(required = false) @ApiParam("工作流实例ID") String workFlowInstId,
+                                                                     @RequestParam(required = false) @ApiParam("检定记录状态") String recStatus,
                                                                      @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(submissionRecordService.pageSubmissionRecord(checkNo, instrmPlanNo, recStatus, workFlowInstId, pageReqDTO));
+        return PageResponse.of(submissionRecordService.pageSubmissionRecord(checkNo, recStatus, pageReqDTO));
     }
 
     @GetMapping("/detail")

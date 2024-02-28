@@ -118,6 +118,12 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
+    public Page<MateBorrowResDTO> pageMateBorrow(String orderCode, String mateCode, String mateName, PageReqDTO pageReqDTO) {
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return overhaulOrderMapper.pageMateBorrow(pageReqDTO.of(), orderCode, mateCode, mateName);
+    }
+
+    @Override
     public void exportOverhaulOrder(List<String> ids, HttpServletResponse response) throws IOException {
         List<OverhaulOrderResDTO> overhaulOrderResDTOList = overhaulOrderMapper.getOrderByIds(ids, "1");
         if (overhaulOrderResDTOList != null && !overhaulOrderResDTOList.isEmpty()) {

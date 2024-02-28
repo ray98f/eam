@@ -54,14 +54,8 @@
         <if test="checkNo!=null and checkNo!=''">
             and a.CHECK_NO like '%' || #{checkNo} || '%'
         </if>
-        <if test="instrmPlanNo!=null and instrmPlanNo!=''">
-            and a.INSTRM_PLAN_NO like '%' || #{instrmPlanNo} || '%'
-        </if>
         <if test="recStatus!=null and recStatus!=''">
             and a.REC_STATUS=#{recStatus}
-        </if>
-        <if test="workFlowInstId!=null and workFlowInstId!=''">
-            and a.WORK_FLOW_INST_ID=#{workFlowInstId}
         </if>
         order by a.CHECK_NO desc
     </select>
@@ -217,20 +211,11 @@
     <select id="listSubmissionRecord" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO">
         <include refid="submission-record-cols"/>
         WHERE 1=1 and a.DELETE_FLAG='0'
-        <if test="recId!=null and recId!=''">
-            and a.REC_ID=#{recId}
-        </if>
         <if test="checkNo!=null and checkNo!=''">
             and a.CHECK_NO like '%' || #{checkNo} || '%'
         </if>
-        <if test="instrmPlanNo!=null and instrmPlanNo!=''">
-            and a.INSTRM_PLAN_NO like '%' || #{instrmPlanNo} || '%'
-        </if>
         <if test="recStatus!=null and recStatus!=''">
             and a.REC_STATUS=#{recStatus}
-        </if>
-        <if test="workFlowInstId!=null and workFlowInstId!=''">
-            and a.WORK_FLOW_INST_ID=#{workFlowInstId}
         </if>
         order by a.CHECK_NO desc
     </select>

@@ -294,14 +294,32 @@
 
     <update id="updateone">
         UPDATE T_MEA_INSTRUMENT SET
-        EQUIP_CODE=#{equipCode},   <!-- 计量器具代码 -->
-        EQUIP_NAME=#{equipName},   <!-- 计量器具名称 -->
-        VERIFY_DEPT=#{verifyDept},   <!-- 检定校准单位 -->
-        MEASURE_BARCODE=#{measureBarcode},   <!-- 送检条码号 -->
-        CERTIFICATE_NO=#{certificateNo},   <!-- 证书编号 -->
-        VERIFY_PERIOD=#{verifyPeriod,jdbcType=NUMERIC},   <!-- 检定周期(天) -->
-        LAST_VERIFY_DATE=#{lastVerifyDate},   <!-- 上次检定日期 -->
-        NEXT_VERIFY_DATE=#{nextVerifyDate}  <!-- 下次检定日期 -->
+        <trim suffixOverrides=",">
+            <if test="equipCode!=null">
+                EQUIP_CODE=#{equipCode},   <!-- 计量器具代码 -->
+            </if>
+            <if test="equipName!=null">
+                EQUIP_NAME=#{equipName},   <!-- 计量器具名称 -->
+            </if>
+            <if test="verifyDept!=null">
+                VERIFY_DEPT=#{verifyDept},   <!-- 检定校准单位 -->
+            </if>
+            <if test="measureBarcode!=null">
+                MEASURE_BARCODE=#{measureBarcode},   <!-- 送检条码号 -->
+            </if>
+            <if test="certificateNo!=null">
+                CERTIFICATE_NO=#{certificateNo},   <!-- 证书编号 -->
+            </if>
+            <if test="verifyPeriod!=null">
+                VERIFY_PERIOD=#{verifyPeriod,jdbcType=NUMERIC},   <!-- 检定周期(天) -->
+            </if>
+            <if test="lastVerifyDate!=null">
+                LAST_VERIFY_DATE=#{lastVerifyDate},   <!-- 上次检定日期 -->
+            </if>
+            <if test="nextVerifyDate!=null">
+                NEXT_VERIFY_DATE=#{nextVerifyDate},  <!-- 下次检定日期 -->
+            </if>
+        </trim>
         WHERE EQUIP_CODE=#{equipCode}
     </update>
 

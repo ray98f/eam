@@ -933,8 +933,8 @@
         </if>
     </select>
 
-    <select id="getEquipCodeByName" resultType="java.lang.String">
-        SELECT EQUIP_CODE
+    <select id="getEquipByName" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
+        <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE EQUIP_NAME=#{name} AND DELETE_FLAG='0'
         AND ROWNUM=1
     </select>
