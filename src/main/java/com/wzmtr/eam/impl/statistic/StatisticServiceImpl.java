@@ -15,6 +15,7 @@ import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelFaultDetailResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import com.wzmtr.eam.dto.res.statistic.excel.*;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -455,10 +456,10 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<FaultDetailResDTO> faultDetailResDTOS = oneCarOneGearMapper.queryFMHistory(equipName, startTime, endTime);
-        List<ExcelFaultDetailResDTO> list = new ArrayList<>();
+        List<ExcelFmFaultDetailResDTO> list = new ArrayList<>();
         if (StringUtils.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
-                ExcelFaultDetailResDTO res = new ExcelFaultDetailResDTO();
+                ExcelFmFaultDetailResDTO res = new ExcelFmFaultDetailResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setRepairTime(String.valueOf(resDTO.getRepairTime()));
                 list.add(res);
