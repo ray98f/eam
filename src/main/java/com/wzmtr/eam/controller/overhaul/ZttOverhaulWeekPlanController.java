@@ -31,6 +31,12 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 预防性检修管理-检修周计划（中铁通）
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/17
+ */
 @Slf4j
 @RestController
 @RequestMapping("/overhaul/ztt")

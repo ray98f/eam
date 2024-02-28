@@ -26,6 +26,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 计量器具管理-检定记录
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/18
+ */
 @Slf4j
 @RestController
 @RequestMapping("/mea/submission/record")

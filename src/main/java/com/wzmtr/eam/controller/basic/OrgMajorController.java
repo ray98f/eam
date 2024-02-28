@@ -25,6 +25,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 基础管理-组织机构专业
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/20
+ */
 @Slf4j
 @RestController
 @RequestMapping("/basic/org-major")

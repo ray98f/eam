@@ -26,6 +26,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 特种设备管理-特种设备台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/01
+ */
 @Slf4j
 @RestController
 @RequestMapping("/specialEquip")

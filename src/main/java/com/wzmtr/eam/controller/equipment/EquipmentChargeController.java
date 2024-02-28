@@ -24,6 +24,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 设备管理-设备充电管理
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/27
+ */
 @Slf4j
 @RestController
 @RequestMapping("/equipment/charge")

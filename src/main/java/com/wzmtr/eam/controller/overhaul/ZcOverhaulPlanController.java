@@ -28,6 +28,12 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
+/**
+ * 预防性检修管理-检修计划（中车）
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/11
+ */
 @Slf4j
 @RestController
 @RequestMapping("/overhaul/zc")

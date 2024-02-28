@@ -24,6 +24,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 基础管理-工单触发规则
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/20
+ */
 @Slf4j
 @RestController
 @RequestMapping("/basic/wo-rule")

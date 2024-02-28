@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 故障管理-故障跟踪工单
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/12/06
+ */
 @RestController
 @RequestMapping("/fault/track")
 @Api(tags = "故障管理-故障跟踪工单")

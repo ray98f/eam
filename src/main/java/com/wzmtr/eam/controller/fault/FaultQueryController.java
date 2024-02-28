@@ -20,8 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/16 20:36
+ * 故障管理-故障查询
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/16
  */
 @RestController
 @RequestMapping("/fault/query")

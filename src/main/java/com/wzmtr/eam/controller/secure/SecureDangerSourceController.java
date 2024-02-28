@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+/**
+ * 安全管理-危险源排查记录
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/02
+ */
 @RestController
 @RequestMapping("/secure/danger/source")
 @Api(tags = "安全管理-危险源排查记录")

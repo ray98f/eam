@@ -18,8 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/2 19:47
+ * 安全管理-安全隐患排查记录
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/02
  */
 @RestController
 @RequestMapping("/secure/hazard")

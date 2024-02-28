@@ -21,6 +21,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 
+/**
+ * 设备管理-设备移交-建设工程
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/26
+ */
 @Slf4j
 @RestController
 @RequestMapping("/transfer")

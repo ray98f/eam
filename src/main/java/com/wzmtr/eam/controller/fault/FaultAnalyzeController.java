@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 故障管理-故障分析
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/15
+ */
 @RestController
 @RequestMapping("/fault/analyze")
 @Api(tags = "故障管理-故障分析")

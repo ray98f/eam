@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/16 14:21
+ * 对象查询
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/16
  */
 @RestController
 @RequestMapping("/object")

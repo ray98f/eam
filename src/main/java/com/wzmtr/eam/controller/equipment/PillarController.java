@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+/**
+ * 设备管理-触网一杆一档
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/28
+ */
 @Slf4j
 @RestController
 @RequestMapping("/pillar")

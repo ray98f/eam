@@ -20,10 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @Author lize
- * @Date 2023/8/16
+ * 流程引擎接口
+ * @author  lize
+ * @version 1.0
+ * @date 2023/08/16
  */
-
 @Slf4j
 @RestController
 @RequestMapping("/bpmn")

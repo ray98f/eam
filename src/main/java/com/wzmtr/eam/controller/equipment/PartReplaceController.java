@@ -27,6 +27,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 设备管理-车辆维保台账-部件更换台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/28
+ */
 @Slf4j
 @RestController
 @RequestMapping("/train/maintenance/partReplace")

@@ -32,6 +32,12 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 设备管理-设备台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/24
+ */
 @Slf4j
 @RestController
 @RequestMapping("/equipment")
