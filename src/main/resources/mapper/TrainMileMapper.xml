@@ -292,7 +292,7 @@
         REC_DELETE_TIME,
         DELETE_FLAG,
         REMARK
-        FROM T_TARIN_MILE
+        FROM T_TRAIN_MILE
         WHERE DELETE_FLAG='0'
         <if test="day!=null and day!=''">
             AND "DAY"=#{day}
@@ -330,12 +330,12 @@
         REC_DELETE_TIME,
         DELETE_FLAG,
         REMARK
-        FROM T_TARIN_MILE
+        FROM T_TRAIN_MILE
         WHERE DELETE_FLAG='0' AND REC_ID=#{id}
     </select>
 
     <insert id="addTrainDailyMile">
-        INSERT INTO T_TARIN_MILE (
+        INSERT INTO T_TRAIN_MILE (
         REC_ID,
         EQUIP_CODE,
         EQUIP_NAME,
@@ -374,7 +374,7 @@
     </insert>
 
     <update id="modifyTrainDailyMile">
-        UPDATE T_TARIN_MILE SET
+        UPDATE T_TRAIN_MILE SET
         <if test="equipCode!=null">
             EQUIP_CODE = #{equipCode},
         </if>
@@ -423,7 +423,7 @@
     </update>
 
     <update id="deleteTrainDailyMile">
-        UPDATE T_TARIN_MILE SET
+        UPDATE T_TRAIN_MILE SET
         DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
         WHERE REC_ID IN (
         <foreach collection="ids" index="index" item="id" separator=",">
@@ -456,7 +456,7 @@
         REC_DELETE_TIME,
         DELETE_FLAG,
         REMARK
-        FROM T_TARIN_MILE
+        FROM T_TRAIN_MILE
         WHERE DELETE_FLAG='0'
         <if test="day!=null and day!=''">
             AND "DAY"=TO_DATE(#{day}, 'yyyy-mm-dd hh24:mi:ss')
@@ -491,7 +491,7 @@
         REC_DELETE_TIME,
         DELETE_FLAG,
         REMARK
-        FROM T_TARIN_MILE
+        FROM T_TRAIN_MILE
         WHERE DELETE_FLAG='0'
         AND REC_ID IN (
         <foreach collection="ids" index="index" item="id" separator=",">
@@ -504,7 +504,7 @@
     <insert id="importTrainDailyMile">
         insert ALL
         <foreach collection="list" index="index" item="mile" separator=" ">
-            INTO T_TARIN_MILE (
+            INTO T_TRAIN_MILE (
             REC_ID,
             EQUIP_CODE,
             EQUIP_NAME,
