@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/9 15:22
@@ -39,4 +41,7 @@ public class AnalyzeReqDTO extends PageReqDTO {
     private String respDeptName;
     @ApiModelProperty(value = "故障影响")
     private String affectCodes;
+
+    @ApiModelProperty(value = "ids")
+    private List<String> ids;
 }

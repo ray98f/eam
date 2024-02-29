@@ -50,20 +50,9 @@ public class FaultAnalyzeController {
     }
 
     @ApiOperation(value = "导出")
-    @GetMapping("/export")
-    public DataResponse<AnalyzeResDTO> export(@RequestParam(required = false) String faultNo,
-                                              @RequestParam(required = false) String majorCode,
-                                              @RequestParam(required = false) String recStatus,
-                                              @RequestParam(required = false) String lineCode,
-                                              @RequestParam(required = false) String frequency,
-                                              @RequestParam(required = false) String positionCode,
-                                              @RequestParam(required = false) String discoveryStartTime,
-                                              @RequestParam(required = false) String discoveryEndTime,
-                                              @RequestParam(required = false) String respDeptCode,
-                                              @RequestParam(required = false) String affectCodes,
-                                              HttpServletResponse response) {
-        analyzeService.export(faultNo, majorCode, recStatus, lineCode, faultNo, positionCode, discoveryStartTime,
-                discoveryEndTime, respDeptCode, affectCodes, response);
+    @PostMapping("/export")
+    public DataResponse<AnalyzeResDTO> export(@RequestBody AnalyzeReqDTO reqDTO, HttpServletResponse response) {
+        analyzeService.export(reqDTO, response);
         return DataResponse.success();
     }
 

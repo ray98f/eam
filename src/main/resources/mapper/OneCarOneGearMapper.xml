@@ -112,7 +112,7 @@
         </if>
         ) as "er1",
         (SELECT
-        MAX(DM06.TOTAL_MILES)
+        MAX(DM06.TOTAL_MILE)
         FROM
         T_TRAIN_MILE DM06
         WHERE
@@ -133,7 +133,7 @@
         DM06.EQUIP_NAME =#{equipName}
         ) as "maxReEle",
         (SELECT
-        MAX(DM06.TOTAL_MILES)- MIN(DM06.TOTAL_MILES)
+        MAX(DM06.TOTAL_MILE)- MIN(DM06.TOTAL_MILE)
         FROM
         T_TRAIN_MILE DM06
         WHERE
@@ -175,7 +175,7 @@
     </select>
     <select id="querydmer3" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
         SELECT
-        MAX(DM06.TOTAL_MILES) as "dmer3km", DM06.DAY as "dmer3date"
+        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
         FROM
         T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
         WHERE
@@ -199,7 +199,7 @@
     </select>
     <select id="queryER4" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
         SELECT
-        MAX(DM06.TOTAL_MILES) as "dmer3km", DM06.DAY as "dmer3date"
+        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
         FROM
         T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
         WHERE
@@ -223,7 +223,7 @@
     </select>
     <select id="queryER5" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
         SELECT
-        MAX(DM06.TOTAL_MILES) as "dmer3km", DM06.DAY as "dmer3date"
+        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
         FROM
         T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
         WHERE
@@ -416,7 +416,7 @@
     </select>
     <select id="queryER2" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
         SELECT
-        MAX(DM06.TOTAL_MILES) as "dmer3km", DM06.DAY as "dmer3date"
+        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
         FROM
         T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
         WHERE
@@ -440,7 +440,7 @@
     </select>
     <select id="queryER1" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
         SELECT
-        MAX(DM06.TOTAL_MILES) as "dmer3km", DM06.DAY as "dmer3date"
+        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
         FROM
         T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
         WHERE

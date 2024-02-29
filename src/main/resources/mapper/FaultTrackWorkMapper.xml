@@ -122,6 +122,13 @@
             <if test="recStatus!=null and recStatus!=''">
                 and df11.REC_STATUS = #{recStatus}
             </if>
+            <if test="ids!=null and ids.size()>0">
+                and df11.REC_ID in (
+                <foreach collection="ids" item="id" index="index" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
         </trim>
         order by df11.FAULT_TRACK_WORK_NO desc
     </select>

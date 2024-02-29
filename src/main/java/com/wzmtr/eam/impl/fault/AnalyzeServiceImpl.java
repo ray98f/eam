@@ -60,7 +60,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
-        Page<AnalyzeResDTO> query = faultAnalyzeMapper.query(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getMajorCode(), reqDTO.getRecStatus(), reqDTO.getLineCode(), reqDTO.getFrequency(), reqDTO.getPositionCode(), reqDTO.getDiscoveryStartTime(), reqDTO.getDiscoveryEndTime(), reqDTO.getRespDeptCode(), reqDTO.getAffectCodes());
+        Page<AnalyzeResDTO> query = faultAnalyzeMapper.query(reqDTO.of(), reqDTO);
         List<AnalyzeResDTO> records = query.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();
@@ -75,11 +75,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     }
 
     @Override
-    public void export(String faultNo, String majorCode, String recStatus, String lineCode,
-                       String frequency, String positionCode, String discoveryStartTime, String discoveryEndTime,
-                       String respDeptCode, String affectCodes, HttpServletResponse response) {
-        List<AnalyzeResDTO> resList = faultAnalyzeMapper.list(faultNo, majorCode, recStatus, lineCode, frequency,
-                positionCode, discoveryStartTime, discoveryEndTime, respDeptCode, affectCodes);
+    public void export(AnalyzeReqDTO reqDTO, HttpServletResponse response) {
+        List<AnalyzeResDTO> resList = faultAnalyzeMapper.list(reqDTO);
         if (StringUtils.isEmpty(resList)) {
             return;
         }

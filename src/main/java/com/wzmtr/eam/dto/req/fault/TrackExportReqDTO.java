@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/9 15:22
@@ -28,5 +30,8 @@ public class TrackExportReqDTO {
     private String objectName;
     @ApiModelProperty(value = "记录状态")
     private String recStatus;
+
+    @ApiModelProperty(value = "ids")
+    private List<String> ids;
 
 }

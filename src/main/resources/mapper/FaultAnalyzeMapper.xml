@@ -295,6 +295,13 @@
             <if test="affectCodes!=null and affectCodes!=''">
                 and d3.AFFECT_CODES =#{affectCodes}
             </if>
+            <if test="ids!=null and ids.size()>0">
+                and d3.REC_ID in (
+                <foreach collection="ids" index="index" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
         </trim>
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">

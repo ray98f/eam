@@ -14,9 +14,7 @@ public interface AnalyzeService {
 
     Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO);
 
-    void export(String faultNo, String majorCode, String recStatus, String lineCode,
-                String frequency, String positionCode, String discoveryStartTime, String discoveryEndTime,
-                String respDeptCode, String affectCodes, HttpServletResponse response);
+    void export(AnalyzeReqDTO reqDTO, HttpServletResponse response);
 
     AnalyzeResDTO detail(FaultAnalyzeDetailReqDTO reqDTO);
 
