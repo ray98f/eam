@@ -25,7 +25,7 @@ public interface OrgMajorService {
 
     void deleteOrgMajor(BaseIdsEntity baseIdsEntity);
 
-    void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response) throws IOException;
+    void exportOrgMajor(List<String> ids, HttpServletResponse response) throws IOException;
 
     FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode, String majorCode);
 }

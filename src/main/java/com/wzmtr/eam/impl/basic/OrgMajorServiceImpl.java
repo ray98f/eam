@@ -1,10 +1,11 @@
 package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
-import com.wzmtr.eam.dto.res.basic.*;
+import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
+import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelOrgMajorResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -14,17 +15,20 @@ import com.wzmtr.eam.mapper.basic.FaultMapper;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.service.basic.OrgMajorService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author frp
@@ -69,7 +73,7 @@ public class OrgMajorServiceImpl implements OrgMajorService {
         if (StringUtils.isNotEmpty(orgCode)) {
             orgCodes = organizationMapper.downRecursion(orgCode);
         }
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return orgMajorMapper.pageOrgMajor(pageReqDTO.of(), StringUtils.getSumArrayList(orgCodes), majorCode);
     }
 
@@ -89,9 +93,9 @@ public class OrgMajorServiceImpl implements OrgMajorService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        orgMajorReqDTO.setRecId(TokenUtil.getUuId());
-        orgMajorReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        orgMajorReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        orgMajorReqDTO.setRecId(TokenUtils.getUuId());
+        orgMajorReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        orgMajorReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         orgMajorMapper.addOrgMajor(orgMajorReqDTO);
     }
 
@@ -101,27 +105,23 @@ public class OrgMajorServiceImpl implements OrgMajorService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        orgMajorReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        orgMajorReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        orgMajorReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        orgMajorReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         orgMajorMapper.modifyOrgMajor(orgMajorReqDTO);
     }
 
     @Override
     public void deleteOrgMajor(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            orgMajorMapper.deleteOrgMajor(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            orgMajorMapper.deleteOrgMajor(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
     }
 
     @Override
-    public void exportOrgMajor(String orgCode, String majorCode, HttpServletResponse response) throws IOException {
-        List<String> orgCodes = new ArrayList<>();
-        if (StringUtils.isNotEmpty(orgCode)) {
-            orgCodes = organizationMapper.downRecursion(orgCode);
-        }
-        List<OrgMajorResDTO> orgMajors = orgMajorMapper.listOrgMajor(StringUtils.getSumArrayList(orgCodes), majorCode);
+    public void exportOrgMajor(List<String> ids, HttpServletResponse response) throws IOException {
+        List<OrgMajorResDTO> orgMajors = orgMajorMapper.listOrgMajor(ids);
         if (orgMajors != null && !orgMajors.isEmpty()) {
             List<ExcelOrgMajorResDTO> resList = new ArrayList<>();
             for (OrgMajorResDTO resDTO : orgMajors) {
@@ -145,18 +145,12 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     public FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode, String majorCode) {
         FaultRespAndRepairDeptResDTO faultRespAndRepairDeptResDTO = new FaultRespAndRepairDeptResDTO();
         String organType = "30";
-        // List<FaultResDTO> list = getEquipTypeByMajorCode(majorCode, lineCode);
         List<OrgMajorResDTO> respDept = orgMajorMapper.queryTypeAndDeptCode(organType, majorCode, lineCode);
         faultRespAndRepairDeptResDTO.setResp(respDept);
         organType = "20";
         List<OrgMajorResDTO> repairDept = orgMajorMapper.queryTypeAndDeptCode(organType, majorCode, lineCode);
         faultRespAndRepairDeptResDTO.setRepair(repairDept);
         return faultRespAndRepairDeptResDTO;
-    }
-
-
-    private List<FaultResDTO> getEquipTypeByMajorCode(String majorCode, String lineCode) {
-        return faultMapper.listFault("E", null, lineCode, null);
     }
 
 }

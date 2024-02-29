@@ -19,4 +19,10 @@ public interface OrganizationService {
     List<MemberResDTO> listMember(String id);
 
     List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(String equipName);
+
+    /**
+     * 获取中铁通组织层级结构
+     * @return 中铁通组织层级结构
+     */
+    List<CompanyStructureTree> listZttCompanyStructure();
 }

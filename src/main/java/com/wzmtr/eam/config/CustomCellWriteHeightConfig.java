@@ -4,7 +4,7 @@ import com.alibaba.excel.write.style.row.AbstractRowHeightStyleStrategy;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
- 
+
 import java.util.Iterator;
 
 /**
@@ -24,6 +24,7 @@ public class CustomCellWriteHeightConfig extends AbstractRowHeightStyleStrategy 
 
     @Override
     protected void setHeadColumnHeight(Row row, int relativeRowIndex) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

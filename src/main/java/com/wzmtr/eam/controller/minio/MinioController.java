@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Objects;
-
 /**
  * Author: Li.Wang
  * Date: 2023/8/11 15:32
@@ -25,7 +23,7 @@ import java.util.Objects;
 @Api(tags = "文件上传")
 public class MinioController {
 
-    private static final long NUM = 50 * 1024 * 1024;
+    private static final long NUM = 50L * 1024L * 1024L;
 
     @Autowired
     private MinioService minioService;

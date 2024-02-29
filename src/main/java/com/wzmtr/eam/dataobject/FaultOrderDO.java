@@ -16,7 +16,7 @@ public class FaultOrderDO {
      * notnull
      */
     @TableId(value = "REC_ID")
-    private String recId = " ";
+    private String recId;
     /**
      * notnull
      */

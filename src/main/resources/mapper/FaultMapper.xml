@@ -126,4 +126,19 @@
         ORDER BY f.FAULT_CODE ASC
     </select>
 
+    <select id="exportFault" resultType="com.wzmtr.eam.dto.res.basic.FaultResDTO">
+        SELECT f.REC_ID, f.EQUIPMENT_TYPE_CODE, f.LINE_CODE, f.FAULT_CODE_TYPE, f.FAULT_CODE, f.FAULT_DESCR,
+        f.REC_STATUS, f.REMARK, u.NAME AS REC_CREATOR, f.REC_CREATE_TIME, f.RELATED_CODES, ec.NODE_NAME AS EQUIPMENT_TYPE_NAME
+        FROM T_FAULT f
+        LEFT JOIN SYS_USER u ON f.REC_CREATOR=u.ID
+        LEFT JOIN T_EQUIPMENT_CATEGORY ec ON f.EQUIPMENT_TYPE_CODE=ec.NODE_CODE and ec.DELETE_FLAG=0
+        where f.DELETE_FLAG='0'
+        AND f.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY f.FAULT_CODE ASC
+    </select>
+
 </mapper>

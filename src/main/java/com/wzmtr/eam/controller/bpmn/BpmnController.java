@@ -1,19 +1,14 @@
 package com.wzmtr.eam.controller.bpmn;
 
-import com.wzmtr.eam.dto.req.bpmn.ExamineListReq;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
+import com.wzmtr.eam.dto.req.bpmn.ExamineListReq;
 import com.wzmtr.eam.dto.req.bpmn.StartInstanceVO;
-import com.wzmtr.eam.dto.res.bpmn.ExamineListRes;
-import com.wzmtr.eam.dto.res.bpmn.ExaminedListRes;
-import com.wzmtr.eam.dto.res.bpmn.HisListRes;
-import com.wzmtr.eam.dto.res.bpmn.RunningListRes;
-import com.wzmtr.eam.dto.res.bpmn.ExamineOpinionRes;
-import com.wzmtr.eam.dto.res.bpmn.FlowRes;
+import com.wzmtr.eam.dto.res.bpmn.*;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +59,7 @@ public class BpmnController {
     public DataResponse<String> login(@RequestParam(value = "account", required = false) String account,
                                       @RequestParam(value = "password", required = false) String password) {
         if (StringUtils.isEmpty(account)) {
-            account = "eam" + TokenUtil.getCurrentPersonId();
+            account = "eam" + TokenUtils.getCurrentPersonId();
             password = account;
         }
         return DataResponse.of(bpmnService.login(account, password));
@@ -161,5 +156,16 @@ public class BpmnController {
                                   @RequestParam(value = "opinion", required = false) String opinion) {
         bpmnService.reject(taskId, opinion);
         return DataResponse.success();
+    }
+
+    /**
+     * 根据流程实例id获取最新流程图
+     * @param processId 流程实例id
+     * @return 流程图信息
+     */
+    @ApiOperation(value = "根据流程实例id获取最新流程图")
+    @GetMapping("/getFlowChart")
+    public DataResponse<FlowChartRes> getFlowChartByProcessId(@RequestParam("processId") String processId) {
+        return DataResponse.of(bpmnService.getFlowChartByProcessId(processId));
     }
 }

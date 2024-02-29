@@ -1,10 +1,10 @@
 package com.wzmtr.eam.mapper.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.mea.SubmissionRecordReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordDetailReqDTO;
-import com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO;
+import com.wzmtr.eam.dto.req.mea.SubmissionRecordReqDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
+import com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -33,6 +33,13 @@ public interface SubmissionRecordMapper {
 
     List<SubmissionRecordResDTO> listSubmissionRecord(String recId, String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId);
 
+    /**
+     * 导出检修记录列表
+     * @param ids ids
+     * @return 检修记录列表
+     */
+    List<SubmissionRecordResDTO> exportSubmissionRecord(List<String> ids);
+
     Page<SubmissionRecordDetailResDTO> pageSubmissionRecordDetail(Page<SubmissionRecordDetailResDTO> page, String testRecId);
 
     SubmissionRecordDetailResDTO getSubmissionRecordDetailDetail(String id);
@@ -42,4 +49,11 @@ public interface SubmissionRecordMapper {
     void modifySubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO);
 
     List<SubmissionRecordDetailResDTO> listSubmissionRecordDetail(String testRecId);
+
+    /**
+     * 导出检定记录明细
+     * @param ids ids
+     * @return 检定记录明细
+     */
+    List<SubmissionRecordDetailResDTO> exportSubmissionRecordDetail(List<String> ids);
 }

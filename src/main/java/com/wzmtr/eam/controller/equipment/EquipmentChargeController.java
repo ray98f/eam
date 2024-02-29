@@ -6,7 +6,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.EquipmentChargeService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -70,16 +74,12 @@ public class EquipmentChargeController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出设备充电")
-    public void exportEquipmentCharge(@RequestParam(required = false) @ApiParam("设备编码") String equipCode,
-                                      @RequestParam(required = false) @ApiParam("设备名称") String equipName,
-                                      @RequestParam(required = false) @ApiParam("充电日期") String chargeDate,
-                                      @RequestParam(required = false) @ApiParam("位置一") String position1Name,
-                                      @RequestParam(required = false) @ApiParam("专业") String subjectCode,
-                                      @RequestParam(required = false) @ApiParam("系统") String systemCode,
-                                      @RequestParam(required = false) @ApiParam("设备类别") String equipTypeCode,
-                                      HttpServletResponse response) throws IOException {
-        equipmentChargeService.exportEquipmentCharge(equipCode, equipName, chargeDate, position1Name, subjectCode, systemCode, equipTypeCode, response);
+    public void exportEquipmentCharge(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        equipmentChargeService.exportEquipmentCharge(baseIdsEntity.getIds(), response);
     }
 }

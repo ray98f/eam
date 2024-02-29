@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
@@ -90,7 +90,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO) {
         overhaulPlanListReqDTO.setTrialStatus("'20','10','30'");
         overhaulPlanListReqDTO.setObjectFlag("1");
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OverhaulPlanResDTO> page = overhaulPlanMapper.pageOverhaulPlan(pageReqDTO.of(), overhaulPlanListReqDTO);
         List<OverhaulPlanResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
@@ -124,27 +124,27 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void addOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws ParseException {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
+        }
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         if (df.parse(df.format(new Date())).getTime() >= df.parse(overhaulPlanReqDTO.getFirstBeginTime()).getTime()) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "首次开始时间必须大于当前时间！");
         }
-        if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) || StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
-        }
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        overhaulPlanReqDTO.setRecId(TokenUtil.getUuId());
+        overhaulPlanReqDTO.setRecId(TokenUtils.getUuId());
         overhaulPlanReqDTO.setTrialStatus("10");
         overhaulPlanReqDTO.setPlanStatus("10");
-        overhaulPlanReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        overhaulPlanReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulPlanReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        overhaulPlanReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String planCode = CodeUtils.getNextCode(overhaulPlanMapper.getMaxCode(), 2);
         overhaulPlanReqDTO.setPlanCode(planCode);
         overhaulPlanReqDTO.setExt1(" ");
@@ -162,11 +162,11 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void modifyOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -174,13 +174,13 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !CommonConstants.NINETY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
-        if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) ||
-                StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime()) ||
-                StringUtils.isBlank(overhaulPlanReqDTO.getPlanStatus())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) ||
+                org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime()) ||
+                org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getPlanStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
-        overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
     }
@@ -190,11 +190,11 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulPlanResDTO resDTO = overhaulPlanMapper.getOverhaulPlanDetail(id, "1");
-                if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+                if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
                     if (Objects.isNull(resDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
-                    List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+                    List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
                     if (Objects.isNull(code) || code.isEmpty() || !code.contains(resDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                     }
@@ -202,8 +202,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) && !"90".equals(resDTO.getTrialStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                overhaulPlanMapper.deleteOverhaulPlanDetail(null, id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                overhaulPlanMapper.deleteOverhaulPlan(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                overhaulPlanMapper.deleteOverhaulPlanDetail(null, id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+                overhaulPlanMapper.deleteOverhaulPlan(id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
                 if (StringUtils.isNotBlank(resDTO.getWorkFlowInstId())) {
                     BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
                     bpmnExamineDTO.setTaskId(resDTO.getWorkFlowInstId());
@@ -218,11 +218,11 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     @Override
     public void triggerOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
         if (checkHasNotOrder(overhaulPlanReqDTO.getPlanCode())) {
-            if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+            if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
                 if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                     throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                 }
-                List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+                List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
                 if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulPlanReqDTO.getSubjectCode())) {
                     throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
                 }
@@ -235,11 +235,11 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void submitOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -247,7 +247,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !CommonConstants.NINETY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有编辑和驳回状态的数据才能够进行送审！");
         }
-        if (StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         List<OverhaulObjectResDTO> list12 = overhaulPlanMapper.listOverhaulObject(overhaulPlanReqDTO.getPlanCode(), null, null, null, null, "flag");
@@ -297,8 +297,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                         .build());
             }
         }
-        overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
     }
@@ -324,7 +324,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             }
         }
         List<WoRuleResDTO.WoRuleDetail> dmer21TopOrder = overhaulPlanMapper.queryAllRule(String.valueOf(planCodeAndIn));
-        String relationCode = TokenUtil.getUuId();
+        String relationCode = TokenUtils.getUuId();
         for (int j = 0; j < dmer21TopOrder.size(); j++) {
             OverhaulPlanReqDTO reqDTO = getOverhaulPlan(dmer21TopOrder, j, relationCode);
             overhaulPlanMapper.modifyOverhaulPlan(reqDTO);
@@ -340,14 +340,14 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (j == 0) {
             reqDTO.setCountFlag(1);
         } else {
-            int max = dmer21TopOrder.get(j - 1).getPeriod();
-            int min = dmer21TopOrder.get(j).getPeriod();
+            long max = dmer21TopOrder.get(j - 1).getPeriod();
+            long min = dmer21TopOrder.get(j).getPeriod();
             if (max % min != 0 || max == min) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "所有关联计划之间的规则周期必须为倍数关系");
             }
-            int max1 = dmer21TopOrder.get(j - 1).getPeriod();
-            int min1 = dmer21TopOrder.get(j).getPeriod();
-            reqDTO.setCountFlag(max1 / min1 - 1);
+            long max1 = dmer21TopOrder.get(j - 1).getPeriod();
+            long min1 = dmer21TopOrder.get(j).getPeriod();
+            reqDTO.setCountFlag(Math.toIntExact(max1 / min1 - 1));
             reqDTO.setParentNodeRecId(dmer21TopOrder.get(j - 1).getExt1());
         }
         return reqDTO;
@@ -355,16 +355,16 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void switchsOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulPlanMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (StringUtils.isBlank(overhaulPlanReqDTO.getPlanStatus())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getPlanStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选的检修计划中计划状态不能为空！");
         }
         overhaulPlanMapper.updatePlanSta(overhaulPlanReqDTO);
@@ -434,10 +434,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isEmpty(tplDetailList)) {
             return;
         }
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String orderCode = overhaulOrderMapper.getMaxCode();
-        if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(day.format(System.currentTimeMillis()))) {
-            orderCode = "JX" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+        if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(DateUtils.getNoDate())) {
+            orderCode = "JX" + DateUtils.getNoDate() + "0001";
         } else {
             orderCode = CodeUtils.getNextCode(orderCode, 10);
         }
@@ -448,7 +447,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         } catch (Exception e) {
             log.error("exception message", e);
         }
-        overhaulPlanMapper.updateTrigerTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()), planCode);
+        overhaulPlanMapper.updateTrigerTime(DateUtils.getCurrentTime(), planCode);
     }
 
     public void insertInspectPlan1(String planCode, String[] orderCodes) throws Exception {
@@ -465,8 +464,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isNotEmpty(list11) && !list11.get(0).getWorkerGroupCode().trim().isEmpty()) {
             trigerTime = list11.get(0).getTrigerTime();
             insertMap.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
-            insertMap.setWorkerCode(TokenUtil.getCurrentPersonId());
-            insertMap.setWorkerName(TokenUtil.getCurrentPerson().getPersonName());
+            insertMap.setWorkerCode(TokenUtils.getCurrentPersonId());
+            insertMap.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
             OverhaulOrderReqDTO dmer21 = buildOverhaulOrder(planCode, orderCode, list11);
             try {
                 overhaulWorkRecordService.insertRepair(dmer21);
@@ -494,8 +493,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         dmer21.setOrderCode(orderCode);
         dmer21.setPlanCode(planCode);
         dmer21.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
-        dmer21.setWorkerCode(TokenUtil.getCurrentPersonId());
-        dmer21.setWorkerName(TokenUtil.getCurrentPerson().getPersonName());
+        dmer21.setWorkerCode(TokenUtils.getCurrentPersonId());
+        dmer21.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
         dmer21.setRecId(dmer21.getOrderCode());
         dmer21.setWorkStatus("1");
         dmer21.setSubjectCode(list11.get(0).getSubjectCode());
@@ -519,7 +518,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
                 String nowDate = dateTimeFormat.format(new Date());
                 List<WoRuleResDTO.WoRuleDetail> ruleList = woRuleMapper.queryRuleList(planCode, nowDate.substring(nowDate.length() - 4));
-                int beforeDay = ruleList.get(0).getBeforeTime();
+                long beforeDay = ruleList.get(0).getBeforeTime();
                 if (StringUtils.isEmpty(trigerTime) || CommonConstants.ZERO_STRING.equals(trigerTime)) {
                     trigerTime = orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN);
                 } else {
@@ -528,7 +527,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 Date date = dateTimeFormat.parse(trigerTime);
                 Calendar ca = Calendar.getInstance();
                 ca.setTime(date);
-                ca.add(Calendar.DAY_OF_YEAR, beforeDay);
+                ca.add(Calendar.DAY_OF_YEAR, Math.toIntExact(beforeDay));
                 insertMap.setPlanStartTime(dateTimeFormat.format(ca.getTime()));
             }
         } else {
@@ -545,14 +544,19 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         try {
             List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(overhaulPlanList);
             if (StringUtils.isNotEmpty(planList)) {
+                int i = 0;
                 for (OverhaulPlanResDTO plan : planList) {
-                    plan.setRecCreator(TokenUtil.getCurrentPersonId());
-                    plan.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    plan.setRecCreator(TokenUtils.getCurrentPersonId());
+                    plan.setRecCreateTime(DateUtils.getCurrentTime());
                     plan.setRecRevisor("");
                     plan.setRecReviseTime("");
                     BeanUtils.copyProperties(plan, overhaulOrder);
-                    overhaulOrder.setRecId(TokenUtil.getUuId());
+                    overhaulOrder.setRecId(TokenUtils.getUuId());
+                    if (i > 0) {
+                        overhaulOrder.setOrderCode(CodeUtils.getNextCodeByAddNum(overhaulOrder.getOrderCode(), 10, i));
+                    }
                     overhaulOrderMapper.addOverhaulOrder(overhaulOrder);
+                    i++;
                 }
             }
         } catch (Exception e) {
@@ -563,7 +567,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void insertInspectObject(String planCode, String orderCode) {
         List<OverhaulObjectResDTO> objects = overhaulPlanMapper.listOverhaulObject(planCode, null, null, null, null, null);
         for (OverhaulObjectResDTO object : objects) {
-            String dmer22uuid = TokenUtil.getUuId();
+            String dmer22uuid = TokenUtils.getUuId();
             List<OverhaulTplDetailResDTO> objectIsValid = overhaulTplMapper.listOverhaulTplDetail(object.getTemplateId());
             if (StringUtils.isNotEmpty(objectIsValid)) {
                 String objectCode = object.getObjectCode();
@@ -574,8 +578,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                     List<OverhaulObjectResDTO> list = overhaulPlanMapper.listOverhaulObject(planCode, object.getRecId(), null, objectCode, null, null);
                     if (StringUtils.isNotEmpty(list)) {
                         for (OverhaulObjectResDTO resDTO : list) {
-                            resDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-                            resDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                            resDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+                            resDTO.setRecCreateTime(DateUtils.getCurrentTime());
                             resDTO.setRecRevisor("");
                             resDTO.setRecReviseTime("");
                             OverhaulOrderDetailReqDTO reqDTO = new OverhaulOrderDetailReqDTO();
@@ -607,7 +611,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 for (OverhaulTplDetailResDTO overhaulTplDetail : overhaulTplDetailList) {
                     BeanUtils.copyProperties(overhaulTplDetail, reqDTO);
                     reqDTO.setTdmer02Id(overhaulTplDetail.getRecId());
-                    reqDTO.setRecId(TokenUtil.getUuId());
+                    reqDTO.setRecId(TokenUtils.getUuId());
                     overhaulItemMapper.insert(reqDTO);
                 }
             }
@@ -628,7 +632,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (workCode.length() > CommonConstants.TWO) {
             String[] workerCodes = workCode.split(",");
             for (String workerCode : workerCodes) {
-                dmer24.setRecId(TokenUtil.getUuId());
+                dmer24.setRecId(TokenUtils.getUuId());
                 dmer24.setWorkerCode(workerCode);
                 try {
                     overhaulWorkRecordMapper.insert(dmer24);
@@ -649,8 +653,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanReqDTO.setWorkFlowInstId(processId);
         overhaulPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(),null));
         overhaulPlanReqDTO.setTrialStatus("20");
-        overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
         // 记录日志
@@ -676,7 +680,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public Page<OverhaulObjectResDTO> pageOverhaulObject(String planCode, String planName, String objectCode, String objectName, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulPlanMapper.pageOverhaulObject(pageReqDTO.of(), planCode, null, planName, objectCode, objectName, null);
     }
 
@@ -694,9 +698,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isEmpty(list)) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
-        overhaulObjectReqDTO.setRecId(TokenUtil.getUuId());
-        overhaulObjectReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        overhaulObjectReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulObjectReqDTO.setRecId(TokenUtils.getUuId());
+        overhaulObjectReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        overhaulObjectReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         if ("".equals(overhaulObjectReqDTO.getObjectCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "在" + overhaulObjectReqDTO.getPlanName() + "计划中，有对象编号为空");
         }
@@ -712,8 +716,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isEmpty(list)) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
-        overhaulObjectReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulObjectReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulObjectReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulObjectReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanMapper.modifyOverhaulObject(overhaulObjectReqDTO);
     }
 
@@ -729,7 +733,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 if (StringUtils.isEmpty(list)) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
                 }
-                overhaulPlanMapper.deleteOverhaulObject(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                overhaulPlanMapper.deleteOverhaulObject(id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         }
     }

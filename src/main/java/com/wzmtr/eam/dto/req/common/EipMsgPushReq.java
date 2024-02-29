@@ -2,9 +2,6 @@ package com.wzmtr.eam.dto.req.common;
 
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
-
 @Data
 public class EipMsgPushReq {
 
@@ -29,31 +26,31 @@ public class EipMsgPushReq {
     public void add() {
         this.operId = "1";
         this.todoStatus = "1";
-        this.kindType = "1";
+        this.kindType = "3";
     }
 
     public void update() {
         this.operId = "2";
         this.todoStatus = "2";
-        this.kindType = "1";
+        this.kindType = "3";
     }
 
     public void readed() {
         this.operId = "1";
         this.todoStatus = "2";
-        this.kindType = "1";
+        this.kindType = "3";
     }
 
     public void delete() {
         this.operId = "3";
         this.todoStatus = "1";
-        this.kindType = "1";
+        this.kindType = "3";
     }
 
     public void send() {
         this.operId = "1";
         this.todoStatus = "7";
-        this.kindType = "1";
+        this.kindType = "3";
     }
 
 }

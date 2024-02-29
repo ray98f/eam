@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.res.equipment.PillarResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.equipment.PillarMapper;
@@ -22,7 +22,7 @@ public class PillarServiceImpl implements PillarService {
 
     @Override
     public Page<PillarResDTO> pagePillar(String pillarNumber, String powerSupplySection, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return pillarMapper.pagePillar(pageReqDTO.of(), pillarNumber, powerSupplySection);
     }
 }

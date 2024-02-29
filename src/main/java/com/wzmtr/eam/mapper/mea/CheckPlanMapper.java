@@ -35,6 +35,13 @@ public interface CheckPlanMapper {
 
     List<CheckPlanResDTO> listCheckPlan(CheckPlanListReqDTO checkPlanListReqDTO);
 
+    /**
+     * 导出定检计划
+     * @param ids ids
+     * @return 定检计划列表
+     */
+    List<CheckPlanResDTO> exportCheckPlan(List<String> ids);
+
     Page<MeaInfoResDTO> pageInfo(Page<MeaInfoResDTO> page, String equipCode, String instrmPlanNo);
 
     MeaInfoResDTO getInfoDetail(String id);
@@ -44,6 +51,13 @@ public interface CheckPlanMapper {
     void modifyInfo(MeaInfoReqDTO meaInfoReqDTO);
 
     List<MeaInfoResDTO> listInfo(String equipCode, String instrmPlanNo);
+
+    /**
+     * 导出定检计划明细
+     * @param ids ids
+     * @return 定检计划明细
+     */
+    List<MeaInfoResDTO> exportInfo(List<String> ids);
 
     Page<MeaInfoResDTO> queryDetail(Page<MeaInfoResDTO> page, MeaInfoQueryReqDTO req);
 }

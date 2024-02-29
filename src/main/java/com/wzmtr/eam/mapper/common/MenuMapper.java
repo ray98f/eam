@@ -4,7 +4,6 @@ import com.wzmtr.eam.dto.req.common.MenuAddReqDTO;
 import com.wzmtr.eam.dto.req.common.MenuModifyReqDTO;
 import com.wzmtr.eam.dto.res.common.MenuDetailResDTO;
 import com.wzmtr.eam.dto.res.common.MenuListResDTO;
-import com.wzmtr.eam.dto.res.common.SuperMenuResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

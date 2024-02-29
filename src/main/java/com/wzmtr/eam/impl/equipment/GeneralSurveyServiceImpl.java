@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelGeneralSurveyReqDTO;
@@ -14,28 +14,22 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.equipment.GeneralSurveyService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static com.wzmtr.eam.constant.CommonConstants.XLS;
-import static com.wzmtr.eam.constant.CommonConstants.XLSX;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author frp
@@ -52,7 +46,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
 
     @Override
     public Page<GeneralSurveyResDTO> pageGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<GeneralSurveyResDTO> page = generalSurveyMapper.pageGeneralSurvey(pageReqDTO.of(), trainNo, recNotifyNo, recDetail, orgType);
         List<GeneralSurveyResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
@@ -86,16 +80,16 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
 
     @Override
     public void addGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO) {
-        generalSurveyReqDTO.setRecId(TokenUtil.getUuId());
-        generalSurveyReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        generalSurveyReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        generalSurveyReqDTO.setRecId(TokenUtils.getUuId());
+        generalSurveyReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        generalSurveyReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         generalSurveyMapper.addGeneralSurvey(generalSurveyReqDTO);
     }
 
     @Override
     public void modifyGeneralSurvey(GeneralSurveyReqDTO generalSurveyReqDTO) {
-        generalSurveyReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        generalSurveyReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        generalSurveyReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        generalSurveyReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         generalSurveyMapper.modifyGeneralSurvey(generalSurveyReqDTO);
     }
 
@@ -103,11 +97,11 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     public void deleteGeneralSurvey(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
             for (String id : baseIdsEntity.getIds()) {
-                if (!generalSurveyMapper.getGeneralSurveyDetail(id).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!generalSurveyMapper.getGeneralSurveyDetail(id).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
             }
-            generalSurveyMapper.deleteGeneralSurvey(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            generalSurveyMapper.deleteGeneralSurvey(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
@@ -115,25 +109,21 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
 
     @Override
     public void importGeneralSurvey(MultipartFile file) {
-        try {
-            List<ExcelGeneralSurveyReqDTO> list = EasyExcelUtils.read(file, ExcelGeneralSurveyReqDTO.class);
-            List<GeneralSurveyReqDTO> temp = new ArrayList<>();
-            for (ExcelGeneralSurveyReqDTO reqDTO : list) {
-                GeneralSurveyReqDTO req = new GeneralSurveyReqDTO();
-                BeanUtils.copyProperties(reqDTO, req);
-                req.setRecType(Objects.isNull(reqDTO.getRecType()) ? "" : "普查".equals(reqDTO.getRecType()) ? "10" : "20");
-                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
-                req.setRecId(TokenUtil.getUuId());
-                req.setDeleteFlag("0");
-                req.setRecCreator(TokenUtil.getCurrentPersonId());
-                req.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-                temp.add(req);
-            }
-            if (!temp.isEmpty()) {
-                generalSurveyMapper.importGeneralSurvey(temp);
-            }
-        } catch (Exception e) {
-            throw new CommonException(ErrorCode.IMPORT_ERROR);
+        List<ExcelGeneralSurveyReqDTO> list = EasyExcelUtils.read(file, ExcelGeneralSurveyReqDTO.class);
+        List<GeneralSurveyReqDTO> temp = new ArrayList<>();
+        for (ExcelGeneralSurveyReqDTO reqDTO : list) {
+            GeneralSurveyReqDTO req = new GeneralSurveyReqDTO();
+            BeanUtils.copyProperties(reqDTO, req);
+            req.setRecType(Objects.isNull(reqDTO.getRecType()) ? "" : "普查".equals(reqDTO.getRecType()) ? "10" : "20");
+            req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+            req.setRecId(TokenUtils.getUuId());
+            req.setDeleteFlag("0");
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
+            req.setRecCreateTime(DateUtils.getCurrentTime());
+            temp.add(req);
+        }
+        if (!temp.isEmpty()) {
+            generalSurveyMapper.importGeneralSurvey(temp);
         }
     }
 

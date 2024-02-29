@@ -7,10 +7,10 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.minio.MinioService;
-import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.FileUploadUtils;
 import com.wzmtr.eam.utils.MinioUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import lombok.Cleanup;
@@ -65,11 +65,11 @@ public class MinioServiceImpl implements MinioService {
         FileReqDTO build = FileReqDTO.builder()
                 .bucket(bucket)
                 .fileName(fileName)
-                .id(TokenUtil.getUuId())
+                .id(TokenUtils.getUuId())
                 .oldName(oldName)
                 .url(url)
-                .recCreateTime(DateUtil.current(DateUtil.YYYY_MM_DD_HH_MM_SS))
-                .recCreator(TokenUtil.getCurrentPersonId())
+                .recCreateTime(DateUtils.getCurrentTime())
+                .recCreator(TokenUtils.getCurrentPersonId())
                 .build();
         fileMapper.insertFile(build);
         return fileMapper.getFile(url, bucket, oldName);

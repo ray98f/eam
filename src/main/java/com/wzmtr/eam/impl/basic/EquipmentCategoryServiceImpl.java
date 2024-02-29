@@ -1,20 +1,21 @@
 package com.wzmtr.eam.impl.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.dto.res.basic.excel.ExcelEquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
+import com.wzmtr.eam.dto.res.basic.excel.ExcelEquipmentCategoryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.service.basic.EquipmentCategoryService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import com.wzmtr.eam.utils.tree.EquipmentCategoryTreeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author frp
@@ -37,7 +38,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
 
     @Override
     public Page<EquipmentCategoryResDTO> listEquipmentCategory(String name, String code, String parentId, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentCategoryMapper.pageEquipmentCategory(pageReqDTO.of(), name, code, parentId);
     }
 
@@ -60,9 +61,9 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        equipmentCategoryReqDTO.setRecId(TokenUtil.getUuId());
-        equipmentCategoryReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        equipmentCategoryReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentCategoryReqDTO.setRecId(TokenUtils.getUuId());
+        equipmentCategoryReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        equipmentCategoryReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentCategoryMapper.addEquipmentCategory(equipmentCategoryReqDTO);
     }
 
@@ -72,23 +73,23 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
-        equipmentCategoryReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        equipmentCategoryReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentCategoryReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        equipmentCategoryReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         equipmentCategoryMapper.modifyEquipmentCategory(equipmentCategoryReqDTO);
     }
 
     @Override
     public void deleteEquipmentCategory(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            equipmentCategoryMapper.deleteEquipmentCategory(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            equipmentCategoryMapper.deleteEquipmentCategory(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
     }
 
     @Override
-    public void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response) throws IOException {
-        List<EquipmentCategoryResDTO> categoryResDTOList = equipmentCategoryMapper.listEquipmentCategory(name, no, parentId);
+    public void exportEquipmentCategory(List<String> ids, HttpServletResponse response) throws IOException {
+        List<EquipmentCategoryResDTO> categoryResDTOList = equipmentCategoryMapper.exportEquipmentCategory(ids);
         if (categoryResDTOList != null && !categoryResDTOList.isEmpty()) {
             List<ExcelEquipmentCategoryResDTO> resList = new ArrayList<>();
             for (EquipmentCategoryResDTO categoryResDTO : categoryResDTOList) {

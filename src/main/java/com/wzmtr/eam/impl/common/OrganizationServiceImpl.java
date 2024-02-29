@@ -1,21 +1,21 @@
 package com.wzmtr.eam.impl.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
+import com.wzmtr.eam.entity.CompanyStructureTree;
 import com.wzmtr.eam.entity.OrganMajorLineType;
-import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
-import com.wzmtr.eam.entity.CompanyStructureTree;
-import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
+import com.wzmtr.eam.service.common.OrganizationService;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.tree.CompanyTreeUtils;
-import com.wzmtr.eam.dto.res.common.MemberResDTO;
-import com.wzmtr.eam.service.common.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,7 +58,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Page<MemberResDTO> pageMember(String id, String name, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<MemberResDTO> page;
         String newId = organizationMapper.getIdByAreaId(id);
         if (!Objects.isNull(newId)) {
@@ -121,6 +121,21 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<EquipmentResDTO> equipmentRes = equipmentMapper.queryMajor(equipName);
         EquipmentResDTO equipmentResDTO = equipmentRes.get(0);
         return orgMajorMapper.getWorkerGroupBySubjectAndLine(equipmentResDTO.getMajorCode(),equipmentResDTO.getUseLineNo(),"10");
+    }
+
+    @Override
+    public List<CompanyStructureTree> listZttCompanyStructure() {
+        CompanyStructureTree companyStructureTree = organizationMapper.getZttRoot();
+        if (Objects.isNull(companyStructureTree)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        List<CompanyStructureTree> extraRootList = new ArrayList<>();
+        extraRootList.add(companyStructureTree);
+        List<String> ids = organizationMapper.downRecursionId(companyStructureTree.getId());
+        ids.remove(companyStructureTree.getId());
+        List<CompanyStructureTree> extraBodyList = organizationMapper.listZttExtraBodyList(ids);
+        CompanyTreeUtils extraTree = new CompanyTreeUtils(extraRootList, extraBodyList);
+        return extraTree.getTree();
     }
 
 }

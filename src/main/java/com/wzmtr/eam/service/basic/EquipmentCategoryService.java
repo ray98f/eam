@@ -24,7 +24,7 @@ public interface EquipmentCategoryService {
 
     void deleteEquipmentCategory(BaseIdsEntity baseIdsEntity);
 
-    void exportEquipmentCategory(String name, String no, String parentId, HttpServletResponse response) throws IOException;
+    void exportEquipmentCategory(List<String> ids, HttpServletResponse response) throws IOException;
 
     List<EquipmentCategoryResDTO> getFirstEquipmentCategory();
 

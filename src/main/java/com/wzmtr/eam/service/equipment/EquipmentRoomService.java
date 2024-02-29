@@ -8,6 +8,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public interface EquipmentRoomService {
 
@@ -22,6 +23,5 @@ public interface EquipmentRoomService {
 
     void deleteEquipmentRoom(BaseIdsEntity baseIdsEntity);
 
-    void exportEquipmentRoom(String equipRoomCode, String equipRoomName, String lineCode, String position1Code,
-                             String position1Name, String subjectCode, HttpServletResponse response) throws IOException;
+    void exportEquipmentRoom(List<String> ids, HttpServletResponse response) throws IOException;
 }

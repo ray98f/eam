@@ -23,21 +23,21 @@ public interface RoleMapper {
 
     Page<Role> listRole(Page<Role> page, @Param("roleName") String roleName);
 
-    Integer deleteRole(@Param("id") String id);
+    void deleteRole(@Param("id") String id);
 
-    Integer deleteRoleMenu(@Param("id") String id);
+    void deleteRoleMenu(@Param("id") String id);
 
-    Integer insertRole(RoleReqDTO role);
+    void insertRole(RoleReqDTO role);
 
-    Integer insertRoleMenu(RoleReqDTO role);
+    void insertRoleMenu(RoleReqDTO role);
 
-    Integer updateRole(RoleReqDTO role);
+    void updateRole(RoleReqDTO role);
 
     List<String> getRolePerms(@Param("id") String id);
 
-    Integer deleteUserRole(UserRoleReqDTO userRoleReqDTO);
+    void deleteUserRole(UserRoleReqDTO userRoleReqDTO);
 
-    Integer addUserRole(UserRoleReqDTO userRoleReqDTO);
+    void addUserRole(UserRoleReqDTO userRoleReqDTO);
 
     List<PersonListResDTO> listRoleUsers(@Param("roleId") String roleId, @Param("roleCode") String roleCode);
 

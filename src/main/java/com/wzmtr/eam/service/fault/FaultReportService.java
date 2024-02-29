@@ -13,10 +13,16 @@ public interface FaultReportService {
 
     /**
      * 提报
-     *
      * @param reqDTO
      */
     String addToFault(FaultReportReqDTO reqDTO);
+
+    /**
+     * 故障提报（到设备）-开放接口
+     * @param reqDTO 入参
+     * @return 故障编号
+     */
+    String addToFaultOpen(FaultReportOpenReqDTO reqDTO);
 
     /**
      * 已提报故障

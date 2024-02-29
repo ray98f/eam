@@ -53,6 +53,9 @@ public class FaultInfoDO {
     private String positionName;
     @ApiModelProperty(value = "位置2编码")
     private String position2Code;
+
+    @ApiModelProperty(value = "位置2")
+    private String position2Name;
     @ApiModelProperty(value = "部件编码")
     private String partCode;
     @ApiModelProperty(value = "部件名称")
@@ -148,7 +151,7 @@ public class FaultInfoDO {
     /**
      * not null
      */
-    @ApiModelProperty(value = "故障状态")
+    @ApiModelProperty(value = "故障状态 10 草稿 20 提报")
     private String faultStatus;
     @ApiModelProperty(value = "工作流实例ID")
     private String workFlowInstId;

@@ -6,6 +6,9 @@
         SELECT REC_ID, EQUIP_CODE as NODE_CODE, EQUIP_NAME as NODE_NAME
         FROM T_EQUIPMENT
         WHERE MAJOR_CODE='07' and APPROVAL_STATUS ='30'
+        <if test="lineCode!=null and lineCode!=''">
+            AND USE_LINE_NO=#{lineCode}
+        </if>
         order by EQUIP_CODE asc
     </select>
 
@@ -50,7 +53,7 @@
         ORDER BY NODE_CODE ASC
     </select>
 
-    <select id="pageEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
+    <sql id="equip-cols">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
         COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
@@ -124,6 +127,10 @@
         EXT3	as "ext3",  <!-- 扩展字段3 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
+    </sql>
+
+    <select id="pageEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
+        <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30'
         <if test="equipCode!=null and equipCode!=''">
             and EQUIP_CODE like '%' || #{equipCode} || '%'
@@ -168,80 +175,13 @@
     </select>
 
     <select id="getEquipmentDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
-        SELECT
-        REC_ID	as "recId",  <!-- 记录编号 -->
-        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
-        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
-        DEPT_CODE	as "deptCode",  <!-- 部门代码 -->
-        DEPT_NAME	as "deptName",  <!-- 部门名称 -->
-        EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
-        MAJOR_CODE	as "majorCode",  <!-- 专业代码 -->
-        MAJOR_NAME	as "majorName",  <!-- 专业名称 -->
-        SYSTEM_CODE	as "systemCode",  <!-- 系统代码 -->
-        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
-        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
-        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
-        SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 特种设备标识 -->
-        SOURCE_KIND	as "sourceKind",  <!-- 设备来源 -->
-        BOM_TYPE	as "bomType",  <!-- BOM类型 -->
-        MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
-        ORDER_NO	as "orderNo",  <!-- 合同号 -->
-        ORDER_NAME	as "orderName",  <!-- 合同名称 -->
-        MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
-        BRAND	as "brand",  <!-- 品牌 -->
-        MANUFACTURE_DATE	as "manufactureDate",  <!-- 出厂日期 -->
-        MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
-        START_USE_DATE	as "startUseDate",  <!-- 开始使用日期 -->
-        END_USE_TIME	as "endUseTime",  <!-- 停止使用日期 -->
-        OTHER_FEATURE	as "otherFeature",  <!-- 其它特征参数 -->
-        MEASURE_UNIT	as "measureUnit",  <!-- 计量单位 -->
-        QUANTITY	as "quantity",  <!-- 数量 -->
-        IN_ACCOUNT_TIME	as "inAccountTime",  <!-- 进设备台帐时间 -->
-        PICK_NO	as "pickNo",  <!-- 领用人工号 -->
-        PICK_NAME	as "pickName",  <!-- 领用人姓名 -->
-        EQUIP_STATUS	as "equipStatus",  <!-- 设备状态 -->
-        SOURCE_APP_NO	as "sourceAppNo",  <!-- 来源单号 -->
-        SOURCE_SUB_NO	as "sourceSubNo",  <!-- 来源明细号 -->
-        SOURCE_REC_ID	as "sourceRecId",  <!-- 来源记录编号 -->
-        INSTALL_DEALER	as "installDealer",  <!-- 安装单位 -->
-        DOC_ID	as "docId",  <!-- 附件编号 -->
-        ORIGIN_LINE_NO	as "originLineNo",  <!-- 来源线别代码 -->
-        ORIGIN_LINE_NAME	as "originLineName",  <!-- 来源线别名称 -->
-        ORIGIN_SEG_NO	as "originSegNo",  <!-- 来源线段代码 -->
-        ORIGIN_SEG_NAME	as "originSegName",  <!-- 来源线段名称 -->
-        USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
-        USE_LINE_NAME	as "useLineName",  <!-- 应用线别 -->
-        USE_SEG_NO	as "useSegNo",  <!-- 应用线段代码 -->
-        USE_SEG_NAME	as "useSegName",  <!-- 应用线段 -->
-        POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
-        POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
-        POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
-        POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
-        POSITION3	as "position3",  <!-- 位置三 -->
-        POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
-        TOTAL_MILES	as "totalMiles",  <!-- 走行里程 -->
-        REMARK	as "remark",  <!-- 备注 -->
-        APPROVAL_STATUS	as "approvalStatus",  <!-- 审批状态 -->
-        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
-        VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
-        VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
-        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
-        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
-        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
-        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
-        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
-        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
-        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
-        EXT1	as "ext1",  <!-- 扩展字段1 -->
-        EXT2	as "ext2",  <!-- 扩展字段2 -->
-        EXT3	as "ext3",  <!-- 扩展字段3 -->
-        EXT4	as "ext4",  <!-- 扩展字段4 -->
-        EXT5	as "ext5" <!-- 扩展字段5 -->
+        <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE REC_ID=#{id}
+    </select>
+
+    <select id="getEquipmentDetailByCode" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
+        <include refid="equip-cols"/>
+        FROM T_EQUIPMENT WHERE EQUIP_CODE=#{code}
     </select>
 
     <select id="getMaxCode" resultType="java.lang.String">
@@ -606,82 +546,10 @@
     </insert>
 
     <select id="listEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
-        SELECT
-        REC_ID	as "recId",  <!-- 记录编号 -->
-        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
-        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
-        DEPT_CODE	as "deptCode",  <!-- 部门代码 -->
-        DEPT_NAME	as "deptName",  <!-- 部门名称 -->
-        EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
-        MAJOR_CODE	as "majorCode",  <!-- 专业代码 -->
-        MAJOR_NAME	as "majorName",  <!-- 专业名称 -->
-        SYSTEM_CODE	as "systemCode",  <!-- 系统代码 -->
-        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
-        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
-        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
-        SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 特种设备标识 -->
-        SOURCE_KIND	as "sourceKind",  <!-- 设备来源 -->
-        BOM_TYPE	as "bomType",  <!-- BOM类型 -->
-        MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
-        ORDER_NO	as "orderNo",  <!-- 合同号 -->
-        ORDER_NAME	as "orderName",  <!-- 合同名称 -->
-        MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
-        BRAND	as "brand",  <!-- 品牌 -->
-        MANUFACTURE_DATE	as "manufactureDate",  <!-- 出厂日期 -->
-        MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
-        START_USE_DATE	as "startUseDate",  <!-- 开始使用日期 -->
-        END_USE_TIME	as "endUseTime",  <!-- 停止使用日期 -->
-        OTHER_FEATURE	as "otherFeature",  <!-- 其它特征参数 -->
-        MEASURE_UNIT	as "measureUnit",  <!-- 计量单位 -->
-        QUANTITY	as "quantity",  <!-- 数量 -->
-        IN_ACCOUNT_TIME	as "inAccountTime",  <!-- 进设备台帐时间 -->
-        PICK_NO	as "pickNo",  <!-- 领用人工号 -->
-        PICK_NAME	as "pickName",  <!-- 领用人姓名 -->
-        EQUIP_STATUS	as "equipStatus",  <!-- 设备状态 -->
-        SOURCE_APP_NO	as "sourceAppNo",  <!-- 来源单号 -->
-        SOURCE_SUB_NO	as "sourceSubNo",  <!-- 来源明细号 -->
-        SOURCE_REC_ID	as "sourceRecId",  <!-- 来源记录编号 -->
-        INSTALL_DEALER	as "installDealer",  <!-- 安装单位 -->
-        DOC_ID	as "docId",  <!-- 附件编号 -->
-        ORIGIN_LINE_NO	as "originLineNo",  <!-- 来源线别代码 -->
-        ORIGIN_LINE_NAME	as "originLineName",  <!-- 来源线别名称 -->
-        ORIGIN_SEG_NO	as "originSegNo",  <!-- 来源线段代码 -->
-        ORIGIN_SEG_NAME	as "originSegName",  <!-- 来源线段名称 -->
-        USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
-        USE_LINE_NAME	as "useLineName",  <!-- 应用线别 -->
-        USE_SEG_NO	as "useSegNo",  <!-- 应用线段代码 -->
-        USE_SEG_NAME	as "useSegName",  <!-- 应用线段 -->
-        POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
-        POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
-        POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
-        POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
-        POSITION3	as "position3",  <!-- 位置三 -->
-        POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
-        TOTAL_MILES	as "totalMiles",  <!-- 走行里程 -->
-        REMARK	as "remark",  <!-- 备注 -->
-        APPROVAL_STATUS	as "approvalStatus",  <!-- 审批状态 -->
-        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
-        VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
-        VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
-        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
-        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
-        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
-        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
-        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
-        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
-        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
-        EXT1	as "ext1",  <!-- 扩展字段1 -->
-        EXT2	as "ext2",  <!-- 扩展字段2 -->
-        EXT3	as "ext3",  <!-- 扩展字段3 -->
-        EXT4	as "ext4",  <!-- 扩展字段4 -->
-        EXT5	as "ext5" <!-- 扩展字段5 -->
+        <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE
         REC_ID IN (
-        <foreach collection="list" index="index" item="id" separator=",">
+        <foreach collection="ids" index="index" item="id" separator=",">
             #{id}
         </foreach>
         )
@@ -689,79 +557,7 @@
     </select>
 
     <select id="siftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
-        SELECT
-        REC_ID	as "recId",  <!-- 记录编号 -->
-        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
-        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
-        DEPT_CODE	as "deptCode",  <!-- 部门代码 -->
-        DEPT_NAME	as "deptName",  <!-- 部门名称 -->
-        EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
-        MAJOR_CODE	as "majorCode",  <!-- 专业代码 -->
-        MAJOR_NAME	as "majorName",  <!-- 专业名称 -->
-        SYSTEM_CODE	as "systemCode",  <!-- 系统代码 -->
-        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
-        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
-        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
-        SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 特种设备标识 -->
-        SOURCE_KIND	as "sourceKind",  <!-- 设备来源 -->
-        BOM_TYPE	as "bomType",  <!-- BOM类型 -->
-        MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
-        ORDER_NO	as "orderNo",  <!-- 合同号 -->
-        ORDER_NAME	as "orderName",  <!-- 合同名称 -->
-        MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
-        BRAND	as "brand",  <!-- 品牌 -->
-        MANUFACTURE_DATE	as "manufactureDate",  <!-- 出厂日期 -->
-        MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
-        START_USE_DATE	as "startUseDate",  <!-- 开始使用日期 -->
-        END_USE_TIME	as "endUseTime",  <!-- 停止使用日期 -->
-        OTHER_FEATURE	as "otherFeature",  <!-- 其它特征参数 -->
-        MEASURE_UNIT	as "measureUnit",  <!-- 计量单位 -->
-        QUANTITY	as "quantity",  <!-- 数量 -->
-        IN_ACCOUNT_TIME	as "inAccountTime",  <!-- 进设备台帐时间 -->
-        PICK_NO	as "pickNo",  <!-- 领用人工号 -->
-        PICK_NAME	as "pickName",  <!-- 领用人姓名 -->
-        EQUIP_STATUS	as "equipStatus",  <!-- 设备状态 -->
-        SOURCE_APP_NO	as "sourceAppNo",  <!-- 来源单号 -->
-        SOURCE_SUB_NO	as "sourceSubNo",  <!-- 来源明细号 -->
-        SOURCE_REC_ID	as "sourceRecId",  <!-- 来源记录编号 -->
-        INSTALL_DEALER	as "installDealer",  <!-- 安装单位 -->
-        DOC_ID	as "docId",  <!-- 附件编号 -->
-        ORIGIN_LINE_NO	as "originLineNo",  <!-- 来源线别代码 -->
-        ORIGIN_LINE_NAME	as "originLineName",  <!-- 来源线别名称 -->
-        ORIGIN_SEG_NO	as "originSegNo",  <!-- 来源线段代码 -->
-        ORIGIN_SEG_NAME	as "originSegName",  <!-- 来源线段名称 -->
-        USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
-        USE_LINE_NAME	as "useLineName",  <!-- 应用线别 -->
-        USE_SEG_NO	as "useSegNo",  <!-- 应用线段代码 -->
-        USE_SEG_NAME	as "useSegName",  <!-- 应用线段 -->
-        POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
-        POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
-        POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
-        POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
-        POSITION3	as "position3",  <!-- 位置三 -->
-        POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
-        TOTAL_MILES	as "totalMiles",  <!-- 走行里程 -->
-        REMARK	as "remark",  <!-- 备注 -->
-        APPROVAL_STATUS	as "approvalStatus",  <!-- 审批状态 -->
-        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
-        VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
-        VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
-        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
-        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
-        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
-        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
-        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
-        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
-        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
-        EXT1	as "ext1",  <!-- 扩展字段1 -->
-        EXT2	as "ext2",  <!-- 扩展字段2 -->
-        EXT3	as "ext3",  <!-- 扩展字段3 -->
-        EXT4	as "ext4",  <!-- 扩展字段4 -->
-        EXT5	as "ext5" <!-- 扩展字段5 -->
+        <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE 1=1
         <if test="bomType!=null and bomType!=''">
             and TRIM(BOM_TYPE) IS NOT NULL AND MAJOR_CODE ='07'
@@ -824,79 +620,7 @@
     </select>
 
     <select id="getSplitTransferDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
-        SELECT
-        REC_ID	as "recId",  <!-- 记录编号 -->
-        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
-        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
-        DEPT_CODE	as "deptCode",  <!-- 部门代码 -->
-        DEPT_NAME	as "deptName",  <!-- 部门名称 -->
-        EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
-        MAJOR_CODE	as "majorCode",  <!-- 专业代码 -->
-        MAJOR_NAME	as "majorName",  <!-- 专业名称 -->
-        SYSTEM_CODE	as "systemCode",  <!-- 系统代码 -->
-        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
-        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
-        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
-        SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 特种设备标识 -->
-        SOURCE_KIND	as "sourceKind",  <!-- 设备来源 -->
-        BOM_TYPE	as "bomType",  <!-- BOM类型 -->
-        MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
-        ORDER_NO	as "orderNo",  <!-- 合同号 -->
-        ORDER_NAME	as "orderName",  <!-- 合同名称 -->
-        MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
-        BRAND	as "brand",  <!-- 品牌 -->
-        MANUFACTURE_DATE	as "manufactureDate",  <!-- 出厂日期 -->
-        MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
-        START_USE_DATE	as "startUseDate",  <!-- 开始使用日期 -->
-        END_USE_TIME	as "endUseTime",  <!-- 停止使用日期 -->
-        OTHER_FEATURE	as "otherFeature",  <!-- 其它特征参数 -->
-        MEASURE_UNIT	as "measureUnit",  <!-- 计量单位 -->
-        QUANTITY	as "quantity",  <!-- 数量 -->
-        IN_ACCOUNT_TIME	as "inAccountTime",  <!-- 进设备台帐时间 -->
-        PICK_NO	as "pickNo",  <!-- 领用人工号 -->
-        PICK_NAME	as "pickName",  <!-- 领用人姓名 -->
-        EQUIP_STATUS	as "equipStatus",  <!-- 设备状态 -->
-        SOURCE_APP_NO	as "sourceAppNo",  <!-- 来源单号 -->
-        SOURCE_SUB_NO	as "sourceSubNo",  <!-- 来源明细号 -->
-        SOURCE_REC_ID	as "sourceRecId",  <!-- 来源记录编号 -->
-        INSTALL_DEALER	as "installDealer",  <!-- 安装单位 -->
-        DOC_ID	as "docId",  <!-- 附件编号 -->
-        ORIGIN_LINE_NO	as "originLineNo",  <!-- 来源线别代码 -->
-        ORIGIN_LINE_NAME	as "originLineName",  <!-- 来源线别名称 -->
-        ORIGIN_SEG_NO	as "originSegNo",  <!-- 来源线段代码 -->
-        ORIGIN_SEG_NAME	as "originSegName",  <!-- 来源线段名称 -->
-        USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
-        USE_LINE_NAME	as "useLineName",  <!-- 应用线别 -->
-        USE_SEG_NO	as "useSegNo",  <!-- 应用线段代码 -->
-        USE_SEG_NAME	as "useSegName",  <!-- 应用线段 -->
-        POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
-        POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
-        POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
-        POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
-        POSITION3	as "position3",  <!-- 位置三 -->
-        POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
-        TOTAL_MILES	as "totalMiles",  <!-- 走行里程 -->
-        REMARK	as "remark",  <!-- 备注 -->
-        APPROVAL_STATUS	as "approvalStatus",  <!-- 审批状态 -->
-        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
-        VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
-        VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
-        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
-        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
-        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
-        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
-        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
-        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
-        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
-        EXT1	as "ext1",  <!-- 扩展字段1 -->
-        EXT2	as "ext2",  <!-- 扩展字段2 -->
-        EXT3	as "ext3",  <!-- 扩展字段3 -->
-        EXT4	as "ext4",  <!-- 扩展字段4 -->
-        EXT5	as "ext5" <!-- 扩展字段5 -->
+        <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE 1=1 and REC_ID=#{id}
         ORDER BY EQUIP_CODE ASC
     </select>

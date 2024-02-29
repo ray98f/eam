@@ -27,4 +27,11 @@ public interface WheelsetLathingMapper {
 
     List<WheelsetLathingResDTO> listWheelsetLathing(String trainNo, String carriageNo, String axleNo, String wheelNo);
 
+    /**
+     * 导出轮对镟修台账列表
+     * @param ids ids
+     * @return 轮对镟修台账列表
+     */
+    List<WheelsetLathingResDTO> exportWheelsetLathing(List<String> ids);
+
 }

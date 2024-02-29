@@ -23,7 +23,7 @@ public interface MeaMapper {
 
     void importMea(List<MeaReqDTO> list);
 
-    List<MeaResDTO> listMea(MeaListReqDTO meaListReqDTO);
+    List<MeaResDTO> listMea(List<String> ids);
 
     void updateone(MeaResDTO meaResDTO);
 

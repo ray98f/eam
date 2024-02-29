@@ -36,6 +36,12 @@ public interface OverhaulTplMapper {
 
     void deleteOverhaulTpl(String id, String userId, String time);
 
+    /**
+     * 检修模板导入
+     * @param list 检修模板列表
+     */
+    void importOverhaulTpl(List<OverhaulTplReqDTO> list);
+
     void changeOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO);
 
     List<OverhaulTplDetailResDTO> listOverhaulTplDetail(String templateId);
@@ -43,13 +49,37 @@ public interface OverhaulTplMapper {
     List<OverhaulTplResDTO> listOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
                                             String majorCode, String systemCode, String equipTypeCode, String trialStatus);
 
+    /**
+     * 导出搜索检修模板列表
+     * @param ids ids
+     * @return 检修模板列表
+     */
+    List<OverhaulTplResDTO> exportOverhaulTpl(List<String> ids);
+
     Page<OverhaulTplDetailResDTO> pageOverhaulDetailTpl(Page<OverhaulTplDetailResDTO> page, String templateId);
+
+    /**
+     * 根据信息获取模板编号
+     * @param templateName 模板名称
+     * @param lineName 线路名称
+     * @param subjectName 专业名称
+     * @param systemName 系统名称
+     * @param equipTypeName 设备类别名称
+     * @return 模板编号
+     */
+    String getTemplateId(String templateName, String lineName, String subjectName, String systemName, String equipTypeName);
 
     OverhaulTplDetailResDTO getOverhaulTplDetailDetail(String id);
 
     void addOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO);
 
     void modifyOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO);
+
+    /**
+     * 检修模板检修项导入
+     * @param list 检修模板检修项列表
+     */
+    void importOverhaulTplDetail(List<OverhaulTplDetailReqDTO> list);
 
     Page<OverhaulMaterialResDTO> pageOverhaulMaterial(Page<OverhaulMaterialResDTO> page, String templateId);
 
@@ -62,6 +92,12 @@ public interface OverhaulTplMapper {
     void modifyOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO);
 
     void deleteOverhaulMaterial(List<String> ids, String userId, String time);
+
+    /**
+     * 检修模板物料导入
+     * @param list 检修模板物料列表
+     */
+    void importOverhaulMaterial(List<OverhaulMaterialReqDTO> list);
 
     List<OverhaulMaterialResDTO> listOverhaulMaterial(String templateId);
 

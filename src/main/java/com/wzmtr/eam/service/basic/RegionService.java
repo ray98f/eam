@@ -24,5 +24,5 @@ public interface RegionService {
 
     void deleteRegion(BaseIdsEntity baseIdsEntity);
 
-    void exportRegion(String name, String no, String parentId, HttpServletResponse response) throws IOException;
+    void exportRegion(List<String> ids, HttpServletResponse response) throws IOException;
 }

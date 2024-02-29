@@ -65,12 +65,10 @@ public interface OrgTypeMapper {
 
     /**
      * 获取组织机构类别列表
-     *
-     * @param orgCodes
-     * @param orgType
-     * @return
+     * @param ids ids
+     * @return 组织机构类别列表
      */
-    List<OrgTypeResDTO> listOrgType(List<List<String>> orgCodes, String orgType);
+    List<OrgTypeResDTO> listOrgType(List<String> ids);
 
 
 }

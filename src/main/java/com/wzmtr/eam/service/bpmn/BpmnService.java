@@ -20,7 +20,7 @@ public interface BpmnService {
 
     String startInstance(StartInstanceVO startInstanceVO);
 
-    ResultEntity agreeInstance(BpmnExamineDTO bpmnExamineDTO);
+    ResultEntity<?> agreeInstance(BpmnExamineDTO bpmnExamineDTO);
 
     void rejectInstance(BpmnExamineDTO bpmnExamineDTO);
 
@@ -57,4 +57,11 @@ public interface BpmnService {
     String getNextNodeId(String flowId, String nodeId);
 
     FlowRoleResDTO getNextNode(String flowId, String nodeId, String line);
+
+    /**
+     * 根据流程实例id获取最新流程图
+     * @param processId 流程实例id
+     * @return 流程图信息
+     */
+    FlowChartRes getFlowChartByProcessId(String processId);
 }

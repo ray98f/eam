@@ -3,7 +3,7 @@ package com.wzmtr.eam.impl.secure;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.export.SecureDangerSourceExportBO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceDetailReqDTO;
@@ -17,15 +17,15 @@ import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.secure.SecureDangerSourceMapper;
 import com.wzmtr.eam.service.secure.SecureDangerSourceService;
 import com.wzmtr.eam.utils.*;
-import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -45,10 +45,10 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
 
     @Override
     public Page<SecureDangerSourceResDTO> dangerSourceList(SecureDangerSourceListReqDTO reqDTO) {
-        PageHelper.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDateStart(), reqDTO.getDiscDateEnd());
         List<SecureDangerSourceResDTO> records = query.getRecords();
-        if (CollectionUtil.isNotEmpty(records)) {
+        if (StringUtils.isNotEmpty(records)) {
             records.forEach(this::assemble);
         }
         return query;
@@ -69,12 +69,16 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Override
     public void export(String dangerRiskId, String discDate, HttpServletResponse response) {
         List<SecureDangerSourceResDTO> resList = secureDangerSourceMapper.list(dangerRiskId, discDate);
-        if (CollectionUtil.isNotEmpty(resList)) {
+        if (StringUtils.isNotEmpty(resList)) {
             List<SecureDangerSourceExportBO> exportList = new ArrayList<>();
             for (SecureDangerSourceResDTO resDTO : resList) {
                 SecureDangerSourceExportBO exportBO = BeanUtils.convert(resDTO, SecureDangerSourceExportBO.class);
-                exportBO.setInspectDept(organizationMapper.getExtraOrgByAreaId(resDTO.getRecDept()));
-                exportBO.setRestoreDept(organizationMapper.getExtraOrgByAreaId(resDTO.getRespDeptCode()));
+                if (StringUtils.isNotEmpty(resDTO.getRecDept())) {
+                    exportBO.setRecDeptName(organizationMapper.getExtraOrgByAreaId(resDTO.getRecDept()));
+                }
+                if (StringUtils.isNotEmpty(resDTO.getRespDeptCode())) {
+                    exportBO.setRespDeptName(organizationMapper.getExtraOrgByAreaId(resDTO.getRespDeptCode()));
+                }
                 exportList.add(exportBO);
             }
             try {
@@ -102,22 +106,22 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SecureDangerSourceAddReqDTO reqDTO) {
-        reqDTO.setRecId(TokenUtil.getUuId());
-        reqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
+        reqDTO.setRecId(TokenUtils.getUuId());
+        reqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         reqDTO.setDeleteFlag("0");
         String maxCode = secureDangerSourceMapper.getMaxCode();
         reqDTO.setDangerRiskId(CodeUtils.getNextCode(maxCode, "WX"));
-        reqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         secureDangerSourceMapper.add(reqDTO);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(BaseIdsEntity reqDTO) {
-        if (CollectionUtil.isEmpty(reqDTO.getIds())) {
+        if (StringUtils.isEmpty(reqDTO.getIds())) {
             return;
         }
-        secureDangerSourceMapper.deleteByIds(reqDTO.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        secureDangerSourceMapper.deleteByIds(reqDTO.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
     }
 
 
@@ -128,8 +132,8 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
             log.warn("危险源记录单号为空!");
             return;
         }
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         secureDangerSourceMapper.update(reqDTO);
     }
     // public void upload(){

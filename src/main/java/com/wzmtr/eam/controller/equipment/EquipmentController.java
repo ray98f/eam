@@ -1,10 +1,9 @@
 package com.wzmtr.eam.controller.equipment;
 
-import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
-import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
@@ -15,6 +14,7 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.EquipmentService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -30,6 +30,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -41,10 +42,15 @@ public class EquipmentController {
     @Resource
     private EquipmentService equipmentService;
 
+    /**
+     * 获取列车列表
+     * @param lineCode 线路编号
+     * @return 列车列表
+     */
     @GetMapping("/train")
     @ApiOperation(value = "获取列车号")
-    public DataResponse<List<RegionResDTO>> listTrainRegion() {
-        return DataResponse.of(equipmentService.listTrainRegion());
+    public DataResponse<List<RegionResDTO>> listTrainRegion(@RequestParam(required = false) String lineCode) {
+        return DataResponse.of(equipmentService.listTrainRegion(lineCode));
     }
 
     @GetMapping("/listTree")
@@ -92,7 +98,7 @@ public class EquipmentController {
     @PostMapping("/export")
     @ApiOperation(value = "导出设备台账")
     public void exportEquipment(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
-        if (baseIdsEntity == null || baseIdsEntity.getIds().isEmpty()) {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
         }
         equipmentService.exportEquipment(baseIdsEntity.getIds(), response);

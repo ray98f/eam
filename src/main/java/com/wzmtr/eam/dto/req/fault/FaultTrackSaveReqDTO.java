@@ -3,11 +3,10 @@ package com.wzmtr.eam.dto.req.fault;
 import com.wzmtr.eam.bizobject.FaultTrackBO;
 import com.wzmtr.eam.bizobject.FaultTrackWorkBO;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.dataobject.FaultTrackWorkDO;
 import com.wzmtr.eam.utils.BeanUtils;
-import com.wzmtr.eam.utils.DateUtil;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -61,9 +60,9 @@ public class FaultTrackSaveReqDTO {
     public FaultTrackBO toFaultTrackBO(FaultTrackSaveReqDTO req) {
         FaultTrackBO bo = BeanUtils.convert(req, FaultTrackBO.class);
         bo.setRecStatus("10");
-        bo.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        bo.setRecCreateTime(DateUtil.getCurrentTime());
-        bo.setRecId(TokenUtil.getUuId());
+        bo.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
+        bo.setRecCreateTime(DateUtils.getCurrentTime());
+        bo.setRecId(TokenUtils.getUuId());
         bo.setDeleteFlag("0");
         if (StringUtils.isEmpty(req.getDocId())){
             bo.setDocId(CommonConstants.BLANK);
@@ -81,9 +80,9 @@ public class FaultTrackSaveReqDTO {
     public FaultTrackWorkBO toFaultTrackWorkBO(FaultTrackSaveReqDTO req) {
         FaultTrackWorkBO bo = BeanUtils.convert(req, FaultTrackWorkBO.class);
         bo.setRecStatus("10");
-        bo.setRecCreator(TokenUtil.getCurrentPerson().getPersonId());
-        bo.setRecCreateTime(DateUtil.getCurrentTime());
-        bo.setRecId(TokenUtil.getUuId());
+        bo.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
+        bo.setRecCreateTime(DateUtils.getCurrentTime());
+        bo.setRecId(TokenUtils.getUuId());
         bo.setDeleteFlag("0");
         if (StringUtils.isEmpty(req.getDocId())){
             bo.setDocId(CommonConstants.BLANK);

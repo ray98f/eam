@@ -6,7 +6,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.basic.WoRuleService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -100,19 +104,21 @@ public class WoRuleController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出工单触发规则")
-    public void exportWoRule(@RequestParam(required = false) @ApiParam("规则编号") String ruleCode,
-                             @RequestParam(required = false) @ApiParam("规则名称") String ruleName,
-                             @RequestParam(required = false) @ApiParam("用途 10 20 30") String ruleUseage,
-                             HttpServletResponse response) throws IOException {
-        woRuleService.exportWoRule(ruleCode, ruleName, ruleUseage, response);
+    public void exportWoRule(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        woRuleService.exportWoRule(baseIdsEntity.getIds(), response);
     }
 
-    @GetMapping("/detail/export")
+    @PostMapping("/detail/export")
     @ApiOperation(value = "导出工单触发规则明细")
-    public void exportWoRuleDetail(@RequestParam @ApiParam("规则编号") String ruleCode,
-                                   HttpServletResponse response) throws IOException {
-        woRuleService.exportWoRuleDetail(ruleCode, response);
+    public void exportWoRuleDetail(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        woRuleService.exportWoRuleDetail(baseIdsEntity.getIds(), response);
     }
 }

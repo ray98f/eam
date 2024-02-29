@@ -3,12 +3,11 @@ package com.wzmtr.eam.mapper.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
-import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.basic.LineResDTO;
-import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
@@ -24,7 +23,12 @@ import java.util.List;
 @Repository
 public interface EquipmentMapper {
 
-    List<RegionResDTO> listTrainRegion();
+    /**
+     * 获取列车列表
+     * @param lineCode 线路编号
+     * @return 列车列表
+     */
+    List<RegionResDTO> listTrainRegion(String lineCode);
 
     List<RegionResDTO> listLine();
 
@@ -39,6 +43,13 @@ public interface EquipmentMapper {
 
     EquipmentResDTO getEquipmentDetail(String id);
 
+    /**
+     * 根据设备编号获取设备详情
+     * @param code 设备编号
+     * @return 设备详情
+     */
+    EquipmentResDTO getEquipmentDetailByCode(String code);
+
     String getMaxCode(Integer type);
 
     void insertUnitCode(UnitCodeReqDTO unitCodeReqDTO);
@@ -47,7 +58,7 @@ public interface EquipmentMapper {
 
     void insertEquipment(EquipmentReqDTO equipmentReqDTO);
 
-    List<EquipmentResDTO> listEquipment(List<String> list);
+    List<EquipmentResDTO> listEquipment(List<String> ids);
 
     List<EquipmentResDTO> siftEquipment(EquipmentSiftReqDTO equipmentSiftReqDTO);
 

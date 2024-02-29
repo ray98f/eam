@@ -8,6 +8,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public interface WoRuleService {
 
@@ -31,7 +32,7 @@ public interface WoRuleService {
 
     void deleteWoRuleDetail(BaseIdsEntity baseIdsEntity);
 
-    void exportWoRule(String ruleCode, String ruleName, String ruleUseage, HttpServletResponse response) throws IOException;
+    void exportWoRule(List<String> ids, HttpServletResponse response) throws IOException;
 
-    void exportWoRuleDetail(String ruleCode, HttpServletResponse response) throws IOException;
+    void exportWoRuleDetail(List<String> ids, HttpServletResponse response) throws IOException;
 }

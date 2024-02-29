@@ -8,7 +8,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.MenuMapper;
 import com.wzmtr.eam.service.common.MenuService;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import com.wzmtr.eam.utils.tree.MenuTreeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuListResDTO> listLoginMenu() {
-        List<MenuListResDTO> extraRootList = menuMapper.listLoginMenuRootList(TokenUtil.getCurrentPersonId());
-        List<MenuListResDTO> extraBodyList = menuMapper.listLoginMenuBodyList(TokenUtil.getCurrentPersonId());
+        List<MenuListResDTO> extraRootList = menuMapper.listLoginMenuRootList(TokenUtils.getCurrentPersonId());
+        List<MenuListResDTO> extraBodyList = menuMapper.listLoginMenuBodyList(TokenUtils.getCurrentPersonId());
         MenuTreeUtils extraTree = new MenuTreeUtils(extraRootList, extraBodyList);
         return extraTree.getTree();
     }
@@ -61,8 +61,8 @@ public class MenuServiceImpl implements MenuService {
         if (Objects.isNull(menuAddReqDTO)) {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
-        menuAddReqDTO.setId(TokenUtil.getUuId());
-        menuAddReqDTO.setUserId(TokenUtil.getCurrentPersonId());
+        menuAddReqDTO.setId(TokenUtils.getUuId());
+        menuAddReqDTO.setUserId(TokenUtils.getCurrentPersonId());
         Integer result = menuMapper.insertMenu(menuAddReqDTO);
         if (result < 0) {
             throw new CommonException(ErrorCode.INSERT_ERROR);
@@ -78,7 +78,7 @@ public class MenuServiceImpl implements MenuService {
         if (result > 0) {
             throw new CommonException(ErrorCode.RESOURCE_USE);
         }
-        result = menuMapper.deleteMenu(TokenUtil.getCurrentPersonId(), id);
+        result = menuMapper.deleteMenu(TokenUtils.getCurrentPersonId(), id);
         if (result < 0) {
             throw new CommonException(ErrorCode.DELETE_ERROR);
         }
@@ -89,7 +89,7 @@ public class MenuServiceImpl implements MenuService {
         if (Objects.isNull(menuModifyReqDTO)) {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
-        menuModifyReqDTO.setUserId(TokenUtil.getCurrentPersonId());
+        menuModifyReqDTO.setUserId(TokenUtils.getCurrentPersonId());
         Integer result = menuMapper.modifyMenu(menuModifyReqDTO);
         if (result < 0) {
             throw new CommonException(ErrorCode.UPDATE_ERROR);

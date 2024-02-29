@@ -2,12 +2,16 @@ package com.wzmtr.eam.dto.req.fault;
 
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
-import com.wzmtr.eam.utils.DateUtil;
-import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
+import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.utils.BeanUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Objects;
 
 /**
  * Author: Li.Wang
@@ -104,6 +108,8 @@ public class FaultReportReqDTO {
     private String partCode;
     @ApiModelProperty(value = "部件名称")
     private String partName;
+    @ApiModelProperty(value = "故障状态 10 草稿 20 提报")
+    private String faultStatus;
 
     /**
      * 数据库非空字段兜底赋值，初始化为空字符串
@@ -128,16 +134,20 @@ public class FaultReportReqDTO {
         convert.setRecCreator(" ");
         convert.setFaultNo(" ");
         convert.setFaultWorkNo(" ");
-        convert.setRecCreateTime(DateUtil.getCurrentTime());
+        convert.setRecCreateTime(DateUtils.getCurrentTime());
         convert.setDeleteFlag("0");
-        convert.setOrderStatus("10");
+        if (StringUtils.isEmpty(req.getOrderStatus())) {
+            convert.setOrderStatus(OrderStatus.TI_BAO.getCode());
+        }
         return convert;
     }
 
     public FaultInfoDO toFaultInfoInsertDO(FaultReportReqDTO req) {
         FaultInfoDO convert = BeanUtils.convert(req, FaultInfoDO.class);
         // String Toocc = (String)((Map)faultinfo.get(0)).get("ext4");
-        convert.setExt4(req.getMaintenance().toString());
+        if (!Objects.isNull(req.getMaintenance())) {
+            convert.setExt4(req.getMaintenance().toString());
+        }
         convert.setTrainTag(req.getTraintag());
         if (StringUtils.isEmpty(req.getFillinDeptCode())) {
             convert.setFillinDeptCode(" ");
@@ -175,12 +185,35 @@ public class FaultReportReqDTO {
         if (StringUtils.isEmpty(req.getCompanyName())){
             convert.setCompanyName(" ");
         }
+        if (StringUtils.isEmpty(req.getFaultStatus())){
+            convert.setFaultStatus(" ");
+        }
         convert.setFaultFlag(" ");
         convert.setFaultLevel(" ");
         convert.setRecStatus(" ");
-        convert.setFaultStatus(" ");
         convert.setFaultDisplayCode(" ");
         convert.setDeleteFlag("0");
+        return convert;
+    }
+
+    /**
+     * 根据设备编号查询的设备数据填充故障提报入参
+     */
+    public FaultReportReqDTO toReportReqFromEquipment(EquipmentResDTO req) {
+        FaultReportReqDTO convert = new FaultReportReqDTO();
+        convert.setObjectCode(req.getEquipCode());
+        convert.setObjectName(req.getEquipName());
+        convert.setMajorCode(req.getMajorCode());
+        convert.setMajorName(req.getMajorName());
+        convert.setSystemCode(req.getSystemCode());
+        convert.setSystemName(req.getSystemName());
+        convert.setEquipTypeCode(req.getEquipTypeCode());
+        convert.setEquipTypeName(req.getEquipTypeName());
+        convert.setLineCode(req.getUseLineNo());
+        convert.setLineName(req.getUseLineName());
+        convert.setPositionCode(req.getPosition1Code());
+        convert.setPosition2Code(req.getPosition2Code());
+        convert.setPosition2Name(req.getPosition2Name());
         return convert;
     }
 

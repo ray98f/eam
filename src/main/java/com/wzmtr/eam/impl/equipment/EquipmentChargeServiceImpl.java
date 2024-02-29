@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.equipment.EquipmentChargeReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentChargeResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelEquipChargeResDTO;
@@ -11,9 +11,10 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentChargeMapper;
 import com.wzmtr.eam.service.equipment.EquipmentChargeService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author frp
@@ -37,7 +38,7 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
     @Override
     public Page<EquipmentChargeResDTO> listEquipmentCharge(String equipCode, String equipName, String chargeDate, String position1Code,
                                                            String subjectCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentChargeMapper.pageEquipmentCharge(pageReqDTO.of(), equipCode, equipName, chargeDate, position1Code, subjectCode, systemCode, equipTypeCode);
     }
 
@@ -52,32 +53,31 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
         if (StringUtils.isEmpty(equipName)) {
             throw new CommonException(ErrorCode.EQUIP_CODE_ERROR);
         }
-        equipmentChargeReqDTO.setRecId(TokenUtil.getUuId());
-        equipmentChargeReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        equipmentChargeReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentChargeReqDTO.setRecId(TokenUtils.getUuId());
+        equipmentChargeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        equipmentChargeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentChargeMapper.addEquipmentCharge(equipmentChargeReqDTO);
     }
 
     @Override
     public void modifyEquipmentCharge(EquipmentChargeReqDTO equipmentChargeReqDTO) {
-        equipmentChargeReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        equipmentChargeReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        equipmentChargeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        equipmentChargeReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         equipmentChargeMapper.modifyEquipmentCharge(equipmentChargeReqDTO);
     }
 
     @Override
     public void deleteEquipmentCharge(BaseIdsEntity baseIdsEntity) {
         if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
-            equipmentChargeMapper.deleteEquipmentCharge(baseIdsEntity.getIds(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            equipmentChargeMapper.deleteEquipmentCharge(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
         }
     }
 
     @Override
-    public void exportEquipmentCharge(String equipCode, String equipName, String chargeDate, String position1Name,
-                                      String subjectCode, String systemCode, String equipTypeCode, HttpServletResponse response) throws IOException {
-        List<EquipmentChargeResDTO> equipmentChargeResDTOList = equipmentChargeMapper.listEquipmentCharge(equipCode, equipName, chargeDate, position1Name, subjectCode, systemCode, equipTypeCode);
+    public void exportEquipmentCharge(List<String> ids, HttpServletResponse response) throws IOException {
+        List<EquipmentChargeResDTO> equipmentChargeResDTOList = equipmentChargeMapper.listEquipmentCharge(ids);
         if (equipmentChargeResDTOList != null && !equipmentChargeResDTOList.isEmpty()) {
             List<ExcelEquipChargeResDTO> list = new ArrayList<>();
             for (EquipmentChargeResDTO resDTO : equipmentChargeResDTOList) {

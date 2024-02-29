@@ -204,4 +204,47 @@
         select NAMES from SYS_OFFICE where (ID=#{id} or AREA_ID=#{id})
     </select>
 
+    <select id="getNameById" resultType="java.lang.String">
+        select NAME from SYS_OFFICE where (ID=#{id} or AREA_ID=#{id})
+    </select>
+
+    <select id="getParentCodeByCode" resultType="java.lang.String">
+        SELECT o2.AREA_ID
+        FROM SYS_OFFICE o1
+        left join SYS_OFFICE o2 on o1.PARENT_ID=o2.ID and o2.DEL_FLAG='0'
+        WHERE o1.AREA_ID=#{orgCode} AND o1.DEL_FLAG='0'
+    </select>
+
+    <select id="getChildCodeByCodeAndMajorLineType" resultType="java.lang.String">
+        SELECT tw.AREA_ID
+        FROM SYS_OFFICE tw,SYS_ORG_MAJOR d5,SYS_ORG_LINE d6,SYS_ORG_TYPE d7
+        WHERE d5.ORG_CODE=d6.ORG_CODE
+        AND d6.ORG_CODE=d7.ORG_CODE
+        AND d7.ORG_CODE=tw.AREA_ID
+        AND d5.MAJOR_CODE=#{majorCode} AND d6.LINE_CODE=#{lineCode} AND d7.ORG_TYPE=#{orgType}
+        AND (select o.AREA_ID from SYS_OFFICE o where o.ID=tw.PARENT_ID and o.DEL_FLAG='0')=#{orgCode}
+    </select>
+
+    <select id="getZttRoot" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where PARENT_ID='root' and USEABLE=1 and DEL_FLAG=0 and NAME LIKE '%中铁通%'
+        order by ID asc
+    </select>
+
+    <select id="downRecursionId" resultType="java.lang.String">
+        SELECT ID FROM SYS_OFFICE
+        START WITH ID=#{id}
+        CONNECT BY PRIOR ID=PARENT_ID
+    </select>
+
+    <select id="listZttExtraBodyList" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        ) order by SORT asc
+    </select>
 </mapper>

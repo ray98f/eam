@@ -30,9 +30,20 @@ public class FaultReportController {
     private OrgMajorService orgMajorService;
 
     @ApiOperation(value = "故障提报（到设备）")
-    @PostMapping("/insert/epuip")
-    public DataResponse<String> add(@RequestBody @Valid FaultReportReqDTO reqDTO) {
+    @PostMapping("/insert/equip")
+    public DataResponse<String> addToEquip(@RequestBody @Valid FaultReportReqDTO reqDTO) {
         return DataResponse.of(reportService.addToFault(reqDTO));
+    }
+
+    /**
+     * 故障提报（到设备）-开放接口
+     * @param reqDTO 入参
+     * @return 故障编号
+     */
+    @ApiOperation(value = "故障提报（到设备）-开放接口")
+    @PostMapping("/insert/equip/open")
+    public DataResponse<String> addToEquipOpen(@RequestBody @Valid FaultReportOpenReqDTO reqDTO) {
+        return DataResponse.of(reportService.addToFaultOpen(reqDTO));
     }
 
     @ApiOperation(value = "故障提报（到专业）")

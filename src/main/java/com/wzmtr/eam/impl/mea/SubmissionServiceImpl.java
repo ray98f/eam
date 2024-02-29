@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
@@ -31,8 +31,9 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author frp
@@ -55,7 +56,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public Page<SubmissionResDTO> pageSubmission(SubmissionListReqDTO submissionListReqDTO, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return submissionMapper.pageSubmission(pageReqDTO.of(), submissionListReqDTO);
     }
 
@@ -66,18 +67,17 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public void addSubmission(SubmissionReqDTO submissionReqDTO) {
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMdd");
         String sendVerifyNo = submissionMapper.getMaxCode();
-        if (StringUtils.isEmpty(sendVerifyNo) || !(CommonConstants.TWENTY_STRING + sendVerifyNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(day.format(System.currentTimeMillis()))) {
-            sendVerifyNo = "JW" + day.format(System.currentTimeMillis()).substring(2) + "0001";
+        if (StringUtils.isEmpty(sendVerifyNo) || !(CommonConstants.TWENTY_STRING + sendVerifyNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+            sendVerifyNo = "JW" + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             sendVerifyNo = CodeUtils.getNextCode(sendVerifyNo, 8);
         }
-        submissionReqDTO.setRecId(TokenUtil.getUuId());
+        submissionReqDTO.setRecId(TokenUtils.getUuId());
         submissionReqDTO.setSendVerifyNo(sendVerifyNo);
         submissionReqDTO.setSendVerifyStatus("10");
-        submissionReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        submissionReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        submissionReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         submissionReqDTO.setArchiveFlag("0");
         submissionMapper.addSubmission(submissionReqDTO);
     }
@@ -88,14 +88,14 @@ public class SubmissionServiceImpl implements SubmissionService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+        if (!res.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
         }
         if (!CommonConstants.TEN_STRING.equals(res.getSendVerifyStatus())) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
         }
-        submissionReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        submissionReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        submissionReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         submissionMapper.modifySubmission(submissionReqDTO);
     }
 
@@ -107,19 +107,19 @@ public class SubmissionServiceImpl implements SubmissionService {
                 if (Objects.isNull(res)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                if (!res.getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                if (!res.getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                     throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                 }
                 if (!CommonConstants.TEN_STRING.equals(res.getSendVerifyStatus())) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
-                submissionMapper.deleteSubmissionDetail(null, res.getSendVerifyNo(), TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionMapper.deleteSubmissionDetail(null, res.getSendVerifyNo(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
                 if (StringUtils.isNotBlank(res.getWorkFlowInstId())) {
                     BpmnExamineDTO bpmnExamineDTO = new BpmnExamineDTO();
                     bpmnExamineDTO.setTaskId(res.getWorkFlowInstId());
                     bpmnService.rejectInstance(bpmnExamineDTO);
                 }
-                submissionMapper.deleteSubmission(id, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionMapper.deleteSubmission(id, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);
@@ -149,8 +149,8 @@ public class SubmissionServiceImpl implements SubmissionService {
             reqDTO.setWorkFlowInstId(processId);
             reqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.SUBMISSION_SUBMIT.value(),null));
             reqDTO.setSendVerifyStatus("20");
-            reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-            reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+            reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
             submissionMapper.modifySubmission(reqDTO);
             // 记录日志
             workFlowLogService.add(WorkFlowLogBO.builder()
@@ -175,7 +175,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.agree(taskId, submissionReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getSendVerifyNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus("已完成");
-                reqDTO.setRecStatus("30");
+                reqDTO.setSendVerifyStatus("30");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()
                         .status(BpmnStatus.PASS.getDesc())
@@ -184,7 +184,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                         .build());
             }
         } else {
-            if (!CommonConstants.TWENTY_STRING.equals(res.getRecStatus())) {
+            if (!CommonConstants.TWENTY_STRING.equals(res.getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = res.getWorkFlowInstId();
@@ -192,7 +192,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 bpmnService.reject(taskId, submissionReqDTO.getExamineReqDTO().getOpinion());
                 reqDTO.setWorkFlowInstId("");
                 reqDTO.setWorkFlowInstStatus("");
-                reqDTO.setRecStatus("10");
+                reqDTO.setSendVerifyStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()
                         .status(BpmnStatus.REJECT.getDesc())
@@ -201,14 +201,14 @@ public class SubmissionServiceImpl implements SubmissionService {
                         .build());
             }
         }
-        reqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        reqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        reqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        reqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         submissionMapper.modifySubmission(reqDTO);
     }
 
     @Override
-    public void exportSubmission(SubmissionListReqDTO checkPlanListReqDTO, HttpServletResponse response) throws IOException {
-        List<SubmissionResDTO> checkPlanList = submissionMapper.listSubmission(checkPlanListReqDTO);
+    public void exportSubmission(List<String> ids, HttpServletResponse response) throws IOException {
+        List<SubmissionResDTO> checkPlanList = submissionMapper.exportSubmission(ids);
         if (checkPlanList != null && !checkPlanList.isEmpty()) {
             List<ExcelSubmissionResDTO> list = new ArrayList<>();
             for (SubmissionResDTO resDTO : checkPlanList) {
@@ -222,7 +222,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public Page<SubmissionDetailResDTO> pageSubmissionDetail(String sendVerifyNo, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return submissionMapper.pageSubmissionDetail(pageReqDTO.of(), sendVerifyNo);
     }
 
@@ -237,16 +237,17 @@ public class SubmissionServiceImpl implements SubmissionService {
         submissionListReqDTO.setSendVerifyNo(submissionDetailReqDTO.getSendVerifyNo());
         List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
         if (!list.isEmpty()) {
-            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+            if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
             if (!CommonConstants.TEN_STRING.equals(list.get(0).getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "新增");
             }
         }
-        submissionDetailReqDTO.setRecId(TokenUtil.getUuId());
-        submissionDetailReqDTO.setRecCreator(TokenUtil.getCurrentPersonId());
-        submissionDetailReqDTO.setRecCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionDetailReqDTO.setRecId(TokenUtils.getUuId());
+        submissionDetailReqDTO.setPlanDetailRecId(TokenUtils.getUuId());
+        submissionDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        submissionDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         submissionDetailReqDTO.setArchiveFlag("0");
         submissionMapper.addSubmissionDetail(submissionDetailReqDTO);
     }
@@ -257,15 +258,15 @@ public class SubmissionServiceImpl implements SubmissionService {
         submissionListReqDTO.setSendVerifyNo(submissionDetailReqDTO.getSendVerifyNo());
         List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
         if (!list.isEmpty()) {
-            if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+            if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
             }
             if (!CommonConstants.TEN_STRING.equals(list.get(0).getSendVerifyStatus())) {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
-        submissionDetailReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        submissionDetailReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        submissionDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        submissionDetailReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         submissionMapper.modifySubmissionDetail(submissionDetailReqDTO);
     }
 
@@ -281,14 +282,14 @@ public class SubmissionServiceImpl implements SubmissionService {
                 submissionListReqDTO.setSendVerifyNo(id);
                 List<SubmissionResDTO> list = submissionMapper.listSubmission(submissionListReqDTO);
                 if (!list.isEmpty()) {
-                    if (!list.get(0).getRecCreator().equals(TokenUtil.getCurrentPersonId())) {
+                    if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
                     }
                     if (!CommonConstants.TEN_STRING.equals(list.get(0).getSendVerifyStatus())) {
                         throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
                     }
                 }
-                submissionMapper.deleteSubmissionDetail(id, null, TokenUtil.getCurrentPersonId(), new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                submissionMapper.deleteSubmissionDetail(id, null, TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

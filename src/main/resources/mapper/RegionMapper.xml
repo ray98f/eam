@@ -110,25 +110,24 @@
         FROM SYS_REGION r
         LEFT JOIN SYS_USER u ON r.REC_CREATOR=u.ID
         where r.DELETE_FLAG='0'
-        <if test="name!=null and name!=''">
-            and r.NODE_NAME like '%' || #{name} || '%'
-        </if>
-        <if test="code!=null and code!=''">
-            and r.NODE_CODE like '%' || #{code} || '%'
-        </if>
-        <if test="parentId!=null and parentId!=''">
-            and r.PARENT_NODE_REC_ID=#{parentId}
-        </if>
+        AND r.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         ORDER BY r.NODE_CODE ASC
     </select>
-    <select id="selectByNodeCodes" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
+    <select id="selectByQuery" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
         SELECT * from SYS_REGION
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="nodeCodes!=null and nodeCodes.size() > 0">
+            <if test="query.nodeCodes!=null and query.nodeCodes.size() > 0">
                 AND NODE_CODE IN
-                <foreach collection="nodeCodes" item="code" open="(" close=")" separator=",">
+                <foreach collection="query.nodeCodes" item="code" open="(" close=")" separator=",">
                     #{code}
                 </foreach>
+            </if>
+            <if test="query.nodeName!=null and query.nodeName!=''">
+               and NODE_NAME = #{query.nodeName}
             </if>
         </trim>
     </select>

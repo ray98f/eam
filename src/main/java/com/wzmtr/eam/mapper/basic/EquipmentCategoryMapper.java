@@ -90,6 +90,13 @@ public interface EquipmentCategoryMapper {
     List<EquipmentCategoryResDTO> listEquipmentCategory(String name, String code, String parentId);
 
     /**
+     * 导出设备分类列表
+     * @param ids ids
+     * @return 设备分类列表
+     */
+    List<EquipmentCategoryResDTO> exportEquipmentCategory(List<String> ids);
+
+    /**
      * 获取设备分类一级分类
      *
      * @return

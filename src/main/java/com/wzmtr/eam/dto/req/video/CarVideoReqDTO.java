@@ -3,7 +3,8 @@ package com.wzmtr.eam.dto.req.video;
 import com.wzmtr.eam.entity.PageReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Author: Li.Wang

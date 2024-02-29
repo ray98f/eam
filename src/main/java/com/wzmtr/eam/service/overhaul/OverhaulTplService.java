@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public interface OverhaulTplService {
 
@@ -33,10 +34,13 @@ public interface OverhaulTplService {
 
     void examineOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO);
 
+    /**
+     * 检修模板导入
+     * @param file excel文件
+     */
     void importOverhaulTpl(MultipartFile file);
 
-    void exportOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
-                           String majorCode, String systemCode, String equipTypeCode, HttpServletResponse response) throws IOException;
+    void exportOverhaulTpl(List<String> ids, HttpServletResponse response) throws IOException;
 
     Page<OverhaulTplDetailResDTO> pageOverhaulDetailTpl(String templateId, PageReqDTO pageReqDTO);
 

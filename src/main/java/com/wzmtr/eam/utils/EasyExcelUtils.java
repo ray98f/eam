@@ -6,6 +6,9 @@ import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.wzmtr.eam.config.CustomCellWriteHeightConfig;
 import com.wzmtr.eam.config.CustomCellWriteWidthConfig;
+import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -16,8 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * EasyExcel导入导出工具类
@@ -71,7 +76,6 @@ public class EasyExcelUtils {
 
     /**
      * 导出设置响应信息
-     *
      * @param response 响应
      * @param fileName 文件名称
      * @throws UnsupportedEncodingException
@@ -89,7 +93,6 @@ public class EasyExcelUtils {
 
     /**
      * 普通导出
-     *
      * @param response 响应
      * @param name     名称
      * @param list     数据集合
@@ -109,13 +112,90 @@ public class EasyExcelUtils {
     }
 
     /**
+     /**
      * 文件导入数据读取
-     * @param file
-     * @param head
-     * @return
-     * @throws IOException
+     * @param file 文件
+     * @param head 头部
+     * @return 列表
      */
-    public static <T> List<T> read(MultipartFile file, Class<T> head) throws IOException {
-        return EasyExcel.read(file.getInputStream(), head, null).doReadAllSync();
+    public static <T> List<T> read(MultipartFile file, Class<T> head) {
+        checkFileFormat(file);
+        try {
+            return checkData(EasyExcel.read(file.getInputStream(), head, null).doReadAllSync());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 文件导入数据读取(多sheet)
+     * @param file 文件
+     * @param head 头部
+     * @param sheetNo sheet编号
+     * @return 列表
+     */
+    public static <T> List<T> read(MultipartFile file, Class<T> head, Integer sheetNo) {
+        checkFileFormat(file);
+        try {
+            return checkData(EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 导入文件格式校验
+     * @param file 文件
+     */
+    private static void checkFileFormat(MultipartFile file) {
+        if (Objects.isNull(file.getOriginalFilename())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "文件格式有误，请检查上传文件格式!");
+        }
+        if (!Objects.requireNonNull(file.getOriginalFilename()).endsWith(CommonConstants.XLSX) &&
+                !Objects.requireNonNull(file.getOriginalFilename()).endsWith(CommonConstants.XLS)) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "文件格式有误，请检查上传文件格式!");
+        }
+    }
+
+    /**
+     * 导入数据校验
+     * @param list 导入数据
+     * @return 导入数据
+     * @param <T> 泛型
+     */
+    private static <T> List<T> checkData(List<T> list) {
+        if (StringUtils.isEmpty(list)) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "导入空模板，请填写数据后导入");
+        }
+        boolean bool = true;
+        for (T t : list) {
+            bool = allFieldsNull(t);
+            if (!bool) {
+                break;
+            }
+        }
+        if (bool) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "导入模板错误，请检查模板");
+        }
+        return list;
+    }
+
+    /**
+     * 判断对象元素是否都为null
+     * @param obj 对象
+     * @return 是否都为null
+     */
+    private static boolean allFieldsNull(Object obj) {
+        for (Field field : obj.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                if (field.get(obj) != null) {
+                    return false;
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
     }
 }

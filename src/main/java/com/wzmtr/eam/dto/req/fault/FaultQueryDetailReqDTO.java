@@ -1,9 +1,11 @@
 package com.wzmtr.eam.dto.req.fault;
 
-import com.wzmtr.eam.entity.PageReqDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
@@ -58,4 +60,9 @@ public class FaultQueryDetailReqDTO  {
     private String levelfault;
     @ApiModelProperty(value = "故障编号集合")
     private Set<String> faultNos;
+    /**
+     * 导出类型 1 中铁通 2 其他
+     */
+    @ApiModelProperty(value = "导出类型")
+    private Integer exportType;
 }

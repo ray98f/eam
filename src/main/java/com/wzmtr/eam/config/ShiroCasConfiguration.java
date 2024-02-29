@@ -71,7 +71,9 @@ public class ShiroCasConfiguration {
     @Value("${cas.logoutUrlPattern}")
     public String logoutUrlPattern;
 
-    public static final String UNAUTHORIZED_URL = "/error/exthrow";
+    public static final String SERVICE = "?service=";
+
+    private static final String CAS_FILTER = "casFilter";
 
     @Bean
     public SecurityManager securityManager() {
@@ -92,15 +94,15 @@ public class ShiroCasConfiguration {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public ServletListenerRegistrationBean<?> servletListenerRegistrationBean() {
-        ServletListenerRegistrationBean  bean = new ServletListenerRegistrationBean();
+        ServletListenerRegistrationBean<SingleSignOutHttpSessionListener>  bean = new ServletListenerRegistrationBean<>();
         bean.setListener(new SingleSignOutHttpSessionListener());
         bean.setEnabled(true);
         return bean;
     }
 
     @Bean
-    public FilterRegistrationBean registrationBean() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+    public FilterRegistrationBean<?> registrationBean() {
+        FilterRegistrationBean<SingleSignOutFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setName("registrationBean");
         registrationBean.setFilter(new SingleSignOutFilter());
         //拦截所有的请求
@@ -112,8 +114,8 @@ public class ShiroCasConfiguration {
     }
 
     @Bean
-    public FilterRegistrationBean filterRegistrationBean() {
-        FilterRegistrationBean bean = new FilterRegistrationBean();
+    public FilterRegistrationBean<?> filterRegistrationBean() {
+        FilterRegistrationBean<DelegatingFilterProxy> bean = new FilterRegistrationBean<>();
         bean.setFilter(new DelegatingFilterProxy("shiroFilter"));
         bean.addInitParameter("targetFilterLifecycle", "true");
         bean.setEnabled(true);
@@ -152,12 +154,11 @@ public class ShiroCasConfiguration {
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
         factoryBean.setSecurityManager(securityManager);
         factoryBean.setLoginUrl(String.join("", casServerUrlPrefix, loginUrlPattern,
-                "?service=",casServiceUrlPrefix,casFilterUrlPattern));
-        //factoryBean.setSuccessUrl(loginSuccessUrl);
+                SERVICE,casServiceUrlPrefix,casFilterUrlPattern));
         factoryBean.setUnauthorizedUrl(String.join("", casServerUrlPrefix, loginUrlPattern,
-                "?service=",casServiceUrlPrefix,casFilterUrlPattern));
+                SERVICE,casServiceUrlPrefix,casFilterUrlPattern));
         Map<String, Filter> linkedHashMap = new LinkedHashMap<>();
-        linkedHashMap.put("casFilter", casFilter);
+        linkedHashMap.put(CAS_FILTER, casFilter);
 
         factoryBean.setFilters(linkedHashMap);
         loadShiroFilterChain(factoryBean);
@@ -167,10 +168,10 @@ public class ShiroCasConfiguration {
     @Bean(name = "casFilter")
     public CasFilter getCasFilter() {
         CasFilter casFilter = new CasFilter();
-        casFilter.setName("casFilter");
+        casFilter.setName(CAS_FILTER);
         casFilter.setEnabled(true);
         casFilter.setFailureUrl(String.join("", casServerUrlPrefix, loginUrlPattern,
-                "?service=",casServiceUrlPrefix,casFilterUrlPattern));
+                SERVICE,casServiceUrlPrefix,casFilterUrlPattern));
         casFilter.setSuccessUrl(casServiceUrlPrefix + loginSuccessUrl);
         return casFilter;
 
@@ -179,7 +180,7 @@ public class ShiroCasConfiguration {
     private void loadShiroFilterChain(ShiroFilterFactoryBean shiroFilterFactoryBean) {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
-        filterChainDefinitionMap.put(casFilterUrlPattern, "casFilter");
+        filterChainDefinitionMap.put(casFilterUrlPattern, CAS_FILTER);
         filterChainDefinitionMap.put("/rights/index", "authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);

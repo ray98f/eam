@@ -1,13 +1,12 @@
 package com.wzmtr.eam.config.filter;
 
 import com.wzmtr.eam.config.RequestHeaderContext;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.TokenStatus;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +23,8 @@ import java.util.Objects;
 public class JwtFilter implements Filter {
 
     private static final String JSESSIONID_FIX = ";jsessionid";
+    private static final String FILTER_ERROR= "filter.error";
+    private static final String ERROR_EXTHROW = "/error/exthrow";
 
     @Value("${excluded.swagger-pages}")
     private String[] swaggerPages;
@@ -41,6 +42,7 @@ public class JwtFilter implements Filter {
             String jsessionid = uri.replace(newUri+";jsessionid=","");
             httpRequest.getSession();
             Cookie cookie = new Cookie("JSESSIONID", jsessionid);
+            cookie.setHttpOnly(true);
             httpResponse.addCookie(cookie);
             httpResponse.sendRedirect(newUri);
             return;
@@ -50,19 +52,19 @@ public class JwtFilter implements Filter {
             chain.doFilter(httpRequest, httpResponse);
         } else {
             String token = httpRequest.getHeader("Authorization");
-            if (token == null || StringUtils.isBlank(token)) {
-                request.setAttribute("filter.error", new CommonException(ErrorCode.AUTHORIZATION_EMPTY));
-                request.getRequestDispatcher("/error/exthrow").forward(request, response);
+            if (token == null || org.apache.commons.lang3.StringUtils.isBlank(token)) {
+                request.setAttribute(FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_EMPTY));
+                request.getRequestDispatcher(ERROR_EXTHROW).forward(request, response);
                 return;
             }
-            TokenStatus tokenStatus = TokenUtil.verifySimpleToken(token);
+            TokenStatus tokenStatus = TokenUtils.verifySimpleToken(token);
             switch (Objects.requireNonNull(tokenStatus)) {
                 //有效
                 case VALID:
-                    CurrentLoginUser simpleTokenInfo = TokenUtil.getSimpleTokenInfo(token);
+                    CurrentLoginUser simpleTokenInfo = TokenUtils.getSimpleTokenInfo(token);
                     if (simpleTokenInfo == null) {
-                        request.setAttribute("filter.error", new CommonException(ErrorCode.AUTHORIZATION_CHECK_FAIL));
-                        request.getRequestDispatcher("/error/exthrow").forward(request, response);
+                        request.setAttribute(FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_CHECK_FAIL));
+                        request.getRequestDispatcher(ERROR_EXTHROW).forward(request, response);
                         break;
                     }
                     new RequestHeaderContext.RequestHeaderContextBuild().user(simpleTokenInfo).build();
@@ -71,13 +73,13 @@ public class JwtFilter implements Filter {
                     break;
                 //过期
                 case EXPIRED:
-                    request.setAttribute("filter.error", new CommonException(ErrorCode.AUTHORIZATION_IS_OVERDUE));
-                    request.getRequestDispatcher("/error/exthrow").forward(request, response);
+                    request.setAttribute(FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_IS_OVERDUE));
+                    request.getRequestDispatcher(ERROR_EXTHROW).forward(request, response);
                     break;
                 //无效
                 default:
-                    request.setAttribute("filter.error", new CommonException(ErrorCode.AUTHORIZATION_INVALID));
-                    request.getRequestDispatcher("/error/exthrow").forward(request, response);
+                    request.setAttribute(FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_INVALID));
+                    request.getRequestDispatcher(ERROR_EXTHROW).forward(request, response);
                     break;
             }
         }

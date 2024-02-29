@@ -15,6 +15,13 @@ spring:
       maximum-pool-size: 30
       minimum-idle: 10
 
+  rabbitmq:
+    host: 192.168.30.113
+    port: 5672
+    username: admin
+    password: 123456
+    virtual-host: /eam
+
   redis:
     host: 192.168.30.113
     port: 6379
@@ -29,7 +36,7 @@ spring:
 
 excluded:
   swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
-  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout,/eam/overhaul/order/page/open,/eam/fault/report/list/open
+  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout,/eam/overhaul/order/page/open,/eam/fault/report/list/open,/eam/fault/report/insert/equip/open
 
 sso:
   url: http://zxgd.softether.net:4443/cas

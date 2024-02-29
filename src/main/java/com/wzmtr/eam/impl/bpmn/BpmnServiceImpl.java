@@ -1,11 +1,11 @@
 package com.wzmtr.eam.impl.bpmn;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.constant.FastFlowConstants;
 import com.wzmtr.eam.dto.req.bpmn.*;
 import com.wzmtr.eam.dto.res.bpmn.*;
 import com.wzmtr.eam.dto.res.common.FlowRoleResDTO;
@@ -16,11 +16,10 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
+import com.wzmtr.eam.utils.HttpUtils;
+import com.wzmtr.eam.utils.JointUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtil;
-import com.wzmtr.eam.utils.bpmn.FastFlowPathUrl;
-import com.wzmtr.eam.utils.bpmn.HttpUtil;
-import com.wzmtr.eam.utils.bpmn.JointUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,16 +61,17 @@ public class BpmnServiceImpl implements BpmnService {
         LoginDTO dto = new LoginDTO();
         dto.setUsername(account);
         dto.setPassword(password);
-        String data = JSONObject.toJSONString(dto);
-        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.LOGIN, data), ResultEntity.class);
+        String data = JSON.toJSONString(dto);
+        ResultEntity<?> resultEntity = JSON.parseObject(HttpUtils.doPost(FastFlowConstants.LOGIN, data),
+                ResultEntity.class);
         return String.valueOf(resultEntity.getData());
     }
 
     @Override
     public String startInstance(StartInstanceVO startInstanceVO) {
-        String data = JSONObject.toJSONString(startInstanceVO);
+        String data = JSON.toJSONString(startInstanceVO);
         log.info("startInstance调用入参：[{}]", data);
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_START, data, httpServletRequest.getHeader("Authorization-Flow")));
+        JSONObject jsonObject = JSON.parseObject(HttpUtils.doPost(FastFlowConstants.INSTANCE_START, data, httpServletRequest.getHeader("Authorization-Flow")));
         if (CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
             return jsonObject.getString("procId");
         } else {
@@ -80,26 +80,26 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     @Override
-    public ResultEntity agreeInstance(BpmnExamineDTO bpmnExamineDTO) {
+    public ResultEntity<?> agreeInstance(BpmnExamineDTO bpmnExamineDTO) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         log.info("agreeInstance调用入参：[{}]", JSON.toJSONString(bpmnExamineDTO));
         StringBuilder data = JointUtils.jointEntity(bpmnExamineDTO);
-        return JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_AGREE + data, null, authorization), ResultEntity.class);
+        return JSON.parseObject(HttpUtils.doPost(FastFlowConstants.INSTANCE_AGREE + data, null, authorization), ResultEntity.class);
     }
 
     @Override
     public void rejectInstance(BpmnExamineDTO bpmnExamineDTO) {
-        HttpUtil.doGet(FastFlowPathUrl.INSTANCE_REJECT + bpmnExamineDTO.getTaskId()
+        HttpUtils.doGet(FastFlowConstants.INSTANCE_REJECT + bpmnExamineDTO.getTaskId()
                 + "?option=" + bpmnExamineDTO.getOpinion()
-                + "&userId=" + TokenUtil.getCurrentPersonId()
-                + "&userName=" + TokenUtil.getCurrentPerson().getPersonName());
+                + "&userId=" + TokenUtils.getCurrentPersonId()
+                + "&userName=" + TokenUtils.getCurrentPerson().getPersonName());
     }
 
     @Override
     public List<ExamineOpinionRes> examineOpinion(String instId) {
         List<ExamineOpinionRes> list = new ArrayList<>();
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.EXAMINE_OPINION + "?instId=" + instId, authorization));
+        JSONObject jsonObject = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.EXAMINE_OPINION + "?instId=" + instId, authorization));
         if (jsonObject != null) {
             JSONArray data = jsonObject.getJSONArray("data");
             for (int i = 0; i < data.size(); i++) {
@@ -120,36 +120,36 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String taskProgress(String instId) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.EXAMINE_OPINION + "?instId=" + instId, authorization));
+        JSONObject jsonObject = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.EXAMINE_OPINION + "?instId=" + instId, authorization));
         return jsonObject.getString("XML");
     }
 
     @Override
     public String nextTaskKey(String procId) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        log.info("nextTaskKey调用入参：[{}]", FastFlowPathUrl.NEXT_TASK_KEY + procId);
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.NEXT_TASK_KEY + procId, authorization));
-        log.info("nextTaskKey调用结果：[{}]", JSONObject.toJSONString(jsonObject));
+        log.info("nextTaskKey调用入参：[{}]", FastFlowConstants.NEXT_TASK_KEY + procId);
+        JSONObject jsonObject = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.NEXT_TASK_KEY + procId, authorization));
+        log.info("nextTaskKey调用结果：[{}]", JSON.toJSONString(jsonObject));
         JSONArray data = jsonObject.getJSONArray("data");
-        return CollectionUtil.isEmpty(data) ? null : data.getJSONObject(0).getString("taskId");
+        return StringUtils.isEmpty(data) ? null : data.getJSONObject(0).getString("taskId");
     }
 
     @Override
     public String queryTaskIdByProcId(String procId) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        String param = FastFlowPathUrl.QUERY_TASKID_BY_PROCID + "?procId=" + procId;
+        String param = FastFlowConstants.QUERY_TASKID_BY_PROCID + "?procId=" + procId;
         log.info("流程引擎queryTaskIdByProcId调用入参：[{}]", param);
-        ResultEntity result = JSONObject.parseObject(HttpUtil.doGet(param, authorization), ResultEntity.class);
+        ResultEntity<?> result = JSON.parseObject(HttpUtils.doGet(param, authorization), ResultEntity.class);
         return String.valueOf(result.getData());
     }
 
     @Override
     public List<FlowRes> queryFlowList(String name, String modelKey) throws Exception {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        String param = FastFlowPathUrl.FLOW_LIST + "?name=" + URLEncoder.encode(name, "UTF-8") + "&modelkey=" + modelKey + "&page=1&limit=100000&pageSize=100000&type=2";
+        String param = FastFlowConstants.FLOW_LIST + "?name=" + URLEncoder.encode(name, "UTF-8") + "&modelkey=" + modelKey + "&page=1&limit=100000&pageSize=100000&type=2";
         log.info("queryFlowList调用入参：[{}]", param);
-        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doGet(param, authorization), ResultEntity.class);
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        ResultEntity<?> resultEntity = JSON.parseObject(HttpUtils.doGet(param, authorization), ResultEntity.class);
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
         List<FlowRes> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -174,7 +174,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String queryFirstTaskKeyByModelId(String modelId) throws Exception {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
+        JSONObject jsonObject = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.QUERY_MODEL_INFO + modelId, authorization));
         if (!CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
             throw new CommonException(ErrorCode.BPMN_ERROR, jsonObject.getString("msg"));
         }
@@ -195,7 +195,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String queryTaskNameByModelIdAndTaskKey(String modelId, String taskKey) throws Exception {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.QUERY_MODEL_INFO + modelId, authorization));
+        JSONObject jsonObject = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.QUERY_MODEL_INFO + modelId, authorization));
         if (!CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
             throw new CommonException(ErrorCode.BPMN_ERROR, jsonObject.getString("msg"));
         }
@@ -224,23 +224,24 @@ public class BpmnServiceImpl implements BpmnService {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         req.setPageNo(1);
         req.setPageSize(10000);
-        String data = JSONObject.toJSONString(req);
-        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.EXAMINE_LIST, data, authorization), ResultEntity.class);
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
-        return JSONArray.parseArray(jsonArray.toJSONString(), ExamineListRes.class);
+        String data = JSON.toJSONString(req);
+        ResultEntity<?> resultEntity = JSON.parseObject(HttpUtils.doPost(FastFlowConstants.EXAMINE_LIST, data, authorization), ResultEntity.class);
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
+        return JSON.parseArray(jsonArray.toJSONString(), ExamineListRes.class);
     }
 
     @Override
     public Page<ExaminedListRes> examinedList(ExamineListReq req) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
-        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.EXAMINED_LIST + data, null, authorization), ResultEntity.class);
+        ResultEntity<?> resultEntity = JSON.parseObject(HttpUtils.doPost(FastFlowConstants.EXAMINED_LIST + data,
+                null, authorization), ResultEntity.class);
         if (resultEntity.getCode() != 0) {
             throw new CommonException(ErrorCode.BPMN_ERROR, resultEntity.getMsg());
         }
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
-        List<ExaminedListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), ExaminedListRes.class);
+        List<ExaminedListRes> originalList = JSON.parseArray(jsonArray.toJSONString(), ExaminedListRes.class);
         // 总记录数
         int total = originalList.size();
         // 起始索引
@@ -264,13 +265,14 @@ public class BpmnServiceImpl implements BpmnService {
     public Page<RunningListRes> runningList(ExamineListReq req) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
-        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_RUNNING_LIST + data, null, authorization), ResultEntity.class);
+        ResultEntity<?> resultEntity = JSON.parseObject(HttpUtils.doPost(FastFlowConstants.INSTANCE_RUNNING_LIST + data,
+                null, authorization), ResultEntity.class);
         if (resultEntity.getCode() != 0) {
             throw new CommonException(ErrorCode.BPMN_ERROR, resultEntity.getMsg());
         }
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
-        List<RunningListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), RunningListRes.class);
+        List<RunningListRes> originalList = JSON.parseArray(jsonArray.toJSONString(), RunningListRes.class);
         // 总记录数
         int total = originalList.size();
         // 起始索引
@@ -301,13 +303,14 @@ public class BpmnServiceImpl implements BpmnService {
     public Page<HisListRes> hisList(ExamineListReq req) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
         StringBuilder data = JointUtils.jointEntity(req, 1, 100000, 100000);
-        ResultEntity resultEntity = JSONObject.parseObject(HttpUtil.doPost(FastFlowPathUrl.INSTANCE_ENDING_LIST + data, null, authorization), ResultEntity.class);
+        ResultEntity<?> resultEntity = JSON.parseObject(HttpUtils.doPost(FastFlowConstants.INSTANCE_ENDING_LIST + data,
+                null, authorization), ResultEntity.class);
         if (resultEntity.getCode() != 0) {
             throw new CommonException(ErrorCode.BPMN_ERROR, resultEntity.getMsg());
         }
-        JSONArray jsonArray = JSONArray.parseArray(String.valueOf(resultEntity.getData()));
+        JSONArray jsonArray = JSON.parseArray(String.valueOf(resultEntity.getData()));
         // pagehelper不支持普通list分页 手动分页
-        List<HisListRes> originalList = JSONArray.parseArray(jsonArray.toJSONString(), HisListRes.class);
+        List<HisListRes> originalList = JSON.parseArray(jsonArray.toJSONString(), HisListRes.class);
         // 总记录数
         int total = originalList.size();
         // 起始索引
@@ -330,7 +333,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public String getSelfId(String procId) {
         String authorization = httpServletRequest.getHeader("Authorization-Flow");
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.RENDER_HIS_FORM + procId, authorization));
+        JSONObject jsonObject = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.RENDER_HIS_FORM + procId, authorization));
         JSONObject editData = jsonObject.getJSONObject("editData");
         return editData.getString("id");
     }
@@ -352,9 +355,9 @@ public class BpmnServiceImpl implements BpmnService {
             req.setFlowId(flowId);
             req.setNodeId(nodeId);
             List<BpmnExaminePersonRes> bpmnExaminePersonId = roleMapper.getBpmnExaminePerson(req);
-            if (CollectionUtil.isNotEmpty(bpmnExaminePersonId)) {
+            if (StringUtils.isNotEmpty(bpmnExaminePersonId)) {
                 StringBuilder chooseNodeUser = new StringBuilder();
-                String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
+                String currentUserDepartCode = TokenUtils.getCurrentPerson().getOfficeAreaId();
                 for (BpmnExaminePersonRes res : bpmnExaminePersonId) {
                     if (StringUtils.isEmpty(res.getUserId())) {
                         continue;
@@ -388,7 +391,7 @@ public class BpmnServiceImpl implements BpmnService {
         bpmnExamineDTO.setTaskTitle(BpmnFlowEnum.getLabelByValue(flowId));
         // 审核意见
         bpmnExamineDTO.setOpinion(opinion);
-        ResultEntity result = agreeInstance(bpmnExamineDTO);
+        ResultEntity<?> result = agreeInstance(bpmnExamineDTO);
         if (result.getCode() != 0) {
             throw new CommonException(ErrorCode.BPMN_ERROR, result.getMsg());
         }
@@ -406,14 +409,14 @@ public class BpmnServiceImpl implements BpmnService {
 
     public String getDefKeyByTaskId(String taskId) {
         log.info("流程引擎调用入参getDefKeyByTaskId:[{}]", taskId);
-        String processDefinitionId = JSONObject.parseObject(HttpUtil.doGet(FastFlowPathUrl.GET_DEF_KEY + taskId, null)).getString("processDefinitionId");
+        String processDefinitionId = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.GET_DEF_KEY + taskId, null)).getString("processDefinitionId");
         return processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
     }
 
     @Override
     public String commit(String id, String flow, String otherParam, String roleCode, List<String> userIds, String nodeId) throws Exception {
         List<FlowRes> list = queryFlowList(BpmnFlowEnum.getLabelByValue(flow), flow);
-        if (CollectionUtil.isEmpty(list)) {
+        if (StringUtils.isEmpty(list)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "没有找到流程");
         }
         StartInstanceVO startInstanceVO = new StartInstanceVO();
@@ -436,7 +439,7 @@ public class BpmnServiceImpl implements BpmnService {
             req.setFlowId(flow);
             req.setNodeId(nodeId);
             List<BpmnExaminePersonRes> resList = roleMapper.getBpmnExaminePerson(req);
-            String currentUserDepartCode = TokenUtil.getCurrentPerson().getOfficeAreaId();
+            String currentUserDepartCode = TokenUtils.getCurrentPerson().getOfficeAreaId();
             for (BpmnExaminePersonRes res : resList) {
                 if (null != res.getIsOwnerOrg() && CommonConstants.ONE_STRING.equals(res.getIsOwnerOrg())) {
                     // 找出为自己部门的
@@ -451,7 +454,7 @@ public class BpmnServiceImpl implements BpmnService {
         }
         NodeInfos nodeInfos = new NodeInfos();
         List<NodeInfo> arrayList = new ArrayList<>();
-        if (bpmnExaminePersonId.size() > 0) {
+        if (!bpmnExaminePersonId.isEmpty()) {
             for (String s : bpmnExaminePersonId) {
                 NodeInfo nodeInfo = new NodeInfo();
                 nodeInfo.setNodeId(nodeId);
@@ -473,7 +476,7 @@ public class BpmnServiceImpl implements BpmnService {
         req.setFlowId(flowId);
         req.setNodeId(nodeId);
         List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
-        if (CollectionUtil.isNotEmpty(flowRoleResDTO)) {
+        if (StringUtils.isNotEmpty(flowRoleResDTO)) {
             FlowRoleResDTO roleResDTO = flowRoleResDTO.get(0);
             String step = roleResDTO.getStep();
             String nextStep = String.valueOf((Integer.parseInt(step) + 1));
@@ -485,7 +488,7 @@ public class BpmnServiceImpl implements BpmnService {
                 bpmnExamineFlowRoleReq.setParentId(roleResDTO.getNodeId());
             }
             List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
-            if (CollectionUtil.isNotEmpty(flowRoleRes)) {
+            if (StringUtils.isNotEmpty(flowRoleRes)) {
                 return flowRoleRes.get(0).getNodeId();
             }
         }
@@ -501,7 +504,7 @@ public class BpmnServiceImpl implements BpmnService {
         req.setFlowId(flowId);
         req.setNodeId(nodeId);
         List<FlowRoleResDTO> flowRoleResDTO = roleMapper.queryBpmnExamine(req);
-        if (CollectionUtil.isNotEmpty(flowRoleResDTO)) {
+        if (StringUtils.isNotEmpty(flowRoleResDTO)) {
             flowRoleResDTO = flowRoleResDTO.stream().filter(a -> line.equals(a.getLine())).collect(Collectors.toList());
             FlowRoleResDTO roleResDTO = flowRoleResDTO.get(0);
             String step = roleResDTO.getStep();
@@ -512,12 +515,35 @@ public class BpmnServiceImpl implements BpmnService {
                 bpmnExamineFlowRoleReq.setLine(roleResDTO.getLine());
             }
             List<FlowRoleResDTO> flowRoleRes = roleMapper.queryBpmnExamine(bpmnExamineFlowRoleReq);
-            if (CollectionUtil.isNotEmpty(flowRoleRes)) {
+            if (StringUtils.isNotEmpty(flowRoleRes)) {
                 return flowRoleRes.get(0);
             }
         }
         return null;
     }
 
+    @Override
+    public FlowChartRes getFlowChartByProcessId(String processId) {
+        try {
+            log.info("getFlowChartByProcessId调用入参：[{}]", FastFlowConstants.GET_FLOW_CHART_BY_PROCESS_ID + processId);
+            JSONObject jsonObject = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.GET_FLOW_CHART_BY_PROCESS_ID + processId, null));
+            log.info("getFlowChartByProcessId调用结果：[{}]", JSON.toJSONString(jsonObject));
+            if (!CommonConstants.ZERO_STRING.equals(jsonObject.getString(CommonConstants.CODE))) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "流程图查询失败");
+            }
+            FlowChartRes res = new FlowChartRes();
+            String xml = jsonObject.getString("xml");
+            if (StringUtils.isNotEmpty(xml)) {
+                xml = xml.replaceAll("\n", "");
+            }
+            res.setXml(xml);
+            res.setCompleted(jsonObject.getJSONArray("completed").toJavaList(String.class));
+            res.setRuning(jsonObject.getJSONArray("runing").toJavaList(String.class));
+            res.setFlowDetails(jsonObject.getJSONArray("data").toJavaList(FlowChartRes.FlowDetail.class));
+            return res;
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "流程图查询失败");
+        }
+    }
 
 }

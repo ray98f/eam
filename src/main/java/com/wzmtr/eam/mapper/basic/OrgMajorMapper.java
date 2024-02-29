@@ -32,7 +32,7 @@ public interface OrgMajorMapper {
 
     void deleteOrgMajor(List<String> ids, String userId, String time);
 
-    List<OrgMajorResDTO> listOrgMajor(List<List<String>> orgCodes, String majorCode);
+    List<OrgMajorResDTO> listOrgMajor(List<String> ids);
 
     List<OrgMajorResDTO> queryTypeAndDeptCode(String organType, String majorCode, String lineCode);
 

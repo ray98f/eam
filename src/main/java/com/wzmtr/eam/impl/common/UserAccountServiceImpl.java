@@ -1,19 +1,19 @@
 package com.wzmtr.eam.impl.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
-import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.entity.CurrentLoginUser;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.shiro.model.Person;
-import com.wzmtr.eam.shiro.service.IPersonService;
-import com.wzmtr.eam.mapper.common.UserAccountMapper;
-import com.wzmtr.eam.entity.PageReqDTO;
-import com.wzmtr.eam.entity.SysUserAccount;
+import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
+import com.wzmtr.eam.entity.CurrentLoginUser;
+import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.SysUserAccount;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.service.common.UserAccountService;
-import com.wzmtr.eam.utils.TokenUtil;
+import com.wzmtr.eam.shiro.model.Person;
+import com.wzmtr.eam.shiro.service.IPersonService;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public Page<UserAccountListResDTO> listUserAccount(String searchKey, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return userAccountMapper.listUserAccount(pageReqDTO.of(), searchKey);
     }
 
@@ -46,22 +46,13 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public Page<SysUserAccount> listOutUserAccount(PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return userAccountMapper.listOutUserAccount(pageReqDTO.of());
     }
 
     @Override
     public String getToken(String userId) {
         CurrentLoginUser person = new CurrentLoginUser();
-        // if (CommonConstants.ADMIN.equals(userId)) {
-        //     person.setPersonId(CommonConstants.ADMIN);
-        //     person.setPersonNo(CommonConstants.ADMIN);
-        //     person.setPersonName("系统管理员");
-        //     person.setCompanyId("A");
-        //     person.setCompanyName("集团本级");
-        //     person.setOfficeId("A02");
-        //     person.setOfficeName("办公室");
-        // } else {
             Person p = personService.searchPersonByNo(userId);
             if (p != null) {
                 person.setPersonId(p.getId());
@@ -80,12 +71,12 @@ public class UserAccountServiceImpl implements UserAccountService {
             } else {
                 throw new CommonException(ErrorCode.USER_NOT_EXIST);
             }
-        return TokenUtil.createSimpleToken(person);
+        return TokenUtils.createSimpleToken(person);
     }
 
     @Override
     public UserCenterInfoResDTO getUserDetail() {
-        UserCenterInfoResDTO res = userAccountMapper.userCenterInfo(TokenUtil.getCurrentPersonId());
+        UserCenterInfoResDTO res = userAccountMapper.userCenterInfo(TokenUtils.getCurrentPersonId());
         // 获取登录用户角色权限
         res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
         return res;

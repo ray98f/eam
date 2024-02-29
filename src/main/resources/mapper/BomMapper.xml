@@ -512,4 +512,173 @@
             AND dd1.EQUIP_TYPE_CODE = #{req.equipTypeCode}
         </if>
     </select>
+
+    <select id="pageBom" resultType="com.wzmtr.eam.dto.res.basic.BomResDTO">
+        SELECT REC_ID, ENAME, CNAME, PARENT_ID, IS_LEAF, COMPANY_CODE, STATUS, TBLNAME,
+        RELATION_ID, SORT_INDEX, QUANTITY, MEASURE_UNIT, REC_CREATOR, REC_CREATE_TIME, REC_REVISOR,
+        REC_REVISE_TIME, REC_DELETOR, REC_DELETE_TIME, DELETE_FLAG, ARCHIVE_FLAG,
+        EXT1, EXT2, EXT3, EXT4, EXT5, TREE_ID
+        FROM T_BOM where DELETE_FLAG='0'
+        <if test="parentId!=null and parentId!=''">
+            and PARENT_ID=#{parentId}
+        </if>
+        <if test="code!=null and code!=''">
+            and ENAME LIKE '%' || #{code} || '%'
+        </if>
+        <if test="name!=null and name!=''">
+            and CNAME LIKE '%' || #{name} || '%'
+        </if>
+        order by SORT_INDEX, ENAME asc
+    </select>
+
+    <select id="getBomDetail" resultType="com.wzmtr.eam.dto.res.basic.BomResDTO">
+        SELECT REC_ID, ENAME, CNAME, PARENT_ID, IS_LEAF, COMPANY_CODE, STATUS, TBLNAME,
+        RELATION_ID, SORT_INDEX, QUANTITY, MEASURE_UNIT, REC_CREATOR, REC_CREATE_TIME, REC_REVISOR,
+        REC_REVISE_TIME, REC_DELETOR, REC_DELETE_TIME, DELETE_FLAG, ARCHIVE_FLAG,
+        EXT1, EXT2, EXT3, EXT4, EXT5, TREE_ID
+        FROM T_BOM where DELETE_FLAG='0' and REC_ID=#{id}
+    </select>
+
+    <select id="selectBomIsExist" resultType="java.lang.Integer">
+        SELECT COUNT(REC_ID)
+        FROM T_BOM
+        WHERE DELETE_FLAG='0' AND ENAME=#{ename} AND CNAME=#{cname} AND PARENT_ID=#{parentId}
+        <if test="recId!=null and recId!=''">
+            AND REC_ID!=#{recId}
+        </if>
+    </select>
+
+    <insert id="addBom">
+        INSERT INTO T_BOM (
+        REC_ID,
+        ENAME,
+        CNAME,
+        PARENT_ID,
+        IS_LEAF,
+        STATUS,
+        TBLNAME,
+        RELATION_ID,
+        SORT_INDEX,
+        QUANTITY,
+        REC_CREATOR,
+        REC_CREATE_TIME,
+        DELETE_FLAG,
+        EXT1,
+        EXT2,
+        EXT3,
+        EXT4,
+        EXT5,
+        TREE_ID)
+        VALUES
+        (#{recId,jdbcType=VARCHAR},
+        #{ename,jdbcType=VARCHAR},
+        #{cname,jdbcType=VARCHAR},
+        #{parentId,jdbcType=VARCHAR},
+        #{isLeaf,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        ' ',
+        ' ',
+        #{sortIndex,jdbcType=DECIMAL},
+        #{quantity,jdbcType=DECIMAL},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        '0',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        ' ',
+        #{treeId,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="modifyBom">
+        UPDATE T_BOM SET
+        <if test="ename!=null">
+            ENAME = #{ename},
+        </if>
+        <if test="cname!=null">
+            CNAME = #{cname},
+        </if>
+        <if test="parentId!=null">
+            PARENT_ID = #{parentId},
+        </if>
+        <if test="isLeaf!=null">
+            IS_LEAF = #{isLeaf},
+        </if>
+        <if test="status!=null">
+            STATUS = #{status},
+        </if>
+        <if test="sortIndex!=null">
+            SORT_INDEX = #{sortIndex},
+        </if>
+        <if test="quantity!=null">
+            QUANTITY = #{quantity},
+        </if>
+        <if test="treeId!=null">
+            TREE_ID = #{treeId},
+        </if>
+        REC_REVISOR = #{recRevisor},
+        REC_REVISE_TIME = #{recReviseTime}
+        where REC_ID = #{recId}
+    </update>
+
+    <update id="deleteBom">
+        UPDATE T_BOM SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <insert id="importBom">
+        insert ALL
+        <foreach collection="list" index="index" item="bom" separator=" ">
+            INTO T_BOM (
+            REC_ID,
+            ENAME,
+            CNAME,
+            PARENT_ID,
+            IS_LEAF,
+            STATUS,
+            SORT_INDEX,
+            QUANTITY,
+            REC_CREATOR,
+            REC_CREATE_TIME)
+            VALUES
+            (#{bom.ename,jdbcType=VARCHAR},
+            #{bom.ename,jdbcType=VARCHAR},
+            #{bom.cname,jdbcType=VARCHAR},
+            #{bom.parentId,jdbcType=VARCHAR},
+            '0',
+            '0',
+            '0',
+            '1',
+            #{userId,jdbcType=VARCHAR},
+            #{time,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="importBomTrain">
+        insert ALL
+        <foreach collection="list" index="index" item="bomTrain" separator=" ">
+            INTO T_BOM_TRAIN (
+            REC_ID,
+            BOM_PARENT_CODE,
+            BOM_PARENT_NAME,
+            EQUIP_CODE,
+            EQUIP_NAME)
+            VALUES
+            (#{bomTrain.recId,jdbcType=VARCHAR},
+            (SELECT ENAME FROM T_BOM_TEST WHERE CNAME=#{bomTrain.bomParenName,jdbcType=VARCHAR}
+            AND DELETE_FLAG='0' AND PARENT_ID='1'),
+            #{bomTrain.bomParenName,jdbcType=VARCHAR},
+            (SELECT EQUIP_CODE FROM T_EQUIPMENT WHERE EQUIP_NAME=#{bomTrain.equipName,jdbcType=VARCHAR}
+            AND DELETE_FLAG='0' AND MAJOR_CODE='07'),
+            #{bomTrain.equipName,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 </mapper>

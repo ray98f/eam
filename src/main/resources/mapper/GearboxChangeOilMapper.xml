@@ -6,7 +6,7 @@
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TRAIN_NO	as "trainNo",  <!-- 列车号 -->
-        b.TOTAL_MILES  as "totalMiles",  <!-- 里程(公里) -->
+        a.TOTAL_MILES  as "totalMiles",  <!-- 里程(公里) -->
         a.COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
         a.ORG_TYPE	as "orgType",  <!-- 作业单位 -->
         a.OPERATOR	as "operator",  <!-- 作业人员 -->
@@ -30,7 +30,7 @@
         a.EXT6	as "ext6",  <!-- 扩展字段6 -->
         a.EXT7	as "ext7" <!-- 扩展字段7 -->
         FROM T_GEARBOX_CHANGE_OIL a
-        LEFT JOIN T_EQUIPMENT b on b.EQUIP_NAME=a.TRAIN_NO and b.DELETE_FLAG='0'
+        LEFT JOIN T_EQUIPMENT b on b.EQUIP_NAME=a.TRAIN_NO and b.DELETE_FLAG='0' and b.MAJOR_CODE='07'
         WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="trainNo!=null and trainNo!=''">
             and a.TRAIN_NO like '%' || #{trainNo} || '%'
@@ -42,7 +42,7 @@
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TRAIN_NO	as "trainNo",  <!-- 列车号 -->
-        b.TOTAL_MILES  as "totalMiles",  <!-- 里程(公里) -->
+        a.TOTAL_MILES  as "totalMiles",  <!-- 里程(公里) -->
         a.COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
         a.ORG_TYPE	as "orgType",  <!-- 作业单位 -->
         a.OPERATOR	as "operator",  <!-- 作业人员 -->
@@ -66,7 +66,7 @@
         a.EXT6	as "ext6",  <!-- 扩展字段6 -->
         a.EXT7	as "ext7" <!-- 扩展字段7 -->
         FROM T_GEARBOX_CHANGE_OIL a
-        LEFT JOIN T_EQUIPMENT b on b.EQUIP_NAME=a.TRAIN_NO and b.DELETE_FLAG='0'
+        LEFT JOIN T_EQUIPMENT b on b.EQUIP_NAME=a.TRAIN_NO and b.DELETE_FLAG='0' and b.MAJOR_CODE='07'
         WHERE a.REC_ID=#{id}
     </select>
 
@@ -96,6 +96,7 @@
         DELETE_FLAG,  <!-- 删除标志 -->
         ARCHIVE_FLAG,  <!-- 归档标记 -->
         REC_STATUS,  <!-- 记录状态 -->
+        TOTAL_MILES,
         EXT1,  <!-- 扩展字段1 -->
         EXT2,  <!-- 扩展字段2 -->
         EXT3,  <!-- 扩展字段3 -->
@@ -121,6 +122,7 @@
         '0',
         #{archiveFlag,jdbcType=VARCHAR},
         #{recStatus,jdbcType=VARCHAR},
+        #{totalMiles,jdbcType=DECIMAL},
         #{ext1,jdbcType=VARCHAR},
         #{ext2,jdbcType=VARCHAR},
         #{ext3,jdbcType=VARCHAR},
@@ -161,6 +163,7 @@
             DELETE_FLAG,  <!-- 删除标志 -->
             ARCHIVE_FLAG,  <!-- 归档标记 -->
             REC_STATUS,  <!-- 记录状态 -->
+            TOTAL_MILES,
             EXT1,  <!-- 扩展字段1 -->
             EXT2,  <!-- 扩展字段2 -->
             EXT3,  <!-- 扩展字段3 -->
@@ -186,6 +189,7 @@
             '0',
             #{oil.archiveFlag,jdbcType=VARCHAR},
             #{oil.recStatus,jdbcType=VARCHAR},
+            #{oil.totalMiles,jdbcType=DECIMAL},
             #{oil.ext1,jdbcType=VARCHAR},
             #{oil.ext2,jdbcType=VARCHAR},
             #{oil.ext3,jdbcType=VARCHAR},
@@ -201,7 +205,7 @@
         SELECT
         a.REC_ID	as "recId",  <!-- 记录编号 -->
         a.TRAIN_NO	as "trainNo",  <!-- 列车号 -->
-        b.TOTAL_MILES  as "totalMiles",  <!-- 里程(公里) -->
+        a.TOTAL_MILES  as "totalMiles",  <!-- 里程(公里) -->
         a.COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
         a.ORG_TYPE	as "orgType",  <!-- 作业单位 -->
         a.OPERATOR	as "operator",  <!-- 作业人员 -->
@@ -225,7 +229,7 @@
         a.EXT6	as "ext6",  <!-- 扩展字段6 -->
         a.EXT7	as "ext7" <!-- 扩展字段7 -->
         FROM T_GEARBOX_CHANGE_OIL a
-        LEFT JOIN T_EQUIPMENT b on b.EQUIP_NAME=a.TRAIN_NO and b.DELETE_FLAG='0'
+        LEFT JOIN T_EQUIPMENT b on b.EQUIP_NAME=a.TRAIN_NO and b.DELETE_FLAG='0' and b.MAJOR_CODE='07'
         WHERE 1=1 and a.DELETE_FLAG='0'
         <if test="trainNo!=null and trainNo!=''">
             and a.TRAIN_NO like '%' || #{trainNo} || '%'

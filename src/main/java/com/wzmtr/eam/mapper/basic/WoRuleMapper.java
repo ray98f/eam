@@ -142,6 +142,20 @@ public interface WoRuleMapper {
      */
     List<WoRuleResDTO.WoRuleDetail> listWoRuleDetail(String ruleCode, String startDate, String endDate);
 
+    /**
+     * 导出工单触发规则列表
+     * @param ids ids
+     * @return 工单触发规则列表
+     */
+    List<WoRuleResDTO> exportWoRule(List<String> ids);
+
+    /**
+     * 导出工单触发规则明细列表
+     * @param ids ids
+     * @return 工单触发规则明细列表
+     */
+    List<WoRuleResDTO.WoRuleDetail> exportWoRuleDetail(List<String> ids);
+
     List<WoRuleResDTO.WoRuleDetail> queryRuleList(String planCode, String nowDate);
 
 

@@ -1,13 +1,10 @@
 package com.wzmtr.eam.dto.res.statistic.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.wzmtr.eam.entity.File;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 /**
  * @author Li.Wang

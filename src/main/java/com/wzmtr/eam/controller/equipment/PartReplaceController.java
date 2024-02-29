@@ -7,7 +7,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.PartReplaceService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -78,15 +82,13 @@ public class PartReplaceController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出部件更换台账")
-    public void exportPartReplace(@RequestParam(required = false) @ApiParam("设备名称") String equipName,
-                                  @RequestParam(required = false) @ApiParam("部件名称") String replacementName,
-                                  @RequestParam(required = false) @ApiParam("故障工单编号") String faultWorkNo,
-                                  @RequestParam(required = false) @ApiParam("作业单位") String orgType,
-                                  @RequestParam(required = false) @ApiParam("更换原因") String replaceReason,
-                                  HttpServletResponse response) throws IOException {
-        partReplaceService.exportPartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason, response);
+    public void exportPartReplace(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        partReplaceService.exportPartReplace(baseIdsEntity.getIds(), response);
     }
 
 }

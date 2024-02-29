@@ -17,29 +17,22 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class ExcelEquipChargeResDTO {
-
-    @ExcelProperty(value = "记录编号")
-    private String recId;
     @ExcelProperty(value = "设备编码")
     private String equipCode;
     @ExcelProperty(value = "设备名称")
     private String equipName;
+    @ExcelProperty(value = "充电日期")
+    private String chargeDate;
+    @ExcelProperty(value = "充电时长")
+    private String chargeDuration;
+    @ExcelProperty(value = "位置一")
+    private String position1Name;
     @ExcelProperty(value = "专业")
     private String majorName;
     @ExcelProperty(value = "系统")
     private String systemName;
     @ExcelProperty(value = "设备类别")
     private String equipTypeName;
-    @ExcelProperty(value = "位置一")
-    private String position1Name;
-    @ExcelProperty(value = "充电日期")
-    private String chargeDate;
-    @ExcelProperty(value = "充电时长")
-    private String chargeDuration;
     @ExcelProperty(value = "备注")
     private String remark;
-    @ExcelProperty(value = "创建者")
-    private String recCreator;
-    @ExcelProperty(value = "创建时间")
-    private String recCreateTime;
 }

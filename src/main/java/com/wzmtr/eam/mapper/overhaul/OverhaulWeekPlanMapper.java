@@ -36,5 +36,5 @@ public interface OverhaulWeekPlanMapper {
 
     List<OverhaulWeekPlanResDTO> listOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO);
 
-    List<OverhaulWeekPlanResDTO> getOverhaulWeekPlanByIds(List<String> list);
+    List<OverhaulWeekPlanResDTO> getOverhaulWeekPlanByIds(List<String> ids);
 }

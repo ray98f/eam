@@ -1,7 +1,7 @@
 package com.wzmtr.eam.impl.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.base.Joiner;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
@@ -12,11 +12,11 @@ import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
+import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
+import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulOrderResDTO;
-import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
-import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulStateResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -25,6 +25,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
@@ -96,21 +97,19 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Autowired
     private RoleMapper roleMapper;
 
+    @Autowired
+    private OrganizationMapper organizationMapper;
+
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        overhaulOrderListReqDTO.setObjectFlag("1");
         return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
     }
 
     @Override
     public Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
-        String csm = "NCSM";
-        if (overhaulOrderListReqDTO.getTenant().contains(csm)) {
-            PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-            return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
-        } else {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "您无权访问这个接口");
-        }
+        return pageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO);
     }
 
     @Override
@@ -136,7 +135,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                         .tools(resDTO.getRecDeletor())
                         .planStartTime(resDTO.getPlanStartTime())
                         .planEndTime(resDTO.getPlanEndTime())
-                        .workGroupName(resDTO.getWorkGroupName())
+                        .workGroupName(organizationMapper.getNameById(resDTO.getWorkerGroupCode()))
                         .workerName(resDTO.getWorkerName())
                         .realStartTime(resDTO.getRealStartTime())
                         .realEndTime(resDTO.getRealEndTime())
@@ -165,15 +164,15 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (Objects.isNull(order)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        String userId = TokenUtil.getCurrentPersonId();
+        String userId = TokenUtils.getCurrentPersonId();
         List<Role> roleList = roleMapper.getLoginRole(userId);
         if (StringUtils.isNotEmpty(roleList)) {
             List<String> roles = roleList.stream().map(Role::getRoleCode).collect(Collectors.toList());
             if (CommonConstants.ONE_STRING.equals(order.getWorkStatus())) {
-                if (!roles.contains("DM_007") && !CommonConstants.ADMIN.equals(userId) && !roles.contains("DM_037")) {
+                if (!roles.contains(CommonConstants.DM_007) && !CommonConstants.ADMIN.equals(userId) && !roles.contains(CommonConstants.DM_037)) {
                     throw new CommonException(ErrorCode.NORMAL_ERROR, "首次派工必须是调度派工给工班长！");
                 }
-            } else if (!roles.contains("DM_012") && !CommonConstants.ADMIN.equals(userId)) {
+            } else if (!roles.contains(CommonConstants.DM_012) && !CommonConstants.ADMIN.equals(userId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "已下达、已分配状态必须由工班长派工！");
             }
         }
@@ -194,11 +193,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void dispatchWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulOrderReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulOrderMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulOrderMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulOrderReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -206,26 +205,26 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         checkOrderState(overhaulOrderReqDTO, "1,2,3", "请求、已下达、已分配");
         if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
             overhaulOrderReqDTO.setWorkStatus("2");
-            overhaulOrderReqDTO.setRecDeletor(TokenUtil.getCurrentPerson().getPersonName() + "-" + new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
         } else {
-            overhaulOrderReqDTO.setSendPersonId(TokenUtil.getCurrentPersonId());
-            overhaulOrderReqDTO.setSendPersonName(TokenUtil.getCurrentPerson().getPersonName());
-            overhaulOrderReqDTO.setSendTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+            overhaulOrderReqDTO.setSendPersonId(TokenUtils.getCurrentPersonId());
+            overhaulOrderReqDTO.setSendPersonName(TokenUtils.getCurrentPerson().getPersonName());
+            overhaulOrderReqDTO.setSendTime(DateUtils.getCurrentTime());
             overhaulOrderReqDTO.setWorkStatus("3");
         }
-        overhaulOrderReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulWorkRecordService.insertRepair(overhaulOrderReqDTO);
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
     }
 
     @Override
     public void auditWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulOrderReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulOrderMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulOrderMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulOrderReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -235,28 +234,28 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         }
         checkOrderState(overhaulOrderReqDTO, "4", "完工");
         overhaulOrderReqDTO.setWorkStatus("6");
-        overhaulOrderReqDTO.setRecDeleteTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        overhaulOrderReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setRecDeleteTime(DateUtils.getCurrentTime());
+        overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         // ServiceDMER0201  auditWorkers
         overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
         // 根据角色获取用户列表
-        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), "DM_007");
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), CommonConstants.DM_007);
         for (BpmnExaminePersonRes map2 : userList) {
             overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
-                    map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtil.getCurrentPersonId());
+                    map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId());
         }
     }
 
     @Override
     public void confirmWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {
-        if (!CommonConstants.ADMIN.equals(TokenUtil.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulOrderReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulOrderMapper.getSubjectByUserId(TokenUtil.getCurrentPersonId());
+            List<String> code = overhaulOrderMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulOrderReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -266,15 +265,15 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         } else {
             checkOrderState(overhaulOrderReqDTO, "6", "验收");
         }
-        if (StringUtils.isBlank(overhaulOrderReqDTO.getRealEndTime())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulOrderReqDTO.getRealEndTime())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该工单没有实际完成时间，无法完工确认！");
         }
         overhaulOrderReqDTO.setWorkStatus("5");
-        overhaulOrderReqDTO.setAckPersonId(TokenUtil.getCurrentPersonId());
-        overhaulOrderReqDTO.setAckPersonName(TokenUtil.getCurrentPerson().getPersonName());
-        overhaulOrderReqDTO.setConfirTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        overhaulOrderReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setAckPersonId(TokenUtils.getCurrentPersonId());
+        overhaulOrderReqDTO.setAckPersonName(TokenUtils.getCurrentPerson().getPersonName());
+        overhaulOrderReqDTO.setConfirTime(DateUtils.getCurrentTime());
+        overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         modifyOverhaulPlanByOrder(overhaulOrderReqDTO);
@@ -297,7 +296,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             List<OverhaulPlanResDTO> plans = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
             if (StringUtils.isNotEmpty(plans)) {
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
-                SimpleDateFormat dateTimeFormat1 = new SimpleDateFormat("yyyyMMddHH");
+                SimpleDateFormat dateTimeFormat1 = new SimpleDateFormat("yyyy-MM-dd HH");
                 String nowDate = dateTimeFormat.format(new Date());
                 String substring = nowDate.substring(nowDate.length() - 4);
                 List<WoRuleResDTO.WoRuleDetail> rules = woRuleMapper.listWoRuleDetail(plans.get(0).getRuleCode(), substring, substring);
@@ -317,8 +316,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                     overhaulPlanReqDTO.setRecId(plans.get(0).getRecId());
                     overhaulPlanReqDTO.setTrigerTime(realEndTimeStr);
                     overhaulPlanReqDTO.setLastActionTime(String.valueOf(trigerMiles));
-                    overhaulPlanReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-                    overhaulPlanReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+                    overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+                    overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
                     overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
                 }
             }
@@ -334,25 +333,25 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     @NotNull
     private static Date getRealEndTime(OverhaulOrderReqDTO overhaulOrderReqDTO, List<WoRuleResDTO.WoRuleDetail> rules) throws ParseException {
-        int period = rules.get(0).getPeriod();
-        int beforeTime = rules.get(0).getBeforeTime();
+        long period = rules.get(0).getPeriod();
+        long beforeTime = rules.get(0).getBeforeTime();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
         Date realEndTime1 = format.parse(overhaulOrderReqDTO.getRealEndTime().substring(0, 13));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(realEndTime1);
-        calendar.add(Calendar.HOUR_OF_DAY, period);
-        calendar.add(Calendar.DAY_OF_YEAR, -beforeTime);
+        calendar.add(Calendar.HOUR_OF_DAY, Math.toIntExact(period));
+        calendar.add(Calendar.DAY_OF_YEAR, Math.toIntExact(-beforeTime));
         return calendar.getTime();
     }
 
     @Override
     public void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
         overhaulOrderReqDTO.setWorkStatus("8");
-        overhaulOrderReqDTO.setCancelPersonId(TokenUtil.getCurrentPersonId());
-        overhaulOrderReqDTO.setCancelPersonName(TokenUtil.getCurrentPerson().getPersonName());
-        overhaulOrderReqDTO.setCancelTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
-        overhaulOrderReqDTO.setRecRevisor(TokenUtil.getCurrentPersonId());
-        overhaulOrderReqDTO.setRecReviseTime(new SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()));
+        overhaulOrderReqDTO.setCancelPersonId(TokenUtils.getCurrentPersonId());
+        overhaulOrderReqDTO.setCancelPersonName(TokenUtils.getCurrentPerson().getPersonName());
+        overhaulOrderReqDTO.setCancelTime(DateUtils.getCurrentTime());
+        overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
     }
@@ -387,19 +386,19 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public Page<ConstructionResDTO> construction(String orderCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return faultQueryMapper.construction(pageReqDTO.of(), orderCode);
     }
 
     @Override
     public Page<ConstructionResDTO> cancellation(String orderCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return faultQueryMapper.cancellation(pageReqDTO.of(), orderCode);
     }
 
     @Override
     public Page<OverhaulOrderDetailResDTO> pageOverhaulObject(String orderCode, String planCode, String planName, String objectCode, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OverhaulOrderDetailResDTO> page = overhaulOrderMapper.pageOverhaulObject(pageReqDTO.of(), orderCode, planCode, planName, objectCode);
         List<OverhaulOrderDetailResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
@@ -475,7 +474,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public Page<OverhaulItemResDTO> pageOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulItemMapper.pageOverhaulItem(pageReqDTO.of(), overhaulItemListReqDTO);
     }
 
@@ -487,7 +486,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     @Override
     public List<OverhaulItemResDTO> listOverhaulItemModel(String objectCode, String orderCode) {
-        return overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
+        List<OverhaulItemResDTO> list = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
+        return list.stream().distinct().collect(Collectors.toList());
     }
 
     /**
@@ -513,6 +513,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         List<OverhaulItemResDTO> modelList = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
         List<OverhaulItemTreeResDTO> models = new ArrayList<>();
         if (StringUtils.isNotEmpty(modelList)) {
+            modelList = modelList.stream().distinct().collect(Collectors.toList());
             for (OverhaulItemResDTO model : modelList) {
                 OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
                 org.springframework.beans.BeanUtils.copyProperties(model, res);
@@ -560,7 +561,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public Page<OverhaulStateResDTO> pageOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId, PageReqDTO pageReqDTO) {
-        PageHelper.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulStateMapper.pageOverhaulState(pageReqDTO.of(), objectCode, itemName, orderCode, tdmer23RecId);
     }
 
@@ -595,20 +596,19 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             res.setPosition1Code(list.get(0).getPosition1Code());
             res.setSubjectCode(list.get(0).getSubjectCode());
             res.setSubjectName(list.get(0).getSubjectName());
-            res.setUserId(TokenUtil.getCurrentPersonId());
-            String userName = TokenUtil.getCurrentPerson().getPersonName();
-            String discovererPhone = TokenUtil.getCurrentPerson().getPhone();
-            String currentUser = TokenUtil.getCurrentPerson().getPersonName();
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String orgCode = TokenUtil.getCurrentPerson().getOfficeId();
-            String orgName = TokenUtil.getCurrentPerson().getOfficeName();
+            res.setUserId(TokenUtils.getCurrentPersonId());
+            String userName = TokenUtils.getCurrentPerson().getPersonName();
+            String discovererPhone = TokenUtils.getCurrentPerson().getPhone();
+            String currentUser = TokenUtils.getCurrentPerson().getPersonName();
+            String orgCode = TokenUtils.getCurrentPerson().getOfficeId();
+            String orgName = TokenUtils.getCurrentPerson().getOfficeName();
             res.setFillinUserId(currentUser);
             res.setFillinUserName(userName);
             res.setDiscovererId(userName);
             res.setDiscovererName(currentUser);
             res.setDiscovererPhone(discovererPhone);
-            res.setDiscoveryTime(dateTimeFormat.format(new Date()));
-            res.setFillinTime(dateTimeFormat.format(new Date()));
+            res.setDiscoveryTime(DateUtils.getCurrentTime());
+            res.setFillinTime(DateUtils.getCurrentTime());
             res.setFillinDeptName(orgName);
             res.setFillinDeptCode(orgCode);
         }
@@ -617,7 +617,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void upState(OverhaulUpStateReqDTO overhaulUpStateReqDTO) {
-        String currentUser = TokenUtil.getCurrentPerson().getPersonName();
+        String currentUser = TokenUtils.getCurrentPerson().getPersonName();
         String orderCode = overhaulUpStateReqDTO.getOrderCode();
         String objectCode = overhaulUpStateReqDTO.getObjectCode();
         OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
@@ -638,7 +638,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         dmfm01.setFaultNo(faultNo);
         FaultOrderReqDTO dmfm02 = new FaultOrderReqDTO();
         org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm02);
-        dmfm02.setRecId(TokenUtil.getUuId());
+        dmfm02.setRecId(TokenUtils.getUuId());
         dmfm02.setFaultWorkNo(faultWorkNo);
         dmfm02.setFaultNo(faultNo);
         dmfm02.setOrderStatus("30");
@@ -650,7 +650,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
         String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
         // ServiceDMER0205 insertUpFaultMessage
-        overTodoService.insertTodoWithUserGroupAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + "】故障管理流程",
+        overTodoService.insertTodoWithUserGroupAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
                 dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content);
     }
 
@@ -664,7 +664,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     public void buildFaultInfo(FaultInfoReqDTO faultInfo, String fillinUserId, String objectCode,
                                List<OverhaulOrderDetailResDTO> overhaulOrderDetailList, List<OverhaulOrderResDTO> overhaulOrderList) {
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         faultInfo.setExt2(queryNowUser(fillinUserId));
         faultInfo.setRecId(UUID.randomUUID().toString());
         if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith(CommonConstants.NINE_STRING)) {
@@ -680,10 +679,10 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         faultInfo.setEquipTypeName(overhaulOrderList.get(0).getEquipTypeName());
         faultInfo.setPositionName(overhaulOrderList.get(0).getPosition1Name());
         faultInfo.setPositionCode(overhaulOrderList.get(0).getPosition1Code());
-        faultInfo.setRecCreator(TokenUtil.getCurrentPerson().getPersonName());
-        faultInfo.setRecCreateTime(dateTimeFormat.format(new Date()));
-        faultInfo.setDiscoveryTime(dateTimeFormat.format(new Date()));
-        faultInfo.setFillinTime(dateTimeFormat.format(new Date()));
+        faultInfo.setRecCreator(TokenUtils.getCurrentPerson().getPersonName());
+        faultInfo.setRecCreateTime(DateUtils.getCurrentTime());
+        faultInfo.setDiscoveryTime(DateUtils.getCurrentTime());
+        faultInfo.setFillinTime(DateUtils.getCurrentTime());
     }
 
     public String queryNowUser(String userCode) {
@@ -702,10 +701,10 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         String ext2 = "";
 //        if (groups.contains("DM_012") || groups.contains("DM_013")) {
 //            ext2 = "DM_013";
-//        } else if (groups.contains("DM_007")) {
-//            ext2 = "DM_007";
-//        } else if (groups.contains("DM_006")) {
-//            ext2 = "DM_006";
+//        } else if (groups.contains(CommonConstants.DM_007)) {
+//            ext2 = CommonConstants.DM_007;
+//        } else if (groups.contains(CommonConstants.DM_006)) {
+//            ext2 = CommonConstants.DM_006;
 //        } else {
 //            ext2 = "";
 //        }

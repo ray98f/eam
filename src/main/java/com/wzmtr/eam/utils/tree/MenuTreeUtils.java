@@ -2,7 +2,6 @@ package com.wzmtr.eam.utils.tree;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.common.MenuListResDTO;
 
 import java.util.List;

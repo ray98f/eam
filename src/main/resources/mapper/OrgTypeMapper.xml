@@ -90,18 +90,11 @@
         FROM SYS_ORG_TYPE ot
         LEFT JOIN SYS_USER u ON ot.REC_CREATOR=u.ID
         where ot.DELETE_FLAG='0'
-        <if test="orgCodes!=null and orgCodes.size()>0">
-            and
-            <foreach collection="orgCodes" item="orgCode" separator="or">
-                ot.ORG_CODE in
-                <foreach collection="orgCode" item="x" separator="," open="(" close=")">
-                    #{x}
-                </foreach>
-            </foreach>
-        </if>
-        <if test="orgType!=null and orgType!=''">
-            and ot.ORG_TYPE=#{orgType}
-        </if>
+        AND ot.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         ORDER BY ot.REC_CREATE_TIME ASC
     </select>
 
