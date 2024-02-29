@@ -126,7 +126,7 @@
         DM06.EQUIP_NAME =#{equipName}
         ) as "maxkWh",
         (SELECT
-        MAX(DM06.TOTAL_REGENERATED_ELECTRICITY)
+        MAX(DM06.TOTAL_REGENRATED_ELECTRICITY)
         FROM
         T_TRAIN_MILE DM06
         WHERE
