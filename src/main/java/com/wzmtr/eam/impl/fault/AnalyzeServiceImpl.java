@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.fault;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
@@ -67,41 +66,42 @@ public class AnalyzeServiceImpl implements AnalyzeService {
             return new Page<>();
         }
         records.forEach(a -> {
-                    a.setRespDeptName(organizationMapper.getNamesById(a.getRespDeptCode()));
-                    if (StringUtils.isNotEmpty(a.getDocId())) {
-                        a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
-                    }
-                }
-        );
+            a.setRespDeptName(organizationMapper.getNamesById(a.getRespDeptCode()));
+            if (StringUtils.isNotEmpty(a.getDocId())) {
+                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
+            }
+        });
         return query;
     }
 
     @Override
-    public void export(String faultAnalysisNo, String faultNo, String faultWorkNo, HttpServletResponse response) {
-        List<AnalyzeResDTO> resList = faultAnalyzeMapper.list(faultAnalysisNo, faultNo, faultWorkNo);
+    public void export(String faultNo, String majorCode, String recStatus, String lineCode,
+                       String frequency, String positionCode, String discoveryStartTime, String discoveryEndTime,
+                       String respDeptCode, String affectCodes, HttpServletResponse response) {
+        List<AnalyzeResDTO> resList = faultAnalyzeMapper.list(faultNo, majorCode, recStatus, lineCode, frequency,
+                positionCode, discoveryStartTime, discoveryEndTime, respDeptCode, affectCodes);
         if (StringUtils.isEmpty(resList)) {
             return;
         }
         List<FaultAnalizeExportBO> exportList = Lists.newArrayList();
         resList.forEach(item -> {
-                    LineCode lineCode = LineCode.getByCode(item.getLineCode());
-                    FaultFrequency frequency = FaultFrequency.getByCode(item.getFrequency());
-                    String respDeptName = organizationMapper.getOrgById(item.getRespDeptCode());
-                    FaultAnalizeExportBO exportBO = BeanUtils.convert(item, FaultAnalizeExportBO.class);
-                    exportBO.setLineCode(lineCode != null ? lineCode.getDesc() : item.getLineCode());
-                    if (StringUtils.isNotEmpty(item.getFaultLevel())){
-                        exportBO.setFaultLevel(dictService.queryOneByItemCodeAndCodesetCode("dm.faultLevel", item.getFaultLevel()).getItemCname());
-                    }
-                    exportBO.setFrequency(frequency != null ? frequency.getDesc() : item.getFrequency());
-                    exportBO.setRespDeptName(respDeptName == null ? CommonConstants.EMPTY : respDeptName);
-                    exportList.add(exportBO);
-                }
-        );
+            LineCode lineCodeRes = LineCode.getByCode(item.getLineCode());
+            FaultFrequency frequencyRes = FaultFrequency.getByCode(item.getFrequency());
+            String respDeptName = organizationMapper.getOrgById(item.getRespDeptCode());
+            FaultAnalizeExportBO exportBO = BeanUtils.convert(item, FaultAnalizeExportBO.class);
+            exportBO.setLineCode(lineCodeRes != null ? lineCodeRes.getDesc() : item.getLineCode());
+            if (StringUtils.isNotEmpty(item.getFaultLevel())){
+                exportBO.setFaultLevel(dictService.queryOneByItemCodeAndCodesetCode("dm.faultLevel", item.getFaultLevel()).getItemCname());
+            }
+            exportBO.setFrequency(frequencyRes != null ? frequencyRes.getDesc() : item.getFrequency());
+            exportBO.setRespDeptName(respDeptName == null ? CommonConstants.EMPTY : respDeptName);
+            exportList.add(exportBO);
+        });
         try {
-            EasyExcelUtils.export(response, "故障调查及处置情况", exportList);
+            EasyExcelUtils.export(response, "故障分析", exportList);
         } catch (Exception e) {
             log.error("导出失败", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.EXPORT_ERROR);
         }
     }
 

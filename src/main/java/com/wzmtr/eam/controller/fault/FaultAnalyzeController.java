@@ -10,7 +10,6 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,15 +49,21 @@ public class FaultAnalyzeController {
         return DataResponse.success();
     }
 
-
-
     @ApiOperation(value = "导出")
     @GetMapping("/export")
-    public DataResponse<AnalyzeResDTO> export(@RequestParam(required = false) @ApiParam("故障分析编号") String faultAnalysisNo,
-                                              @RequestParam(required = false) @ApiParam("故障编号") String faultNo,
-                                              @RequestParam(required = false) @ApiParam("故障工单编号") String faultWorkNo,
+    public DataResponse<AnalyzeResDTO> export(@RequestParam(required = false) String faultNo,
+                                              @RequestParam(required = false) String majorCode,
+                                              @RequestParam(required = false) String recStatus,
+                                              @RequestParam(required = false) String lineCode,
+                                              @RequestParam(required = false) String frequency,
+                                              @RequestParam(required = false) String positionCode,
+                                              @RequestParam(required = false) String discoveryStartTime,
+                                              @RequestParam(required = false) String discoveryEndTime,
+                                              @RequestParam(required = false) String respDeptCode,
+                                              @RequestParam(required = false) String affectCodes,
                                               HttpServletResponse response) {
-        analyzeService.export(faultAnalysisNo, faultNo, faultWorkNo, response);
+        analyzeService.export(faultNo, majorCode, recStatus, lineCode, faultNo, positionCode, discoveryStartTime,
+                discoveryEndTime, respDeptCode, affectCodes, response);
         return DataResponse.success();
     }
 

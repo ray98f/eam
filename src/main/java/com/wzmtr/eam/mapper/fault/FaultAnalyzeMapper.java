@@ -21,9 +21,13 @@ import java.util.Set;
 public interface FaultAnalyzeMapper extends BaseMapper<FaultAnalyzeDO> {
 
 
-    Page<AnalyzeResDTO> query(Page<Object> of, String faultNo, String majorCode, String recStatus, String lineCode, String frequency, String positionCode, String discoveryStartTime, String discoveryEndTime, String respDeptCode, String affectCodes);
+    Page<AnalyzeResDTO> query(Page<Object> of, String faultNo, String majorCode, String recStatus, String lineCode,
+                              String frequency, String positionCode, String discoveryStartTime, String discoveryEndTime,
+                              String respDeptCode, String affectCodes);
 
-    List<AnalyzeResDTO> list(String faultAnalysisNo, String faultNo, String faultWorkNo);
+    List<AnalyzeResDTO> list(String faultNo, String majorCode, String recStatus, String lineCode,
+                             String frequency, String positionCode, String discoveryStartTime, String discoveryEndTime,
+                             String respDeptCode, String affectCodes);
 
     AnalyzeResDTO detail(FaultAnalyzeDetailReqDTO reqDTO);
 

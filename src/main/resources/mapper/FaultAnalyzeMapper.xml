@@ -262,14 +262,38 @@
         left join T_FAULT_INFO d1 on d3.FAULT_NO = d1.FAULT_NO
         left join T_FAULT_DETAIL d2 on d2.FAULT_WORK_NO = d3.FAULT_WORK_NO
         <trim prefix="WHERE" prefixOverrides="AND">
+            and d3.DELETE_FLAG ='0'
             <if test="faultNo!=null and faultNo!=''">
                 and d3.FAULT_NO =#{faultNo}
             </if>
-            <if test="faultAnalysisNo!=null and faultAnalysisNo!=''">
-                and d3.FAULT_ANALYSIS_NO =#{faultAnalysisNo}
+            <if test="recStatus!=null and recStatus!=''">
+                and d3.REC_STATUS =#{recStatus}
             </if>
-            <if test="faultWorkNo!=null and faultWorkNo!=''">
-                and d3.FAULT_WORK_NO =#{faultWorkNo}
+            <if test="frequency!=null and frequency!=''">
+                and d3.FREQUENCY =#{frequency}
+            </if>
+            <if test="majorCode!=null and majorCode!=''">
+                and d3.MAJOR_CODE =#{majorCode}
+            </if>
+            <if test="lineCode!=null and lineCode!=''">
+                and d1.LINE_CODE =#{lineCode}
+            </if>
+            <if test="positionCode!=null and positionCode!=''">
+                and d1.POSITION_CODE =#{positionCode}
+            </if>
+            <if test="discoveryStartTime!=null and discoveryStartTime!=''">
+                and to_date( d1.DISCOVERY_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{discoveryStartTime},
+                'YYYY-MM-DD')
+            </if>
+            <if test="discoveryEndTime!=null and discoveryEndTime!=''">
+                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]>
+                TO_DATE(#{discoveryEndTime},'YYYY-MM-DD')
+            </if>
+            <if test="respDeptCode!=null and respDeptCode!=''">
+                and d1.RESP_DEPT_CODE = #{respDeptCode}
+            </if>
+            <if test="affectCodes!=null and affectCodes!=''">
+                and d3.AFFECT_CODES =#{affectCodes}
             </if>
         </trim>
     </select>

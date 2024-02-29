@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.secure;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.export.SecureCheckExportBO;
@@ -145,7 +144,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             EasyExcelUtils.export(response, "安全、质量、消防检查记录", exportList);
         } catch (Exception e) {
             log.error("导出失败",e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.EXPORT_ERROR);
         }
     }
 
