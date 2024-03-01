@@ -173,14 +173,14 @@
         EXT5 as "ext5" <!-- 扩展字段5 -->
         FROM T_DANGER_RISK
         <trim prefix="WHERE" prefixOverrides="AND">
-        <if test="dangerRiskId!=null and dangerRiskId!=''">
-            and DANGER_RISK_ID = #{dangerRiskId}
+        <if test="req.dangerRiskId!=null and req.dangerRiskId!=''">
+            and DANGER_RISK_ID = #{req.dangerRiskId}
         </if>
-        <if test="discDateStart!=null and discDateStart!=''">
-            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{discDateStart},'YYYY-MM-DD')
+        <if test="req.discDateStart!=null and req.discDateStart!=''">
+            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{req.discDateStart},'YYYY-MM-DD')
         </if>
-        <if test="discDateEnd!=null and discDateEnd!=''">
-            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{discDateEnd},'YYYY-MM-DD')
+        <if test="req.discDateEnd!=null and req.discDateEnd!=''">
+            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{req.discDateEnd},'YYYY-MM-DD')
         </if>
         and DELETE_FLAG='0'
         </trim>
@@ -219,13 +219,26 @@
         EXT3 as "ext3",  <!-- 扩展字段3 -->
         EXT4 as "ext4",  <!-- 扩展字段4 -->
         EXT5 as "ext5" <!-- 扩展字段5 -->
-        FROM T_DANGER_RISK WHERE 1=1
-        <if test="dangerRiskId!=null and dangerRiskId!=''">
-            and DANGER_RISK_ID = #{dangerRiskId}
-        </if>
-        <if test="discDate!=null and discDate!=''">
-            and DISC_DATE = #{discDate}
-        </if>
+        FROM T_DANGER_RISK
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="dangerRiskId!=null and dangerRiskId!=''">
+                and DANGER_RISK_ID = #{dangerRiskId}
+            </if>
+            <if test="discDateStart!=null and discDateStart!=''">
+                and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{discDateStart},'YYYY-MM-DD')
+            </if>
+            <if test="discDateEnd!=null and discDateEnd!=''">
+                and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{discDateEnd},'YYYY-MM-DD')
+            </if>
+            <if test="ids!=null and ids.size()>0">
+                and REC_ID in (
+                <foreach collection="ids" index="index" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
+            and DELETE_FLAG='0'
+        </trim>
         order by DANGER_RISK_ID desc
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO">

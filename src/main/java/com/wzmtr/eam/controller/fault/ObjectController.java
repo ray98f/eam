@@ -37,18 +37,18 @@ public class ObjectController {
         return PageResponse.of(objectService.queryObject(reqDTO));
     }
     @ApiOperation(value = "车辆对象树")
-    @PostMapping("car/getQuery")
+    @PostMapping("/car/getQuery")
     public DataResponse<CarObjResDTO> getQuery(@RequestBody CarObjectReqDTO reqDTO) {
         return DataResponse.of(objectService.getQuery(reqDTO));
     }
     @ApiOperation(value = "车辆对象树列表")
-    @PostMapping("car/query")
+    @PostMapping("/car/query")
     public DataResponse<List<CarTreeListObjResDTO>> query(@RequestBody CarObjectReqDTO reqDTO) {
         return DataResponse.of(objectService.query(reqDTO));
     }
 
     @ApiOperation(value = "对象查询分页")
-    @PostMapping("car/queryForObject")
+    @PostMapping("/car/queryForObject")
     public PageResponse<ObjectResDTO> queryForObject(@RequestBody ObjectReqDTO reqDTO) {
         return PageResponse.of(objectService.queryForObject(reqDTO));
     }

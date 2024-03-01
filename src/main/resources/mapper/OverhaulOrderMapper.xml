@@ -943,8 +943,8 @@
         BORROW_CODE	as "borrowCode",  <!-- 借用人工号 -->
         BORROW_NAME	as "borrowName",  <!-- 借用人姓名 -->
         BORROW_TIME	as "borrowTime",  <!-- 借用时间 -->
-        RETURN_NAME	as "returnName",  <!-- 归还人工号 -->
-        RETURN_CODE	as "returnCode",  <!-- 归还人姓名 -->
+        RETURN_NAME	as "returnName",  <!-- 归还人姓名 -->
+        RETURN_CODE	as "returnCode",  <!-- 归还人工号 -->
         RETURN_TIME	as "returnTime",  <!-- 归还时间 -->
         STATE	as "state",  <!-- 状态 -->
         REMARK	as "remark",  <!-- 备注 -->
@@ -961,13 +961,13 @@
         EXT5	as "ext5" <!-- 扩展字段5 -->
         FROM T_MATE_BORROW WHERE 1=1
         <if test="orderCode!=null and orderCode!=''">
-            ORDER_CODE=#{orderCode}
+            and ORDER_CODE=#{orderCode}
         </if>
         <if test="mateCode!=null and mateCode!=''">
-            MATE_CODE like '%' || #{mateCode} || '%'
+            and MATE_CODE like '%' || #{mateCode} || '%'
         </if>
         <if test="mateName!=null and mateName!=''">
-            MATE_NAME like '%' || #{mateName} || '%'
+            and MATE_NAME like '%' || #{mateName} || '%'
         </if>
         order by REC_ID asc
     </select>

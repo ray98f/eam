@@ -16,7 +16,6 @@ import com.wzmtr.eam.mapper.bom.BomMapper;
 import com.wzmtr.eam.service.basic.BomService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -154,9 +153,10 @@ public class BomServiceImpl implements BomService {
 
     /**
      * 获取树状code
-     * @param nowCode 当前code
+     *
+     * @param nowCode  当前code
      * @param laseCode 上一层code
-     * @param type 类型
+     * @param type     类型
      * @return code
      */
     private String getTreeCode(String nowCode, String laseCode, int type) {
@@ -187,14 +187,30 @@ public class BomServiceImpl implements BomService {
     public void importBomTrain(MultipartFile file) {
         List<ExcelBomTrainReqDTO> list = EasyExcelUtils.read(file, ExcelBomTrainReqDTO.class);
         List<BomTrainReqDTO> temp = new ArrayList<>();
+        int i = 1;
         for (ExcelBomTrainReqDTO reqDTO : list) {
-            BomTrainReqDTO req = new BomTrainReqDTO();
-            BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtils.getUuId());
-            temp.add(req);
+            List<BomResDTO> boms = bomMapper.getChildBom(reqDTO.getBomParenName());
+            if (StringUtils.isNotEmpty(boms)) {
+                for (BomResDTO bom : boms) {
+                    BomTrainReqDTO req = new BomTrainReqDTO();
+                    req.setRecId(TokenUtils.getUuId());
+                    req.setBomCode(bom.getEname());
+                    req.setBomName(bom.getCname());
+                    req.setPartCode("P" + String.format("%010d", i));
+                    req.setEquipCode(reqDTO.getEquipCode());
+                    req.setEquipName(reqDTO.getEquipName());
+                    i++;
+                    temp.add(req);
+                }
+            }
         }
         if (!temp.isEmpty()) {
-            bomMapper.importBomTrain(temp);
+            int times = (int) Math.ceil(temp.size() / 2000.0);
+            for (int j = 0; j < times; j++) {
+                System.out.println("分批插入：" + j);
+                bomMapper.importBomTrain(temp.subList(j * 2000, Math.min((j + 1) * 2000, temp.size() - 1)),
+                        TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+            }
         }
     }
 

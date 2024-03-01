@@ -22,7 +22,7 @@ import java.util.Set;
 public interface FaultAnalyzeMapper extends BaseMapper<FaultAnalyzeDO> {
 
 
-    Page<AnalyzeResDTO> query(Page<Object> of, AnalyzeReqDTO reqDTO);
+    Page<AnalyzeResDTO> query(Page<Object> of, AnalyzeReqDTO req);
 
     List<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO);
 

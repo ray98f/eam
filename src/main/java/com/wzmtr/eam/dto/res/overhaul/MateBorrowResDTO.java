@@ -41,11 +41,11 @@ public class MateBorrowResDTO {
      */
     private String borrowTime;
     /**
-     * 归还人工号
+     * 归还人姓名
      */
     private String returnName;
     /**
-     * 归还人姓名
+     * 归还人工号
      */
     private String returnCode;
     /**

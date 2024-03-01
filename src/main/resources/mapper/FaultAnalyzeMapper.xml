@@ -118,7 +118,6 @@
         </if>
     </update>
 
-
     <select id="query" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">
         SELECT
         d3.REC_ID as "recId",  <!-- 记录编号 -->
@@ -174,37 +173,35 @@
         left join T_FAULT_DETAIL d2 on d2.FAULT_WORK_NO = d3.FAULT_WORK_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             and d3.DELETE_FLAG ='0'
-            <if test="faultNo!=null and faultNo!=''">
-                and d3.FAULT_NO =#{faultNo}
+            <if test="req.faultNo!=null and req.faultNo!=''">
+                and d3.FAULT_NO =#{req.faultNo}
             </if>
-            <if test="recStatus!=null and recStatus!=''">
-                and d3.REC_STATUS =#{recStatus}
+            <if test="req.recStatus!=null and req.recStatus!=''">
+                and d3.REC_STATUS =#{req.recStatus}
             </if>
-            <if test="frequency!=null and frequency!=''">
-                and d3.FREQUENCY =#{frequency}
+            <if test="req.frequency!=null and req.frequency!=''">
+                and d3.FREQUENCY =#{req.frequency}
             </if>
-            <if test="majorCode!=null and majorCode!=''">
-                and d3.MAJOR_CODE =#{majorCode}
+            <if test="req.majorCode!=null and req.majorCode!=''">
+                and d3.MAJOR_CODE =#{req.majorCode}
             </if>
-            <if test="lineCode!=null and lineCode!=''">
-                and d1.LINE_CODE =#{lineCode}
+            <if test="req.lineCode!=null and req.lineCode!=''">
+                and d1.LINE_CODE =#{req.lineCode}
             </if>
-            <if test="positionCode!=null and positionCode!=''">
-                and d1.POSITION_CODE =#{positionCode}
+            <if test="req.positionCode!=null and req.positionCode!=''">
+                and d1.POSITION_CODE =#{req.positionCode}
             </if>
-            <if test="discoveryStartTime!=null and discoveryStartTime!=''">
-                and to_date( d1.DISCOVERY_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{discoveryStartTime},
-                'YYYY-MM-DD')
+            <if test="req.discoveryStartTime!=null and req.discoveryStartTime!=''">
+                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')<![CDATA[>=]]>to_date(#{req.discoveryStartTime},'YYYY-MM-DD')
             </if>
-            <if test="discoveryEndTime!=null and discoveryEndTime!=''">
-                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]>
-                TO_DATE(#{discoveryEndTime},'YYYY-MM-DD')
+            <if test="req.discoveryEndTime!=null and req.discoveryEndTime!=''">
+                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')<![CDATA[<=]]>to_date(#{req.discoveryEndTime},'YYYY-MM-DD')
             </if>
-            <if test="respDeptCode!=null and respDeptCode!=''">
-                and d1.RESP_DEPT_CODE = #{respDeptCode}
+            <if test="req.respDeptCode!=null and req.respDeptCode!=''">
+                and d1.RESP_DEPT_CODE = #{req.respDeptCode}
             </if>
-            <if test="affectCodes!=null and affectCodes!=''">
-                and d3.AFFECT_CODES =#{affectCodes}
+            <if test="req.affectCodes!=null and req.affectCodes!=''">
+                and d3.AFFECT_CODES =#{req.affectCodes}
             </if>
         </trim>
     </select>

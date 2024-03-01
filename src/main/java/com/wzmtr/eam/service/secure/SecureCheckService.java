@@ -17,7 +17,7 @@ public interface SecureCheckService {
 
     SecureCheckRecordListResDTO detail(SecureCheckDetailReqDTO reqDTO);
 
-    void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, HttpServletResponse response);
+    void export(SecureCheckRecordListReqDTO reqDTO, HttpServletResponse response);
 
     void delete(BaseIdsEntity reqDTO);
 

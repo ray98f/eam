@@ -10,9 +10,11 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.secure.SecureCheckService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -65,13 +67,9 @@ public class SecureCheckController {
     }
 
     @ApiOperation(value = "安全/质量/消防/-检查问题单导出")
-    @GetMapping("/record/export")
-    public void export(@RequestParam(required = false) @ApiParam("检查问题单号") String secRiskId,
-                       @RequestParam(required = false) @ApiParam("发现日期") String inspectDate,
-                       @RequestParam(required = false) @ApiParam(value = "整改情况") String restoreDesc,
-                       @RequestParam(required = false) @ApiParam(value = "流程状态") String workFlowInstStatus,
-                       HttpServletResponse response) {
-        secureService.export(secRiskId, inspectDate, restoreDesc, workFlowInstStatus, response);
+    @PostMapping("/record/export")
+    public void export(@RequestBody SecureCheckRecordListReqDTO reqDTO, HttpServletResponse response) {
+        secureService.export(reqDTO, response);
     }
 
 }
