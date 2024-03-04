@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel
-public class RAMSResult2ResDTO {
+public class RamsResult2ResDTO {
 
     @ApiModelProperty(value = "不适合服务")
     private String noService;

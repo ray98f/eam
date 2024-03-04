@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel
-public class FaultRAMSResDTO {
+public class FaultRamsResDTO {
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
     @ApiModelProperty(value = "对象名称")

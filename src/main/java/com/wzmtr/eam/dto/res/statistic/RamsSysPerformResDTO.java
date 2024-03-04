@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @ApiModel
 @Data
-public class RAMSSysPerformResDTO {
+public class RamsSysPerformResDTO {
     /*****各系统可靠性情况统计******/
     @ApiModelProperty(value = "moduleName")
     private String moduleName;

@@ -10,6 +10,7 @@ import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.FaultQueryService;
@@ -23,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -244,7 +246,7 @@ public class StatisticController {
 
     @GetMapping("/rams/query4AQYYZB")
     @ApiOperation(value = "车辆可靠性表现")
-    public DataResponse<RAMSCarResDTO> query4AQYYZB() {
+    public DataResponse<RamsCarResDTO> query4AQYYZB() {
         return DataResponse.of(statisticService.query4AQYYZB());
     }
 
@@ -256,20 +258,51 @@ public class StatisticController {
 
     @GetMapping("/rams/queryresult2")
     @ApiOperation(value = "故障影响统计")
-    public DataResponse<List<RAMSResult2ResDTO>> queryresult2(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate) {
+    public DataResponse<List<RamsResult2ResDTO>> queryresult2(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate) {
         return DataResponse.of(statisticService.queryresult2(startDate, endDate));
     }
 
     @GetMapping("/rams/querySysPerform")
     @ApiOperation(value = "各系统可靠性统计")
-    public DataResponse<List<RAMSSysPerformResDTO>> querySysPerform() {
+    public DataResponse<List<RamsSysPerformResDTO>> querySysPerform() {
         return DataResponse.of(statisticService.querySysPerform());
     }
 
     @PostMapping("/rams/queryRAMSFaultList")
     @ApiOperation(value = "RAMS故障列表")
-    public PageResponse<FaultRAMSResDTO> queryRAMSFaultList(@RequestBody RAMSTimeReqDTO reqDTO) {
+    public PageResponse<FaultRamsResDTO> queryRAMSFaultList(@RequestBody RamsTimeReqDTO reqDTO) {
         return PageResponse.of(statisticService.queryRAMSFaultList(reqDTO));
+    }
+
+    /**
+     * RAMS-列车可靠性统计
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param trainNo 列车号
+     * @return 列车可靠性统计
+     */
+    @GetMapping("/rams/train/reliability")
+    @ApiOperation(value = "列车可靠性统计")
+    public DataResponse<RamsTrainReliabilityResDTO> trainReliability(@RequestParam String startTime,
+                                                                     @RequestParam String endTime,
+                                                                     @RequestParam String trainNo) {
+        return DataResponse.of(statisticService.trainReliability(startTime, endTime, trainNo));
+    }
+
+    /**
+     * RAMS-列车可靠性统计-故障列表
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param trainNo 列车号
+     * @return 故障列表
+     */
+    @GetMapping("/rams/train/reliability/fault")
+    @ApiOperation(value = "RAMS-列车可靠性统计-故障列表")
+    public PageResponse<FaultRamsResDTO> trainReliabilityFaultList(@RequestParam String startTime,
+                                                                   @RequestParam String endTime,
+                                                                   @RequestParam String trainNo,
+                                                                   @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(statisticService.trainReliabilityFaultList(startTime, endTime, trainNo, pageReqDTO));
     }
 
 }

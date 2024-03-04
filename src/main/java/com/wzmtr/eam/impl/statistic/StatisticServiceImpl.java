@@ -19,6 +19,7 @@ import com.wzmtr.eam.dto.res.statistic.excel.ExcelFaultDetailResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import com.wzmtr.eam.dto.res.statistic.excel.*;
 import com.wzmtr.eam.entity.Dictionaries;
+import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
@@ -78,7 +79,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Autowired
     private OverhaulOrderMapper overhaulOrderMapper;
     @Autowired
-    private RAMSMapper ramsMapper;
+    private RamsMapper ramsMapper;
     @Autowired
     private FaultExportComponent exportComponent;
     @Autowired
@@ -641,13 +642,13 @@ public class StatisticServiceImpl implements StatisticService {
 
 
     @Override
-    public RAMSCarResDTO query4AQYYZB() {
-        List<RAMSCarResDTO> records = ramsMapper.query4AQYYZB();
+    public RamsCarResDTO query4AQYYZB() {
+        List<RamsCarResDTO> records = ramsMapper.query4AQYYZB();
         if (StringUtils.isEmpty(records)) {
             return null;
         }
         DecimalFormat df = new DecimalFormat("#0.00");
-        RAMSCarResDTO ramsCarResDTO = records.get(0);
+        RamsCarResDTO ramsCarResDTO = records.get(0);
         String millionMiles = ramsCarResDTO.getMillionMiles();
         String affect11 = ramsCarResDTO.getAffect11();
         String affect21 = ramsCarResDTO.getAffect21();
@@ -751,7 +752,7 @@ public class StatisticServiceImpl implements StatisticService {
      * @return
      */
     @Override
-    public List<RAMSResult2ResDTO> queryresult2(String startDate, String endDate) {
+    public List<RamsResult2ResDTO> queryresult2(String startDate, String endDate) {
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
         } else {
@@ -763,7 +764,7 @@ public class StatisticServiceImpl implements StatisticService {
             endDate = getLastMouths(0);
         }
         DecimalFormat df = new DecimalFormat("#0.00");
-        List<RAMSResult2ResDTO> ramsResDTOS = ramsMapper.queryresult2(startDate, endDate);
+        List<RamsResult2ResDTO> ramsResDTOS = ramsMapper.queryresult2(startDate, endDate);
         ramsResDTOS.forEach(a -> {
             double lateZ = 0.0D;
             double noServiceZ = 0.0D;
@@ -786,11 +787,11 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public List<RAMSSysPerformResDTO> querySysPerform() {
-        List<RAMSSysPerformResDTO> ramsResDTOS = ramsMapper.querySysPerform();
-        List<RAMSResDTO> totalMilesList = ramsMapper.querytotalMiles();
-        RAMSResDTO totalMiles = totalMilesList.get(0);
-        Map<String, RAMSSysPerformResDTO> map = Maps.newHashMap();
+    public List<RamsSysPerformResDTO> querySysPerform() {
+        List<RamsSysPerformResDTO> ramsResDTOS = ramsMapper.querySysPerform();
+        List<RamsResDTO> totalMilesList = ramsMapper.querytotalMiles();
+        RamsResDTO totalMiles = totalMilesList.get(0);
+        Map<String, RamsSysPerformResDTO> map = Maps.newHashMap();
         Set<String> names = Sets.newHashSet();
         ramsResDTOS.forEach(a -> {
             switch (a.getModuleName()) {
@@ -853,7 +854,7 @@ public class StatisticServiceImpl implements StatisticService {
                 MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumNos());
             }
             a.setMTBF_NOS(df.format(MTBF_NOS));
-            RAMSSysPerformResDTO last = map.get(a.getModuleName());
+            RamsSysPerformResDTO last = map.get(a.getModuleName());
             if (map.containsKey(a.getModuleName())) {
                 a.setNumNos(String.valueOf(Integer.parseInt(a.getNumNos()) + Integer.parseInt(last.getNumNos())));
                 a.setMTBF_NOS(String.valueOf(Integer.parseInt(a.getMTBF_NOS()) + Integer.parseInt(last.getMTBF_NOS())));
@@ -870,7 +871,7 @@ public class StatisticServiceImpl implements StatisticService {
      * 各系统可靠性统计-构建是否达标标识
      * @param map 集合
      */
-    private void buildSysPerformIsCompliance(Map<String, RAMSSysPerformResDTO> map) {
+    private void buildSysPerformIsCompliance(Map<String, RamsSysPerformResDTO> map) {
         map.values().forEach(a -> {
             if (Double.parseDouble(a.getMTBF_LATE()) >= Double.parseDouble(a.getContractZBLATE())) {
                 a.setIsDB_LATE("达标");
@@ -890,9 +891,9 @@ public class StatisticServiceImpl implements StatisticService {
      */
     @Override
     public List<FaultConditionResDTO> queryCountFaultType() {
-        List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4RAMS();
-        List<RAMSResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
-        RAMSResDTO ramsResDTO = ramsResDTOS.get(0);
+        List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4Rams();
+        List<RamsResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
+        RamsResDTO ramsResDTO = ramsResDTOS.get(0);
         Set<String> names = Sets.newHashSet();
         Map<String, FaultConditionResDTO> map = new HashMap<>();
         for (FaultConditionResDTO a : list) {
@@ -962,7 +963,7 @@ public class StatisticServiceImpl implements StatisticService {
      * @param map 集合
      * @param ramsRes ram
      */
-    private void buildFaultTypeIsCompliance(Map<String, FaultConditionResDTO> map, RAMSResDTO ramsRes) {
+    private void buildFaultTypeIsCompliance(Map<String, FaultConditionResDTO> map, RamsResDTO ramsRes) {
         map.values().forEach(a -> {
             DecimalFormat df = new DecimalFormat("#0");
             double zb;
@@ -984,14 +985,14 @@ public class StatisticServiceImpl implements StatisticService {
      * RAMS 故障列表
      */
     @Override
-    public Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO) {
-        Page<FaultRAMSResDTO> list = ramsMapper.queryRAMSFaultList(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime());
+    public Page<FaultRamsResDTO> queryRAMSFaultList(RamsTimeReqDTO reqDTO) {
+        Page<FaultRamsResDTO> list = ramsMapper.queryRamsFaultList(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime(),null);
         if (StringUtils.isEmpty(list.getRecords())) {
             return new Page<>();
         }
-        List<FaultRAMSResDTO> records = list.getRecords();
+        List<FaultRamsResDTO> records = list.getRecords();
         records.forEach(a -> {
-            FaultRAMSResDTO faultRAMSResDTO = ramsMapper.queryPart(a.getFaultWorkNo());
+            FaultRamsResDTO faultRAMSResDTO = ramsMapper.queryPart(a.getFaultWorkNo());
             if (null != faultRAMSResDTO) {
                 String replacementName = faultRAMSResDTO.getReplacementName();
                 String oldRepNo = faultRAMSResDTO.getOldRepNo();
@@ -1035,7 +1036,7 @@ public class StatisticServiceImpl implements StatisticService {
         }
     }
 
-    public void rebuildBlock4SP(RAMSSysPerformResDTO map, Set<String> module, String moduleName, String contractZB_LATE, String contractZB_NOS) {
+    public void rebuildBlock4SP(RamsSysPerformResDTO map, Set<String> module, String moduleName, String contractZB_LATE, String contractZB_NOS) {
         DecimalFormat df = new DecimalFormat("#0");
         String NUM_LATE = map.getNumLate();
         String NUM_NOS = map.getNumNos();
@@ -1074,6 +1075,63 @@ public class StatisticServiceImpl implements StatisticService {
             map.setZS(ZS);
             map.setNOYF(NOYF);
         }
+    }
+
+    @Override
+    public RamsTrainReliabilityResDTO trainReliability(String startTime, String endTime, String trainNo) {
+        RamsTrainReliabilityResDTO res = new RamsTrainReliabilityResDTO();
+        // 获取各指标项的故障次数
+        Integer delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'");
+        Integer notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'");
+        Integer faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null);
+        Integer miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
+        if (Objects.isNull(miles) || miles == 0) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "");
+        }
+        res.setTotalMile(miles);
+        // 实际指标计算
+        res.setRealDelay(countTrainReliabilityIndex(delayCount, miles));
+        res.setRealNot(countTrainReliabilityIndex(notCount, miles));
+        res.setRealFault(countTrainReliabilityIndex(faultCount, miles));
+        // todo 合同指标填充
+
+        return res;
+    }
+
+    /**
+     * 计算列车可靠性指标
+     * @param count 次数
+     * @param miles 运营里程
+     * @return 计算列车可靠性指标
+     */
+    private Double countTrainReliabilityIndex(Integer count, Integer miles) {
+        if (StringUtils.isNotNull(miles) && miles != 0) {
+            return (double) (count * 1000000 / (4 * miles));
+        }
+        return null;
+    }
+
+    @Override
+    public Page<FaultRamsResDTO> trainReliabilityFaultList(String startTime, String endTime, String trainNo, PageReqDTO pageReqDTO) {
+        Page<FaultRamsResDTO> list = ramsMapper.queryRamsFaultList(pageReqDTO.of(), startTime, endTime, trainNo);
+        if (StringUtils.isEmpty(list.getRecords())) {
+            return new Page<>();
+        }
+        List<FaultRamsResDTO> records = list.getRecords();
+        records.forEach(a -> {
+            FaultRamsResDTO faultRamsRes = ramsMapper.queryPart(a.getFaultWorkNo());
+            if (StringUtils.isNotNull(faultRamsRes)) {
+                String replacementName = faultRamsRes.getReplacementName();
+                String oldRepNo = faultRamsRes.getOldRepNo();
+                String newRepNo = faultRamsRes.getNewRepNo();
+                String operateCostTime = faultRamsRes.getOperateCostTime();
+                a.setReplacementName(replacementName == null ? CommonConstants.EMPTY : replacementName);
+                a.setOldRepNo(oldRepNo == null ? CommonConstants.EMPTY : oldRepNo);
+                a.setNewRepNo(newRepNo == null ? CommonConstants.EMPTY : newRepNo);
+                a.setOperateCostTime(operateCostTime == null ? CommonConstants.EMPTY : operateCostTime);
+            }
+        });
+        return list;
     }
 }
 

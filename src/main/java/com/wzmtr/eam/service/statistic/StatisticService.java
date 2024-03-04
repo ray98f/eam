@@ -11,6 +11,7 @@ import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -88,17 +89,17 @@ public interface StatisticService {
 
     Page<InspectionJobListResDTO> queryER1(OneCarOneGearQueryReqDTO reqDTO);
 
-    RAMSCarResDTO query4AQYYZB();
+    RamsCarResDTO query4AQYYZB();
 
     List<SystemFaultsResDTO> queryresult3(String startDate, String endDate, String sys);
 
-    List<RAMSResult2ResDTO> queryresult2(String startDate, String endDate);
+    List<RamsResult2ResDTO> queryresult2(String startDate, String endDate);
 
-    List<RAMSSysPerformResDTO> querySysPerform();
+    List<RamsSysPerformResDTO> querySysPerform();
 
     List<FaultConditionResDTO> queryCountFaultType();
 
-    Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO);
+    Page<FaultRamsResDTO> queryRAMSFaultList(RamsTimeReqDTO reqDTO);
 
     void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
@@ -128,4 +129,23 @@ public interface StatisticService {
      * @param response response
      */
     void faultExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response);
+
+    /**
+     * RAMS-列车可靠性统计
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param trainNo 列车号
+     * @return 列车可靠性统计
+     */
+    RamsTrainReliabilityResDTO trainReliability(String startTime, String endTime, String trainNo);
+
+    /**
+     * RAMS-列车可靠性统计-故障列表
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param trainNo 列车号
+     * @param pageReqDTO 分页参数
+     * @return 故障列表
+     */
+    Page<FaultRamsResDTO> trainReliabilityFaultList(String startTime, String endTime, String trainNo, PageReqDTO pageReqDTO);
 }

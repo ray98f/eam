@@ -8,7 +8,7 @@ import lombok.Data;
  * Date: 2023/8/22 17:14
  */
 @Data
-public class RAMSResDTO {
+public class RamsResDTO {
     private String faultNum;
     private String affect11;
     private String affect12;

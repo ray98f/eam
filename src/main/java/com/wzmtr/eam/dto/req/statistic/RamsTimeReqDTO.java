@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @ApiModel
 @Data
-public class RAMSTimeReqDTO extends PageReqDTO {
+public class RamsTimeReqDTO extends PageReqDTO {
     @ApiModelProperty(value = "时间开始")
     private String startTime;
     @ApiModelProperty(value = "时间结束")
