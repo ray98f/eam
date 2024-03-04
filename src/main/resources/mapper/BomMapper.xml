@@ -703,4 +703,9 @@
         </foreach>
         SELECT * FROM dual
     </insert>
+
+    <select id="getMaxPartCode" resultType="java.lang.String">
+        SELECT max(PART_CODE)
+        FROM T_EQUIPMENT_PART_TEST
+    </select>
 </mapper>

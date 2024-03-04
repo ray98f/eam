@@ -187,7 +187,7 @@ public class BomServiceImpl implements BomService {
     public void importBomTrain(MultipartFile file) {
         List<ExcelBomTrainReqDTO> list = EasyExcelUtils.read(file, ExcelBomTrainReqDTO.class);
         List<BomTrainReqDTO> temp = new ArrayList<>();
-        int i = 1;
+        String partCode = bomMapper.getMaxPartCode();
         for (ExcelBomTrainReqDTO reqDTO : list) {
             List<BomResDTO> boms = bomMapper.getChildBom(reqDTO.getBomParenName());
             if (StringUtils.isNotEmpty(boms)) {
@@ -196,19 +196,18 @@ public class BomServiceImpl implements BomService {
                     req.setRecId(TokenUtils.getUuId());
                     req.setBomCode(bom.getEname());
                     req.setBomName(bom.getCname());
-                    req.setPartCode("P" + String.format("%010d", i));
+                    partCode = CodeUtils.getNextCodeByAddNum(partCode, 1, 1);
+                    req.setPartCode(partCode);
                     req.setEquipCode(reqDTO.getEquipCode());
                     req.setEquipName(reqDTO.getEquipName());
-                    i++;
                     temp.add(req);
                 }
             }
         }
         if (!temp.isEmpty()) {
-            int times = (int) Math.ceil(temp.size() / 2000.0);
+            int times = (int) Math.ceil(temp.size() / 1000.0);
             for (int j = 0; j < times; j++) {
-                System.out.println("分批插入：" + j);
-                bomMapper.importBomTrain(temp.subList(j * 2000, Math.min((j + 1) * 2000, temp.size() - 1)),
+                bomMapper.importBomTrain(temp.subList(j * 1000, Math.min((j + 1) * 1000, temp.size() - 1)),
                         TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         }

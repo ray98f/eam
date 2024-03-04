@@ -106,4 +106,10 @@ public interface BomMapper extends BaseMapper<BomDO> {
      * @param startTime 时间
      */
     void importBomTrain(List<BomTrainReqDTO> list, String userId, String startTime);
+
+    /**
+     * 获取当前最大的部件编号
+     * @return 最大的部件编号
+     */
+    String getMaxPartCode();
 }
