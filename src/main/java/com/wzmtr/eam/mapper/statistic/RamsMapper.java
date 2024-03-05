@@ -39,14 +39,15 @@ public interface RamsMapper {
 
     /**
      * 查询故障数量
-     * @param startDate 开始时间
-     * @param endDate 结束时间
-     * @param trainNo 车号
-     * @param faultType 故障分类
+     *
+     * @param startDate   开始时间
+     * @param endDate     结束时间
+     * @param trainNo     车号
+     * @param faultType   故障分类
      * @param faultAffect 故障影响
      * @return 故障数量
      */
-    Integer countRamsFaultList(String startDate, String endDate, String trainNo, String faultType, String faultAffect);
+    Double countRamsFaultList(String startDate, String endDate, String trainNo, String faultType, String faultAffect);
 
     /**
      * 获取时间段内累计运营里程相减值
@@ -55,7 +56,7 @@ public interface RamsMapper {
      * @param trainNo 车号
      * @return 累计运营里程相减值
      */
-    Integer getMileSubtract(String startDate, String endDate, String trainNo);
+    Double getMileSubtract(String startDate, String endDate, String trainNo);
 
     /**
      * 故障列表更换部件查询

@@ -1081,11 +1081,11 @@ public class StatisticServiceImpl implements StatisticService {
     public RamsTrainReliabilityResDTO trainReliability(String startTime, String endTime, String trainNo) {
         RamsTrainReliabilityResDTO res = new RamsTrainReliabilityResDTO();
         // 获取各指标项的故障次数
-        Integer delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'");
-        Integer notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'");
-        Integer faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null);
-        Integer miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
-        if (Objects.isNull(miles) || miles == 0) {
+        double delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'");
+        double notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'");
+        double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null);
+        double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
+        if (miles == 0) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "");
         }
         res.setTotalMile(miles);
@@ -1104,9 +1104,9 @@ public class StatisticServiceImpl implements StatisticService {
      * @param miles 运营里程
      * @return 计算列车可靠性指标
      */
-    private Double countTrainReliabilityIndex(Integer count, Integer miles) {
-        if (StringUtils.isNotNull(miles) && miles != 0) {
-            return (double) (count * 1000000 / (4 * miles));
+    private Double countTrainReliabilityIndex(double count, double miles) {
+        if (miles != 0) {
+            return count * 1000000 / (4 * miles);
         }
         return null;
     }

@@ -13,7 +13,7 @@ public class RamsTrainReliabilityResDTO {
     /**
      * 统计周期累计运营里程
      */
-    private Integer totalMile;
+    private Double totalMile;
     /**
      * 3分钟或以上延误百万车公里次数-实际指标
      */

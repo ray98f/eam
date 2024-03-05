@@ -330,7 +330,7 @@
         </if>
         ORDER BY d.FAULT_NO DESC
     </select>
-    <select id="countRamsFaultList" resultType="java.lang.Integer">
+    <select id="countRamsFaultList" resultType="java.lang.Double">
         SELECT COUNT(d.FAULT_NO)
         FROM T_FAULT_INFO d
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO = df.FAULT_NO
@@ -359,7 +359,7 @@
         </if>
         ORDER BY d.FAULT_NO DESC
     </select>
-    <select id="getMileSubtract" resultType="java.lang.Integer">
+    <select id="getMileSubtract" resultType="java.lang.Double">
         SELECT
         (SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{endDate} and EQUIP_NAME=#{trainNo} and DELETE_FLAG='0')-
         (SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{startDate} and EQUIP_NAME=#{trainNo} and DELETE_FLAG='0')
