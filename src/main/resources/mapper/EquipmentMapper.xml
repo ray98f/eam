@@ -548,12 +548,12 @@
     <select id="listEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE
-        USE_LINE_NO='02' and MAJOR_CODE='07'
-<!--        REC_ID IN (-->
-<!--        <foreach collection="ids" index="index" item="id" separator=",">-->
-<!--            #{id}-->
-<!--        </foreach>-->
-<!--        )-->
+<!--        USE_LINE_NO='02' and MAJOR_CODE='07'-->
+        REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
         ORDER BY EQUIP_CODE ASC
     </select>
 

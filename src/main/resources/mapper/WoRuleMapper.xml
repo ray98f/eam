@@ -247,11 +247,16 @@
         FROM T_WO_RULE_DETAIL wd
         LEFT JOIN SYS_USER u ON wd.REC_CREATOR=u.ID
         where wd.DELETE_FLAG='0'
-        AND wd.REC_ID IN (
-        <foreach collection="ids" index="index" item="id" separator=",">
-            #{id}
-        </foreach>
-        )
+        <if test="ruleCode!=null and ruleCode!=''">
+            and wd.RULE_CODE like '%' || #{ruleCode} || '%'
+        </if>
+        <if test="ids!=null and ids.size()>0">
+            AND wd.REC_ID IN (
+            <foreach collection="ids" index="index" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
         ORDER BY wd.RULE_SORT ASC
     </select>
 
