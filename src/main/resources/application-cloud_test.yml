@@ -39,17 +39,17 @@ excluded:
   pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout,/eam/overhaul/order/page/open,/eam/fault/report/list/open,/eam/fault/report/insert/equip/open
 
 sso:
-  url: http://zxgd.softether.net:4443/cas
-  home: http://192.168.30.140:8002/eam/
+  url: http://36.139.239.105:4443/cas
+  home: http://36.139.239.105:8002/eam/
 
 cas:
   serverUrlPrefix: "${sso.url}"
-  serviceUrlPrefix: "http://192.168.30.140:8002/eam"
+  serviceUrlPrefix: "http://36.139.239.105:8002/eam"
   casFilterUrlPattern: "/cas"
   loginUrlPattern: "/login"
   logoutUrlPattern: "/logout"
   successUrlPattern: "/index"
-  serviceFront: "http://192.168.30.140:8899/index.html"
+  serviceFront: "http://36.139.239.105:86/index.html"
 
 diboot:
   core:
@@ -100,7 +100,7 @@ mdm:
     address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
 
 local:
-  base-url: http://192.168.30.140:8002/eam
+  base-url: http://36.139.239.105:8002/eam
   data-sync: off
 
 minio:
