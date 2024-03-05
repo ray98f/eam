@@ -1093,7 +1093,7 @@ public class StatisticServiceImpl implements StatisticService {
         res.setRealDelay(countTrainReliabilityIndex(delayCount, miles));
         res.setRealNot(countTrainReliabilityIndex(notCount, miles));
         res.setRealFault(countTrainReliabilityIndex(faultCount, miles));
-        // todo 合同指标填充
+        // todo 合同指标及是否达标填充
 
         return res;
     }

@@ -188,6 +188,9 @@ public class BomServiceImpl implements BomService {
         List<ExcelBomTrainReqDTO> list = EasyExcelUtils.read(file, ExcelBomTrainReqDTO.class);
         List<BomTrainReqDTO> temp = new ArrayList<>();
         String partCode = bomMapper.getMaxPartCode();
+        if (StringUtils.isEmpty(partCode)) {
+            partCode = "P0000000000";
+        }
         for (ExcelBomTrainReqDTO reqDTO : list) {
             List<BomResDTO> boms = bomMapper.getChildBom(reqDTO.getBomParenName());
             if (StringUtils.isNotEmpty(boms)) {
