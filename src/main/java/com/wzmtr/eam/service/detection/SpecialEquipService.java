@@ -20,6 +20,12 @@ public interface SpecialEquipService {
 
     void importSpecialEquip(MultipartFile file);
 
+    /**
+     * 新增特种设备台账
+     * @param specialEquipReqDTO 特种设备台账参数
+     */
+    void addSpecialEquip(SpecialEquipReqDTO specialEquipReqDTO);
+
     void modifySpecialEquip(SpecialEquipReqDTO specialEquipReqDTO);
 
     void exportSpecialEquip(List<String> ids, HttpServletResponse response) throws IOException;

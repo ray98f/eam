@@ -70,6 +70,18 @@ public class SpecialEquipController {
         return DataResponse.success();
     }
 
+    /**
+     * 新增特种设备台账
+     * @param specialEquipReqDTO 特种设备台账参数
+     * @return 成功
+     */
+    @PostMapping("/add")
+    @ApiOperation(value = "新增特种设备台账")
+    public DataResponse<T> addSpecialEquip(@RequestBody SpecialEquipReqDTO specialEquipReqDTO) {
+        specialEquipService.addSpecialEquip(specialEquipReqDTO);
+        return DataResponse.success();
+    }
+
     @PostMapping("/modify")
     @ApiOperation(value = "编辑特种设备台账")
     public DataResponse<T> modifySpecialEquip(@RequestBody SpecialEquipReqDTO specialEquipReqDTO) {
