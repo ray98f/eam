@@ -9,10 +9,7 @@ import com.wzmtr.eam.dto.res.detection.excel.ExcelSpecialEquipTypeResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.detection.SpecialEquipTypeMapper;
 import com.wzmtr.eam.service.detection.SpecialEquipTypeService;
-import com.wzmtr.eam.utils.DateUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StringUtils;
-import com.wzmtr.eam.utils.TokenUtils;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +63,13 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
     @Override
     public void addSpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO) {
         specialEquipTypeReqDTO.setRecId(TokenUtils.getUuId());
+        String code = specialEquipTypeMapper.getMaxTypeCode();
+        if (StringUtils.isEmpty(code)) {
+            code = "0001";
+        } else {
+            code = String.format("%04d", Integer.parseInt(code) + 1);
+        }
+        specialEquipTypeReqDTO.setTypeCode(code);
         specialEquipTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         specialEquipTypeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         specialEquipTypeMapper.addSpecialEquipType(specialEquipTypeReqDTO);

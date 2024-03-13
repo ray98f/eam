@@ -66,6 +66,11 @@
         SELECT * FROM dual
     </insert>
 
+    <select id="getMaxTypeCode" resultType="java.lang.String">
+        SELECT max(TYPE_CODE)
+        FROM T_OTHER_EQUIP_TYPE
+    </select>
+
     <insert id="addOtherEquipType">
         INSERT INTO T_OTHER_EQUIP_TYPE (
         REC_ID,
@@ -87,9 +92,6 @@
     
     <update id="modifyOtherEquipType">
         UPDATE T_OTHER_EQUIP_TYPE SET
-        <if test="typeCode!=null">
-            TYPE_CODE=#{typeCode,jdbcType=VARCHAR},
-        </if>
         <if test="typeName!=null">
             TYPE_NAME=#{typeName,jdbcType=VARCHAR},
         </if>

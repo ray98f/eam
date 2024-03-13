@@ -41,6 +41,12 @@ public interface SpecialEquipTypeMapper {
     void importSpecialEquipType(List<SpecialEquipTypeReqDTO> list);
 
     /**
+     * 获取当前最大的分类编号
+     * @return 最大分类编号
+     */
+    String getMaxTypeCode();
+
+    /**
      * 新增特种设备分类
      * @param specialEquipTypeReqDTO 特种设备分类信息
      */
