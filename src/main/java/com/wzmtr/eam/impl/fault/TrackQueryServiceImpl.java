@@ -156,7 +156,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             EasyExcelUtils.export(response, "跟踪查询信息", exportList);
         } catch (Exception e) {
             log.error("导出失败！", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.EXPORT_ERROR);
         }
     }
 

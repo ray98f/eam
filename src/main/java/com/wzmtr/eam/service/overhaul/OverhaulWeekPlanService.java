@@ -2,6 +2,7 @@ package com.wzmtr.eam.service.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.overhaul.*;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO;
@@ -20,6 +21,14 @@ public interface OverhaulWeekPlanService {
     Page<OverhaulWeekPlanResDTO> pageOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO, PageReqDTO pageReqDTO);
 
     OverhaulWeekPlanResDTO getOverhaulWeekPlanDetail(String id);
+
+    /**
+     * 检修周计划（中铁通）获取作业工班
+     * @param lineNo 线路编号
+     * @param subjectCode 系统编号
+     * @return 作业工班列表
+     */
+    List<FaultRepairDeptResDTO> queryDept(String lineNo, String subjectCode);
 
     void addOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws ParseException;
 

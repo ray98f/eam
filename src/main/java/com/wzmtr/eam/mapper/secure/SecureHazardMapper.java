@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dataobject.SecureHazardDO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardAddReqDTO;
+import com.wzmtr.eam.dto.req.secure.SecureHazardReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureHazardResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,13 +20,13 @@ import java.util.List;
 @Repository
 public interface SecureHazardMapper extends BaseMapper<SecureHazardDO> {
 
-    Page<SecureHazardResDTO> query(Page<SecureHazardResDTO> of, String riskId, String riskRank, String inspectDateBegin, String inspectDateEnd, String isRestored, String recStatus);
+    Page<SecureHazardResDTO> query(Page<SecureHazardResDTO> of, SecureHazardReqDTO req);
 
     SecureHazardResDTO detail(String riskId);
 
     void add(SecureHazardAddReqDTO reqDTO);
 
-    List<SecureHazardResDTO> list(String riskId, String begin, String end, String riskRank, String restoreDesc, String workFlowInstStatus);
+    List<SecureHazardResDTO> list(SecureHazardReqDTO reqDTO);
 
     void deleteByIds(@Param("ids") List<String> ids, @Param("userId") String userId, @Param("time") String time);
 

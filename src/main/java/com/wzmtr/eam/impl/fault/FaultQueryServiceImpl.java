@@ -193,7 +193,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             EasyExcelUtils.export(response, "故障信息", exportList);
         } catch (Exception e) {
             log.error("导出失败!", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.EXPORT_ERROR);
         }
     }
 

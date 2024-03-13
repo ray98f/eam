@@ -661,24 +661,51 @@
         SELECT * FROM dual
     </insert>
 
+    <select id="getChildBom" resultType="com.wzmtr.eam.dto.res.basic.BomResDTO">
+        SELECT REC_ID, ENAME, CNAME, PARENT_ID, IS_LEAF, COMPANY_CODE, STATUS, TBLNAME,
+        RELATION_ID, SORT_INDEX, QUANTITY, MEASURE_UNIT, REC_CREATOR, REC_CREATE_TIME, REC_REVISOR,
+        REC_REVISE_TIME, REC_DELETOR, REC_DELETE_TIME, DELETE_FLAG, ARCHIVE_FLAG,
+        EXT1, EXT2, EXT3, EXT4, EXT5, TREE_ID
+        FROM T_BOM_TEST WHERE DELETE_FLAG='0'
+        and (PARENT_ID like '%' || (select bt1.ENAME from T_BOM_TEST bt1 WHERE bt1.PARENT_ID='1' AND bt1.CNAME=#{name}) || '%'
+        or (PARENT_ID='1' AND CNAME=#{name}))
+    </select>
+
     <insert id="importBomTrain">
         insert ALL
         <foreach collection="list" index="index" item="bomTrain" separator=" ">
-            INTO T_BOM_TRAIN (
+            INTO T_EQUIPMENT_PART_TEST (
             REC_ID,
-            BOM_PARENT_CODE,
-            BOM_PARENT_NAME,
+            PART_CODE,
+            PART_NAME,
+            BOM_ENAME,
             EQUIP_CODE,
-            EQUIP_NAME)
+            EQUIP_NAME,
+            QUANTITY,
+            IN_ACCOUNT_TIME,
+            EQUIP_STATUS,
+            REC_CREATOR,
+            REC_CREATE_TIME,
+            REC_STATUS)
             VALUES
-            (#{bomTrain.recId,jdbcType=VARCHAR},
-            (SELECT ENAME FROM T_BOM_TEST WHERE CNAME=#{bomTrain.bomParenName,jdbcType=VARCHAR}
-            AND DELETE_FLAG='0' AND PARENT_ID='1'),
-            #{bomTrain.bomParenName,jdbcType=VARCHAR},
-            (SELECT EQUIP_CODE FROM T_EQUIPMENT WHERE EQUIP_NAME=#{bomTrain.equipName,jdbcType=VARCHAR}
-            AND DELETE_FLAG='0' AND MAJOR_CODE='07'),
-            #{bomTrain.equipName,jdbcType=VARCHAR})
+            (#{bomTrain.recId},
+            #{bomTrain.partCode},
+            #{bomTrain.bomName},
+            #{bomTrain.bomCode},
+            #{bomTrain.equipCode},
+            #{bomTrain.equipName},
+            1,
+            #{startTime},
+            '10',
+            #{userId},
+            #{startTime},
+            '10')
         </foreach>
         SELECT * FROM dual
     </insert>
+
+    <select id="getMaxPartCode" resultType="java.lang.String">
+        SELECT max(PART_CODE)
+        FROM T_EQUIPMENT_PART_TEST
+    </select>
 </mapper>

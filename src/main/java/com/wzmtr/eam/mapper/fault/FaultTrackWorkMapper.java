@@ -23,7 +23,7 @@ import java.util.List;
 public interface FaultTrackWorkMapper extends BaseMapper<FaultTrackWorkDO> {
     Page<TrackResDTO> query(Page<Object> of, String faultTrackNo, String faultTrackWorkNo, String recStatus, String equipTypeCode, String majorCode, String objectName, String objectCode, String systemCode);
 
-    List<TrackResDTO> query(TrackExportReqDTO reqDTO);
+    List<TrackResDTO> export(TrackExportReqDTO reqDTO);
 
     TrackResDTO detail(@Param("id") String id);
 

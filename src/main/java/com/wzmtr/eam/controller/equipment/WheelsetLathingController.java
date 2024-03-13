@@ -25,6 +25,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 设备管理-车辆维保台账-轮对镟修台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/31
+ */
 @Slf4j
 @RestController
 @RequestMapping("/train/maintenance/wheelsetLathing")

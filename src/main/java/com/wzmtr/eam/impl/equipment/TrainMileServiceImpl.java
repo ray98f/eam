@@ -6,6 +6,7 @@ import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelTrainMileDailyReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
@@ -251,7 +252,10 @@ public class TrainMileServiceImpl implements TrainMileService {
             TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
             req.setRecId(TokenUtils.getUuId());
-            req.setEquipCode(equipmentMapper.getEquipCodeByName(req.getEquipName()));
+            EquipmentResDTO equipment = equipmentMapper.getEquipByName(req.getEquipName());
+            if (StringUtils.isNotNull(equipment)) {
+                req.setEquipCode(equipment.getEquipCode());
+            }
             req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(DateUtils.getCurrentTime());
             temp.add(req);

@@ -26,6 +26,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 特种设备管理-特种设备台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/01
+ */
 @Slf4j
 @RestController
 @RequestMapping("/specialEquip")
@@ -61,6 +67,18 @@ public class SpecialEquipController {
     @ApiOperation(value = "导入特种设备台账")
     public DataResponse<T> importSpecialEquip(@RequestParam MultipartFile file) {
         specialEquipService.importSpecialEquip(file);
+        return DataResponse.success();
+    }
+
+    /**
+     * 新增特种设备台账
+     * @param specialEquipReqDTO 特种设备台账参数
+     * @return 成功
+     */
+    @PostMapping("/add")
+    @ApiOperation(value = "新增特种设备台账")
+    public DataResponse<T> addSpecialEquip(@RequestBody SpecialEquipReqDTO specialEquipReqDTO) {
+        specialEquipService.addSpecialEquip(specialEquipReqDTO);
         return DataResponse.success();
     }
 

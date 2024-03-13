@@ -23,11 +23,15 @@ public class BomTrainReqDTO {
      */
     private String equipName;
     /**
-     * 一级Bom编号
+     * Bom编号
      */
-    private String bomParentCode;
+    private String bomCode;
     /**
-     * 一级Bom名称
+     * Bom名称
      */
-    private String bomParenName;
+    private String bomName;
+    /**
+     * 部件编号
+     */
+    private String partCode;
 }

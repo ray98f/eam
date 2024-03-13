@@ -118,8 +118,94 @@
         </if>
     </update>
 
-
     <select id="query" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">
+        SELECT
+        d3.REC_ID as "recId",  <!-- 记录编号 -->
+        d3.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
+        d3.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
+        d3.FAULT_ANALYSIS_NO as "faultAnalysisNo",  <!-- 故障分析编号 -->
+        d3.FAULT_NO as "faultNo",  <!-- 故障编号 -->
+        d3.FAULT_WORK_NO as "faultWorkNo",  <!-- 故障工单号 -->
+        d3.MAIN_EQUIP_CODE as "mainEquipCode",  <!-- 主设备编码 -->
+        d3.MAIN_EQUIP_NAME as "mainEquipName",  <!-- 主设备名称 -->
+        d3.MAJOR_CODE as "majorCode",  <!-- 专业代码 -->
+        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d3.MAJOR_CODE) as "majorName",
+        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d1.SYSTEM_CODE) as "systemName",
+        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d1.POSITION_CODE) as "positionName",
+        d3.RECOVERY_TIME as "recoveryTime",  <!-- 恢复时间 -->
+        d3.AFFECT_CODES as "affectCodes",  <!-- 故障影响 -->
+        d3.FREQUENCY as "frequency",  <!-- 频次（10-偶尔；20-一般；30-频发） -->
+        <!--d3.MANUFACTURE	as "manufacture",  &lt;!&ndash; 生产厂家 &ndash;&gt;-->
+        (SELECT dd.MANUFACTURE from T_EQUIPMENT dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",
+        d3.FAULT_DETAIL as "faultDetail",  <!-- 故障详情 -->
+        d3.FAULT_PROCESS_DETAIL as "faultProcessDetail",  <!-- 故障调查及处置 -->
+        d3.FAULT_REASON_DETAIL as "faultReasonDetail",  <!-- 故障原因 -->
+        d3.PROBLEM_DESCR as "problemDescr",  <!-- 暴露问题 -->
+        d3.IMPROVE_DETAIL as "improveDetail",  <!-- 整改措施 -->
+        d3.WORK_FLOW_INST_ID as "workFlowInstId",  <!-- 工作流实例ID -->
+        d3.WORK_FLOW_INST_STATUS as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        d3.DOC_ID as "docId",  <!-- 附件编号 -->
+        d3.REMARK as "remark",  <!-- 备注 -->
+        d3.REC_STATUS as "recStatus",
+        d3.REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        d3.REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        d3.REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        d3.REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        d3.REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        d3.REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        d3.DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        d3.ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        d3.EXT1 as "ext1",  <!-- 扩展字段1 -->
+        d3.EXT2 as "ext2",  <!-- 扩展字段2 -->
+        d3.EXT3 as "ext3",  <!-- 扩展字段3 -->
+        d3.EXT4 as "ext4",  <!-- 扩展字段4 -->
+        d3.EXT5 as "ext5", <!-- 扩展字段5 -->
+        d1.RESP_DEPT_CODE as "respDeptCode",
+        d1.POSITION_CODE as "positionCode",
+        d1.SYSTEM_CODE as "systemCode",
+        d1.FAULT_LEVEL as "faultLevel",
+        d1.LINE_CODE as "lineCode",
+        d1.DISCOVERY_TIME as "discoveryTime",
+        d1.FAULT_DISPLAY_CODE as "faultDisplayCode",
+        d1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail"
+        FROM T_FAULT_DETAIL d3
+        left join T_FAULT_INFO d1 on d3.FAULT_NO = d1.FAULT_NO
+        left join T_FAULT_DETAIL d2 on d2.FAULT_WORK_NO = d3.FAULT_WORK_NO
+        <trim prefix="WHERE" prefixOverrides="AND">
+            and d3.DELETE_FLAG ='0'
+            <if test="req.faultNo!=null and req.faultNo!=''">
+                and d3.FAULT_NO =#{req.faultNo}
+            </if>
+            <if test="req.recStatus!=null and req.recStatus!=''">
+                and d3.REC_STATUS =#{req.recStatus}
+            </if>
+            <if test="req.frequency!=null and req.frequency!=''">
+                and d3.FREQUENCY =#{req.frequency}
+            </if>
+            <if test="req.majorCode!=null and req.majorCode!=''">
+                and d3.MAJOR_CODE =#{req.majorCode}
+            </if>
+            <if test="req.lineCode!=null and req.lineCode!=''">
+                and d1.LINE_CODE =#{req.lineCode}
+            </if>
+            <if test="req.positionCode!=null and req.positionCode!=''">
+                and d1.POSITION_CODE =#{req.positionCode}
+            </if>
+            <if test="req.discoveryStartTime!=null and req.discoveryStartTime!=''">
+                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')<![CDATA[>=]]>to_date(#{req.discoveryStartTime},'YYYY-MM-DD')
+            </if>
+            <if test="req.discoveryEndTime!=null and req.discoveryEndTime!=''">
+                and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')<![CDATA[<=]]>to_date(#{req.discoveryEndTime},'YYYY-MM-DD')
+            </if>
+            <if test="req.respDeptCode!=null and req.respDeptCode!=''">
+                and d1.RESP_DEPT_CODE = #{req.respDeptCode}
+            </if>
+            <if test="req.affectCodes!=null and req.affectCodes!=''">
+                and d3.AFFECT_CODES =#{req.affectCodes}
+            </if>
+        </trim>
+    </select>
+    <select id="list" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">
         SELECT
         d3.REC_ID as "recId",  <!-- 记录编号 -->
         d3.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
@@ -206,70 +292,12 @@
             <if test="affectCodes!=null and affectCodes!=''">
                 and d3.AFFECT_CODES =#{affectCodes}
             </if>
-        </trim>
-    </select>
-    <select id="list" resultType="com.wzmtr.eam.dto.res.fault.AnalyzeResDTO">
-        SELECT
-        d3.REC_ID as "recId",  <!-- 记录编号 -->
-        d3.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
-        d3.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
-        d3.FAULT_ANALYSIS_NO as "faultAnalysisNo",  <!-- 故障分析编号 -->
-        d3.FAULT_NO as "faultNo",  <!-- 故障编号 -->
-        d3.FAULT_WORK_NO as "faultWorkNo",  <!-- 故障工单号 -->
-        d3.MAIN_EQUIP_CODE as "mainEquipCode",  <!-- 主设备编码 -->
-        d3.MAIN_EQUIP_NAME as "mainEquipName",  <!-- 主设备名称 -->
-        d3.MAJOR_CODE as "majorCode",  <!-- 专业代码 -->
-        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d3.MAJOR_CODE) as "majorName",
-        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d1.SYSTEM_CODE) as "systemName",
-        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=d1.POSITION_CODE) as "positionName",
-        d3.RECOVERY_TIME as "recoveryTime",  <!-- 恢复时间 -->
-        d3.AFFECT_CODES as "affectCodes",  <!-- 故障影响 -->
-        d3.FREQUENCY as "frequency",  <!-- 频次（10-偶尔；20-一般；30-频发） -->
-        <!--d3.MANUFACTURE	as "manufacture",  &lt;!&ndash; 生产厂家 &ndash;&gt;-->
-        (SELECT dd.MANUFACTURE from T_EQUIPMENT dd where dd.EQUIP_CODE=d1.OBJECT_CODE) as "manufacture",
-        d3.FAULT_DETAIL as "faultDetail",  <!-- 故障详情 -->
-        d3.FAULT_PROCESS_DETAIL as "faultProcessDetail",  <!-- 故障调查及处置 -->
-        d3.FAULT_REASON_DETAIL as "faultReasonDetail",  <!-- 故障原因 -->
-        d3.PROBLEM_DESCR as "problemDescr",  <!-- 暴露问题 -->
-        d3.IMPROVE_DETAIL as "improveDetail",  <!-- 整改措施 -->
-        d3.WORK_FLOW_INST_ID as "workFlowInstId",  <!-- 工作流实例ID -->
-        d3.WORK_FLOW_INST_STATUS as "workFlowInstStatus",  <!-- 工作流实例状态 -->
-        d3.DOC_ID as "docId",  <!-- 附件编号 -->
-        d3.REMARK as "remark",  <!-- 备注 -->
-        d3.REC_STATUS as "recStatus",
-        d3.REC_CREATOR as "recCreator",  <!-- 创建者 -->
-        d3.REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
-        d3.REC_REVISOR as "recRevisor",  <!-- 修改者 -->
-        d3.REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
-        d3.REC_DELETOR as "recDeletor",  <!-- 删除者 -->
-        d3.REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
-        d3.DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
-        d3.ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
-        d3.EXT1 as "ext1",  <!-- 扩展字段1 -->
-        d3.EXT2 as "ext2",  <!-- 扩展字段2 -->
-        d3.EXT3 as "ext3",  <!-- 扩展字段3 -->
-        d3.EXT4 as "ext4",  <!-- 扩展字段4 -->
-        d3.EXT5 as "ext5", <!-- 扩展字段5 -->
-        d1.RESP_DEPT_CODE as "respDeptCode",
-        d1.POSITION_CODE as "positionCode",
-        d1.SYSTEM_CODE as "systemCode",
-        d1.FAULT_LEVEL as "faultLevel",
-        d1.LINE_CODE as "lineCode",
-        d1.DISCOVERY_TIME as "discoveryTime",
-        d1.FAULT_DISPLAY_CODE as "faultDisplayCode",
-        d1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail"
-        FROM T_FAULT_DETAIL d3
-        left join T_FAULT_INFO d1 on d3.FAULT_NO = d1.FAULT_NO
-        left join T_FAULT_DETAIL d2 on d2.FAULT_WORK_NO = d3.FAULT_WORK_NO
-        <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="faultNo!=null and faultNo!=''">
-                and d3.FAULT_NO =#{faultNo}
-            </if>
-            <if test="faultAnalysisNo!=null and faultAnalysisNo!=''">
-                and d3.FAULT_ANALYSIS_NO =#{faultAnalysisNo}
-            </if>
-            <if test="faultWorkNo!=null and faultWorkNo!=''">
-                and d3.FAULT_WORK_NO =#{faultWorkNo}
+            <if test="ids!=null and ids.size()>0">
+                and d3.REC_ID in (
+                <foreach collection="ids" index="index" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
             </if>
         </trim>
     </select>

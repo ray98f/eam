@@ -575,22 +575,17 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 String templateId = object.getTemplateId();
                 insertInspectObjectItem(orderCode, objectCode, objectName, templateId, dmer22uuid);
                 try {
-                    List<OverhaulObjectResDTO> list = overhaulPlanMapper.listOverhaulObject(planCode, object.getRecId(), null, objectCode, null, null);
-                    if (StringUtils.isNotEmpty(list)) {
-                        for (OverhaulObjectResDTO resDTO : list) {
-                            resDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-                            resDTO.setRecCreateTime(DateUtils.getCurrentTime());
-                            resDTO.setRecRevisor("");
-                            resDTO.setRecReviseTime("");
-                            OverhaulOrderDetailReqDTO reqDTO = new OverhaulOrderDetailReqDTO();
-                            BeanUtils.copyProperties(resDTO, reqDTO);
-                            reqDTO.setOrderCode(orderCode);
-                            reqDTO.setRecId(dmer22uuid);
-                            reqDTO.setStartTime(" ");
-                            reqDTO.setCompliteTime(" ");
-                            overhaulOrderMapper.addOverhaulOrderDetail(reqDTO);
-                        }
-                    }
+                    object.setRecCreator(TokenUtils.getCurrentPersonId());
+                    object.setRecCreateTime(DateUtils.getCurrentTime());
+                    object.setRecRevisor("");
+                    object.setRecReviseTime("");
+                    OverhaulOrderDetailReqDTO reqDTO = new OverhaulOrderDetailReqDTO();
+                    BeanUtils.copyProperties(object, reqDTO);
+                    reqDTO.setOrderCode(orderCode);
+                    reqDTO.setRecId(dmer22uuid);
+                    reqDTO.setStartTime(" ");
+                    reqDTO.setCompliteTime(" ");
+                    overhaulOrderMapper.addOverhaulOrderDetail(reqDTO);
                 } catch (Exception e) {
                     log.error("exception message", e);
                 }

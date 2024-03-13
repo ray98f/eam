@@ -126,6 +126,81 @@
         order by df11.FAULT_TRACK_WORK_NO desc
     </select>
 
+    <select id="export" resultType="com.wzmtr.eam.dto.res.fault.TrackResDTO">
+        SELECT
+        df11.REC_ID as "recId",  <!-- 记录编号 -->
+        df11.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
+        df11.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
+        df11.FAULT_TRACK_NO as "faultTrackNo",  <!-- 故障跟踪编号 -->
+        df11.FAULT_TRACK_WORK_NO as "faultTrackWorkNo",  <!-- 故障跟踪工单号 -->
+        df11.DISPATCH_USER_ID as "dispatchUserId",  <!-- 派工人工号 -->
+        df11.DISPATCH_TIME as "dispatchTime",  <!-- 派工时间 -->
+        df11.WORKER_GROUP_CODE as "workerGroupCode",
+        df11.WORK_GROUP_NAME as "workGroupName",
+        df11.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
+        df11.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME =df11.TRACK_REPORTER_ID) as "trackReportName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.DISPATCH_USER_ID) as "dispatchUserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.TRACK_CLOSER_ID) as "trackCloserName",
+        df11.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
+        df11.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
+        df11.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->
+        df11.DOC_ID as "docId",  <!-- 附件编号 -->
+        df11.REMARK as "remark",  <!-- 备注 -->
+        df11.REC_CREATOR as "recCreator",  <!-- 创建者 -->
+        df11.REC_CREATE_TIME as "recCreateTime",  <!-- 创建时间 -->
+        df11.REC_REVISOR as "recRevisor",  <!-- 修改者 -->
+        df11.REC_REVISE_TIME as "recReviseTime",  <!-- 修改时间 -->
+        df11.REC_DELETOR as "recDeletor",  <!-- 删除者 -->
+        df11.REC_DELETE_TIME as "recDeleteTime",  <!-- 删除时间 -->
+        df11.DELETE_FLAG as "deleteFlag",  <!-- 删除标志 -->
+        df11.ARCHIVE_FLAG as "archiveFlag",  <!-- 归档标记 -->
+        df11.REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        df9.REC_STATUS as "trackStatus",
+        df1.OBJECT_CODE as "objectCode",
+        df1.OBJECT_NAME as "objectName"
+        FROM T_FAULT_TRACK_DETAIL df11,
+        T_FAULT_ORDER df2,T_FAULT_TRACK df9,T_FAULT_INFO df1
+        <trim prefix="WHERE" prefixOverrides="AND">
+            and df11.FAULT_TRACK_NO = df9.FAULT_TRACK_NO
+            and df9.FAULT_NO=df1.FAULT_NO
+            and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+            and df2.FAULT_NO=df1.FAULT_NO
+            <if test="faultTrackNo!=null and faultTrackNo!=''">
+                and df11.FAULT_TRACK_NO = #{faultTrackNo}
+            </if>
+            <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
+                and df11.FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+            </if>
+            <if test="objectCode!=null and objectCode!=''">
+                and df1.OBJECT_CODE = #{objectCode}
+            </if>
+            <if test="objectName!=null and objectName!=''">
+                and df1.OBJECT_NAME = #{objectName}
+            </if>
+            <if test="majorCode!=null and majorCode!=''">
+                and df1.MAJOR_CODE = #{majorCode}
+            </if>
+            <if test="systemCode!=null and systemCode!=''">
+                and df1.SYSTEM_CODE = #{systemCode}
+            </if>
+            <if test="equipTypeCode!=null and equipTypeCode!=''">
+                and df1.EQUIP_TYPE_CODE = #{equipTypeCode}
+            </if>
+            <if test="recStatus!=null and recStatus!=''">
+                and df11.REC_STATUS = #{recStatus}
+            </if>
+            <if test="ids!=null and ids.size()>0">
+                and df11.REC_ID in (
+                <foreach collection="ids" item="id" index="index" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
+        </trim>
+        order by df11.FAULT_TRACK_WORK_NO desc
+    </select>
+
     <select id="detail" resultType="com.wzmtr.eam.dto.res.fault.TrackResDTO">
         SELECT
         df11.REC_ID as "recId",  <!-- 记录编号 -->

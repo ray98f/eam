@@ -24,6 +24,14 @@ public class CommonConstants {
     public static final String UNKNOWN = "unknown";
 
     public static final String ROOT = "root";
+    /**
+     * 开启
+     */
+    public static final String ON = "on";
+    /**
+     * 关闭
+     */
+    public static final String OFF = "off";
 
     /**
      * 权限

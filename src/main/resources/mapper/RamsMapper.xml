@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wzmtr.eam.mapper.statistic.RAMSMapper">
-    <select id="query4AQYYZB" resultType="com.wzmtr.eam.dto.res.statistic.RAMSCarResDTO">
+<mapper namespace="com.wzmtr.eam.mapper.statistic.RamsMapper">
+    <select id="query4AQYYZB" resultType="com.wzmtr.eam.dto.res.statistic.RamsCarResDTO">
         SELECT (SELECT count(1)
             FROM T_FAULT_INFO d
             left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
@@ -120,7 +120,7 @@
         GROUP BY c.YEAR_MONTH
         ORDER BY c.YEAR_MONTH DESC
     </select>
-    <select id="queryresult2" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResult2ResDTO">
+    <select id="queryresult2" resultType="com.wzmtr.eam.dto.res.statistic.RamsResult2ResDTO">
         select c.YEAR_MONTH                                       as "yearMonth",
                (select count(1)
                 from T_FAULT_INFO d,
@@ -187,7 +187,7 @@
         group by c.YEAR_MONTH
         ORDER by c.YEAR_MONTH desc
     </select>
-    <select id="querySysPerform" resultType="com.wzmtr.eam.dto.res.statistic.RAMSSysPerformResDTO">
+    <select id="querySysPerform" resultType="com.wzmtr.eam.dto.res.statistic.RamsSysPerformResDTO">
         SELECT LATE.SC       AS "moduleName",
                LATE.NUM_LATE AS "numLate",
                NOS.NUM_NOS   AS "numNos"
@@ -224,7 +224,7 @@
                                 ORDER BY c."SC" ASC) NOS ON NOS.SC = LATE.SC
                  )
     </select>
-    <select id="querytotalMiles" resultType="com.wzmtr.eam.dto.res.statistic.RAMSResDTO">
+    <select id="querytotalMiles" resultType="com.wzmtr.eam.dto.res.statistic.RamsResDTO">
         select sum(a.TOTAL_MILES) as "totalMiles"
         from T_EQUIPMENT a
         where a.MAJOR_CODE = '07'
@@ -232,7 +232,7 @@
     </select>
 
 
-    <select id="queryCountFautType4RAMS" resultType="com.wzmtr.eam.dto.res.statistic.FaultConditionResDTO">
+    <select id="queryCountFautType4Rams" resultType="com.wzmtr.eam.dto.res.statistic.FaultConditionResDTO">
         select FAULT10.SC,
                FAULT10.ZX,
                FAULT20.CRK,
@@ -289,7 +289,7 @@
                             order by c."SC" asc) FAULT30 on FAULT10.SC = FAULT30.SC
     </select>
 
-    <select id="queryRAMSFaultList" resultType="com.wzmtr.eam.dto.res.statistic.FaultRAMSResDTO">
+    <select id="queryRamsFaultList" resultType="com.wzmtr.eam.dto.res.statistic.FaultRamsResDTO">
         SELECT
         d.FAULT_NO as "faultNo",  <!-- 故障编号 -->
         d.OBJECT_NAME as "objectName",  <!-- 对象名称 -->
@@ -319,15 +319,53 @@
         AND d.MAJOR_CODE = '07'
         AND NVL(df.IS_FAULT, '10') = '10'
         AND df.ORDER_STATUS <![CDATA[!=]]> '99'
-        <if test="startDate != null">
+        <if test="startDate!=null and startDate!=''">
             AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
         </if>
-        <if test="endDate != null">
+        <if test="endDate!=null and endDate!=''">
             AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="trainNo!=null and trainNo!=''">
+            AND d.OBJECT_NAME=#{trainNo}
         </if>
         ORDER BY d.FAULT_NO DESC
     </select>
-    <select id="queryPart" resultType="com.wzmtr.eam.dto.res.statistic.FaultRAMSResDTO">
+    <select id="countRamsFaultList" resultType="java.lang.Double">
+        SELECT COUNT(d.FAULT_NO)
+        FROM T_FAULT_INFO d
+        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO = df.FAULT_NO
+        LEFT JOIN T_FAULT_DETAIL d3 ON d3.FAULT_NO = df.FAULT_NO
+        LEFT JOIN IPLAT60.XS_USER xu ON d.FILLIN_USER_ID = xu.LOGIN_NAME
+        LEFT JOIN T_SUPPLIER b21 ON b21.ORG_CODE = d.FILLIN_DEPT_CODE
+        LEFT JOIN IPLAT60.XS_USER xu1 ON df.REPORT_FINISH_USER_ID = xu1.LOGIN_NAME
+        WHERE 1 = 1
+        AND d.MAJOR_CODE = '07'
+        AND NVL(df.IS_FAULT, '10') = '10'
+        AND df.ORDER_STATUS <![CDATA[!=]]> '99'
+        <if test="startDate!=null and startDate!=''">
+            AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate!=null and endDate!=''">
+            AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="trainNo!=null and trainNo!=''">
+            AND d.OBJECT_NAME=#{trainNo}
+        </if>
+        <if test="faultType!=null and faultType!=''">
+            AND d.FAULT_TYPE in (${faultType})
+        </if>
+        <if test="faultAffect!=null and faultAffect!=''">
+            AND df.FAULT_AFFECT in (${faultAffect})
+        </if>
+        ORDER BY d.FAULT_NO DESC
+    </select>
+    <select id="getMileSubtract" resultType="java.lang.Double">
+        SELECT
+        (SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{endDate} and EQUIP_NAME=#{trainNo} and DELETE_FLAG='0')-
+        (SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{startDate} and EQUIP_NAME=#{trainNo} and DELETE_FLAG='0')
+        from dual
+    </select>
+    <select id="queryPart" resultType="com.wzmtr.eam.dto.res.statistic.FaultRamsResDTO">
         SELECT nvl(listagg(to_char(dm20.REPLACEMENT_NAME), '; ') within group (order by dm20.REPLACEMENT_NAME),
                    ' ') AS "replacementName",
                nvl(listagg(to_char(dm20.OLD_REP_NO), '; ') within group (order by dm20.OLD_REP_NO),

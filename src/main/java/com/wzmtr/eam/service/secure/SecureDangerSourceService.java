@@ -13,8 +13,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface SecureDangerSourceService {
     Page<SecureDangerSourceResDTO> dangerSourceList(SecureDangerSourceListReqDTO reqDTO);
-    void export(String dangerRiskId,String discDate,HttpServletResponse response);
+
+    void export(SecureDangerSourceListReqDTO reqDTO, HttpServletResponse response);
+
     SecureDangerSourceResDTO detail(SecureDangerSourceDetailReqDTO reqDTO);
+
     void add(SecureDangerSourceAddReqDTO reqDTO);
 
     void delete(BaseIdsEntity reqDTO);

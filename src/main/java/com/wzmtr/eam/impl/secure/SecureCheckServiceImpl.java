@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.secure;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.export.SecureCheckExportBO;
@@ -51,7 +50,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     @Override
     public Page<SecureCheckRecordListResDTO> list(SecureCheckRecordListReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO.getSecRiskId(), reqDTO.getInspectDateStart(), reqDTO.getInspectDateEnd(), reqDTO.getIsRestoredCode(), reqDTO.getRecStatus());
+        Page<SecureCheckRecordListResDTO> list = secureMapper.query(reqDTO.of(), reqDTO);
         if (StringUtils.isNotEmpty(list.getRecords())) {
             List<SecureCheckRecordListResDTO> records = list.getRecords();
             // StreamUtils.map(records,SecureCheckRecordListResDTO::create);
@@ -106,8 +105,8 @@ public class SecureCheckServiceImpl implements SecureCheckService {
     }
 
     @Override
-    public void export(String secRiskId, String inspectDate, String restoreDesc, String workFlowInstStatus, HttpServletResponse response) {
-        List<SecureCheckRecordListResDTO> list = secureMapper.list(secRiskId, restoreDesc, inspectDate, workFlowInstStatus);
+    public void export(SecureCheckRecordListReqDTO reqDTO, HttpServletResponse response) {
+        List<SecureCheckRecordListResDTO> list = secureMapper.list(reqDTO);
         if (StringUtils.isEmpty(list)) {
             log.warn("未查询到数据，丢弃导出操作!");
             return;
@@ -145,7 +144,7 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             EasyExcelUtils.export(response, "安全、质量、消防检查记录", exportList);
         } catch (Exception e) {
             log.error("导出失败",e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.EXPORT_ERROR);
         }
     }
 

@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.video;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.export.CarVideoExportBO;
@@ -137,11 +136,11 @@ public class CarVideoCallServiceImpl implements CarVideoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void operate(CarVideoOperateReqDTO reqDTO) {
-        Assert.notNull(reqDTO.getRecId(),ErrorCode.PARAM_ERROR);
+        Assert.notNull(reqDTO.getRecId(), ErrorCode.PARAM_ERROR);
         // 这里的recId传生成的uuid
         CarVideoResDTO detail = carVideoMapper.detail(reqDTO.getRecId());
         if (detail == null) {
-            log.error("该记录不存在-{}", reqDTO.getRecId());
+            log.error("该记录不存在--RecId={}", reqDTO.getRecId());
             return;
         }
         CarVideoDO carVideoDO = BeanUtils.convert(detail, CarVideoDO.class);
@@ -150,7 +149,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             if (!CommonConstants.TEN_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可下达!");
             }
-            Assert.notNull(reqDTO.getDispatchUserId(),ErrorCode.NORMAL_ERROR, "失败,检修调度不能为空");
+            Assert.notNull(reqDTO.getDispatchUserId(), ErrorCode.NORMAL_ERROR, "检修调度不能为空");
             carVideoDO.setDispatchUserId(reqDTO.getDispatchUserId());
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
             overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getApplyNo(), reqDTO.getDispatchUserId(), "视频调阅下达", "DMBR0022", TokenUtils.getCurrentPersonId());
@@ -158,13 +157,13 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         // 派工
         if (CommonConstants.THIRTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.TWENTY_STRING.equals(detail.getRecStatus())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非下达状态下不可派工");
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "非下达状态下不可派工");
             }
-            Assert.isTrue(StringUtils.isNotEmpty(reqDTO.getWorkerId()) && StringUtils.isNotEmpty(reqDTO.getWorkClass()), ErrorCode.PARAM_ERROR, "派工人信息不能为空");
+            Assert.isTrue(StringUtils.isNotEmpty(reqDTO.getWorkerId()) && StringUtils.isNotEmpty(reqDTO.getWorkClass()), ErrorCode.NORMAL_ERROR, "派工人信息不能为空");
             overTodoService.overTodo(reqDTO.getRecId(), "");
             String[] split = reqDTO.getWorkerId().split(",");
-            for (int i = 0; i < split.length; i++) {
-                overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), split[i], "视频调阅派工", "DMBR0022", TokenUtils.getCurrentPersonId());
+            for (String s : split) {
+                overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), s, "视频调阅派工", "DMBR0022", TokenUtils.getCurrentPersonId());
             }
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
             carVideoDO.setDispatchTime(DateUtils.getCurrentTime());
@@ -196,7 +195,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
         // 关闭
         if (CommonConstants.FIFTY_STRING.equals(reqDTO.getRecStatus())) {
             if (!CommonConstants.FORTY_STRING.equals(detail.getRecStatus())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非完工状态下不可关闭");
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "非完工状态下不可关闭");
             }
             overTodoService.overTodo(reqDTO.getRecId(), "");
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
@@ -233,7 +232,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             EasyExcelUtils.export(response, "检调视频调阅", exportList);
         } catch (Exception e) {
             log.error("导出失败", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.EXPORT_ERROR);
         }
     }
 }

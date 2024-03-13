@@ -124,6 +124,13 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
     }
 
     @Override
+    public void addSpecialEquip(SpecialEquipReqDTO specialEquipReqDTO) {
+        specialEquipReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        specialEquipReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+        specialEquipMapper.addSpecialEquip(specialEquipReqDTO);
+    }
+
+    @Override
     public void modifySpecialEquip(SpecialEquipReqDTO specialEquipReqDTO) {
         specialEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         specialEquipReqDTO.setRecReviseTime(DateUtils.getCurrentTime());

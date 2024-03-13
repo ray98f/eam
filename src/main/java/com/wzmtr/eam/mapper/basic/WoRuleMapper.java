@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.basic.WoRuleDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.basic.WoRuleReqDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -151,10 +152,10 @@ public interface WoRuleMapper {
 
     /**
      * 导出工单触发规则明细列表
-     * @param ids ids
+     * @param reqDTO 请求参数
      * @return 工单触发规则明细列表
      */
-    List<WoRuleResDTO.WoRuleDetail> exportWoRuleDetail(List<String> ids);
+    List<WoRuleResDTO.WoRuleDetail> exportWoRuleDetail(WoRuleDetailExportReqDTO reqDTO);
 
     List<WoRuleResDTO.WoRuleDetail> queryRuleList(String planCode, String nowDate);
 

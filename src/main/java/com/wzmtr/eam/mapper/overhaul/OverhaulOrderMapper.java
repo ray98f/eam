@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderDetailReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
+import com.wzmtr.eam.dto.res.overhaul.MateBorrowResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -35,6 +36,16 @@ public interface OverhaulOrderMapper {
     Page<OverhaulOrderResDTO> pageOrder(Page<OverhaulOrderResDTO> page, OverhaulOrderListReqDTO req);
 
     OverhaulOrderResDTO getOrder(String recId, String objectFlag);
+
+    /**
+     * 获取工器具分页列表
+     * @param page 分页参数
+     * @param orderCode 检修工单
+     * @param mateCode 物资编码
+     * @param mateName 物资名称
+     * @return 工器具分页列表
+     */
+    Page<MateBorrowResDTO> pageMateBorrow(Page<MateBorrowResDTO> page, String orderCode, String mateCode, String mateName);
 
     List<OverhaulOrderResDTO> listOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO);
 

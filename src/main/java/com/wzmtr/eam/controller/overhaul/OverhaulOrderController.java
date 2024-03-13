@@ -29,6 +29,12 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 预防性检修管理-检修工单
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/17
+ */
 @Slf4j
 @RestController
 @RequestMapping("/overhaul/order")
@@ -61,6 +67,23 @@ public class OverhaulOrderController {
     @ApiOperation(value = "获取检修工单详情")
     public DataResponse<OverhaulOrderResDTO> getOverhaulOrderDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(overhaulOrderService.getOverhaulOrderDetail(id));
+    }
+
+    /**
+     * 获取工器具分页列表
+     * @param orderCode 检修工单
+     * @param mateCode 物资编码
+     * @param mateName 物资名称
+     * @param pageReqDTO 分页参数
+     * @return 工器具分页列表
+     */
+    @GetMapping("/mate/borrow/page")
+    @ApiOperation(value = "获取工器具列表")
+    public PageResponse<MateBorrowResDTO> pageMateBorrow(@RequestParam @ApiParam("检修工单") String orderCode,
+                                                         @RequestParam(required = false) @ApiParam("物资编码") String mateCode,
+                                                         @RequestParam(required = false) @ApiParam("物资名称") String mateName,
+                                                         @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(overhaulOrderService.pageMateBorrow(orderCode, mateCode, mateName, pageReqDTO));
     }
 
     @PostMapping("/export")

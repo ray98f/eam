@@ -81,9 +81,9 @@ public interface EquipmentMapper {
     Page<PartReplaceResDTO> listPartReplace(Page<PartReplaceResDTO> page, String equipCode);
 
     /**
-     * 根据设备名称获取设备编号
+     * 根据设备名称获取设备信息
      * @param name 设备名称
-     * @return 设备编号
+     * @return 设备信息
      */
-    String getEquipCodeByName(String name);
+    EquipmentResDTO getEquipByName(String name);
 }

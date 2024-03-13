@@ -934,6 +934,44 @@
         FROM T_OVERHAUL_ORDER WHERE REC_ID=#{recId}
     </select>
 
+    <select id="pageMateBorrow" resultType="com.wzmtr.eam.dto.res.overhaul.MateBorrowResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        MATE_CODE	as "mateCode",  <!-- 物资编码 -->
+        MATE_NAME	as "mateName",  <!-- 物资名称 -->
+        BORROW_CODE	as "borrowCode",  <!-- 借用人工号 -->
+        BORROW_NAME	as "borrowName",  <!-- 借用人姓名 -->
+        BORROW_TIME	as "borrowTime",  <!-- 借用时间 -->
+        RETURN_NAME	as "returnName",  <!-- 归还人姓名 -->
+        RETURN_CODE	as "returnCode",  <!-- 归还人工号 -->
+        RETURN_TIME	as "returnTime",  <!-- 归还时间 -->
+        STATE	as "state",  <!-- 状态 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_MATE_BORROW WHERE 1=1
+        <if test="orderCode!=null and orderCode!=''">
+            and ORDER_CODE=#{orderCode}
+        </if>
+        <if test="mateCode!=null and mateCode!=''">
+            and MATE_CODE like '%' || #{mateCode} || '%'
+        </if>
+        <if test="mateName!=null and mateName!=''">
+            and MATE_NAME like '%' || #{mateName} || '%'
+        </if>
+        order by REC_ID asc
+    </select>
+
     <select id="listOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->

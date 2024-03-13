@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.overhaul;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
@@ -9,6 +8,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
+import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
@@ -27,6 +27,7 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
+import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
@@ -98,6 +99,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     @Autowired
     private IWorkFlowLogService workFlowLogService;
 
+    @Autowired
+    private FaultQueryMapper faultQueryMapper;
+
     @Override
     public Page<OverhaulWeekPlanResDTO> pageOverhaulWeekPlan(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
@@ -120,6 +124,14 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
         res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
         return res;
+    }
+
+    @Override
+    public List<FaultRepairDeptResDTO> queryDept(String lineNo, String subjectCode) {
+        if (StringUtils.isEmpty(lineNo) || StringUtils.isEmpty(subjectCode)) {
+            throw new CommonException(ErrorCode.PARAM_ERROR);
+        }
+        return faultQueryMapper.queryDeptCode(lineNo, subjectCode, "10");
     }
 
     @Override
@@ -599,7 +611,6 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         List<OverhaulWeekPlanResDTO> weekPlanList = checkTrialStatus(overhaulWeekPlanListReqDTO);
         overhaulPlanReqDTO.setRecId(TokenUtils.getUuId());
         overhaulPlanReqDTO.setTrialStatus(" ");
-        overhaulPlanReqDTO.setArchiveFlag("0");
         overhaulPlanReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         overhaulPlanReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String planCode = CodeUtils.getNextCode(overhaulPlanMapper.getMaxCode(), 2);

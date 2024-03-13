@@ -144,7 +144,7 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public void export(TrackExportReqDTO reqDTO, HttpServletResponse response) throws IOException {
-        List<TrackResDTO> resList = faultTrackWorkMapper.query(reqDTO);
+        List<TrackResDTO> resList = faultTrackWorkMapper.export(reqDTO);
         if (StringUtils.isEmpty(resList)) {
             return;
         }

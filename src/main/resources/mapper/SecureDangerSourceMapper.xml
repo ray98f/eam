@@ -46,37 +46,84 @@
         #{ext2,jdbcType=VARCHAR}, #{ext3,jdbcType=VARCHAR}, #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR})
     </insert>
     <update id="update">
-        UPDATE T_DANGER_RISK
-        SET
+        UPDATE T_DANGER_RISK SET
+        <if test="recDept!=null">
             REC_DEPT           = #{recDept,jdbcType=VARCHAR},
+        </if>
+        <if test="dangerRisk!=null">
             DANGER_RISK        = #{dangerRisk,jdbcType=VARCHAR},
+        </if>
+        <if test="dangerRiskRank!=null">
             DANGER_RISK_RANK   = #{dangerRiskRank,jdbcType=VARCHAR},
+        </if>
+        <if test="dangerRiskDetail!=null">
             DANGER_RISK_DETAIL = #{dangerRiskDetail,jdbcType=VARCHAR},
+        </if>
+        <if test="consequense!=null">
             CONSEQUENSE        = #{consequense,jdbcType=VARCHAR},
+        </if>
+        <if test="respDeptCode!=null">
             RESP_DEPT_CODE     = #{respDeptCode,jdbcType=VARCHAR},
+        </if>
+        <if test="respCode!=null">
             RESP_CODE          = #{respCode,jdbcType=VARCHAR},
+        </if>
+        <if test="positionDesc!=null">
             POSITION_DESC      = #{positionDesc,jdbcType=VARCHAR},
+        </if>
+        <if test="position1Code!=null">
             POSITION1_CODE     = #{position1Code,jdbcType=VARCHAR},
+        </if>
+        <if test="position2Code!=null">
             POSITION2_CODE     = #{position2Code,jdbcType=VARCHAR},
+        </if>
+        <if test="position3!=null">
             POSITION3          = #{position3,jdbcType=VARCHAR},
+        </if>
+        <if test="positionRemark!=null">
             POSITION_REMARK    = #{positionRemark,jdbcType=VARCHAR},
+        </if>
+        <if test="dangerRiskPic!=null">
             DANGER_RISK_PIC    = #{dangerRiskPic,jdbcType=VARCHAR},
+        </if>
+        <if test="controlDetail!=null">
             CONTROL_DETAIL     = #{controlDetail,jdbcType=VARCHAR},
+        </if>
+        <if test="discDate!=null">
             DISC_DATE          = #{discDate,jdbcType=VARCHAR},
+        </if>
+        <if test="remark!=null">
             REMARK             = #{remark,jdbcType=VARCHAR},
-            REC_CREATOR        = #{recCreator,jdbcType=VARCHAR},
-            REC_CREATE_TIME    = #{recCreateTime,jdbcType=VARCHAR},
-            REC_REVISOR        = #{recRevisor,jdbcType=VARCHAR},
-            REC_REVISE_TIME    = #{recReviseTime,jdbcType=VARCHAR},
+        </if>
+        <if test="recDeletor!=null">
             REC_DELETOR        = #{recDeletor,jdbcType=VARCHAR},
+        </if>
+        <if test="recDeleteTime!=null">
             REC_DELETE_TIME    = #{recDeleteTime,jdbcType=VARCHAR},
+        </if>
+        <if test="deleteFlag!=null">
             DELETE_FLAG        = #{deleteFlag,jdbcType=VARCHAR},
+        </if>
+        <if test="archiveFlag!=null">
             ARCHIVE_FLAG       = #{archiveFlag,jdbcType=VARCHAR},
+        </if>
+        <if test="ext1!=null">
             EXT1               = #{ext1,jdbcType=VARCHAR},
+        </if>
+        <if test="ext2!=null">
             EXT2               = #{ext2,jdbcType=VARCHAR},
+        </if>
+        <if test="ext3!=null">
             EXT3               = #{ext3,jdbcType=VARCHAR},
+        </if>
+        <if test="ext4!=null">
             EXT4               = #{ext4,jdbcType=VARCHAR},
-            EXT5               = #{ext5,jdbcType=VARCHAR}
+        </if>
+        <if test="ext5!=null">
+            EXT5               = #{ext5,jdbcType=VARCHAR},
+        </if>
+        REC_REVISOR        = #{recRevisor,jdbcType=VARCHAR},
+        REC_REVISE_TIME    = #{recReviseTime,jdbcType=VARCHAR}
         WHERE DANGER_RISK_ID = #{dangerRiskId,jdbcType=VARCHAR}
     </update>
 
@@ -126,14 +173,14 @@
         EXT5 as "ext5" <!-- 扩展字段5 -->
         FROM T_DANGER_RISK
         <trim prefix="WHERE" prefixOverrides="AND">
-        <if test="dangerRiskId!=null and dangerRiskId!=''">
-            and DANGER_RISK_ID = #{dangerRiskId}
+        <if test="req.dangerRiskId!=null and req.dangerRiskId!=''">
+            and DANGER_RISK_ID = #{req.dangerRiskId}
         </if>
-        <if test="discDateStart!=null and discDateStart!=''">
-            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{discDateStart},'YYYY-MM-DD')
+        <if test="req.discDateStart!=null and req.discDateStart!=''">
+            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{req.discDateStart},'YYYY-MM-DD')
         </if>
-        <if test="discDateEnd!=null and discDateEnd!=''">
-            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{discDateEnd},'YYYY-MM-DD')
+        <if test="req.discDateEnd!=null and req.discDateEnd!=''">
+            and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{req.discDateEnd},'YYYY-MM-DD')
         </if>
         and DELETE_FLAG='0'
         </trim>
@@ -172,13 +219,26 @@
         EXT3 as "ext3",  <!-- 扩展字段3 -->
         EXT4 as "ext4",  <!-- 扩展字段4 -->
         EXT5 as "ext5" <!-- 扩展字段5 -->
-        FROM T_DANGER_RISK WHERE 1=1
-        <if test="dangerRiskId!=null and dangerRiskId!=''">
-            and DANGER_RISK_ID = #{dangerRiskId}
-        </if>
-        <if test="discDate!=null and discDate!=''">
-            and DISC_DATE = #{discDate}
-        </if>
+        FROM T_DANGER_RISK
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="dangerRiskId!=null and dangerRiskId!=''">
+                and DANGER_RISK_ID = #{dangerRiskId}
+            </if>
+            <if test="discDateStart!=null and discDateStart!=''">
+                and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{discDateStart},'YYYY-MM-DD')
+            </if>
+            <if test="discDateEnd!=null and discDateEnd!=''">
+                and TO_DATE(DISC_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{discDateEnd},'YYYY-MM-DD')
+            </if>
+            <if test="ids!=null and ids.size()>0">
+                and REC_ID in (
+                <foreach collection="ids" index="index" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
+            and DELETE_FLAG='0'
+        </trim>
         order by DANGER_RISK_ID desc
     </select>
     <select id="detail" resultType="com.wzmtr.eam.dto.res.secure.SecureDangerSourceResDTO">

@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/15 17:04
+ * 故障管理-车辆故障提报
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/15
  */
 @RestController
 @RequestMapping("/fault/car/report")

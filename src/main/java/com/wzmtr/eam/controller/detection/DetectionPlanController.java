@@ -22,6 +22,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 
+/**
+ * 特种设备管理-检测计划
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/02
+ */
 @Slf4j
 @RestController
 @RequestMapping("/detectionPlan")

@@ -7,26 +7,38 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author Li.Wang
- * Date: 2023/8/18 10:27
+ * 故障详情导出列表
+ * @author  Ray
+ * @version 1.0
+ * @date 2024/02/27
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
 public class ExcelFaultDetailResDTO {
-    @ExcelProperty(value = "故障编号")
-    private String faultNo;
-    @ExcelProperty(value = "发现时间")
-    private String discoveryTime;
-    @ExcelProperty(value = "故障影响")
-    private String faultAffect;
-    @ExcelProperty(value = "故障系统")
+    @ExcelProperty(value = "状态")
+    private String orderStatus;
+    @ExcelProperty(value = "工单编号")
+    private String faultWorkNo;
+    @ExcelProperty(value = "提报时间")
+    private String fillinTime;
+    @ExcelProperty(value = "紧急程度")
+    private String faultLevel;
+    @ExcelProperty(value = "位置")
+    private String positionName;
+    @ExcelProperty(value = "专业")
     private String systemName;
-    @ExcelProperty(value = "故障描述")
+    @ExcelProperty(value = "故障概况")
     private String faultDisplayDetail;
-    @ExcelProperty(value = "处理人员")
-    private String dealerUnit;
-    @ExcelProperty(value = "处理时间")
-    private String repairTime;
+    @ExcelProperty(value = "故障描述")
+    private String faultDetail;
+    @ExcelProperty(value = "发现人")
+    private String fillinUserName;
+    @ExcelProperty(value = "处理人")
+    private String reportFinishUserName;
+    @ExcelProperty(value = "维修完成时间")
+    private String reportFinishTime;
+    @ExcelProperty(value = "工单关闭时间")
+    private String closeTime;
 }

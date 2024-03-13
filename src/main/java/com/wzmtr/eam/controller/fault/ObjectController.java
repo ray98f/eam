@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/16 14:21
+ * 对象查询
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/16
  */
 @RestController
 @RequestMapping("/object")
@@ -35,18 +37,18 @@ public class ObjectController {
         return PageResponse.of(objectService.queryObject(reqDTO));
     }
     @ApiOperation(value = "车辆对象树")
-    @PostMapping("car/getQuery")
+    @PostMapping("/car/getQuery")
     public DataResponse<CarObjResDTO> getQuery(@RequestBody CarObjectReqDTO reqDTO) {
         return DataResponse.of(objectService.getQuery(reqDTO));
     }
     @ApiOperation(value = "车辆对象树列表")
-    @PostMapping("car/query")
+    @PostMapping("/car/query")
     public DataResponse<List<CarTreeListObjResDTO>> query(@RequestBody CarObjectReqDTO reqDTO) {
         return DataResponse.of(objectService.query(reqDTO));
     }
 
     @ApiOperation(value = "对象查询分页")
-    @PostMapping("car/queryForObject")
+    @PostMapping("/car/queryForObject")
     public PageResponse<ObjectResDTO> queryForObject(@RequestBody ObjectReqDTO reqDTO) {
         return PageResponse.of(objectService.queryForObject(reqDTO));
     }

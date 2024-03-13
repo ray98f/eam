@@ -67,6 +67,13 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
     @Override
     public void addOtherEquipType(OtherEquipTypeReqDTO otherEquipTypeReqDTO) {
         otherEquipTypeReqDTO.setRecId(TokenUtils.getUuId());
+        String code = otherEquipTypeMapper.getMaxTypeCode();
+        if (StringUtils.isEmpty(code)) {
+            code = "0001";
+        } else {
+            code = String.format("%04d", Integer.parseInt(code) + 1);
+        }
+        otherEquipTypeReqDTO.setTypeCode(code);
         otherEquipTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         otherEquipTypeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         otherEquipTypeMapper.addOtherEquipType(otherEquipTypeReqDTO);

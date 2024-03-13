@@ -93,8 +93,23 @@ public interface BomMapper extends BaseMapper<BomDO> {
     void importBom(List<BomReqDTO> list, String userId, String time);
 
     /**
+     * 获取子集Bom结构列表
+     * @param name 名称
+     * @return 子集Bom结构列表
+     */
+    List<BomResDTO> getChildBom(String name);
+
+    /**
      * 导入车辆与Bom关联关系
      * @param list 车辆与Bom关联关系
+     * @param userId 人员编号
+     * @param startTime 时间
      */
-    void importBomTrain(List<BomTrainReqDTO> list);
+    void importBomTrain(List<BomTrainReqDTO> list, String userId, String startTime);
+
+    /**
+     * 获取当前最大的部件编号
+     * @return 最大的部件编号
+     */
+    String getMaxPartCode();
 }

@@ -121,23 +121,23 @@
         EXT5 as "ext5" <!-- 扩展字段5 -->
         FROM T_RISK_RECORD
         <trim prefix="WHERE" prefixOverrides="AND">
-            <if test="riskId!=null and riskId!=''">
-                and RISK_ID = #{riskId}
+            <if test="req.riskId!=null and req.riskId!=''">
+                and RISK_ID = #{req.riskId}
             </if>
-            <if test="riskRank!=null and riskRank!=''">
-                and RISK_RANK = #{riskRank}
+            <if test="req.riskRank!=null and req.riskRank!=''">
+                and RISK_RANK = #{req.riskRank}
             </if>
-            <if test="isRestored!=null and isRestored!=''">
-                and IS_RESTORED = #{isRestored}
+            <if test="req.isRestored!=null and req.isRestored!=''">
+                and IS_RESTORED = #{req.isRestored}
             </if>
-            <if test="inspectDateBegin!=null and inspectDateBegin!=''">
-                and to_date(INSPECT_DATE, 'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{inspectDateBegin}, 'YYYY-MM-DD')
+            <if test="req.inspectDateBegin!=null and req.inspectDateBegin!=''">
+                and to_date(INSPECT_DATE, 'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{req.inspectDateBegin}, 'YYYY-MM-DD')
             </if>
-            <if test="inspectDateEnd!=null and inspectDateEnd!=''">
-                and to_date(INSPECT_DATE, 'YYYY-MM-DD')<![CDATA[<=]]>to_date(#{inspectDateEnd}, 'YYYY-MM-DD')
+            <if test="req.inspectDateEnd!=null and req.inspectDateEnd!=''">
+                and to_date(INSPECT_DATE, 'YYYY-MM-DD')<![CDATA[<=]]>to_date(#{req.inspectDateEnd}, 'YYYY-MM-DD')
             </if>
-            <if test="recStatus!=null and recStatus!=''">
-                and REC_STATUS = #{recStatus}
+            <if test="req.recStatus!=null and req.recStatus!=''">
+                and REC_STATUS = #{req.recStatus}
             </if>
             and DELETE_FLAG='0'
         </trim>
@@ -247,19 +247,31 @@
             <if test="riskId!=null and riskId!=''">
                 and RISK_ID = #{riskId}
             </if>
-            <if test="begin!=null and begin!=''">
-                and TO_DATE(INSPECT_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{begin},'YYYY-MM-DD')
+            <if test="riskRank!=null and riskRank!=''">
+                and RISK_RANK = #{riskRank}
             </if>
-            <if test="end!=null and end!=''">
-                and TO_DATE(INSPECT_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{end},'YYYY-MM-DD')
+            <if test="isRestored!=null and isRestored!=''">
+                and IS_RESTORED = #{isRestored}
             </if>
-            <if test="restoreDesc!=null and restoreDesc!=''">
-                and RESTORE_DESC = #{restoreDesc}
+            <if test="inspectDateBegin!=null and inspectDateBegin!=''">
+                and to_date(INSPECT_DATE, 'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{inspectDateBegin}, 'YYYY-MM-DD')
             </if>
-            <if test="workFlowInstStatus!=null and workFlowInstStatus!=''">
-                and WORK_FLOW_INST_STATUS = #{workFlowInstStatus}
+            <if test="inspectDateEnd!=null and inspectDateEnd!=''">
+                and to_date(INSPECT_DATE, 'YYYY-MM-DD')<![CDATA[<=]]>to_date(#{inspectDateEnd}, 'YYYY-MM-DD')
             </if>
+            <if test="recStatus!=null and recStatus!=''">
+                and REC_STATUS = #{recStatus}
+            </if>
+            <if test="ids!=null and ids.size()>0">
+                and REC_ID in (
+                <foreach collection="ids" index="index" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
+            and DELETE_FLAG='0'
         </trim>
+        order by RISK_ID desc
     </select>
     <select id="getMaxCode" resultType="java.lang.String">
             SELECT max(RISK_ID)

@@ -8,7 +8,7 @@ import lombok.Data;
  * Date: 2023/8/22 17:14
  */
 @Data
-public class RAMSCarResDTO {
+public class RamsCarResDTO {
     @ApiModelProperty(value = "故障数")
     private String faultNum;
     @ApiModelProperty(value = "晚点数")

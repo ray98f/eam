@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -14,17 +15,22 @@ import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelFaultDetailResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import com.wzmtr.eam.dto.res.statistic.excel.*;
 import com.wzmtr.eam.entity.Dictionaries;
+import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
+import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
@@ -73,11 +79,17 @@ public class StatisticServiceImpl implements StatisticService {
     @Autowired
     private OverhaulOrderMapper overhaulOrderMapper;
     @Autowired
-    private RAMSMapper ramsMapper;
+    private RamsMapper ramsMapper;
     @Autowired
     private FaultExportComponent exportComponent;
     @Autowired
     private DictionariesMapper dictionariesMapper;
+    @Autowired
+    private FaultQueryMapper faultQueryMapper;
+    @Autowired
+    private FileMapper fileMapper;
+    @Autowired
+    private OrganizationMapper organizationMapper;
 
     @Override
     public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
@@ -190,7 +202,7 @@ public class StatisticServiceImpl implements StatisticService {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             String starDate = calendar.get(Calendar.YEAR) + "-01-01";
-            Date parse = null;
+            Date parse;
             try {
                 parse = sdf.parse(starDate);
             } catch (ParseException e) {
@@ -445,10 +457,10 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
         List<FaultDetailResDTO> faultDetailResDTOS = oneCarOneGearMapper.queryFMHistory(equipName, startTime, endTime);
-        List<ExcelFaultDetailResDTO> list = new ArrayList<>();
+        List<ExcelFmFaultDetailResDTO> list = new ArrayList<>();
         if (StringUtils.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
-                ExcelFaultDetailResDTO res = new ExcelFaultDetailResDTO();
+                ExcelFmFaultDetailResDTO res = new ExcelFmFaultDetailResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setRepairTime(String.valueOf(resDTO.getRepairTime()));
                 list.add(res);
@@ -565,7 +577,21 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void faultListExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response) {
+    public void faultListExport(FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<FaultDetailResDTO> faultDetailList = faultQueryMapper.getByIds(reqDTO);
+        if (StringUtils.isNotEmpty(faultDetailList)) {
+            List<ExcelFaultDetailResDTO> list = new ArrayList<>();
+            for (FaultDetailResDTO resDTO : faultDetailList) {
+                ExcelFaultDetailResDTO res = new ExcelFaultDetailResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
+            }
+            EasyExcelUtils.export(response, "故障统计报表列表信息", list);
+        }
+    }
+
+    @Override
+    public void faultExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response) {
         exportComponent.exportByTemplate(reqDTO,response);
     }
 
@@ -616,13 +642,13 @@ public class StatisticServiceImpl implements StatisticService {
 
 
     @Override
-    public RAMSCarResDTO query4AQYYZB() {
-        List<RAMSCarResDTO> records = ramsMapper.query4AQYYZB();
+    public RamsCarResDTO query4AQYYZB() {
+        List<RamsCarResDTO> records = ramsMapper.query4AQYYZB();
         if (StringUtils.isEmpty(records)) {
             return null;
         }
         DecimalFormat df = new DecimalFormat("#0.00");
-        RAMSCarResDTO ramsCarResDTO = records.get(0);
+        RamsCarResDTO ramsCarResDTO = records.get(0);
         String millionMiles = ramsCarResDTO.getMillionMiles();
         String affect11 = ramsCarResDTO.getAffect11();
         String affect21 = ramsCarResDTO.getAffect21();
@@ -726,7 +752,7 @@ public class StatisticServiceImpl implements StatisticService {
      * @return
      */
     @Override
-    public List<RAMSResult2ResDTO> queryresult2(String startDate, String endDate) {
+    public List<RamsResult2ResDTO> queryresult2(String startDate, String endDate) {
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
         } else {
@@ -738,7 +764,7 @@ public class StatisticServiceImpl implements StatisticService {
             endDate = getLastMouths(0);
         }
         DecimalFormat df = new DecimalFormat("#0.00");
-        List<RAMSResult2ResDTO> ramsResDTOS = ramsMapper.queryresult2(startDate, endDate);
+        List<RamsResult2ResDTO> ramsResDTOS = ramsMapper.queryresult2(startDate, endDate);
         ramsResDTOS.forEach(a -> {
             double lateZ = 0.0D;
             double noServiceZ = 0.0D;
@@ -761,11 +787,11 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public List<RAMSSysPerformResDTO> querySysPerform() {
-        List<RAMSSysPerformResDTO> ramsResDTOS = ramsMapper.querySysPerform();
-        List<RAMSResDTO> totalMilesList = ramsMapper.querytotalMiles();
-        RAMSResDTO totalMiles = totalMilesList.get(0);
-        Map<String, RAMSSysPerformResDTO> map = Maps.newHashMap();
+    public List<RamsSysPerformResDTO> querySysPerform() {
+        List<RamsSysPerformResDTO> ramsResDTOS = ramsMapper.querySysPerform();
+        List<RamsResDTO> totalMilesList = ramsMapper.querytotalMiles();
+        RamsResDTO totalMiles = totalMilesList.get(0);
+        Map<String, RamsSysPerformResDTO> map = Maps.newHashMap();
         Set<String> names = Sets.newHashSet();
         ramsResDTOS.forEach(a -> {
             switch (a.getModuleName()) {
@@ -828,7 +854,7 @@ public class StatisticServiceImpl implements StatisticService {
                 MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumNos());
             }
             a.setMTBF_NOS(df.format(MTBF_NOS));
-            RAMSSysPerformResDTO last = map.get(a.getModuleName());
+            RamsSysPerformResDTO last = map.get(a.getModuleName());
             if (map.containsKey(a.getModuleName())) {
                 a.setNumNos(String.valueOf(Integer.parseInt(a.getNumNos()) + Integer.parseInt(last.getNumNos())));
                 a.setMTBF_NOS(String.valueOf(Integer.parseInt(a.getMTBF_NOS()) + Integer.parseInt(last.getMTBF_NOS())));
@@ -845,7 +871,7 @@ public class StatisticServiceImpl implements StatisticService {
      * 各系统可靠性统计-构建是否达标标识
      * @param map 集合
      */
-    private void buildSysPerformIsCompliance(Map<String, RAMSSysPerformResDTO> map) {
+    private void buildSysPerformIsCompliance(Map<String, RamsSysPerformResDTO> map) {
         map.values().forEach(a -> {
             if (Double.parseDouble(a.getMTBF_LATE()) >= Double.parseDouble(a.getContractZBLATE())) {
                 a.setIsDB_LATE("达标");
@@ -865,9 +891,9 @@ public class StatisticServiceImpl implements StatisticService {
      */
     @Override
     public List<FaultConditionResDTO> queryCountFaultType() {
-        List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4RAMS();
-        List<RAMSResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
-        RAMSResDTO ramsResDTO = ramsResDTOS.get(0);
+        List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4Rams();
+        List<RamsResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
+        RamsResDTO ramsResDTO = ramsResDTOS.get(0);
         Set<String> names = Sets.newHashSet();
         Map<String, FaultConditionResDTO> map = new HashMap<>();
         for (FaultConditionResDTO a : list) {
@@ -937,7 +963,7 @@ public class StatisticServiceImpl implements StatisticService {
      * @param map 集合
      * @param ramsRes ram
      */
-    private void buildFaultTypeIsCompliance(Map<String, FaultConditionResDTO> map, RAMSResDTO ramsRes) {
+    private void buildFaultTypeIsCompliance(Map<String, FaultConditionResDTO> map, RamsResDTO ramsRes) {
         map.values().forEach(a -> {
             DecimalFormat df = new DecimalFormat("#0");
             double zb;
@@ -959,14 +985,14 @@ public class StatisticServiceImpl implements StatisticService {
      * RAMS 故障列表
      */
     @Override
-    public Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO) {
-        Page<FaultRAMSResDTO> list = ramsMapper.queryRAMSFaultList(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime());
+    public Page<FaultRamsResDTO> queryRAMSFaultList(RamsTimeReqDTO reqDTO) {
+        Page<FaultRamsResDTO> list = ramsMapper.queryRamsFaultList(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime(),null);
         if (StringUtils.isEmpty(list.getRecords())) {
             return new Page<>();
         }
-        List<FaultRAMSResDTO> records = list.getRecords();
+        List<FaultRamsResDTO> records = list.getRecords();
         records.forEach(a -> {
-            FaultRAMSResDTO faultRAMSResDTO = ramsMapper.queryPart(a.getFaultWorkNo());
+            FaultRamsResDTO faultRAMSResDTO = ramsMapper.queryPart(a.getFaultWorkNo());
             if (null != faultRAMSResDTO) {
                 String replacementName = faultRAMSResDTO.getReplacementName();
                 String oldRepNo = faultRAMSResDTO.getOldRepNo();
@@ -1010,7 +1036,7 @@ public class StatisticServiceImpl implements StatisticService {
         }
     }
 
-    public void rebuildBlock4SP(RAMSSysPerformResDTO map, Set<String> module, String moduleName, String contractZB_LATE, String contractZB_NOS) {
+    public void rebuildBlock4SP(RamsSysPerformResDTO map, Set<String> module, String moduleName, String contractZB_LATE, String contractZB_NOS) {
         DecimalFormat df = new DecimalFormat("#0");
         String NUM_LATE = map.getNumLate();
         String NUM_NOS = map.getNumNos();
@@ -1049,6 +1075,63 @@ public class StatisticServiceImpl implements StatisticService {
             map.setZS(ZS);
             map.setNOYF(NOYF);
         }
+    }
+
+    @Override
+    public RamsTrainReliabilityResDTO trainReliability(String startTime, String endTime, String trainNo) {
+        RamsTrainReliabilityResDTO res = new RamsTrainReliabilityResDTO();
+        // 获取各指标项的故障次数
+        double delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'");
+        double notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'");
+        double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null);
+        double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
+        if (miles == 0) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "");
+        }
+        res.setTotalMile(miles);
+        // 实际指标计算
+        res.setRealDelay(countTrainReliabilityIndex(delayCount, miles));
+        res.setRealNot(countTrainReliabilityIndex(notCount, miles));
+        res.setRealFault(countTrainReliabilityIndex(faultCount, miles));
+        // todo 合同指标及是否达标填充
+
+        return res;
+    }
+
+    /**
+     * 计算列车可靠性指标
+     * @param count 次数
+     * @param miles 运营里程
+     * @return 计算列车可靠性指标
+     */
+    private Double countTrainReliabilityIndex(double count, double miles) {
+        if (miles != 0) {
+            return count * 1000000 / (4 * miles);
+        }
+        return null;
+    }
+
+    @Override
+    public Page<FaultRamsResDTO> trainReliabilityFaultList(String startTime, String endTime, String trainNo, PageReqDTO pageReqDTO) {
+        Page<FaultRamsResDTO> list = ramsMapper.queryRamsFaultList(pageReqDTO.of(), startTime, endTime, trainNo);
+        if (StringUtils.isEmpty(list.getRecords())) {
+            return new Page<>();
+        }
+        List<FaultRamsResDTO> records = list.getRecords();
+        records.forEach(a -> {
+            FaultRamsResDTO faultRamsRes = ramsMapper.queryPart(a.getFaultWorkNo());
+            if (StringUtils.isNotNull(faultRamsRes)) {
+                String replacementName = faultRamsRes.getReplacementName();
+                String oldRepNo = faultRamsRes.getOldRepNo();
+                String newRepNo = faultRamsRes.getNewRepNo();
+                String operateCostTime = faultRamsRes.getOperateCostTime();
+                a.setReplacementName(replacementName == null ? CommonConstants.EMPTY : replacementName);
+                a.setOldRepNo(oldRepNo == null ? CommonConstants.EMPTY : oldRepNo);
+                a.setNewRepNo(newRepNo == null ? CommonConstants.EMPTY : newRepNo);
+                a.setOperateCostTime(operateCostTime == null ? CommonConstants.EMPTY : operateCostTime);
+            }
+        });
+        return list;
     }
 }
 

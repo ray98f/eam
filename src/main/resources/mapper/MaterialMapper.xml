@@ -47,11 +47,9 @@
         AND A.REC_STATUS = '2'
         AND D.ORDER_CODE = c.RELATION_NO
         AND D.SUBJECT_CODE = '07'
-        AND (TRIM(C.RELATION_NO) LIKE 'GD%'
-        OR TRIM(C.RELATION_NO) LIKE 'JX%')
+        AND (TRIM(C.RELATION_NO) LIKE 'GD%' OR TRIM(C.RELATION_NO) LIKE 'JX%')
         <if test="endTime != null and endTime != ''">
-            AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{startTime}, 'YYYY-MM-DD
-            HH24:MI:SS')
+            AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="endTime != null and endTime != ''">
             AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &lt; TO_DATE(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
@@ -115,11 +113,9 @@
         AND A.REC_STATUS = '2'
         AND D.ORDER_CODE = c.RELATION_NO
         AND D.SUBJECT_CODE = '07'
-        AND (TRIM(C.RELATION_NO) LIKE 'GD%'
-        OR TRIM(C.RELATION_NO) LIKE 'JX%')
+        AND (TRIM(C.RELATION_NO) LIKE 'GD%' OR TRIM(C.RELATION_NO) LIKE 'JX%')
         <if test="endTime != null and endTime != ''">
-            AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{startTime}, 'YYYY-MM-DD
-            HH24:MI:SS')
+            AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="endTime != null and endTime != ''">
             AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &lt; TO_DATE(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')

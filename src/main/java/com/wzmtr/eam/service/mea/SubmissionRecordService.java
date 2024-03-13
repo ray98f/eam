@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface SubmissionRecordService {
 
-    Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, PageReqDTO pageReqDTO);
+    Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String recStatus, PageReqDTO pageReqDTO);
 
     SubmissionRecordResDTO getSubmissionRecordDetail(String id);
 

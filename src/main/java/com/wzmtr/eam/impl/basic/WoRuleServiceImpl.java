@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.basic.WoRuleDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.basic.WoRuleReqDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelWoRuleDetailResDTO;
@@ -145,8 +146,8 @@ public class WoRuleServiceImpl implements WoRuleService {
     }
 
     @Override
-    public void exportWoRuleDetail(List<String> ids, HttpServletResponse response) throws IOException {
-        List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.exportWoRuleDetail(ids);
+    public void exportWoRuleDetail(WoRuleDetailExportReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.exportWoRuleDetail(reqDTO);
         if (StringUtils.isNotEmpty(woRuleDetails)) {
             List<ExcelWoRuleDetailResDTO> list = new ArrayList<>();
             for (WoRuleResDTO.WoRuleDetail resDTO : woRuleDetails) {

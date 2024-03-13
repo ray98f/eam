@@ -23,6 +23,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
 
+/**
+ * 特种设备管理-检测记录
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/04
+ */
 @Slf4j
 @RestController
 @RequestMapping("/detection")

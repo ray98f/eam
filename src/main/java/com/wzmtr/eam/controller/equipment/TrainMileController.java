@@ -28,6 +28,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 设备管理-车辆行走里程台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/27
+ */
 @Slf4j
 @RestController
 @RequestMapping("/train")

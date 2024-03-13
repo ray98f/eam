@@ -194,19 +194,16 @@
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
         FROM T_OVERHAUL_ITEM WHERE 1=1 AND OBJECT_CODE=#{objectCode}
-        <if test="recId">
-            and REC_ID=#{recId}
-        </if>
-        <if test="itemName">
+        <if test="itemName!=null and itemName!=''">
             and ITEM_NAME=#{itemName}
         </if>
-        <if test="orderCode">
+        <if test="orderCode!=null and orderCode!=''">
             and ORDER_CODE=#{orderCode}
         </if>
-        <if test="objectId">
+        <if test="objectId!=null and objectId!=''">
             and OBJECT_ID=#{objectId}
         </if>
-        <if test="modelName">
+        <if test="modelName!=null and modelName!=''">
             and MODEL_NAME=#{modelName}
         </if>
         order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc

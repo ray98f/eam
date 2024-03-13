@@ -94,8 +94,8 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
     }
 
     @Override
-    public void exportGearboxChangeOil(String trainNo, HttpServletResponse response) throws IOException {
-        List<GearboxChangeOilResDTO> gearboxChangeOilResDTOList = gearboxChangeOilMapper.listGearboxChangeOil(trainNo);
+    public void exportGearboxChangeOil(List<String> ids, HttpServletResponse response) throws IOException {
+        List<GearboxChangeOilResDTO> gearboxChangeOilResDTOList = gearboxChangeOilMapper.exportGearboxChangeOil(ids);
         if (gearboxChangeOilResDTOList != null && !gearboxChangeOilResDTOList.isEmpty()) {
             List<ExcelGearboxChangeOilResDTO> list = new ArrayList<>();
             for (GearboxChangeOilResDTO resDTO : gearboxChangeOilResDTOList) {

@@ -7,6 +7,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.mea.MeaResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO;
@@ -73,9 +74,9 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     private OrganizationMapper organizationMapper;
 
     @Override
-    public Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, PageReqDTO pageReqDTO) {
+    public Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String recStatus, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        Page<SubmissionRecordResDTO> page = submissionRecordMapper.pageSubmissionRecord(pageReqDTO.of(), checkNo, instrmPlanNo, recStatus, workFlowInstId);
+        Page<SubmissionRecordResDTO> page = submissionRecordMapper.pageSubmissionRecord(pageReqDTO.of(), checkNo, recStatus);
         List<SubmissionRecordResDTO> list = page.getRecords();
         if (!Objects.isNull(list) && !list.isEmpty()) {
             for (SubmissionRecordResDTO res : list) {
@@ -282,20 +283,21 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
+        if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
+            EquipmentResDTO equipment = equipmentMapper.getEquipByName(submissionRecordDetailReqDTO.getEquipName());
+            if (StringUtils.isNotNull(equipment)) {
+                BeanUtils.copyProperties(equipment, submissionRecordDetailReqDTO);
+            } else {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "请填写正确的设备名称，确保设备台账中存在此设备");
+            }
+        } else {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "设备名称必填");
+        }
         submissionRecordDetailReqDTO.setRecId(TokenUtils.getUuId());
         submissionRecordDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         submissionRecordDetailReqDTO.setArchiveFlag("0");
-        if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
-            String equipCode = equipmentMapper.getEquipCodeByName(submissionRecordDetailReqDTO.getEquipName());
-            if (StringUtils.isNotEmpty(equipCode)) {
-                submissionRecordDetailReqDTO.setEquipCode(equipCode);
-            } else {
-                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
-            }
-        } else {
-            throw new CommonException(ErrorCode.PARAM_NULL);
-        }
+        submissionRecordDetailReqDTO.setTestRecId(submissionRecordDetailReqDTO.getSendVerifyNo());
         MeaResDTO meaResDTO = new MeaResDTO();
         meaResDTO.setLastVerifyDate(submissionRecordDetailReqDTO.getLastVerifyDate());
         meaResDTO.setNextVerifyDate(submissionRecordDetailReqDTO.getNextVerifyDate());
@@ -315,7 +317,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public void modifySubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
-        List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(submissionRecordDetailReqDTO.getTestRecId(), null, null, null, null);
+        List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(submissionRecordDetailReqDTO.getSendVerifyNo(), null);
         if (!list.isEmpty()) {
             if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
@@ -324,7 +326,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
-        submissionRecordDetailReqDTO.setRecRevisor(TokenUtils.getUuId());
+        submissionRecordDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         submissionRecordMapper.modifySubmissionRecordDetail(submissionRecordDetailReqDTO);
     }
@@ -337,7 +339,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 if (Objects.isNull(res)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(res.getTestRecId(), null, null, null, null);
+                List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(res.getSendVerifyNo(), null);
                 if (!list.isEmpty()) {
                     if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);

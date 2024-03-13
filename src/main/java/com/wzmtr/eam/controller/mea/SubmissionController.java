@@ -27,6 +27,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 预防性检修管理-送检单
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/17
+ */
 @Slf4j
 @RestController
 @RequestMapping("/mea/submission")

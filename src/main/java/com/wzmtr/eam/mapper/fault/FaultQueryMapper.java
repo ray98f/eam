@@ -26,6 +26,13 @@ public interface FaultQueryMapper {
 
     Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
 
+    /**
+     * 根据ids获取故障详情列表
+     * @param req 入参
+     * @return 故障详情列表
+     */
+    List<FaultDetailResDTO> getByIds(FaultQueryReqDTO req);
+
     FaultDetailResDTO queryDetail(@Param("req") FaultQueryDetailReqDTO req);
 
     List<FaultDetailResDTO> list(@Param("req") FaultQueryDetailReqDTO req);
