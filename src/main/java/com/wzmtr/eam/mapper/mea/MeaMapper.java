@@ -23,6 +23,12 @@ public interface MeaMapper {
 
     void importMea(List<MeaReqDTO> list);
 
+    /**
+     * 新增计量器具
+     * @param meaReqDTO 计量器具参数
+     */
+    void addMea(MeaReqDTO meaReqDTO);
+
     List<MeaResDTO> listMea(List<String> ids);
 
     void updateone(MeaResDTO meaResDTO);

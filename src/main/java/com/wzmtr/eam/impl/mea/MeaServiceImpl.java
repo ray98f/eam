@@ -68,6 +68,14 @@ public class MeaServiceImpl implements MeaService {
     }
 
     @Override
+    public void addMea(MeaReqDTO meaReqDTO) {
+        meaReqDTO.setRecId(TokenUtils.getUuId());
+        meaReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        meaReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+        meaMapper.addMea(meaReqDTO);
+    }
+
+    @Override
     public void exportMea(List<String> ids, HttpServletResponse response) throws IOException {
         List<MeaResDTO> meaList = meaMapper.listMea(ids);
         if (meaList != null && !meaList.isEmpty()) {
