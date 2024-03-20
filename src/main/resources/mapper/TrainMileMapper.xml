@@ -504,6 +504,7 @@
     <insert id="importTrainDailyMile">
         insert ALL
         <foreach collection="list" index="index" item="mile" separator=" ">
+            WHEN NOT EXISTS (SELECT 1 FROM T_TRAIN_MILE WHERE EQUIP_CODE=#{mile.equipCode} and "DAY"=#{mile.day}) THEN
             INTO T_TRAIN_MILE (
             REC_ID,
             EQUIP_CODE,
