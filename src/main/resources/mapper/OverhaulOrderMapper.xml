@@ -814,6 +814,9 @@
         <if test="req.planName!=null and req.planName!=''">
             and PLAN_NAME like '%' || #{req.planName} || '%'
         </if>
+        <if test="req.objectName!=null and req.objectName!=''">
+            and ext1 like '%' || #{req.objectName} || '%'
+        </if>
         <if test="req.lineNo!=null and req.lineNo!=''">
             and LINE_NO=#{req.lineNo}
         </if>

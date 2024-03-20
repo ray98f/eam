@@ -131,7 +131,7 @@ public class OtherEquipServiceImpl implements OtherEquipService {
             otherEquipMapper.updateEquip(req);
             otherEquipMapper.modifyOtherEquip(req);
         }
-        throw new CommonException(ErrorCode.NORMAL_ERROR, "特种设备编号为" + String.join("、", otherCode) + "的特种设备导入失败，请重试");
+        throw new CommonException(ErrorCode.NORMAL_ERROR, "其他设备编号为" + String.join("、", otherCode) + "的其他设备导入失败，请重试");
     }
 
     @Override
