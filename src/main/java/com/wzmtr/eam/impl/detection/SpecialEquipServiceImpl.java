@@ -7,16 +7,16 @@ import com.wzmtr.eam.dto.req.detection.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelSpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.detection.SpecialEquipHistoryResDTO;
 import com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO;
+import com.wzmtr.eam.dto.res.detection.SpecialEquipTypeResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelSpecialEquipHistoryResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelSpecialEquipResDTO;
-import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.detection.SpecialEquipMapper;
-import com.wzmtr.eam.mapper.dict.DictionariesMapper;
+import com.wzmtr.eam.mapper.detection.SpecialEquipTypeMapper;
 import com.wzmtr.eam.service.detection.SpecialEquipService;
 import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -47,10 +47,10 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
     private SpecialEquipMapper specialEquipMapper;
 
     @Autowired
-    private OrganizationMapper organizationMapper;
+    private SpecialEquipTypeMapper specialEquipTypeMapper;
 
     @Autowired
-    private DictionariesMapper dictionariesMapper;
+    private OrganizationMapper organizationMapper;
 
     @Override
     public Page<SpecialEquipResDTO> pageSpecialEquip(String equipCode, String equipName, String specialEquipCode, String factNo,
@@ -99,6 +99,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
 
     @Override
     public void importSpecialEquip(MultipartFile file) {
+        List<String> specialCode = new ArrayList<>();
         List<ExcelSpecialEquipReqDTO> list = EasyExcelUtils.read(file, ExcelSpecialEquipReqDTO.class);
         for (ExcelSpecialEquipReqDTO reqDTO : list) {
             SpecialEquipReqDTO req = new SpecialEquipReqDTO();
@@ -109,11 +110,17 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
             req.setRecRevisor(TokenUtils.getCurrentPersonId());
             req.setRecReviseTime(DateUtils.getCurrentTime());
             if (StringUtils.isNotEmpty(reqDTO.getSpecialEquipType())) {
-                req.setSpecialEquipType("电梯".equals(reqDTO.getSpecialEquipType()) ? "10" : "起重机".equals(reqDTO.getSpecialEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getSpecialEquipType()) ? "30" : "40");
+                SpecialEquipTypeResDTO res = specialEquipTypeMapper.getSpecialEquipTypeDetailByType(null, reqDTO.getSpecialEquipType());
+                if (Objects.isNull(res)) {
+                    specialCode.add(req.getSpecialEquipCode());
+                    continue;
+                }
+                req.setSpecialEquipType(res.getTypeName());
             }
             SysOffice manageOrg = organizationMapper.getByNames(reqDTO.getManageOrg());
             SysOffice secOrg = organizationMapper.getByNames(reqDTO.getSecOrg());
             if (Objects.isNull(manageOrg) || Objects.isNull(secOrg)) {
+                specialCode.add(req.getSpecialEquipCode());
                 continue;
             }
             req.setManageOrg(manageOrg.getId());
@@ -121,6 +128,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
             specialEquipMapper.updateEquip(req);
             specialEquipMapper.modifySpecialEquip(req);
         }
+        throw new CommonException(ErrorCode.NORMAL_ERROR, "特种设备编号为" + String.join("、", specialCode) + "的特种设备导入失败，请重试");
     }
 
     @Override
@@ -145,12 +153,11 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
             for (SpecialEquipResDTO resDTO : specialEquipResDTOList) {
                 ExcelSpecialEquipResDTO res = new ExcelSpecialEquipResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                List<Dictionaries> dicList = dictionariesMapper.list("dm.specialequiptype", resDTO.getSpecialEquipType() == null ? " " : resDTO.getSpecialEquipType(), null);
-                if (dicList != null && !dicList.isEmpty()) {
-                    res.setSpecialEquipType(dicList.get(0).getItemCname());
-                } else {
-                    res.setSpecialEquipType("");
+                SpecialEquipTypeResDTO specialEquipType = specialEquipTypeMapper.getSpecialEquipTypeDetailByType(resDTO.getSpecialEquipType(), null);
+                if (Objects.isNull(specialEquipType)) {
+                    continue;
                 }
+                res.setSpecialEquipType(specialEquipType.getTypeName());
                 res.setUseLineNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getUseLineNo()) ? "S1线" : "S2线");
                 list.add(res);
             }

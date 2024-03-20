@@ -143,7 +143,7 @@ public class SpecialEquipTypeController {
     @GetMapping("/list")
     @ApiOperation(value = "获取特种设备分类列表")
     public DataResponse<List<SpecialEquipTypeResDTO>> listSpecialEquipType(@RequestParam(required = false) String typeCode,
-                                                                          @RequestParam(required = false) String typeName) {
+                                                                           @RequestParam(required = false) String typeName) {
         return DataResponse.of(specialEquipTypeService.listSpecialEquipType(typeCode, typeName));
     }
 }

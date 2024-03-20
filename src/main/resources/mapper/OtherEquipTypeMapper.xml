@@ -167,4 +167,28 @@
         </if>
         ORDER BY TYPE_CODE asc
     </select>
+
+    <select id="getOtherEquipTypeDetailByType" resultType="com.wzmtr.eam.dto.res.detection.OtherEquipTypeResDTO">
+        SELECT
+        REC_ID,
+        TYPE_CODE,
+        TYPE_NAME,
+        DETECTION_PERIOD,
+        REC_CREATOR,
+        REC_CREATE_TIME,
+        REC_REVISOR,
+        REC_REVISE_TIME,
+        REC_DELETOR,
+        REC_DELETE_TIME,
+        DELETE_FLAG
+        FROM T_OTHER_EQUIP_TYPE
+        where DELETE_FLAG='0'
+        <if test="code!=null and code!=''">
+            and TYPE_CODE=#{code}
+        </if>
+        <if test="name!=null and name!=''">
+            and TYPE_NAME=#{name}
+        </if>
+        and rownum=1
+    </select>
 </mapper>
