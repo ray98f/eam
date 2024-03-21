@@ -131,4 +131,10 @@
             </if>
         </trim>
     </select>
+
+    <select id="getRegionByRegionCode" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
+        SELECT r.REC_ID, r.PARENT_NODE_REC_ID, r.NODE_NAME, r.NODE_CODE, r.REC_STATUS, r.LINE_CODE, r.REMARK
+        FROM SYS_REGION r
+        where r.NODE_NAME=#{regionCode}
+    </select>
 </mapper>
