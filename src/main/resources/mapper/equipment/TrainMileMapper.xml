@@ -66,11 +66,20 @@
 
     <update id="updateTrainMile">
         update T_EQUIPMENT set
-        TOTAL_MILES=#{totalMiles},
-        TOTAL_TRACTION_ENERGY = #{totalTractionEnergy},
-        TOTAL_AUXILIARY_ENERGY = #{totalAuxiliaryEnergy},
-        TOTAL_REGENERATED_ELECTRICITY = #{totalRegenratedElectricity}
-        where DELETE_FLAG='0'
+        <if test="totalMiles!=null and totalMiles!=''">
+            TOTAL_MILES=#{totalMiles},
+        </if>
+        <if test="totalTractionEnergy!=null and totalTractionEnergy!=''">
+            TOTAL_TRACTION_ENERGY = #{totalTractionEnergy},
+        </if>
+        <if test="totalAuxiliaryEnergy!=null and totalAuxiliaryEnergy!=''">
+            TOTAL_AUXILIARY_ENERGY = #{totalAuxiliaryEnergy},
+        </if>
+        <if test="totalRegenratedElectricity!=null and totalRegenratedElectricity!=''">
+            TOTAL_REGENERATED_ELECTRICITY = #{totalRegenratedElectricity},
+        </if>
+        DELETE_FLAG='0'
+        WHERE DELETE_FLAG='0'
         <if test="recId!=null and recId!=''">
             AND REC_ID=#{recId}
         </if>

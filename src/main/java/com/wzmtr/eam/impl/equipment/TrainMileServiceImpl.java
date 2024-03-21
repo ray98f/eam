@@ -202,6 +202,10 @@ public class TrainMileServiceImpl implements TrainMileService {
         TrainMileReqDTO trainMileReqDTO = new TrainMileReqDTO();
         BeanUtils.copyProperties(trainMileDailyReqDTO, trainMileReqDTO);
         trainMileReqDTO.setRecId(null);
+        trainMileReqDTO.setTotalMiles(String.valueOf(trainMileDailyReqDTO.getTotalWorkMile()));
+        trainMileReqDTO.setTotalTractionEnergy(String.valueOf(trainMileDailyReqDTO.getTotalTractionEnergy()));
+        trainMileReqDTO.setTotalAuxiliaryEnergy(String.valueOf(trainMileDailyReqDTO.getTotalAuxiliaryEnergy()));
+        trainMileReqDTO.setTotalRegenratedElectricity(String.valueOf(trainMileDailyReqDTO.getTotalRegenratedElectricity()));
         trainMileMapper.updateTrainMile(trainMileReqDTO);
     }
 
