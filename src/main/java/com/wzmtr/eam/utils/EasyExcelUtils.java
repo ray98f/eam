@@ -104,14 +104,12 @@ public class EasyExcelUtils {
             EasyExcel.write(outputStream, list.get(0).getClass())
                     .sheet(name)
                     .registerWriteHandler(new CustomCellWriteWidthConfig())
-//                    .registerWriteHandler(new CustomCellWriteHeightConfig())
                     .registerWriteHandler(EasyExcelUtils.getStyleStrategy())
                     .doWrite(list);
         }
     }
 
     /**
-     /**
      * 文件导入数据读取
      * @param file 文件
      * @param head 头部

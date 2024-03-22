@@ -84,7 +84,7 @@
             AND REC_ID=#{recId}
         </if>
         <if test="equipCode!=null and equipCode!=''">
-            AND equipCode=#{equipCode}
+            AND EQUIP_CODE=#{equipCode}
         </if>
     </update>
 

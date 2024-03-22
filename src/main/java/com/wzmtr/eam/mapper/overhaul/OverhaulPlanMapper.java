@@ -61,4 +61,11 @@ public interface OverhaulPlanMapper {
     void modifyOverhaulObject(OverhaulObjectReqDTO overhaulObjectReqDTO);
 
     void deleteOverhaulObject(String id, String userId, String time);
+
+    /**
+     * 获取需要触发的检修计划
+     * @param nowDay 当前日期，如0206
+     * @return 需要自动触发的检修计划id
+     */
+    List<OverhaulPlanResDTO> getTriggerOverhaulPlan(String nowDay);
 }

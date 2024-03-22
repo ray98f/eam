@@ -90,6 +90,8 @@ public class CommonConstants {
     public static final int TWENTY = 20;
     public static final int THIRTY = 30;
 
+    public static final String MESSAGE = "message";
+
     /**
      * 流程相关
      */

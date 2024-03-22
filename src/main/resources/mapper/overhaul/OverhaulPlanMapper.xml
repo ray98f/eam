@@ -815,61 +815,61 @@
     <update id="modifyOverhaulObject">
         UPDATE T_OVERHAUL_OBJECT SET
         <if test="planCode!=null">
-            PLAN_CODE	=#{planCode},   <!-- 计划编号 -->
+            PLAN_CODE=#{planCode},   <!-- 计划编号 -->
         </if>
         <if test="planName!=null">
-            PLAN_NAME	=#{planName},   <!-- 计划名称 -->
+            PLAN_NAME=#{planName},   <!-- 计划名称 -->
         </if>
         <if test="objectCode!=null">
-            OBJECT_CODE	=#{objectCode},   <!-- 对象编码 -->
+            OBJECT_CODE=#{objectCode},   <!-- 对象编码 -->
         </if>
         <if test="objectName!=null">
-            OBJECT_NAME	=#{objectName},   <!-- 对象名称 -->
+            OBJECT_NAME=#{objectName},   <!-- 对象名称 -->
         </if>
         <if test="taskContent!=null">
-            TASK_CONTENT	=#{taskContent},   <!-- 作业内容 -->
+            TASK_CONTENT=#{taskContent},   <!-- 作业内容 -->
         </if>
         <if test="taskArea!=null">
-            TASK_AREA	=#{taskArea},   <!-- 作业区域 -->
+            TASK_AREA=#{taskArea},   <!-- 作业区域 -->
         </if>
         <if test="taskRequest!=null">
-            TASK_REQUEST	=#{taskRequest},   <!-- 作业需求 -->
+            TASK_REQUEST=#{taskRequest},   <!-- 作业需求 -->
         </if>
         <if test="taskRemark!=null">
-            TASK_REMARK	=#{taskRemark},   <!-- 作业备注 -->
+            TASK_REMARK=#{taskRemark},   <!-- 作业备注 -->
         </if>
         <if test="templateId!=null">
-            TEMPLATE_ID	=#{templateId},   <!-- 模板编号 -->
+            TEMPLATE_ID=#{templateId},   <!-- 模板编号 -->
         </if>
         <if test="templateName!=null">
-            TEMPLATE_NAME	=#{templateName},   <!-- 模板名称 -->
+            TEMPLATE_NAME=#{templateName},   <!-- 模板名称 -->
         </if>
         <if test="taskSpot!=null">
-            TASK_SPOT	=#{taskSpot},   <!-- 作业场 -->
+            TASK_SPOT=#{taskSpot},   <!-- 作业场 -->
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG	=#{archiveFlag},   <!-- 归档标记 -->
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
         </if>
         <if test="remark!=null">
-            REMARK	=#{remark},   <!-- 说明 -->
+            REMARK=#{remark},   <!-- 说明 -->
         </if>
         <if test="ext1!=null">
-            EXT1	=#{ext1},   <!-- 扩展字段1 -->
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
         </if>
         <if test="ext2!=null">
-            EXT2	=#{ext2},   <!-- 扩展字段2 -->
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
         </if>
         <if test="ext3!=null">
-            EXT3	=#{ext3},   <!-- 扩展字段3 -->
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
         </if>
         <if test="ext4!=null">
-            EXT4	=#{ext4},   <!-- 扩展字段4 -->
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
         </if>
         <if test="ext5!=null">
-            EXT5	=#{ext5},  <!-- 扩展字段5 -->
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
         </if>
-        REC_REVISOR	=#{recRevisor},   <!-- 记录修改者 -->
-        REC_REVISE_TIME	=#{recReviseTime}   <!-- 记录修改时间 -->
+        REC_REVISOR=#{recRevisor},   <!-- 记录修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 记录修改时间 -->
         WHERE REC_ID =#{recId}
     </update>
 
@@ -878,5 +878,23 @@
         DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
         WHERE REC_ID=#{id}
     </update>
+
+    <select id="getTriggerOverhaulPlan" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
+        SELECT DISTINCT a.*
+        FROM (SELECT op.PLAN_CODE, op.SUBJECT_CODE
+        FROM T_OVERHAUL_PLAN op
+        LEFT JOIN T_WO_RULE_DETAIL rd ON rd.RULE_CODE=op.RULE_CODE AND rd.DELETE_FLAG='0'
+        WHERE op.RULE_CODE IS NOT NULL AND #{nowDay}>=rd.START_DATE AND rd.END_DATE>=#{nowDay}
+        AND to_date(op.BEFORE_TRIGGER_TIME,'YYYY-MM-DD HH24:MI:SS')>sysdate-((rd.PERIOD+rd.BEFORE_TIME)/24)
+        UNION ALL
+        SELECT op.PLAN_CODE, op.SUBJECT_CODE
+        FROM T_OVERHAUL_PLAN op
+        LEFT JOIN T_WO_RULE_DETAIL rd ON rd.RULE_CODE=op.RULE_CODE AND rd.DELETE_FLAG='0'
+        LEFT JOIN T_OVERHAUL_OBJECT oo ON oo.PLAN_CODE=op.PLAN_CODE AND oo.DELETE_FLAG='0'
+        LEFT JOIN T_TRAIN_MILE tm1 ON tm1.EQUIP_CODE=oo.OBJECT_CODE AND tm1."DAY"=to_char(to_date(op.BEFORE_TRIGGER_TIME,'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD')
+        LEFT JOIN T_TRAIN_MILE tm2 ON tm2.EQUIP_CODE=oo.OBJECT_CODE AND tm2."DAY"=to_char(SYSDATE,'YYYY-MM-DD')
+        WHERE op.RULE_CODE IS NOT NULL AND #{nowDay}>=rd.START_DATE AND rd.END_DATE>=#{nowDay} AND op.SUBJECT_CODE='07'
+        AND tm2.TOTAL_WORK_MILE-tm1.TOTAL_WORK_MILE>=TO_NUMBER(NVL(rd.EXT1,'0'))-TO_NUMBER(NVL(rd.EXT2,'0'))) a
+    </select>
 
 </mapper>
