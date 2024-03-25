@@ -90,6 +90,9 @@ public class FaultDetailResDTO {
     private String dispatchUserName;
     @ApiModelProperty(value = "维修负责人")
     private String repairRespUserName;
+
+    @ApiModelProperty(value = "维修负责人电话")
+    private String repairRespUserMobile;
     @ApiModelProperty(value = "验收人")
     private String checkUserName;
     @ApiModelProperty(value = "关闭人")
