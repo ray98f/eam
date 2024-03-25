@@ -241,19 +241,21 @@
     
     <update id="finishedOverhaulOrder" parameterType="com.wzmtr.eam.dto.req.overhaul.OverhaulItemTroubleshootReqDTO">
         UPDATE T_OVERHAUL_ORDER SET
-        WORK_STATUS=4,
-        <if test="actualStartTime!=null">
-            ACTUAL_START_TIME=#{actualStartTime},
-        </if>
-        <if test="actualEndTime!=null">
-            ACTUAL_END_TIME=#{actualEndTime},
-        </if>
-        <if test="startMile!=null">
-            START_MILE=#{startMile},
-        </if>
-        <if test="endMile!=null">
-            END_MILE=#{endMile},
-        </if>
+        <trim suffixOverrides=",">
+            WORK_STATUS=4,
+            <if test="actualStartTime!=null">
+                ACTUAL_START_TIME=#{actualStartTime},
+            </if>
+            <if test="actualEndTime!=null">
+                ACTUAL_END_TIME=#{actualEndTime},
+            </if>
+            <if test="startMile!=null">
+                START_MILE=#{startMile},
+            </if>
+            <if test="endMile!=null">
+                END_MILE=#{endMile},
+            </if>
+        </trim>
         WHERE NOT EXISTS (SELECT REC_ID FROM T_OVERHAUL_ITEM
         WHERE ORDER_CODE=#{orderCode}
         AND WORK_RESULT IS NOT NULL)

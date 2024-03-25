@@ -111,13 +111,19 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             for (OverhaulOrderResDTO res : list) {
                 OverhaulOrderResDTO ext = overhaulOrderMapper.getCarOrderExt(res.getOrderCode(), res.getPlanCode());
                 OverhaulOrderResDTO rule = overhaulOrderMapper.getCarOrderRuleExt(res.getOrderCode(), res.getPlanCode());
-                res.setLastMile(ext.getLastMile());
-                res.setLastDay(ext.getLastDay());
-                res.setProvideMile(rule.getProvideMile());
-                res.setProvideTime(rule.getProvideTime());
-                res.setNowMile(ext.getLastMile() + rule.getProvideMile());
-                if (ext.getLastDay() != null && rule.getProvideTime() != null) {
-                    res.setNowDay(DateUtils.addDateHour(ext.getLastDay(), rule.getProvideTime()));
+                if (!Objects.isNull(ext)) {
+                    res.setLastMile(ext.getLastMile());
+                    res.setLastDay(ext.getLastDay());
+                }
+                if (!Objects.isNull(rule)) {
+                    res.setProvideMile(rule.getProvideMile());
+                    res.setProvideTime(rule.getProvideTime());
+                }
+                if (!Objects.isNull(ext) && !Objects.isNull(rule)) {
+                    res.setNowMile(ext.getLastMile() + rule.getProvideMile());
+                    if (ext.getLastDay() != null && rule.getProvideTime() != null) {
+                        res.setNowDay(DateUtils.addDateHour(ext.getLastDay(), rule.getProvideTime()));
+                    }
                 }
             }
         }

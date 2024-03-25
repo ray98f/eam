@@ -140,8 +140,9 @@
         EXT3,  <!-- 扩展字段3 -->
         EXT4,  <!-- 扩展字段4 -->
         EXT5,  <!-- 扩展字段5 -->
-        TRAIN_TAG
-        )
+        IF_PHM,
+        IF_RELIABILITY,
+        TRAIN_TAG )
         VALUES (#{recId,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
         #{position2Code,jdbcType=VARCHAR},#{partCode,jdbcType=VARCHAR},#{partName,jdbcType=VARCHAR},#{faultModuleId,jdbcType=VARCHAR},
         #{faultNo,jdbcType=VARCHAR},
@@ -165,7 +166,9 @@
         #{deleteFlag,jdbcType=VARCHAR},
         #{archiveFlag,jdbcType=VARCHAR}, #{recStatus,jdbcType=VARCHAR}, #{ext1,jdbcType=VARCHAR},
         #{ext2,jdbcType=VARCHAR}, #{ext3,jdbcType=VARCHAR},
-        #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR},#{trainTag,jdbcType=VARCHAR})
+        #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR},
+        #{ifPhm,jdbcType=VARCHAR},#{ifReliability,jdbcType=VARCHAR},
+        #{trainTag,jdbcType=VARCHAR})
     </insert>
     <update id="updateFaultOrder">
         UPDATE T_FAULT_ORDER SET
@@ -496,6 +499,12 @@
         </if>
         <if test="ext5!=null and ext5!=''">
             EXT5=#{ext5},
+        </if>
+        <if test="ifPhm!=null">
+            IF_PHM=#{ifPhm},
+        </if>
+        <if test="ifReliability!=null">
+            IF_RELIABILITY=#{ifReliability},
         </if>
         <if test="trainTag!=null and trainTag!=''">
             TRAIN_TAG=#{trainTag},

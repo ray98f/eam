@@ -205,4 +205,9 @@ public class FaultInfoDO {
     private String trainTag;
     @ApiModelProperty(value = "故障模块")
     private String faultModuleId;
+    @ApiModelProperty(value = "是否由phm报出 0是 1否")
+    private String ifPhm;
+    @ApiModelProperty(value = "是否列入列车可靠性统计 0是 1否")
+    private String ifReliability;
+
 }

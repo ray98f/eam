@@ -110,6 +110,10 @@ public class FaultReportReqDTO {
     private String partName;
     @ApiModelProperty(value = "故障状态 10 草稿 20 提报")
     private String faultStatus;
+    @ApiModelProperty(value = "是否由phm报出 0是 1否")
+    private String ifPhm;
+    @ApiModelProperty(value = "是否列入列车可靠性统计 0是 1否")
+    private String ifReliability;
 
     /**
      * 数据库非空字段兜底赋值，初始化为空字符串
