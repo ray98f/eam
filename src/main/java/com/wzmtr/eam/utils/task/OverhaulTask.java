@@ -2,9 +2,12 @@ package com.wzmtr.eam.utils.task;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulPlanReqDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
 import com.wzmtr.eam.entity.CurrentLoginUser;
+import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -45,6 +48,9 @@ public class OverhaulTask {
     private OverhaulPlanMapper overhaulPlanMapper;
 
     @Autowired
+    private OverhaulOrderMapper overhaulOrderMapper;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     /**
@@ -66,12 +72,14 @@ public class OverhaulTask {
             for (OverhaulPlanResDTO plan : plans) {
                 OverhaulPlanReqDTO req = new OverhaulPlanReqDTO();
                 BeanUtils.copyProperties(plan, req);
-                // 调用本地接口触发检修计划
-                String url = baseUrl + "/overhaul/zc/plan/trigger";
-                HttpEntity<String> strEntity = new HttpEntity<>(JSONObject.toJSONString(req), headers);
-                JSONObject res = restTemplate.postForObject(url, strEntity, JSONObject.class);
-                if (!CommonConstants.ZERO_STRING.equals(Objects.requireNonNull(res).getString(CommonConstants.CODE))) {
-                    log.error("计划编号为：" + req.getPlanCode() + "的检修计划自动触发失败，错误原因为：" + Objects.requireNonNull(res).getString(CommonConstants.MESSAGE));
+                if (checkHasNotOrder(plan.getPlanCode())) {
+                    // 调用本地接口触发检修计划
+                    String url = baseUrl + "/overhaul/zc/plan/trigger";
+                    HttpEntity<String> strEntity = new HttpEntity<>(JSONObject.toJSONString(req), headers);
+                    JSONObject res = restTemplate.postForObject(url, strEntity, JSONObject.class);
+                    if (!CommonConstants.ZERO_STRING.equals(Objects.requireNonNull(res).getString(CommonConstants.CODE))) {
+                        log.error("计划编号为：" + req.getPlanCode() + "的检修计划自动触发失败，错误原因为：" + Objects.requireNonNull(res).getString(CommonConstants.MESSAGE));
+                    }
                 }
             }
         }
@@ -92,6 +100,19 @@ public class OverhaulTask {
         person.setOfficeName("办公室");
         person.setNames("集团本级-办公室");
         return person;
+    }
+
+    /**
+     * 判断检修计划中是否存在未做完的工单
+     * @param planCode 检修计划编号
+     * @return 是否存在未做完的工单
+     */
+    public boolean checkHasNotOrder(String planCode) {
+        OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
+        overhaulOrderListReqDTO.setPlanCode(planCode);
+        overhaulOrderListReqDTO.setNewTime("flag");
+        List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
+        return StringUtils.isEmpty(list);
     }
 
 }
