@@ -271,6 +271,17 @@ public class OverhaulOrderController {
     }
 
     /**
+     * 判断是否存在未填报的检修项
+     * @param orderCode 工单编号
+     * @return 是否存在未填报的检修项
+     */
+    @GetMapping("/item/troubleshoot/had")
+    @ApiOperation(value = "判断是否存在未填报的检修项")
+    public DataResponse<Integer> selectHadFinishedOverhaulOrder(@RequestParam @ApiParam("工单编号") String orderCode) {
+        return DataResponse.of(overhaulOrderService.selectHadFinishedOverhaulOrder(orderCode));
+    }
+
+    /**
      * 排查检修项
      * @param troubleshootReqDTO 排查检修项信息
      * @return 操作成功/失败

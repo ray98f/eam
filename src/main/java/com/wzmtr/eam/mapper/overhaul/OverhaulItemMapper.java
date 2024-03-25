@@ -3,6 +3,7 @@ package com.wzmtr.eam.mapper.overhaul;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulItemReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulItemTroubleshootReqDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -49,11 +50,17 @@ public interface OverhaulItemMapper {
     void troubleshootOverhaulItem(OverhaulItemResDTO overhaulItem, String workUserId, String workUserName);
 
     /**
-     * 检修工单完工
-     * @param objectCode 对象编号
+     * 判断是否存在未填报的检修项
      * @param orderCode 工单编号
+     * @return 是否存在未填报的检修项
      */
-    void finishedOverhaulOrder(String objectCode, String orderCode);
+    Integer selectHadFinishedOverhaulOrder(String orderCode);
+
+    /**
+     * 检修工单完工
+     * @param troubleshootReqDTO 排产参数
+     */
+    void finishedOverhaulOrder(OverhaulItemTroubleshootReqDTO troubleshootReqDTO);
 
     void insert(OverhaulItemReqDTO overhaulItemReqDTO);
 

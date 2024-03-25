@@ -803,8 +803,10 @@
         and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
         else 9
         end
-        ) as sort
-        FROM T_OVERHAUL_ORDER WHERE 1=1 and DELETE_FLAG='0'
+        ) as sort,
+        ACTUAL_END_TIME as REAL_DAY,
+        END_MILE as REAL_MILE
+        FROM T_OVERHAUL_ORDER WHERE DELETE_FLAG='0'
         <if test="req.orderCode!=null and req.orderCode!=''">
             and ORDER_CODE like '%' || #{req.orderCode} || '%'
         </if>
@@ -825,6 +827,9 @@
         </if>
         <if test="req.subjectCode!=null and req.subjectCode!=''">
             and SUBJECT_CODE=#{req.subjectCode}
+        </if>
+        <if test="req.subjectCode==null or req.subjectCode==''.toString()">
+            and SUBJECT_CODE!='07'
         </if>
         <if test="req.systemCode!=null and req.systemCode!=''">
             and SYSTEM_CODE=#{req.systemCode}
@@ -854,6 +859,21 @@
             and WORK_STATUS NOT IN ('5','8')
         </if>
         ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
+    </select>
+
+    <select id="getCarOrderExt" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT END_MILE AS LAST_MILE, ACTUAL_END_TIME AS LAST_DAY
+        FROM T_OVERHAUL_ORDER
+        WHERE REC_CREATE_TIME IS NOT NULL AND rownum=2 AND PLAN_CODE=#{planCode}
+        ORDER BY REC_CREATE_TIME
+    </select>
+
+    <select id="getCarOrderRuleExt" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT MAX(wrd.EXT1) AS PROVIDE_MILE, MAX(wrd.PERIOD) AS PROVIDE_TIME
+        FROM T_OVERHAUL_ORDER oo
+        LEFT JOIN T_OVERHAUL_PLAN op ON op.PLAN_CODE=oo.PLAN_CODE AND op.DELETE_FLAG='0'
+        LEFT JOIN T_WO_RULE_DETAIL wrd ON wrd.RULE_CODE=op.RULE_CODE AND wrd.DELETE_FLAG='0'
+        WHERE oo.ORDER_CODE=#{orderCode} AND oo.PLAN_CODE=#{planCode}
     </select>
 
     <select id="getOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
@@ -933,7 +953,9 @@
         and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
         else 9
         end
-        ) as sort
+        ) as sort,
+        ACTUAL_END_TIME as REAL_DAY,
+        END_MILE as REAL_MILE
         FROM T_OVERHAUL_ORDER WHERE REC_ID=#{recId}
     </select>
 
@@ -1052,8 +1074,10 @@
         and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
         else 9
         end
-        ) as sort
-        FROM T_OVERHAUL_ORDER WHERE 1=1 and DELETE_FLAG='0'
+        ) as sort,
+        ACTUAL_END_TIME as REAL_DAY,
+        END_MILE as REAL_MILE
+        FROM T_OVERHAUL_ORDER WHERE DELETE_FLAG='0'
         <if test="orderCode!=null and orderCode!=''">
             and ORDER_CODE like '%' || #{orderCode} || '%'
         </if>
@@ -1179,7 +1203,9 @@
         and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
         else 9
         end
-        ) as sort
+        ) as sort,
+        ACTUAL_END_TIME as REAL_DAY,
+        END_MILE as REAL_MILE
         FROM T_OVERHAUL_ORDER WHERE DELETE_FLAG='0' and REC_ID IN (
         <foreach collection="list" index="index" item="id" separator=",">
             #{id}

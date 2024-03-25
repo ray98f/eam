@@ -35,6 +35,22 @@ public interface OverhaulOrderMapper {
 
     Page<OverhaulOrderResDTO> pageOrder(Page<OverhaulOrderResDTO> page, OverhaulOrderListReqDTO req);
 
+    /**
+     * 根据工单编号和计划编号获取工单详情
+     * @param orderCode 工单编号
+     * @param planCode 计划编号
+     * @return 工单详情
+     */
+    OverhaulOrderResDTO getCarOrderExt(String orderCode, String planCode);
+
+    /**
+     * 根据工单编号和计划编号获取工单规则时间和公路数
+     * @param orderCode 工单编号
+     * @param planCode 计划编号
+     * @return 工单规则时间和公路数
+     */
+    OverhaulOrderResDTO getCarOrderRuleExt(String orderCode, String planCode);
+
     OverhaulOrderResDTO getOrder(String recId, String objectFlag);
 
     /**

@@ -107,6 +107,13 @@ public interface OverhaulOrderService {
     void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, HttpServletResponse response) throws IOException;
 
     /**
+     * 判断是否存在未填报的检修项
+     * @param orderCode 工单编号
+     * @return 是否存在未填报的检修项
+     */
+    Integer selectHadFinishedOverhaulOrder(String orderCode);
+
+    /**
      * 排查检修项
      * @param troubleshootReqDTO 排查检修项信息
      */

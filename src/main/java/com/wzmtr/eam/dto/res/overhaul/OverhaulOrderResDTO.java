@@ -184,4 +184,52 @@ public class OverhaulOrderResDTO {
 
     @ApiModelProperty(value = "最后修改人")
     private String lastUpdatePerson;
+
+    /**
+     * 上次检修完成公里数
+     */
+    @ApiModelProperty(value = "上次检修完成公里数")
+    private Double lastMile;
+
+    /**
+     * 上次检修完成日期
+     */
+    @ApiModelProperty(value = "上次检修完成日期")
+    private String lastDay;
+
+    /**
+     * 规定检修周期公里数
+     */
+    @ApiModelProperty(value = "规定检修周期公里数")
+    private Double provideMile;
+
+    /**
+     * 规定检修周期时间h
+     */
+    @ApiModelProperty(value = "规定检修周期时间h")
+    private Integer provideTime;
+
+    /**
+     * 计划本次检修公里数
+     */
+    @ApiModelProperty(value = "计划本次检修公里数")
+    private Double nowMile;
+
+    /**
+     * 计划本次检修日期
+     */
+    @ApiModelProperty(value = "计划本次检修日期")
+    private String nowDay;
+
+    /**
+     * 实际完成检修公里数
+     */
+    @ApiModelProperty(value = "实际完成检修公里数")
+    private Double realMile;
+
+    /**
+     * 实际完成检修日期
+     */
+    @ApiModelProperty(value = "实际完成检修日期")
+    private String realDay;
 }

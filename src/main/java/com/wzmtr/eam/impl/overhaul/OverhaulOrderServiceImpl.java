@@ -104,7 +104,25 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         overhaulOrderListReqDTO.setObjectFlag("1");
-        return overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
+        Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
+        List<OverhaulOrderResDTO> list = page.getRecords();
+        // 专业为车辆的检修工单填充字段
+        if (StringUtils.isNotEmpty(list) && CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderListReqDTO.getSubjectCode())) {
+            for (OverhaulOrderResDTO res : list) {
+                OverhaulOrderResDTO ext = overhaulOrderMapper.getCarOrderExt(res.getOrderCode(), res.getPlanCode());
+                OverhaulOrderResDTO rule = overhaulOrderMapper.getCarOrderRuleExt(res.getOrderCode(), res.getPlanCode());
+                res.setLastMile(ext.getLastMile());
+                res.setLastDay(ext.getLastDay());
+                res.setProvideMile(rule.getProvideMile());
+                res.setProvideTime(rule.getProvideTime());
+                res.setNowMile(ext.getLastMile() + rule.getProvideMile());
+                if (ext.getLastDay() != null && rule.getProvideTime() != null) {
+                    res.setNowDay(DateUtils.addDateHour(ext.getLastDay(), rule.getProvideTime()));
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
@@ -549,6 +567,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         }
     }
 
+    @Override
+    public Integer selectHadFinishedOverhaulOrder(String orderCode) {
+        return overhaulItemMapper.selectHadFinishedOverhaulOrder(orderCode);
+    }
+
     /**
      * 排查检修项
      * @param troubleshootReqDTO 排查检修项信息
@@ -559,7 +582,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             for (OverhaulItemResDTO res : troubleshootReqDTO.getOverhaulItemList()) {
                 overhaulItemMapper.troubleshootOverhaulItem(res, troubleshootReqDTO.getWorkUserId(), troubleshootReqDTO.getWorkUserName());
             }
-            overhaulItemMapper.finishedOverhaulOrder(troubleshootReqDTO.getObjectCode(), troubleshootReqDTO.getOrderCode());
+            overhaulItemMapper.finishedOverhaulOrder(troubleshootReqDTO);
         } else {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }

@@ -137,5 +137,30 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return sdf.format(cal.getTime());
     }
 
+    /**
+     * 给时间加上几个小时
+     * @param day 当前时间 格式：yyyy-MM-dd HH:mm:ss
+     * @param hour 需要加的时间
+     * @return 更新后的时间
+     */
+    public static String addDateHour(String day, int hour){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date;
+        try {
+            date = sdf.parse(day);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        if (date == null) {
+            return "";
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        // 24小时制
+        cal.add(Calendar.HOUR, hour);
+        date = cal.getTime();
+        return sdf.format(date);
+    }
+
 
 }
