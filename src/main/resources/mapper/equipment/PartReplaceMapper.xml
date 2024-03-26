@@ -19,6 +19,7 @@
         REPLACE_DATE	as "replaceDate",  <!-- 处理日期 -->
         REMARK	as "remark",  <!-- 备注 -->
         DOC_ID	as "docId",  <!-- 附件编号 -->
+        CAR_NO	as "carNo",  <!-- 车厢号 -->
         REC_CREATOR	as "recCreator",  <!-- 创建者 -->
         REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
         REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
@@ -72,6 +73,7 @@
         REPLACE_DATE	as "replaceDate",  <!-- 处理日期 -->
         REMARK	as "remark",  <!-- 备注 -->
         DOC_ID	as "docId",  <!-- 附件编号 -->
+        CAR_NO	as "carNo",  <!-- 车厢号 -->
         REC_CREATOR	as "recCreator",  <!-- 创建者 -->
         REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
         REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
@@ -128,6 +130,7 @@
         REPLACE_DATE,  <!-- 处理日期 -->
         REMARK,  <!-- 备注 -->
         DOC_ID,  <!-- 附件编号 -->
+        CAR_NO,
         REC_CREATOR,  <!-- 创建者 -->
         REC_CREATE_TIME,  <!-- 创建时间 -->
         REC_REVISOR,  <!-- 修改者 -->
@@ -160,6 +163,7 @@
         #{replaceDate,jdbcType=VARCHAR},
         #{remark,jdbcType=VARCHAR},
         #{docId,jdbcType=VARCHAR},
+        #{carNo,jdbcType=VARCHAR},
         #{recCreator,jdbcType=VARCHAR},
         #{recCreateTime,jdbcType=VARCHAR},
         #{recRevisor,jdbcType=VARCHAR},
@@ -207,6 +211,7 @@
             REPLACE_DATE,  <!-- 处理日期 -->
             REMARK,  <!-- 备注 -->
             DOC_ID,  <!-- 附件编号 -->
+            CAR_NO,
             REC_CREATOR,  <!-- 创建者 -->
             REC_CREATE_TIME,  <!-- 创建时间 -->
             REC_REVISOR,  <!-- 修改者 -->
@@ -239,6 +244,7 @@
             #{part.replaceDate,jdbcType=VARCHAR},
             #{part.remark,jdbcType=VARCHAR},
             #{part.docId,jdbcType=VARCHAR},
+            #{part.carNo,jdbcType=VARCHAR},
             #{part.recCreator,jdbcType=VARCHAR},
             #{part.recCreateTime,jdbcType=VARCHAR},
             #{part.recRevisor,jdbcType=VARCHAR},
@@ -276,6 +282,7 @@
         REPLACE_DATE	as "replaceDate",  <!-- 处理日期 -->
         REMARK	as "remark",  <!-- 备注 -->
         DOC_ID	as "docId",  <!-- 附件编号 -->
+        CAR_NO	as "carNo",  <!-- 车厢号 -->
         REC_CREATOR	as "recCreator",  <!-- 创建者 -->
         REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
         REC_REVISOR	as "recRevisor",  <!-- 修改者 -->

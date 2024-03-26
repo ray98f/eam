@@ -56,6 +56,9 @@ public class PartReplaceResDTO {
     @ApiModelProperty(value = "附件编号")
     private String docId;
 
+    @ApiModelProperty(value = "车厢号")
+    private String carNo;
+
     @ApiModelProperty(value = "创建者")
     private String recCreator;
 
