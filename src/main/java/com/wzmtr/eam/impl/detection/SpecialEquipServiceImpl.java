@@ -154,10 +154,9 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                 ExcelSpecialEquipResDTO res = new ExcelSpecialEquipResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 SpecialEquipTypeResDTO specialEquipType = specialEquipTypeMapper.getSpecialEquipTypeDetailByType(resDTO.getSpecialEquipType(), null);
-                if (Objects.isNull(specialEquipType)) {
-                    continue;
+                if (!Objects.isNull(specialEquipType)) {
+                    res.setSpecialEquipType(specialEquipType.getTypeName());
                 }
-                res.setSpecialEquipType(specialEquipType.getTypeName());
                 res.setUseLineNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getUseLineNo()) ? "S1线" : "S2线");
                 list.add(res);
             }

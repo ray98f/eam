@@ -102,6 +102,12 @@
         WHERE ID=#{id} AND DEL_FLAG=0
     </update>
 
+    <update id="updateBpmnRole">
+        update T_BPMN_EXAMINE set
+        ROLE_NAME=#{roleName}
+        where ROLE_ID=#{roleCode}
+    </update>
+
     <select id="getRolePerms" resultType="java.lang.String">
         select PERMISSION_ID from SYS_ROLE_PERMISSION where ROLE_ID=#{id}
     </select>

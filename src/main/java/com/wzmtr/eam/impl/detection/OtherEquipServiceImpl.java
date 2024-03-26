@@ -150,10 +150,9 @@ public class OtherEquipServiceImpl implements OtherEquipService {
                 ExcelOtherEquipResDTO res = new ExcelOtherEquipResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 OtherEquipTypeResDTO otherEquipType = otherEquipTypeMapper.getOtherEquipTypeDetailByType(resDTO.getOtherEquipType(), null);
-                if (Objects.isNull(otherEquipType)) {
-                    continue;
+                if (!Objects.isNull(otherEquipType)) {
+                    res.setOtherEquipType(otherEquipType.getTypeName());
                 }
-                res.setOtherEquipType(otherEquipType.getTypeName());
                 res.setUseLineNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getUseLineNo()) ? "S1线" : "S2线");
                 list.add(res);
             }

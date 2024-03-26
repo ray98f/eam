@@ -187,79 +187,79 @@
     <update id="modifyOverhaulTpl">
         UPDATE T_OVERHAUL_TPL SET
         <if test="templateId!=null">
-            TEMPLATE_ID	=#{templateId},   <!-- 模板编号 -->
+            TEMPLATE_ID=#{templateId},   <!-- 模板编号 -->
         </if>
         <if test="templateName!=null">
-            TEMPLATE_NAME	=#{templateName},   <!-- 模板名称 -->
+            TEMPLATE_NAME=#{templateName},   <!-- 模板名称 -->
         </if>
         <if test="lineNo!=null">
-            LINE_NO	=#{lineNo},   <!-- 线路编码 -->
+            LINE_NO=#{lineNo},   <!-- 线路编码 -->
         </if>
         <if test="lineName!=null">
-            LINE_NAME	=#{lineName},   <!-- 线路名称 -->
+            LINE_NAME=#{lineName},   <!-- 线路名称 -->
         </if>
         <if test="position1Name!=null">
-            POSITION1_NAME	=#{position1Name},   <!-- 位置1  -->
+            POSITION1_NAME=#{position1Name},   <!-- 位置1  -->
         </if>
         <if test="position1Code!=null">
-            POSITION1_CODE	=#{position1Code},   <!-- 位置1代码 -->
+            POSITION1_CODE=#{position1Code},   <!-- 位置1代码 -->
         </if>
         <if test="subjectCode!=null">
-            SUBJECT_CODE	=#{subjectCode},   <!-- 设备专业编码 -->
+            SUBJECT_CODE=#{subjectCode},   <!-- 设备专业编码 -->
         </if>
         <if test="subjectName!=null">
-            SUBJECT_NAME	=#{subjectName},   <!-- 设备专业名称 -->
+            SUBJECT_NAME=#{subjectName},   <!-- 设备专业名称 -->
         </if>
         <if test="systemCode!=null">
-            SYSTEM_CODE	=#{systemCode},   <!-- 系统编码 -->
+            SYSTEM_CODE=#{systemCode},   <!-- 系统编码 -->
         </if>
         <if test="systemName!=null">
-            SYSTEM_NAME	=#{systemName},   <!-- 系统名称 -->
+            SYSTEM_NAME=#{systemName},   <!-- 系统名称 -->
         </if>
         <if test="equipTypeCode!=null">
-            EQUIP_TYPE_CODE	=#{equipTypeCode},   <!-- 设备类别编码 -->
+            EQUIP_TYPE_CODE=#{equipTypeCode},   <!-- 设备类别编码 -->
         </if>
         <if test="equipTypeName!=null">
-            EQUIP_TYPE_NAME	=#{equipTypeName},   <!-- 设备类别名称 -->
+            EQUIP_TYPE_NAME=#{equipTypeName},   <!-- 设备类别名称 -->
         </if>
         <if test="trialStatus!=null">
-            TRIAL_STATUS	=#{trialStatus},   <!-- 审批状态 -->
+            TRIAL_STATUS=#{trialStatus},   <!-- 审批状态 -->
         </if>
         <if test="workFlowInstId!=null">
-            WORK_FLOW_INST_ID	=#{workFlowInstId},   <!-- 工作流实例ID -->
+            WORK_FLOW_INST_ID=#{workFlowInstId},   <!-- 工作流实例ID -->
         </if>
         <if test="workFlowInstStatus!=null">
-            WORK_FLOW_INST_STATUS	=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
+            WORK_FLOW_INST_STATUS=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
         </if>
         <if test="remark!=null">
-            REMARK	=#{remark},   <!-- 说明 -->
+            REMARK=#{remark},   <!-- 说明 -->
         </if>
         <if test="companyCode!=null">
-            COMPANY_CODE	=#{companyCode},   <!-- 公司代码 -->
+            COMPANY_CODE=#{companyCode},   <!-- 公司代码 -->
         </if>
         <if test="companyName!=null">
-            COMPANY_NAME	=#{companyName},   <!-- 公司名称 -->
+            COMPANY_NAME=#{companyName},   <!-- 公司名称 -->
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG	=#{archiveFlag},   <!-- 归档标记 -->
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
         </if>
         <if test="ext1!=null">
-            EXT1	=#{ext1},   <!-- 扩展字段1 -->
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
         </if>
         <if test="ext2!=null">
-            EXT2	=#{ext2},   <!-- 扩展字段2 -->
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
         </if>
         <if test="ext3!=null">
-            EXT3	=#{ext3},   <!-- 扩展字段3 -->
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
         </if>
         <if test="ext4!=null">
-            EXT4	=#{ext4},   <!-- 扩展字段4 -->
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
         </if>
         <if test="ext5!=null">
-            EXT5	=#{ext5},  <!-- 扩展字段5 -->
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
         </if>
-        REC_REVISOR	=#{recRevisor},   <!-- 记录修改者 -->
-        REC_REVISE_TIME	=#{recReviseTime}   <!-- 记录修改时间 -->
+        REC_REVISOR=#{recRevisor},   <!-- 记录修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 记录修改时间 -->
         WHERE REC_ID =#{recId}
     </update>
 
@@ -355,11 +355,11 @@
 
     <update id="changeOverhaulTpl">
         UPDATE T_OVERHAUL_TPL SET
-        TRIAL_STATUS	=#{trialStatus},   <!-- 审批状态 -->
-        WORK_FLOW_INST_ID	=#{workFlowInstId},   <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS	=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
-        REC_REVISOR	=#{recRevisor},   <!-- 记录修改者 -->
-        REC_REVISE_TIME	=#{recReviseTime}   <!-- 记录修改时间 -->
+        TRIAL_STATUS=#{trialStatus},   <!-- 审批状态 -->
+        WORK_FLOW_INST_ID=#{workFlowInstId},   <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
+        REC_REVISOR=#{recRevisor},   <!-- 记录修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 记录修改时间 -->
         WHERE REC_ID =#{recId}
     </update>
 
@@ -551,8 +551,8 @@
     <select id="getTemplateId" resultType="java.lang.String">
         SELECT max(TEMPLATE_ID)	as "templateId"
         FROM T_OVERHAUL_TPL
-        WHERE TEMPLATE_NAME=#{templateName} AND LINE_NAME=#{lineName} AND
-        SUBJECT_NAME=#{subjectName} AND SYSTEM_NAME=#{systemName} AND EQUIP_TYPE_NAME=#{equipTypeName}
+        WHERE TEMPLATE_NAME=#{templateName} AND LINE_NAME=#{lineName} AND DELETE_FLAG='0'
+        AND SUBJECT_NAME=#{subjectName} AND SYSTEM_NAME=#{systemName} AND EQUIP_TYPE_NAME=#{equipTypeName}
         and rownum=1
     </select>
 
@@ -669,82 +669,82 @@
     <update id="modifyOverhaulTplDetail">
         UPDATE T_OVERHAUL_TPL_DETAIL SET
         <if test="templateId!=null">
-            TEMPLATE_ID	=#{templateId},   <!-- 模板编号 -->
+            TEMPLATE_ID=#{templateId},   <!-- 模板编号 -->
         </if>
         <if test="templateName!=null">
-            TEMPLATE_NAME	=#{templateName},   <!-- 模板名称 -->
+            TEMPLATE_NAME=#{templateName},   <!-- 模板名称 -->
         </if>
         <if test="modelSequence!=null">
-            MODEL_SEQUENCE	=#{modelSequence},   <!-- 模块顺序 -->
+            MODEL_SEQUENCE=#{modelSequence},   <!-- 模块顺序 -->
         </if>
         <if test="modelName!=null">
-            MODEL_NAME	=#{modelName},   <!-- 模块名称 -->
+            MODEL_NAME=#{modelName},   <!-- 模块名称 -->
         </if>
         <if test="trainNumber!=null">
-            TRAIN_NUMBER	=#{trainNumber},   <!-- 车组号 -->
+            TRAIN_NUMBER=#{trainNumber},   <!-- 车组号 -->
         </if>
         <if test="itemName!=null">
-            ITEM_NAME	=#{itemName},   <!-- 检修项 -->
+            ITEM_NAME=#{itemName},   <!-- 检修项 -->
         </if>
         <if test="itemType!=null">
-            ITEM_TYPE	=#{itemType},   <!-- 项目类型 -->
+            ITEM_TYPE=#{itemType},   <!-- 项目类型 -->
         </if>
         <if test="inspectItemValue!=null">
-            INSPECT_ITEM_VALUE	=#{inspectItemValue},   <!-- 项目值 -->
+            INSPECT_ITEM_VALUE=#{inspectItemValue},   <!-- 项目值 -->
         </if>
         <if test="maxValue!=null">
-            MAX_VALUE	=#{maxValue},   <!-- 最大参考值 -->
+            MAX_VALUE=#{maxValue},   <!-- 最大参考值 -->
         </if>
         <if test="minValue!=null">
-            MIN_VALUE	=#{minValue},   <!-- 最小参考值 -->
+            MIN_VALUE=#{minValue},   <!-- 最小参考值 -->
         </if>
         <if test="itemUnit!=null">
-            ITEM_UNIT	=#{itemUnit},   <!-- 参考值单位 -->
+            ITEM_UNIT=#{itemUnit},   <!-- 参考值单位 -->
         </if>
         <if test="defaultValue!=null">
-            DEFAULT_VALUE	=#{defaultValue},   <!-- 默认值 -->
+            DEFAULT_VALUE=#{defaultValue},   <!-- 默认值 -->
         </if>
         <if test="itemState!=null">
-            ITEM_STATE	=#{itemState},   <!-- 启用状态 -->
+            ITEM_STATE=#{itemState},   <!-- 启用状态 -->
         </if>
         <if test="defaultFlag!=null">
-            DEFAULT_FLAG	=#{defaultFlag},   <!-- 默认标识 -->
+            DEFAULT_FLAG=#{defaultFlag},   <!-- 默认标识 -->
         </if>
         <if test="sequenceId!=null">
-            SEQUENCE_ID	=#{sequenceId},   <!-- 顺序号 -->
+            SEQUENCE_ID=#{sequenceId},   <!-- 顺序号 -->
         </if>
         <if test="repairType!=null">
-            REPAIR_TYPE	=#{repairType},   <!-- 修程 -->
+            REPAIR_TYPE=#{repairType},   <!-- 修程 -->
         </if>
         <if test="timePeriod!=null">
-            TIME_PERIOD	=#{timePeriod},   <!-- 时间周期 -->
+            TIME_PERIOD=#{timePeriod},   <!-- 时间周期 -->
         </if>
         <if test="mileagePeriod!=null">
-            MILEAGE_PERIOD	=#{mileagePeriod},   <!-- 里程周期 -->
+            MILEAGE_PERIOD=#{mileagePeriod},   <!-- 里程周期 -->
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG	=#{archiveFlag},   <!-- 归档标记 -->
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
         </if>
         <if test="remark!=null">
-            REMARK	=#{remark},   <!-- 说明 -->
+            REMARK=#{remark},   <!-- 说明 -->
         </if>
         <if test="ext1!=null">
-            EXT1	=#{ext1},   <!-- 扩展字段1 -->
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
         </if>
         <if test="ext2!=null">
-            EXT2	=#{ext2},   <!-- 扩展字段2 -->
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
         </if>
         <if test="ext3!=null">
-            EXT3	=#{ext3},   <!-- 扩展字段3 -->
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
         </if>
         <if test="ext4!=null">
-            EXT4	=#{ext4},   <!-- 扩展字段4 -->
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
         </if>
         <if test="ext5!=null">
-            EXT5	=#{ext5},  <!-- 扩展字段5 -->
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
         </if>
-        REC_REVISOR	=#{recRevisor},   <!-- 记录修改者 -->
-        REC_REVISE_TIME	=#{recReviseTime}   <!-- 记录修改时间 -->
+        REC_REVISOR=#{recRevisor},   <!-- 记录修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 记录修改时间 -->
         WHERE REC_ID =#{recId}
     </update>
 
@@ -959,49 +959,49 @@
     <update id="modifyOverhaulMaterial">
         UPDATE T_OVERHAUL_MATERIAL SET
         <if test="templateId!=null">
-            TEMPLATE_ID	=#{templateId},
+            TEMPLATE_ID=#{templateId},
         </if>
         <if test="templateName!=null">
-            TEMPLATE_NAME	=#{templateName},
+            TEMPLATE_NAME=#{templateName},
         </if>
         <if test="materialCode!=null">
-            MATERIAL_CODE	=#{materialCode},
+            MATERIAL_CODE=#{materialCode},
         </if>
         <if test="materialName!=null">
-            MATERIAL_NAME	=#{materialName},
+            MATERIAL_NAME=#{materialName},
         </if>
         <if test="materialSpec!=null">
-            MATERIAL_SPEC	=#{materialSpec},
+            MATERIAL_SPEC=#{materialSpec},
         </if>
         <if test="unitName!=null">
-            UNIT_NAME	=#{unitName},
+            UNIT_NAME=#{unitName},
         </if>
         <if test="quantity!=null">
-            QUANTITY	=#{quantity},
+            QUANTITY=#{quantity},
         </if>
         <if test="remark!=null">
-            REMARK	=#{remark},
+            REMARK=#{remark},
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG	=#{archiveFlag},
+            ARCHIVE_FLAG=#{archiveFlag},
         </if>
         <if test="ext1!=null">
-            EXT1	=#{ext1},
+            EXT1=#{ext1},
         </if>
         <if test="ext2!=null">
-            EXT2	=#{ext2},
+            EXT2=#{ext2},
         </if>
         <if test="ext3!=null">
-            EXT3	=#{ext3},
+            EXT3=#{ext3},
         </if>
         <if test="ext4!=null">
-            EXT4	=#{ext4},
+            EXT4=#{ext4},
         </if>
         <if test="ext5!=null">
-            EXT5	=#{ext5},
+            EXT5=#{ext5},
         </if>
-        REC_REVISOR	=#{recRevisor},
-        REC_REVISE_TIME	=#{recReviseTime}
+        REC_REVISOR=#{recRevisor},
+        REC_REVISE_TIME=#{recReviseTime}
         WHERE REC_ID =#{recId}
     </update>
 
