@@ -34,6 +34,8 @@ public interface SubmissionRecordService {
 
     SubmissionRecordDetailResDTO getSubmissionRecordDetailDetail(String id);
 
+    Page<SubmissionRecordDetailResDTO> getSubmissionRecordDetailByEquip(String equipCode,PageReqDTO pageReqDTO);
+
     void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO);
 
     void modifySubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO);

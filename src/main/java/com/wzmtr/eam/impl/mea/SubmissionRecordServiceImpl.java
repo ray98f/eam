@@ -282,6 +282,12 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     }
 
     @Override
+    public Page<SubmissionRecordDetailResDTO> getSubmissionRecordDetailByEquip(String equipCode,PageReqDTO pageReqDTO) {
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return submissionRecordMapper.getSubmissionRecordDetailByEquip(pageReqDTO.of(),equipCode);
+    }
+
+    @Override
     public void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
         if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
             EquipmentResDTO equipment = equipmentMapper.getEquipByName(submissionRecordDetailReqDTO.getEquipName());
