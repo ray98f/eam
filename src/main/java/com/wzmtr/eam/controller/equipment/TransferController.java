@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.equipment;
 
+import com.wzmtr.eam.dto.req.equipment.TransferExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TransferSplitReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.TransferResDTO;
@@ -59,19 +60,10 @@ public class TransferController {
         return DataResponse.of(transferService.getTransferDetail(id));
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出设备移交")
-    public void exportTransfer(@RequestParam(required = false) @ApiParam("移交单号") String transferNo,
-                               @RequestParam(required = false) @ApiParam("合同清单明细号") String itemCode,
-                               @RequestParam(required = false) @ApiParam("设备名称") String itemName,
-                               @RequestParam(required = false) @ApiParam("位置一") String position1Code,
-                               @RequestParam(required = false) @ApiParam("处理状态") String eamProcessStatus,
-                               @RequestParam(required = false) @ApiParam("专业编号") String majorCode,
-                               @RequestParam(required = false) @ApiParam("合同编号") String orderNo,
-                               @RequestParam(required = false) @ApiParam("合同名称") String orderName,
-                               HttpServletResponse response) throws IOException {
-        transferService.exportTransfer(transferNo, itemCode, itemName, position1Code,
-                eamProcessStatus, majorCode, orderNo, orderName, response);
+    public void exportTransfer(@RequestBody TransferExportReqDTO transferExportReqDTO, HttpServletResponse response) throws IOException {
+        transferService.exportTransfer(transferExportReqDTO, response);
     }
 
     @PostMapping("/encoding")

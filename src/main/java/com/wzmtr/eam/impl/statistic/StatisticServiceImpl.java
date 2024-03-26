@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.equipment.GeneralSurveyExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
@@ -615,7 +616,9 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public void pageGeneralSurveyExport(String equipName, HttpServletResponse response) throws IOException {
-        List<GeneralSurveyResDTO> generalSurveyList = generalSurveyMapper.listGeneralSurvey(equipName, null, null, null);
+        GeneralSurveyExportReqDTO generalSurveyExportReqDTO = new GeneralSurveyExportReqDTO();
+        generalSurveyExportReqDTO.setTrainNo(equipName);
+        List<GeneralSurveyResDTO> generalSurveyList = generalSurveyMapper.listGeneralSurvey(generalSurveyExportReqDTO);
         if (StringUtils.isNotEmpty(generalSurveyList)) {
             List<ExcelStatisticGeneralSurveyResDTO> list = new ArrayList<>();
             for (GeneralSurveyResDTO resDTO : generalSurveyList) {

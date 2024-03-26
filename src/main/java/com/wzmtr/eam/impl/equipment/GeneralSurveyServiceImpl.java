@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.equipment.GeneralSurveyExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelGeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -128,8 +129,8 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     }
 
     @Override
-    public void exportGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, HttpServletResponse response) throws IOException {
-        List<GeneralSurveyResDTO> generalSurveyResDTOList = generalSurveyMapper.listGeneralSurvey(trainNo, recNotifyNo, recDetail, orgType);
+    public void exportGeneralSurvey(GeneralSurveyExportReqDTO generalSurveyExportReqDTO, HttpServletResponse response) throws IOException {
+        List<GeneralSurveyResDTO> generalSurveyResDTOList = generalSurveyMapper.listGeneralSurvey(generalSurveyExportReqDTO);
         if (generalSurveyResDTOList != null && !generalSurveyResDTOList.isEmpty()) {
             List<ExcelGeneralSurveyResDTO> list = new ArrayList<>();
             for (GeneralSurveyResDTO resDTO : generalSurveyResDTOList) {

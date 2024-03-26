@@ -101,7 +101,9 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
             for (GearboxChangeOilResDTO resDTO : gearboxChangeOilResDTOList) {
                 ExcelGearboxChangeOilResDTO res = new ExcelGearboxChangeOilResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                res.setTotalMiles(String.valueOf(resDTO.getTotalMiles()));
+                if (!Objects.isNull(resDTO.getTotalMiles())) {
+                    res.setTotalMiles(String.valueOf(resDTO.getTotalMiles()));
+                }
                 res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "检修工班" : "售后服务站");
                 list.add(res);
             }

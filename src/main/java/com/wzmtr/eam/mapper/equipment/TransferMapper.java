@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.equipment.TransferExportReqDTO;
 import com.wzmtr.eam.dto.res.equipment.TransferResDTO;
 import com.wzmtr.eam.entity.Bom;
 import com.wzmtr.eam.entity.WorkFlow;
@@ -21,8 +22,7 @@ public interface TransferMapper {
 
     TransferResDTO getTransferDetail(String id);
 
-    List<TransferResDTO> listTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
-                                      String majorCode, String orderNo, String orderName);
+    List<TransferResDTO> listTransfer(TransferExportReqDTO transferExportReqDTO);
 
     void updateTransfer(TransferResDTO transferResDTO);
 

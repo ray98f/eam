@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/7/31 18:31
@@ -26,4 +28,7 @@ public class SecureCheckRecordListReqDTO extends PageReqDTO {
     private String recStatus;
     @ApiModelProperty(value = "安全隐患等级")
     private String riskRank;
+
+    @ApiModelProperty(value = "ids")
+    private List<String> ids;
 }

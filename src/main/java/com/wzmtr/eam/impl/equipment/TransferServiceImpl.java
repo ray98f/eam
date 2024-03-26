@@ -88,10 +88,8 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public void exportTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
-                               String majorCode, String orderNo, String orderName, HttpServletResponse response) throws IOException {
-        List<TransferResDTO> transferResDTOList = transferMapper.listTransfer(transferNo, itemCode, itemName, position1Code, eamProcessStatus,
-                majorCode, orderNo, orderName);
+    public void exportTransfer(TransferExportReqDTO transferExportReqDTO, HttpServletResponse response) throws IOException {
+        List<TransferResDTO> transferResDTOList = transferMapper.listTransfer(transferExportReqDTO);
         if (transferResDTOList != null && !transferResDTOList.isEmpty()) {
             List<ExcelTransferResDTO> list = new ArrayList<>();
             for (TransferResDTO resDTO : transferResDTOList) {

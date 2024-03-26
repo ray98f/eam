@@ -47,8 +47,11 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void addEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
+        Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
+        if (result > 0) {
+            throw new CommonException(ErrorCode.DATA_EXIST);
+        }
         equipmentRoomReqDTO.setRecId(TokenUtils.getUuId());
-        equipmentRoomReqDTO.setEquipRoomCode(CodeUtils.getNextCode(equipmentRoomMapper.selectMaxEquipmentRoomCode(), 1));
         equipmentRoomReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         equipmentRoomReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentRoomMapper.addEquipmentRoom(equipmentRoomReqDTO);
@@ -56,6 +59,10 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void modifyEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
+        Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
+        if (result > 0) {
+            throw new CommonException(ErrorCode.DATA_EXIST);
+        }
         equipmentRoomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         equipmentRoomReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         equipmentRoomMapper.modifyEquipmentRoom(equipmentRoomReqDTO);
