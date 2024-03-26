@@ -146,7 +146,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         overhaulPlanReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String code = overhaulPlanMapper.getMaxCode();
-        if (StringUtils.isNotEmpty(code)) {
+        if (StringUtils.isEmpty(code)) {
             code = "JX00000000";
         }
         String planCode = CodeUtils.getNextCode(code, 2);
