@@ -188,6 +188,13 @@
             <if test="recStatus!=null and recStatus!=''">
                 and df9.REC_STATUS = #{recStatus}
             </if>
+            <if test="ids!=null and ids.size()>0">
+                and df9.REC_ID in (
+                <foreach collection="ids" index="index" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
             and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
             and df9.FAULT_NO=df1.FAULT_NO
             and df1.FAULT_NO=df2.FAULT_NO

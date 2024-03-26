@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.detection.DetectionDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionDetailResDTO;
@@ -151,7 +152,9 @@ public class DetectionServiceImpl implements DetectionService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        List<DetectionDetailResDTO> result = detectionMapper.listDetectionDetail(res.getRecId());
+        DetectionDetailExportReqDTO detectionDetailExportReqDTO = new DetectionDetailExportReqDTO();
+        detectionDetailExportReqDTO.setTestRecId(res.getRecId());
+        List<DetectionDetailResDTO> result = detectionMapper.listDetectionDetail(detectionDetailExportReqDTO);
         if (StringUtils.isEmpty(result)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "此检测单不存在检测明细，无法提交");
         }
@@ -267,9 +270,9 @@ public class DetectionServiceImpl implements DetectionService {
     }
 
     @Override
-    public Page<DetectionDetailResDTO> pageDetectionDetail(String testRecId, PageReqDTO pageReqDTO) {
+    public Page<DetectionDetailResDTO> pageDetectionDetail(String equipCode, String testRecId, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return detectionMapper.pageDetectionDetail(pageReqDTO.of(), testRecId);
+        return detectionMapper. pageDetectionDetail(pageReqDTO.of(), equipCode, testRecId);
     }
 
     @Override
@@ -350,8 +353,8 @@ public class DetectionServiceImpl implements DetectionService {
     }
 
     @Override
-    public void exportDetectionDetail(String testRecId, HttpServletResponse response) throws IOException {
-        List<DetectionDetailResDTO> detectionPlanDetailResDTOList = detectionMapper.listDetectionDetail(testRecId);
+    public void exportDetectionDetail(DetectionDetailExportReqDTO detectionDetailExportReqDTO, HttpServletResponse response) throws IOException {
+        List<DetectionDetailResDTO> detectionPlanDetailResDTOList = detectionMapper.listDetectionDetail(detectionDetailExportReqDTO);
         if (StringUtils.isNotEmpty(detectionPlanDetailResDTOList)) {
             List<ExcelDetectionDetailResDTO> list = new ArrayList<>();
             for (DetectionDetailResDTO resDTO : detectionPlanDetailResDTOList) {

@@ -283,6 +283,13 @@
         <if test="orderName!=null and orderName!=''">
             AND ORDER_NAME like '%' || #{orderName} || '%'
         </if>
+        <if test="ids!=null and ids.size()>0">
+            and REC_ID in (
+            <foreach collection="ids" index="index" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
         ORDER BY SUBSTR(TRANSFER_NO,3) DESC,ITEM_CODE DESC
     </select>
     

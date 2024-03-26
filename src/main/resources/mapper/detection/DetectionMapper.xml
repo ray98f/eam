@@ -374,7 +374,14 @@
         FROM T_DETECTION_DETAIL a
         LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
         LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE
-        WHERE 1=1 and a.TEST_REC_ID=#{testRecId} and a.DELETE_FLAG='0'
+        WHERE 1=1
+        <if test="equipCode!=null and equipCode!=''">
+            and a.EQUIP_CODE=#{equipCode}
+        </if>
+        <if test="testRecId!=null and testRecId!=''">
+            and a.TEST_REC_ID=#{testRecId}
+        </if>
+        and a.DELETE_FLAG='0'
         <!--<isNotEmpty prepend=" AND " property="testRecId">-->
         <!--a.TEST_REC_ID=#{testRecId#-->
         <!--</isNotEmpty>-->
@@ -735,12 +742,19 @@
         LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
         <!--LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE-->
         WHERE a.DELETE_FLAG='0'
-        <if test="testRecId!=null and testRecId!=''">
-           and a.TEST_REC_ID=#{testRecId}
+        <if test="equipCode!=null and equipCode!=''">
+            and a.EQUIP_CODE=#{equipCode}
         </if>
-        <!--<isNotEmpty prepend=" AND " property="testRecId">-->
-        <!--a.TEST_REC_ID=#{testRecId#-->
-        <!--</isNotEmpty>-->
+        <if test="testRecId!=null and testRecId!=''">
+            and a.TEST_REC_ID=#{testRecId}
+        </if>
+        <if test="ids!=null and ids.size()>0">
+            and a.REC_ID in (
+            <foreach collection="ids" index="index" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
         order by a.EQUIP_CODE
     </select>
 

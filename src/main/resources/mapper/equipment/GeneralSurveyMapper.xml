@@ -261,6 +261,13 @@
         <if test="orgType!=null and orgType!=''">
             and ORG_TYPE=#{orgType}
         </if>
+        <if test="ids!=null and ids.size()>0">
+            and REC_ID in (
+            <foreach collection="ids" index="index" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
         ORDER BY REC_CREATE_TIME desc
     </select>
 

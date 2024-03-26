@@ -4,12 +4,17 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author frp
  */
 @Data
 @ApiModel
 public class OverhaulPlanListReqDTO {
+
+    @ApiModelProperty(value = "ids")
+    private List<String> ids;
 
     @ApiModelProperty(value = "标记")
     private String objectFlag;

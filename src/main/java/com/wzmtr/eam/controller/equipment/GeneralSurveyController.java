@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.equipment;
 
+import com.wzmtr.eam.dto.req.equipment.GeneralSurveyExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -81,14 +82,11 @@ public class GeneralSurveyController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出普查与技改台账")
-    public void exportGeneralSurvey(@RequestParam(required = false) @ApiParam("列车号") String trainNo,
-                                    @RequestParam(required = false) @ApiParam("技术通知单编号") String recNotifyNo,
-                                    @RequestParam(required = false) @ApiParam("项目内容") String recDetail,
-                                    @RequestParam(required = false) @ApiParam("作业单位") String orgType,
+    public void exportGeneralSurvey(@RequestBody GeneralSurveyExportReqDTO generalSurveyExportReqDTO,
                                     HttpServletResponse response) throws IOException {
-        generalSurveyService.exportGeneralSurvey(trainNo, recNotifyNo, recDetail, orgType, response);
+        generalSurveyService.exportGeneralSurvey(generalSurveyExportReqDTO, response);
     }
 
 }
