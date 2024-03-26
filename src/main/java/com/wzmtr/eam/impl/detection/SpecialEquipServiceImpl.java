@@ -128,7 +128,9 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
             specialEquipMapper.updateEquip(req);
             specialEquipMapper.modifySpecialEquip(req);
         }
-        throw new CommonException(ErrorCode.NORMAL_ERROR, "特种设备编号为" + String.join("、", specialCode) + "的特种设备导入失败，请重试");
+        if (StringUtils.isNotEmpty(specialCode)) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "特种设备编号为" + String.join("、", specialCode) + "的特种设备导入失败，请重试");
+        }
     }
 
     @Override
