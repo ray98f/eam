@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 组织机构位置请求类
  * @author  Ray
@@ -22,6 +24,9 @@ public class OrgRegionReqDTO {
 
     @ApiModelProperty(value = "组织机构名称")
     private String orgName;
+
+    @ApiModelProperty(value = "位置编号s")
+    private List<String> regionCodes;
 
     @ApiModelProperty(value = "位置编号")
     private String regionCode;

@@ -50,16 +50,19 @@
     </select>
 
     <insert id="addOrgRegion">
-        INSERT INTO SYS_ORG_REGION (REC_ID, ORG_CODE, ORG_NAME, REGION_CODE, REC_STATUS,
-        <if test="remark!=null and remark!=''">
-            REMARK,
-        </if>
-        REC_CREATOR, REC_CREATE_TIME)
-        VALUES (#{recId}, #{orgCode}, #{orgName}, #{regionCode}, #{recStatus},
-        <if test="remark!=null and remark!=''">
-            #{remark},
-        </if>
-        #{recCreator}, #{recCreateTime})
+        INSERT ALL
+        <foreach collection="regionCodes" index="index" item="code" separator=" ">
+            INTO SYS_ORG_REGION (REC_ID, ORG_CODE, ORG_NAME, REGION_CODE, REC_STATUS,
+            <if test="remark!=null and remark!=''">
+                REMARK,
+            </if>
+            REC_CREATOR, REC_CREATE_TIME)
+            VALUES (#{recId}, #{orgCode}, #{orgName}, #{code}, #{recStatus},
+            <if test="remark!=null and remark!=''">
+                #{remark},
+            </if>
+            #{recCreator}, #{recCreateTime})
+        </foreach>
     </insert>
 
     <update id="modifyOrgRegion">
