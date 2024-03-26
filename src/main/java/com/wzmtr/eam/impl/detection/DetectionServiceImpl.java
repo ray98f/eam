@@ -7,6 +7,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.detection.DetectionDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionReqDTO;
+import com.wzmtr.eam.dto.req.detection.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionDetailResDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelDetectionDetailResDTO;
@@ -20,6 +21,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.detection.DetectionMapper;
+import com.wzmtr.eam.mapper.detection.SpecialEquipMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.detection.DetectionService;
@@ -46,6 +48,9 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Autowired
     private DetectionMapper detectionMapper;
+
+    @Autowired
+    private SpecialEquipMapper specialEquipMapper;
 
     @Autowired
     private OrganizationMapper organizationMapper;
@@ -272,7 +277,7 @@ public class DetectionServiceImpl implements DetectionService {
     @Override
     public Page<DetectionDetailResDTO> pageDetectionDetail(String equipCode, String testRecId, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return detectionMapper. pageDetectionDetail(pageReqDTO.of(), equipCode, testRecId);
+        return detectionMapper.pageDetectionDetail(pageReqDTO.of(), equipCode, testRecId);
     }
 
     @Override
@@ -302,6 +307,11 @@ public class DetectionServiceImpl implements DetectionService {
         detectionDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         detectionDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         detectionMapper.addDetectionDetail(detectionDetailReqDTO);
+        SpecialEquipReqDTO specialEquipReqDTO = new SpecialEquipReqDTO();
+        specialEquipReqDTO.setEquipCode(detectionDetailReqDTO.getEquipCode());
+        specialEquipReqDTO.setVerifyDate(detectionDetailReqDTO.getVerifyDate());
+        specialEquipReqDTO.setVerifyValidityDate(detectionDetailReqDTO.getVerifyValidityDate());
+        specialEquipMapper.updateEquip(specialEquipReqDTO);
     }
 
     @Override
