@@ -54,7 +54,7 @@ public class StatisticController {
     @ApiOperation(value = "故障统计报表")
     @PostMapping("/fault/list")
     public PageResponse<FaultDetailResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
-        return PageResponse.of(faultQueryService.list(reqDTO));
+        return PageResponse.of(faultQueryService.statustucList(reqDTO));
     }
 
     /**

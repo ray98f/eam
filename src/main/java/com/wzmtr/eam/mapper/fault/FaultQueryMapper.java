@@ -26,6 +26,8 @@ public interface FaultQueryMapper {
 
     Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
 
+    Page<FaultDetailResDTO> statustucQuery(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
+
     /**
      * 根据ids获取故障详情列表
      * @param req 入参

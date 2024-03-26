@@ -100,6 +100,20 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         return page;
     }
 
+    @Override
+    public Page<FaultDetailResDTO> statustucList(FaultQueryReqDTO reqDTO) {
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        Page<FaultDetailResDTO> page = faultQueryMapper.statustucQuery(reqDTO.of(), reqDTO);
+        List<FaultDetailResDTO> list = page.getRecords();
+        if (StringUtils.isNotEmpty(list)) {
+            for (FaultDetailResDTO res : list) {
+                buildRes(res);
+            }
+        }
+        page.setRecords(list);
+        return page;
+    }
+
     private void buildRes(FaultDetailResDTO a) {
         if (StringUtils.isNotEmpty(a.getDocId())) {
             a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
