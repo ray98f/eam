@@ -549,7 +549,7 @@
     </select>
 
     <select id="getTemplateId" resultType="java.lang.String">
-        SELECT TEMPLATE_ID	as "templateId"
+        SELECT max(TEMPLATE_ID)	as "templateId"
         FROM T_OVERHAUL_TPL
         WHERE TEMPLATE_NAME=#{templateName} AND LINE_NAME=#{lineName} AND
         SUBJECT_NAME=#{subjectName} AND SYSTEM_NAME=#{systemName} AND EQUIP_TYPE_NAME=#{equipTypeName}
