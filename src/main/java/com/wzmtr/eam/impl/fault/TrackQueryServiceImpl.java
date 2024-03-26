@@ -64,7 +64,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<TrackQueryResDTO> list = faultTrackMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(), reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode());
+        Page<TrackQueryResDTO> list = faultTrackMapper.query(reqDTO.of(), reqDTO);
         List<TrackQueryResDTO> records = list.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();
@@ -140,7 +140,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public void export(TrackQueryReqDTO reqDTO, HttpServletResponse response) {
-        List<TrackQueryResDTO> res = faultTrackMapper.query(reqDTO);
+        List<TrackQueryResDTO> res = faultTrackMapper.export(reqDTO);
         List<FaultTrackExportBO> exportList = new ArrayList<>();
         if (StringUtils.isNotEmpty(res)) {
             res.forEach(resDTO -> {

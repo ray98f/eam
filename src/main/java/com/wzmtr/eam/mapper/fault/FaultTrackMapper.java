@@ -41,9 +41,9 @@ public interface FaultTrackMapper extends BaseMapper<FaultTrackDO> {
 
     void cancellGenZ(TrackQueryResDTO bo);
 
-    Page<TrackQueryResDTO> query(Page<Object> of, String faultTrackNo, String faultNo, String faultTrackWorkNo, String faultWorkNo, String lineCode, String majorCode, String objectCode, String positionCode, String systemCode, String objectName, String recStatus, String equipTypeCode);
+    Page<TrackQueryResDTO> query(Page<Object> of, TrackQueryReqDTO req);
 
-    List<TrackQueryResDTO> query(TrackQueryReqDTO req);
+    List<TrackQueryResDTO> export(TrackQueryReqDTO req);
     void transmit(FaultTrackDO faultTrackDO);
     String selectMaxCode();
 

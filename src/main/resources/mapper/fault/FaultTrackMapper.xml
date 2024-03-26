@@ -110,8 +110,99 @@
         WHERE
         FAULT_TRACK_NO = #{faultTrackNo}
     </update>
-
     <select id="query" resultType="com.wzmtr.eam.dto.res.fault.TrackQueryResDTO">
+        SELECT
+        df9.REC_ID as "recId",  <!-- 记录编号 -->
+        df9.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
+        df9.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
+        df9.FAULT_TRACK_NO as "faultTrackNo",  <!-- 故障跟踪编号 -->
+        df9.FAULT_ANALYSIS_NO as "faultAnalysisNo",  <!-- 故障分析编号 -->
+        df9.FAULT_ANALYSIS_NO as "faultAnalysisNo_textField",
+        df9.TRACK_REASON as "trackReason",  <!-- 跟踪原因 -->
+        df9.TRACK_USER_ID as "trackUserId",  <!-- 转跟踪人员工号 -->
+        (SELECT NAME FROM SYS_USER WHERE df9.TRACK_USER_ID = LOGIN_NAME) as "trackUserName",
+        df9.TRACK_TIME as "trackTime",  <!-- 转跟踪时间 -->
+        df9.TRACK_PERIOD as "trackPeriod",  <!-- 跟踪期限 -->
+        df9.TRACK_CYCLE as "trackCycle",  <!-- 跟踪周期 -->
+        df9.TRACK_START_DATE as "trackStartDate",
+        df9.TRACK_END_DATE as "trackEndDate",
+        df9.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
+        df9.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
+        df9.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
+        df9.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
+        df9.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->
+        df9.WORK_FLOW_INST_ID as "workFlowInstId",  <!-- 工作流实例ID -->
+        df9.WORK_FLOW_INST_STATUS as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        df2.WORK_CLASS as "workClass",
+        df9.DOC_ID as "docId",  <!-- 附件编号 -->
+        df9.REMARK as "remark",  <!-- 备注 -->
+        df9.REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        df1.FAULT_NO as "faultNo",
+        df2.FAULT_WORK_NO as "faultWorkNo",
+        df1.OBJECT_CODE as "objectCode",
+        df1.OBJECT_NAME as "objectName",
+        df1.POSITION_CODE as "positionCode",
+        db3.NODE_NAME as "positionName",
+        df1.FAULT_DISPLAY_CODE as "faultDisplayCode",
+        df1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail",
+        df2.FAULT_REASON_CODE as "faultReasonCode",
+        df2.FAULT_REASON_DETAIL as "faultReasonDetail",
+        df1.LINE_CODE as "lineCode",
+        df1.MAJOR_CODE AS "majorCode",
+        df1.FAULT_DETAIL AS "faultDetail",
+        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = df1.MAJOR_CODE ) AS "majorName",
+        df2.FAULT_ACTION_DETAIL AS "faultActionDetail"
+        FROM T_FAULT_TRACK df9,T_FAULT_ORDER df2,T_FAULT_INFO df1,SYS_REGION db3
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="req.faultTrackNo!=null and req.faultTrackNo!=''">
+                and df9.FAULT_TRACK_NO = #{req.faultTrackNo}
+            </if>
+            <if test="req.faultNo!=null and req.faultNo!=''">
+                and df1.FAULT_NO = #{req.faultNo}
+            </if>
+            <if test="req.faultWorkNo!=null and req.faultWorkNo!=''">
+                and df2.FAULT_WORK_NO = #{req.faultWorkNo}
+            </if>
+            <if test="req.objectCode!=null and req.objectCode!=''">
+                and df1.OBJECT_CODE = #{req.objectCode}
+            </if>
+            <if test="req.objectName!=null and req.objectName!=''">
+                and df1.OBJECT_NAME = #{req.objectName}
+            </if>
+            <if test="req.lineCode!=null and req.lineCode!=''">
+                and df1.LINE_CODE = #{req.lineCode}
+            </if>
+            <if test="req.positionCode!=null and req.positionCode!=''">
+                and df1.POSITION_CODE= #{req.positionCode}
+            </if>
+            <if test="req.majorCode!=null and req.majorCode!=''">
+                and df1.MAJOR_CODE = #{req.majorCode}
+            </if>
+            <if test="req.systemCode!=null and req.systemCode!=''">
+                and df1.SYSTEM_CODE = #{req.systemCode}
+            </if>
+            <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
+                and df1.EQUIP_TYPE_CODE = #{req.equipTypeCode}
+            </if>
+            <if test="req.recStatus!=null and req.recStatus!=''">
+                and df9.REC_STATUS = #{req.recStatus}
+            </if>
+            <if test="req.ids!=null and req.ids.size()>0">
+                and df9.REC_ID in (
+                <foreach collection="ids" index="index" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
+            and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+            and df9.FAULT_NO=df1.FAULT_NO
+            and df1.FAULT_NO=df2.FAULT_NO
+            and df1.POSITION_CODE=db3.NODE_CODE
+            and df9.DELETE_FLAG='0'
+        </trim>
+        order by df9.FAULT_TRACK_NO desc
+    </select>
+    <select id="export" resultType="com.wzmtr.eam.dto.res.fault.TrackQueryResDTO">
         SELECT
         df9.REC_ID as "recId",  <!-- 记录编号 -->
         df9.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
