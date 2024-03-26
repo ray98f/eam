@@ -100,11 +100,18 @@ public class SubmissionRecordController {
         submissionRecordService.exportSubmissionRecord(baseIdsEntity.getIds(), response);
     }
 
-    @GetMapping("/detail/page")
+/*    @GetMapping("/detail/page")
     @ApiOperation(value = "获取检定记录明细列表")
     public PageResponse<SubmissionRecordDetailResDTO> pageSubmissionRecordDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
                                                                                  @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(submissionRecordService.pageSubmissionRecordDetail(testRecId, pageReqDTO));
+    }*/
+
+    @GetMapping("/detail/page")
+    @ApiOperation(value = "获取检定记录明细详情")
+    public PageResponse<SubmissionRecordDetailResDTO> pageSubmissionRecordDetail(@RequestParam @ApiParam("equipCode") String equipCode,
+                                                                                      @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(submissionRecordService.getSubmissionRecordDetailByEquip(equipCode,pageReqDTO));
     }
 
 /*    @GetMapping("/detail/detail")
@@ -112,12 +119,7 @@ public class SubmissionRecordController {
     public DataResponse<SubmissionRecordDetailResDTO> getSubmissionRecordDetailDetail(@RequestParam @ApiParam("equipCode") String equipCode) {
         return DataResponse.of(submissionRecordService.getSubmissionRecordDetailDetail(id));
     }*/
-    @GetMapping("/detail/detail")
-    @ApiOperation(value = "获取检定记录明细详情")
-    public PageResponse<SubmissionRecordDetailResDTO> getSubmissionRecordDetailDetail(@RequestParam @ApiParam("equipCode") String equipCode,
-                                                                                      @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(submissionRecordService.getSubmissionRecordDetailByEquip(equipCode,pageReqDTO));
-    }
+
 
     @PostMapping("/detail/add")
     @ApiOperation(value = "新增检定记录明细")
