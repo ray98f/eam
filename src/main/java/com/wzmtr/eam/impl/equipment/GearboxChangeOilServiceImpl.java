@@ -80,7 +80,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
             for (ExcelGearboxChangeOilReqDTO reqDTO : list) {
                 GearboxChangeOilReqDTO req = new GearboxChangeOilReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
-                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "检修工班".equals(reqDTO.getOrgType()) ? "10" : "20");
                 req.setRecId(TokenUtils.getUuId());
                 req.setDeleteFlag("0");
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
@@ -102,7 +102,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
                 ExcelGearboxChangeOilResDTO res = new ExcelGearboxChangeOilResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setTotalMiles(String.valueOf(resDTO.getTotalMiles()));
-                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
+                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "检修工班" : "售后服务站");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "齿轮箱换油台账信息", list);

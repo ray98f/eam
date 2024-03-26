@@ -92,7 +92,7 @@ public class PartReplaceServiceImpl implements PartReplaceService {
             for (ExcelPartReplaceReqDTO reqDTO : list) {
                 PartReplaceReqDTO req = new PartReplaceReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
-                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "检修工班".equals(reqDTO.getOrgType()) ? "10" : "20");
                 req.setRecId(TokenUtils.getUuId());
                 req.setDeleteFlag("0");
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
@@ -113,9 +113,7 @@ public class PartReplaceServiceImpl implements PartReplaceService {
             for (PartReplaceResDTO resDTO : partReplaceResDTOList) {
                 ExcelPartReplaceResDTO res = new ExcelPartReplaceResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" :
-                        CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" :
-                                CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
+                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "检修工班" : "售后服务站");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "部件更换台账信息", list);
