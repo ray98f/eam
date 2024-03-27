@@ -427,7 +427,7 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
-        df.EXT1 AS "levelfault"
+        df.EXT1 AS "faultLevel"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
@@ -502,7 +502,7 @@
         DELETE_FLAG	as "deleteFlag",
         ARCHIVE_FLAG	as "archiveFlag",
         REC_STATUS	as "recStatus",
-        EXT1	as "levelfault",
+        EXT1	as "faultLevel",
         EXT2	as "ext2",
         EXT3	as "ext3",
         EXT4	as "ext4",
