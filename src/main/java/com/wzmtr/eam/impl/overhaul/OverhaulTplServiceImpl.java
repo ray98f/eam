@@ -89,7 +89,11 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         overhaulTplReqDTO.setTrialStatus("10");
         overhaulTplReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         overhaulTplReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        String templateId = CodeUtils.getNextCode(overhaulTplMapper.getMaxCode(), 2);
+        String templateId = overhaulTplMapper.getMaxCode();
+        if (StringUtils.isEmpty(templateId)) {
+            templateId = "JM000000";
+        }
+        templateId = CodeUtils.getNextCode(templateId, 2);
         overhaulTplReqDTO.setTemplateId(templateId);
         overhaulTplMapper.addOverhaulTpl(overhaulTplReqDTO);
     }
@@ -281,7 +285,11 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 OverhaulTplReqDTO req = new OverhaulTplReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
                 req.setLineNo("S1线".equals(req.getLineName()) ? "01" : "02");
-                String templateId = CodeUtils.getNextCode(overhaulTplMapper.getMaxCode(), 2);
+                String templateId = overhaulTplMapper.getMaxCode();
+                if (StringUtils.isEmpty(templateId)) {
+                    templateId = "JM000000";
+                }
+                templateId = CodeUtils.getNextCode(templateId, 2);
                 req.setTemplateId(templateId);
                 req.setRecId(TokenUtils.getUuId());
                 req.setTrialStatus("10");
@@ -315,7 +323,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 req.setRecId(TokenUtils.getUuId());
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
                 req.setRecCreateTime(DateUtils.getCurrentTime());
-                req.setTrainNumber(req.getTrainNumber().substring(0, 2));
+                if (StringUtils.isNotEmpty(req.getTrainNumber())) {
+                    req.setTrainNumber(req.getTrainNumber().substring(0, 2));
+                }
                 temp.add(req);
             }
         }

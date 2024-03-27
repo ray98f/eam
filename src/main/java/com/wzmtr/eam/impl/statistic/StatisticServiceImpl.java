@@ -1089,7 +1089,7 @@ public class StatisticServiceImpl implements StatisticService {
         double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null);
         double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
         if (miles == 0) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "");
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "选定统计周期内累计运营里程为0，无法计算");
         }
         res.setTotalMile(miles);
         // 实际指标计算
