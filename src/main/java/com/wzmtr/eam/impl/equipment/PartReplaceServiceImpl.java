@@ -60,9 +60,8 @@ public class PartReplaceServiceImpl implements PartReplaceService {
             if (StringUtils.isEmpty(node)) {
                 throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
             }
-            return partReplaceMapper.getBom(node, type);
         }
-        return new ArrayList<>();
+        return partReplaceMapper.getBom(node, "2");
     }
 
     @Override
