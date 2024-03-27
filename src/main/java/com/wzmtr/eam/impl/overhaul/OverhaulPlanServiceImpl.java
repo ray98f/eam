@@ -221,6 +221,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void triggerOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
+        if (!CommonConstants.THIRTY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "检修计划未审批完成，无法触发");
+        }
         if (checkHasNotOrder(overhaulPlanReqDTO.getPlanCode())) {
             if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
                 if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {

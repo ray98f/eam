@@ -48,7 +48,7 @@ public class FaultReceiver {
     @RabbitListener(queues = RabbitMqConfig.FAULT_QUEUE)
     @RabbitHandler
     public void faultProcess(FaultReportOpenReqDTO fault) {
-//        try {
+        try {
             if (!Objects.isNull(fault)) {
                 FaultReportReqDTO req = new FaultReportReqDTO();
                 if (StringUtils.isNotEmpty(fault.getEquipCode())) {
@@ -56,7 +56,11 @@ public class FaultReceiver {
                     req = req.toReportReqFromEquipment(equipment);
                 }
                 req.setCompanyName(fault.getSysName());
-                req.setFaultDetail("故障等级：" + fault.getFaultLevel() + "，故障详情：" + fault.getFaultDetail());
+                if (StringUtils.isEmpty(fault.getFaultLevel())) {
+                    req.setFaultDetail("故障详情：" + fault.getFaultDetail());
+                } else {
+                    req.setFaultDetail("故障等级：" + fault.getFaultLevel() + "，故障详情：" + fault.getFaultDetail());
+                }
                 req.setDiscoveryTime(fault.getAlamTime());
                 req.setFaultType(fault.getFaultType());
                 req.setFaultStatus(fault.getFaultStatus());
@@ -71,10 +75,10 @@ public class FaultReceiver {
                 insertToFaultOrder(faultOrderDO, fault.getFaultNo(), fault.getFaultWorkNo());
                 addFaultFlow(fault.getFaultNo(), fault.getFaultWorkNo());
             }
-//        } catch (Exception e) {
-//            faultReportMapper.addFaultError(buildFaultError(fault, e.getMessage()));
-//            log.error("故障提报失败：" + e.getMessage());
-//        }
+        } catch (Exception e) {
+            faultReportMapper.addFaultError(buildFaultError(fault, e.getMessage()));
+            log.error("故障提报失败：" + e.getMessage());
+        }
     }
 
     /**
