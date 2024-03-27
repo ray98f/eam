@@ -113,6 +113,7 @@
         DISCOVERER_PHONE,
         FAULT_DISPLAY_DETAIL,
         FILLIN_USER_ID,  <!-- 提报人工号 -->
+        FILLIN_USER_NAME,
         FILLIN_DEPT_CODE,  <!-- 提报部门 -->
         FILLIN_TIME,  <!-- 提报时间 -->
         RESP_DEPT_CODE,  <!-- 主责部门 -->
@@ -153,7 +154,7 @@
         #{sourceCode,jdbcType=VARCHAR}, #{faultDisplayCode,jdbcType=VARCHAR}, #{faultDetail,jdbcType=VARCHAR},
         #{discovererId,jdbcType=VARCHAR}, #{discovererName,jdbcType=VARCHAR},
         #{discoveryTime,jdbcType=VARCHAR},#{discovererPhone,jdbcType=VARCHAR},#{faultDisplayDetail,jdbcType=VARCHAR},
-        #{fillinUserId,jdbcType=VARCHAR},
+        #{fillinUserId,jdbcType=VARCHAR}, #{fillinUserName,jdbcType=VARCHAR},
         #{fillinDeptCode,jdbcType=VARCHAR}, #{fillinTime,jdbcType=VARCHAR}, #{respDeptCode,jdbcType=VARCHAR},
         #{assistDeptCode,jdbcType=VARCHAR},
         #{repairDeptCode,jdbcType=VARCHAR}, #{publishUserId,jdbcType=VARCHAR}, #{publishTime,jdbcType=VARCHAR},
@@ -585,7 +586,7 @@
         d.EXT4	as "ext4",  <!-- 扩展字段4 -->
         d.EXT5	as "ext5", <!-- 扩展字段5 -->
         d.TRAIN_TAG as "traintag",
-        u.NAME as "fillinUserName",
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) as "fillinUserName",
         df.FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单号 -->
         df.ORDER_STATUS	as "orderStatus" , <!-- 工单状态 -->
         df.EXT1	as "levelfault"  <!-- 派工状态 -->
@@ -699,7 +700,7 @@
         d.EXT4	as "ext4",  <!-- 扩展字段4 -->
         d.EXT5	as "ext5", <!-- 扩展字段5 -->
         d.TRAIN_TAG as "traintag",
-        u.NAME as "fillinUserName",
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) as "fillinUserName",
         df.FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单号 -->
         df.ORDER_STATUS	as "orderStatus" , <!-- 工单状态 -->
         df.EXT1	as "levelfault"  <!-- 派工状态 -->
@@ -824,7 +825,7 @@
         d.EXT4 as "ext4",  <!-- 扩展字段4 -->
         d.EXT5 as "ext5", <!-- 扩展字段5 -->
         d.TRAIN_TAG as "traintag",
-        u.NAME as "fillinUserName",
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) as "fillinUserName",
         df.FAULT_WORK_NO as "faultWorkNo",  <!-- 故障工单号 -->
         df.ORDER_STATUS as "orderStatus" , <!-- 工单状态 -->
         df.EXT1 as "levelfault"  <!-- 派工状态 -->

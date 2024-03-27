@@ -131,7 +131,7 @@ public class FaultInfoDO {
     /**
      * not null
      */
-    @TableField(exist = false)
+    @ApiModelProperty(value = "提报人")
     private String fillinUserName;
     @ApiModelProperty(value = "主责部门")
     private String respDeptCode;

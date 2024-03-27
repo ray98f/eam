@@ -9,6 +9,7 @@
         a.REG_NO	as "regNo",  <!-- 登记证编号 -->
         b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
         a.OTHER_EQUIP_TYPE	as "otherEquipType",  <!-- 其他设备类别 -->
+        et.DETECTION_PERIOD	as "detectionPeriod",  <!-- 特种设备周期 -->
         a.OTHER_EQUIP_CODE	as "otherEquipCode",  <!-- 设备代码 -->
         a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
         a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
@@ -49,8 +50,8 @@
         b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 其他设备检测有效期 -->
         c.NAME as "manageOrgName",
         d.NAME as "secOrgName"
-        FROM T_EQUIPMENT b right join T_OTHER_EQUIP_EXT a
-        on a.EQUIP_CODE=b.EQUIP_CODE
+        FROM T_EQUIPMENT b right join T_OTHER_EQUIP_EXT a on a.EQUIP_CODE=b.EQUIP_CODE
+        left join T_OTHER_EQUIP_TYPE et on et.TYPE_CODE=a.OTHER_EQUIP_TYPE
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
         where 1=1
@@ -150,6 +151,70 @@
         VERIFY_VALIDITY_DATE=#{verifyValidityDate}
         WHERE EQUIP_CODE=#{equipCode}
     </update>
+
+    <select id="selectOtherEquipIsExist" resultType="java.lang.Integer">
+        select count(1) from T_OTHER_EQUIP_EXT where EQUIP_CODE=#{equipCode}
+        and OTHER_EQUIP_CODE=#{otherEquipCode} and rownum=1
+    </select>
+
+    <insert id="addOtherEquip">
+        INSERT INTO T_OTHER_EQUIP_EXT (
+        REC_ID,  <!-- 统一编号 -->
+        REG_ORG,  <!-- 使用登记机构 -->
+        REG_NO,  <!-- 登记证编号 -->
+        EQUIP_CODE,  <!-- 设备编码 -->
+        OTHER_EQUIP_TYPE,  <!-- 特种设备类别 -->
+        OTHER_EQUIP_CODE,  <!-- 设备代码 -->
+        FACT_NO,  <!-- 出厂编号 -->
+        EQUIP_INNER_NO,  <!-- 设备内部编号 -->
+        EQUIP_POSITION,  <!-- 设备所在地点 -->
+        EQUIP_DETAILED_POSITION,  <!-- 设备详细地址 -->
+        EQUIP_PARAMETER,  <!-- 设备主要参数 -->
+        MANAGE_ORG,  <!-- 管理部门 -->
+        SEC_ORG,  <!-- 维管部门 -->
+        SEC_STAFF_NAME,  <!-- 安管人员 -->
+        SEC_STAFF_PHONE,  <!-- 安管人员电话 -->
+        SEC_STAFF_MOBILE,  <!-- 安管人员手机 -->
+        LINKMAN_NAME,  <!-- 联系人 -->
+        LINKMAN_PHONE,  <!-- 联系人电话 -->
+        LINKMAN_MOBILE,  <!-- 联系人手机 -->
+        REMARK,  <!-- 备注 -->
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{regOrg,jdbcType=VARCHAR},
+        #{regNo,jdbcType=VARCHAR},
+        #{equipCode,jdbcType=VARCHAR},
+        #{specialEquipType,jdbcType=VARCHAR},
+        #{specialEquipCode,jdbcType=VARCHAR},
+        #{factNo,jdbcType=VARCHAR},
+        #{equipInnerNo,jdbcType=VARCHAR},
+        #{equipPosition,jdbcType=VARCHAR},
+        #{equipDetailedPosition,jdbcType=VARCHAR},
+        #{equipParameter,jdbcType=VARCHAR},
+        #{manageOrg,jdbcType=VARCHAR},
+        #{secOrg,jdbcType=VARCHAR},
+        #{secStaffName,jdbcType=VARCHAR},
+        #{secStaffPhone,jdbcType=VARCHAR},
+        #{secStaffMobile,jdbcType=VARCHAR},
+        #{linkmanName,jdbcType=VARCHAR},
+        #{linkmanPhone,jdbcType=VARCHAR},
+        #{linkmanMobile,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
     
     <update id="modifyOtherEquip">
         UPDATE T_OTHER_EQUIP_EXT SET

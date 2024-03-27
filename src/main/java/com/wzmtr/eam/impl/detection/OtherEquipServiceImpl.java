@@ -118,7 +118,7 @@ public class OtherEquipServiceImpl implements OtherEquipService {
                     otherCode.add(req.getOtherEquipCode());
                     continue;
                 }
-                req.setOtherEquipType(res.getTypeName());
+                req.setOtherEquipType(res.getTypeCode());
             }
             SysOffice manageOrg = organizationMapper.getByNames(reqDTO.getManageOrg());
             SysOffice secOrg = organizationMapper.getByNames(reqDTO.getSecOrg());
@@ -129,7 +129,12 @@ public class OtherEquipServiceImpl implements OtherEquipService {
             req.setManageOrg(manageOrg.getId());
             req.setSecOrg(secOrg.getId());
             otherEquipMapper.updateEquip(req);
-            otherEquipMapper.modifyOtherEquip(req);
+            if (otherEquipMapper.selectOtherEquipIsExist(req) > 0) {
+                otherEquipMapper.modifyOtherEquip(req);
+            } else {
+                req.setRecId(TokenUtils.getUuId());
+                otherEquipMapper.addOtherEquip(req);
+            }
         }
         throw new CommonException(ErrorCode.NORMAL_ERROR, "其他设备编号为" + String.join("、", otherCode) + "的其他设备导入失败，请重试");
     }

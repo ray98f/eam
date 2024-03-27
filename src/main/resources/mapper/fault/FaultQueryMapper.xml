@@ -16,19 +16,17 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
-        AS
-        "lineName",
+        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line') AS "lineName",
         d.LINE_CODE AS "lineCode",
         d.POSITION_CODE AS "positionCode",
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
+        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -72,9 +70,9 @@
         d.EXT4 AS "ext4",
         d.EXT5 AS "ext5",
         d.TRAIN_TAG AS "traintag",
-        u.NAME AS "fillinUserName",
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
-        ( SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID ) AS "closeUserName",
+        (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS "closeUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.FAULT_PROCESS_RESULT AS "faultProcessResult",
         df.DEALER_NUM AS "dealerNum",
@@ -153,7 +151,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
+        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line')
         AS
         "lineName",
         d.LINE_CODE AS "lineCode",
@@ -161,11 +159,11 @@
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
+        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -209,9 +207,9 @@
         d.EXT4 AS "ext4",
         d.EXT5 AS "ext5",
         d.TRAIN_TAG AS "traintag",
-        u.NAME AS "fillinUserName",
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
-        ( SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID ) AS "closeUserName",
+        (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS "closeUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.FAULT_PROCESS_RESULT AS "faultProcessResult",
         df.DEALER_NUM AS "dealerNum",
@@ -302,7 +300,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
+        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line')
         AS
         "lineName",
         d.LINE_CODE AS "lineCode",
@@ -310,11 +308,11 @@
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
+        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -358,9 +356,9 @@
         d.EXT4 AS "ext4",
         d.EXT5 AS "ext5",
         d.TRAIN_TAG AS "traintag",
-        u.NAME AS "fillinUserName",
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
-        ( SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID ) AS "closeUserName",
+        (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS "closeUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.FAULT_PROCESS_RESULT AS "faultProcessResult",
         df.DEALER_NUM AS "dealerNum",
@@ -437,7 +435,7 @@
                 <foreach collection="ids" index="index" item="id" separator=",">
                     #{id}
                 </foreach>
-                )
+               )
             </if>
             AND d.FAULT_FLAG!='2'
             and d.DELETE_FLAG='0'
@@ -457,7 +455,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
+        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line')
         AS
         "lineName",
         d.LINE_CODE AS "lineCode",
@@ -465,12 +463,12 @@
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName_textField",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName_textField",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
+        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -514,9 +512,9 @@
         d.EXT4 AS "ext4",
         d.EXT5 AS "ext5",
         d.TRAIN_TAG AS "traintag",
-        u.NAME AS "fillinUserName",
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
-        ( SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID ) AS "closeUserName",
+        (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS "closeUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.DEALER_NUM AS "dealerNum",
         df.FAULT_WORK_NO AS "faultWorkNo",
@@ -761,7 +759,7 @@
         d.EXT4 AS ext4,
         d.EXT5 AS ext5,
         d.TRAIN_TAG AS traintag,
-        u.NAME AS fillinUserName,
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) AS fillinUserName,
         df.CLOSE_TIME AS closeTime,
         (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS closeUserName,
         df.DEALER_UNIT AS dealerUnit,
@@ -784,7 +782,7 @@
         df.ORDER_STATUS!='99' AND df.ORDER_STATUS!='60' AND df.ORDER_STATUS!='70' THEN 3
         ELSE 9
         END
-        ) AS sort
+       ) AS sort
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO AND d.FAULT_FLAG!='2'
@@ -847,7 +845,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
+        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line')
         AS
         "lineName",
         d.LINE_CODE AS "lineCode",
@@ -855,13 +853,13 @@
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName_textField",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION2_CODE ) AS "position2Name",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName_textField",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION2_CODE) AS "position2Name",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
+        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -1006,7 +1004,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line' )
+        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line')
         AS
         "lineName",
         d.LINE_CODE AS "lineCode",
@@ -1014,12 +1012,12 @@
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName_textField",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1 ) AS "stationCode",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName_textField",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
+        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -1063,9 +1061,9 @@
         d.EXT4 AS "ext4",
         d.EXT5 AS "ext5",
         d.TRAIN_TAG AS "traintag",
-        u.NAME AS "fillinUserName",
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
-        ( SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID ) AS "closeUserName",
+        (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS "closeUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.DEALER_NUM AS "dealerNum",
         df.FAULT_WORK_NO AS "faultWorkNo",

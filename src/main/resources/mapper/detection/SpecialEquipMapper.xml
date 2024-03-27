@@ -9,6 +9,7 @@
         a.REG_NO	as "regNo",  <!-- 登记证编号 -->
         b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
         a.SPECIAL_EQUIP_TYPE	as "specialEquipType",  <!-- 特种设备类别 -->
+        et.DETECTION_PERIOD	as "detectionPeriod",  <!-- 特种设备周期 -->
         a.SPECIAL_EQUIP_CODE	as "specialEquipCode",  <!-- 设备代码 -->
         a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
         a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
@@ -51,6 +52,7 @@
         d.NAME as "secOrgName"
         FROM T_EQUIPMENT b
         left join T_SPECIAL_EQUIP_EXT a on a.EQUIP_CODE=b.EQUIP_CODE
+        left join T_SPECIAL_EQUIP_TYPE et on et.TYPE_CODE=a.SPECIAL_EQUIP_TYPE
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
         where b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
@@ -149,6 +151,11 @@
         VERIFY_VALIDITY_DATE=#{verifyValidityDate}
         WHERE EQUIP_CODE=#{equipCode}
     </update>
+
+    <select id="selectSpecialEquipIsExist" resultType="java.lang.Integer">
+        select count(1) from T_SPECIAL_EQUIP_EXT where EQUIP_CODE=#{equipCode}
+        and SPECIAL_EQUIP_CODE=#{specialEquipCode} and rownum=1
+    </select>
 
     <insert id="addSpecialEquip">
         INSERT INTO T_SPECIAL_EQUIP_EXT (
