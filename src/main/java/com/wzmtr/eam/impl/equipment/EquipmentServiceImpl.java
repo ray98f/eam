@@ -102,6 +102,16 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
+    public List<EquipmentResDTO> allList(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode, String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture) {
+        if (StringUtils.isNotEmpty(position1Code) && position1Code.contains(ES)) {
+            majorCode = "07";
+            position1Code = null;
+        }
+        return equipmentMapper.allList(equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
+                systemCode, equipTypeCode, brand, startTime, endTime, manufacture);
+    }
+
+    @Override
     public EquipmentResDTO getEquipmentDetail(String id) {
         return equipmentMapper.getEquipmentDetail(id);
     }

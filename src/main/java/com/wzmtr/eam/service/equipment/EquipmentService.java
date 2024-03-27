@@ -31,6 +31,9 @@ public interface EquipmentService {
     Page<EquipmentResDTO> pageEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, PageReqDTO pageReqDTO);
 
+    List<EquipmentResDTO> allList(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
+            String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture);
+
     EquipmentResDTO getEquipmentDetail(String id);
 
     void importEquipment(MultipartFile file);

@@ -88,6 +88,25 @@ public class EquipmentController {
                 systemCode, equipTypeCode, brand, startTime, endTime, manufacture, pageReqDTO));
     }
 
+    @GetMapping("/allList")
+    @ApiOperation(value = "获取设备列表")
+    public DataResponse<List<EquipmentResDTO>> allList(@RequestParam(required = false) @ApiParam("设备编码") String equipCode,
+                                                       @RequestParam(required = false) @ApiParam("设备名称") String equipName,
+                                                       @RequestParam(required = false) @ApiParam("线路编号") String useLineNo,
+                                                       @RequestParam(required = false) @ApiParam("线段编号") String useSegNo,
+                                                       @RequestParam(required = false) @ApiParam("位置一") String position1Code,
+                                                       @RequestParam(required = false) @ApiParam("专业编号") String majorCode,
+                                                       @RequestParam(required = false) @ApiParam("系统编号") String systemCode,
+                                                       @RequestParam(required = false) @ApiParam("设备分类编号") String equipTypeCode,
+                                                       @RequestParam(required = false) @ApiParam("品牌") String brand,
+                                                       @RequestParam(required = false) @ApiParam("出产开始时间") String startTime,
+                                                       @RequestParam(required = false) @ApiParam("出产结束时间") String endTime,
+                                                       @RequestParam(required = false) @ApiParam("生产厂家") String manufacture,
+                                                       @Valid PageReqDTO pageReqDTO) {
+        return DataResponse.of(equipmentService.allList(equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
+                systemCode, equipTypeCode, brand, startTime, endTime, manufacture));
+    }
+
     @GetMapping("/detail")
     @ApiOperation(value = "获取设备台账详情")
     public DataResponse<EquipmentResDTO> getEquipmentDetail(@RequestParam @ApiParam("id") String id) {
