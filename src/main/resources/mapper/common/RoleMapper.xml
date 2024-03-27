@@ -14,7 +14,7 @@
         <if test="roleName!=null and roleName!=''">
             and ROLE_NAME like '%' || #{roleName} || '%'
         </if>
-        ORDER BY SORT ASC
+        ORDER BY SORT ASC, ROLE_CODE ASC
     </select>
 
     <update id="deleteRole">
