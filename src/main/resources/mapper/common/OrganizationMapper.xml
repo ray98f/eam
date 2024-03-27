@@ -77,14 +77,14 @@
     </select>
 
     <select id="pageUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
-        select su.ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
+        select su.LOGIN_NAME as ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
         from SYS_USER su
         where su.OFFICE_ID=#{id} and su.EXPIRED=0 and su.DEL_FLAG=0
         ORDER BY su.ORDER_NUM ASC
     </select>
 
     <select id="listUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
-        select su.ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
+        select su.LOGIN_NAME as ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
         from SYS_USER su
         where su.OFFICE_ID=#{id} and su.EXPIRED=0 and su.DEL_FLAG=0
         ORDER BY su.ORDER_NUM ASC
