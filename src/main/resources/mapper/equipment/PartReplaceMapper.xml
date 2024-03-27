@@ -107,7 +107,7 @@
         <if test="type=='2'.toString()">
             LEFT JOIN T_BOM_TEST u ON u.ENAME=d.BOM_TYPE
         </if>
-        where EQUIP_CODE=#{equipCode}
+        WHERE d.EQUIP_CODE=#{equipCode}
     </select>
 
     <select id="getBom" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO">
@@ -116,7 +116,12 @@
         ENAME	as "ename",  <!-- 代码编号 -->
         CNAME	as "text",
         PARENT_ID    as "parentId"
-        FROM T_BOM
+        <if test="type=='1'.toString()">
+            FROM T_BOM
+        </if>
+        <if test="type=='2'.toString()">
+            FROM T_BOM_TEST
+        </if>
         where PARENT_ID=#{node}
         order by ENAME asc
     </select>

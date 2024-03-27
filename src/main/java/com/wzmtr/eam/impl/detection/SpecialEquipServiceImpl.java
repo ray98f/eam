@@ -104,7 +104,6 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
         for (ExcelSpecialEquipReqDTO reqDTO : list) {
             SpecialEquipReqDTO req = new SpecialEquipReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtils.getUuId());
             req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(DateUtils.getCurrentTime());
             req.setRecRevisor(TokenUtils.getCurrentPersonId());
@@ -115,7 +114,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
                     specialCode.add(req.getSpecialEquipCode());
                     continue;
                 }
-                req.setSpecialEquipType(res.getTypeName());
+                req.setSpecialEquipType(res.getTypeCode());
             }
             SysOffice manageOrg = organizationMapper.getByNames(reqDTO.getManageOrg());
             SysOffice secOrg = organizationMapper.getByNames(reqDTO.getSecOrg());
@@ -126,7 +125,12 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
             req.setManageOrg(manageOrg.getId());
             req.setSecOrg(secOrg.getId());
             specialEquipMapper.updateEquip(req);
-            specialEquipMapper.modifySpecialEquip(req);
+            if (specialEquipMapper.selectSpecialEquipIsExist(req) > 0) {
+                specialEquipMapper.modifySpecialEquip(req);
+            } else {
+                req.setRecId(TokenUtils.getUuId());
+                specialEquipMapper.addSpecialEquip(req);
+            }
         }
         if (StringUtils.isNotEmpty(specialCode)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "特种设备编号为" + String.join("、", specialCode) + "的特种设备导入失败，请重试");

@@ -26,6 +26,9 @@ public class SpecialEquipResDTO {
     @ApiModelProperty(value = "特种设备类别")
     private String specialEquipType;
 
+    @ApiModelProperty(value = "特种设备周期")
+    private String detectionPeriod;
+
     @ApiModelProperty(value = "特种设备代码")
     private String specialEquipCode;
 

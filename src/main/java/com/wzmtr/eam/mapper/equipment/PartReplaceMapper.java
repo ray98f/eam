@@ -24,7 +24,7 @@ public interface PartReplaceMapper {
 
     String selectBomCode(String equipCode, String type);
 
-    List<PartReplaceBomResDTO> getBom(String node);
+    List<PartReplaceBomResDTO> getBom(String node, String type);
 
     void addPartReplace(PartReplaceReqDTO equipmentChargeReqDTO);
 
