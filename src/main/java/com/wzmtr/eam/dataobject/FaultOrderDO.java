@@ -118,4 +118,5 @@ public class FaultOrderDO {
     private String reportFinishUserName;
     @TableField(exist = false)
     private String confirmUserName;
+    private String levelFault;
 }

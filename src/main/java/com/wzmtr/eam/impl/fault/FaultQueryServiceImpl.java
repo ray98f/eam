@@ -336,15 +336,15 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             String workerGroupCode = reqDTO.getWorkerGroupCode();
             FaultOrderDO faultOrder1 = faultQueryMapper.queryOneFaultOrder(null, a);
             if (faultOrder1 != null) {
-                if (StringUtils.isNotEmpty(reqDTO.getLevelFault())) {
-                    faultOrder1.setExt1(reqDTO.getLevelFault());
+                if (StringUtils.isNotEmpty(reqDTO.getFaultLevel())) {
+                    faultOrder1.setExt1(reqDTO.getFaultLevel());
                 }
                 faultOrder1.setFaultAffect(reqDTO.getFaultAffect());
                 faultOrder1.setWorkArea(reqDTO.getWorkArea());
                 faultOrder1.setPlanRecoveryTime(reqDTO.getPlanRecoveryTime());
                 faultOrder1.setRepairRespUserId(reqDTO.getRepairRespUserId());
                 faultOrder1.setDispatchUserId(TokenUtils.getCurrentPersonId());
-                faultOrder1.setDispatchTime(reqDTO.getDispatchTime());
+                faultOrder1.setDispatchTime(DateUtils.getCurrentTime());
                 faultOrder1.setRecRevisor(TokenUtils.getCurrentPersonId());
                 faultOrder1.setRecReviseTime(DateUtils.getCurrentTime());
                 faultOrder1.setOrderStatus(OrderStatus.PAI_GONG.getCode());

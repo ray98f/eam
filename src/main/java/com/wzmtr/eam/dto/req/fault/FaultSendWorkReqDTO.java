@@ -44,5 +44,5 @@ public class FaultSendWorkReqDTO {
     private String recRevisor;
     private String ext1;
     @ApiModelProperty(value = "故障紧急程度")
-    private String levelFault;
+    private String faultLevel;
 }
