@@ -632,6 +632,69 @@
         ORDER BY EQUIP_CODE ASC
     </select>
 
+    <select id="pageSiftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
+        <include refid="equip-cols"/>
+        FROM T_EQUIPMENT WHERE 1=1
+        <if test="req.bomType!=null and req.bomType!=''">
+            and TRIM(BOM_TYPE) IS NOT NULL AND MAJOR_CODE ='07'
+        </if>
+        <if test="req.sourceRecId!=null and req.sourceRecId!=''">
+            and SOURCE_REC_ID=#{req.sourceRecId}
+        </if>
+        <if test="req.approvalStatus!=null and req.approvalStatus!=''">
+            and APPROVAL_STATUS=#{req.approvalStatus}
+        </if>
+        <if test="req.equipCode!=null and req.equipCode!=''">
+            and EQUIP_CODE like '%' || #{req.equipCode} || '%'
+        </if>
+        <if test="req.equipName!=null and req.equipName!=''">
+            and EQUIP_NAME like '%' || #{req.equipName} || '%'
+        </if>
+        <if test="req.useLineNo!=null and req.useLineNo!=''">
+            and USE_LINE_NO=#{req.useLineNo}
+        </if>
+        <if test="req.useSegNo!=null and req.useSegNo!=''">
+            and USE_SEG_NO=#{req.useSegNo}
+        </if>
+        <if test="req.position1Code!=null and req.position1Code!=''">
+            and POSITION1_CODE=#{req.position1Code}
+        </if>
+        <if test="req.specialEquipFlag!=null and req.specialEquipFlag!=''">
+            and SPECIAL_EQUIP_FLAG=#{req.specialEquipFlag}
+        </if>
+        <if test="req.brand!=null and req.brand!=''">
+            and BRAND=#{req.brand}
+        </if>
+        <if test="req.equipStatus!=null and req.equipStatus!=''">
+            and EQUIP_STATUS=#{req.equipStatus}
+        </if>
+        <if test="req.manufacture!=null and req.manufacture!=''">
+            and MANUFACTURE=#{req.manufacture}
+        </if>
+        <if test="req.startTime!=null and startTime!=''">
+            and MANUFACTURE_DATE>=#{req.startTime}
+        </if>
+        <if test="req.endTime!=null and req.endTime!=''">
+            and #{req.endTime}>=MANUFACTURE_DATE
+        </if>
+        <if test="req.majorCode!=null and req.majorCode!=''">
+            and MAJOR_CODE=#{req.majorCode}
+        </if>
+        <if test="req.systemCode!=null and req.systemCode!=''">
+            and SYSTEM_CODE=#{req.systemCode}
+        </if>
+        <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
+            and EQUIP_TYPE_CODE=#{req.equipTypeCode}
+        </if>
+        <if test="req.subjectCode!=null and req.subjectCode!=''">
+            and MAJOR_CODE=#{req.subjectCode}
+        </if>
+        <if test="req.lineNo!=null and req.lineNo!=''">
+            and USE_LINE_NO=#{req.lineNo}
+        </if>
+        ORDER BY EQUIP_CODE ASC
+    </select>
+
     <select id="siftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE 1=1

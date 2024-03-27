@@ -128,7 +128,7 @@
     <select id="listRoleUsers" resultType="com.wzmtr.eam.dto.res.common.PersonListResDTO">
         SELECT t1.USER_ID as id, t2.NAME as userName
         FROM SYS_USER_ROLE t1
-        LEFT JOIN SYS_USER t2 ON t1.USER_ID=t2.ID
+        LEFT JOIN SYS_USER t2 ON t1.USER_ID=t2.LOGIN_NAME
         LEFT JOIN SYS_ROLE t3 ON t1.ROLE_ID=t3.ID
         WHERE 1=1
         <if test="roleId!=null and roleId!=''">
@@ -143,14 +143,14 @@
         SELECT DISTINCT t2.USER_ID, t3.NAME AS USER_NAME, t3.OFFICE_ID, t1.IS_OWNER_ORG
         FROM T_BPMN_EXAMINE t1
         LEFT JOIN SYS_USER_ROLE t2 ON t1.ROLE_ID=t2.ROLE_ID
-        LEFT JOIN SYS_USER t3 ON t3.ID=t2.USER_ID
+        LEFT JOIN SYS_USER t3 ON t3.LOGIN_NAME=t2.USER_ID
         WHERE t1.NODE_ID=#{nodeId,jdbcType=VARCHAR} AND t1.FLOW_ID=#{flowId,jdbcType=VARCHAR}
     </select>
 
     <select id="getUserBySubjectAndLineAndRole" resultType="com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes">
         SELECT DISTINCT t1.USER_ID, t2.NAME AS USER_NAME, t2.OFFICE_ID
         FROM SYS_USER_ROLE t1
-        LEFT JOIN SYS_USER t2 on t1.USER_ID=t2.ID
+        LEFT JOIN SYS_USER t2 on t1.USER_ID=t2.LOGIN_NAME
         LEFT JOIN SYS_ROLE t3 ON t1.ROLE_ID=t3.ID
         WHERE 1=1
         <if test="roleCode!=null and roleCode!=''">
@@ -167,7 +167,7 @@
     <select id="getUserByOrgAndRole" resultType="com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes">
         SELECT DISTINCT t1.USER_ID, t2.NAME AS USER_NAME, t2.OFFICE_ID
         FROM SYS_USER_ROLE t1
-        LEFT JOIN SYS_USER t2 on t1.USER_ID=t2.ID
+        LEFT JOIN SYS_USER t2 on t1.USER_ID=t2.LOGIN_NAME
         LEFT JOIN SYS_ROLE t3 ON t1.ROLE_ID=t3.ID
         WHERE 1=1
         <if test="roleCode!=null and roleCode!=''">
@@ -181,7 +181,7 @@
     <select id="getUserBySubjectAndLineAndRole2" resultType="com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes">
         SELECT DISTINCT t1.USER_ID, t2.NAME AS USER_NAME, t2.OFFICE_ID
         FROM SYS_USER_ROLE t1
-        LEFT JOIN SYS_USER t2 on t1.USER_ID=t2.ID
+        LEFT JOIN SYS_USER t2 on t1.USER_ID=t2.LOGIN_NAME
         LEFT JOIN SYS_ROLE t3 ON t1.ROLE_ID=t3.ID
         WHERE 1=1
         <if test="roleCode!=null and roleCode!=''">
