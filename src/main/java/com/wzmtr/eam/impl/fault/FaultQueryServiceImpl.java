@@ -169,7 +169,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultOrderDO.setOrderStatus(OrderStatus.XIA_FA.getCode());
+
+        //TODO 只更新下发状态?
         faultReportMapper.updateFaultOrder(faultOrderDO);
+
         FaultInfoDO faultInfoDO = BeanUtils.convert(reqDTO, FaultInfoDO.class);
         faultInfoDO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
@@ -180,6 +183,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(faultOrder)) {
             BeanUtils.copy(faultOrder.get(0), faultOrderDO);
         }
+
+        //TODO 工班长接收待办信息
         overTodoService.overTodo(faultOrderDO.getRecId(), "提报成功，准备下发");
         String content = "【市铁投集团】" + TokenUtils.getCurrentPerson().getOfficeName() + "的" + TokenUtils.getCurrentPerson().getPersonName() +
                 "下发一条" + faultInfo1.getMajorName() + "故障，工单号：" + reqDTO.getFaultWorkNo() + "，尽快派工。";
@@ -334,6 +339,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 if (StringUtils.isNotEmpty(reqDTO.getLevelFault())) {
                     faultOrder1.setExt1(reqDTO.getLevelFault());
                 }
+                faultOrder1.setFaultAffect(reqDTO.getFaultAffect());
+                faultOrder1.setWorkArea(reqDTO.getWorkArea());
+                faultOrder1.setPlanRecoveryTime(reqDTO.getPlanRecoveryTime());
+                faultOrder1.setRepairRespUserId(reqDTO.getRepairRespUserId());
+                faultOrder1.setDispatchUserId(TokenUtils.getCurrentPersonId());
+                faultOrder1.setDispatchTime(reqDTO.getDispatchTime());
                 faultOrder1.setRecRevisor(TokenUtils.getCurrentPersonId());
                 faultOrder1.setRecReviseTime(DateUtils.getCurrentTime());
                 faultOrder1.setOrderStatus(OrderStatus.PAI_GONG.getCode());
