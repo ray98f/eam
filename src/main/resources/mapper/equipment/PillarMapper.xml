@@ -100,4 +100,13 @@
         #{anchorNumber,jdbcType=VARCHAR},
         #{intervalStation,jdbcType=VARCHAR})
     </insert>
+
+    <delete id="delete">
+        DELETE FROM T_PILLAR
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
 </mapper>

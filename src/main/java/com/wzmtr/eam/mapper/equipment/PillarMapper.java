@@ -6,6 +6,8 @@ import com.wzmtr.eam.dto.res.equipment.PillarResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author frp
  */
@@ -17,4 +19,6 @@ public interface PillarMapper {
     Page<PillarResDTO> pagePillar(Page<PillarResDTO> page, String pillarNumber, String powerSupplySection);
 
     void add(PillarReqDTO pillarReqDTO);
+
+    void delete(List<String> ids);
 }

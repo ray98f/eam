@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 设备管理-触网一杆一档
@@ -45,6 +46,13 @@ public class PillarController {
     @ApiOperation(value = "获取触网一杆一档-新增")
     public DataResponse<T> listPillar(@RequestBody PillarReqDTO pillarReqDTO) {
         pillarService.add(pillarReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/delete")
+    @ApiOperation(value = "获取触网一杆一档-删除")
+    public DataResponse<T> listPillar(@RequestBody List<String> ids) {
+        pillarService.delete(ids);
         return DataResponse.success();
     }
 }
