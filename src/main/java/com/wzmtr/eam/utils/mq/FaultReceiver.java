@@ -62,9 +62,9 @@ public class FaultReceiver {
                     req.setFaultDetail("故障等级：" + fault.getFaultLevel() + "，故障详情：" + fault.getFaultDetail());
                 }
                 if (StringUtils.isEmpty(fault.getAlamTime())) {
-                    req.setDiscoveryTime(fault.getAlamTime());
-                } else {
                     req.setDiscoveryTime(DateUtils.getCurrentTime());
+                } else {
+                    req.setDiscoveryTime(fault.getAlamTime());
                 }
                 req.setFaultType(fault.getFaultType());
                 req.setFaultStatus(fault.getFaultStatus());
@@ -72,7 +72,6 @@ public class FaultReceiver {
                 FaultInfoDO faultInfoDO = req.toFaultInfoInsertDO(req);
                 // 来源系统名称填充创建人
                 faultInfoDO.setRecCreator(fault.getSysName());
-                faultInfoDO.setDiscoveryTime(DateUtils.getCurrentTime());
                 faultInfoDO.setDiscovererName(fault.getSysName());
                 faultInfoDO.setFillinUserName(fault.getSysName());
                 insertToFaultInfo(faultInfoDO, fault.getFaultNo());
@@ -98,7 +97,6 @@ public class FaultReceiver {
         faultInfo.setRecId(TokenUtils.getUuId());
         faultInfo.setDeleteFlag("0");
         faultInfo.setFillinTime(DateUtils.getCurrentTime());
-        faultInfo.setFillinUserId(TokenUtils.getCurrentPerson().getPersonId());
         faultInfo.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
         faultInfo.setRecCreateTime(DateUtils.getCurrentTime());
         faultReportMapper.addToFaultInfo(faultInfo);

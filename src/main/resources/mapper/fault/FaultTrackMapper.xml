@@ -418,7 +418,7 @@
         d.EXT4 AS "ext4",
         d.EXT5 AS "ext5",
         d.TRAIN_TAG AS "traintag",
-        u.NAME AS "fillinUserName",
+        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end)  AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
         (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS "closeUserName",
         (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=d.FILLIN_USER_ID) AS "fillinUserName",
