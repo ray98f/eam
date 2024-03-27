@@ -12,6 +12,7 @@ import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
+import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulItemResDTO;
@@ -35,6 +36,7 @@ import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulStateMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.service.common.OrganizationService;
 import com.wzmtr.eam.service.common.UserGroupMemberService;
 import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
@@ -99,6 +101,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
@@ -214,11 +219,22 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (StringUtils.isEmpty(workerGroupCode)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
-        String groupCname = "DM_013";
-        if (CommonConstants.ONE_STRING.equals(workStatus)) {
-            groupCname = "DM_012";
+//        String groupCname = "DM_013";
+//        if (CommonConstants.ONE_STRING.equals(workStatus)) {
+//            groupCname = "DM_012";
+//        }
+//        return userGroupMemberService.getDepartmentUserByGroupName(groupCname, workerGroupCode);
+        List<OrganMajorLineType> list = new ArrayList<>();
+        List<MemberResDTO> memberList = organizationService.listMember(workerGroupCode);
+        if (StringUtils.isNotEmpty(memberList)) {
+            for (MemberResDTO member : memberList) {
+                OrganMajorLineType res = new OrganMajorLineType();
+                res.setLoginName(member.getId());
+                res.setUserName(member.getName());
+                list.add(res);
+            }
         }
-        return userGroupMemberService.getDepartmentUserByGroupName(groupCname, workerGroupCode);
+        return list;
     }
 
     @Override

@@ -30,8 +30,8 @@
     </select>
 
     <select id="pageMember" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
-        select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
-        listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
+        select su.LOGIN_NAME as ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS,
+        so.ID AS PARENT_ID, listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
         su.EMAIL, su.ROOM from SYS_USER su
         left join SYS_OFFICE so on su.OFFICE_ID=so.ID and so.DEL_FLAG=0 and so.USEABLE=1
         left join SYS_ORG_USER sou on sou.USER_ID=su.ID and sou.ACTIVESTATUS=1 AND sou.LEAVEDATE>=SYSDATE
@@ -57,8 +57,8 @@
     </select>
 
     <select id="listMember" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
-        select su.ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS, so.ID AS PARENT_ID,
-        listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
+        select su.LOGIN_NAME as ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS,
+        so.ID AS PARENT_ID, listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
         su.EMAIL, su.ROOM from SYS_USER su
         left join SYS_OFFICE so on su.OFFICE_ID=so.ID and so.DEL_FLAG=0 and so.USEABLE=1
         left join SYS_ORG_USER sou on sou.USER_ID=su.ID and sou.ACTIVESTATUS=1 AND sou.LEAVEDATE>=SYSDATE

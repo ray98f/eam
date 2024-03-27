@@ -299,11 +299,11 @@
         d.FILLIN_USER_ID as "fillinUserId",  <!-- 提报人工号 -->
         d.FILLIN_DEPT_CODE as "fillinDeptCode",  <!-- 提报部门 -->
         df.ARRIVAL_TIME as "arrivalTime",
-        b21.ORG_NAME_S || '-' || xu.USER_NAME as "fillinUser",
+        b21.ORG_NAME_S || '-' || xu.NAME as "fillinUser",
         df.REPAIR_END_TIME as "repairEndTime",  <!-- 维修结束时间 -->
         round(((to_date(decode(df.REPAIR_END_TIME, ' ', '2019-11-11 11:11:11', df.REPAIR_END_TIME), 'yyyy-mm-dd HH24:mi:ss') - to_date(decode(df.ARRIVAL_TIME, ' ', '2019-11-11 11:11:11', df.ARRIVAL_TIME), 'yyyy-mm-dd HH24:mi:ss')) * 24 * 60), 0) as "repairTime",
         df.REPORT_FINISH_USER_ID as "reportFinishUserId",  <!-- 完工人工号 -->
-        nvl(xu1.USER_NAME, ' ') as "reportFinishUser",
+        nvl(xu1.NAME, ' ') as "reportFinishUser",
         df.ORDER_STATUS as "orderStatus",  <!-- 工单状态 -->
         df.FAULT_ACTION_DETAIL as "faultActionDetail",
         df.FAULT_WORK_NO as "faultWorkNo",
@@ -312,9 +312,9 @@
         FROM T_FAULT_INFO d
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO = df.FAULT_NO
         LEFT JOIN T_FAULT_DETAIL d3 ON d3.FAULT_NO = df.FAULT_NO
-        LEFT JOIN IPLAT60.XS_USER xu ON d.FILLIN_USER_ID = xu.LOGIN_NAME
+        LEFT JOIN SYS_USER xu ON d.FILLIN_USER_ID = xu.LOGIN_NAME
         LEFT JOIN T_SUPPLIER b21 ON b21.ORG_CODE = d.FILLIN_DEPT_CODE
-        LEFT JOIN IPLAT60.XS_USER xu1 ON df.REPORT_FINISH_USER_ID = xu1.LOGIN_NAME
+        LEFT JOIN SYS_USER xu1 ON df.REPORT_FINISH_USER_ID = xu1.LOGIN_NAME
         WHERE 1 = 1
         AND d.MAJOR_CODE = '07'
         AND NVL(df.IS_FAULT, '10') = '10'
@@ -335,9 +335,9 @@
         FROM T_FAULT_INFO d
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO = df.FAULT_NO
         LEFT JOIN T_FAULT_DETAIL d3 ON d3.FAULT_NO = df.FAULT_NO
-        LEFT JOIN IPLAT60.XS_USER xu ON d.FILLIN_USER_ID = xu.LOGIN_NAME
+        LEFT JOIN SYS_USER xu ON d.FILLIN_USER_ID = xu.LOGIN_NAME
         LEFT JOIN T_SUPPLIER b21 ON b21.ORG_CODE = d.FILLIN_DEPT_CODE
-        LEFT JOIN IPLAT60.XS_USER xu1 ON df.REPORT_FINISH_USER_ID = xu1.LOGIN_NAME
+        LEFT JOIN SYS_USER xu1 ON df.REPORT_FINISH_USER_ID = xu1.LOGIN_NAME
         WHERE 1 = 1
         AND d.MAJOR_CODE = '07'
         AND NVL(df.IS_FAULT, '10') = '10'

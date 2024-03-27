@@ -12,6 +12,7 @@ import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
+import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
@@ -31,6 +32,7 @@ import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.service.common.OrganizationService;
 import com.wzmtr.eam.service.common.UserGroupMemberService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.fault.FaultReportService;
@@ -85,6 +87,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private FaultInfoMapper faultInfoMapper;
     @Autowired
     private UserGroupMemberService userGroupMemberService;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
@@ -549,7 +554,18 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isEmpty(workerGroupCode)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
-        return userGroupMemberService.getDepartmentUserByGroupName("DM_012", workerGroupCode);
+//        return userGroupMemberService.getDepartmentUserByGroupName("DM_012", workerGroupCode);
+        List<OrganMajorLineType> list = new ArrayList<>();
+        List<MemberResDTO> memberList = organizationService.listMember(workerGroupCode);
+        if (StringUtils.isNotEmpty(memberList)) {
+            for (MemberResDTO member : memberList) {
+                OrganMajorLineType res = new OrganMajorLineType();
+                res.setLoginName(member.getId());
+                res.setUserName(member.getName());
+                list.add(res);
+            }
+        }
+        return list;
     }
 
 
