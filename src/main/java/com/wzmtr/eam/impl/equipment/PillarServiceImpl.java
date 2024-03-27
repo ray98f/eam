@@ -9,6 +9,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.PillarMapper;
 import com.wzmtr.eam.service.equipment.PillarService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,10 @@ public class PillarServiceImpl implements PillarService {
     @Override
     public void add(PillarReqDTO pillarReqDTO) {
         try{
+            pillarReqDTO.setRecId(TokenUtils.getUuId());
+            pillarReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+            pillarReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+
             pillarMapper.add(pillarReqDTO);
         }catch (Exception e){
             throw new CommonException(ErrorCode.INSERT_ERROR);
