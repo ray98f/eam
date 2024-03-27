@@ -72,11 +72,12 @@ public class OrgRegionServiceImpl implements OrgRegionService {
     public void addOrgRegion(OrgRegionReqDTO orgMajorReqDTO) {
         if (StringUtils.isNotEmpty(orgMajorReqDTO.getRegionCodes())) {
             for (String code : orgMajorReqDTO.getRegionCodes()) {
+                orgMajorReqDTO.setRegionCode(code);
                 Integer result = orgMajorMapper.selectOrgRegionIsExist(orgMajorReqDTO);
                 if (result > 0) {
                     continue;
                 }
-                orgMajorReqDTO.setRegionCode(code);
+
                 orgMajorReqDTO.setRecId(TokenUtils.getUuId());
                 orgMajorReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
                 orgMajorReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
