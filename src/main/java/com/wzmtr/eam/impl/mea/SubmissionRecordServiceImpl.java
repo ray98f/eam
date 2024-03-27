@@ -7,7 +7,6 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.bpmn.BpmnExamineDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.SubmissionRecordReqDTO;
-import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.mea.MeaResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordResDTO;
@@ -289,16 +288,16 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
-        if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
-            EquipmentResDTO equipment = equipmentMapper.getEquipByName(submissionRecordDetailReqDTO.getEquipName());
-            if (StringUtils.isNotNull(equipment)) {
-                BeanUtils.copyProperties(equipment, submissionRecordDetailReqDTO);
-            } else {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "请填写正确的设备名称，确保设备台账中存在此设备");
-            }
-        } else {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "设备名称必填");
-        }
+//        if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
+//            EquipmentResDTO equipment = equipmentMapper.getEquipByName(submissionRecordDetailReqDTO.getEquipName());
+//            if (StringUtils.isNotNull(equipment)) {
+//                BeanUtils.copyProperties(equipment, submissionRecordDetailReqDTO);
+//            } else {
+//                throw new CommonException(ErrorCode.NORMAL_ERROR, "请填写正确的设备名称，确保设备台账中存在此设备");
+//            }
+//        } else {
+//            throw new CommonException(ErrorCode.NORMAL_ERROR, "设备名称必填");
+//        }
         submissionRecordDetailReqDTO.setRecId(TokenUtils.getUuId());
         submissionRecordDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
