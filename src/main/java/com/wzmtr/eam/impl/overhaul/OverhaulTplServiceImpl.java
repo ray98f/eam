@@ -315,6 +315,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 req.setRecId(TokenUtils.getUuId());
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
                 req.setRecCreateTime(DateUtils.getCurrentTime());
+                req.setTrainNumber(req.getTrainNumber().substring(0, 2));
                 temp.add(req);
             }
         }

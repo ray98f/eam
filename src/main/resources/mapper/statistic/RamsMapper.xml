@@ -361,8 +361,14 @@
     </select>
     <select id="getMileSubtract" resultType="java.lang.Double">
         SELECT
-        (SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{endDate} and EQUIP_NAME=#{trainNo} and DELETE_FLAG='0')-
-        (SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{startDate} and EQUIP_NAME=#{trainNo} and DELETE_FLAG='0')
+        CASE WHEN ((SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{endDate} and
+        EQUIP_NAME=#{trainNo} and DELETE_FLAG='0')-
+        (SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{startDate} and EQUIP_NAME=#{trainNo} and
+        DELETE_FLAG='0')) IS NULL THEN 0 ELSE
+        ((SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{endDate} and
+        EQUIP_NAME=#{trainNo} and DELETE_FLAG='0')-
+        (SELECT TOTAL_WORK_MILE from T_TRAIN_MILE where "DAY"=#{startDate} and EQUIP_NAME=#{trainNo} and
+        DELETE_FLAG='0')) END
         from dual
     </select>
     <select id="queryPart" resultType="com.wzmtr.eam.dto.res.statistic.FaultRamsResDTO">
