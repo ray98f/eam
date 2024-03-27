@@ -89,8 +89,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         overhaulTplReqDTO.setTrialStatus("10");
         overhaulTplReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         overhaulTplReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        String templateId = "";
-        if (StringUtils.isEmpty(overhaulTplMapper.getMaxCode())) {
+        String templateId = overhaulTplMapper.getMaxCode();
+        if (StringUtils.isEmpty(templateId)) {
             templateId = "JM000000";
         }
         templateId = CodeUtils.getNextCode(templateId, 2);
@@ -285,8 +285,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 OverhaulTplReqDTO req = new OverhaulTplReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
                 req.setLineNo("S1线".equals(req.getLineName()) ? "01" : "02");
-                String templateId = "";
-                if (StringUtils.isEmpty(overhaulTplMapper.getMaxCode())) {
+                String templateId = overhaulTplMapper.getMaxCode();
+                if (StringUtils.isEmpty(templateId)) {
                     templateId = "JM000000";
                 }
                 templateId = CodeUtils.getNextCode(templateId, 2);
