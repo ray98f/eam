@@ -812,7 +812,15 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             }
         }
         String subjectCode = Optional.ofNullable(planList.get(0).getSubjectCode()).orElse(CommonConstants.BLANK);
-        String objectName = getEquipNameByCodeAndSubjects(overhaulObjectReqDTO.getObjectCode(), subjectCode, planList.get(0).getSystemCode().trim(), planList.get(0).getEquipTypeCode().trim());
+        String systemCode = "";
+        String equipTypeCode = "";
+        if (StringUtils.isNotEmpty(planList.get(0).getSystemCode())) {
+            systemCode = planList.get(0).getSystemCode().trim();
+        }
+        if (StringUtils.isNotEmpty(planList.get(0).getEquipTypeCode())) {
+            equipTypeCode = planList.get(0).getEquipTypeCode().trim();
+        }
+        String objectName = getEquipNameByCodeAndSubjects(overhaulObjectReqDTO.getObjectCode(), subjectCode, systemCode, equipTypeCode);
         if (org.apache.commons.lang3.StringUtils.isBlank(objectName)) {
             List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(), null, null, null, null, null);
             if (StringUtils.isNotEmpty(equipmentRoomList)) {
@@ -835,7 +843,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         equipmentSiftReqDTO.setSystemCode(systemCode);
         equipmentSiftReqDTO.setEquipTypeCode(equipTypeCode);
         List<EquipmentResDTO> equipMsg = equipmentMapper.siftEquipment(equipmentSiftReqDTO);
-        if (equipMsg.size() <= 0) {
+        if (equipMsg.isEmpty()) {
             return " ";
         }
         return equipMsg.get(0).getEquipName();
