@@ -70,14 +70,19 @@ public class OrgRegionServiceImpl implements OrgRegionService {
 
     @Override
     public void addOrgRegion(OrgRegionReqDTO orgMajorReqDTO) {
-        Integer result = orgMajorMapper.selectOrgRegionIsExist(orgMajorReqDTO);
-        if (result > 0) {
-            throw new CommonException(ErrorCode.DATA_EXIST);
+        if (StringUtils.isNotEmpty(orgMajorReqDTO.getRegionCodes())) {
+            for (String code : orgMajorReqDTO.getRegionCodes()) {
+                Integer result = orgMajorMapper.selectOrgRegionIsExist(orgMajorReqDTO);
+                if (result > 0) {
+                    continue;
+                }
+                orgMajorReqDTO.setRegionCode(code);
+                orgMajorReqDTO.setRecId(TokenUtils.getUuId());
+                orgMajorReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+                orgMajorReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+                orgMajorMapper.addOrgRegion(orgMajorReqDTO);
+            }
         }
-        orgMajorReqDTO.setRecId(TokenUtils.getUuId());
-        orgMajorReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        orgMajorReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        orgMajorMapper.addOrgRegion(orgMajorReqDTO);
     }
 
     @Override

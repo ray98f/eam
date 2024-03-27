@@ -831,7 +831,6 @@
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
-        FROM T_FAULT_INFO d,SYS_USER u,T_FAULT_ORDER df
         WHERE d.MAJOR_CODE in ('07', '06')
         <if test="faultNo!=null and faultNo!=''">
            and d.FAULT_NO=#{faultNo}
