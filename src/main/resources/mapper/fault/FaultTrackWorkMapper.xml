@@ -6,55 +6,55 @@
         UPDATE T_FAULT_TRACK_DETAIL
         SET
         <if test="recStatus!=null">
-            REC_STATUS = #{recStatus},
+            REC_STATUS=#{recStatus},
         </if>
         <if test="trackReporterId!=null">
-            TRACK_REPORTER_ID = #{trackReporterId},
+            TRACK_REPORTER_ID=#{trackReporterId},
         </if>
         <if test="trackResult!=null">
-            TRACK_RESULT = #{trackResult},
+            TRACK_RESULT=#{trackResult},
         </if>
         <if test="trackReportTime!=null">
-            TRACK_REPORT_TIME = #{trackReportTime}
+            TRACK_REPORT_TIME=#{trackReportTime}
         </if>
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultTrackNo!=null and faultTrackNo!=''">
-                and FAULT_TRACK_NO = #{faultTrackNo}
+                and FAULT_TRACK_NO=#{faultTrackNo}
             </if>
             <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
-                and FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+                and FAULT_TRACK_WORK_NO=#{faultTrackWorkNo}
             </if>
         </trim>
     </update>
     <update id="close">
         UPDATE T_FAULT_TRACK_DETAIL
         SET
-        REC_STATUS = #{recStatus},
-        TRACK_CLOSER_ID = #{trackCloserId},
-        TRACK_CLOSE_TIME = #{trackCloseTime}
+        REC_STATUS=#{recStatus},
+        TRACK_CLOSER_ID=#{trackCloserId},
+        TRACK_CLOSE_TIME=#{trackCloseTime}
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultTrackNo!=null and faultTrackNo!=''">
-                and FAULT_TRACK_NO = #{faultTrackNo}
+                and FAULT_TRACK_NO=#{faultTrackNo}
             </if>
             <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
-                and FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+                and FAULT_TRACK_WORK_NO=#{faultTrackWorkNo}
             </if>
         </trim>
     </update>
     <update id="repair">
         UPDATE T_FAULT_TRACK_DETAIL
         SET
-        WORKER_GROUP_CODE = #{workerGroupCode},
-        TRACK_REPORTER_ID = #{trackReporterId},
-        DISPATCH_USER_ID = #{dispatchUserId},
-        DISPATCH_TIME = #{dispatchTime},
-        REC_STATUS = #{recStatus}
+        WORKER_GROUP_CODE=#{workerGroupCode},
+        TRACK_REPORTER_ID=#{trackReporterId},
+        DISPATCH_USER_ID=#{dispatchUserId},
+        DISPATCH_TIME=#{dispatchTime},
+        REC_STATUS=#{recStatus}
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultTrackNo!=null and faultTrackNo!=''">
-                and FAULT_TRACK_NO = #{faultTrackNo}
+                and FAULT_TRACK_NO=#{faultTrackNo}
             </if>
             <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
-                and FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+                and FAULT_TRACK_WORK_NO=#{faultTrackWorkNo}
             </if>
         </trim>
     </update>
@@ -72,8 +72,8 @@
         df11.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
         df11.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
         (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME =df11.TRACK_REPORTER_ID) as "trackReportName",
-        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.DISPATCH_USER_ID) as "dispatchUserName",
-        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.TRACK_CLOSER_ID) as "trackCloserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME=df11.DISPATCH_USER_ID) as "dispatchUserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME=df11.TRACK_CLOSER_ID) as "trackCloserName",
         df11.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
         df11.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
         df11.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->
@@ -91,36 +91,34 @@
         df9.REC_STATUS as "trackStatus",
         df1.OBJECT_CODE as "objectCode",
         df1.OBJECT_NAME as "objectName"
-        FROM T_FAULT_TRACK_DETAIL df11,
-        T_FAULT_ORDER df2,T_FAULT_TRACK df9,T_FAULT_INFO df1
+        FROM T_FAULT_TRACK_DETAIL df11
+        LEFT JOIN T_FAULT_TRACK df9 ON df11.FAULT_TRACK_NO=df9.FAULT_TRACK_NO
+        LEFT JOIN T_FAULT_ORDER df2 ON df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+        LEFT JOIN T_FAULT_INFO df1 ON df9.FAULT_NO=df1.FAULT_NO AND df2.FAULT_NO=df1.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
-            and df11.FAULT_TRACK_NO = df9.FAULT_TRACK_NO
-            and df9.FAULT_NO=df1.FAULT_NO
-            and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
-            and df2.FAULT_NO=df1.FAULT_NO
             <if test="faultTrackNo!=null and faultTrackNo!=''">
-                and df11.FAULT_TRACK_NO = #{faultTrackNo}
+                and df11.FAULT_TRACK_NO=#{faultTrackNo}
             </if>
             <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
-                and df11.FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+                and df11.FAULT_TRACK_WORK_NO=#{faultTrackWorkNo}
             </if>
             <if test="objectCode!=null and objectCode!=''">
-                and df1.OBJECT_CODE = #{objectCode}
+                and df1.OBJECT_CODE=#{objectCode}
             </if>
             <if test="objectName!=null and objectName!=''">
-                and df1.OBJECT_NAME = #{objectName}
+                and df1.OBJECT_NAME=#{objectName}
             </if>
             <if test="majorCode!=null and majorCode!=''">
-                and df1.MAJOR_CODE = #{majorCode}
+                and df1.MAJOR_CODE=#{majorCode}
             </if>
             <if test="systemCode!=null and systemCode!=''">
-                and df1.SYSTEM_CODE = #{systemCode}
+                and df1.SYSTEM_CODE=#{systemCode}
             </if>
             <if test="equipTypeCode!=null and equipTypeCode!=''">
-                and df1.EQUIP_TYPE_CODE = #{equipTypeCode}
+                and df1.EQUIP_TYPE_CODE=#{equipTypeCode}
             </if>
             <if test="recStatus!=null and recStatus!=''">
-                and df11.REC_STATUS = #{recStatus}
+                and df11.REC_STATUS=#{recStatus}
             </if>
         </trim>
         order by df11.FAULT_TRACK_WORK_NO desc
@@ -140,8 +138,8 @@
         df11.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
         df11.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
         (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME =df11.TRACK_REPORTER_ID) as "trackReportName",
-        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.DISPATCH_USER_ID) as "dispatchUserName",
-        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.TRACK_CLOSER_ID) as "trackCloserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME=df11.DISPATCH_USER_ID) as "dispatchUserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME=df11.TRACK_CLOSER_ID) as "trackCloserName",
         df11.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
         df11.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
         df11.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->
@@ -159,36 +157,34 @@
         df9.REC_STATUS as "trackStatus",
         df1.OBJECT_CODE as "objectCode",
         df1.OBJECT_NAME as "objectName"
-        FROM T_FAULT_TRACK_DETAIL df11,
-        T_FAULT_ORDER df2,T_FAULT_TRACK df9,T_FAULT_INFO df1
+        FROM T_FAULT_TRACK_DETAIL df11
+        LEFT JOIN T_FAULT_TRACK df9 ON df11.FAULT_TRACK_NO=df9.FAULT_TRACK_NO
+        LEFT JOIN T_FAULT_ORDER df2 ON df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+        LEFT JOIN T_FAULT_INFO df1 ON df9.FAULT_NO=df1.FAULT_NO AND df2.FAULT_NO=df1.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
-            and df11.FAULT_TRACK_NO = df9.FAULT_TRACK_NO
-            and df9.FAULT_NO=df1.FAULT_NO
-            and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
-            and df2.FAULT_NO=df1.FAULT_NO
             <if test="faultTrackNo!=null and faultTrackNo!=''">
-                and df11.FAULT_TRACK_NO = #{faultTrackNo}
+                and df11.FAULT_TRACK_NO=#{faultTrackNo}
             </if>
             <if test="faultTrackWorkNo!=null and faultTrackWorkNo!=''">
-                and df11.FAULT_TRACK_WORK_NO = #{faultTrackWorkNo}
+                and df11.FAULT_TRACK_WORK_NO=#{faultTrackWorkNo}
             </if>
             <if test="objectCode!=null and objectCode!=''">
-                and df1.OBJECT_CODE = #{objectCode}
+                and df1.OBJECT_CODE=#{objectCode}
             </if>
             <if test="objectName!=null and objectName!=''">
-                and df1.OBJECT_NAME = #{objectName}
+                and df1.OBJECT_NAME=#{objectName}
             </if>
             <if test="majorCode!=null and majorCode!=''">
-                and df1.MAJOR_CODE = #{majorCode}
+                and df1.MAJOR_CODE=#{majorCode}
             </if>
             <if test="systemCode!=null and systemCode!=''">
-                and df1.SYSTEM_CODE = #{systemCode}
+                and df1.SYSTEM_CODE=#{systemCode}
             </if>
             <if test="equipTypeCode!=null and equipTypeCode!=''">
-                and df1.EQUIP_TYPE_CODE = #{equipTypeCode}
+                and df1.EQUIP_TYPE_CODE=#{equipTypeCode}
             </if>
             <if test="recStatus!=null and recStatus!=''">
-                and df11.REC_STATUS = #{recStatus}
+                and df11.REC_STATUS=#{recStatus}
             </if>
             <if test="ids!=null and ids.size()>0">
                 and df11.REC_ID in (
@@ -215,8 +211,8 @@
         df11.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
         df11.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
         (Select u.USER_NAME from IPLAT60.c u where u.LOGIN_NAME =df11.TRACK_REPORTER_ID) as "trackReportName",
-        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.DISPATCH_USER_ID) as "dispatchUserName",
-        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME = df11.TRACK_CLOSER_ID) as "trackCloserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME=df11.DISPATCH_USER_ID) as "dispatchUserName",
+        (Select u.USER_NAME from IPLAT60.XS_USER u where u.LOGIN_NAME=df11.TRACK_CLOSER_ID) as "trackCloserName",
         df11.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
         df11.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
         df11.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->
@@ -234,16 +230,12 @@
         df1.OBJECT_CODE as "objectCode",
         df1.OBJECT_NAME as "objectName"
         FROM T_FAULT_TRACK_DETAIL df11
-        LEFT JOIN T_FAULT_TRACK df9
-        ON df11.FAULT_TRACK_NO = df9.FAULT_TRACK_NO
-        LEFT JOIN T_FAULT_ORDER df2
-        ON df9.FAULT_WORK_NO = df2.FAULT_WORK_NO
-        LEFT JOIN T_FAULT_INFO df1
-        ON df9.FAULT_NO = df1.FAULT_NO
-        AND df2.FAULT_NO = df1.FAULT_NO
+        LEFT JOIN T_FAULT_TRACK df9 ON df11.FAULT_TRACK_NO=df9.FAULT_TRACK_NO
+        LEFT JOIN T_FAULT_ORDER df2 ON df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+        LEFT JOIN T_FAULT_INFO df1 ON df9.FAULT_NO=df1.FAULT_NO AND df2.FAULT_NO=df1.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="id!=null and id!=''">
-                and df11.REC_ID = #{id}
+                and df11.REC_ID=#{id}
             </if>
         </trim>
     </select>
@@ -260,11 +252,9 @@
         df1.FAULT_MODULE AS "faultModule",
         df1.LINE_CODE AS "lineCode",
         df1.POSITION_CODE AS "positionCode"
-        FROM
-        T_FAULT_ORDER df2,
-        T_FAULT_INFO df1
-        WHERE
-        df1.FAULT_NO = df2.FAULT_NO
+        FROM T_FAULT_ORDER df2
+        LEFT JOIN T_FAULT_INFO df1 ON df1.FAULT_NO=df2.FAULT_NO
+        WHERE 1=1
         <if test="faultWorkNo!=null">
             df2.FAULT_WORK_NO =#{faultWorkNo}
         </if>

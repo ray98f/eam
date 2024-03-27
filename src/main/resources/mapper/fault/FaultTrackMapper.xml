@@ -5,40 +5,40 @@
         UPDATE T_FAULT_TRACK
         SET
         <if test="companyCode!=null">
-            COMPANY_CODE = #{companyCode},
+            COMPANY_CODE=#{companyCode},
         </if>
         <if test="companyName!=null">
-            COMPANY_NAME = #{companyName},
+            COMPANY_NAME=#{companyName},
         </if>
         <if test="faultAnalysisNo!=null">
-            FAULT_ANALYSIS_NO = #{faultAnalysisNo},
+            FAULT_ANALYSIS_NO=#{faultAnalysisNo},
         </if>
         <if test="trackReason!=null">
-            TRACK_REASON = #{trackReason},
+            TRACK_REASON=#{trackReason},
         </if>
         <if test="trackUserId!=null">
-            TRACK_USER_ID = #{trackUserId},
+            TRACK_USER_ID=#{trackUserId},
         </if>
         <if test="trackTime!=null">
-            TRACK_TIME = #{trackTime},
+            TRACK_TIME=#{trackTime},
         </if>
         <if test="trackStartDate!=null">
-            TRACK_START_DATE = #{trackStartDate},
+            TRACK_START_DATE=#{trackStartDate},
         </if>
         <if test="trackPeriod!=null">
-            TRACK_PERIOD = #{trackPeriod},
+            TRACK_PERIOD=#{trackPeriod},
         </if>
         <if test="faultNo!=null">
-            FAULT_NO = #{faultNo},
+            FAULT_NO=#{faultNo},
         </if>
         <if test="faultWorkNo!=null">
-            FAULT_WORK_NO = #{faultWorkNo},
+            FAULT_WORK_NO=#{faultWorkNo},
         </if>
         <if test="trackEndDate!=null">
             TRACK_END_DATE =#{trackEndDate},
         </if>
         <if test="trackCycle!=null">
-            TRACK_CYCLE = #{trackCycle},
+            TRACK_CYCLE=#{trackCycle},
         </if>
         <if test="trackReporterId!=null">
             TRACK_REPORTER_ID =#{trackReporterId},
@@ -47,68 +47,68 @@
             TRACK_REPORT_TIME =#{trackReportTime},
         </if>
         <if test="trackResult!=null">
-            TRACK_RESULT = #{trackResult},
+            TRACK_RESULT=#{trackResult},
         </if>
         <if test="trackCloserId!=null">
-            TRACK_CLOSER_ID = #{trackCloserId},
+            TRACK_CLOSER_ID=#{trackCloserId},
         </if>
         <if test="trackCloseTime!=null">
-            TRACK_CLOSE_TIME = #{trackCloseTime},
+            TRACK_CLOSE_TIME=#{trackCloseTime},
         </if>
         <if test="workFlowInstId!=null">
-            WORK_FLOW_INST_ID = #{workFlowInstId},
+            WORK_FLOW_INST_ID=#{workFlowInstId},
         </if>
         <if test="workFlowInstStatus!=null">
-            WORK_FLOW_INST_STATUS = #{workFlowInstStatus},
+            WORK_FLOW_INST_STATUS=#{workFlowInstStatus},
         </if>
         <if test="docId!=null">
-            DOC_ID = #{docId},
+            DOC_ID=#{docId},
         </if>
         <if test="remark!=null">
-            REMARK = #{remark},
+            REMARK=#{remark},
         </if>
         <if test="recCreator!=null">
-            REC_CREATOR = #{recCreator},
+            REC_CREATOR=#{recCreator},
         </if>
         <if test="recCreateTime!=null">
-            REC_CREATE_TIME = #{recCreateTime},
+            REC_CREATE_TIME=#{recCreateTime},
         </if>
         <if test="recRevisor!=null">
-            REC_REVISOR = #{recRevisor},
+            REC_REVISOR=#{recRevisor},
         </if>
         <if test="recReviseTime!=null">
-            REC_REVISE_TIME = #{recReviseTime},
+            REC_REVISE_TIME=#{recReviseTime},
         </if>
         <if test="recDeletor!=null">
-            REC_DELETOR = #{recDeletor},
+            REC_DELETOR=#{recDeletor},
         </if>
         <if test="recDeleteTime!=null">
-            REC_DELETE_TIME = #{recDeleteTime},
+            REC_DELETE_TIME=#{recDeleteTime},
         </if>
         <if test="deleteFlag!=null">
-            DELETE_FLAG = #{deleteFlag},
+            DELETE_FLAG=#{deleteFlag},
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG = #{archiveFlag},
+            ARCHIVE_FLAG=#{archiveFlag},
         </if>
         <if test="ext1!=null">
-            EXT1 = #{ext1},
+            EXT1=#{ext1},
         </if>
         <if test="ext2!=null">
-            EXT2 = #{ext2},
+            EXT2=#{ext2},
         </if>
         <if test="ext3!=null">
-            EXT3 = #{ext3},
+            EXT3=#{ext3},
         </if>
         <if test="ext4!=null">
-            EXT4 = #{ext4},
+            EXT4=#{ext4},
         </if>
         <if test="ext5!=null">
             EXT5 =#{ext5},
         </if>
-        REC_STATUS = #{recStatus}
+        REC_STATUS=#{recStatus}
         WHERE
-        FAULT_TRACK_NO = #{faultTrackNo}
+        FAULT_TRACK_NO=#{faultTrackNo}
     </update>
     <select id="query" resultType="com.wzmtr.eam.dto.res.fault.TrackQueryResDTO">
         SELECT
@@ -120,7 +120,7 @@
         df9.FAULT_ANALYSIS_NO as "faultAnalysisNo_textField",
         df9.TRACK_REASON as "trackReason",  <!-- 跟踪原因 -->
         df9.TRACK_USER_ID as "trackUserId",  <!-- 转跟踪人员工号 -->
-        (SELECT NAME FROM SYS_USER WHERE df9.TRACK_USER_ID = LOGIN_NAME) as "trackUserName",
+        (SELECT NAME FROM SYS_USER WHERE df9.TRACK_USER_ID=LOGIN_NAME) as "trackUserName",
         df9.TRACK_TIME as "trackTime",  <!-- 转跟踪时间 -->
         df9.TRACK_PERIOD as "trackPeriod",  <!-- 跟踪期限 -->
         df9.TRACK_CYCLE as "trackCycle",  <!-- 跟踪周期 -->
@@ -150,55 +150,54 @@
         df1.LINE_CODE as "lineCode",
         df1.MAJOR_CODE AS "majorCode",
         df1.FAULT_DETAIL AS "faultDetail",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = df1.MAJOR_CODE ) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=df1.MAJOR_CODE) AS "majorName",
         df2.FAULT_ACTION_DETAIL AS "faultActionDetail"
-        FROM T_FAULT_TRACK df9,T_FAULT_ORDER df2,T_FAULT_INFO df1,SYS_REGION db3
+        FROM T_FAULT_TRACK df9
+        LEFT JOIN T_FAULT_ORDER df2 ON df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+        LEFT JOIN T_FAULT_INFO df1 ON df9.FAULT_NO=df1.FAULT_NO AND df1.FAULT_NO=df2.FAULT_NO
+        LEFT JOIN SYS_REGION db3 ON df1.POSITION_CODE=db3.NODE_CODE
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultTrackNo!=null and req.faultTrackNo!=''">
-                and df9.FAULT_TRACK_NO = #{req.faultTrackNo}
+                and df9.FAULT_TRACK_NO=#{req.faultTrackNo}
             </if>
             <if test="req.faultNo!=null and req.faultNo!=''">
-                and df1.FAULT_NO = #{req.faultNo}
+                and df1.FAULT_NO=#{req.faultNo}
             </if>
             <if test="req.faultWorkNo!=null and req.faultWorkNo!=''">
-                and df2.FAULT_WORK_NO = #{req.faultWorkNo}
+                and df2.FAULT_WORK_NO=#{req.faultWorkNo}
             </if>
             <if test="req.objectCode!=null and req.objectCode!=''">
-                and df1.OBJECT_CODE = #{req.objectCode}
+                and df1.OBJECT_CODE=#{req.objectCode}
             </if>
             <if test="req.objectName!=null and req.objectName!=''">
-                and df1.OBJECT_NAME = #{req.objectName}
+                and df1.OBJECT_NAME=#{req.objectName}
             </if>
             <if test="req.lineCode!=null and req.lineCode!=''">
-                and df1.LINE_CODE = #{req.lineCode}
+                and df1.LINE_CODE=#{req.lineCode}
             </if>
             <if test="req.positionCode!=null and req.positionCode!=''">
                 and df1.POSITION_CODE= #{req.positionCode}
             </if>
             <if test="req.majorCode!=null and req.majorCode!=''">
-                and df1.MAJOR_CODE = #{req.majorCode}
+                and df1.MAJOR_CODE=#{req.majorCode}
             </if>
             <if test="req.systemCode!=null and req.systemCode!=''">
-                and df1.SYSTEM_CODE = #{req.systemCode}
+                and df1.SYSTEM_CODE=#{req.systemCode}
             </if>
             <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
-                and df1.EQUIP_TYPE_CODE = #{req.equipTypeCode}
+                and df1.EQUIP_TYPE_CODE=#{req.equipTypeCode}
             </if>
             <if test="req.recStatus!=null and req.recStatus!=''">
-                and df9.REC_STATUS = #{req.recStatus}
+                and df9.REC_STATUS=#{req.recStatus}
             </if>
             <if test="req.ids!=null and req.ids.size()>0">
                 and df9.REC_ID in (
                 <foreach collection="ids" index="index" item="id" separator=",">
                     #{id}
                 </foreach>
-                )
+               )
             </if>
-            and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
-            and df9.FAULT_NO=df1.FAULT_NO
-            and df1.FAULT_NO=df2.FAULT_NO
-            and df1.POSITION_CODE=db3.NODE_CODE
-            and df9.DELETE_FLAG='0'
+            AND df9.DELETE_FLAG='0'
         </trim>
         order by df9.FAULT_TRACK_NO desc
     </select>
@@ -212,7 +211,7 @@
         df9.FAULT_ANALYSIS_NO as "faultAnalysisNo_textField",
         df9.TRACK_REASON as "trackReason",  <!-- 跟踪原因 -->
         df9.TRACK_USER_ID as "trackUserId",  <!-- 转跟踪人员工号 -->
-        (SELECT NAME FROM SYS_USER WHERE df9.TRACK_USER_ID = LOGIN_NAME) as "trackUserName",
+        (SELECT NAME FROM SYS_USER WHERE df9.TRACK_USER_ID=LOGIN_NAME) as "trackUserName",
         df9.TRACK_TIME as "trackTime",  <!-- 转跟踪时间 -->
         df9.TRACK_PERIOD as "trackPeriod",  <!-- 跟踪期限 -->
         df9.TRACK_CYCLE as "trackCycle",  <!-- 跟踪周期 -->
@@ -242,55 +241,54 @@
         df1.LINE_CODE as "lineCode",
         df1.MAJOR_CODE AS "majorCode",
         df1.FAULT_DETAIL AS "faultDetail",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = df1.MAJOR_CODE ) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=df1.MAJOR_CODE) AS "majorName",
         df2.FAULT_ACTION_DETAIL AS "faultActionDetail"
-        FROM T_FAULT_TRACK df9,T_FAULT_ORDER df2,T_FAULT_INFO df1,SYS_REGION db3
+        FROM T_FAULT_TRACK df9
+        LEFT JOIN T_FAULT_ORDER df2 ON df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+        LEFT JOIN T_FAULT_INFO df1 ON df9.FAULT_NO=df1.FAULT_NO AND df1.FAULT_NO=df2.FAULT_NO
+        LEFT JOIN SYS_REGION db3 ON df1.POSITION_CODE=db3.NODE_CODE
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultTrackNo!=null and faultTrackNo!=''">
-                and df9.FAULT_TRACK_NO = #{faultTrackNo}
+                and df9.FAULT_TRACK_NO=#{faultTrackNo}
             </if>
             <if test="faultNo!=null and faultNo!=''">
-                and df1.FAULT_NO = #{faultNo}
+                and df1.FAULT_NO=#{faultNo}
             </if>
             <if test="faultWorkNo!=null and faultWorkNo!=''">
-                and df2.FAULT_WORK_NO = #{faultWorkNo}
+                and df2.FAULT_WORK_NO=#{faultWorkNo}
             </if>
             <if test="objectCode!=null and objectCode!=''">
-                and df1.OBJECT_CODE = #{objectCode}
+                and df1.OBJECT_CODE=#{objectCode}
             </if>
             <if test="objectName!=null and objectName!=''">
-                and df1.OBJECT_NAME = #{objectName}
+                and df1.OBJECT_NAME=#{objectName}
             </if>
             <if test="lineCode!=null and lineCode!=''">
-                and df1.LINE_CODE = #{lineCode}
+                and df1.LINE_CODE=#{lineCode}
             </if>
             <if test="positionCode!=null and positionCode!=''">
                 and df1.POSITION_CODE= #{positionCode}
             </if>
             <if test="majorCode!=null and majorCode!=''">
-                and df1.MAJOR_CODE = #{majorCode}
+                and df1.MAJOR_CODE=#{majorCode}
             </if>
             <if test="systemCode!=null and systemCode!=''">
-                and df1.SYSTEM_CODE = #{systemCode}
+                and df1.SYSTEM_CODE=#{systemCode}
             </if>
             <if test="equipTypeCode!=null and equipTypeCode!=''">
-                and df1.EQUIP_TYPE_CODE = #{equipTypeCode}
+                and df1.EQUIP_TYPE_CODE=#{equipTypeCode}
             </if>
             <if test="recStatus!=null and recStatus!=''">
-                and df9.REC_STATUS = #{recStatus}
+                and df9.REC_STATUS=#{recStatus}
             </if>
             <if test="ids!=null and ids.size()>0">
                 and df9.REC_ID in (
                 <foreach collection="ids" index="index" item="id" separator=",">
                     #{id}
                 </foreach>
-                )
+               )
             </if>
-            and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
-            and df9.FAULT_NO=df1.FAULT_NO
-            and df1.FAULT_NO=df2.FAULT_NO
-            and df1.POSITION_CODE=db3.NODE_CODE
-            and df9.DELETE_FLAG='0'
+            AND df9.DELETE_FLAG='0'
         </trim>
         order by df9.FAULT_TRACK_NO desc
     </select>
@@ -304,7 +302,7 @@
         df9.FAULT_ANALYSIS_NO as "faultAnalysisNo_textField",
         df9.TRACK_REASON as "trackReason",  <!-- 跟踪原因 -->
         df9.TRACK_USER_ID as "trackUserId",  <!-- 转跟踪人员工号 -->
-        (SELECT NAME FROM SYS_USER WHERE df9.TRACK_USER_ID = LOGIN_NAME) as "trackUserName",
+        (SELECT NAME FROM SYS_USER WHERE df9.TRACK_USER_ID=LOGIN_NAME) as "trackUserName",
         df9.TRACK_TIME as "trackTime",  <!-- 转跟踪时间 -->
         df9.TRACK_PERIOD as "trackPeriod",  <!-- 跟踪期限 -->
         df9.TRACK_CYCLE as "trackCycle",  <!-- 跟踪周期 -->
@@ -334,19 +332,18 @@
         df1.LINE_CODE as "lineCode",<!-- 线路 -->
         df1.MAJOR_CODE AS "majorCode",<!-- 专业 -->
         df1.FAULT_DETAIL AS "faultDetail",<!-- 故障详情 -->
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = df1.MAJOR_CODE ) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=df1.MAJOR_CODE) AS "majorName",
         df2.FAULT_ACTION_DETAIL AS "faultActionDetail"
-        FROM
-        T_FAULT_TRACK df9
-        LEFT JOIN T_FAULT_ORDER df2 ON df9.FAULT_WORK_NO = df2.FAULT_WORK_NO
-        LEFT JOIN T_FAULT_INFO df1 ON df9.FAULT_NO = df1.FAULT_NO and df1.FAULT_NO = df2.FAULT_NO
-        LEFT JOIN SYS_REGION db3 ON df1.POSITION_CODE = db3.NODE_CODE
+        FROM T_FAULT_TRACK df9
+        LEFT JOIN T_FAULT_ORDER df2 ON df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+        LEFT JOIN T_FAULT_INFO df1 ON df9.FAULT_NO=df1.FAULT_NO and df1.FAULT_NO=df2.FAULT_NO
+        LEFT JOIN SYS_REGION db3 ON df1.POSITION_CODE=db3.NODE_CODE
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultTrackNo!=null and faultTrackNo!=''">
-                and df9.FAULT_TRACK_NO = #{faultTrackNo}
+                and df9.FAULT_TRACK_NO=#{faultTrackNo}
             </if>
             <if test="faultNo!=null and faultNo!=''">
-                and df9.FAULT_NO = #{faultNo}
+                and df9.FAULT_NO=#{faultNo}
             </if>
             and df9.DELETE_FLAG='0'
             and db3.DELETE_FLAG='0'
@@ -365,19 +362,19 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        ( SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE = d.LINE_CODE AND ec.CODESET_CODE = 'line' )
+        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line')
         AS "lineName",
         d.LINE_CODE AS "lineCode",
         d.POSITION_CODE AS "positionCode",
         d.POSITION2_CODE AS "position2Code",
         d.PART_CODE AS "partCode",
         d.PART_NAME AS "partName",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName_textField",
-        ( SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE = d.POSITION_CODE ) AS "positionName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.MAJOR_CODE ) AS "majorName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.SYSTEM_CODE ) AS "systemName",
-        ( SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE = d.EQUIP_TYPE_CODE ) AS "equipTypeName",
-        ( SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE = d.EXT1 ) AS "stationCode",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName_textField",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS "majorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
+        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -423,28 +420,25 @@
         d.TRAIN_TAG AS "traintag",
         u.NAME AS "fillinUserName",
         df.CLOSE_TIME AS "closeTime",
-        ( SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME = df.CLOSE_USER_ID ) AS "closeUserName",
-        ( SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME = d.FILLIN_USER_ID ) AS "fillinUserName",
+        (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS "closeUserName",
+        (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=d.FILLIN_USER_ID) AS "fillinUserName",
         df.DEALER_UNIT AS "dealerUnit",
         df.DEALER_NUM AS "dealerNum",
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
         df.EXT1 AS "levelfault"
-        FROM
-        T_FAULT_INFO d,
-        SYS_USER u,
-        T_FAULT_ORDER df
+        FROM T_FAULT_INFO d
+        LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
+        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultNo!=null and faultNo!=''">
-                and d.FAULT_NO = #{faultNo}
+                and d.FAULT_NO=#{faultNo}
             </if>
             <if test="faultWorkNo!=null and faultWorkNo!=''">
-                and df.FAULT_WORK_NO = #{faultWorkNo}
+                and df.FAULT_WORK_NO=#{faultWorkNo}
             </if>
-            AND d.FILLIN_USER_ID = u.LOGIN_NAME
-            AND d.FAULT_NO = df.FAULT_NO
-            AND d.FAULT_FLAG <![CDATA[!=]]> '2'
+            AND d.FAULT_FLAG!='2'
         </trim>
     </select>
     <select id="faultOrderDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -487,14 +481,14 @@
         WORK_FLOW_INST_ID	as "workFlowInstId",
         WORK_FLOW_INST_STATUS	as "workFlowInstStatus",
         PLAN_RECOVERY_TIME as "planRecoveryTime",
-        (select u.NAME from SYS_USER u where u.LOGIN_NAME = trim(DISPATCH_USER_ID)) as "dispatchUserName",
-        (select u.NAME from SYS_USER u where u.LOGIN_NAME = trim(REPAIR_RESP_USER_ID)) as "repairRespUserName",
-        (select u.MOBILE from SYS_USER u where u.LOGIN_NAME = trim(REPAIR_RESP_USER_ID)) as "repairRespUserMobile",
-        (select u.NAME from SYS_USER u where u.LOGIN_NAME = trim(CHECK_USER_ID)) as "checkUserName",
-        (select u.NAME from SYS_USER u where u.LOGIN_NAME = trim(CLOSE_USER_ID)) as "closeUserName",
-        (select u.NAME from SYS_USER u where u.LOGIN_NAME = trim(REPORT_FINISH_USER_ID)) as "reportFinishUserName",
-        (select u.NAME from SYS_USER u where u.LOGIN_NAME = trim(CONFIRM_USER_ID)) as "confirmUserName",
-        (select u.NAME from SYS_USER u where u.LOGIN_NAME = trim(REPORT_USER_ID)) as "reportUserName",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(DISPATCH_USER_ID)) as "dispatchUserName",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPAIR_RESP_USER_ID)) as "repairRespUserName",
+        (select u.MOBILE from SYS_USER u where u.LOGIN_NAME=trim(REPAIR_RESP_USER_ID)) as "repairRespUserMobile",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(CHECK_USER_ID)) as "checkUserName",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(CLOSE_USER_ID)) as "closeUserName",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPORT_FINISH_USER_ID)) as "reportFinishUserName",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(CONFIRM_USER_ID)) as "confirmUserName",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPORT_USER_ID)) as "reportUserName",
         FAULT_AFFECT as "faultAffect",
         IS_DETAINING_REPAIR as "isDetainingRepair",
         DOC_ID	as "docId",
@@ -516,10 +510,10 @@
         FROM T_FAULT_ORDER
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultNo!=null and faultNo!=''">
-                and FAULT_NO = #{faultNo}
+                and FAULT_NO=#{faultNo}
             </if>
             <if test="faultWorkNo!=null and faultWorkNo!=''">
-                and FAULT_WORK_NO = #{faultWorkNo}
+                and FAULT_WORK_NO=#{faultWorkNo}
             </if>
         </trim>
     </select>
@@ -528,10 +522,10 @@
         FROM T_FAULT_FLOW
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultNo!=null and faultNo!=''">
-                and FAULT_NO = #{faultNo}
+                and FAULT_NO=#{faultNo}
             </if>
             <if test="faultWorkNo!=null and faultWorkNo!=''">
-                and FAULT_WORK_NO = #{faultWorkNo}
+                and FAULT_WORK_NO=#{faultWorkNo}
             </if>
         </trim>
         order by OPERATE_TIME asc
@@ -541,178 +535,176 @@
         FROM T_FAULT_TRACK
     </select>
     <select id="queryList" resultType="com.wzmtr.eam.dataobject.FaultTrackDO">
-            SELECT
-            df9.REC_ID as "recId",  <!-- 记录编号 -->
-            df9.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
-            df9.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
-            df9.FAULT_TRACK_NO as "faultTrackNo",  <!-- 故障跟踪编号 -->
-            df9.FAULT_ANALYSIS_NO as "faultAnalysisNo",  <!-- 故障分析编号 -->
-            df9.FAULT_ANALYSIS_NO as "faultAnalysisNo_textField",
-            df9.TRACK_REASON as "trackReason",  <!-- 跟踪原因 -->
-            df9.TRACK_USER_ID as "trackUserId",  <!-- 转跟踪人员工号 -->
-            (SELECT NAME FROM SYS_USER WHERE df9.TRACK_USER_ID = LOGIN_NAME) as "trackUserName",
-            df9.TRACK_TIME as "trackTime",  <!-- 转跟踪时间 -->
-            df9.TRACK_PERIOD as "trackPeriod",  <!-- 跟踪期限 -->
-            df9.TRACK_CYCLE as "trackCycle",  <!-- 跟踪周期 -->
-            df9.TRACK_START_DATE as "trackStartDate",
-            df9.TRACK_END_DATE as "trackEndDate",
-            df9.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
-            df9.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
-            df9.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
-            df9.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
-            df9.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->
-            df9.WORK_FLOW_INST_ID as "workFlowInstId",  <!-- 工作流实例ID -->
-            df9.WORK_FLOW_INST_STATUS as "workFlowInstStatus",  <!-- 工作流实例状态 -->
-            df2.WORK_CLASS as "workClass",
-            df9.DOC_ID as "docId",  <!-- 附件编号 -->
-            df9.REMARK as "remark",  <!-- 备注 -->
-            df9.REC_STATUS as "recStatus",  <!-- 记录状态 -->
-            df1.FAULT_NO as "faultNo",
-            df2.FAULT_WORK_NO as "faultWorkNo",
-            df1.OBJECT_CODE as "objectCode",
-            df1.OBJECT_NAME as "objectName",
-            df1.POSITION_CODE as "positionCode",
-            db3.NODE_NAME as "positionName",
-            df1.FAULT_DISPLAY_CODE as "faultDisplayCode",
-            df1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail",
-            df2.FAULT_REASON_CODE as "faultReasonCode",
-            df2.FAULT_REASON_DETAIL as "faultReasonDetail",
-            df1.LINE_CODE as "lineCode",
-            df1.MAJOR_CODE as "majorCode",
-            df1.FAULT_DETAIL as "faultDetail",
-            (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=df1.MAJOR_CODE) as "majorName",
-            df2.FAULT_ACTION_DETAIL as "faultActionDetail"
-            FROM T_FAULT_TRACK df9,T_FAULT_ORDER df2,T_FAULT_INFO df1,SYS_REGION db3
-            <trim prefix="WHERE" prefixOverrides="AND">
-                and df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
-                and df9.FAULT_NO=df1.FAULT_NO
-                and df1.FAULT_NO=df2.FAULT_NO
-                and df1.POSITION_CODE=db3.NODE_CODE
-                <if test="faultTrackNo!=null and faultTrackNo!=''">
-                    and df9.FAULT_TRACK_NO = #{faultTrackNo}
-                </if>
-                <if test="faultWorkNo!=null and faultWorkNo!=''">
-                    and df2.FAULT_WORK_NO = #{faultWorkNo}
-                </if>
-                <if test="faultNo!=null and faultNo!=''">
-                    and df1.FAULT_NO = #{faultNo}
-                </if>
-                <if test="faultAnalysisNo!=null and faultAnalysisNo!=''">
-                    df9.FAULT_ANALYSIS_NO = #{faultAnalysisNo}
-                </if>
-            </trim>
-            order by df9.FAULT_TRACK_NO desc
+        SELECT
+        df9.REC_ID as "recId",  <!-- 记录编号 -->
+        df9.COMPANY_CODE as "companyCode",  <!-- 公司代码 -->
+        df9.COMPANY_NAME as "companyName",  <!-- 公司名称 -->
+        df9.FAULT_TRACK_NO as "faultTrackNo",  <!-- 故障跟踪编号 -->
+        df9.FAULT_ANALYSIS_NO as "faultAnalysisNo",  <!-- 故障分析编号 -->
+        df9.FAULT_ANALYSIS_NO as "faultAnalysisNo_textField",
+        df9.TRACK_REASON as "trackReason",  <!-- 跟踪原因 -->
+        df9.TRACK_USER_ID as "trackUserId",  <!-- 转跟踪人员工号 -->
+        (SELECT NAME FROM SYS_USER WHERE df9.TRACK_USER_ID=LOGIN_NAME) as "trackUserName",
+        df9.TRACK_TIME as "trackTime",  <!-- 转跟踪时间 -->
+        df9.TRACK_PERIOD as "trackPeriod",  <!-- 跟踪期限 -->
+        df9.TRACK_CYCLE as "trackCycle",  <!-- 跟踪周期 -->
+        df9.TRACK_START_DATE as "trackStartDate",
+        df9.TRACK_END_DATE as "trackEndDate",
+        df9.TRACK_REPORTER_ID as "trackReporterId",  <!-- 跟踪报告人工号 -->
+        df9.TRACK_REPORT_TIME as "trackReportTime",  <!-- 跟踪报告时间 -->
+        df9.TRACK_RESULT as "trackResult",  <!-- 跟踪结果 -->
+        df9.TRACK_CLOSER_ID as "trackCloserId",  <!-- 跟踪关闭人工号 -->
+        df9.TRACK_CLOSE_TIME as "trackCloseTime",  <!-- 跟踪关闭时间 -->
+        df9.WORK_FLOW_INST_ID as "workFlowInstId",  <!-- 工作流实例ID -->
+        df9.WORK_FLOW_INST_STATUS as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        df2.WORK_CLASS as "workClass",
+        df9.DOC_ID as "docId",  <!-- 附件编号 -->
+        df9.REMARK as "remark",  <!-- 备注 -->
+        df9.REC_STATUS as "recStatus",  <!-- 记录状态 -->
+        df1.FAULT_NO as "faultNo",
+        df2.FAULT_WORK_NO as "faultWorkNo",
+        df1.OBJECT_CODE as "objectCode",
+        df1.OBJECT_NAME as "objectName",
+        df1.POSITION_CODE as "positionCode",
+        db3.NODE_NAME as "positionName",
+        df1.FAULT_DISPLAY_CODE as "faultDisplayCode",
+        df1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail",
+        df2.FAULT_REASON_CODE as "faultReasonCode",
+        df2.FAULT_REASON_DETAIL as "faultReasonDetail",
+        df1.LINE_CODE as "lineCode",
+        df1.MAJOR_CODE as "majorCode",
+        df1.FAULT_DETAIL as "faultDetail",
+        (SELECT db.NODE_NAME from T_EQUIPMENT_CATEGORY db where db.NODE_CODE=df1.MAJOR_CODE) as "majorName",
+        df2.FAULT_ACTION_DETAIL as "faultActionDetail"
+        FROM T_FAULT_TRACK df9
+        LEFT JOIN T_FAULT_ORDER df2 ON df9.FAULT_WORK_NO=df2.FAULT_WORK_NO
+        LEFT JOIN T_FAULT_INFO df1 ON df9.FAULT_NO=df1.FAULT_NO and df1.FAULT_NO=df2.FAULT_NO
+        LEFT JOIN SYS_REGION db3 ON df1.POSITION_CODE=db3.NODE_CODE
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="faultTrackNo!=null and faultTrackNo!=''">
+                and df9.FAULT_TRACK_NO=#{faultTrackNo}
+            </if>
+            <if test="faultWorkNo!=null and faultWorkNo!=''">
+                and df2.FAULT_WORK_NO=#{faultWorkNo}
+            </if>
+            <if test="faultNo!=null and faultNo!=''">
+                and df1.FAULT_NO=#{faultNo}
+            </if>
+            <if test="faultAnalysisNo!=null and faultAnalysisNo!=''">
+                df9.FAULT_ANALYSIS_NO=#{faultAnalysisNo}
+            </if>
+        </trim>
+        order by df9.FAULT_TRACK_NO desc
     </select>
 
     <update id="transmit">
-        UPDATE T_FAULT_TRACK
-        SET
+        UPDATE T_FAULT_TRACK SET
         <if test="companyCode != null">
-            COMPANY_CODE = #{companyCode}
+            COMPANY_CODE=#{companyCode}
         </if>
         <if test="companyName != null">
-            , COMPANY_NAME = #{companyName}
+            , COMPANY_NAME=#{companyName}
         </if>
         <if test="faultAnalysisNo != null">
-            , FAULT_ANALYSIS_NO = #{faultAnalysisNo}
+            , FAULT_ANALYSIS_NO=#{faultAnalysisNo}
         </if>
         <if test="trackReason != null">
-            , TRACK_REASON = #{trackReason}
+            , TRACK_REASON=#{trackReason}
         </if>
         <if test="trackUserId != null">
-            , TRACK_USER_ID = #{trackUserId}
+            , TRACK_USER_ID=#{trackUserId}
         </if>
         <if test="trackTime != null">
-            , TRACK_TIME = #{trackTime}
+            , TRACK_TIME=#{trackTime}
         </if>
         <if test="trackStartDate != null">
-            , TRACK_START_DATE = #{trackStartDate}
+            , TRACK_START_DATE=#{trackStartDate}
         </if>
         <if test="trackPeriod != null">
-            , TRACK_PERIOD = #{trackPeriod}
+            , TRACK_PERIOD=#{trackPeriod}
         </if>
         <if test="faultNo != null">
-            , FAULT_NO = #{faultNo}
+            , FAULT_NO=#{faultNo}
         </if>
         <if test="faultWorkNo != null">
-            , FAULT_WORK_NO = #{faultWorkNo}
+            , FAULT_WORK_NO=#{faultWorkNo}
         </if>
         <if test="trackEndDate != null">
-            , TRACK_END_DATE = #{trackEndDate}
+            , TRACK_END_DATE=#{trackEndDate}
         </if>
         <if test="trackCycle != null">
-            , TRACK_CYCLE = #{trackCycle}
+            , TRACK_CYCLE=#{trackCycle}
         </if>
         <if test="trackReporterId != null">
-            , TRACK_REPORTER_ID = #{trackReporterId}
+            , TRACK_REPORTER_ID=#{trackReporterId}
         </if>
         <if test="trackReportTime != null">
-            , TRACK_REPORT_TIME = #{trackReportTime}
+            , TRACK_REPORT_TIME=#{trackReportTime}
         </if>
         <if test="trackResult != null">
-            , TRACK_RESULT = #{trackResult}
+            , TRACK_RESULT=#{trackResult}
         </if>
         <if test="trackCloserId != null">
-            , TRACK_CLOSER_ID = #{trackCloserId}
+            , TRACK_CLOSER_ID=#{trackCloserId}
         </if>
         <if test="trackCloseTime != null">
-            , TRACK_CLOSE_TIME = #{trackCloseTime}
+            , TRACK_CLOSE_TIME=#{trackCloseTime}
         </if>
         <if test="workFlowInstId != null">
-            , WORK_FLOW_INST_ID = #{workFlowInstId}
+            , WORK_FLOW_INST_ID=#{workFlowInstId}
         </if>
         <if test="workFlowInstStatus != null">
-            , WORK_FLOW_INST_STATUS = #{workFlowInstStatus}
+            , WORK_FLOW_INST_STATUS=#{workFlowInstStatus}
         </if>
         <if test="docId != null">
-            , DOC_ID = #{docId}
+            , DOC_ID=#{docId}
         </if>
         <if test="remark != null">
-            , REMARK = #{remark}
+            , REMARK=#{remark}
         </if>
         <if test="recCreator != null">
-            , REC_CREATOR = #{recCreator}
+            , REC_CREATOR=#{recCreator}
         </if>
         <if test="recCreateTime != null">
-            , REC_CREATE_TIME = #{recCreateTime}
+            , REC_CREATE_TIME=#{recCreateTime}
         </if>
         <if test="recRevisor != null">
-            , REC_REVISOR = #{recRevisor}
+            , REC_REVISOR=#{recRevisor}
         </if>
         <if test="recReviseTime != null">
-            , REC_REVISE_TIME = #{recReviseTime}
+            , REC_REVISE_TIME=#{recReviseTime}
         </if>
         <if test="recDeletor != null">
-            , REC_DELETOR = #{recDeletor}
+            , REC_DELETOR=#{recDeletor}
         </if>
         <if test="recDeleteTime != null">
-            , REC_DELETE_TIME = #{recDeleteTime}
+            , REC_DELETE_TIME=#{recDeleteTime}
         </if>
         <if test="deleteFlag != null">
-            , DELETE_FLAG = #{deleteFlag}
+            , DELETE_FLAG=#{deleteFlag}
         </if>
         <if test="archiveFlag != null">
-            , ARCHIVE_FLAG = #{archiveFlag}
+            , ARCHIVE_FLAG=#{archiveFlag}
         </if>
         <if test="recStatus != null">
-            , REC_STATUS = #{recStatus}
+            , REC_STATUS=#{recStatus}
         </if>
         <if test="ext1 != null">
-            , EXT1 = #{ext1}
+            , EXT1=#{ext1}
         </if>
         <if test="ext2 != null">
-            , EXT2 = #{ext2}
+            , EXT2=#{ext2}
         </if>
         <if test="ext3 != null">
-            , EXT3 = #{ext3}
+            , EXT3=#{ext3}
         </if>
         <if test="ext4 != null">
-            , EXT4 = #{ext4}
+            , EXT4=#{ext4}
         </if>
         <if test="ext5 != null">
-            , EXT5 = #{ext5}
+            , EXT5=#{ext5}
         </if>
         WHERE
-        FAULT_TRACK_NO = #{faultTrackNo}
+        FAULT_TRACK_NO=#{faultTrackNo}
     </update>
 </mapper>

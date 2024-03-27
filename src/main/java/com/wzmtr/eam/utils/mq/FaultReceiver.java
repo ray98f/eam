@@ -48,7 +48,7 @@ public class FaultReceiver {
     @RabbitListener(queues = RabbitMqConfig.FAULT_QUEUE)
     @RabbitHandler
     public void faultProcess(FaultReportOpenReqDTO fault) {
-        try {
+//        try {
             if (!Objects.isNull(fault)) {
                 FaultReportReqDTO req = new FaultReportReqDTO();
                 if (StringUtils.isNotEmpty(fault.getEquipCode())) {
@@ -62,15 +62,19 @@ public class FaultReceiver {
                 req.setFaultStatus(fault.getFaultStatus());
                 req.setPartCode(fault.getPartCode());
                 FaultInfoDO faultInfoDO = req.toFaultInfoInsertDO(req);
+                // 来源系统名称填充创建人
+                faultInfoDO.setRecCreator(fault.getSysName());
                 insertToFaultInfo(faultInfoDO, fault.getFaultNo());
                 FaultOrderDO faultOrderDO = req.toFaultOrderInsertDO(req);
+                // 来源系统名称填充创建人
+                faultOrderDO.setRecCreator(fault.getSysName());
                 insertToFaultOrder(faultOrderDO, fault.getFaultNo(), fault.getFaultWorkNo());
                 addFaultFlow(fault.getFaultNo(), fault.getFaultWorkNo());
             }
-        } catch (Exception e) {
-            faultReportMapper.addFaultError(buildFaultError(fault, e.getMessage()));
-            log.error("故障提报失败：" + e.getMessage());
-        }
+//        } catch (Exception e) {
+//            faultReportMapper.addFaultError(buildFaultError(fault, e.getMessage()));
+//            log.error("故障提报失败：" + e.getMessage());
+//        }
     }
 
     /**
@@ -85,7 +89,6 @@ public class FaultReceiver {
         faultInfo.setFillinTime(DateUtils.getCurrentTime());
         faultInfo.setFillinUserId(TokenUtils.getCurrentPerson().getPersonId());
         faultInfo.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
-        faultInfo.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
         faultInfo.setRecCreateTime(DateUtils.getCurrentTime());
         faultReportMapper.addToFaultInfo(faultInfo);
     }
@@ -101,7 +104,6 @@ public class FaultReceiver {
         faultOrder.setFaultNo(faultNo);
         faultOrder.setDeleteFlag("0");
         faultOrder.setRecId(TokenUtils.getUuId());
-        faultOrder.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
         faultOrder.setRecCreateTime(DateUtils.getCurrentTime());
         faultReportMapper.addToFaultOrder(faultOrder);
 

@@ -5,116 +5,116 @@
         UPDATE T_FAULT_DETAIL
         SET
         <if test="companyCode != null and companyCode != ''">
-             COMPANY_CODE = #{companyCode}
+             COMPANY_CODE=#{companyCode}
         </if>
         <if test="companyName != null and companyName != ''">
-            , COMPANY_NAME = #{companyName}
+            , COMPANY_NAME=#{companyName}
         </if>
         <if test="faultAnalysisNo != null and faultAnalysisNo != ''">
-            , FAULT_ANALYSIS_NO = #{faultAnalysisNo}
+            , FAULT_ANALYSIS_NO=#{faultAnalysisNo}
         </if>
         <if test="faultWorkNo != null and faultWorkNo != ''">
-            , FAULT_WORK_NO = #{faultWorkNo}
+            , FAULT_WORK_NO=#{faultWorkNo}
         </if>
         <if test="mainEquipCode != null and mainEquipCode != ''">
-            , MAIN_EQUIP_CODE = #{mainEquipCode}
+            , MAIN_EQUIP_CODE=#{mainEquipCode}
         </if>
         <if test="mainEquipName != null and mainEquipName != ''">
-            , MAIN_EQUIP_NAME = #{mainEquipName}
+            , MAIN_EQUIP_NAME=#{mainEquipName}
         </if>
         <if test="majorCode != null and majorCode != ''">
-            , MAJOR_CODE = #{majorCode}
+            , MAJOR_CODE=#{majorCode}
         </if>
         <if test="recoveryTime != null">
-            , RECOVERY_TIME = #{recoveryTime}
+            , RECOVERY_TIME=#{recoveryTime}
         </if>
         <if test="affectCodes != null and affectCodes != ''">
-            , AFFECT_CODES = #{affectCodes}
+            , AFFECT_CODES=#{affectCodes}
         </if>
         <if test="frequency != null">
-            , FREQUENCY = #{frequency}
+            , FREQUENCY=#{frequency}
         </if>
         <if test="manufacture != null and manufacture != ''">
-            , MANUFACTURE = #{manufacture}
+            , MANUFACTURE=#{manufacture}
         </if>
         <if test="faultDetail != null and faultDetail != ''">
-            , FAULT_DETAIL = #{faultDetail}
+            , FAULT_DETAIL=#{faultDetail}
         </if>
         <if test="faultProcessDetail != null and faultProcessDetail != ''">
-            , FAULT_PROCESS_DETAIL = #{faultProcessDetail}
+            , FAULT_PROCESS_DETAIL=#{faultProcessDetail}
         </if>
         <if test="faultReasonDetail != null and faultReasonDetail != ''">
-            , FAULT_REASON_DETAIL = #{faultReasonDetail}
+            , FAULT_REASON_DETAIL=#{faultReasonDetail}
         </if>
         <if test="problemDescr != null and problemDescr != ''">
-            , PROBLEM_DESCR = #{problemDescr}
+            , PROBLEM_DESCR=#{problemDescr}
         </if>
         <if test="improveDetail != null and improveDetail != ''">
-            , IMPROVE_DETAIL = #{improveDetail}
+            , IMPROVE_DETAIL=#{improveDetail}
         </if>
         <if test="workFlowInstId != null and workFlowInstId != ''">
-            , WORK_FLOW_INST_ID = #{workFlowInstId}
+            , WORK_FLOW_INST_ID=#{workFlowInstId}
         </if>
         <if test="workFlowInstStatus != null and workFlowInstStatus != ''">
-            , WORK_FLOW_INST_STATUS = #{workFlowInstStatus}
+            , WORK_FLOW_INST_STATUS=#{workFlowInstStatus}
         </if>
         <if test="docId != null and docId != ''">
-            , DOC_ID = #{docId}
+            , DOC_ID=#{docId}
         </if>
         <if test="remark != null and remark != ''">
-            , REMARK = #{remark}
+            , REMARK=#{remark}
         </if>
         <if test="recStatus != null">
-            , REC_STATUS = #{recStatus}
+            , REC_STATUS=#{recStatus}
         </if>
         <if test="recCreator != null and recCreator != ''">
-            , REC_CREATOR = #{recCreator}
+            , REC_CREATOR=#{recCreator}
         </if>
         <if test="recCreateTime != null">
-            , REC_CREATE_TIME = #{recCreateTime}
+            , REC_CREATE_TIME=#{recCreateTime}
         </if>
         <if test="recRevisor != null and recRevisor != ''">
-            , REC_REVISOR = #{recRevisor}
+            , REC_REVISOR=#{recRevisor}
         </if>
         <if test="recReviseTime != null">
-            , REC_REVISE_TIME = #{recReviseTime}
+            , REC_REVISE_TIME=#{recReviseTime}
         </if>
         <if test="recDeletor != null and recDeletor != ''">
-            , REC_DELETOR = #{recDeletor}
+            , REC_DELETOR=#{recDeletor}
         </if>
         <if test="recDeleteTime != null">
-            , REC_DELETE_TIME = #{recDeleteTime}
+            , REC_DELETE_TIME=#{recDeleteTime}
         </if>
         <if test="deleteFlag != null">
-            , DELETE_FLAG = #{deleteFlag}
+            , DELETE_FLAG=#{deleteFlag}
         </if>
         <if test="archiveFlag != null">
-            , ARCHIVE_FLAG = #{archiveFlag}
+            , ARCHIVE_FLAG=#{archiveFlag}
         </if>
         <if test="ext1 != null and ext1 != ''">
-            , EXT1 = #{ext1}
+            , EXT1=#{ext1}
         </if>
         <if test="ext2 != null and ext2 != ''">
-            , EXT2 = #{ext2}
+            , EXT2=#{ext2}
         </if>
         <if test="ext3 != null and ext3 != ''">
-            , EXT3 = #{ext3}
+            , EXT3=#{ext3}
         </if>
         <if test="ext4 != null and ext4 != ''">
-            , EXT4 = #{ext4}
+            , EXT4=#{ext4}
         </if>
         <if test="ext5 != null and ext5 != ''">
-            , EXT5 = #{ext5}
+            , EXT5=#{ext5}
         </if>
         WHERE 1=1
         <if test="faultAnalysisNo != null and faultAnalysisNo != ''">
-            AND FAULT_ANALYSIS_NO = #{faultAnalysisNo}
+            AND FAULT_ANALYSIS_NO=#{faultAnalysisNo}
         </if>
         <if test="faultNo != null and faultNo != ''">
-            AND FAULT_NO = #{faultNo}
+            AND FAULT_NO=#{faultNo}
         </if>
         <if test="faultWorkNo != null and faultWorkNo != ''">
-            AND FAULT_WORK_NO = #{faultWorkNo}
+            AND FAULT_WORK_NO=#{faultWorkNo}
         </if>
     </update>
 
@@ -169,8 +169,8 @@
         d1.FAULT_DISPLAY_CODE as "faultDisplayCode",
         d1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail"
         FROM T_FAULT_DETAIL d3
-        left join T_FAULT_INFO d1 on d3.FAULT_NO = d1.FAULT_NO
-        left join T_FAULT_DETAIL d2 on d2.FAULT_WORK_NO = d3.FAULT_WORK_NO
+        left join T_FAULT_INFO d1 on d3.FAULT_NO=d1.FAULT_NO
+        left join T_FAULT_DETAIL d2 on d2.FAULT_WORK_NO=d3.FAULT_WORK_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             and d3.DELETE_FLAG ='0'
             <if test="req.faultNo!=null and req.faultNo!=''">
@@ -198,7 +198,7 @@
                 and TO_DATE(d1.DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')<![CDATA[<=]]>to_date(#{req.discoveryEndTime},'YYYY-MM-DD')
             </if>
             <if test="req.respDeptCode!=null and req.respDeptCode!=''">
-                and d1.RESP_DEPT_CODE = #{req.respDeptCode}
+                and d1.RESP_DEPT_CODE=#{req.respDeptCode}
             </if>
             <if test="req.affectCodes!=null and req.affectCodes!=''">
                 and d3.AFFECT_CODES =#{req.affectCodes}
@@ -256,8 +256,8 @@
         d1.FAULT_DISPLAY_CODE as "faultDisplayCode",
         d1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail"
         FROM T_FAULT_DETAIL d3
-        left join T_FAULT_INFO d1 on d3.FAULT_NO = d1.FAULT_NO
-        left join T_FAULT_DETAIL d2 on d2.FAULT_WORK_NO = d3.FAULT_WORK_NO
+        left join T_FAULT_INFO d1 on d3.FAULT_NO=d1.FAULT_NO
+        left join T_FAULT_DETAIL d2 on d2.FAULT_WORK_NO=d3.FAULT_WORK_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             and d3.DELETE_FLAG ='0'
             <if test="faultNo!=null and faultNo!=''">
@@ -287,7 +287,7 @@
                 TO_DATE(#{discoveryEndTime},'YYYY-MM-DD')
             </if>
             <if test="respDeptCode!=null and respDeptCode!=''">
-                and d1.RESP_DEPT_CODE = #{respDeptCode}
+                and d1.RESP_DEPT_CODE=#{respDeptCode}
             </if>
             <if test="affectCodes!=null and affectCodes!=''">
                 and d3.AFFECT_CODES =#{affectCodes}
@@ -333,8 +333,9 @@
         d3.FAULT_DETAIL as "faultDetail",  <!-- 故障详情 -->
         d3.DOC_ID as "docId",
         d3.REC_CREATOR as "recCreator"
-        FROM T_FAULT_INFO d1 , T_FAULT_DETAIL d3
-        WHERE 1=1 and d1.FAULT_NO = d3.FAULT_NO
+        FROM T_FAULT_INFO d1
+        left join T_FAULT_DETAIL d3 on d1.FAULT_NO=d3.FAULT_NO
+        WHERE 1=1
         <if test="faultAnalysisNo!=null and faultAnalysisNo!=''">
             and d3.FAULT_ANALYSIS_NO =#{faultAnalysisNo}
         </if>
@@ -356,14 +357,14 @@
             </foreach>
         </if>
         <if test="orgCode != null">
-            AND ORG_CODE = #{orgCode}
+            AND ORG_CODE=#{orgCode}
         </if>
     </select>
     <select id="queryCoParent" resultType="com.wzmtr.eam.dto.res.common.PersonResDTO">
         SELECT PARENT_CODE as "orgCode" FROM RPLAT60.T_WW_ORG
         WHERE 1=1
         <if test="orgCode != null">
-            AND ORG_CODE = #{orgCode}
+            AND ORG_CODE=#{orgCode}
         </if>
     </select>
     <select id="getFaultAnalysisList" resultType="com.wzmtr.eam.dataobject.FaultAnalyzeDO">
@@ -417,7 +418,9 @@
         d1.DISCOVERY_TIME as "discoveryTime",
         d1.FAULT_DISPLAY_CODE as "faultDisplayCode",
         d1.FAULT_DISPLAY_DETAIL as "faultDisplayDetail"
-        FROM T_FAULT_DETAIL d3, T_FAULT_INFO d1, T_FAULT_ORDER d2
+        FROM T_FAULT_DETAIL d3
+        left join T_FAULT_INFO d1 on d3.FAULT_NO=d1.FAULT_NO
+        left join T_FAULT_ORDER d2 on d1.FAULT_NO=d2.FAULT_NO and d2.FAULT_WORK_NO=d3.FAULT_WORK_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultNo!=null and faultNo!=''">
                 and d3.FAULT_NO =#{faultNo}
@@ -428,7 +431,6 @@
             <if test="faultWorkNo!=null and faultWorkNo!=''">
                 and d3.FAULT_WORK_NO =#{faultWorkNo}
             </if>
-            and d3.FAULT_NO = d1.FAULT_NO and d1.FAULT_NO = d2.FAULT_NO and d2.FAULT_WORK_NO = d3.FAULT_WORK_NO
         </trim>
         ORDER BY d3.FAULT_ANALYSIS_NO DESC
     </select>

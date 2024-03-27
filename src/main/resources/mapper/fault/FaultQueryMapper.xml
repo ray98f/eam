@@ -82,10 +82,9 @@
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
         df.EXT1 AS "levelfault"
-        FROM
-        T_FAULT_INFO d,
-        SYS_USER u,
-        T_FAULT_ORDER df
+        FROM T_FAULT_INFO d
+        LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
+        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultType!=null and req.faultType!=''">
                 AND d.FAULT_TYPE=#{req.faultType}
@@ -94,7 +93,7 @@
                 AND d.POSITION_CODE=#{req.positionCode}
             </if>
             <if test="req.faultNo!=null and req.faultNo!=''">
-                AND d.FAULT_NO = #{req.faultNo}
+                AND d.FAULT_NO=#{req.faultNo}
             </if>
             <if test="req.faultWorkNo!=null and req.faultWorkNo!=''">
                 AND df.FAULT_WORK_NO =#{req.faultWorkNo}
@@ -103,7 +102,7 @@
                 AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
             <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
-                AND df.ORDER_STATUS = '99'
+                AND df.ORDER_STATUS='99'
             </if>
             <if test="req.lineCode!=null and req.lineCode!=''">
                 AND d.LINE_CODE=#{req.lineCode}
@@ -135,10 +134,8 @@
             <if test="req.levelfault!=null and req.levelfault!=''">
                 AND df.EXT1=#{req.levelfault}
             </if>
-            AND d.FILLIN_USER_ID=u.LOGIN_NAME
-            AND d.FAULT_NO=df.FAULT_NO
-            AND d.FAULT_FLAG <![CDATA[!=]]> '2'
-            and d.DELETE_FLAG = '0'
+            AND d.FAULT_FLAG!='2'
+            AND d.DELETE_FLAG='0'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -222,10 +219,9 @@
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
         df.EXT1 AS "levelfault"
-        FROM
-        T_FAULT_INFO d,
-        SYS_USER u,
-        T_FAULT_ORDER df
+        FROM T_FAULT_INFO d
+        LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
+        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultType!=null and req.faultType!=''">
                 AND d.FAULT_TYPE=#{req.faultType}
@@ -234,7 +230,7 @@
                 AND d.POSITION_CODE=#{req.positionCode}
             </if>
             <if test="req.faultNo!=null and req.faultNo!=''">
-                AND d.FAULT_NO = #{req.faultNo}
+                AND d.FAULT_NO=#{req.faultNo}
             </if>
             <if test="req.faultWorkNo!=null and req.faultWorkNo!=''">
                 AND df.FAULT_WORK_NO =#{req.faultWorkNo}
@@ -243,7 +239,7 @@
                 AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
             <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
-                AND df.ORDER_STATUS = '99'
+                AND df.ORDER_STATUS='99'
             </if>
             <if test="req.lineCode!=null and req.lineCode!=''">
                 AND d.LINE_CODE=#{req.lineCode}
@@ -287,10 +283,8 @@
                 d.ASSIST_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
                 d.REPAIR_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))
             </if>
-            AND d.FILLIN_USER_ID=u.LOGIN_NAME
-            AND d.FAULT_NO=df.FAULT_NO
-            AND d.FAULT_FLAG <![CDATA[!=]]> '2'
-            and d.DELETE_FLAG = '0'
+            AND d.FAULT_FLAG!='2'
+            and d.DELETE_FLAG='0'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -374,10 +368,9 @@
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
         df.EXT1 AS "levelfault"
-        FROM
-        T_FAULT_INFO d,
-        SYS_USER u,
-        T_FAULT_ORDER df
+        FROM T_FAULT_INFO d
+        LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
+        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultType!=null and faultType!=''">
                 AND d.FAULT_TYPE=#{faultType}
@@ -386,7 +379,7 @@
                 AND d.POSITION_CODE=#{positionCode}
             </if>
             <if test="faultNo!=null and faultNo!=''">
-                AND d.FAULT_NO = #{faultNo}
+                AND d.FAULT_NO=#{faultNo}
             </if>
             <if test="faultWorkNo!=null and faultWorkNo!=''">
                 AND df.FAULT_WORK_NO =#{faultWorkNo}
@@ -395,7 +388,7 @@
                 AND df.ORDER_STATUS=#{orderStatus}
             </if>
             <if test="invalid != null and 'true'.toString() == invalid.toString()">
-                AND df.ORDER_STATUS = '99'
+                AND df.ORDER_STATUS='99'
             </if>
             <if test="lineCode!=null and lineCode!=''">
                 AND d.LINE_CODE=#{lineCode}
@@ -446,10 +439,8 @@
                 </foreach>
                 )
             </if>
-            AND d.FILLIN_USER_ID=u.LOGIN_NAME
-            AND d.FAULT_NO=df.FAULT_NO
-            AND d.FAULT_FLAG <![CDATA[!=]]> '2'
-            and d.DELETE_FLAG = '0'
+            AND d.FAULT_FLAG!='2'
+            and d.DELETE_FLAG='0'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -532,14 +523,10 @@
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
         df.EXT1 AS "levelfault"
-        FROM
-        T_FAULT_INFO d,
-        SYS_USER u,
-        T_FAULT_ORDER df
-        WHERE d.FILLIN_USER_ID=u.LOGIN_NAME
-        AND d.FAULT_NO=df.FAULT_NO
-        AND d.FAULT_FLAG <![CDATA[!=]]> '2'
-        and d.DELETE_FLAG = '0'
+        FROM T_FAULT_INFO d
+        LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
+        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
+        WHERE d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0'
         <if test="req.faultType!=null">
             AND d.FAULT_TYPE=#{req.faultType}
         </if>
@@ -559,7 +546,7 @@
             AND df.ORDER_STATUS=#{req.orderStatus}
         </if>
         <if test="req.recStatus!=null and req.recStatus!=''">
-            AND df.ORDER_STATUS <![CDATA[!=]]> #{req.recStatus}
+            AND df.ORDER_STATUS!=#{req.recStatus}
         </if>
         <if test="req.objectCode!=null">
             AND d.OBJECT_CODE=#{req.objectCode}
@@ -623,8 +610,9 @@
     <select id="queryOrderStatus" resultType="java.lang.String">
         select
         df2.ORDER_STATUS
-        from T_FAULT_INFO df1,T_FAULT_ORDER df2
-        where 1=1 and df1.FAULT_NO=df2.FAULT_NO
+        from T_FAULT_INFO df1
+        left join T_FAULT_ORDER df2 on df1.FAULT_NO=df2.FAULT_NO
+        where 1=1
         <if test="reqDTO.id!=null">
             AND df2.FAULT_WORK_NO=#{reqDTO.id}
         </if>
@@ -798,9 +786,9 @@
         END
         ) AS sort
         FROM T_FAULT_INFO d
-        INNER JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
-        INNER JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO AND d.FAULT_FLAG!='2'
-        WHERE 1=1 and d.DELETE_FLAG = '0'
+        LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
+        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO AND d.FAULT_FLAG!='2'
+        WHERE 1=1 and d.DELETE_FLAG='0'
         <if test="faultType!=null">
             AND d.FAULT_TYPE=#{faultType}
         </if>
@@ -918,7 +906,7 @@
         d.EXT5 AS "ext5",
         d.TRAIN_TAG AS "traintag"
         FROM T_FAULT_INFO d
-        left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
+        LEFT JOIN T_FAULT_ORDER df on d.FAULT_NO=df.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultWorkNo!=null and faultWorkNo!=''">
                 AND df.FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
@@ -1084,10 +1072,9 @@
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
         df.EXT1 AS "levelfault"
-        FROM
-        T_FAULT_INFO d,
-        SYS_USER u,
-        T_FAULT_ORDER df
+        FROM T_FAULT_INFO d
+        LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
+        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultType!=null">
                 AND d.FAULT_TYPE=#{req.faultType}
@@ -1105,7 +1092,7 @@
                 AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
             <if test="req.recStatus!=null and req.recStatus!=''">
-                AND df.ORDER_STATUS <![CDATA[!=]]> #{req.recStatus}
+                AND df.ORDER_STATUS!=#{req.recStatus}
             </if>
             <if test="req.objectCode!=null">
                 AND d.OBJECT_CODE=#{req.objectCode}
@@ -1129,12 +1116,9 @@
                 AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= to_date(#{req.fillinTimeStart}, 'YYYY-MM-DD')
             </if>
             <if test="req.fillinTimeEnd!=null">
-                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD') +
-                1
+                AND to_date(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= to_date(#{req.fillinTimeEnd}, 'YYYY-MM-DD') + 1
             </if>
-            AND d.FILLIN_USER_ID=u.LOGIN_NAME
-            AND d.FAULT_NO=df.FAULT_NO
-            AND d.FAULT_FLAG <![CDATA[!=]]> '2'
+            AND d.FAULT_FLAG!='2'
         </trim>
         ORDER BY df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
