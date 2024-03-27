@@ -236,7 +236,7 @@
         t1.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
         t2.NAME	as "recCreator",  <!-- 创建者 -->
         t1.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        t1.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        t3.NAME	as "recRevisor",  <!-- 修改者 -->
         t1.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
         t1.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
         t1.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
@@ -250,6 +250,7 @@
         t1.EXT5	as "ext5" <!-- 扩展字段5 -->
         FROM T_EQUIPMENT t1
         LEFT JOIN SYS_USER t2 on t1.REC_CREATOR=t2.LOGIN_NAME
+        LEFT JOIN SYS_USER t3 on t1.REC_CREATOR=t3.LOGIN_NAME
         WHERE REC_ID=#{id}
     </select>
 
