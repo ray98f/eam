@@ -63,10 +63,10 @@
         <if test="matName != null and matName != ''">
             AND B.MAT_NAME LIKE CONCAT('%', #{matName}, '%')
         </if>
-        <if test="trainNo != null and trainNo != ''">
-            AND B.OBJECT_NAME = #{trainNo}
+        <if test="equipCode != null and equipCode != ''">
+            AND B.OBJECT_CODE = #{equipCode}
         </if>
-        ORDER BY "realTime" DESC, SUBSTR("objectName", 4, 5) DESC, "planName" DESC
+        ORDER BY "realTime" DESC, "planName" DESC
     </select>
     <select id="exportList" resultType="com.wzmtr.eam.dto.res.statistic.MaterialResDTO">
         SELECT
@@ -126,9 +126,9 @@
         <if test="matName != null and matName != ''">
             AND B.MAT_NAME LIKE CONCAT('%', #{matName}, '%')
         </if>
-        <if test="trainNo != null and trainNo != ''">
-            AND B.OBJECT_NAME = #{trainNo}
+        <if test="equipCode != null and equipCode != ''">
+            AND B.OBJECT_CODE = #{equipCode}
         </if>
-        ORDER BY "realTime" DESC, SUBSTR("objectName", 4, 5) DESC, "planName" DESC
+        ORDER BY "realTime" DESC, "planName" DESC
     </select>
 </mapper>

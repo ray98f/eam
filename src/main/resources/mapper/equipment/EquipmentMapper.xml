@@ -175,8 +175,82 @@
     </select>
 
     <select id="getEquipmentDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
-        <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE REC_ID=#{id}
+        SELECT
+        t1.REC_ID	as "recId",  <!-- 记录编号 -->
+        t1.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        t1.COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        t1.DEPT_CODE	as "deptCode",  <!-- 部门代码 -->
+        t1.DEPT_NAME	as "deptName",  <!-- 部门名称 -->
+        t1.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
+        t1.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        t1.MAJOR_CODE	as "majorCode",  <!-- 专业代码 -->
+        t1.MAJOR_NAME	as "majorName",  <!-- 专业名称 -->
+        t1.SYSTEM_CODE	as "systemCode",  <!-- 系统代码 -->
+        t1.SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        t1.EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
+        t1.EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
+        t1.SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 特种设备标识 -->
+        t1.SOURCE_KIND	as "sourceKind",  <!-- 设备来源 -->
+        t1.BOM_TYPE	as "bomType",  <!-- BOM类型 -->
+        t1.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
+        t1.ORDER_NO	as "orderNo",  <!-- 合同号 -->
+        t1.ORDER_NAME	as "orderName",  <!-- 合同名称 -->
+        t1.MAT_SPECIFI	as "matSpecifi",  <!-- 型号规格 -->
+        t1.BRAND	as "brand",  <!-- 品牌 -->
+        t1.MANUFACTURE_DATE	as "manufactureDate",  <!-- 出厂日期 -->
+        t1.MANUFACTURE_NO	as "manufactureNo",  <!-- 出厂编号 -->
+        t1.START_USE_DATE	as "startUseDate",  <!-- 开始使用日期 -->
+        t1.END_USE_TIME	as "endUseTime",  <!-- 停止使用日期 -->
+        t1.OTHER_FEATURE	as "otherFeature",  <!-- 其它特征参数 -->
+        t1.MEASURE_UNIT	as "measureUnit",  <!-- 计量单位 -->
+        t1.QUANTITY	as "quantity",  <!-- 数量 -->
+        t1.IN_ACCOUNT_TIME	as "inAccountTime",  <!-- 进设备台帐时间 -->
+        t1.PICK_NO	as "pickNo",  <!-- 领用人工号 -->
+        t1.PICK_NAME	as "pickName",  <!-- 领用人姓名 -->
+        t1.EQUIP_STATUS	as "equipStatus",  <!-- 设备状态 -->
+        t1.SOURCE_APP_NO	as "sourceAppNo",  <!-- 来源单号 -->
+        t1.SOURCE_SUB_NO	as "sourceSubNo",  <!-- 来源明细号 -->
+        t1.SOURCE_REC_ID	as "sourceRecId",  <!-- 来源记录编号 -->
+        t1.INSTALL_DEALER	as "installDealer",  <!-- 安装单位 -->
+        t1.DOC_ID	as "docId",  <!-- 附件编号 -->
+        t1.ORIGIN_LINE_NO	as "originLineNo",  <!-- 来源线别代码 -->
+        t1.ORIGIN_LINE_NAME	as "originLineName",  <!-- 来源线别名称 -->
+        t1.ORIGIN_SEG_NO	as "originSegNo",  <!-- 来源线段代码 -->
+        t1.ORIGIN_SEG_NAME	as "originSegName",  <!-- 来源线段名称 -->
+        t1.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
+        t1.USE_LINE_NAME	as "useLineName",  <!-- 应用线别 -->
+        t1.USE_SEG_NO	as "useSegNo",  <!-- 应用线段代码 -->
+        t1.USE_SEG_NAME	as "useSegName",  <!-- 应用线段 -->
+        t1.POSITION1_CODE	as "position1Code",  <!-- 位置一 -->
+        t1.POSITION1_NAME	as "position1Name",  <!-- 位置一名称 -->
+        t1.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
+        t1.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
+        t1.POSITION3	as "position3",  <!-- 位置三 -->
+        t1.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        t1.TOTAL_MILES	as "totalMiles",  <!-- 走行里程 -->
+        t1.REMARK	as "remark",  <!-- 备注 -->
+        t1.APPROVAL_STATUS	as "approvalStatus",  <!-- 审批状态 -->
+        t1.WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        t1.WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        t1.VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
+        t1.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
+        t2.NAME	as "recCreator",  <!-- 创建者 -->
+        t1.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        t1.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        t1.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        t1.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        t1.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        t1.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        t1.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        t1.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        t1.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        t1.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        t1.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        t1.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        t1.EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_EQUIPMENT t1
+        LEFT JOIN SYS_USER t2 on t1.REC_CREATOR=t2.LOGIN_NAME
+        WHERE REC_ID=#{id}
     </select>
 
     <select id="getEquipmentDetailByCode" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">

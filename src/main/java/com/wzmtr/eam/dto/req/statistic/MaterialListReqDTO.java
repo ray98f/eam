@@ -13,6 +13,8 @@ import lombok.Data;
 public class MaterialListReqDTO {
     @ApiModelProperty(value = "列车号")
     private String trainNo;
+    @ApiModelProperty(value = "设备号")
+    private String equipCode;
     @ApiModelProperty(value = "时间开始")
     private String startTime;
     @ApiModelProperty(value = "时间结束")
