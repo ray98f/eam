@@ -13,6 +13,8 @@ public class Person implements Serializable {
 
     private String name;
 
+    private String loginName;
+
     private String companyId;
 
     private String companyName;
