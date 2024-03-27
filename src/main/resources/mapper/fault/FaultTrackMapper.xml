@@ -518,17 +518,19 @@
         </trim>
     </select>
     <select id="faultFlowDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultFlowResDTO">
-        SELECT REC_ID, FAULT_NO, FAULT_WORK_NO, ORDER_STATUS, OPERATE_USER_ID, OPERATE_TIME, OPERATE_USER_NAME
-        FROM T_FAULT_FLOW
+        SELECT ff.REC_ID, ff.FAULT_NO, ff.FAULT_WORK_NO, ff.ORDER_STATUS, ff.OPERATE_USER_ID,
+        ff.OPERATE_TIME, ff.OPERATE_USER_NAME, u.MOBILE as OPERATE_USER_MOBILE
+        FROM T_FAULT_FLOW ff
+        LEFT JOIN SYS_USER u ON ff.OPERATE_USER_ID=u.LOGIN_NAME
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultNo!=null and faultNo!=''">
-                and FAULT_NO=#{faultNo}
+                and ff.FAULT_NO=#{faultNo}
             </if>
             <if test="faultWorkNo!=null and faultWorkNo!=''">
-                and FAULT_WORK_NO=#{faultWorkNo}
+                and ff.FAULT_WORK_NO=#{faultWorkNo}
             </if>
         </trim>
-        order by OPERATE_TIME asc
+        order by ff.OPERATE_TIME asc
     </select>
     <select id="selectMaxCode" resultType="string">
         select max(FAULT_TRACK_NO)

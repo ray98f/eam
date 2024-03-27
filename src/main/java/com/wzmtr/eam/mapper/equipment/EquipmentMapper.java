@@ -63,6 +63,8 @@ public interface EquipmentMapper {
 
     List<EquipmentResDTO> listEquipment(List<String> ids);
 
+    Page<EquipmentResDTO> pageSiftEquipment(Page<EquipmentResDTO> page, EquipmentSiftReqDTO req);
+
     List<EquipmentResDTO> siftEquipment(EquipmentSiftReqDTO equipmentSiftReqDTO);
 
     EquipmentResDTO getSplitTransferDetail(String id);

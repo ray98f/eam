@@ -42,6 +42,11 @@ public class FaultFlowResDTO {
     @ApiModelProperty(value = "操作人名")
     private String operateUserName;
     /**
+     * 操作人手机号
+     */
+    @ApiModelProperty(value = "操作人手机号")
+    private String operateUserMobile;
+    /**
      * 操作时间
      */
     @ApiModelProperty(value = "操作时间")

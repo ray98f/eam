@@ -163,14 +163,13 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Page<EquipmentResDTO> pageSplitTransfer(String sourceRecId, PageReqDTO pageReqDTO) {
-        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
         if (sourceRecId == null) {
             sourceRecId = "flag";
         }
         equipmentReqDTO.setSourceRecId(sourceRecId);
-        List<EquipmentResDTO> list = equipmentMapper.siftEquipment(equipmentReqDTO);
-        return new Page<EquipmentResDTO>().setRecords(list);
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return equipmentMapper.pageSiftEquipment(pageReqDTO.of(), equipmentReqDTO);
     }
 
     @Override
