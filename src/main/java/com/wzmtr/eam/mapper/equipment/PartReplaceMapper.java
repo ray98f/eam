@@ -20,7 +20,9 @@ public interface PartReplaceMapper {
 
     PartReplaceResDTO getPartReplaceDetail(String id);
 
-    String selectBomCode(String equipCode);
+    String getEquipLineNo(String equipCode);
+
+    String selectBomCode(String equipCode, String type);
 
     List<PartReplaceBomResDTO> getBom(String node);
 
