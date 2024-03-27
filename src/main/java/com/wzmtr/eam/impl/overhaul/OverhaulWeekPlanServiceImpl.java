@@ -717,7 +717,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     public List<OverhaulWeekPlanResDTO> checkTrialStatus(OverhaulWeekPlanListReqDTO overhaulWeekPlanListReqDTO) {
         List<OverhaulWeekPlanResDTO> queryCount = overhaulWeekPlanMapper.listOverhaulWeekPlan(overhaulWeekPlanListReqDTO);
-        if (queryCount != null && queryCount.size() <= 0) {
+        if (StringUtils.isEmpty(queryCount)) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作！");
         }
         return queryCount;

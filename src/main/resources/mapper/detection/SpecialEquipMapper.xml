@@ -4,7 +4,7 @@
 
     <select id="pageSpecialEquip" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
         SELECT
-        a.REC_ID	as "recId",  <!-- 统一编号 -->
+        b.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
         a.REG_NO	as "regNo",  <!-- 登记证编号 -->
         b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
@@ -49,12 +49,11 @@
         b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
         c.NAME as "manageOrgName",
         d.NAME as "secOrgName"
-        FROM T_EQUIPMENT b right join T_SPECIAL_EQUIP_EXT a
-        on a.EQUIP_CODE=b.EQUIP_CODE
+        FROM T_EQUIPMENT b
+        left join T_SPECIAL_EQUIP_EXT a on a.EQUIP_CODE=b.EQUIP_CODE
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
-        where 1=1
-        and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
+        where b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
         <if test="equipCode!=null and equipCode!=''">
             and b.EQUIP_CODE like '%' || #{equipCode} || '%'
         </if>
@@ -140,7 +139,7 @@
         on a.EQUIP_CODE=b.EQUIP_CODE
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
-        where 1=1 and a.REC_ID=#{id}
+        where 1=1 and b.REC_ID=#{id}
         and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
     </select>
 

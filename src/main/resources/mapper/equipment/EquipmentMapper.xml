@@ -650,199 +650,199 @@
     <update id="updateEquipment">
         UPDATE T_EQUIPMENT SET
         <if test="companyCode!=null">
-            COMPANY_CODE	= #{companyCode},   <!-- 公司代码 -->
+            COMPANY_CODE=#{companyCode},   <!-- 公司代码 -->
         </if>
         <if test="companyName!=null">
-            COMPANY_NAME	= #{companyName},   <!-- 公司名称 -->
+            COMPANY_NAME=#{companyName},   <!-- 公司名称 -->
         </if>
         <if test="deptCode!=null">
-            DEPT_CODE	= #{deptCode},   <!-- 公司代码 -->
+            DEPT_CODE=#{deptCode},   <!-- 公司代码 -->
         </if>
         <if test="deptName!=null">
-            DEPT_NAME	= #{deptName},   <!-- 公司名称 -->
+            DEPT_NAME=#{deptName},   <!-- 公司名称 -->
         </if>
         <if test="equipCode!=null">
-            EQUIP_CODE	= #{equipCode},   <!-- 设备编码 -->
+            EQUIP_CODE=#{equipCode},   <!-- 设备编码 -->
         </if>
         <if test="equipName!=null">
-            EQUIP_NAME	= #{equipName},   <!-- 设备名称 -->
+            EQUIP_NAME=#{equipName},   <!-- 设备名称 -->
         </if>
         <if test="majorCode!=null">
-            MAJOR_CODE	= #{majorCode},   <!-- 专业代码 -->
+            MAJOR_CODE=#{majorCode},   <!-- 专业代码 -->
         </if>
         <if test="majorName!=null">
-            MAJOR_NAME	= #{majorName},   <!-- 专业名称 -->
+            MAJOR_NAME=#{majorName},   <!-- 专业名称 -->
         </if>
         <if test="systemCode!=null">
-            SYSTEM_CODE	= #{systemCode},   <!-- 系统代码 -->
+            SYSTEM_CODE=#{systemCode},   <!-- 系统代码 -->
         </if>
         <if test="systemName!=null">
-            SYSTEM_NAME	= #{systemName},   <!-- 系统名称 -->
+            SYSTEM_NAME=#{systemName},   <!-- 系统名称 -->
         </if>
         <if test="equipTypeCode!=null">
-            EQUIP_TYPE_CODE	= #{equipTypeCode},   <!-- 设备分类代码 -->
+            EQUIP_TYPE_CODE=#{equipTypeCode},   <!-- 设备分类代码 -->
         </if>
         <if test="equipTypeName!=null">
-            EQUIP_TYPE_NAME	= #{equipTypeName},   <!-- 设备分类名称 -->
+            EQUIP_TYPE_NAME=#{equipTypeName},   <!-- 设备分类名称 -->
         </if>
         <if test="specialEquipFlag!=null">
-            SPECIAL_EQUIP_FLAG	= #{specialEquipFlag},   <!-- 特种设备标识 -->
+            SPECIAL_EQUIP_FLAG=#{specialEquipFlag},   <!-- 特种设备标识 -->
         </if>
         <if test="sourceKind!=null">
-            SOURCE_KIND	= #{sourceKind},   <!-- 设备来源 -->
+            SOURCE_KIND=#{sourceKind},   <!-- 设备来源 -->
         </if>
         <if test="bomType!=null">
-            BOM_TYPE	= #{bomType},   <!-- BOM类型 -->
+            BOM_TYPE=#{bomType},   <!-- BOM类型 -->
         </if>
         <if test="manufacture!=null">
-            MANUFACTURE	= #{manufacture},   <!-- 生产厂家 -->
+            MANUFACTURE=#{manufacture},   <!-- 生产厂家 -->
         </if>
         <if test="orderNo!=null">
-            ORDER_NO	= #{orderNo},   <!-- 合同号 -->
+            ORDER_NO=#{orderNo},   <!-- 合同号 -->
         </if>
         <if test="orderName!=null">
-            ORDER_NAME	= #{orderName},   <!-- 合同名称 -->
+            ORDER_NAME=#{orderName},   <!-- 合同名称 -->
         </if>
         <if test="matSpecifi!=null">
-            MAT_SPECIFI	= #{matSpecifi},   <!-- 型号规格 -->
+            MAT_SPECIFI=#{matSpecifi},   <!-- 型号规格 -->
         </if>
         <if test="brand!=null">
-            BRAND	= #{brand},   <!-- 品牌 -->
+            BRAND=#{brand},   <!-- 品牌 -->
         </if>
         <if test="manufactureDate!=null">
-            MANUFACTURE_DATE	= #{manufactureDate},   <!-- 出厂日期 -->
+            MANUFACTURE_DATE=#{manufactureDate},   <!-- 出厂日期 -->
         </if>
         <if test="manufactureNo!=null">
-            MANUFACTURE_NO	= #{manufactureNo},   <!-- 出厂编号 -->
+            MANUFACTURE_NO=#{manufactureNo},   <!-- 出厂编号 -->
         </if>
         <if test="startUseDate!=null">
-            START_USE_DATE	= #{startUseDate},   <!-- 开始使用日期 -->
+            START_USE_DATE=#{startUseDate},   <!-- 开始使用日期 -->
         </if>
         <if test="endUseTime!=null">
-            END_USE_TIME	= #{endUseTime},   <!-- 停止使用日期 -->
+            END_USE_TIME=#{endUseTime},   <!-- 停止使用日期 -->
         </if>
         <if test="otherFeature!=null">
-            OTHER_FEATURE	= #{otherFeature},   <!-- 其它特征参数 -->
+            OTHER_FEATURE=#{otherFeature},   <!-- 其它特征参数 -->
         </if>
         <if test="measureUnit!=null">
-            MEASURE_UNIT	= #{measureUnit},   <!-- 计量单位 -->
+            MEASURE_UNIT=#{measureUnit},   <!-- 计量单位 -->
         </if>
         <if test="quantity!=null">
-            QUANTITY	= #{quantity,jdbcType=NUMERIC},   <!-- 数量 -->
+            QUANTITY=#{quantity,jdbcType=NUMERIC},   <!-- 数量 -->
         </if>
         <if test="inAccountTime!=null">
-            IN_ACCOUNT_TIME	= #{inAccountTime},   <!-- 进设备台帐时间 -->
+            IN_ACCOUNT_TIME=#{inAccountTime},   <!-- 进设备台帐时间 -->
         </if>
         <if test="pickNo!=null">
-            PICK_NO	= #{pickNo},   <!-- 领用人工号 -->
+            PICK_NO=#{pickNo},   <!-- 领用人工号 -->
         </if>
         <if test="pickName!=null">
-            PICK_NAME	= #{pickName},   <!-- 领用人姓名 -->
+            PICK_NAME=#{pickName},   <!-- 领用人姓名 -->
         </if>
         <if test="equipStatus!=null">
-            EQUIP_STATUS	= #{equipStatus},   <!-- 设备状态 -->
+            EQUIP_STATUS=#{equipStatus},   <!-- 设备状态 -->
         </if>
         <if test="sourceAppNo!=null">
-            SOURCE_APP_NO	= #{sourceAppNo},   <!-- 来源单号 -->
+            SOURCE_APP_NO=#{sourceAppNo},   <!-- 来源单号 -->
         </if>
         <if test="sourceSubNo!=null">
-            SOURCE_SUB_NO	= #{sourceSubNo},   <!-- 来源明细号 -->
+            SOURCE_SUB_NO=#{sourceSubNo},   <!-- 来源明细号 -->
         </if>
         <if test="sourceRecId!=null">
-            SOURCE_REC_ID	= #{sourceRecId},   <!-- 来源记录编号 -->
+            SOURCE_REC_ID=#{sourceRecId},   <!-- 来源记录编号 -->
         </if>
         <if test="installDealer!=null">
-            INSTALL_DEALER	= #{installDealer},   <!-- 安装单位 -->
+            INSTALL_DEALER=#{installDealer},   <!-- 安装单位 -->
         </if>
         <if test="docId!=null">
-            DOC_ID	= #{docId},   <!-- 附件编号 -->
+            DOC_ID=#{docId},   <!-- 附件编号 -->
         </if>
         <if test="originLineNo!=null">
-            ORIGIN_LINE_NO	= #{originLineNo},   <!-- 来源线别代码 -->
+            ORIGIN_LINE_NO=#{originLineNo},   <!-- 来源线别代码 -->
         </if>
         <if test="originLineName!=null">
-            ORIGIN_LINE_NAME	= #{originLineName},   <!-- 来源线别名称 -->
+            ORIGIN_LINE_NAME=#{originLineName},   <!-- 来源线别名称 -->
         </if>
         <if test="originSegNo!=null">
-            ORIGIN_SEG_NO	= #{originSegNo},   <!-- 来源线段代码 -->
+            ORIGIN_SEG_NO=#{originSegNo},   <!-- 来源线段代码 -->
         </if>
         <if test="originSegName!=null">
-            ORIGIN_SEG_NAME	= #{originSegName},   <!-- 来源线段名称 -->
+            ORIGIN_SEG_NAME=#{originSegName},   <!-- 来源线段名称 -->
         </if>
         <if test="useLineNo!=null">
-            USE_LINE_NO	= #{useLineNo},   <!-- 应用线别代码 -->
+            USE_LINE_NO=#{useLineNo},   <!-- 应用线别代码 -->
         </if>
         <if test="useLineName!=null">
-            USE_LINE_NAME	= #{useLineName},   <!-- 应用线别 -->
+            USE_LINE_NAME=#{useLineName},   <!-- 应用线别 -->
         </if>
         <if test="useSegNo!=null">
-            USE_SEG_NO	= #{useSegNo},   <!-- 应用线段代码 -->
+            USE_SEG_NO=#{useSegNo},   <!-- 应用线段代码 -->
         </if>
         <if test="useSegName!=null">
-            USE_SEG_NAME	= #{useSegName},   <!-- 应用线段 -->
+            USE_SEG_NAME=#{useSegName},   <!-- 应用线段 -->
         </if>
         <if test="position1Code!=null">
-            POSITION1_CODE	= #{position1Code},   <!-- 位置一 -->
+            POSITION1_CODE=#{position1Code},   <!-- 位置一 -->
         </if>
         <if test="position1Name!=null">
-            POSITION1_NAME	= #{position1Name},   <!-- 位置一名称 -->
+            POSITION1_NAME=#{position1Name},   <!-- 位置一名称 -->
         </if>
         <if test="position2Code!=null">
-            POSITION2_CODE	= #{position2Code},   <!-- 位置二 -->
+            POSITION2_CODE=#{position2Code},   <!-- 位置二 -->
         </if>
         <if test="position2Name!=null">
-            POSITION2_NAME	= #{position2Name},   <!-- 位置二名称 -->
+            POSITION2_NAME=#{position2Name},   <!-- 位置二名称 -->
         </if>
         <if test="position3!=null">
-            POSITION3	= #{position3},   <!-- 位置三 -->
+            POSITION3=#{position3},   <!-- 位置三 -->
         </if>
         <if test="positionRemark!=null">
-            POSITION_REMARK	= #{positionRemark},   <!-- 位置补充说明 -->
+            POSITION_REMARK=#{positionRemark},   <!-- 位置补充说明 -->
         </if>
         <if test="totalMiles!=null">
-            TOTAL_MILES	= #{totalMiles,jdbcType=NUMERIC},   <!-- 走行里程 -->
+            TOTAL_MILES=#{totalMiles,jdbcType=NUMERIC},   <!-- 走行里程 -->
         </if>
         <if test="remark!=null">
-            REMARK	= #{remark},   <!-- 备注 -->
+            REMARK=#{remark},   <!-- 备注 -->
         </if>
         <if test="approvalStatus!=null">
-            APPROVAL_STATUS	= #{approvalStatus},   <!-- 审批状态 -->
+            APPROVAL_STATUS=#{approvalStatus},   <!-- 审批状态 -->
         </if>
         <if test="workFlowInstId!=null">
-            WORK_FLOW_INST_ID	= #{workFlowInstId},   <!-- 工作流实例ID -->
+            WORK_FLOW_INST_ID=#{workFlowInstId},   <!-- 工作流实例ID -->
         </if>
         <if test="workFlowInstStatus!=null">
-            WORK_FLOW_INST_STATUS	= #{workFlowInstStatus},   <!-- 工作流实例状态 -->
+            WORK_FLOW_INST_STATUS=#{workFlowInstStatus},   <!-- 工作流实例状态 -->
         </if>
         <if test="verifyDate!=null">
-            VERIFY_DATE	= #{verifyDate},   <!-- 特种设备检测日期 -->
+            VERIFY_DATE=#{verifyDate},   <!-- 特种设备检测日期 -->
         </if>
         <if test="verifyValidityDate!=null">
-            VERIFY_VALIDITY_DATE	= #{verifyValidityDate},   <!-- 特种设备检测有效期 -->
+            VERIFY_VALIDITY_DATE=#{verifyValidityDate},   <!-- 特种设备检测有效期 -->
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG	= #{archiveFlag},   <!-- 归档标记 -->
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
         </if>
         <if test="recStatus!=null">
-            REC_STATUS	= #{recStatus},   <!-- 记录状态 -->
+            REC_STATUS=#{recStatus},   <!-- 记录状态 -->
         </if>
         <if test="ext1!=null">
-            EXT1	= #{ext1},   <!-- 扩展字段1 -->
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
         </if>
         <if test="ext2!=null">
-            EXT2	= #{ext2},   <!-- 扩展字段2 -->
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
         </if>
         <if test="ext3!=null">
-            EXT3	= #{ext3},   <!-- 扩展字段3 -->
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
         </if>
         <if test="ext4!=null">
-            EXT4	= #{ext4},   <!-- 扩展字段4 -->
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
         </if>
         <if test="ext5!=null">
-            EXT5	= #{ext5},  <!-- 扩展字段5 -->
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
         </if>
-        REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
-        REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
+        REC_REVISOR=#{recRevisor},   <!-- 修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 修改时间 -->
         WHERE REC_ID = #{recId}
     </update>
 
