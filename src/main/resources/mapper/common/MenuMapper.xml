@@ -6,7 +6,7 @@
         SELECT DISTINCT sp.*
         FROM SYS_USER_ROLE sur left join SYS_ROLE_PERMISSION srp on srp.ROLE_ID=sur.ROLE_ID
         left join SYS_PERMISSION sp on sp.ID=srp.PERMISSION_ID and sp.DEL_FLAG=0 and sp.STATUS=0
-        WHERE sp.TYPE=1 AND sp.PARENT_ID IS NULL and sur.LOGIN_NAME=#{personId}
+        WHERE sp.TYPE=1 AND sp.PARENT_ID IS NULL and sur.USER_ID=#{personId}
         ORDER BY sp.SORT
     </select>
 
@@ -14,7 +14,7 @@
         SELECT DISTINCT sp.*
         FROM SYS_USER_ROLE sur left join SYS_ROLE_PERMISSION srp on srp.ROLE_ID=sur.ROLE_ID
         left join SYS_PERMISSION sp on sp.ID=srp.PERMISSION_ID and sp.DEL_FLAG=0 and sp.STATUS=0
-        WHERE sp.TYPE!=1 AND sp.PARENT_ID IS NOT NULL and sur.LOGIN_NAME=#{personId}
+        WHERE sp.TYPE!=1 AND sp.PARENT_ID IS NOT NULL and sur.USER_ID=#{personId}
         ORDER BY sp.SORT
     </select>
 
