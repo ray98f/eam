@@ -24,16 +24,16 @@
         FROM T_FAULT_INFO t1,
         T_FAULT_ORDER t2,
         T_EQUIPMENT_CATEGORY b1
-        WHERE b1.NODE_CODE = t1.MAJOR_CODE
-        AND t1.FAULT_NO = t2.FAULT_NO
-        AND t2.FAULT_WORK_NO = c.RELATION_NO
+        WHERE b1.NODE_CODE=t1.MAJOR_CODE
+        AND t1.FAULT_NO=t2.FAULT_NO
+        AND t2.FAULT_WORK_NO=c.RELATION_NO
         )
         ELSE (
         SELECT b1.NODE_NAME
         FROM T_OVERHAUL_ORDER t3,
         T_EQUIPMENT_CATEGORY b1
-        WHERE b1.NODE_CODE = t3.SUBJECT_CODE
-        AND t3.ORDER_CODE = c.RELATION_NO
+        WHERE b1.NODE_CODE=t3.SUBJECT_CODE
+        AND t3.ORDER_CODE=c.RELATION_NO
         )
         END
         ) AS "majorName",
@@ -42,11 +42,11 @@
         WLPLAT.T_MM_DELIVERY_DETAIL B,
         WLPLAT.T_MM_DELIVERY_APPLY C,
         T_OVERHAUL_ORDER D
-        WHERE A.DELIVERY_NO = B.DELIVERY_NO
-        AND A.DELIVERY_APPLY_NO = C.DELIVERY_APPLY_NO
-        AND A.REC_STATUS = '2'
-        AND D.ORDER_CODE = c.RELATION_NO
-        AND D.SUBJECT_CODE = '07'
+        WHERE A.DELIVERY_NO=B.DELIVERY_NO
+        AND A.DELIVERY_APPLY_NO=C.DELIVERY_APPLY_NO
+        AND A.REC_STATUS='2'
+        AND D.ORDER_CODE=c.RELATION_NO
+        AND D.SUBJECT_CODE='07'
         AND (TRIM(C.RELATION_NO) LIKE 'GD%' OR TRIM(C.RELATION_NO) LIKE 'JX%')
         <if test="endTime != null and endTime != ''">
             AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
@@ -63,8 +63,8 @@
         <if test="matName != null and matName != ''">
             AND B.MAT_NAME LIKE CONCAT('%', #{matName}, '%')
         </if>
-        <if test="equipCode != null and equipCode != ''">
-            AND B.OBJECT_CODE = #{equipCode}
+        <if test="trainNo != null and trainNo != ''">
+            AND B.OBJECT_CODE=#{trainNo}
         </if>
         ORDER BY "realTime" DESC, "planName" DESC
     </select>
@@ -90,16 +90,16 @@
         FROM T_FAULT_INFO t1,
         T_FAULT_ORDER t2,
         T_EQUIPMENT_CATEGORY b1
-        WHERE b1.NODE_CODE = t1.MAJOR_CODE
-        AND t1.FAULT_NO = t2.FAULT_NO
-        AND t2.FAULT_WORK_NO = c.RELATION_NO
+        WHERE b1.NODE_CODE=t1.MAJOR_CODE
+        AND t1.FAULT_NO=t2.FAULT_NO
+        AND t2.FAULT_WORK_NO=c.RELATION_NO
         )
         ELSE (
         SELECT b1.NODE_NAME
         FROM T_OVERHAUL_ORDER t3,
         T_EQUIPMENT_CATEGORY b1
-        WHERE b1.NODE_CODE = t3.SUBJECT_CODE
-        AND t3.ORDER_CODE = c.RELATION_NO
+        WHERE b1.NODE_CODE=t3.SUBJECT_CODE
+        AND t3.ORDER_CODE=c.RELATION_NO
         )
         END
         ) AS "majorName",
@@ -108,11 +108,11 @@
         WLPLAT.T_MM_DELIVERY_DETAIL B,
         WLPLAT.T_MM_DELIVERY_APPLY C,
         T_OVERHAUL_ORDER D
-        WHERE A.DELIVERY_NO = B.DELIVERY_NO
-        AND A.DELIVERY_APPLY_NO = C.DELIVERY_APPLY_NO
-        AND A.REC_STATUS = '2'
-        AND D.ORDER_CODE = c.RELATION_NO
-        AND D.SUBJECT_CODE = '07'
+        WHERE A.DELIVERY_NO=B.DELIVERY_NO
+        AND A.DELIVERY_APPLY_NO=C.DELIVERY_APPLY_NO
+        AND A.REC_STATUS='2'
+        AND D.ORDER_CODE=c.RELATION_NO
+        AND D.SUBJECT_CODE='07'
         AND (TRIM(C.RELATION_NO) LIKE 'GD%' OR TRIM(C.RELATION_NO) LIKE 'JX%')
         <if test="endTime != null and endTime != ''">
             AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
@@ -121,13 +121,13 @@
             AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &lt; TO_DATE(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="planName != null and planName != ''">
-            AND D.PLAN_NAME = #{planName}
+            AND D.PLAN_NAME=#{planName}
         </if>
         <if test="matName != null and matName != ''">
             AND B.MAT_NAME LIKE CONCAT('%', #{matName}, '%')
         </if>
         <if test="equipCode != null and equipCode != ''">
-            AND B.OBJECT_CODE = #{equipCode}
+            AND B.OBJECT_CODE=#{equipCode}
         </if>
         ORDER BY "realTime" DESC, "planName" DESC
     </select>
