@@ -339,22 +339,22 @@
         <if test="position1Code!=null">
             POSITION1_CODE =#{position1Code},
         </if>
-        <if test="subjectCode!=null">
+        <if test="subjectCode!=null and subjectCode!=''">
             SUBJECT_CODE =#{subjectCode},
         </if>
-        <if test="subjectName!=null">
+        <if test="subjectName!=null and subjectName!=''">
             SUBJECT_NAME =#{subjectName},
         </if>
-        <if test="systemCode!=null">
+        <if test="systemCode!=null and systemCode!=''">
             SYSTEM_CODE =#{systemCode},
         </if>
-        <if test="systemName!=null">
+        <if test="systemName!=null and systemName!=''">
             SYSTEM_NAME =#{systemName},
         </if>
-        <if test="equipTypeCode!=null">
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
             EQUIP_TYPE_CODE =#{equipTypeCode},
         </if>
-        <if test="equipTypeName!=null">
+        <if test="equipTypeName!=null and equipTypeName!=''">
             EQUIP_TYPE_NAME =#{equipTypeName},
         </if>
         <if test="workerGroupCode!=null">
