@@ -560,6 +560,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         List<OverhaulItemTreeResDTO> models = new ArrayList<>();
         if (StringUtils.isNotEmpty(modelList)) {
             modelList = modelList.stream().distinct().collect(Collectors.toList());
+            modelList = modelList.stream().filter(Objects::nonNull).collect(Collectors.toList());
             for (OverhaulItemResDTO model : modelList) {
                 OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
                 org.springframework.beans.BeanUtils.copyProperties(model, res);
