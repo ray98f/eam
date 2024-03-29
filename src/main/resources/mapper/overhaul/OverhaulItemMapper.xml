@@ -90,6 +90,7 @@
         DEFAULT_VALUE	as "defaultValue",  <!-- 默认值 -->
         MAX_VALUE	as "maxValue",  <!-- 最大参考值 -->
         MIN_VALUE	as "minValue",  <!-- 最小参考值 -->
+        DOC_ID	as "docId",  <!-- 附件ID -->
         MUTUAL_INSPECTION_PEOPLE	as "mutualInspectionPeople",  <!-- 互检人 -->
         MUTUAL_INSPECTION_PEOPLE_ID	as "mutualInspectionPeopleId",  <!-- 互检人工号 -->
         SPECIAL_INSPECTION_PEOPLE	as "specialInspectionPeople",  <!-- 专检人 -->
@@ -257,22 +258,9 @@
     
     <update id="finishedOverhaulOrder" parameterType="com.wzmtr.eam.dto.req.overhaul.OverhaulItemTroubleshootReqDTO">
         UPDATE T_OVERHAUL_ORDER SET
-        <trim suffixOverrides=",">
-            WORK_STATUS=4,
-            <if test="actualStartTime!=null">
-                ACTUAL_START_TIME=#{actualStartTime},
-            </if>
-            <if test="actualEndTime!=null">
-                ACTUAL_END_TIME=#{actualEndTime},
-            </if>
-            <if test="startMile!=null">
-                START_MILE=#{startMile},
-            </if>
-            <if test="endMile!=null">
-                END_MILE=#{endMile},
-            </if>
-        </trim>
+        WORK_STATUS=4
         WHERE NOT EXISTS (SELECT REC_ID FROM T_OVERHAUL_ITEM WHERE ORDER_CODE=#{orderCode} AND WORK_RESULT IS NULL)
+        AND ORDER_CODE=#{orderCode}
     </update>
 
     <insert id="insert">

@@ -315,6 +315,24 @@ public class DetectionServiceImpl implements DetectionService {
     }
 
     @Override
+    public void addNormalDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (sdf.parse(detectionDetailReqDTO.getVerifyValidityDate()).before(sdf.parse(detectionDetailReqDTO.getVerifyDate()))) {
+            return;
+        }
+        detectionDetailReqDTO.setRecId(TokenUtils.getUuId());
+        detectionDetailReqDTO.setArchiveFlag("0");
+        detectionDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        detectionDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+        detectionMapper.addDetectionDetail(detectionDetailReqDTO);
+        SpecialEquipReqDTO specialEquipReqDTO = new SpecialEquipReqDTO();
+        specialEquipReqDTO.setEquipCode(detectionDetailReqDTO.getEquipCode());
+        specialEquipReqDTO.setVerifyDate(detectionDetailReqDTO.getVerifyDate());
+        specialEquipReqDTO.setVerifyValidityDate(detectionDetailReqDTO.getVerifyValidityDate());
+        specialEquipMapper.updateEquip(specialEquipReqDTO);
+    }
+
+    @Override
     public void modifyDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException {
         List<DetectionResDTO> list = detectionMapper.listDetection(detectionDetailReqDTO.getTestRecId(), null, null, null, null);
         if (Objects.isNull(list) || list.isEmpty()) {

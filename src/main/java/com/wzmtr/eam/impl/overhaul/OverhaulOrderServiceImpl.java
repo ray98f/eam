@@ -265,6 +265,12 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
+    public void finishOrder(OverhaulOrderReqDTO req) {
+        overhaulOrderMapper.modifyOverhaulOrder(req);
+        overhaulItemMapper.finishedOverhaulOrder(req.getOrderCode());
+    }
+
+    @Override
     public void auditWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulOrderReqDTO.getSubjectCode())) {
@@ -490,6 +496,12 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
+    public void modifyOverhaulObject(OverhaulOrderDetailReqDTO req) {
+        req.setRepairPerson(TokenUtils.getCurrentPersonId());
+        overhaulOrderMapper.modifyOverhaulObject(req);
+    }
+
+    @Override
     public void exportOverhaulObject(String orderCode, String planCode, String planName, String objectCode, HttpServletResponse response) throws IOException {
         List<OverhaulOrderDetailResDTO> overhaulObject = overhaulOrderMapper.listOverhaulObject(orderCode, planCode, planName, objectCode);
         if (overhaulObject != null && !overhaulObject.isEmpty()) {
@@ -631,7 +643,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 }
                 overhaulItemMapper.troubleshootOverhaulItem(res, req.getWorkUserId(), req.getWorkUserName());
             }
-            overhaulItemMapper.finishedOverhaulOrder(req);
         } else {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }

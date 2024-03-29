@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.detection;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.detection.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.detection.OtherEquipReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelOtherEquipReqDTO;
 import com.wzmtr.eam.dto.res.detection.OtherEquipHistoryResDTO;
@@ -17,12 +18,14 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.detection.OtherEquipMapper;
 import com.wzmtr.eam.mapper.detection.OtherEquipTypeMapper;
+import com.wzmtr.eam.service.detection.DetectionService;
 import com.wzmtr.eam.service.detection.OtherEquipService;
 import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,9 @@ public class OtherEquipServiceImpl implements OtherEquipService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private DetectionService detectionService;
 
     @Override
     public Page<OtherEquipResDTO> pageOtherEquip(String equipCode, String equipName, String otherEquipCode, String factNo,
@@ -101,7 +107,7 @@ public class OtherEquipServiceImpl implements OtherEquipService {
     }
 
     @Override
-    public void importOtherEquip(MultipartFile file) {
+    public void importOtherEquip(MultipartFile file) throws ParseException {
         List<String> otherCode = new ArrayList<>();
         List<ExcelOtherEquipReqDTO> list = EasyExcelUtils.read(file, ExcelOtherEquipReqDTO.class);
         for (ExcelOtherEquipReqDTO reqDTO : list) {
@@ -134,9 +140,28 @@ public class OtherEquipServiceImpl implements OtherEquipService {
             } else {
                 req.setRecId(TokenUtils.getUuId());
                 otherEquipMapper.addOtherEquip(req);
+                DetectionDetailReqDTO detectionDetailReqDTO = buildDetectionDetail(req);
+                detectionService.addNormalDetectionDetail(detectionDetailReqDTO);
             }
         }
         throw new CommonException(ErrorCode.NORMAL_ERROR, "其他设备编号为" + String.join("、", otherCode) + "的其他设备导入失败，请重试");
+    }
+
+    /**
+     * 检测记录拼装
+     * @param req 特种设备参数
+     * @return 检测记录
+     */
+    @NotNull
+    private static DetectionDetailReqDTO buildDetectionDetail(OtherEquipReqDTO req) {
+        DetectionDetailReqDTO detectionDetailReqDTO = new DetectionDetailReqDTO();
+        detectionDetailReqDTO.setEquipCode(req.getEquipCode());
+        detectionDetailReqDTO.setEquipName(req.getEquipName());
+        detectionDetailReqDTO.setVerifyDate(req.getVerifyDate());
+        detectionDetailReqDTO.setVerifyValidityDate(req.getVerifyValidityDate());
+        detectionDetailReqDTO.setVerifyResult(req.getVerifyResult());
+        detectionDetailReqDTO.setVerifyConclusion(req.getVerifyConclusion());
+        return detectionDetailReqDTO;
     }
 
     @Override
