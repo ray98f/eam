@@ -267,6 +267,10 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void finishOrder(OverhaulOrderReqDTO req) {
+        req.setRecRevisor(TokenUtils.getCurrentPersonId());
+        req.setRecReviseTime(DateUtils.getCurrentTime());
+        req.setRealStartTime(req.getActualStartTime());
+        req.setRealEndTime(req.getActualEndTime());
         overhaulOrderMapper.modifyOverhaulOrder(req);
         overhaulItemMapper.finishedOverhaulOrder(req.getOrderCode());
     }

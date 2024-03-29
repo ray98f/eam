@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
 import com.wzmtr.eam.dto.req.mea.MeaReqDTO;
+import com.wzmtr.eam.dto.req.mea.SubmissionRecordDetailReqDTO;
 import com.wzmtr.eam.dto.req.mea.excel.ExcelMeaReqDTO;
 import com.wzmtr.eam.dto.res.mea.MeaResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
@@ -11,6 +12,7 @@ import com.wzmtr.eam.dto.res.mea.excel.ExcelMeaResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.mea.MeaMapper;
 import com.wzmtr.eam.service.mea.MeaService;
+import com.wzmtr.eam.service.mea.SubmissionRecordService;
 import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.TokenUtils;
@@ -36,6 +38,9 @@ public class MeaServiceImpl implements MeaService {
     @Autowired
     private MeaMapper meaMapper;
 
+    @Autowired
+    private SubmissionRecordService submissionRecordService;
+
     @Override
     public Page<MeaResDTO> pageMea(MeaListReqDTO meaListReqDTO, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
@@ -60,6 +65,7 @@ public class MeaServiceImpl implements MeaService {
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
                 req.setRecCreateTime(DateUtils.getCurrentTime());
                 temp.add(req);
+                addSubmissionRecordDetail(req);
             }
         }
         if (!temp.isEmpty()) {
@@ -73,6 +79,22 @@ public class MeaServiceImpl implements MeaService {
         meaReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         meaReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         meaMapper.addMea(meaReqDTO);
+        addSubmissionRecordDetail(meaReqDTO);
+    }
+
+    /**
+     * 新增计量器具检修记录
+     * @param meaReqDTO 计量器具参数
+     */
+    private void addSubmissionRecordDetail(MeaReqDTO meaReqDTO) {
+        SubmissionRecordDetailReqDTO req = new SubmissionRecordDetailReqDTO();
+        BeanUtils.copyProperties(meaReqDTO, req);
+        req.setVerifyPeriod(String.valueOf(meaReqDTO.getVerifyPeriod()));
+        req.setNextVerifyDate(DateUtils.addMonthDay(req.getLastVerifyDate(), Integer.parseInt(req.getVerifyPeriod())));
+        req.setUseDeptCname(meaReqDTO.getUseDeptCode());
+        req.setVerificationNo(meaReqDTO.getCertificateNo());
+        req.setVerificationType(meaReqDTO.getCertificateType());
+        submissionRecordService.addSubmissionRecordDetail(req);
     }
 
     @Override
