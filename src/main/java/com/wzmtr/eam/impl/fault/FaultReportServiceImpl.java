@@ -19,6 +19,7 @@ import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
+import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.*;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,10 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FaultReportServiceImpl implements FaultReportService {
+
+    @Resource
+    private UserAccountService userAccountService;
+
     @Autowired
     private FaultReportMapper faultReportMapper;
     @Autowired
@@ -119,10 +125,17 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     public Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+
+        // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        List<String> userMajorList = null;
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
+            userMajorList = userAccountService.listUserMajor();
+        }
+
         Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(),
                 reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                 reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
-                reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),reqDTO.getFaultWorkNo(), reqDTO.getLineCode());
+                reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),reqDTO.getFaultWorkNo(), reqDTO.getLineCode(),userMajorList);
         List<FaultReportResDTO> records = list.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();
@@ -151,10 +164,17 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     public Page<FaultReportResDTO> carReportList(FaultReportPageReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+
+        // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        List<String> userMajorList = null;
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
+            userMajorList = userAccountService.listUserMajor();
+        }
+
         Page<FaultReportResDTO> list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(),
                 reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                 reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
-                reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus());
+                reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),userMajorList);
         List<FaultReportResDTO> records = list.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();

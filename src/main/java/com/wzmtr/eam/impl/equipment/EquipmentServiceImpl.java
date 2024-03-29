@@ -101,7 +101,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
 
         //  专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
-        List<String> userMajorList = new ArrayList<>();
+        List<String> userMajorList = null;
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(majorCode)) {
             userMajorList = userAccountService.listUserMajor();
         }

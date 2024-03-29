@@ -20,7 +20,7 @@ import java.util.List;
 public interface OverhaulTplMapper {
 
     Page<OverhaulTplResDTO> pageOverhaulTpl(Page<OverhaulTplResDTO> page, String templateId, String templateName, String lineCode, String position1Code,
-                                            String subjectCode, String systemCode, String equipTypeCode, String trialStatus);
+                                            String subjectCode, String systemCode, String equipTypeCode, String trialStatus,List<String> majors);
 
     OverhaulTplResDTO getOverhaulTplDetail(String id);
 

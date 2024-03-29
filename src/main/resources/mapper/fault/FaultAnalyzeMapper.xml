@@ -186,6 +186,13 @@
             <if test="req.majorCode!=null and req.majorCode!=''">
                 and d3.MAJOR_CODE =#{req.majorCode}
             </if>
+            <if test="majors!=null">
+                and d3.MAJOR_CODE IN (
+                <foreach collection="majors" index="index" item="major" separator=",">
+                    #{major}
+                </foreach>
+                )
+            </if>
             <if test="req.lineCode!=null and req.lineCode!=''">
                 and d1.LINE_CODE =#{req.lineCode}
             </if>

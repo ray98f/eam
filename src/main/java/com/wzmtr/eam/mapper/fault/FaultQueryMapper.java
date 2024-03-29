@@ -24,7 +24,7 @@ import java.util.List;
 @Repository
 public interface FaultQueryMapper {
 
-    Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
+    Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req,List<String> majors);
 
     Page<FaultDetailResDTO> statustucQuery(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
 

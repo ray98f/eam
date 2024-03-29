@@ -114,6 +114,13 @@
             <if test="req.majorCode!=null and req.majorCode!=''">
                 AND d.MAJOR_CODE=#{req.majorCode}
             </if>
+            <if test="majors!=null">
+                and d.MAJOR_CODE IN (
+                <foreach collection="majors" index="index" item="major" separator=",">
+                    #{major}
+                </foreach>
+                )
+            </if>
             <if test="req.systemCode!=null and req.systemCode!=''">
                 AND d.SYSTEM_CODE=#{req.systemCode}
             </if>

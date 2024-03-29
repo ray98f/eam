@@ -44,8 +44,8 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
                                                        String position1Name, String subjectCode, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
 
-        //  专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
-        List<String> userMajorList = new ArrayList<>();
+        // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        List<String> userMajorList = null;
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(subjectCode)) {
             userMajorList = userAccountService.listUserMajor();
         }
