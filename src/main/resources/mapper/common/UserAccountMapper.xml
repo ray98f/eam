@@ -210,7 +210,7 @@
         from SYS_ORG_MAJOR t1
         LEFT JOIN SYS_OFFICE t2 on t2.AREA_ID = t1.ORG_CODE
         LEFT JOIN SYS_USER t3 on t3.OFFICE_ID = t2.ID
-        where t3.LOGIN_NAME = '13067963335'
+        where t3.LOGIN_NAME = #{userId}
     </select>
 
 
