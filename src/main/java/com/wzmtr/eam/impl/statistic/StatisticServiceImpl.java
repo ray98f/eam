@@ -954,6 +954,11 @@ public class StatisticServiceImpl implements StatisticService {
                 a.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()== null ? CommonConstants.ZERO_STRING:a.getNOYF()) + Integer.parseInt(last.getNOYF()== null ? CommonConstants.ZERO_STRING:last.getNOYF())));
                 map.put(a.getModuleName(), a);
             } else {
+                a.setCRK(String.valueOf(Integer.parseInt(a.getCRK() == null ? CommonConstants.ZERO_STRING:a.getCRK())));
+                a.setZX(String.valueOf(Integer.parseInt(a.getZX() == null ? CommonConstants.ZERO_STRING:a.getZX())));
+                a.setZS(String.valueOf(Integer.parseInt(a.getZS()== null ? CommonConstants.ZERO_STRING:a.getZS())));
+                a.setYF(String.valueOf(Integer.parseInt(a.getYF() == null ? CommonConstants.ZERO_STRING:a.getYF())));
+                a.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()== null ? CommonConstants.ZERO_STRING:a.getNOYF())));
                 map.put(a.getModuleName(), a);
             }
         }
