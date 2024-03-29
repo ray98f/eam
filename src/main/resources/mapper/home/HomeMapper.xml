@@ -164,7 +164,7 @@
     </select>
 
     <update id="urgingTodo">
-        update IPLAT60.STATUS_WORK_FLOW_LOG set
+        update T_FLOW_TASK set
         KIND_TYPE='1'
         where TODO_ID=#{todoId} and TODO_STATUS='1'
     </update>
