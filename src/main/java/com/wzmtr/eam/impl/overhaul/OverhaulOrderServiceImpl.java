@@ -31,13 +31,13 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulItemMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulStateMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.OrganizationService;
-import com.wzmtr.eam.service.common.UserGroupMemberService;
 import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
@@ -94,7 +94,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     private FaultQueryMapper faultQueryMapper;
 
     @Autowired
-    private UserGroupMemberService userGroupMemberService;
+    private FileMapper fileMapper;
 
     @Autowired
     private RoleMapper roleMapper;
@@ -559,12 +559,21 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         List<OverhaulItemResDTO> modelList = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
         List<OverhaulItemTreeResDTO> models = new ArrayList<>();
         if (StringUtils.isNotEmpty(modelList)) {
-            modelList = modelList.stream().distinct().collect(Collectors.toList());
+            modelList = new ArrayList<>(modelList.stream().collect(Collectors.toCollection(() ->
+                    new TreeSet<>(Comparator.comparing(OverhaulItemResDTO::getModelName)))));
             modelList = modelList.stream().filter(Objects::nonNull).collect(Collectors.toList());
             for (OverhaulItemResDTO model : modelList) {
                 OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
                 org.springframework.beans.BeanUtils.copyProperties(model, res);
-                res.setItemList(overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, model.getModelName()));
+                List<OverhaulItemResDTO> list = overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, model.getModelName());
+                if (StringUtils.isNotEmpty(list)) {
+                    for (OverhaulItemResDTO itemRes : list) {
+                        if (StringUtils.isNotEmpty(itemRes.getDocId())) {
+                            itemRes.setDocFile(fileMapper.selectFileInfo(Arrays.asList(itemRes.getDocId().split(","))));
+                        }
+                    }
+                }
+                res.setItemList(list);
                 models.add(res);
             }
         }
@@ -591,21 +600,38 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public Integer selectHadFinishedOverhaulOrder(String orderCode) {
-        return overhaulItemMapper.selectHadFinishedOverhaulOrder(orderCode);
+    public Integer selectHadFinishedOverhaulOrder(String orderCode, String objectCode) {
+        return overhaulItemMapper.selectHadFinishedOverhaulOrder(orderCode, objectCode);
     }
 
-    /**
-     * 排查检修项
-     * @param troubleshootReqDTO 排查检修项信息
-     */
     @Override
-    public void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO) {
-        if (StringUtils.isNotEmpty(troubleshootReqDTO.getOverhaulItemList())) {
-            for (OverhaulItemResDTO res : troubleshootReqDTO.getOverhaulItemList()) {
-                overhaulItemMapper.troubleshootOverhaulItem(res, troubleshootReqDTO.getWorkUserId(), troubleshootReqDTO.getWorkUserName());
+    public void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO req) {
+        if (StringUtils.isNotEmpty(req.getOverhaulItemList())) {
+            for (OverhaulItemResDTO res : req.getOverhaulItemList()) {
+                // 列表时选异常
+                boolean bool1 = CommonConstants.TEN_STRING.equals(res.getItemType()) && CommonConstants.ERROR.equals(res.getWorkResult());
+                // 数字超过上下限
+                boolean bool2 = CommonConstants.TWENTY_STRING.equals(res.getItemType()) &&
+                                ((StringUtils.isNotBlank(res.getMinValue()) && Integer.parseInt(res.getMinValue()) > Integer.parseInt(res.getWorkResult())) ||
+                                        (StringUtils.isNotBlank(res.getMaxValue()) && Integer.parseInt(res.getMaxValue()) < Integer.parseInt(res.getWorkResult())));
+                // 文本内容包含异常
+                boolean bool3 = CommonConstants.THIRTY_STRING.equals(res.getItemType()) && res.getWorkResult().contains(CommonConstants.ERROR);
+                // 异常时添加异常数据
+                if (bool1 || bool2 || bool3) {
+                    // 新增异常数据
+                    OverhaulStateReqDTO overhaulStateReqDTO = new OverhaulStateReqDTO();
+                    org.springframework.beans.BeanUtils.copyProperties(res, overhaulStateReqDTO);
+                    overhaulStateReqDTO.setTdmer23RecId(res.getRecId());
+                    overhaulStateReqDTO.setWorkUserId(req.getWorkUserId());
+                    overhaulStateReqDTO.setWorkUserName(req.getWorkUserName());
+                    overhaulStateMapper.addOverhaulState(overhaulStateReqDTO);
+                    // 修改工单异常数量
+                    overhaulItemMapper.updateOverhaulOrderErrorNum(req.getOrderCode());
+                    overhaulItemMapper.updateOverhaulOrderDetailErrorNum(req.getOrderCode(), req.getObjectCode());
+                }
+                overhaulItemMapper.troubleshootOverhaulItem(res, req.getWorkUserId(), req.getWorkUserName());
             }
-            overhaulItemMapper.finishedOverhaulOrder(troubleshootReqDTO);
+            overhaulItemMapper.finishedOverhaulOrder(req);
         } else {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }

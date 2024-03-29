@@ -236,8 +236,24 @@
     <select id="selectHadFinishedOverhaulOrder" resultType="java.lang.Integer">
         SELECT count(REC_ID) FROM T_OVERHAUL_ITEM
         WHERE ORDER_CODE=#{orderCode}
-        AND WORK_RESULT IS NOT NULL
+        <if test="objectCode!=null and objectCode!=''">
+            and OBJECT_CODE=#{objectCode}
+        </if>
+        AND WORK_RESULT IS NULL
     </select>
+
+    <update id="updateOverhaulOrderErrorNum">
+        UPDATE T_OVERHAUL_ORDER SET
+        ABNORMAL_NUMBER=ABNORMAL_NUMBER+1,
+        WORK_DETAIL='1'
+        WHERE ORDER_CODE=#{orderCode}
+    </update>
+
+    <update id="updateOverhaulOrderDetailErrorNum">
+        UPDATE T_OVERHAUL_ORDER_DETAIL SET
+        ABNORMAL_NUMBER=ABNORMAL_NUMBER+1
+        WHERE ORDER_CODE=#{orderCode} and OBJECT_CODE=#{objectCode}
+    </update>
     
     <update id="finishedOverhaulOrder" parameterType="com.wzmtr.eam.dto.req.overhaul.OverhaulItemTroubleshootReqDTO">
         UPDATE T_OVERHAUL_ORDER SET
@@ -256,9 +272,7 @@
                 END_MILE=#{endMile},
             </if>
         </trim>
-        WHERE NOT EXISTS (SELECT REC_ID FROM T_OVERHAUL_ITEM
-        WHERE ORDER_CODE=#{orderCode}
-        AND WORK_RESULT IS NOT NULL)
+        WHERE NOT EXISTS (SELECT REC_ID FROM T_OVERHAUL_ITEM WHERE ORDER_CODE=#{orderCode} AND WORK_RESULT IS NULL)
     </update>
 
     <insert id="insert">

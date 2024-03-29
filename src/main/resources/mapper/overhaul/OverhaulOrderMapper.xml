@@ -797,8 +797,7 @@
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5", <!-- 扩展字段5 -->
         (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
-        (
-        case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        (case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
         when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
         and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
         else 9
@@ -857,6 +856,9 @@
         </if>
         <if test="req.newTime!=null and req.newTime!=''">
             and WORK_STATUS NOT IN ('5','8')
+        </if>
+        <if test="req.workDetail!=null and req.workDetail!=''">
+            and WORK_DETAIL=#{req.workDetail}
         </if>
         ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
     </select>
