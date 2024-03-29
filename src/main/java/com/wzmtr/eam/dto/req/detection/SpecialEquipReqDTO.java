@@ -140,6 +140,12 @@ public class SpecialEquipReqDTO {
     @ApiModelProperty(value = "特种设备检测有效期")
     private String verifyValidityDate;
 
+    @ApiModelProperty(value = "检测结果")
+    private String verifyResult;
+
+    @ApiModelProperty(value = "检测结果说明")
+    private String verifyConclusion;
+
     @ApiModelProperty(value = "管理部门名称")
     private String manageOrgName;
 

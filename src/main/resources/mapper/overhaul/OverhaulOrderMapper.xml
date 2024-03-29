@@ -302,8 +302,8 @@
         #{realEndTime,jdbcType=VARCHAR},
         #{workStatus,jdbcType=VARCHAR},
         #{workFinishStatus,jdbcType=VARCHAR},
-        #{abnormalNumber,jdbcType=VARCHAR},
-        #{workDetail,jdbcType=VARCHAR},
+        '0',
+        '0',
         #{startworkTime,jdbcType=VARCHAR},
         #{cancelPersonId,jdbcType=VARCHAR},
         #{cancelPersonName,jdbcType=VARCHAR},
@@ -478,6 +478,18 @@
         </if>
         <if test="ext5!=null">
             EXT5=#{ext5},
+        </if>
+        <if test="actualStartTime!=null">
+            ACTUAL_START_TIME=#{actualStartTime},
+        </if>
+        <if test="actualEndTime!=null">
+            ACTUAL_END_TIME=#{actualEndTime},
+        </if>
+        <if test="startMile!=null">
+            START_MILE=#{startMile},
+        </if>
+        <if test="endMile!=null">
+            END_MILE=#{endMile},
         </if>
         REC_REVISOR=#{recRevisor},
         REC_REVISE_TIME=#{recReviseTime}
@@ -700,7 +712,7 @@
         #{startTime,jdbcType=VARCHAR},
         #{compliteTime,jdbcType=VARCHAR},
         #{repairPerson,jdbcType=VARCHAR},
-        #{abnormalNumber,jdbcType=VARCHAR},
+        '0',
         #{selfCheck,jdbcType=VARCHAR},
         #{selfCheckTime,jdbcType=VARCHAR},
         #{selfCheckRemark,jdbcType=VARCHAR},
@@ -1367,6 +1379,27 @@
         EXT5	as "ext5" <!-- 扩展字段5 -->
         FROM T_OVERHAUL_ORDER_DETAIL WHERE REC_ID=#{id}
     </select>
+
+    <update id="modifyOverhaulObject">
+        update T_OVERHAUL_ORDER_DETAIL set
+        <if test="repairStatus!=null">
+            REPAIR_STATUS=#{repairStatus},
+        </if>
+        <if test="repairDetail!=null">
+            REPAIR_DETAIL=#{repairDetail},
+        </if>
+        <if test="startTime!=null">
+            START_TIME=#{startTime},
+        </if>
+        <if test="compliteTime!=null">
+            COMPLITE_TIME=#{compliteTime},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REPAIR_PERSON=#{repairPerson}
+        where REC_ID=#{recId}
+    </update>
 
     <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
         SELECT

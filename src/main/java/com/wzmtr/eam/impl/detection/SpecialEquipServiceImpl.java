@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.detection;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.detection.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.detection.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelSpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.detection.SpecialEquipHistoryResDTO;
@@ -17,12 +18,14 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.detection.SpecialEquipMapper;
 import com.wzmtr.eam.mapper.detection.SpecialEquipTypeMapper;
+import com.wzmtr.eam.service.detection.DetectionService;
 import com.wzmtr.eam.service.detection.SpecialEquipService;
 import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +54,9 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
 
     @Autowired
     private OrganizationMapper organizationMapper;
+
+    @Autowired
+    private DetectionService detectionService;
 
     @Override
     public Page<SpecialEquipResDTO> pageSpecialEquip(String equipCode, String equipName, String specialEquipCode, String factNo,
@@ -98,7 +104,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
     }
 
     @Override
-    public void importSpecialEquip(MultipartFile file) {
+    public void importSpecialEquip(MultipartFile file) throws ParseException {
         List<String> specialCode = new ArrayList<>();
         List<ExcelSpecialEquipReqDTO> list = EasyExcelUtils.read(file, ExcelSpecialEquipReqDTO.class);
         for (ExcelSpecialEquipReqDTO reqDTO : list) {
@@ -130,11 +136,30 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
             } else {
                 req.setRecId(TokenUtils.getUuId());
                 specialEquipMapper.addSpecialEquip(req);
+                DetectionDetailReqDTO detectionDetailReqDTO = buildDetectionDetail(req);
+                detectionService.addNormalDetectionDetail(detectionDetailReqDTO);
             }
         }
         if (StringUtils.isNotEmpty(specialCode)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "特种设备编号为" + String.join("、", specialCode) + "的特种设备导入失败，请重试");
         }
+    }
+
+    /**
+     * 检测记录拼装
+     * @param req 特种设备参数
+     * @return 检测记录
+     */
+    @NotNull
+    private static DetectionDetailReqDTO buildDetectionDetail(SpecialEquipReqDTO req) {
+        DetectionDetailReqDTO detectionDetailReqDTO = new DetectionDetailReqDTO();
+        detectionDetailReqDTO.setEquipCode(req.getEquipCode());
+        detectionDetailReqDTO.setEquipName(req.getEquipName());
+        detectionDetailReqDTO.setVerifyDate(req.getVerifyDate());
+        detectionDetailReqDTO.setVerifyValidityDate(req.getVerifyValidityDate());
+        detectionDetailReqDTO.setVerifyResult(req.getVerifyResult());
+        detectionDetailReqDTO.setVerifyConclusion(req.getVerifyConclusion());
+        return detectionDetailReqDTO;
     }
 
     @Override
