@@ -51,6 +51,12 @@ public interface OverhaulOrderService {
 
     void dispatchWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
+    /**
+     * 检修工单完工
+     * @param req 排查检修项信息
+     */
+    void finishOrder(OverhaulOrderReqDTO req);
+
     void auditWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
     void confirmWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException;
@@ -70,6 +76,12 @@ public interface OverhaulOrderService {
     Page<OverhaulOrderDetailResDTO> pageOverhaulObject(String orderCode, String planCode, String planName, String objectCode, PageReqDTO pageReqDTO);
 
     OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id);
+
+    /**
+     * 编辑检修对象
+     * @param req 检修对象参数
+     */
+    void modifyOverhaulObject(OverhaulOrderDetailReqDTO req);
 
     void exportOverhaulObject(String orderCode, String planCode, String planName, String objectCode, HttpServletResponse response) throws IOException;
 

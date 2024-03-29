@@ -37,6 +37,8 @@ public interface DetectionService {
 
     void addDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException;
 
+    void addNormalDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException;
+
     void modifyDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException;
 
     void deleteDetectionDetail(BaseIdsEntity baseIdsEntity);

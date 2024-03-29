@@ -184,4 +184,24 @@ public class OverhaulOrderReqDTO {
 
     @ApiModelProperty(value = "最后修改人")
     private String lastUpdatePerson;
+
+    /**
+     * 实际开始时间
+     */
+    private String actualStartTime;
+
+    /**
+     * 实际结束时间
+     */
+    private String actualEndTime;
+
+    /**
+     * 开始时公里数
+     */
+    private Double startMile;
+
+    /**
+     * 结束时公里数
+     */
+    private Double endMile;
 }
