@@ -75,4 +75,7 @@ public class UserCenterInfoResDTO {
 
     @ApiModelProperty(value = "用户权限")
     private List<UserRoleResDTO> userRoles;
+
+    @ApiModelProperty(value = "用户相关专业")
+    private List<String> userMajors;
 }
