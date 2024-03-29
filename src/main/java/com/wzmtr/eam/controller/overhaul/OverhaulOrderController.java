@@ -127,7 +127,7 @@ public class OverhaulOrderController {
      * @return 操作成功/失败
      */
     @PostMapping("/finish")
-    @ApiOperation(value = "排查检修项")
+    @ApiOperation(value = "检修工单完工")
     public DataResponse<T> finishOrder(@RequestBody OverhaulOrderReqDTO req) {
         overhaulOrderService.finishOrder(req);
         return DataResponse.success();
