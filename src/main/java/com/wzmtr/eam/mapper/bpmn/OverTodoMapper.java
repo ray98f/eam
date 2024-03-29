@@ -15,6 +15,7 @@ public interface OverTodoMapper {
     List<QueryNotWorkFlowResDTO> queryNotWorkFlow(String todoId);
 
     void updateStatus(StatusWorkFlowLog sLog);
+    void updateStatusByBizId(StatusWorkFlowLog sLog);
 
     void insert(StatusWorkFlowLog sLog);
 

@@ -414,11 +414,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         finishWorkSendMessage(reqDTO);
         //完工更新其他人的待办状态
-        updateTodoStatus(reqDTO.getFaultWorkNo());
-    }
-
-    private void updateTodoStatus(String faultWorkNo) {
-        overTodoService.overTodo();
+        overTodoService.updateTodoStatus(reqDTO.getFaultWorkNo());
     }
 
     @Override
@@ -577,6 +573,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isEmpty(faultNo)) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
+        //线路和专业查维修部门
         FaultInfoDO faultInfoDO = faultQueryMapper.queryOneFaultInfo(faultNo, null);
         return faultQueryMapper.queryDeptCode(faultInfoDO.getLineCode(), faultInfoDO.getMajorCode(), "20");
     }

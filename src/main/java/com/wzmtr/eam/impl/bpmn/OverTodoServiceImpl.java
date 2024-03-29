@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.bpmn;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wzmtr.eam.bizobject.QueryNotWorkFlowBO;
 import com.wzmtr.eam.dto.req.common.EipMsgPushReq;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
@@ -168,10 +169,12 @@ public class OverTodoServiceImpl implements OverTodoService {
 
 
     @Override
-    public void insertTodoWithUserGroupAndOrg(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
+    public void insertTodoWithUserGroupAndOrg(String taskTitle, String businessRecId, String businessNo, String roleId,
                                               String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content,String flowId) {
         // 根据角色和部门获取用户列表
-        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(stepOrg, stepUserGroup);
+        String newId = organizationMapper.getIdByAreaId(stepOrg);
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, roleId);
+        log.info("推送的下一步待办用户列表为:{}", JSONObject.toJSONString(userList));
         List<String> userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
         insertTodoWithUserList(userIds, taskTitle, businessRecId, businessNo, stepName, taskUrl, lastStepUserId, content,flowId);
     }
@@ -270,5 +273,16 @@ public class OverTodoServiceImpl implements OverTodoService {
                 insertTodo(taskTitle, businessRecId, businessNo, userId, stepName, taskUrl, lastStepUserId,flowId);
             }
         }
+    }
+
+    @Override
+    public void updateTodoStatus(String bizNo) {
+        if (StringUtils.isEmpty(bizNo)) {
+            return;
+        }
+        // 关联的待办 更新状态
+        overTodoMapper.updateStatusByBizId(StatusWorkFlowLog.builder()
+                .relateId(bizNo)
+                .build());
     }
 }

@@ -21,7 +21,7 @@ public interface OverTodoService {
     void insertTodoWithUserGroup(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
                                  String stepName, String taskUrl, String lastStepUserId,String flowId);
 
-    void insertTodoWithUserGroupAndOrg(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
+    void insertTodoWithUserGroupAndOrg(String taskTitle, String businessRecId, String businessNo, String roleId,
                                        String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content,String flowId);
 
     /**
@@ -58,4 +58,6 @@ public interface OverTodoService {
      */
     void insertTodoWithUserList(List<String> userIds, String taskTitle, String businessRecId, String businessNo,
                                 String stepName, String taskUrl, String lastStepUserId, String content,String flowId);
+
+    void updateTodoStatus(String bizNo);
 }

@@ -28,6 +28,13 @@
         WHERE TODO_ID=#{todoId} AND USER_ID=#{userId}
     </update>
 
+    <update id="updateStatusByBizId">
+        UPDATE T_FLOW_TASK SET
+                               TODO_DATE=#{todoDate},
+                               TODO_STATUS=#{todoStatus}
+        WHERE RELATE_ID =#{relateId}
+    </update>
+
     <insert id="insert">
         INSERT INTO T_FLOW_TASK (
         TODO_ID,  <!-- 待办主键ID -->
