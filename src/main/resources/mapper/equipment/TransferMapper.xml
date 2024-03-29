@@ -489,7 +489,7 @@
         USER_ID as "userId",
         EIP_URL as "eipUrl",
         PHONE_URL as "phoneUrl"
-        FROM iplat60.STATUS_WORK_FLOW_LOG where TODO_STATUS='1'
+        FROM T_FLOW_TASK where TODO_STATUS='1'
         <if test="todoId!=null and todoId!=''">
             and TODO_ID = #{todoId}
         </if>

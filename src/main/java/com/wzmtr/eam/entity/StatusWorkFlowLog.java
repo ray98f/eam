@@ -113,5 +113,8 @@ public class StatusWorkFlowLog {
      */
     @ApiModelProperty(value = "扩展字段6")
     private String ext6;
-
+    @ApiModelProperty(value = "流程Key")
+    private String flowId;
+    @ApiModelProperty(value = "业务ID")
+    private String relateId;
 }

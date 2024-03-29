@@ -22,6 +22,7 @@ import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulStateResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
@@ -290,8 +291,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         // 根据角色获取用户列表
         List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), CommonConstants.DM_007);
         for (BpmnExaminePersonRes map2 : userList) {
+            //todo 锐鹏看下flowID
             overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
-                    map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId());
+                    map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId(),null);
         }
     }
 
@@ -729,7 +731,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
         // ServiceDMER0205 insertUpFaultMessage
         overTodoService.insertTodoWithUserGroupAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
-                dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content);
+                dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
     }
 
     /**

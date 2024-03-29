@@ -6,7 +6,7 @@ public interface OverTodoService {
 
     void overTodo(String businessRecId, String auditOpinion);
 
-    void insertTodo(String taskTitle, String businessRecId, String businessNo, String stepUserId, String stepName, String taskUrl, String lastStepUserId);
+    void insertTodo(String taskTitle, String businessRecId, String businessNo, String stepUserId, String stepName, String taskUrl, String lastStepUserId,String flowId);
 
     /**
      * 根据用户权限推送消息
@@ -19,10 +19,10 @@ public interface OverTodoService {
      * @param lastStepUserId 上一步用户id
      */
     void insertTodoWithUserGroup(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
-                                 String stepName, String taskUrl, String lastStepUserId);
+                                 String stepName, String taskUrl, String lastStepUserId,String flowId);
 
     void insertTodoWithUserGroupAndOrg(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
-                                       String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content);
+                                       String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content,String flowId);
 
     /**
      * 根据用户权限推和阶段组织结构推送消息
@@ -41,7 +41,7 @@ public interface OverTodoService {
      */
     void insertTodoWithUserGroupAndAllOrg(String taskTitle, String businessRecId, String businessNo,
                                           String stepUserGroup, String stepOrg, String stepName,
-                                          String taskUrl, String lastStepUserId, String majorCode, String lineCode, String orgType, String content);
+                                          String taskUrl, String lastStepUserId, String majorCode, String lineCode, String orgType, String content,String flowId);
 
     void cancelTodo(String businessRecId);
 
@@ -57,5 +57,5 @@ public interface OverTodoService {
      * @param content 内容
      */
     void insertTodoWithUserList(List<String> userIds, String taskTitle, String businessRecId, String businessNo,
-                                String stepName, String taskUrl, String lastStepUserId, String content);
+                                String stepName, String taskUrl, String lastStepUserId, String content,String flowId);
 }
