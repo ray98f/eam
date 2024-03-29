@@ -296,7 +296,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 BeanUtils.copyProperties(reqDTO, req);
                 Integer result = overhaulTplMapper.selectOverhaulTplIsExist(req);
                 if (result > 0) {
-                    error.add("模板编号为："+ req.getTemplateId() +",模板名称为：" + req.getTemplateName() + "的数据已存在，无法导入");
+                    error.add("模板名称为：" + req.getTemplateName() + "的数据已存在，无法导入");
                     continue;
                 }
                 req.setLineNo("S1线".equals(req.getLineName()) ? "01" : "02");

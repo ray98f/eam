@@ -413,8 +413,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void triggerOne(String planCode) {
         if (checkHasNotOrder(planCode)) {
             createInsepectRecordByPlanCode(new String[]{planCode});
-            if (querySonOrder(planCode) != null && checkHasNotOrder(querySonOrder(planCode))) {
-                triggerOne(querySonOrder(planCode));
+            String str = querySonOrder(planCode);
+            if (StringUtils.isNotEmpty(str) && checkHasNotOrder(str)) {
+                triggerOne(str);
             }
         }
     }
