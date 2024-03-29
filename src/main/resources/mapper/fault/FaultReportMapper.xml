@@ -609,6 +609,13 @@
         <if test="majorCode!=null and majorCode!=''">
            and d.MAJOR_CODE=#{majorCode}
         </if>
+        <if test="majors!=null">
+            and d.MAJOR_CODE IN (
+            <foreach collection="majors" index="index" item="major" separator=",">
+                #{major}
+            </foreach>
+            )
+        </if>
         <if test="faultModuleId!=null and faultModuleId!=''">
            and d.FAULT_MODULE_ID=#{faultModuleId}
         </if>
@@ -842,6 +849,14 @@
         <if test="majorCode!=null and majorCode!=''">
            and d.MAJOR_CODE=#{majorCode}
         </if>
+        <if test="majors!=null">
+            and d.MAJOR_CODE IN (
+            <foreach collection="majors" index="index" item="major" separator=",">
+                #{major}
+            </foreach>
+            )
+        </if>
+
         <if test="faultModuleId!=null and faultModuleId!=''">
            and d.FAULT_MODULE_ID=#{faultModuleId}
         </if>

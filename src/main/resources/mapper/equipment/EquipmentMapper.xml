@@ -165,6 +165,14 @@
         <if test="majorCode!=null and majorCode!=''">
             and MAJOR_CODE=#{majorCode}
         </if>
+        <if test="majors!=null">
+            and MAJOR_CODE IN (
+            <foreach collection="majors" index="index" item="major" separator=",">
+                #{major}
+            </foreach>
+            )
+        </if>
+
         <if test="systemCode!=null and systemCode!=''">
             and SYSTEM_CODE=#{systemCode}
         </if>

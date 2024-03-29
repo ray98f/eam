@@ -33,6 +33,7 @@ import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.OrganizationService;
+import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.common.UserGroupMemberService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.fault.FaultReportService;
@@ -43,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,6 +65,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public static final String DM_030 = "DM_030";
     public static final String DM_031 = "DM_031";
     public static final String DM_044 = "DM_044";
+
+    @Resource
+    private UserAccountService userAccountService;
+
     @Autowired
     private FaultQueryMapper faultQueryMapper;
     @Autowired
@@ -94,7 +100,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<FaultDetailResDTO> page = faultQueryMapper.query(reqDTO.of(), reqDTO);
+
+        // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        List<String> userMajorList = null;
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
+            userMajorList = userAccountService.listUserMajor();
+        }
+
+        Page<FaultDetailResDTO> page = faultQueryMapper.query(reqDTO.of(), reqDTO,userMajorList);
         List<FaultDetailResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
             for (FaultDetailResDTO res : list) {

@@ -20,6 +20,8 @@ public interface OrgMajorMapper {
 
     Page<OrgMajorResDTO> pageOrgMajor(Page<OrgMajorResDTO> page, List<List<String>> orgCodes, String majorCode);
 
+    List<OrgMajorResDTO> allListOrgMajor( List<List<String>> orgCodes, String majorCode);
+
     List<OrgMajorResDTO> listUseOrgMajor(String majorCode);
 
     OrgMajorResDTO getOrgMajorDetail(String id);

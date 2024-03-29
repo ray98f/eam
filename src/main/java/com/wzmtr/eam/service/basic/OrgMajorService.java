@@ -15,6 +15,8 @@ public interface OrgMajorService {
 
     Page<OrgMajorResDTO> listOrgMajor(String orgCode, String majorCode, PageReqDTO pageReqDTO);
 
+    List<OrgMajorResDTO> allListOrgMajor(String orgCode, String majorCode);
+
     List<OrgMajorResDTO> listUseOrgMajor(String majorCode);
 
     OrgMajorResDTO getOrgMajorDetail(String id);

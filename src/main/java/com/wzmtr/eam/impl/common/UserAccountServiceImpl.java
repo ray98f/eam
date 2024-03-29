@@ -55,8 +55,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         CurrentLoginUser person = new CurrentLoginUser();
             Person p = personService.searchPersonByNo(userId);
             if (p != null) {
-                person.setPersonId(p.getId());
-                person.setPersonNo(p.getNo());
+                person.setPersonId(p.getLoginName());
+                person.setPersonNo(p.getLoginName());
                 person.setPersonName(p.getName());
                 person.setMobile(p.getMobile());
                 person.setPhone(p.getPhone());
@@ -81,4 +81,11 @@ public class UserAccountServiceImpl implements UserAccountService {
         res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
         return res;
     }
+
+    @Override
+    public List<String> listUserMajor() {
+        return userAccountMapper.getMajor(TokenUtils.getCurrentPersonId());
+    }
+
+
 }
