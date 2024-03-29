@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelEquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
@@ -19,6 +20,7 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
+import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.equipment.EquipmentService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -46,6 +49,9 @@ public class EquipmentServiceImpl implements EquipmentService {
     private static final String ES = "ES";
     private static final String REGION_CODE_ES1 = "ES1";
     private static final String REGION_CODE_ES2 = "ES2";
+
+    @Resource
+    private UserAccountService userAccountService;
 
     @Autowired
     private EquipmentMapper equipmentMapper;
@@ -93,12 +99,20 @@ public class EquipmentServiceImpl implements EquipmentService {
     public Page<EquipmentResDTO> pageEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                                String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+
+        //  专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        List<String> userMajorList = new ArrayList<>();
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(majorCode)) {
+            userMajorList = userAccountService.listUserMajor();
+        }
+
         if (StringUtils.isNotEmpty(position1Code) && position1Code.contains(ES)) {
             majorCode = "07";
             position1Code = null;
         }
+
         return equipmentMapper.pageEquipment(pageReqDTO.of(), equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
-                systemCode, equipTypeCode, brand, startTime, endTime, manufacture);
+                systemCode, equipTypeCode, brand, startTime, endTime, manufacture,userMajorList);
     }
 
     @Override

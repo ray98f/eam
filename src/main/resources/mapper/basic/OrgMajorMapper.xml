@@ -23,6 +23,27 @@
         ORDER BY om.REC_CREATE_TIME ASC
     </select>
 
+    <select id="allListOrgMajor" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
+        SELECT om.REC_ID, om.ORG_CODE, om.ORG_NAME, om.MAJOR_CODE,
+        om.REC_STATUS, om.REMARK, u.NAME AS REC_CREATOR, om.REC_CREATE_TIME
+        FROM SYS_ORG_MAJOR om
+        LEFT JOIN SYS_USER u ON om.REC_CREATOR=u.ID
+        where om.DELETE_FLAG='0'
+        <if test="orgCodes!=null and orgCodes.size()>0">
+            and
+            <foreach collection="orgCodes" item="orgCode" separator="or">
+                om.ORG_CODE in
+                <foreach collection="orgCode" item="x" separator="," open="(" close=")">
+                    #{x}
+                </foreach>
+            </foreach>
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            and om.MAJOR_CODE=#{majorCode}
+        </if>
+        ORDER BY om.REC_CREATE_TIME ASC
+    </select>
+
     <select id="listUseOrgMajor" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
         SELECT om.REC_ID, om.ORG_CODE, om.ORG_NAME, om.MAJOR_CODE,
         om.REC_STATUS, om.REMARK, u.NAME AS REC_CREATOR, om.REC_CREATE_TIME

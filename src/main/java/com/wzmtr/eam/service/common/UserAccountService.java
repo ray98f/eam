@@ -23,4 +23,9 @@ public interface UserAccountService {
 
     UserCenterInfoResDTO getUserDetail();
 
+    /**
+     * 当前用户专业列表
+     * @return
+     */
+    List<String> listUserMajor();
 }
