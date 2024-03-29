@@ -32,7 +32,6 @@ import java.util.List;
 @Slf4j
 public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
-
     @Resource
     private UserAccountService userAccountService;
 

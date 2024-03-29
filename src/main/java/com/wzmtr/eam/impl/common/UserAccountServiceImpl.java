@@ -79,6 +79,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserCenterInfoResDTO res = userAccountMapper.userCenterInfo(TokenUtils.getCurrentPersonId());
         // 获取登录用户角色权限
         res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
+        // 获取登录用户相关专业
+        res.setUserMajors( userAccountMapper.getMajor(TokenUtils.getCurrentPersonId()));
         return res;
     }
 

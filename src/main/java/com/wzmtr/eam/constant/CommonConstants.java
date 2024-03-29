@@ -66,6 +66,7 @@ public class CommonConstants {
     public static final String EIGHT_STRING = "8";
     public static final String NINE_STRING = "9";
     public static final String TEN_STRING = "10";
+    public static final String FOURTEEN_STRING = "14";
     public static final String TWENTY_STRING = "20";
     public static final String THIRTY_STRING = "30";
     public static final String FORTY_STRING = "40";
@@ -87,6 +88,7 @@ public class CommonConstants {
     public static final int EIGHT = 8;
     public static final int NINE = 9;
     public static final int TEN = 10;
+    public static final int FOURTEEN = 14;
     public static final int TWENTY = 20;
     public static final int THIRTY = 30;
 
