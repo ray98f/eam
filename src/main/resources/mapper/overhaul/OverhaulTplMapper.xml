@@ -118,6 +118,9 @@
     <select id="selectOverhaulTplIsExist" resultType="java.lang.Integer">
         select count(1) from
         T_OVERHAUL_TPL where TEMPLATE_NAME=#{templateName} and rownum=1
+        <if test="recId!=null and recId!=''">
+            and REC_ID=#{recId}
+        </if>
     </select>
 
     <insert id="addOverhaulTpl">

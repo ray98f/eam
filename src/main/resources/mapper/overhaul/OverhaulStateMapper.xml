@@ -143,4 +143,78 @@
         order by REC_ID asc
     </select>
 
+    <insert id="addOverhaulState">
+        INSERT INTO T_OVERHAUL_STATE (
+        REC_ID,  <!-- 记录ID -->
+        ITEM_NAME,  <!-- 条目 -->
+        ORDER_CODE,  <!-- 检修工单 -->
+        TDMER23_REC_ID,  <!-- 检修项外键 -->
+        MODEL_NAME,  <!-- 模块名称 -->
+        OBJECT_CODE,  <!-- 对象编码 -->
+        OBJECT_NAME,  <!-- 对象名称 -->
+        WORK_USER_ID,  <!-- 用户工号 -->
+        WORK_USER_NAME,  <!-- 用户姓名 -->
+        ITEM_TYPE,  <!-- 类型 -->
+        WORK_RESULT,  <!-- 结果 -->
+        INSPECT_ITEM_VALUE,  <!-- 条目值 -->
+        WORK_TIME,  <!-- 时间 -->
+        DOC_ID,  <!-- 附件 -->
+        WORK_DETAIL,  <!-- 工作说明 -->
+        REMARK,  <!-- 备注 -->
+        ERROR_FLAG,  <!-- 异常标识 -->
+        ITEM_UNIT,  <!-- 单位 -->
+        DEFAULT_VALUE,  <!-- 默认值 -->
+        MUTUAL_INSPECTION_PEOPLE,  <!-- 互检人 -->
+        MUTUAL_INSPECTION_PEOPLE_ID,  <!-- 互检人工号 -->
+        SPECIAL_INSPECTION_PEOPLE,  <!-- 专检人 -->
+        SPECIAL_INSPECTION_PEOPLE_ID,  <!-- 专检人工号 -->
+        FAULT_CODE,  <!-- 故障单号 -->
+        FAULT_STATUS,  <!-- 故障单号状态 -->
+        FOLLOW_CODE,  <!-- 跟踪单号 -->
+        FOLLOW_STATUS,  <!-- 跟踪单号状态 -->
+        PROBLEM_STATUS,  <!-- 状态 -->
+        PROBLEM_DESCRIPTION,  <!-- 问题描述 -->
+        HANDLING_SUGGESTION,  <!-- 处理意见 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{itemName,jdbcType=VARCHAR},
+        #{orderCode,jdbcType=VARCHAR},
+        #{tdmer23RecId,jdbcType=VARCHAR},
+        #{modelName,jdbcType=VARCHAR},
+        #{objectCode,jdbcType=VARCHAR},
+        #{objectName,jdbcType=VARCHAR},
+        #{workUserId,jdbcType=VARCHAR},
+        #{workUserName,jdbcType=VARCHAR},
+        #{itemType,jdbcType=VARCHAR},
+        #{workResult,jdbcType=VARCHAR},
+        #{inspectItemValue,jdbcType=VARCHAR},
+        #{workTime,jdbcType=VARCHAR},
+        #{docId,jdbcType=VARCHAR},
+        #{workDetail,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{errorFlag,jdbcType=VARCHAR},
+        #{itemUnit,jdbcType=VARCHAR},
+        #{defaultValue,jdbcType=VARCHAR},
+        #{mutualInspectionPeople,jdbcType=VARCHAR},
+        #{mutualInspectionPeopleId,jdbcType=VARCHAR},
+        #{specialInspectionPeople,jdbcType=VARCHAR},
+        #{specialInspectionPeopleId,jdbcType=VARCHAR},
+        #{faultCode,jdbcType=VARCHAR},
+        #{faultStatus,jdbcType=VARCHAR},
+        #{followCode,jdbcType=VARCHAR},
+        #{followStatus,jdbcType=VARCHAR},
+        #{problemStatus,jdbcType=VARCHAR},
+        #{problemDescription,jdbcType=VARCHAR},
+        #{handlingSuggestion,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
 </mapper>

@@ -109,15 +109,16 @@ public interface OverhaulOrderService {
     /**
      * 判断是否存在未填报的检修项
      * @param orderCode 工单编号
+     * @param objectCode 对象编号
      * @return 是否存在未填报的检修项
      */
-    Integer selectHadFinishedOverhaulOrder(String orderCode);
+    Integer selectHadFinishedOverhaulOrder(String orderCode, String objectCode);
 
     /**
      * 排查检修项
-     * @param troubleshootReqDTO 排查检修项信息
+     * @param req 排查检修项信息
      */
-    void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO);
+    void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO req);
 
     Page<OverhaulStateResDTO> pageOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId, PageReqDTO pageReqDTO);
 

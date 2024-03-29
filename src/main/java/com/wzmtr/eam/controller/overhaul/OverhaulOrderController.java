@@ -273,23 +273,25 @@ public class OverhaulOrderController {
     /**
      * 判断是否存在未填报的检修项
      * @param orderCode 工单编号
+     * @param objectCode 对象编号
      * @return 是否存在未填报的检修项
      */
     @GetMapping("/item/troubleshoot/had")
     @ApiOperation(value = "判断是否存在未填报的检修项")
-    public DataResponse<Integer> selectHadFinishedOverhaulOrder(@RequestParam @ApiParam("工单编号") String orderCode) {
-        return DataResponse.of(overhaulOrderService.selectHadFinishedOverhaulOrder(orderCode));
+    public DataResponse<Integer> selectHadFinishedOverhaulOrder(@RequestParam @ApiParam("工单编号") String orderCode,
+                                                                @RequestParam(required = false) @ApiParam("对象编号") String objectCode) {
+        return DataResponse.of(overhaulOrderService.selectHadFinishedOverhaulOrder(orderCode, objectCode));
     }
 
     /**
      * 排查检修项
-     * @param troubleshootReqDTO 排查检修项信息
+     * @param req 排查检修项信息
      * @return 操作成功/失败
      */
     @PostMapping("/item/troubleshoot")
     @ApiOperation(value = "排查检修项")
-    public DataResponse<T> troubleshootOverhaulItem(@RequestBody OverhaulItemTroubleshootReqDTO troubleshootReqDTO) {
-        overhaulOrderService.troubleshootOverhaulItem(troubleshootReqDTO);
+    public DataResponse<T> troubleshootOverhaulItem(@RequestBody OverhaulItemTroubleshootReqDTO req) {
+        overhaulOrderService.troubleshootOverhaulItem(req);
         return DataResponse.success();
     }
 

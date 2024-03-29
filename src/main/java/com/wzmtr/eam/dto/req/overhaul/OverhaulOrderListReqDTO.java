@@ -68,4 +68,10 @@ public class OverhaulOrderListReqDTO {
      * 外部调用标识
      */
     private String tenant;
+
+    /**
+     * 检修情况
+     */
+    @ApiModelProperty(value = "检修情况")
+    private String workDetail;
 }

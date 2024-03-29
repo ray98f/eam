@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulStateReqDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulStateResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -20,5 +21,11 @@ public interface OverhaulStateMapper {
     OverhaulStateResDTO getOverhaulStateDetail(String id);
 
     List<OverhaulStateResDTO> listOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId);
+
+    /**
+     * 新增检修异常
+     * @param overhaulStateReqDTO 检修异常参数
+     */
+    void addOverhaulState(OverhaulStateReqDTO overhaulStateReqDTO);
 
 }

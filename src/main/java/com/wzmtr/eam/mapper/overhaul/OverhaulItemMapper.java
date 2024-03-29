@@ -52,9 +52,23 @@ public interface OverhaulItemMapper {
     /**
      * 判断是否存在未填报的检修项
      * @param orderCode 工单编号
+     * @param objectCode 对象编号
      * @return 是否存在未填报的检修项
      */
-    Integer selectHadFinishedOverhaulOrder(String orderCode);
+    Integer selectHadFinishedOverhaulOrder(String orderCode, String objectCode);
+
+    /**
+     * 修改检修工单异常数量
+     * @param orderCode 工单编号
+     */
+    void updateOverhaulOrderErrorNum(String orderCode);
+
+    /**
+     * 修改检修工单详情异常数量
+     * @param orderCode 工单编号
+     * @param objectCode 对象编号
+     */
+    void updateOverhaulOrderDetailErrorNum(String orderCode, String objectCode);
 
     /**
      * 检修工单完工

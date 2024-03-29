@@ -133,4 +133,6 @@ public class CommonConstants {
     public static final String FAULT_FINISHED_CONFIRM_AND_DISPATCH_CN = "工单完工确认并故障再派工";
     public static final String FAULT_TUNING_CONFIRM_CN = "故障设调确认";
 
+    public static final String ERROR = "异常";
+
 }
