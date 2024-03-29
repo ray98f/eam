@@ -11,6 +11,7 @@ import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
+import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.equipment.EquipmentRoomService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +32,10 @@ import java.util.List;
 @Slf4j
 public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
+
+    @Resource
+    private UserAccountService userAccountService;
+
     @Autowired
     private EquipmentRoomMapper equipmentRoomMapper;
 
@@ -37,7 +43,14 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
     public Page<EquipmentRoomResDTO> listEquipmentRoom(String equipRoomCode, String equipRoomName, String lineCode, String position1Code,
                                                        String position1Name, String subjectCode, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return equipmentRoomMapper.pageEquipmentRoom(pageReqDTO.of(), equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode);
+
+        //  专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        List<String> userMajorList = new ArrayList<>();
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(subjectCode)) {
+            userMajorList = userAccountService.listUserMajor();
+        }
+
+        return equipmentRoomMapper.pageEquipmentRoom(pageReqDTO.of(), equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode,userMajorList);
     }
 
     @Override

@@ -40,6 +40,13 @@
         <if test="subjectCode!=null and subjectCode!=''">
             and SUBJECT_CODE=#{subjectCode}
         </if>
+        <if test="majors!=null">
+            and SUBJECT_CODE IN (
+            <foreach collection="majors" index="index" item="major" separator=",">
+                #{major}
+            </foreach>
+            )
+        </if>
         <if test="lineCode!=null and lineCode!=''">
             and LINE_CODE=#{lineCode}
         </if>
