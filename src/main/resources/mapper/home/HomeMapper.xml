@@ -125,7 +125,7 @@
         AUDIT_OPINION  as opinion,
         EXT1 as businessKey,
         TITLE as processDefName
-        FROM iplat60.STATUS_WORK_FLOW_LOG B
+        FROM T_FLOW_TASK B
         WHERE 1=1
         <if test="modelName != null and modelName != ''">
             AND B.SYSCODE LIKE concat(concat('%',#{modelName}),'%')
@@ -142,7 +142,7 @@
 
     <select id="todoList" resultType="com.wzmtr.eam.entity.StatusWorkFlowLog">
         select * from
-        IPLAT60.STATUS_WORK_FLOW_LOG
+        T_FLOW_TASK
         where USER_ID=#{userId} and TODO_STATUS=#{type}
         order by KIND_TYPE asc
         <if test="type=='1'">
@@ -155,16 +155,16 @@
 
     <select id="todoCount" resultType="com.wzmtr.eam.dto.res.home.HomeCountResDTO">
         with todoSize AS (select count(*) as todoSize from
-        IPLAT60.STATUS_WORK_FLOW_LOG
+        T_FLOW_TASK
         where USER_ID=#{userId} and TODO_STATUS='1'),
         overSize as (select count(*) as overSize from
-        IPLAT60.STATUS_WORK_FLOW_LOG
+        T_FLOW_TASK
         where USER_ID=#{userId} and TODO_STATUS='2')
         SELECT * FROM todoSize, overSize
     </select>
 
     <update id="urgingTodo">
-        update IPLAT60.STATUS_WORK_FLOW_LOG set
+        update T_FLOW_TASK set
         KIND_TYPE='1'
         where TODO_ID=#{todoId} and TODO_STATUS='1'
     </update>
