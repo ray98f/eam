@@ -36,9 +36,10 @@ public interface OverhaulTplService {
 
     /**
      * 检修模板导入
-     * @param file excel文件
+     * @param file 导入文件
+     * @return 错误的导入数据
      */
-    void importOverhaulTpl(MultipartFile file);
+    List<String> importOverhaulTpl(MultipartFile file);
 
     void exportOverhaulTpl(List<String> ids, HttpServletResponse response) throws IOException;
 

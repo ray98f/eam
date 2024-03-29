@@ -28,6 +28,13 @@ public interface OverhaulTplMapper {
 
     String getMaxCode();
 
+    /**
+     * 判断检修计划是否已存在
+     * @param overhaulTplReqDTO 检修计划信息
+     * @return 检修计划是否已存在
+     */
+    Integer selectOverhaulTplIsExist(OverhaulTplReqDTO overhaulTplReqDTO);
+
     void addOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO);
 
     void modifyOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO);

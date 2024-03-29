@@ -85,6 +85,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
+        Integer result = overhaulTplMapper.selectOverhaulTplIsExist(overhaulTplReqDTO);
+        if (result > 0) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "已有模板名为：" + overhaulTplReqDTO.getTemplateName() + "的检修模板存在，无法新建重名检修模板");
+        }
         overhaulTplReqDTO.setRecId(TokenUtils.getUuId());
         overhaulTplReqDTO.setTrialStatus("10");
         overhaulTplReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
@@ -108,6 +112,10 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
+        }
+        Integer result = overhaulTplMapper.selectOverhaulTplIsExist(overhaulTplReqDTO);
+        if (result > 0) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "已有模板名为：" + overhaulTplReqDTO.getTemplateName() + "的检修模板存在，无法新建重名检修模板");
         }
         OverhaulTplResDTO resDTO = overhaulTplMapper.getOverhaulTplDetail(overhaulTplReqDTO.getRecId());
         if (Objects.isNull(resDTO)) {
@@ -259,12 +267,12 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void importOverhaulTpl(MultipartFile file) {
+    public List<String> importOverhaulTpl(MultipartFile file) {
         List<ExcelOverhaulTplReqDTO> listTpl = EasyExcelUtils.read(file, ExcelOverhaulTplReqDTO.class, 0);
         List<ExcelOverhaulTplDetailReqDTO> listTplDetail = EasyExcelUtils.read(file, ExcelOverhaulTplDetailReqDTO.class, 1);
         List<ExcelOverhaulMaterialReqDTO> listMaterial = EasyExcelUtils.read(file, ExcelOverhaulMaterialReqDTO.class, 2);
         if (StringUtils.isNotEmpty(listTpl)) {
-            importOverhaulTpl(listTpl);
+            return importOverhaulTpl(listTpl);
         }
         if (StringUtils.isNotEmpty(listTplDetail)) {
             importOverhaulTplDetail(listTplDetail);
@@ -272,18 +280,25 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (StringUtils.isNotEmpty(listMaterial)) {
             importOverhaulTplMaterial(listMaterial);
         }
+        return new ArrayList<>();
     }
 
     /**
      * 导入检修模板
      * @param listTpl 检修模板导入列表
      */
-    private void importOverhaulTpl(List<ExcelOverhaulTplReqDTO> listTpl) {
+    private List<String> importOverhaulTpl(List<ExcelOverhaulTplReqDTO> listTpl) {
         List<OverhaulTplReqDTO> temp = new ArrayList<>();
+        List<String> error = new ArrayList<>();
         if (!Objects.isNull(listTpl) && !listTpl.isEmpty()) {
             for (ExcelOverhaulTplReqDTO reqDTO : listTpl) {
                 OverhaulTplReqDTO req = new OverhaulTplReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
+                Integer result = overhaulTplMapper.selectOverhaulTplIsExist(req);
+                if (result > 0) {
+                    error.add("模板编号为："+ req.getTemplateId() +",模板名称为：" + req.getTemplateName() + "的数据已存在，无法导入");
+                    continue;
+                }
                 req.setLineNo("S1线".equals(req.getLineName()) ? "01" : "02");
                 String templateId = overhaulTplMapper.getMaxCode();
                 if (StringUtils.isEmpty(templateId)) {
@@ -301,6 +316,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (StringUtils.isNotEmpty(temp)) {
             overhaulTplMapper.importOverhaulTpl(temp);
         }
+        return error;
     }
 
     /**

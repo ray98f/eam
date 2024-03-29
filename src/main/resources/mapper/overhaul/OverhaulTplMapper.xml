@@ -115,6 +115,11 @@
         select max(TEMPLATE_ID) from T_OVERHAUL_TPL
     </select>
 
+    <select id="selectOverhaulTplIsExist" resultType="java.lang.Integer">
+        select count(1) from
+        T_OVERHAUL_TPL where TEMPLATE_NAME=#{templateName} and rownum=1
+    </select>
+
     <insert id="addOverhaulTpl">
         INSERT INTO T_OVERHAUL_TPL (
         REC_ID,  <!-- 记录ID -->

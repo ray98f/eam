@@ -418,18 +418,18 @@
             <if test="levelfault!=null and levelfault!=''">
                 AND df.EXT1=#{levelfault}
             </if>
-            <if test="listType==null">
-                AND (d.FILLIN_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
-                d.RESP_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
-                d.ASSIST_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and
-                d.REPAIR_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))
-            </if>
-            <if test="listType!=null">
-                AND (d.FILLIN_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
-                d.RESP_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
-                d.ASSIST_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or
-                d.REPAIR_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))
-            </if>
+<!--            <if test="listType==null">-->
+<!--                AND (d.FILLIN_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and-->
+<!--                d.RESP_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and-->
+<!--                d.ASSIST_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') and-->
+<!--                d.REPAIR_DEPT_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))-->
+<!--            </if>-->
+<!--            <if test="listType!=null">-->
+<!--                AND (d.FILLIN_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or-->
+<!--                d.RESP_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or-->
+<!--                d.ASSIST_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or-->
+<!--                d.REPAIR_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))-->
+<!--            </if>-->
             <if test="ids!=null and ids.size()>0">
                 AND d.REC_ID IN (
                 <foreach collection="ids" index="index" item="id" separator=",">
