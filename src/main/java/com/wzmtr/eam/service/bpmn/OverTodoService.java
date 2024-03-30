@@ -10,7 +10,7 @@ public interface OverTodoService {
      * @param taskTitle  待办标题
      * @param businessRecId 业务表主键
      * @param businessNo 业务编号
-     * @param stepUserId 待办发送人
+     * @param stepUserId 待办发送给谁
      * @param stepName   待办步骤名
      * @param taskUrl  看着好像没啥用
      * @param lastStepUserId 最新处理人

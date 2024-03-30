@@ -49,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -217,7 +218,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 if (!roles.contains(CommonConstants.DM_007) && !CommonConstants.ADMIN.equals(userId) && !roles.contains(CommonConstants.DM_037)) {
                     throw new CommonException(ErrorCode.NORMAL_ERROR, "首次派工必须是调度派工给工班长！");
                 }
-            } else if (!roles.contains(CommonConstants.DM_012) && !CommonConstants.ADMIN.equals(userId)) {
+            } else if (!roles.contains(CommonConstants.DM_012) && !roles.contains(CommonConstants.DM_051) && !CommonConstants.ADMIN.equals(userId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "已下达、已分配状态必须由工班长派工！");
             }
         }
@@ -243,8 +244,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 res.setUserName(member.getName());
                 List<UserRoleResDTO>  userRoles = userAccountService.getUserRolesById(member.getId());
                 for(UserRoleResDTO r:userRoles){
-                    //是工班长
-                    if(CommonConstants.DM_012.equals(r.getRoleCode())){
+                    //是工班长:DM_012是中车工班长 DM051是中铁通工班长
+                    if(CommonConstants.DM_012.equals(r.getRoleCode())|| CommonConstants.DM_051.equals(r.getRoleCode())){
                         res.setIsDM012(CommonConstants.ONE_STRING);
                     }
                 }
@@ -281,7 +282,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             overhaulOrderReqDTO.setWorkStatus("3");
             String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
             if (StringUtils.isNotEmpty(workerGroupCode)) {
-                // 直接派工至该工班人员
+                // 派工 直接派工至该工班人员
                 overTodoService.insertTodoWithUserOrgan("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
         }
@@ -330,7 +331,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         // ServiceDMER0201  auditWorkers
-        // overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
         //完成该业务编号下的所有待办
         overTodoService.overTodo(overhaulOrderReqDTO.getOrderCode());
         // 根据角色获取用户列表
@@ -354,9 +354,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     private static String nextRole(OverhaulOrderReqDTO overhaulOrderReqDTO,String zcRole,String zttRole) {
         String roleCode = null;
         if (zcList.contains(overhaulOrderReqDTO.getSubjectCode())) {
-            roleCode = "ZCJD";
+            roleCode = zcRole;
         } else {
-            roleCode = "DM_30";
+            roleCode = zttRole;
         }
         return roleCode;
     }
@@ -766,6 +766,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void upState(OverhaulUpStateReqDTO overhaulUpStateReqDTO) {
         String currentUser = TokenUtils.getCurrentPerson().getPersonName();
         String orderCode = overhaulUpStateReqDTO.getOrderCode();
@@ -776,32 +777,38 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        List<OverhaulOrderDetailResDTO> list2 = overhaulOrderMapper.listOverhaulObject(orderCode, list.get(0).getPlanCode(), null, objectCode);
-        FaultInfoReqDTO dmfm01 = new FaultInfoReqDTO();
-        org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm01);
-        String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
-        buildFaultInfo(dmfm01, fillinUserId, objectCode, list2, list);
-        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-        String faultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-        String faultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
-        dmfm01.setFaultNo(faultNo);
-        FaultOrderReqDTO dmfm02 = new FaultOrderReqDTO();
-        org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm02);
-        dmfm02.setRecId(TokenUtils.getUuId());
-        dmfm02.setFaultWorkNo(faultWorkNo);
-        dmfm02.setFaultNo(faultNo);
-        dmfm02.setOrderStatus("30");
-        dmfm02.setWorkClass(list.get(0).getWorkerGroupCode());
-        FaultInfoDO f1 = BeanUtils.convert(dmfm01, FaultInfoDO.class);
-        faultReportMapper.addToFaultInfo(f1);
-        FaultOrderDO f2 = BeanUtils.convert(dmfm02, FaultOrderDO.class);
-        faultReportMapper.addToFaultOrder(f2);
-        overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
-        String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
-        // ServiceDMER0205 insertUpFaultMessage
-        overTodoService.insertTodoWithUserRoleAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
-                dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+
+        try{
+            List<OverhaulOrderDetailResDTO> list2 = overhaulOrderMapper.listOverhaulObject(orderCode, list.get(0).getPlanCode(), null, objectCode);
+            FaultInfoReqDTO dmfm01 = new FaultInfoReqDTO();
+            org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm01);
+            String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
+            buildFaultInfo(dmfm01, fillinUserId, objectCode, list2, list);
+            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
+            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+            String faultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+            String faultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+            dmfm01.setFaultNo(faultNo);
+            FaultOrderReqDTO dmfm02 = new FaultOrderReqDTO();
+            org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm02);
+            dmfm02.setRecId(TokenUtils.getUuId());
+            dmfm02.setFaultWorkNo(faultWorkNo);
+            dmfm02.setFaultNo(faultNo);
+            dmfm02.setOrderStatus("30");
+            dmfm02.setWorkClass(list.get(0).getWorkerGroupCode());
+            FaultInfoDO f1 = BeanUtils.convert(dmfm01, FaultInfoDO.class);
+            faultReportMapper.addToFaultInfo(f1);
+            FaultOrderDO f2 = BeanUtils.convert(dmfm02, FaultOrderDO.class);
+            faultReportMapper.addToFaultOrder(f2);
+            overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
+            String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
+            // ServiceDMER0205 insertUpFaultMessage
+            overTodoService.insertTodoWithUserRoleAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
+                    dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+
     }
 
     /**
