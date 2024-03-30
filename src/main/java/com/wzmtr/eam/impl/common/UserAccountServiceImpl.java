@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
+import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysUserAccount;
@@ -83,6 +84,13 @@ public class UserAccountServiceImpl implements UserAccountService {
         res.setUserMajors( userAccountMapper.getMajor(TokenUtils.getCurrentPersonId()));
         return res;
     }
+
+    @Override
+    public List<UserRoleResDTO> getUserRolesById(String userId) {
+        List<UserRoleResDTO> res  = userAccountMapper.getUserRoles(userId);
+        return res;
+    }
+
 
     @Override
     public List<String> listUserMajor() {

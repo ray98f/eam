@@ -14,4 +14,5 @@ public class OrganMajorLineType {
     private String lineCode;
     private String loginName;
     private String userName;
+    private String isDM012;//是否为工班长
 }

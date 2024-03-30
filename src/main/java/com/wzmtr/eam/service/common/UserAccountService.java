@@ -2,6 +2,7 @@ package com.wzmtr.eam.service.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
+import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysUserAccount;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
@@ -22,6 +23,8 @@ public interface UserAccountService {
     String getToken(String userId);
 
     UserCenterInfoResDTO getUserDetail();
+
+    List<UserRoleResDTO> getUserRolesById(String userId);
 
     /**
      * 当前用户专业列表

@@ -13,6 +13,7 @@ import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
+import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.overhaul.*;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulItemResDTO;
@@ -39,6 +40,7 @@ import com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulStateMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.OrganizationService;
+import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
@@ -47,6 +49,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
@@ -60,6 +63,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class OverhaulOrderServiceImpl implements OverhaulOrderService {
+
+    @Resource
+    private UserAccountService userAccountService;
 
     @Autowired
     private OverhaulOrderMapper overhaulOrderMapper;
@@ -232,6 +238,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 OrganMajorLineType res = new OrganMajorLineType();
                 res.setLoginName(member.getId());
                 res.setUserName(member.getName());
+                List<UserRoleResDTO>  userRoles = userAccountService.getUserRolesById(member.getId());
+                for(UserRoleResDTO r:userRoles){
+                    //是工班长
+                    if(CommonConstants.DM_012.equals(r.getRoleCode())){
+                        res.setIsDM012(CommonConstants.ONE_STRING);
+                    }
+                }
+
                 list.add(res);
             }
         }
@@ -250,10 +264,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             }
         }
         checkOrderState(overhaulOrderReqDTO, "1,2,3", "请求、已下达、已分配");
+        //直接派工至工班长，工班人员可看到该工单，注释掉已下达，直接设置为已分配 TODO 发送待办
         if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
-            overhaulOrderReqDTO.setWorkStatus("2");
+//            overhaulOrderReqDTO.setWorkStatus("2");
+//            overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
+//        } else {
+            //这句有点奇怪，为什么设置删除者这个字段?TODO 后续需要排查
             overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
-        } else {
+
             overhaulOrderReqDTO.setSendPersonId(TokenUtils.getCurrentPersonId());
             overhaulOrderReqDTO.setSendPersonName(TokenUtils.getCurrentPerson().getPersonName());
             overhaulOrderReqDTO.setSendTime(DateUtils.getCurrentTime());
