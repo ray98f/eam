@@ -2,10 +2,16 @@ package com.wzmtr.eam.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @ApiModel
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StatusWorkFlowLog {
 
     /**
@@ -113,5 +119,8 @@ public class StatusWorkFlowLog {
      */
     @ApiModelProperty(value = "扩展字段6")
     private String ext6;
-
+    @ApiModelProperty(value = "流程Key")
+    private String flowId;
+    @ApiModelProperty(value = "业务ID")
+    private String relateId;
 }

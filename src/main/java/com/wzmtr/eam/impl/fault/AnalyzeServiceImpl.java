@@ -23,6 +23,7 @@ import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
+import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import com.wzmtr.eam.utils.*;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +45,10 @@ import java.util.List;
 @Service
 @Slf4j
 public class AnalyzeServiceImpl implements AnalyzeService {
+
+    @Resource
+    private UserAccountService userAccountService;
+
     @Autowired
     private FaultAnalyzeMapper faultAnalyzeMapper;
     @Autowired
@@ -60,7 +66,15 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
-        Page<AnalyzeResDTO> query = faultAnalyzeMapper.query(reqDTO.of(), reqDTO);
+        // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        List<String> userMajorList = null;
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
+            userMajorList = userAccountService.listUserMajor();
+        }
+
+        Page<AnalyzeResDTO> query = faultAnalyzeMapper.query(reqDTO.of(), reqDTO,userMajorList);
+
+
         List<AnalyzeResDTO> records = query.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();

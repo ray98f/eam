@@ -16,6 +16,7 @@ import com.wzmtr.eam.service.home.HomeService;
 import com.wzmtr.eam.utils.StreamUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.util.Map;
  * Date: 2023/9/12 14:46
  */
 @Service
+@Slf4j
 public class HomeServiceImpl implements HomeService {
     @Autowired
     private HomeMapper homeMapper;
@@ -69,6 +71,8 @@ public class HomeServiceImpl implements HomeService {
     @Override
     public Page<StatusWorkFlowLog> todoList(String type, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        //todo 上线后可以删，留个日志方便调试
+        log.info("current userID:{}",TokenUtils.getCurrentPersonId());
         return homeMapper.todoList(pageReqDTO.of(), type, TokenUtils.getCurrentPersonId());
     }
 

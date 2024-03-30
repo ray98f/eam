@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
+import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysUserAccount;
@@ -55,8 +56,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         CurrentLoginUser person = new CurrentLoginUser();
             Person p = personService.searchPersonByNo(userId);
             if (p != null) {
-                person.setPersonId(p.getId());
-                person.setPersonNo(p.getNo());
+                person.setPersonId(p.getLoginName());
+                person.setPersonNo(p.getLoginName());
                 person.setPersonName(p.getName());
                 person.setMobile(p.getMobile());
                 person.setPhone(p.getPhone());
@@ -79,6 +80,22 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserCenterInfoResDTO res = userAccountMapper.userCenterInfo(TokenUtils.getCurrentPersonId());
         // 获取登录用户角色权限
         res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
+        // 获取登录用户相关专业
+        res.setUserMajors( userAccountMapper.getMajor(TokenUtils.getCurrentPersonId()));
         return res;
     }
+
+    @Override
+    public List<UserRoleResDTO> getUserRolesById(String userId) {
+        List<UserRoleResDTO> res  = userAccountMapper.getUserRoles(userId);
+        return res;
+    }
+
+
+    @Override
+    public List<String> listUserMajor() {
+        return userAccountMapper.getMajor(TokenUtils.getCurrentPersonId());
+    }
+
+
 }

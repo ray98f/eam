@@ -114,6 +114,8 @@ public class FaultReportReqDTO {
     private String ifPhm;
     @ApiModelProperty(value = "是否列入列车可靠性统计 0是 1否")
     private String ifReliability;
+    @ApiModelProperty(value = "维修时限")
+    private String ext5;
 
     /**
      * 数据库非空字段兜底赋值，初始化为空字符串

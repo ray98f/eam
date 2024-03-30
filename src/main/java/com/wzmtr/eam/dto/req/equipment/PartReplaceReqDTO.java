@@ -106,4 +106,7 @@ public class PartReplaceReqDTO {
 
     @ApiModelProperty(value = "扩展字段7")
     private String ext7;
+
+    @ApiModelProperty(value = "类型 1故障工单,2检修工单类型")
+    private String workOrderType;
 }

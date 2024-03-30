@@ -36,6 +36,7 @@ import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StreamUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -580,11 +581,17 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public void faultListExport(FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
         List<FaultDetailResDTO> faultDetailList = faultQueryMapper.getByIds(reqDTO);
+        List<Dictionaries> orderStatus = dictionariesMapper.list("dm.faultStatus", null, null);
+        Map<String, Dictionaries> stringDictionariesMap = StreamUtils.toMap(orderStatus, Dictionaries::getItemCode);
         if (StringUtils.isNotEmpty(faultDetailList)) {
             List<ExcelFaultDetailResDTO> list = new ArrayList<>();
             for (FaultDetailResDTO resDTO : faultDetailList) {
                 ExcelFaultDetailResDTO res = new ExcelFaultDetailResDTO();
                 BeanUtils.copyProperties(resDTO, res);
+                String orderStatus1 = res.getOrderStatus();
+                if (stringDictionariesMap.containsKey(orderStatus1)){
+                    res.setOrderStatus(stringDictionariesMap.get(orderStatus1).getItemCname());
+                }
                 list.add(res);
             }
             EasyExcelUtils.export(response, "故障统计报表列表信息", list);
@@ -947,13 +954,18 @@ public class StatisticServiceImpl implements StatisticService {
             }
             FaultConditionResDTO last = map.get(a.getModuleName());
             if (map.containsKey(a.getModuleName())) {
-                a.setCRK(String.valueOf(Integer.parseInt(a.getCRK()) + Integer.parseInt(last.getCRK())));
-                a.setZX(String.valueOf(Integer.parseInt(a.getZX()) + Integer.parseInt(last.getZX())));
-                a.setZS(String.valueOf(Integer.parseInt(a.getZS()) + Integer.parseInt(last.getZS())));
-                a.setYF(String.valueOf(Integer.parseInt(a.getYF()) + Integer.parseInt(last.getYF())));
-                a.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()) + Integer.parseInt(last.getNOYF())));
+                a.setCRK(String.valueOf(Integer.parseInt(a.getCRK() == null ? CommonConstants.ZERO_STRING:a.getCRK()) + Integer.parseInt(last.getCRK()== null ? CommonConstants.ZERO_STRING:last.getCRK())));
+                a.setZX(String.valueOf(Integer.parseInt(a.getZX() == null ? CommonConstants.ZERO_STRING:a.getZX()) + Integer.parseInt(last.getZX()== null ? CommonConstants.ZERO_STRING:last.getZX())));
+                a.setZS(String.valueOf(Integer.parseInt(a.getZS()== null ? CommonConstants.ZERO_STRING:a.getZS()) + Integer.parseInt(last.getZS()== null ? CommonConstants.ZERO_STRING:last.getZS())));
+                a.setYF(String.valueOf(Integer.parseInt(a.getYF() == null ? CommonConstants.ZERO_STRING:a.getYF()) + Integer.parseInt(last.getYF()== null ? CommonConstants.ZERO_STRING:last.getYF())));
+                a.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()== null ? CommonConstants.ZERO_STRING:a.getNOYF()) + Integer.parseInt(last.getNOYF()== null ? CommonConstants.ZERO_STRING:last.getNOYF())));
                 map.put(a.getModuleName(), a);
             } else {
+                a.setCRK(String.valueOf(Integer.parseInt(a.getCRK() == null ? CommonConstants.ZERO_STRING:a.getCRK())));
+                a.setZX(String.valueOf(Integer.parseInt(a.getZX() == null ? CommonConstants.ZERO_STRING:a.getZX())));
+                a.setZS(String.valueOf(Integer.parseInt(a.getZS()== null ? CommonConstants.ZERO_STRING:a.getZS())));
+                a.setYF(String.valueOf(Integer.parseInt(a.getYF() == null ? CommonConstants.ZERO_STRING:a.getYF())));
+                a.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()== null ? CommonConstants.ZERO_STRING:a.getNOYF())));
                 map.put(a.getModuleName(), a);
             }
         }

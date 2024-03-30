@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface PartReplaceService {
 
-    Page<PartReplaceResDTO> pagePartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason, PageReqDTO pageReqDTO);
+    Page<PartReplaceResDTO> pagePartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason,String workOrderType, PageReqDTO pageReqDTO);
 
     PartReplaceResDTO getPartReplaceDetail(String id);
 

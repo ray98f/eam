@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.bpmn.OverTodoMapper">
     <delete id="delete">
-        DELETE FROM IPLAT60.STATUS_WORK_FLOW_LOG WHERE
+        DELETE FROM T_FLOW_TASK WHERE
         TODO_ID = #{todoId} AND USER_ID = #{userId}
     </delete>
 
@@ -12,7 +12,7 @@
         USER_ID as "userId",
         EIP_URL as "eipUrl",
         PHONE_URL as "phoneUrl"
-        FROM iplat60.STATUS_WORK_FLOW_LOG where TODO_STATUS='1'
+        FROM T_FLOW_TASK where TODO_STATUS='1'
         <if test="todoId!=null and todoId!=''">
             and TODO_ID = #{todoId}
         </if>
@@ -20,7 +20,7 @@
     </select>
 
     <update id="updateStatus">
-        UPDATE IPLAT60.STATUS_WORK_FLOW_LOG SET
+        UPDATE T_FLOW_TASK SET
         TODO_DATE=#{todoDate},
         PROCESS_USER_ID= #{processUserId},
         TODO_STATUS=#{todoStatus},
@@ -28,8 +28,15 @@
         WHERE TODO_ID=#{todoId} AND USER_ID=#{userId}
     </update>
 
+    <update id="updateStatusByBizId">
+        UPDATE T_FLOW_TASK SET
+                               TODO_DATE=#{todoDate},
+                               TODO_STATUS=#{todoStatus}
+        WHERE RELATE_ID =#{relateId}
+    </update>
+
     <insert id="insert">
-        INSERT INTO IPLAT60.STATUS_WORK_FLOW_LOG (
+        INSERT INTO T_FLOW_TASK (
         TODO_ID,  <!-- 待办主键ID -->
         SYSCODE,  <!-- 系统编码 -->
         OPER_ID,  <!-- 1：新增2：更新 3：删除 -->
@@ -50,7 +57,9 @@
         EXT3,  <!-- 扩展字段3 -->
         EXT4,  <!-- 扩展字段4 -->
         EXT5,  <!-- 扩展字段5 -->
-        EXT6  <!-- 扩展字段6 -->)
+        EXT6,  <!-- 扩展字段6 -->
+        FLOW_ID
+        )
         VALUES (
         #{todoId,jdbcType=VARCHAR},
         #{syscode,jdbcType=VARCHAR},
@@ -72,6 +81,8 @@
         #{ext3,jdbcType=VARCHAR},
         #{ext4,jdbcType=VARCHAR},
         #{ext5,jdbcType=VARCHAR},
-        #{ext6,jdbcType=VARCHAR})
+        #{ext6,jdbcType=VARCHAR},
+        #{flowId,jdbcType=VARCHAR}
+        )
     </insert>
 </mapper>

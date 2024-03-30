@@ -5,7 +5,7 @@
     <select id="pagePartReplace" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
-        FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号 -->
+        FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号/ -->
         EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
         EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
         ORG_TYPE	as "orgType",  <!-- 作业单位 -->
@@ -35,7 +35,8 @@
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5",  <!-- 扩展字段5 -->
         EXT6	as "ext6",  <!-- 扩展字段6 -->
-        EXT7	as "ext7" <!-- 扩展字段7 -->
+        EXT7	as "ext7", <!-- 扩展字段7 -->
+        WORK_ORDER_TYPE	as "workOrderType" <!-- 工单类型 -->
         FROM T_PART_REPLACEMENT
         WHERE 1=1 and DELETE_FLAG='0'
         <if test="equipName!=null and equipName!=''">
@@ -49,6 +50,68 @@
         </if>
         <if test="orgType!=null and orgType!=''">
             and ORG_TYPE=#{orgType}
+        </if>
+        <if test="workOrderType!=null and workOrderType!=''">
+            and WORK_ORDER_TYPE=#{workOrderType}
+        </if>
+        <if test="replaceReason!=null and replaceReason!=''">
+            and REPLACE_REASON like '%' || #{replaceReason} || '%'
+        </if>
+        ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
+    </select>
+
+    <!-- 车辆专业相关的部件更换 -->
+    <select id="pagePartReplaceByCar" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号/ -->
+        EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        OPERATOR	as "operator",  <!-- 作业人员 -->
+        REPLACEMENT_NO	as "replacementNo",  <!-- 更换配件代码 -->
+        REPLACEMENT_NAME	as "replacementName",  <!-- 更换配件名称 -->
+        REPLACE_REASON	as "replaceReason",  <!-- 更换原因 -->
+        OLD_REP_NO	as "oldRepNo",  <!-- 旧配件编号 -->
+        NEW_REP_NO	as "newRepNo",  <!-- 新配件编号 -->
+        OPERATE_COST_TIME	as "operateCostTime",  <!-- 更换所用时间 -->
+        REPLACE_DATE	as "replaceDate",  <!-- 处理日期 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        CAR_NO	as "carNo",  <!-- 车厢号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7", <!-- 扩展字段7 -->
+        WORK_ORDER_TYPE	as "workOrderType" <!-- 工单类型 -->
+        FROM T_PART_REPLACEMENT
+        WHERE 1=1 and DELETE_FLAG='0'
+        <if test="equipName!=null and equipName!=''">
+            and EQUIP_NAME like '%' || #{equipName} || '%'
+        </if>
+        <if test="replacementName!=null and replacementName!=''">
+            and REPLACEMENT_NAME like '%' || #{replacementName} || '%'
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            and FAULT_WORK_NO like '%' || #{faultWorkNo} || '%'
+        </if>
+        <if test="orgType!=null and orgType!=''">
+            and ORG_TYPE=#{orgType}
+        </if>
+        <if test="workOrderType!=null and workOrderType!=''">
+            and WORK_ORDER_TYPE=#{workOrderType}
         </if>
         <if test="replaceReason!=null and replaceReason!=''">
             and REPLACE_REASON like '%' || #{replaceReason} || '%'

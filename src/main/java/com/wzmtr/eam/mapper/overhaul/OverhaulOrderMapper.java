@@ -75,6 +75,12 @@ public interface OverhaulOrderMapper {
 
     OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id);
 
+    /**
+     * 编辑检修对象
+     * @param req 检修对象参数
+     */
+    void modifyOverhaulObject(OverhaulOrderDetailReqDTO req);
+
     List<OverhaulOrderDetailResDTO> listOverhaulObject(String orderCode, String planCode, String planName, String objectCode);
 
     void updateone(String faultCode, String faultStatus, String recId);

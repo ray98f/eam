@@ -50,8 +50,9 @@ public class PartReplaceController {
                                                            @RequestParam(required = false) @ApiParam("故障工单编号") String faultWorkNo,
                                                            @RequestParam(required = false) @ApiParam("作业单位") String orgType,
                                                            @RequestParam(required = false) @ApiParam("更换原因") String replaceReason,
+                                                           @RequestParam(required = false) @ApiParam("工单类型") String workOrderType,
                                                            @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(partReplaceService.pagePartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason, pageReqDTO));
+        return PageResponse.of(partReplaceService.pagePartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason,workOrderType, pageReqDTO));
     }
 
     @GetMapping("/detail")

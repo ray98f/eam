@@ -165,6 +165,14 @@
         <if test="majorCode!=null and majorCode!=''">
             and MAJOR_CODE=#{majorCode}
         </if>
+        <if test="majors!=null">
+            and MAJOR_CODE IN (
+            <foreach collection="majors" index="index" item="major" separator=",">
+                #{major}
+            </foreach>
+            )
+        </if>
+
         <if test="systemCode!=null and systemCode!=''">
             and SYSTEM_CODE=#{systemCode}
         </if>
@@ -183,9 +191,10 @@
         <if test="equipName!=null and equipName!=''">
             and EQUIP_NAME like '%' || #{equipName} || '%'
         </if>
-        <if test="useLineNo!=null and useLineNo!=''">
+<!--        <if test="useLineNo!=null and useLineNo!=''">
             and USE_LINE_NO=#{useLineNo}
-        </if>
+        </if>-->
+        and USE_LINE_NO='02'
         <if test="useSegNo!=null and useSegNo!=''">
             and USE_SEG_NO=#{useSegNo}
         </if>

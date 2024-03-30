@@ -114,6 +114,13 @@
             <if test="req.majorCode!=null and req.majorCode!=''">
                 AND d.MAJOR_CODE=#{req.majorCode}
             </if>
+            <if test="majors!=null">
+                and d.MAJOR_CODE IN (
+                <foreach collection="majors" index="index" item="major" separator=",">
+                    #{major}
+                </foreach>
+                )
+            </if>
             <if test="req.systemCode!=null and req.systemCode!=''">
                 AND d.SYSTEM_CODE=#{req.systemCode}
             </if>
@@ -136,6 +143,31 @@
             AND d.DELETE_FLAG='0'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+    </select>
+    <select id="queryLimit" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        SELECT
+        df.FAULT_WORK_NO AS "faultWorkNo",
+        df.ORDER_STATUS AS "orderStatus"
+        FROM T_FAULT_ORDER df
+        LEFT JOIN T_FAULT_INFO d ON d.FAULT_NO=df.FAULT_NO
+        LEFT JOIN SYS_USER u ON df.REPAIR_RESP_USER_ID = u.LOGIN_NAME
+        <trim prefix="WHERE" prefixOverrides="AND">
+            AND df.ORDER_STATUS='30' <!-- 查询在派工中的 -->
+            <if test="userDept!=null and userDept!=''">
+                AND u.OFFICE_ID=#{userDept}
+            </if>
+            <if test="majors!=null">
+                and d.MAJOR_CODE IN (
+                <foreach collection="majors" index="index" item="major" separator=",">
+                    #{major}
+                </foreach>
+                )
+            </if>
+            AND SYSDATE >= to_date(df.EXT5, 'YYYY-MM-DD HH24:MI:SS')
+            AND d.FAULT_FLAG!='2'
+            AND df.DELETE_FLAG='0'
+        </trim>
+        ORDER BY df.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
 
     <select id="statustucQuery" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -313,6 +345,7 @@
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
         (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(df.REPORT_FINISH_USER_ID)) as "reportFinishUserName",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
