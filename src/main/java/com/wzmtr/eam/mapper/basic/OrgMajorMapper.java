@@ -50,4 +50,12 @@ public interface OrgMajorMapper {
 
 
     List<DispatchResDTO> queryDispatch();
+
+    /**
+     * 根据位置和专业获取部门
+     * @param station
+     * @param majorCode
+     * @return
+     */
+    OrgMajorResDTO getOrganByStationAndMajor(String station, String majorCode);
 }

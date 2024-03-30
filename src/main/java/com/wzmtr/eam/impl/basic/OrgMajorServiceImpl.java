@@ -96,6 +96,11 @@ public class OrgMajorServiceImpl implements OrgMajorService {
         return orgMajorMapper.getOrgMajorDetail(id);
     }
 
+
+    public OrgMajorResDTO getOrganByStationAndMajor(String station,String majorCode){
+        return orgMajorMapper.getOrganByStationAndMajor(station,majorCode);
+    }
+
     @Override
     public void addOrgMajor(OrgMajorReqDTO orgMajorReqDTO) {
         Integer result = orgMajorMapper.selectOrgMajorIsExist(orgMajorReqDTO);

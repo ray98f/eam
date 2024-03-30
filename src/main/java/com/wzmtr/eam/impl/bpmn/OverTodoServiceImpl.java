@@ -186,9 +186,7 @@ public class OverTodoServiceImpl implements OverTodoService {
     @Override
     public void insertTodoWithUserRoleAndOrg(String taskTitle, String businessRecId, String businessNo, String roleId,
                                              String organ, String stepName, String taskUrl, String lastStepUserId, String content, String flowId) {
-        // 根据角色和部门获取用户列表
-        String newId = organizationMapper.getIdByAreaId(organ);
-        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, roleId);
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(organ, roleId);
         List<String> userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
         insertTodoWithUserList(userIds, taskTitle, businessRecId, businessNo, stepName, taskUrl, lastStepUserId, content,flowId);
     }
