@@ -191,9 +191,10 @@
         <if test="equipName!=null and equipName!=''">
             and EQUIP_NAME like '%' || #{equipName} || '%'
         </if>
-        <if test="useLineNo!=null and useLineNo!=''">
+<!--        <if test="useLineNo!=null and useLineNo!=''">
             and USE_LINE_NO=#{useLineNo}
-        </if>
+        </if>-->
+        and USE_LINE_NO='02'
         <if test="useSegNo!=null and useSegNo!=''">
             and USE_SEG_NO=#{useSegNo}
         </if>
