@@ -320,6 +320,7 @@
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
         (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(df.REPORT_FINISH_USER_ID)) as "reportFinishUserName",
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",

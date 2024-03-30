@@ -14,6 +14,13 @@ public interface DictionariesMapper {
 
     Page<Dictionaries> page(Page<Dictionaries> page, String itemName, String itemCode);
 
+    /**
+     * @param codesetCode 必填
+     * @param itemCode
+     * @param status
+     * @return
+     */
+
     List<Dictionaries> list(String codesetCode, @Param("itemCode") String itemCode,@Param("status") String status);
 
     Dictionaries detail(String itemCode);

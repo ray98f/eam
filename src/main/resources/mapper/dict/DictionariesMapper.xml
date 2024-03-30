@@ -18,7 +18,7 @@
     </select>
 
     <select id="list" resultType="com.wzmtr.eam.entity.Dictionaries">
-        SELECT ITEM_CODE, ITEM_CNAME, ITEM_ENAME
+        SELECT *
         FROM SYS_DICT
         WHERE CODESET_CODE=#{codesetCode}
         <if test="itemCode!=null and itemCode!=''">
