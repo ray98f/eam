@@ -36,13 +36,15 @@ public class CommonConstants {
     /**
      * 权限
      */
-    public static final String ADMIN = "admin";
-    public static final String DM_006 = "DM_006";
-    public static final String DM_007 = "DM_007";
+    public static final String ADMIN = "admin";  //系统管理员
+    public static final String DM_006 = "DM_006";//中铁通-专业工程师
+    public static final String DM_007 = "DM_007";//中铁通-生产调度
     public static final String DM_012 = "DM_012";//中车-工班长
     public static final String DM_051 = "DM_051";//中铁通-工班长
-    public static final String DM_037 = "DM_037";
-    public static final String DM_045 = "DM_045";
+    public static final String DM_037 = "DM_037";//设备工程师
+    public static final String DM_045 = "DM_045";//工程车工程师
+    public static final String ZCJD = "ZCJD";//中车-检调
+
 
     /**
      * 故障分析流程--部长审核节点

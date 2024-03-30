@@ -217,7 +217,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 if (!roles.contains(CommonConstants.DM_007) && !CommonConstants.ADMIN.equals(userId) && !roles.contains(CommonConstants.DM_037)) {
                     throw new CommonException(ErrorCode.NORMAL_ERROR, "首次派工必须是调度派工给工班长！");
                 }
-            } else if (!roles.contains(CommonConstants.DM_012) && !CommonConstants.ADMIN.equals(userId)) {
+            } else if (!roles.contains(CommonConstants.DM_012) && !roles.contains(CommonConstants.DM_051) && !CommonConstants.ADMIN.equals(userId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "已下达、已分配状态必须由工班长派工！");
             }
         }
@@ -243,8 +243,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 res.setUserName(member.getName());
                 List<UserRoleResDTO>  userRoles = userAccountService.getUserRolesById(member.getId());
                 for(UserRoleResDTO r:userRoles){
-                    //是工班长
-                    if(CommonConstants.DM_012.equals(r.getRoleCode())){
+                    //是工班长:DM_012是中车工班长 DM051是中铁通工班长
+                    if(CommonConstants.DM_012.equals(r.getRoleCode())|| CommonConstants.DM_051.equals(r.getRoleCode())){
                         res.setIsDM012(CommonConstants.ONE_STRING);
                     }
                 }
