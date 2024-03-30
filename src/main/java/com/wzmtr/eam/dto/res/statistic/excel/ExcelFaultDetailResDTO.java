@@ -29,8 +29,6 @@ public class ExcelFaultDetailResDTO {
     private String positionName;
     @ExcelProperty(value = "专业")
     private String systemName;
-    @ExcelProperty(value = "故障概况")
-    private String faultDisplayDetail;
     @ExcelProperty(value = "故障描述")
     private String faultDetail;
     @ExcelProperty(value = "发现人")
