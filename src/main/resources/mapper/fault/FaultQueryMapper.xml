@@ -144,6 +144,31 @@
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
+    <select id="queryLimit" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        SELECT
+        df.FAULT_WORK_NO AS "faultWorkNo",
+        df.ORDER_STATUS AS "orderStatus"
+        FROM T_FAULT_ORDER df
+        LEFT JOIN T_FAULT_INFO d ON d.FAULT_NO=df.FAULT_NO
+        LEFT JOIN SYS_USER u ON df.REPAIR_RESP_USER_ID = u.LOGIN_NAME
+        <trim prefix="WHERE" prefixOverrides="AND">
+            AND df.ORDER_STATUS='30' <!-- 查询在派工中的 -->
+            <if test="userDept!=null and userDept!=''">
+                AND u.OFFICE_ID=#{userDept}
+            </if>
+            <if test="majors!=null">
+                and d.MAJOR_CODE IN (
+                <foreach collection="majors" index="index" item="major" separator=",">
+                    #{major}
+                </foreach>
+                )
+            </if>
+            AND SYSDATE >= to_date(df.EXT5, 'YYYY-MM-DD HH24:MI:SS')
+            AND d.FAULT_FLAG!='2'
+            AND df.DELETE_FLAG='0'
+        </trim>
+        ORDER BY df.FAULT_NO desc,df.FAULT_WORK_NO desc
+    </select>
 
     <select id="statustucQuery" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
