@@ -282,7 +282,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             overhaulOrderReqDTO.setWorkStatus("3");
             String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
             if (StringUtils.isNotEmpty(workerGroupCode)) {
-                // 直接派工至该工班人员
+                // 派工 直接派工至该工班人员
                 overTodoService.insertTodoWithUserOrgan("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
         }
@@ -331,7 +331,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         // ServiceDMER0201  auditWorkers
-        // overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
         //完成该业务编号下的所有待办
         overTodoService.overTodo(overhaulOrderReqDTO.getOrderCode());
         // 根据角色获取用户列表
@@ -355,9 +354,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     private static String nextRole(OverhaulOrderReqDTO overhaulOrderReqDTO,String zcRole,String zttRole) {
         String roleCode = null;
         if (zcList.contains(overhaulOrderReqDTO.getSubjectCode())) {
-            roleCode = "ZCJD";
+            roleCode = zcRole;
         } else {
-            roleCode = "DM_30";
+            roleCode = zttRole;
         }
         return roleCode;
     }

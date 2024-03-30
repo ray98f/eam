@@ -8,13 +8,17 @@ import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.basic.query.RegionQuery;
 import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.enums.OrderStatus;
+import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.PersonMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
@@ -22,6 +26,7 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
+import com.wzmtr.eam.shiro.model.Person;
 import com.wzmtr.eam.utils.*;
 import com.wzmtr.eam.utils.mq.FaultSender;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +64,12 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Autowired
     private RegionMapper regionMapper;
     @Autowired
+    private OrgMajorMapper orgMajorMapper;
+    @Autowired
     FaultSender faultSender;
+    @Autowired
+    private PersonMapper personMapper;
+    private static final List<String> zcList = Arrays.asList("06", "07");
 
     @Override
     public String addToFault(FaultReportReqDTO reqDTO) {
@@ -73,7 +83,25 @@ public class FaultReportServiceImpl implements FaultReportService {
         String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
         insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
         // 添加流程记录
+        //中铁通 且是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         addFaultFlow(nextFaultNo, nextFaultWorkNo);
+        String majorCode = reqDTO.getMajorCode();
+        if (zcList.contains(majorCode) && "10".equals(reqDTO.getFaultType())) {
+            String positionCode = reqDTO.getPositionCode();
+            if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
+                // 专业和位置查维修部门
+                OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
+                faultInfoDO.setRepairDeptCode(organ.getOrgCode());
+                // 负责人为中铁通工班长角色
+                Person person = personMapper.searchLeader(majorCode, positionCode, "DM_051");
+                faultOrderDO.setRepairRespUserId(person.getLoginName());
+                // 默认为紧急
+                faultInfoDO.setFaultLevel("01");
+                faultReportMapper.updateFaultOrder(faultOrderDO);
+                faultReportMapper.updateFaultInfo(faultInfoDO);
+                overTodoService.insertTodoWithUserGroup("故障提报流转", faultOrderDO.getRecId(), nextFaultWorkNo, organ.getOrgCode(), "故障派工", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            }
+        }
         return nextFaultNo;
         // TODO: 2023/8/24 知会OCC调度
 //        if ("Y".equals(maintenance)) {
