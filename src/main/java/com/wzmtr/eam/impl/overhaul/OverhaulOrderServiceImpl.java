@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.overhaul;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.google.common.base.Joiner;
@@ -111,6 +112,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Autowired
     private OrganizationService organizationService;
+
+    private static final List<String> zcList = Arrays.asList("07", "06");
 
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
@@ -264,20 +267,23 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             }
         }
         checkOrderState(overhaulOrderReqDTO, "1,2,3", "请求、已下达、已分配");
-        //直接派工至工班长，工班人员可看到该工单，注释掉已下达，直接设置为已分配 TODO 发送待办
+        // 直接派工至工班长，工班人员可看到该工单，注释掉已下达，直接设置为已分配
         if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
 //            overhaulOrderReqDTO.setWorkStatus("2");
 //            overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
 //        } else {
-            //这句有点奇怪，为什么设置删除者这个字段?TODO 后续需要排查
+            // 这句有点奇怪，为什么设置删除者这个字段?TODO 后续需要排查
             overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
 
             overhaulOrderReqDTO.setSendPersonId(TokenUtils.getCurrentPersonId());
             overhaulOrderReqDTO.setSendPersonName(TokenUtils.getCurrentPerson().getPersonName());
             overhaulOrderReqDTO.setSendTime(DateUtils.getCurrentTime());
             overhaulOrderReqDTO.setWorkStatus("3");
-            //insertTodoWithUserList(List<String> userIds, String taskTitle, String businessRecId, String businessNo,
-            //                                       String stepName, String taskUrl, String lastStepUserId, String content,String flowId)
+            String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
+            if (StringUtils.isNotEmpty(workerGroupCode)) {
+                // 直接派工至该工班人员
+                overTodoService.insertTodoWithUserOrgan("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+            }
         }
         overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
@@ -293,6 +299,13 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         req.setRealEndTime(req.getActualEndTime());
         overhaulOrderMapper.modifyOverhaulOrder(req);
         overhaulItemMapper.finishedOverhaulOrder(req.getOrderCode());
+        // 根据专业判断 车辆的是中车-》中车专业工程师 其他是中铁通 -》中铁通专业工程师
+        // DM_032 专业工程师（中车)  DM_006   专业工程师(中铁通)
+        String nextRole = nextRole(req, "DM_006", "DM_032");
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, nextRole);
+        for (BpmnExaminePersonRes map2 : userList) {
+            overTodoService.insertTodo("检修工单流转", req.getRecId(), req.getOrderCode(), map2.getUserId(), "检修工单完工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+        }
     }
 
     @Override
@@ -317,14 +330,35 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         // ServiceDMER0201  auditWorkers
-        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
+        // overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
+        //完成该业务编号下的所有待办
+        overTodoService.overTodo(overhaulOrderReqDTO.getOrderCode());
         // 根据角色获取用户列表
-        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), CommonConstants.DM_007);
-        for (BpmnExaminePersonRes map2 : userList) {
-            //todo 锐鹏看下flowID
-            overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
-                    map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId(),null);
+        String roleCode = nextRole(overhaulOrderReqDTO,"ZCJD","DM_30");
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, roleCode);
+        if (CollectionUtil.isNotEmpty(userList)){
+            for (BpmnExaminePersonRes map2 : userList) {
+                overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
+                        map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId(),BpmnFlowEnum.OVERHAUL_ORDER.value());
+            }
         }
+    }
+
+    /**
+     *
+     * @param overhaulOrderReqDTO
+     * @param zcRole 中车角色
+     * @param zttRole 中铁通角色
+     * @return
+     */
+    private static String nextRole(OverhaulOrderReqDTO overhaulOrderReqDTO,String zcRole,String zttRole) {
+        String roleCode = null;
+        if (zcList.contains(overhaulOrderReqDTO.getSubjectCode())) {
+            roleCode = "ZCJD";
+        } else {
+            roleCode = "DM_30";
+        }
+        return roleCode;
     }
 
     @Override
@@ -356,7 +390,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         modifyOverhaulPlanByOrder(overhaulOrderReqDTO);
         // ServiceDMER0201  confirmWorkers
-        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
+        //完成待办
+        overTodoService.overTodo(overhaulOrderReqDTO.getOrderCode());
     }
 
     /**
@@ -765,7 +800,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
         String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
         // ServiceDMER0205 insertUpFaultMessage
-        overTodoService.insertTodoWithUserGroupAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
+        overTodoService.insertTodoWithUserRoleAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
                 dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
     }
 

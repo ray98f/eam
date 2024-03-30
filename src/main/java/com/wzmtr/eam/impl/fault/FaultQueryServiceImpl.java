@@ -391,7 +391,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                         "，设备名称：" + faultInfoDO.getObjectName() + ",故障现象：" + faultInfoDO.getFaultDisplayDetail() +
                         "请及时处理并在EAM系统填写维修报告，工单号：" + faultOrder1.getFaultWorkNo() + "，请知晓。";
                 //待办推送  根据故障分类来判断
-                overTodoService.insertTodoWithUserGroupAndOrg("【" + reqDTO.getMajorCode() + CommonConstants.FAULT_CONTENT_END,
+                overTodoService.insertTodoWithUserRoleAndOrg("【" + reqDTO.getMajorCode() + CommonConstants.FAULT_CONTENT_END,
                         faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), "DM_013", workerGroupCode, "故障维修",
                         "DMFM0001", TokenUtils.getCurrentPersonId(), content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "01");
@@ -428,7 +428,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         finishWorkSendMessage(reqDTO);
         //完工更新其他人的待办状态
-        overTodoService.updateTodoStatus(reqDTO.getFaultWorkNo());
+        overTodoService.overTodo(reqDTO.getFaultWorkNo());
     }
 
     @Override
@@ -456,7 +456,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         } else if (DM_013.equals(ext2)) {
             overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN);
             // String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已设调确认，请及时在EAM系统关闭工单！";
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + CommonConstants.FAULT_CONTENT_END, faultOrderDO.getRecId(), faultWorkNo, "DM_013", workClass, "故障关闭", "DMFM0001", currentUser, null,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            overTodoService.insertTodoWithUserRoleAndOrg("【" + majorName + CommonConstants.FAULT_CONTENT_END, faultOrderDO.getRecId(), faultWorkNo, "DM_013", workClass, "故障关闭", "DMFM0001", currentUser, null,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         }
         // else if (ext2.equals(CommonConstants.DM_006)) {
         //     overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN);
@@ -973,7 +973,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String toClose = faultInfo.getExt5();
         if (toOcc != null && !toOcc.trim().isEmpty() && Y.equals(toOcc)) {
             overTodoService.overTodo(dmfm02.getRecId(), CommonConstants.FAULT_FINISHED_CONFIRM_CN);
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + majorName + CommonConstants.FAULT_CONTENT_END, dmfm02.getRecId(), faultWorkNo, "DM_021", null, CommonConstants.FAULT_TUNING_CONFIRM_CN, "DMFM0001", currentUser, null,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            overTodoService.insertTodoWithUserRoleAndOrg("【" + majorName + CommonConstants.FAULT_CONTENT_END, dmfm02.getRecId(), faultWorkNo, "DM_021", null, CommonConstants.FAULT_TUNING_CONFIRM_CN, "DMFM0001", currentUser, null,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         } else if (toClose != null && !toClose.trim().isEmpty()) {
             FaultOrderDO faultOrder1 = new FaultOrderDO();
             faultOrder1.setOrderStatus(OrderStatus.GUAN_BI.getCode());

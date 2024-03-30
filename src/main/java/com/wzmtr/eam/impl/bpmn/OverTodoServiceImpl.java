@@ -104,8 +104,8 @@ public class OverTodoServiceImpl implements OverTodoService {
             overTodoMapper.insert(sLog);
             // EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
         } catch (Exception e) {
-            log.error("exception message", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "新增失败");
+            log.error("待办发送失败", e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "待办发送失败");
         }
     }
 
@@ -169,12 +169,26 @@ public class OverTodoServiceImpl implements OverTodoService {
 
 
     @Override
-    public void insertTodoWithUserGroupAndOrg(String taskTitle, String businessRecId, String businessNo, String roleId,
-                                              String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content,String flowId) {
+    public void insertTodoWithUserOrgan(String taskTitle, String businessRecId, String businessNo, String organ,
+                                        String stepName, String taskUrl, String lastStepUserId,String flowId) {
+        // 根据部门获取用户列表
+        String newId = organizationMapper.getIdByAreaId(organ);
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId,null);
+        List<String> userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        if (StringUtils.isNotEmpty(userIds)) {
+            for (String userId : userIds) {
+                insertTodo(taskTitle, businessRecId, businessNo, userId, stepName, taskUrl, lastStepUserId,flowId);
+            }
+        }
+    }
+
+
+    @Override
+    public void insertTodoWithUserRoleAndOrg(String taskTitle, String businessRecId, String businessNo, String roleId,
+                                             String organ, String stepName, String taskUrl, String lastStepUserId, String content, String flowId) {
         // 根据角色和部门获取用户列表
-        String newId = organizationMapper.getIdByAreaId(stepOrg);
+        String newId = organizationMapper.getIdByAreaId(organ);
         List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, roleId);
-        log.info("推送的下一步待办用户列表为:{}", JSONObject.toJSONString(userList));
         List<String> userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
         insertTodoWithUserList(userIds, taskTitle, businessRecId, businessNo, stepName, taskUrl, lastStepUserId, content,flowId);
     }
@@ -183,7 +197,7 @@ public class OverTodoServiceImpl implements OverTodoService {
     public void insertTodoWithUserGroupAndAllOrg(String taskTitle, String businessRecId, String businessNo,
                                                  String stepUserGroup, String stepOrg, String stepName,
                                                  String taskUrl, String lastStepUserId, String majorCode, String lineCode, String orgType, String content,String flowId) {
-        insertTodoWithUserGroupAndOrg(taskTitle, businessRecId, businessNo, stepUserGroup, stepOrg, stepName, taskUrl, lastStepUserId, content,flowId);
+        insertTodoWithUserRoleAndOrg(taskTitle, businessRecId, businessNo, stepUserGroup, stepOrg, stepName, taskUrl, lastStepUserId, content,flowId);
         insertTodoWithUserGroupAndOrgByParent(taskTitle, businessRecId, businessNo, stepUserGroup, stepOrg, stepName, taskUrl, lastStepUserId, content,flowId);
         List<String> userList = queryUserByChild(stepUserGroup, stepOrg, majorCode, lineCode, orgType);
         insertTodoWithUserList(userList, taskTitle, businessRecId, businessNo, stepName, taskUrl, lastStepUserId, content,flowId);
@@ -270,19 +284,21 @@ public class OverTodoServiceImpl implements OverTodoService {
         }
         if (StringUtils.isNotEmpty(userIds)) {
             for (String userId : userIds) {
+                log.info("推送的下一步待办用户列表为:{}", JSONObject.toJSONString(userIds));
                 insertTodo(taskTitle, businessRecId, businessNo, userId, stepName, taskUrl, lastStepUserId,flowId);
             }
         }
     }
 
     @Override
-    public void updateTodoStatus(String bizNo) {
+    public void overTodo(String bizNo) {
         if (StringUtils.isEmpty(bizNo)) {
             return;
         }
         // 关联的待办 更新状态
         overTodoMapper.updateStatusByBizId(StatusWorkFlowLog.builder()
                 .relateId(bizNo)
+                .todoStatus("2")
                 .build());
     }
 }
