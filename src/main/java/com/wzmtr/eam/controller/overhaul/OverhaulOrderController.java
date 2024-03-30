@@ -122,7 +122,7 @@ public class OverhaulOrderController {
     }
 
     /**
-     * 检修工单完工
+     * 检修工单完工填报
      * @param req 排查检修项信息
      * @return 操作成功/失败
      */
