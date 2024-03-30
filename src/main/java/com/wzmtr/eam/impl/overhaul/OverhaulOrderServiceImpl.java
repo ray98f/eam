@@ -49,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -766,6 +767,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void upState(OverhaulUpStateReqDTO overhaulUpStateReqDTO) {
         String currentUser = TokenUtils.getCurrentPerson().getPersonName();
         String orderCode = overhaulUpStateReqDTO.getOrderCode();
@@ -776,32 +778,38 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        List<OverhaulOrderDetailResDTO> list2 = overhaulOrderMapper.listOverhaulObject(orderCode, list.get(0).getPlanCode(), null, objectCode);
-        FaultInfoReqDTO dmfm01 = new FaultInfoReqDTO();
-        org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm01);
-        String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
-        buildFaultInfo(dmfm01, fillinUserId, objectCode, list2, list);
-        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-        String faultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-        String faultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
-        dmfm01.setFaultNo(faultNo);
-        FaultOrderReqDTO dmfm02 = new FaultOrderReqDTO();
-        org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm02);
-        dmfm02.setRecId(TokenUtils.getUuId());
-        dmfm02.setFaultWorkNo(faultWorkNo);
-        dmfm02.setFaultNo(faultNo);
-        dmfm02.setOrderStatus("30");
-        dmfm02.setWorkClass(list.get(0).getWorkerGroupCode());
-        FaultInfoDO f1 = BeanUtils.convert(dmfm01, FaultInfoDO.class);
-        faultReportMapper.addToFaultInfo(f1);
-        FaultOrderDO f2 = BeanUtils.convert(dmfm02, FaultOrderDO.class);
-        faultReportMapper.addToFaultOrder(f2);
-        overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
-        String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
-        // ServiceDMER0205 insertUpFaultMessage
-        overTodoService.insertTodoWithUserRoleAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
-                dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+
+        try{
+            List<OverhaulOrderDetailResDTO> list2 = overhaulOrderMapper.listOverhaulObject(orderCode, list.get(0).getPlanCode(), null, objectCode);
+            FaultInfoReqDTO dmfm01 = new FaultInfoReqDTO();
+            org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm01);
+            String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
+            buildFaultInfo(dmfm01, fillinUserId, objectCode, list2, list);
+            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
+            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+            String faultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+            String faultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+            dmfm01.setFaultNo(faultNo);
+            FaultOrderReqDTO dmfm02 = new FaultOrderReqDTO();
+            org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm02);
+            dmfm02.setRecId(TokenUtils.getUuId());
+            dmfm02.setFaultWorkNo(faultWorkNo);
+            dmfm02.setFaultNo(faultNo);
+            dmfm02.setOrderStatus("30");
+            dmfm02.setWorkClass(list.get(0).getWorkerGroupCode());
+            FaultInfoDO f1 = BeanUtils.convert(dmfm01, FaultInfoDO.class);
+            faultReportMapper.addToFaultInfo(f1);
+            FaultOrderDO f2 = BeanUtils.convert(dmfm02, FaultOrderDO.class);
+            faultReportMapper.addToFaultOrder(f2);
+            overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
+            String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
+            // ServiceDMER0205 insertUpFaultMessage
+            overTodoService.insertTodoWithUserRoleAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
+                    dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+
     }
 
     /**
