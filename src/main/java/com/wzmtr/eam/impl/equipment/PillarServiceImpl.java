@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.dto.req.equipment.PillarReqDTO;
 import com.wzmtr.eam.dto.res.equipment.PillarResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -47,9 +48,9 @@ public class PillarServiceImpl implements PillarService {
     }
 
     @Override
-    public void delete(List<String> ids) {
+    public void delete(BaseIdsEntity baseIdsEntity) {
         try{
-            pillarMapper.delete(ids);
+            pillarMapper.delete(baseIdsEntity.getIds());
         }catch (Exception e){
             throw new CommonException(ErrorCode.DELETE_ERROR);
         }

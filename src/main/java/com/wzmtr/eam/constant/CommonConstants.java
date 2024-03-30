@@ -39,7 +39,8 @@ public class CommonConstants {
     public static final String ADMIN = "admin";
     public static final String DM_006 = "DM_006";
     public static final String DM_007 = "DM_007";
-    public static final String DM_012 = "DM_012";
+    public static final String DM_012 = "DM_012";//中车-工班长
+    public static final String DM_051 = "DM_051";//中铁通-工班长
     public static final String DM_037 = "DM_037";
     public static final String DM_045 = "DM_045";
 

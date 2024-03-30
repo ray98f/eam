@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.equipment;
 
 import com.wzmtr.eam.dto.req.equipment.PillarReqDTO;
 import com.wzmtr.eam.dto.res.equipment.PillarResDTO;
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -51,8 +52,8 @@ public class PillarController {
 
     @PostMapping("/delete")
     @ApiOperation(value = "获取触网一杆一档-删除")
-    public DataResponse<T> listPillar(@RequestBody List<String> ids) {
-        pillarService.delete(ids);
+    public DataResponse<T> listPillar(@RequestBody BaseIdsEntity baseIdsEntity) {
+        pillarService.delete(baseIdsEntity);
         return DataResponse.success();
     }
 }
