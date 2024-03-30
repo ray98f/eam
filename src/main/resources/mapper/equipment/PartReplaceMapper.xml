@@ -5,7 +5,7 @@
     <select id="pagePartReplace" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录编号 -->
-        FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号 -->
+        FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号/ -->
         EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
         EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
         ORG_TYPE	as "orgType",  <!-- 作业单位 -->
@@ -35,7 +35,8 @@
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5",  <!-- 扩展字段5 -->
         EXT6	as "ext6",  <!-- 扩展字段6 -->
-        EXT7	as "ext7" <!-- 扩展字段7 -->
+        EXT7	as "ext7", <!-- 扩展字段7 -->
+        WORK_ORDER_TYPE	as "workOrderType" <!-- 工单类型 -->
         FROM T_PART_REPLACEMENT
         WHERE 1=1 and DELETE_FLAG='0'
         <if test="equipName!=null and equipName!=''">
@@ -49,6 +50,9 @@
         </if>
         <if test="orgType!=null and orgType!=''">
             and ORG_TYPE=#{orgType}
+        </if>
+        <if test="workOrderType!=null and workOrderType!=''">
+            and WORK_ORDER_TYPE=#{workOrderType}
         </if>
         <if test="replaceReason!=null and replaceReason!=''">
             and REPLACE_REASON like '%' || #{replaceReason} || '%'

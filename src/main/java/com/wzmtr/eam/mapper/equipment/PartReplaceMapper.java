@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface PartReplaceMapper {
 
-    Page<PartReplaceResDTO> pagePartReplace(Page<PartReplaceResDTO> page, String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason);
+    Page<PartReplaceResDTO> pagePartReplace(Page<PartReplaceResDTO> page, String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason,String workOrderType);
 
     PartReplaceResDTO getPartReplaceDetail(String id);
 
