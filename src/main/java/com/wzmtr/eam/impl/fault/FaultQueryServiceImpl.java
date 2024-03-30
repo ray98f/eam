@@ -14,6 +14,7 @@ import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.dto.res.common.PersonResDTO;
+import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
@@ -116,6 +117,19 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         page.setRecords(list);
         return page;
+    }
+
+    @Override
+    public List<FaultDetailResDTO> queryLimit() {
+        List<String> userMajorList = null;
+        String userDept = null;
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
+            UserCenterInfoResDTO userinfo = userAccountService.getUserDetail();
+            userDept = userinfo.getOfficeId();
+            userMajorList = userinfo.getUserMajors();
+        }
+        List<FaultDetailResDTO> list = faultQueryMapper.queryLimit(userDept,userMajorList);
+        return null;
     }
 
     @Override

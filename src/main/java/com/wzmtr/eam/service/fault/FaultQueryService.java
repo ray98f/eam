@@ -20,6 +20,8 @@ import java.util.Set;
 public interface FaultQueryService {
     Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO);
 
+    List<FaultDetailResDTO> queryLimit();
+
     Page<FaultDetailResDTO> statustucList(FaultQueryReqDTO reqDTO);
 
     String queryOrderStatus(SidEntity reqDTO);
