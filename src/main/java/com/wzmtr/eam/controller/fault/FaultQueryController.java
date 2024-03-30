@@ -38,6 +38,12 @@ public class FaultQueryController {
         return PageResponse.of(faultQueryService.list(reqDTO));
     }
 
+/*    @ApiOperation(value = "当前用户超过限时列表")
+    @PostMapping("/list")
+    public PageResponse<FaultDetailResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
+        return PageResponse.of(faultQueryService.list(reqDTO));
+    }*/
+
     @ApiOperation(value = "查询订单状态")
     @PostMapping("/queryOrderStatus")
     public DataResponse<String> queryOrderStatus(@RequestBody SidEntity reqDTO) {
