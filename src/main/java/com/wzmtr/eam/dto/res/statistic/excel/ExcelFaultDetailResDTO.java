@@ -33,7 +33,7 @@ public class ExcelFaultDetailResDTO {
     private String faultDetail;
     @ExcelProperty(value = "发现人")
     private String fillinUserName;
-    @ExcelProperty(value = "处理人")
+    @ExcelProperty(value = "完工人")
     private String reportFinishUserName;
     @ExcelProperty(value = "维修完成时间")
     private String reportFinishTime;

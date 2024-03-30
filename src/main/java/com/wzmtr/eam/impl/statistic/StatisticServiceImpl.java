@@ -36,6 +36,7 @@ import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
 import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StreamUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -580,11 +581,17 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public void faultListExport(FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
         List<FaultDetailResDTO> faultDetailList = faultQueryMapper.getByIds(reqDTO);
+        List<Dictionaries> orderStatus = dictionariesMapper.list("dm.faultStatus", null, null);
+        Map<String, Dictionaries> stringDictionariesMap = StreamUtils.toMap(orderStatus, Dictionaries::getItemCode);
         if (StringUtils.isNotEmpty(faultDetailList)) {
             List<ExcelFaultDetailResDTO> list = new ArrayList<>();
             for (FaultDetailResDTO resDTO : faultDetailList) {
                 ExcelFaultDetailResDTO res = new ExcelFaultDetailResDTO();
                 BeanUtils.copyProperties(resDTO, res);
+                String orderStatus1 = res.getOrderStatus();
+                if (stringDictionariesMap.containsKey(orderStatus1)){
+                    res.setOrderStatus(stringDictionariesMap.get(orderStatus1).getItemCname());
+                }
                 list.add(res);
             }
             EasyExcelUtils.export(response, "故障统计报表列表信息", list);
