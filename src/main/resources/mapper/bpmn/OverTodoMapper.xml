@@ -30,7 +30,10 @@
 
     <update id="updateStatusByBizId">
         UPDATE T_FLOW_TASK SET
-                               TODO_DATE=#{todoDate},
+        <if test="todoDate!=null and todoDate!=''">
+            TODO_DATE=#{todoDate},
+        </if>
+
                                TODO_STATUS=#{todoStatus}
         WHERE RELATE_ID =#{relateId}
     </update>
