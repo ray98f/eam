@@ -83,15 +83,15 @@ public class FaultReportServiceImpl implements FaultReportService {
         String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
         insertToFaultOrder(faultOrderDO, nextFaultNo, nextFaultWorkNo);
         // 添加流程记录
-        //中铁通 且是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
+        //中铁通 且不是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         addFaultFlow(nextFaultNo, nextFaultWorkNo);
         String majorCode = reqDTO.getMajorCode();
-        if (!zcList.contains(majorCode) && "10".equals(reqDTO.getFaultType())) {
+        if (!zcList.contains(majorCode) && !"10".equals(majorCode)) {
             String positionCode = reqDTO.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                 // 专业和位置查维修部门
                 OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
-                if(organ != null){
+                if (organ != null) {
                     faultInfoDO.setRepairDeptCode(organ.getOrgCode());
                     // 负责人为中铁通工班长角色
                     Person person = personMapper.searchLeader(majorCode, positionCode, "DM_051");
@@ -101,7 +101,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                     faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
                     faultReportMapper.updateFaultOrder(faultOrderDO);
                     faultReportMapper.updateFaultInfo(faultInfoDO);
-                    overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,nextFaultWorkNo,"故障"),
+                    overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL, nextFaultWorkNo, "故障"),
                             faultOrderDO.getRecId(),
                             nextFaultWorkNo,
                             organ.getOrgCode(),
@@ -109,7 +109,6 @@ public class FaultReportServiceImpl implements FaultReportService {
                             " ? ", TokenUtils.getCurrentPersonId(),
                             BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 }
-
             }
         }
         return nextFaultNo;
@@ -141,7 +140,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         //中铁通 且是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         String majorCode = reqDTO.getMajorCode();
-        if (!zcList.contains(majorCode) && "10".equals(reqDTO.getFaultType())) {
+        if (!zcList.contains(majorCode) && !"10".equals(reqDTO.getFaultType())) {
             String positionCode = reqDTO.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                 // 专业和位置查维修部门
