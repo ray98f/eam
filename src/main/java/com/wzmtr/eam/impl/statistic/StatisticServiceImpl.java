@@ -907,6 +907,8 @@ public class StatisticServiceImpl implements StatisticService {
         Set<String> names = Sets.newHashSet();
         Map<String, FaultConditionResDTO> map = new HashMap<>();
         for (FaultConditionResDTO a : list) {
+
+            //TODO 20210331 先让前端暂时显示一下，逻辑需要重新理一下
             switch (a.getSC()) {
                 case "01":
                 case "02":
