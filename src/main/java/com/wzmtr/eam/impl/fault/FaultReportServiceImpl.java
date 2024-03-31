@@ -91,16 +91,25 @@ public class FaultReportServiceImpl implements FaultReportService {
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                 // 专业和位置查维修部门
                 OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
-                faultInfoDO.setRepairDeptCode(organ.getOrgCode());
-                // 负责人为中铁通工班长角色
-                Person person = personMapper.searchLeader(majorCode, positionCode, "DM_051");
-                faultOrderDO.setRepairRespUserId(person.getLoginName());
-                // 默认为紧急
-                faultInfoDO.setFaultLevel("01");
-                faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
-                faultReportMapper.updateFaultOrder(faultOrderDO);
-                faultReportMapper.updateFaultInfo(faultInfoDO);
-                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,nextFaultWorkNo,"故障"), faultOrderDO.getRecId(), nextFaultWorkNo, organ.getOrgCode(), "故障派工", " ? ", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                if(organ != null){
+                    faultInfoDO.setRepairDeptCode(organ.getOrgCode());
+                    // 负责人为中铁通工班长角色
+                    Person person = personMapper.searchLeader(majorCode, positionCode, "DM_051");
+                    faultOrderDO.setRepairRespUserId(person.getLoginName());
+                    // 默认为紧急
+                    faultInfoDO.setFaultLevel("01");
+                    faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                    faultReportMapper.updateFaultOrder(faultOrderDO);
+                    faultReportMapper.updateFaultInfo(faultInfoDO);
+                    overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,nextFaultWorkNo,"故障"),
+                            faultOrderDO.getRecId(),
+                            nextFaultWorkNo,
+                            organ.getOrgCode(),
+                            "故障派工",
+                            " ? ", TokenUtils.getCurrentPersonId(),
+                            BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                }
+
             }
         }
         return nextFaultNo;
