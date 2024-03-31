@@ -252,4 +252,6 @@ public class FaultDetailResDTO {
      */
     @ApiModelProperty(value = "故障流程数据")
     private List<FaultFlowResDTO> flows;
+
+    private String repairLimitTime;
 }
