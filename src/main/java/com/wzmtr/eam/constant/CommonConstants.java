@@ -36,6 +36,8 @@ public class CommonConstants {
     /**
      * 权限
      */
+
+    public static final String SYS_ALL_01 = "SYS_ALL_01";  //查看全专业角色
     public static final String ADMIN = "admin";  //系统管理员
     public static final String DM_006 = "DM_006";//中铁通-专业工程师
     public static final String DM_007 = "DM_007";//中铁通-生产调度
@@ -46,6 +48,7 @@ public class CommonConstants {
     public static final String ZCJD = "ZCJD";//中车-检调
 
     public static final String TODO_GD_TPL =  "收到工单编号为:%s的%s工单，请及时办理";
+
 
     public static final String EQUIPMENT_ROOM_CODE_0 = "R100000";
 
