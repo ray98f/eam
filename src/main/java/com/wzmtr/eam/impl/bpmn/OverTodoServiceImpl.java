@@ -284,8 +284,8 @@ public class OverTodoServiceImpl implements OverTodoService {
 //            ISendMessage.sendMessageByPhoneList(eiInfo);
         }
         if (StringUtils.isNotEmpty(userIds)) {
+            log.info("推送的下一步待办用户列表为:{}", JSONObject.toJSONString(userIds));
             for (String userId : userIds) {
-                log.info("推送的下一步待办用户列表为:{}", JSONObject.toJSONString(userIds));
                 insertTodo(taskTitle, businessRecId, businessNo, userId, stepName, taskUrl, lastStepUserId,flowId);
             }
         }
