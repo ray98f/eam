@@ -43,9 +43,12 @@ public class CommonConstants {
     public static final String DM_007 = "DM_007";//中铁通-生产调度
     public static final String DM_012 = "DM_012";//中车-工班长
     public static final String DM_051 = "DM_051";//中铁通-工班长
-    public static final String DM_037 = "DM_037";//设备工程师
+    public static final String DM_037 = "DM_048";//中车-生产调度
     public static final String DM_045 = "DM_045";//工程车工程师
     public static final String ZCJD = "ZCJD";//中车-检调
+    public static final String DM_048 = "DM_048";//中车-生产调度
+
+
 
     public static final String TODO_GD_TPL =  "收到工单编号为:%s的%s工单，请及时办理";
 
