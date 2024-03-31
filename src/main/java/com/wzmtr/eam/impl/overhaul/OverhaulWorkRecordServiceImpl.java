@@ -41,7 +41,7 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
         overhaulWorkRecordMapper.deleteByOrderCode(overhaulOrderReqDTO);
         if (workCode.length() > CommonConstants.TWO) {
             String[] workerCodes = workCode.split(",");
-            String[] workerNames = workName.split(",");
+            //String[] workerNames = workName.split(",");
             if (workerCodes.length > 0) {
                 for (int i = 0; i < workerCodes.length; i++) {
                     OverhaulWorkRecordReqDTO workRecord = new OverhaulWorkRecordReqDTO();
@@ -53,11 +53,13 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
                     workRecord.setUploadTime(DateUtils.getCurrentTime());
                     workRecord.setDownloadTime(overhaulOrderReqDTO.getSendPersonId());
                     workRecord.setExt5(overhaulOrderReqDTO.getSendTime());
-                    String[] workerMsg = workerNames[i].split("-");
+
+                    //TODO 20240331 先注释这段 EXT1字段的含义未知
+                    /*String[] workerMsg = workerNames[i].split("-");
                     workRecord.setWorkerName(workerMsg[0]);
                     if (workerMsg.length > 1) {
                         workRecord.setExt1(workerMsg[1]);
-                    }
+                    }*/
                     overhaulWorkRecordMapper.insert(workRecord);
                     // 流程流转
                     try {
