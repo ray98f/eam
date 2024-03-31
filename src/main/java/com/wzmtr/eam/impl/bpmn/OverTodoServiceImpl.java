@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.bpmn;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.wzmtr.eam.bizobject.QueryNotWorkFlowBO;
 import com.wzmtr.eam.dto.req.common.EipMsgPushReq;
@@ -46,12 +47,12 @@ public class OverTodoServiceImpl implements OverTodoService {
 
     @Override
     public void overTodo(String businessRecId, String auditOpinion) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(businessRecId)) {
+        if (StringUtils.isEmpty(businessRecId)) {
             throw new CommonException(ErrorCode.PARAM_NULL);
         }
         try {
             List<QueryNotWorkFlowResDTO> list = overTodoMapper.queryNotWorkFlow(businessRecId);
-            if (StringUtils.isNotEmpty(list)) {
+            if (CollectionUtil.isNotEmpty(list)) {
                 for (QueryNotWorkFlowResDTO l : list) {
                     EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
                     BeanUtils.copyProperties(l, eipMsgPushReq);
@@ -65,7 +66,8 @@ public class OverTodoServiceImpl implements OverTodoService {
                     sLog.setProcessUserId(TokenUtils.getCurrentPersonId());
                     sLog.setTodoDate(DateUtils.getCurrentTime());
                     overTodoMapper.updateStatus(sLog);
-                    EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
+                    // 暂时没有eip
+                    // EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
                 }
             }
         } catch (Exception e) {
@@ -204,12 +206,13 @@ public class OverTodoServiceImpl implements OverTodoService {
     @Override
     public void cancelTodo(String businessRecId) {
         List<QueryNotWorkFlowResDTO> queryNotWorkFlowRes = overTodoMapper.queryNotWorkFlow(businessRecId);
-        for (QueryNotWorkFlowResDTO l : queryNotWorkFlowRes) {
-            QueryNotWorkFlowBO queryNotWorkFlowBO = new QueryNotWorkFlowBO();
-            queryNotWorkFlowBO.setUserId(l.getUserId());
-            queryNotWorkFlowBO.setWorkFlowInstId(businessRecId);
-            queryNotWorkFlowBO.setTodoId(businessRecId);
-            overTodoMapper.delete(queryNotWorkFlowBO);
+        if (CollectionUtil.isNotEmpty(queryNotWorkFlowRes)){
+            for (QueryNotWorkFlowResDTO l : queryNotWorkFlowRes) {
+                QueryNotWorkFlowBO queryNotWorkFlowBO = new QueryNotWorkFlowBO();
+                queryNotWorkFlowBO.setUserId(l.getUserId());
+                queryNotWorkFlowBO.setTodoId(businessRecId);
+                overTodoMapper.delete(queryNotWorkFlowBO);
+            }
         }
     }
 

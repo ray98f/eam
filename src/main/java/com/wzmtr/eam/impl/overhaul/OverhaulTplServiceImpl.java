@@ -27,6 +27,7 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulTplMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.overhaul.OverhaulTplService;
 import com.wzmtr.eam.utils.*;
@@ -66,6 +67,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Autowired
     private IWorkFlowLogService workFlowLogService;
+    @Autowired
+    private OverTodoService overTodoService;
 
     @Override
     public Page<OverhaulTplResDTO> pageOverhaulTpl(String templateId, String templateName, String lineCode, String position1Code,
@@ -186,12 +189,14 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void submitOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) throws Exception {
+        String recId = overhaulTplReqDTO.getRecId();
+        String currentPersonId = TokenUtils.getCurrentPersonId();
         // ServiceDMER0003
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(currentPersonId)) {
             if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
-            List<String> code = overhaulTplMapper.getSubjectByUserId(TokenUtils.getCurrentPersonId());
+            List<String> code = overhaulTplMapper.getSubjectByUserId(currentPersonId);
             if (Objects.isNull(code) || code.isEmpty() || !code.contains(overhaulTplReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
@@ -203,7 +208,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         if (list == null || list.size() <= 0) {
             throw new CommonException(ErrorCode.NO_DETAIL, "勾选模板中没有检修项！");
         }
-        List<Role> roles = roleMapper.getLoginRole(TokenUtils.getCurrentPersonId());
+        List<Role> roles = roleMapper.getLoginRole(currentPersonId);
         List<String> roleCode = new ArrayList<>();
         if (!roles.isEmpty()) {
             // roleCode = roles.stream().map(Role::getRoleCode).collect(Collectors.toList());
@@ -211,10 +216,16 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         }
         boolean bool = !roleCode.isEmpty() && (roleCode.contains("5") || roleCode.contains("6"));
         if (bool) {
-            overhaulTplReqDTO.setWorkFlowInstStatus("运营-车辆专工：" + TokenUtils.getCurrentPersonId());
+            overhaulTplReqDTO.setWorkFlowInstStatus("运营-车辆专工：" + currentPersonId);
             overhaulTplReqDTO.setTrialStatus("30");
         } else {
-            String processId = bpmnService.commit(overhaulTplReqDTO.getTemplateId(), BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null, overhaulTplReqDTO.getExamineReqDTO().getUserIds(), null);
+            //下一步的人
+            List<String> userIds = overhaulTplReqDTO.getExamineReqDTO().getUserIds();
+            String templateId = overhaulTplReqDTO.getTemplateId();
+            //待办
+            overTodoService.insertTodoWithUserList(userIds, "收到一条检修模板编号为：" + templateId + "{}的审批流程", recId, templateId, "检修模板审核", "?", currentPersonId, null, BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value());
+            //流程引擎提交
+            String processId = bpmnService.commit(templateId, BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null, userIds, null);
             overhaulTplReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(),null));
             if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败！");
@@ -224,18 +235,20 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             // 记录日志
             workFlowLogService.add(WorkFlowLogBO.builder()
                     .status(BpmnStatus.SUBMIT.getDesc())
-                    .userIds(overhaulTplReqDTO.getExamineReqDTO().getUserIds())
+                    .userIds(userIds)
                     .workFlowInstId(processId)
                     .build());
         }
-        overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulTplReqDTO.setRecRevisor(currentPersonId);
         overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.modifyOverhaulTpl(overhaulTplReqDTO);
     }
 
     @Override
     public void examineOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO) {
+        String recId = overhaulTplReqDTO.getRecId();
         workFlowLogService.ifReviewer(overhaulTplReqDTO.getWorkFlowInstId());
+        String opinion = overhaulTplReqDTO.getExamineReqDTO().getOpinion();
         if (overhaulTplReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if (CommonConstants.THIRTY_STRING.equals(overhaulTplReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
@@ -245,7 +258,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
             String processId = overhaulTplReqDTO.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
-            bpmnService.agree(taskId, overhaulTplReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + overhaulTplReqDTO.getTemplateId() + "\"}", null);
+            bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulTplReqDTO.getTemplateId() + "\"}", null);
+            //审核完流程就结束了 完成待办
+            overTodoService.overTodo(recId,opinion);
             overhaulTplReqDTO.setWorkFlowInstStatus("已完成");
             overhaulTplReqDTO.setTrialStatus("30");
             // 记录日志
@@ -255,12 +270,15 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                     .workFlowInstId(processId)
                     .build());
         } else {
+            //拒绝驳回
             if (!CommonConstants.TWENTY_STRING.equals(overhaulTplReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.REJECT_ERROR);
             } else {
                 String processId = overhaulTplReqDTO.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
-                bpmnService.reject(taskId, overhaulTplReqDTO.getExamineReqDTO().getOpinion());
+                bpmnService.reject(taskId, opinion);
+                //删除待办
+                overTodoService.cancelTodo(recId);
                 overhaulTplReqDTO.setWorkFlowInstId("");
                 overhaulTplReqDTO.setWorkFlowInstStatus("");
                 overhaulTplReqDTO.setTrialStatus("10");
