@@ -391,6 +391,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultInfoDO.setFaultNo(faultOrder1.getFaultNo());
                 faultReportMapper.updateFaultInfo(faultInfoDO);
                 sendTodoMessage(faultInfoDO, faultOrder1, workerGroupCode);
+
                 Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "01");
                 String zcStepOrg = dictionaries.getItemEname();
                 if (StringUtils.isNotEmpty(faultOrder1.getWorkClass()) && !faultOrder1.getWorkClass().contains(zcStepOrg)) {
@@ -410,19 +411,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
      * @param workerGroupCode
      */
     private void sendTodoMessage(FaultInfoDO faultInfoDO, FaultOrderDO faultOrder1, String workerGroupCode) {
-        String content = "【市铁投集团】" + TokenUtils.getCurrentPerson().getOfficeName() + "的" + TokenUtils.getCurrentPerson().getPersonName() +
-                "向您指派了一条故障工单，故障位置：" + faultInfoDO.getPositionName() + "," + faultInfoDO.getPosition2Code() +
-                "，设备名称：" + faultInfoDO.getObjectName() + ",故障现象：" + faultInfoDO.getFaultDisplayDetail() +
-                "请及时处理并在EAM系统填写维修报告，工单号：" + faultOrder1.getFaultWorkNo() + "，请知晓。";
         List<BpmnExaminePersonRes> userList = Lists.newArrayList();
-        //不是行车调度的情况 推送待办给工班的人
-        if (!"10".equals(faultInfoDO.getFaultType())){
-            String newId = organizationMapper.getIdByAreaId(workerGroupCode);
-            userList = roleMapper.getUserByOrgAndRole(newId,null);
-        }
-        if (CollectionUtil.isNotEmpty(userList)){
+        String newId = organizationMapper.getIdByAreaId(workerGroupCode);
+        userList = roleMapper.getUserByOrgAndRole(newId, null);
+        if (CollectionUtil.isNotEmpty(userList)) {
             for (BpmnExaminePersonRes map2 : userList) {
-                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,faultOrder1.getFaultWorkNo(),"故障"),  faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), map2.getUserId(), "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, faultOrder1.getFaultWorkNo(), "故障"), faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), map2.getUserId(), "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
         }
     }
@@ -987,13 +981,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultReportMapper.updateFaultInfo(faultInfoDO);
             // 完成待办
             overTodoService.overTodo(recId, "故障验收");
+            String majorCode = faultInfoDO.getMajorCode();
             String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
             // 中铁通的发给中铁通生产调度 DM_007
-            // 行车设备类
-            if ("10".equals(faultInfoDO.getFaultType())){
-                List<String> users = getUsersByCompanyAndRole(faultInfoDO.getMajorCode(), "DM_007", "ZCJD");
+            // 行车设备类 且不是车辆故障
+            if ("10".equals(faultInfoDO.getFaultType()) && !zcList.contains(majorCode)) {
+                List<String> users = getUsersByCompanyAndRole(majorCode, "DM_007", "ZCJD");
                 overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo, CommonConstants.FAULT_FINISHED_CONFIRM_CN, currentPersonId, "?", null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
-            }else {
+            } else {
                 //其他的发给工班
                 overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfoDO.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
