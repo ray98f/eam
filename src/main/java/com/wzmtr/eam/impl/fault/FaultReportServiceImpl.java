@@ -86,7 +86,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         //中铁通 且不是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         addFaultFlow(nextFaultNo, nextFaultWorkNo);
         String majorCode = reqDTO.getMajorCode();
-        if (!zcList.contains(majorCode) && !"10".equals(majorCode)) {
+        if (!zcList.contains(majorCode) && !"10".equals(reqDTO.getFaultType())) {
             String positionCode = reqDTO.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                 // 专业和位置查维修部门

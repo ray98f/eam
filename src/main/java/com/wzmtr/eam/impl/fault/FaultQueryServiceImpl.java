@@ -131,10 +131,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             UserCenterInfoResDTO userinfo = userAccountService.getUserDetail();
             userDept = userinfo.getOfficeId();
-            userMajorList = userinfo.getUserMajors();
+            if(userinfo.getUserMajors().size() == 0){
+                userMajorList = null;
+            }else{
+                userMajorList = userinfo.getUserMajors();
+            }
         }
         List<FaultDetailResDTO> list = faultQueryMapper.queryLimit(userDept,userMajorList);
-        return null;
+        return list;
     }
 
     @Override
@@ -694,7 +698,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
      */
     public List<String> getUsersByCompanyAndRole(String majorCode,String zttRole,String zcRole) {
         List<String> userIds = Lists.newArrayList();
-        if (zcList.contains(majorCode)) {
+        if (!zcList.contains(majorCode)) {
             List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zttRole);
             userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
         }

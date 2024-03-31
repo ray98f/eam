@@ -57,9 +57,9 @@ public class PartReplaceServiceImpl implements PartReplaceService {
             String lineNo = partReplaceMapper.getEquipLineNo(equipCode);
             String type = CommonConstants.LINE_CODE_ONE.equals(lineNo) ? "1" : "2";
             node = partReplaceMapper.selectBomCode(equipCode, "1");
-            if (StringUtils.isEmpty(node)) {
-                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
-            }
+        }
+        if (StringUtils.isEmpty(node)) {
+            return null;
         }
         return partReplaceMapper.getBom(node, "1");
     }
