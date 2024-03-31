@@ -125,6 +125,10 @@ public class FaultReceiver {
                 // 默认为紧急
                 faultInfoDO.setFaultLevel("01");
                 faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                faultInfoDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+                faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
+                faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+                faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
                 faultReportMapper.updateFaultOrder(faultOrderDO);
                 faultReportMapper.updateFaultInfo(faultInfoDO);
                 overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,faultWorkNo,"故障"), faultOrderDO.getRecId(), faultWorkNo, organ.getOrgCode(), "故障派工", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());

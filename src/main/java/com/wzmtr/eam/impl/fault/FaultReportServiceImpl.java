@@ -86,7 +86,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         //中铁通 且不是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         addFaultFlow(nextFaultNo, nextFaultWorkNo);
         String majorCode = reqDTO.getMajorCode();
-        if (!zcList.contains(majorCode) && !"10".equals(majorCode)) {
+        if (!zcList.contains(majorCode) && !"10".equals(reqDTO.getFaultType())) {
             String positionCode = reqDTO.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                 // 专业和位置查维修部门
@@ -98,7 +98,11 @@ public class FaultReportServiceImpl implements FaultReportService {
                     faultOrderDO.setRepairRespUserId(person.getLoginName());
                     // 默认为紧急
                     faultInfoDO.setExt1("01");
+                    faultInfoDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+                    faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
                     faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                    faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+                    faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
                     faultReportMapper.updateFaultOrder(faultOrderDO);
                     faultReportMapper.updateFaultInfo(faultInfoDO);
                     overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL, nextFaultWorkNo, "故障"),
@@ -152,6 +156,10 @@ public class FaultReportServiceImpl implements FaultReportService {
                 // 默认为紧急
                 faultInfoDO.setExt1("01");
                 faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                faultInfoDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+                faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
+                faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
+                faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
                 faultReportMapper.updateFaultOrder(faultOrderDO);
                 faultReportMapper.updateFaultInfo(faultInfoDO);
                 overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,reqDTO.getFaultWorkNo(),"故障"), faultOrderDO.getRecId(), reqDTO.getFaultWorkNo(), organ.getOrgCode(), "故障派工", " ? ", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
