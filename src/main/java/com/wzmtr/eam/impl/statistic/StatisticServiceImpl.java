@@ -809,19 +809,19 @@ public class StatisticServiceImpl implements StatisticService {
                 case "02":
                 case "03":
                 case "04":
-                    rebuildBlock4SP(a, names, "车门系统", "10000", "7000");
+                    rebuildBlock4SP(a, names, "门窗系统", "10000", "7000");
                     break;
                 case "12":
                     rebuildBlock4SP(a, names, "制动系统", "49500", "49500");
                     break;
                 case "13":
-                    rebuildBlock4SP(a, names, "空调系统", "210000", "46000");
+                    rebuildBlock4SP(a, names, "空调及通风系统", "210000", "46000");
                     break;
                 case "14":
                     rebuildBlock4SP(a, names, "转向架", "409500", "409500");
                     break;
                 case "17":
-                    rebuildBlock4SP(a, names, "PIDS", "191000", "91000");
+                    rebuildBlock4SP(a, names, "旅客信息系统雷达辅助系统", "191000", "91000");
                     break;
                 case "10":
                     rebuildBlock4SP(a, names, "网络系统", "254000", "254000");
@@ -830,15 +830,15 @@ public class StatisticServiceImpl implements StatisticService {
                 case "08":
                 case "09":
                 case "21":
-                    rebuildBlock4SP(a, names, "车体结构及车身内部", "204800", "204800");
+                    rebuildBlock4SP(a, names, "车体结构及内装", "204800", "204800");
                     break;
                 case "06":
                 case "07":
-                    rebuildBlock4SP(a, names, "通道与车钩系统", "409500", "204800");
+                    rebuildBlock4SP(a, names, "贯通道和车钩", "409500", "204800");
                     break;
                 case "18":
                 case "19":
-                    rebuildBlock4SP(a, names, "牵引设备系统", "36588", "11000");
+                    rebuildBlock4SP(a, names, "牵引及高压系统", "36588", "11000");
                     break;
                 case "11":
                 case "15":
@@ -912,19 +912,19 @@ public class StatisticServiceImpl implements StatisticService {
                 case "02":
                 case "03":
                 case "04":
-                    rebuildBlock(a, names, "车门系统", "9000");
+                    rebuildBlock(a, names, "门窗系统", "9000");
                     break;
                 case "12":
                     rebuildBlock(a, names, "制动系统", "43000");
                     break;
                 case "13":
-                    rebuildBlock(a, names, "空调系统", "85000");
+                    rebuildBlock(a, names, "空调及通风系统", "85000");
                     break;
                 case "14":
                     rebuildBlock(a, names, "转向架", "381000");
                     break;
                 case "17":
-                    rebuildBlock(a, names, "PIDS", "191000");
+                    rebuildBlock(a, names, "旅客信息系统雷达辅助系统", "191000");
                     break;
                 case "10":
                     rebuildBlock(a, names, "网络系统", "254000");
@@ -933,15 +933,15 @@ public class StatisticServiceImpl implements StatisticService {
                 case "08":
                 case "09":
                 case "21":
-                    rebuildBlock(a, names, "车体结构及车身内部", "191000");
+                    rebuildBlock(a, names, "车体结构及内装", "191000");
                     break;
                 case "06":
                 case "07":
-                    rebuildBlock(a, names, "通道与车钩系统", "381000");
+                    rebuildBlock(a, names, "贯通道和车钩", "381000");
                     break;
                 case "18":
                 case "19":
-                    rebuildBlock(a, names, "牵引设备系统", "11000");
+                    rebuildBlock(a, names, "牵引及高压系统", "11000");
                     break;
                 case "11":
                 case "15":

@@ -8,15 +8,15 @@ import lombok.Getter;
  */
 @Getter
 public enum SystemClassify {
-    DOOR_SYSTEM("01", "车门系统"),
+    DOOR_SYSTEM("01", "门窗系统"),
     BRAKE_SYSTEM("02", "制动系统"),
-    ESCALATOR("03", "空调系统"),
+    ESCALATOR("03", "空调及通风系统"),
     AIR_CONDITIONING_SYSTEM("04", "转向架"),
-    PIDS("05", "PIDS"),
+    PIDS("05", "旅客信息系统雷达辅助系统"),
     NETWORK("06", "网络系统"),
-    BODY("07", "车体结构及车身内部"),
-    COUPLER("08", "通道与车钩系统"),
-    TRACTION("09", "牵引设备系统"),
+    BODY("07", "车体结构及内装"),
+    COUPLER("08", "贯通道和车钩"),
+    TRACTION("09", "牵引及高压系统"),
     SUPPLY("10", "辅助供电设备系统");
 
     private final String code;
