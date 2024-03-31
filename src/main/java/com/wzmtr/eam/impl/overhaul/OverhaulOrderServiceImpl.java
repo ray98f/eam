@@ -216,7 +216,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (StringUtils.isNotEmpty(roleList)) {
             List<String> roles = roleList.stream().map(Role::getRoleCode).collect(Collectors.toList());
             if (CommonConstants.ONE_STRING.equals(order.getWorkStatus())) {
-                if (!roles.contains(CommonConstants.DM_007) && !CommonConstants.ADMIN.equals(userId) && !roles.contains(CommonConstants.DM_037)) {
+                if (!roles.contains(CommonConstants.DM_007) && !CommonConstants.ADMIN.equals(userId) && !roles.contains(CommonConstants.DM_048)) {
                     throw new CommonException(ErrorCode.NORMAL_ERROR, "首次派工必须是调度派工给工班长！");
                 }
             } else if (!roles.contains(CommonConstants.DM_012) && !roles.contains(CommonConstants.DM_051) && !CommonConstants.ADMIN.equals(userId)) {
