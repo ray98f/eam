@@ -18,6 +18,12 @@ public interface FaultReportService {
     String addToFault(FaultReportReqDTO reqDTO);
 
     /**
+     * 转报
+     * @param reqDTO
+     */
+    void changeReport(FaultReportReqDTO reqDTO);
+
+    /**
      * 故障提报（到设备）-开放接口
      * @param reqDTO 入参
      * @return 故障编号
