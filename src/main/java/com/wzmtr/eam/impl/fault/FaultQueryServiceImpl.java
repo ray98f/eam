@@ -131,10 +131,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             UserCenterInfoResDTO userinfo = userAccountService.getUserDetail();
             userDept = userinfo.getOfficeId();
-            userMajorList = userinfo.getUserMajors();
+            if(userinfo.getUserMajors().size() == 0){
+                userMajorList = null;
+            }else{
+                userMajorList = userinfo.getUserMajors();
+            }
         }
         List<FaultDetailResDTO> list = faultQueryMapper.queryLimit(userDept,userMajorList);
-        return null;
+        return list;
     }
 
     @Override
