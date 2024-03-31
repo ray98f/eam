@@ -45,6 +45,8 @@ public class CommonConstants {
     public static final String DM_045 = "DM_045";//工程车工程师
     public static final String ZCJD = "ZCJD";//中车-检调
 
+    public static final String TODO_GD_TPL =  "收到工单编号为:%s的%s工单，请及时办理";
+
 
     /**
      * 故障分析流程--部长审核节点

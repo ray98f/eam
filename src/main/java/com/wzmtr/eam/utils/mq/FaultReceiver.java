@@ -2,6 +2,7 @@ package com.wzmtr.eam.utils.mq;
 
 import com.alibaba.fastjson.JSON;
 import com.wzmtr.eam.config.RabbitMqConfig;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultErrorReqDTO;
@@ -126,7 +127,7 @@ public class FaultReceiver {
                 faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
                 faultReportMapper.updateFaultOrder(faultOrderDO);
                 faultReportMapper.updateFaultInfo(faultInfoDO);
-                overTodoService.insertTodoWithUserGroup("收到工单编号为:+" + faultWorkNo + "的故障工单，请及时办理", faultOrderDO.getRecId(), faultWorkNo, organ.getOrgCode(), "故障派工", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,faultWorkNo,"故障"), faultOrderDO.getRecId(), faultWorkNo, organ.getOrgCode(), "故障派工", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
         }
     }
