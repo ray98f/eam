@@ -214,8 +214,8 @@
     </select>
 
     <select id="getAllMajor" resultType="java.lang.String">
-        select t1.MAJOR_CODE
-        from SYS_ORG_MAJOR t1
+        select DISTINCT t1.MAJOR_CODE
+        from SYS_ORG_MAJOR t1 order by MAJOR_CODE ASC
     </select>
 
 </mapper>
