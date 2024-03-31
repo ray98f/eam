@@ -69,4 +69,5 @@ public interface UserAccountMapper {
     List<UserRoleResDTO> getUserRoles(@Param("userId") String userId);
 
     List<String> getMajor(@Param("userId") String userId);
+    List<String> getAllMajor();
 }
