@@ -209,4 +209,9 @@ public class OverhaulOrderReqDTO {
      * 结束时公里数
      */
     private Double endMile;
+
+    /**
+     * 实际完成检修公里数
+     */
+    private Double realMile;
 }

@@ -232,4 +232,16 @@ public class OverhaulOrderResDTO {
      */
     @ApiModelProperty(value = "实际完成检修日期")
     private String realDay;
+
+    /**
+     * 开始时公里数
+     */
+    @ApiModelProperty(value = "开始时公里数")
+    private Double startMile;
+
+    /**
+     * 结束时公里数
+     */
+    @ApiModelProperty(value = "结束时公里数")
+    private Double endMile;
 }

@@ -305,6 +305,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         req.setRecReviseTime(DateUtils.getCurrentTime());
         req.setRealStartTime(req.getActualStartTime());
         req.setRealEndTime(req.getActualEndTime());
+        req.setRealMile(req.getEndMile());
         overhaulOrderMapper.modifyOverhaulOrder(req);
         overhaulItemMapper.finishedOverhaulOrder(req.getOrderCode());
         // 根据专业判断 车辆的是中车-》中车专业工程师 其他是中铁通 -》中铁通专业工程师
