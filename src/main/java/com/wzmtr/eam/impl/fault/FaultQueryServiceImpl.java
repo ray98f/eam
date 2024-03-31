@@ -967,11 +967,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         // 判断是否存在验收状态的数据
         Set<String> orderStatus = StreamUtils.mapToSet(list, FaultDetailResDTO::getOrderStatus);
         Assert.isFalse(orderStatus.contains(OrderStatus.YAN_SHOU.getCode()), "当前勾选的数据中存在验收状态的数据，无法进行重复操作!");
+        String currentPersonId = TokenUtils.getCurrentPersonId();
         list.forEach(a -> {
             String faultNo = a.getFaultNo();
             String faultWorkNo = a.getFaultWorkNo();
             FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
             // 状态变更为验收
+            String recId = faultOrderDO.getRecId();
             faultOrderDO.setOrderStatus(OrderStatus.YAN_SHOU.getCode());
             faultOrderDO.setCheckUserId(currentUser);
             faultOrderDO.setCheckTime(current);
@@ -984,12 +986,17 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultInfoDO.setRecRevisor(currentUser);
             faultReportMapper.updateFaultInfo(faultInfoDO);
             // 完成待办
-            overTodoService.overTodo(faultOrderDO.getRecId(), "故障验收");
+            overTodoService.overTodo(recId, "故障验收");
             String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
             // 中铁通的发给中铁通生产调度 DM_007
-            List<String> users = getUsersByCompanyAndRole(faultInfoDO.getMajorCode(), "DM_007", "ZCJD");
-            //其他的发给工班
-            overTodoService.insertTodoWithUserList(users, content, faultOrderDO.getRecId(), faultWorkNo, faultInfoDO.getFillinUserId(), CommonConstants.FAULT_FINISHED_CONFIRM_CN, "?", currentUser, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            // 行车设备类
+            if ("10".equals(faultInfoDO.getFaultType())){
+                List<String> users = getUsersByCompanyAndRole(faultInfoDO.getMajorCode(), "DM_007", "ZCJD");
+                overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo, CommonConstants.FAULT_FINISHED_CONFIRM_CN, currentPersonId, "?", null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            }else {
+                //其他的发给工班
+                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfoDO.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            }
             // 添加流程记录
             addFaultFlow(faultNo, faultWorkNo);
         });
