@@ -322,7 +322,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             overTodoService.overTodo(recId,opinion);
-            bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulWeekPlanReqDTO.getWeekPlanCode() + "\"}", null);
+
+            //TODO
+            //bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulWeekPlanReqDTO.getWeekPlanCode() + "\"}", null);
             overhaulWeekPlanReqDTO.setWorkFlowInstStatus("已完成");
             // 记录日志
             workFlowLogService.add(WorkFlowLogBO.builder()
