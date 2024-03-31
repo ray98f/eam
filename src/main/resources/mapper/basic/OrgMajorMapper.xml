@@ -167,7 +167,7 @@
         FROM SYS_ORG_MAJOR d5,
              SYS_ORG_LINE d6,
              SYS_ORG_TYPE d7
-        where d5.ORG_CODE = d6.ORG_CODE
+        where d5.DELETE_FLAG='0' AND d6.DELETE_FLAG='0' AND d7.DELETE_FLAG='0' AND d5.ORG_CODE = d6.ORG_CODE
           AND d6.ORG_CODE = d7.ORG_CODE
           AND d5.MAJOR_CODE = #{majorCode}
           AND d6.LINE_CODE = #{lineCode}

@@ -97,7 +97,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                     Person person = personMapper.searchLeader(majorCode, positionCode, "DM_051");
                     faultOrderDO.setRepairRespUserId(person.getLoginName());
                     // 默认为紧急
-                    faultInfoDO.setFaultLevel("01");
+                    faultInfoDO.setExt1("01");
                     faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
                     faultReportMapper.updateFaultOrder(faultOrderDO);
                     faultReportMapper.updateFaultInfo(faultInfoDO);
@@ -150,7 +150,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                 Person person = personMapper.searchLeader(majorCode, positionCode, "DM_051");
                 faultOrderDO.setRepairRespUserId(person.getLoginName());
                 // 默认为紧急
-                faultInfoDO.setFaultLevel("01");
+                faultInfoDO.setExt1("01");
                 faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
                 faultReportMapper.updateFaultOrder(faultOrderDO);
                 faultReportMapper.updateFaultInfo(faultInfoDO);
