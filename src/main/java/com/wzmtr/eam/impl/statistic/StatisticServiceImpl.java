@@ -821,7 +821,7 @@ public class StatisticServiceImpl implements StatisticService {
                     rebuildBlock4SP(a, names, "转向架", "409500", "409500");
                     break;
                 case "17":
-                    rebuildBlock4SP(a, names, "旅客信息系统雷达辅助系统", "191000", "91000");
+                    rebuildBlock4SP(a, names, "旅客信息系统", "191000", "91000");
                     break;
                 case "10":
                     rebuildBlock4SP(a, names, "网络系统", "254000", "254000");
@@ -924,7 +924,7 @@ public class StatisticServiceImpl implements StatisticService {
                     rebuildBlock(a, names, "转向架", "381000");
                     break;
                 case "17":
-                    rebuildBlock(a, names, "旅客信息系统雷达辅助系统", "191000");
+                    rebuildBlock(a, names, "旅客信息系统", "191000");
                     break;
                 case "10":
                     rebuildBlock(a, names, "网络系统", "254000");
