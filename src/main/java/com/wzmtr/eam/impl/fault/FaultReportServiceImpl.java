@@ -117,6 +117,39 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     @Override
+    public void changeReport(FaultReportReqDTO reqDTO) {
+        // 获取AOP代理对象
+        FaultInfoDO faultInfoDO = reqDTO.toFaultInfoInsertDO(reqDTO);
+
+        //更新故障信息
+        modifyToFaultInfo(faultInfoDO);
+        FaultOrderDO faultOrderDO = reqDTO.toFaultOrderChangeDO(reqDTO);
+        faultReportMapper.updateFaultOrder(faultOrderDO);
+
+        // 添加流程记录
+        //中铁通 且是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
+        addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        String majorCode = reqDTO.getMajorCode();
+        if (!zcList.contains(majorCode) && "10".equals(reqDTO.getFaultType())) {
+            String positionCode = reqDTO.getPositionCode();
+            if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
+                // 专业和位置查维修部门
+                OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
+                faultInfoDO.setRepairDeptCode(organ.getOrgCode());
+                // 负责人为中铁通工班长角色
+                Person person = personMapper.searchLeader(majorCode, positionCode, "DM_051");
+                faultOrderDO.setRepairRespUserId(person.getLoginName());
+                // 默认为紧急
+                faultInfoDO.setFaultLevel("01");
+                faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                faultReportMapper.updateFaultOrder(faultOrderDO);
+                faultReportMapper.updateFaultInfo(faultInfoDO);
+                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,reqDTO.getFaultWorkNo(),"故障"), faultOrderDO.getRecId(), reqDTO.getFaultWorkNo(), organ.getOrgCode(), "故障派工", " ? ", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            }
+        }
+    }
+
+    @Override
     public String addToFaultOpen(FaultReportOpenReqDTO reqDTO) {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
@@ -149,6 +182,17 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultOrderDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
         faultOrderDO.setRecCreateTime(DateUtils.getCurrentTime());
         faultReportMapper.addToFaultOrder(faultOrderDO);
+    }
+
+    //变更故障信息
+    public void modifyToFaultInfo(FaultInfoDO faultInfoDO) {
+        faultInfoDO.setDeleteFlag("0");
+        faultInfoDO.setFillinTime(DateUtils.getCurrentTime());
+        faultInfoDO.setFillinUserId(TokenUtils.getCurrentPerson().getPersonId());
+        faultInfoDO.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
+        faultInfoDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
+        faultInfoDO.setRecCreateTime(DateUtils.getCurrentTime());
+        faultReportMapper.updateToFaultInfo(faultInfoDO);
     }
 
     @Override

@@ -9,6 +9,9 @@
         <if test="lineCode!=null and lineCode!=''">
             AND USE_LINE_NO=#{lineCode}
         </if>
+        <if test="lineCode==null or lineCode==''">
+            AND USE_LINE_NO='02'
+        </if>
         order by EQUIP_CODE asc
     </select>
 
@@ -140,6 +143,9 @@
         </if>
         <if test="useLineNo!=null and useLineNo!=''">
             and USE_LINE_NO=#{useLineNo}
+        </if>
+        <if test="useLineNo==null or useLineNo==''">
+            and USE_LINE_NO='02'
         </if>
         <if test="useSegNo!=null and useSegNo!=''">
             and USE_SEG_NO=#{useSegNo}

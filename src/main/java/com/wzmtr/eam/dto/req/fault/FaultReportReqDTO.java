@@ -117,6 +117,8 @@ public class FaultReportReqDTO {
     @ApiModelProperty(value = "维修时限")
     private String ext5;
 
+    @ApiModelProperty(value = "故障工单号:转报时用")
+    private String faultWorkNo;
     /**
      * 数据库非空字段兜底赋值，初始化为空字符串
      */
@@ -145,6 +147,16 @@ public class FaultReportReqDTO {
         if (StringUtils.isEmpty(req.getOrderStatus())) {
             convert.setOrderStatus(OrderStatus.TI_BAO.getCode());
         }
+        return convert;
+    }
+
+    public FaultOrderDO toFaultOrderChangeDO(FaultReportReqDTO req) {
+        FaultOrderDO convert = BeanUtils.convert(req, FaultOrderDO.class);
+        if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
+            convert.setWorkClass(req.getRepairDeptCode());
+        }
+        convert.setDeleteFlag("0");
+        convert.setOrderStatus(OrderStatus.TI_BAO.getCode());
         return convert;
     }
 
