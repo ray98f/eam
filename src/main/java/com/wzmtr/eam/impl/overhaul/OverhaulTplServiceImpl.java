@@ -302,7 +302,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         List<ExcelOverhaulTplDetailReqDTO> listTplDetail = EasyExcelUtils.read(file, ExcelOverhaulTplDetailReqDTO.class, 1);
         List<ExcelOverhaulMaterialReqDTO> listMaterial = EasyExcelUtils.read(file, ExcelOverhaulMaterialReqDTO.class, 2);
         if (StringUtils.isNotEmpty(listTpl)) {
-            return importOverhaulTpl(listTpl);
+             importOverhaulTpl(listTpl);
         }
         if (StringUtils.isNotEmpty(listTplDetail)) {
             importOverhaulTplDetail(listTplDetail);
