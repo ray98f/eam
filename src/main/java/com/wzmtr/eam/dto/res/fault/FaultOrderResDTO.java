@@ -282,4 +282,5 @@ public class FaultOrderResDTO {
      * 处理人数
      */
     private String dealerNum;
+
 }

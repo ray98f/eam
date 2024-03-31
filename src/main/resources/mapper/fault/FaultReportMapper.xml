@@ -59,7 +59,8 @@
         EXT2,  <!-- 扩展字段2 -->
         EXT3,  <!-- 扩展字段3 -->
         EXT4,  <!-- 扩展字段4 -->
-        EXT5  <!-- 扩展字段5 -->
+        EXT5,  <!-- 扩展字段5 -->
+        REPAIR_LIMIT_TIME
         )
         VALUES (#{recId,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
         #{faultNo,jdbcType=VARCHAR}, #{faultWorkNo,jdbcType=VARCHAR},#{reportUserId,jdbcType=VARCHAR},
@@ -82,7 +83,7 @@
         #{recDeleteTime,jdbcType=VARCHAR}, #{deleteFlag,jdbcType=VARCHAR}, #{archiveFlag,jdbcType=VARCHAR},
         #{recStatus,jdbcType=VARCHAR},#{dealerUnit,jdbcType=VARCHAR},#{dealerNum,jdbcType=VARCHAR},
         #{ext1,jdbcType=VARCHAR}, #{ext2,jdbcType=VARCHAR}, #{ext3,jdbcType=VARCHAR}, #{ext4,jdbcType=VARCHAR},
-        #{ext5,jdbcType=VARCHAR})
+        #{ext5,jdbcType=VARCHAR},#{repairLimitTime,jdbcType=VARCHAR})
     </insert>
     <insert id="addToFaultInfo">
         INSERT INTO T_FAULT_INFO (REC_ID,  <!-- 记录编号 -->
@@ -415,6 +416,10 @@
         <if test="dealerUnit!=null and dealerUnit!=''">
             DEALER_UNIT=#{dealerUnit},
         </if>
+        <if test="repairLimitTime!=null and repairLimitTime!=''">
+            REPAIR_LIMIT_TIME=#{repairLimitTime},
+        </if>
+
         REC_REVISOR=#{recRevisor},
         REC_REVISE_TIME=#{recReviseTime}
         <trim prefix="WHERE" prefixOverrides="AND">
