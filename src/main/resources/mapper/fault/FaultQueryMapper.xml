@@ -1159,7 +1159,7 @@
         FROM SYS_ORG_MAJOR T05
         LEFT JOIN SYS_ORG_LINE T06 ON T05.ORG_CODE=T06.ORG_CODE
         LEFT JOIN SYS_ORG_TYPE T07 ON T05.ORG_CODE=T07.ORG_CODE
-        where 1=1
+        where T05.DELETE_FLAG = '0'
         <if test="majorCode!=null and majorCode!=''">
             AND T05.MAJOR_CODE=#{majorCode}
         </if>

@@ -213,5 +213,9 @@
         where t3.LOGIN_NAME = #{userId}
     </select>
 
+    <select id="getAllMajor" resultType="java.lang.String">
+        select t1.MAJOR_CODE
+        from SYS_ORG_MAJOR t1
+    </select>
 
 </mapper>
