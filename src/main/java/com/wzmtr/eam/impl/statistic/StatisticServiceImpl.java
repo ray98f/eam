@@ -924,7 +924,7 @@ public class StatisticServiceImpl implements StatisticService {
                     rebuildBlock(a, names, "转向架", "381000");
                     break;
                 case "17":
-                    rebuildBlock(a, names, "旅客信息系统", "191000");
+                    rebuildBlock(a, names, "旅客信息系统雷达辅助系统", "191000");
                     break;
                 case "10":
                     rebuildBlock(a, names, "网络系统", "254000");
@@ -936,16 +936,27 @@ public class StatisticServiceImpl implements StatisticService {
                     rebuildBlock(a, names, "车体结构及内装", "191000");
                     break;
                 case "06":
+                    rebuildBlock(a, names, "牵引及高压系统", "11000");
+                    break;
                 case "07":
                     rebuildBlock(a, names, "贯通道和车钩", "381000");
                     break;
+                //列车管理及列车控制系统 、  走行部检测系统 弓网检测系统 轨道检测系统 运行性能检测系统
                 case "18":
+                    rebuildBlock(a, names, "列车管理及列车控制系统", "11000");
+                    break;
                 case "19":
-                    rebuildBlock(a, names, "牵引及高压系统", "11000");
+                    rebuildBlock(a, names, "运行性能检测系统", "11000");
                     break;
                 case "11":
+                    rebuildBlock(a, names, "轨道检测系统", "11000");
+                    break;
                 case "15":
+                    rebuildBlock(a, names, "弓网检测系统", "11000");
+                    break;
                 case "16":
+                    rebuildBlock(a, names, "走行部检测系统", "11000");
+                    break;
                 case "20":
                     rebuildBlock(a, names, "辅助供电设备系统", "38000");
                     break;
@@ -969,6 +980,7 @@ public class StatisticServiceImpl implements StatisticService {
                 map.put(a.getModuleName(), a);
             }
         }
+
         buildFaultTypeIsCompliance(map, ramsResDTO);
         return new ArrayList<>(map.values());
     }

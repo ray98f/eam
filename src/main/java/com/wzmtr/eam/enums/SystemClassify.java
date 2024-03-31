@@ -17,7 +17,12 @@ public enum SystemClassify {
     BODY("07", "车体结构及内装"),
     COUPLER("08", "贯通道和车钩"),
     TRACTION("09", "牵引及高压系统"),
-    SUPPLY("10", "辅助供电设备系统");
+    SUPPLY("10", "辅助供电设备系统"),
+    SUPPLY_1("11", "辅助供电设备系统"),
+    SUPPLY_2("12", "辅助供电设备系统"),
+    SUPPLY_3("13", "辅助供电设备系统"),
+    SUPPLY_4("14", "辅助供电设备系统"),
+    SUPPLY_5("15", "辅助供电设备系统");
 
     private final String code;
     private final String desc;
