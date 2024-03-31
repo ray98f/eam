@@ -124,6 +124,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         //更新故障信息
         modifyToFaultInfo(faultInfoDO);
         FaultOrderDO faultOrderDO = reqDTO.toFaultOrderChangeDO(reqDTO);
+        faultOrderDO.setRecRevisor(TokenUtils.getCurrentPerson().getPersonId());
+        faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultReportMapper.updateFaultOrder(faultOrderDO);
 
         // 添加流程记录
@@ -190,8 +192,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultInfoDO.setFillinTime(DateUtils.getCurrentTime());
         faultInfoDO.setFillinUserId(TokenUtils.getCurrentPerson().getPersonId());
         faultInfoDO.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
-        faultInfoDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
-        faultInfoDO.setRecCreateTime(DateUtils.getCurrentTime());
+        faultInfoDO.setRecRevisor(TokenUtils.getCurrentPerson().getPersonId());
+        faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultReportMapper.updateToFaultInfo(faultInfoDO);
     }
 
