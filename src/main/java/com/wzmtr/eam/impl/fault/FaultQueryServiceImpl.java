@@ -418,9 +418,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         List<BpmnExaminePersonRes> userList = Lists.newArrayList();
         String newId = organizationMapper.getIdByAreaId(workerGroupCode);
         userList = roleMapper.getUserByOrgAndRole(newId, null);
+        String faultWorkNo = faultOrder1.getFaultWorkNo();
+        overTodoService.overTodo(faultWorkNo);
         if (CollectionUtil.isNotEmpty(userList)) {
             for (BpmnExaminePersonRes map2 : userList) {
-                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, faultOrder1.getFaultWorkNo(), "故障"), faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), map2.getUserId(), "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), faultOrder1.getRecId(), faultWorkNo, map2.getUserId(), "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
         }
     }
@@ -699,12 +701,15 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public List<String> getUsersByCompanyAndRole(String majorCode,String zttRole,String zcRole) {
         List<String> userIds = Lists.newArrayList();
         if (!zcList.contains(majorCode)) {
-            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zttRole);
-            userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
-        }
-        else {
-            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zcRole);
-            userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+            if (StringUtils.isNotEmpty(zttRole)) {
+                List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zttRole);
+                userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+            }
+        } else {
+            if (StringUtils.isNotEmpty(zcRole)) {
+                List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zcRole);
+                userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+            }
         }
         return userIds;
     }
