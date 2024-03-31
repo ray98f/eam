@@ -699,12 +699,15 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     public List<String> getUsersByCompanyAndRole(String majorCode,String zttRole,String zcRole) {
         List<String> userIds = Lists.newArrayList();
         if (!zcList.contains(majorCode)) {
-            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zttRole);
-            userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
-        }
-        else {
-            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zcRole);
-            userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+            if (StringUtils.isNotEmpty(zttRole)) {
+                List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zttRole);
+                userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+            }
+        } else {
+            if (StringUtils.isNotEmpty(zcRole)) {
+                List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zcRole);
+                userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+            }
         }
         return userIds;
     }
