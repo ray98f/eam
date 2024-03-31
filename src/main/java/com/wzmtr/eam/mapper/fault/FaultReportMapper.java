@@ -35,6 +35,8 @@ public interface FaultReportMapper {
 
     void addToFaultOrder(FaultOrderDO faultOrder);
 
+    void updateToFaultInfo(FaultInfoDO faultInfo);
+
     /**
      * update col by faultNo and faultWorkNo
      *

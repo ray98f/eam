@@ -171,6 +171,86 @@
         #{ifPhm,jdbcType=VARCHAR},#{ifReliability,jdbcType=VARCHAR},
         #{trainTag,jdbcType=VARCHAR})
     </insert>
+
+    <update id="updateToFaultInfo">
+        UPDATE T_FAULT_INFO SET
+        <if test="companyCode!=null">
+            COMPANY_CODE=#{companyCode},
+        </if>
+        <if test="companyName!=null">
+            COMPANY_NAME=#{companyName},
+        </if>
+        <if test="position2Code!=null">
+            POSITION2_CODE=#{position2Code},
+        </if>
+        <if test="partCode!=null">
+            PART_CODE=#{partCode},
+        </if>
+        <if test="partName!=null">
+            PART_NAME=#{partName},
+        </if>
+        <if test="faultModuleId!=null">
+            FAULT_MODULE_ID=#{faultModuleId},
+        </if>
+        <if test="faultFlag!=null">
+            FAULT_FLAG=#{faultFlag},
+        </if>
+        <if test="objectCode!=null">
+            OBJECT_CODE=#{objectCode},
+        </if>
+        <if test="objectName!=null">
+            OBJECT_NAME=#{objectName},
+        </if>
+        <if test="trainTrunk!=null">
+            TRAIN_TRUNK=#{trainTrunk},
+        </if>
+        <if test="positionCode!=null">
+            POSITION_CODE=#{positionCode},
+        </if>
+        <if test="majorCode!=null">
+            MAJOR_CODE=#{majorCode},
+        </if>
+        <if test="systemCode!=null">
+            SYSTEM_CODE=#{systemCode},
+        </if>
+        <if test="equipTypeCode!=null">
+            EQUIP_TYPE_CODE=#{equipTypeCode},
+        </if>
+        <if test="faultModule!=null">
+            FAULT_MODULE=#{faultModule},
+        </if>
+        <if test="faultType!=null">
+            FAULT_TYPE=#{faultType},
+        </if>
+        <if test="sourceCode!=null">
+            SOURCE_CODE=#{sourceCode},
+        </if>
+        <if test="faultDisplayCode!=null">
+            FAULT_DISPLAY_CODE=#{faultDisplayCode},
+        </if>
+        <if test="fillinUserId!=null">
+            FILLIN_USER_ID=#{fillinUserId},
+        </if>
+        <if test="fillinUserName!=null">
+            FILLIN_USER_NAME=#{fillinUserName},
+        </if>
+        <if test="fillinDeptCode!=null">
+            FILLIN_DEPT_CODE=#{fillinDeptCode},
+        </if>
+        <if test="fillinTime!=null">
+            FILLIN_TIME=#{fillinTime},
+        </if>
+        <if test="faultLevel!=null">
+            FAULT_LEVEL=#{faultLevel},
+        </if>
+        <if test="faultStatus!=null">
+            FAULT_STATUS=#{faultStatus},
+        </if>
+        REC_REVISOR=#{recRevisor},
+        REC_REVISE_TIME=#{recReviseTime}
+        WHERE FAULT_NO=#{faultNo}
+    </update>
+
     <update id="updateFaultOrder">
         UPDATE T_FAULT_ORDER SET
         <if test="planRecoveryTime!=null">
