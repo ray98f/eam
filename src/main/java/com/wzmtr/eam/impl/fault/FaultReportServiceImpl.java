@@ -100,7 +100,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                 faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
                 faultReportMapper.updateFaultOrder(faultOrderDO);
                 faultReportMapper.updateFaultInfo(faultInfoDO);
-                overTodoService.insertTodoWithUserGroup("收到工单编号为:" + nextFaultWorkNo + "的故障工单，请及时办理", faultOrderDO.getRecId(), nextFaultWorkNo, organ.getOrgCode(), "故障派工", " ? ", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,nextFaultWorkNo,"故障"), faultOrderDO.getRecId(), nextFaultWorkNo, organ.getOrgCode(), "故障派工", " ? ", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
         }
         return nextFaultNo;

@@ -54,6 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -285,7 +286,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
                 if (StringUtils.isNotEmpty(workerGroupCode)) {
                     // 派工 直接派工至该工班人员
-                    overTodoService.insertTodoWithUserOrgan("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+                    overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL,overhaulOrderReqDTO.getOrderCode(),"检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
                 }
             }
             overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
@@ -311,7 +312,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         String nextRole = nextRole(req, "DM_006", "DM_032");
         List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, nextRole);
         for (BpmnExaminePersonRes map2 : userList) {
-            overTodoService.insertTodo("检修工单流转", req.getRecId(), req.getOrderCode(), map2.getUserId(), "检修工单完工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+            overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,req.getOrderCode(),"检修"), req.getRecId(), req.getOrderCode(), map2.getUserId(), "检修工单完工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
         }
     }
 
@@ -344,7 +345,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, roleCode);
         if (CollectionUtil.isNotEmpty(userList)){
             for (BpmnExaminePersonRes map2 : userList) {
-                overTodoService.insertTodo("检修工单流转", overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
+                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,overhaulOrderReqDTO.getOrderCode(),"检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
                         map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId(),BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
         }
