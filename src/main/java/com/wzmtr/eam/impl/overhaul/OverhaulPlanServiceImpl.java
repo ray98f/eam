@@ -288,7 +288,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             }
             String processId = overhaulPlanReqDTO.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
-            bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulPlanReqDTO.getPlanCode() + "\"}", null);
+            //TODO
+            //bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulPlanReqDTO.getPlanCode() + "\"}", null);
             overhaulPlanReqDTO.setWorkFlowInstStatus("已完成");
             overhaulPlanReqDTO.setTrialStatus("30");
             overTodoService.overTodo(recId,opinion);

@@ -258,7 +258,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
             String processId = overhaulTplReqDTO.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
-            //bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulTplReqDTO.getTemplateId() + "\"}", null);
+            //TODO 20240401先注释，里边代码有问题
+            // bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulTplReqDTO.getTemplateId() + "\"}", null);
             //审核完流程就结束了 完成待办
             overTodoService.overTodo(recId,opinion);
             overhaulTplReqDTO.setWorkFlowInstStatus("已完成");
