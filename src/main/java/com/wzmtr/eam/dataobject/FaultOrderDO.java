@@ -104,6 +104,7 @@ public class FaultOrderDO {
     private String isFault;
     private String dealerUnit;
     private String dealerNum;
+    private String repairLimitTime;
     @TableField(exist = false)
     private String reportUserName;
     @TableField(exist = false)
