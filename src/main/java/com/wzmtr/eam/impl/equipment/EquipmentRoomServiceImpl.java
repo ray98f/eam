@@ -59,10 +59,24 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void addEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
+        //轨道专业
+        if(CommonConstants.FOURTEEN_STRING.equals(equipmentRoomReqDTO.getSubjectCode())){
+            if(StringUtils.isEmpty(equipmentRoomReqDTO.getEquipRoomCode())){
+                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
+            }
+        }else{
+            String equipRoomCode = equipmentRoomMapper.getEquipRoomCodeMaxCode();
+            if(StringUtils.isEmpty(equipRoomCode)){
+                equipRoomCode = CommonConstants.EQUIPMENT_ROOM_CODE_0;
+            }
+            String nextCode = CodeUtils.getNextCode(equipRoomCode,CommonConstants.ONE);
+            equipmentRoomReqDTO.setEquipRoomCode(nextCode);
+        }
         Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
         if (result > 0) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
+
         equipmentRoomReqDTO.setRecId(TokenUtils.getUuId());
         equipmentRoomReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         equipmentRoomReqDTO.setRecCreateTime(DateUtils.getCurrentTime());

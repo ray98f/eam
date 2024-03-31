@@ -99,6 +99,12 @@
         </if>
     </select>
 
+    <select id="getEquipRoomCodeMaxCode" resultType="java.lang.String">
+        SELECT max(EQUIP_ROOM_CODE)
+        FROM T_EQUIPMENT_ROOM
+        WHERE EQUIP_ROOM_CODE LIKE 'R%'
+    </select>
+
     <select id="selectMaxEquipmentRoomCode" resultType="java.lang.String">
         SELECT max(EQUIP_ROOM_CODE)
         FROM T_EQUIPMENT_ROOM where EQUIP_ROOM_CODE like 'F%'

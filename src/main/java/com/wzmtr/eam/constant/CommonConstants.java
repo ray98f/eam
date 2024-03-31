@@ -47,6 +47,7 @@ public class CommonConstants {
 
     public static final String TODO_GD_TPL =  "收到工单编号为:%s的%s工单，请及时办理";
 
+    public static final String EQUIPMENT_ROOM_CODE_0 = "R100000";
 
     /**
      * 故障分析流程--部长审核节点

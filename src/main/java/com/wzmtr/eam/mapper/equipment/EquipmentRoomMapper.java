@@ -23,6 +23,8 @@ public interface EquipmentRoomMapper {
 
     Integer selectEquipmentRoomIsExist(EquipmentRoomReqDTO equipmentRoomReqDTO);
 
+    String getEquipRoomCodeMaxCode();
+
     String selectMaxEquipmentRoomCode();
 
     void addEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO);
