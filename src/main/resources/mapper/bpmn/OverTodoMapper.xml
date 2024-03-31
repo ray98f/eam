@@ -61,7 +61,8 @@
         EXT4,  <!-- 扩展字段4 -->
         EXT5,  <!-- 扩展字段5 -->
         EXT6,  <!-- 扩展字段6 -->
-        FLOW_ID
+        FLOW_ID,
+        RELATE_ID
         )
         VALUES (
         #{todoId,jdbcType=VARCHAR},
@@ -85,7 +86,8 @@
         #{ext4,jdbcType=VARCHAR},
         #{ext5,jdbcType=VARCHAR},
         #{ext6,jdbcType=VARCHAR},
-        #{flowId,jdbcType=VARCHAR}
+        #{flowId,jdbcType=VARCHAR},
+        #{relateId,jdbcType=VARCHAR}
         )
     </insert>
 </mapper>
