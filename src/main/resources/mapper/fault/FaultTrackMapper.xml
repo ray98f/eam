@@ -427,7 +427,8 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
-        df.EXT1 AS "faultLevel"
+        df.EXT1 AS "faultLevel",
+        df.REPAIR_LIMIT_TIME AS "repairLimitTime"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
@@ -506,7 +507,8 @@
         EXT2	as "ext2",
         EXT3	as "ext3",
         EXT4	as "ext4",
-        EXT5	as "ext5"
+        EXT5	as "ext5",
+        REPAIR_LIMIT_TIME	as "repairLimitTime"
         FROM T_FAULT_ORDER
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultNo!=null and faultNo!=''">
