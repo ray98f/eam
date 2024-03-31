@@ -422,7 +422,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         if (CollectionUtil.isNotEmpty(userList)){
             for (BpmnExaminePersonRes map2 : userList) {
-                overTodoService.insertTodo(content,  faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), map2.getUserId(), "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,faultOrder1.getFaultWorkNo(),"故障"),  faultOrder1.getRecId(), faultOrder1.getFaultWorkNo(), map2.getUserId(), "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
         }
     }
