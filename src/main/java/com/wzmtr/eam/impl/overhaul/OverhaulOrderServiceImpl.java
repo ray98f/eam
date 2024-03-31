@@ -638,23 +638,33 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         List<OverhaulItemResDTO> modelList = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
         List<OverhaulItemTreeResDTO> models = new ArrayList<>();
         if (StringUtils.isNotEmpty(modelList)) {
-            modelList = new ArrayList<>(modelList.stream().collect(Collectors.toCollection(() ->
-                    new TreeSet<>(Comparator.comparing(OverhaulItemResDTO::getModelName)))));
-            modelList = modelList.stream().filter(Objects::nonNull).collect(Collectors.toList());
-            for (OverhaulItemResDTO model : modelList) {
-                OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
-                org.springframework.beans.BeanUtils.copyProperties(model, res);
-                List<OverhaulItemResDTO> list = overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, model.getModelName());
-                if (StringUtils.isNotEmpty(list)) {
-                    for (OverhaulItemResDTO itemRes : list) {
-                        if (StringUtils.isNotEmpty(itemRes.getDocId())) {
-                            itemRes.setDocFile(fileMapper.selectFileInfo(Arrays.asList(itemRes.getDocId().split(","))));
+            String flag ="";
+            for(OverhaulItemResDTO rs: modelList){
+                if(rs != null){
+                    flag = "1";
+                }
+            }
+
+            if(StringUtils.isNotEmpty(flag)){
+                modelList = new ArrayList<>(modelList.stream().collect(Collectors.toCollection(() ->
+                        new TreeSet<>(Comparator.comparing(OverhaulItemResDTO::getModelName)))));
+                modelList = modelList.stream().filter(Objects::nonNull).collect(Collectors.toList());
+                for (OverhaulItemResDTO model : modelList) {
+                    OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
+                    org.springframework.beans.BeanUtils.copyProperties(model, res);
+                    List<OverhaulItemResDTO> list = overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, model.getModelName());
+                    if (StringUtils.isNotEmpty(list)) {
+                        for (OverhaulItemResDTO itemRes : list) {
+                            if (StringUtils.isNotEmpty(itemRes.getDocId())) {
+                                itemRes.setDocFile(fileMapper.selectFileInfo(Arrays.asList(itemRes.getDocId().split(","))));
+                            }
                         }
                     }
+                    res.setItemList(list);
+                    models.add(res);
                 }
-                res.setItemList(list);
-                models.add(res);
             }
+
         }
         return models;
     }
