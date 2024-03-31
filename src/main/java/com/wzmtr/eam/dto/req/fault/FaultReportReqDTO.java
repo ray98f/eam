@@ -114,8 +114,12 @@ public class FaultReportReqDTO {
     private String ifPhm;
     @ApiModelProperty(value = "是否列入列车可靠性统计 0是 1否")
     private String ifReliability;
-    @ApiModelProperty(value = "维修时限")
+    @ApiModelProperty(value = "")
     private String ext5;
+
+    @ApiModelProperty(value = "维修时限")
+    private String repairLimitTime;
+
 
     @ApiModelProperty(value = "故障工单号:转报时用")
     private String faultWorkNo;
