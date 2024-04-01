@@ -145,6 +145,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setName(RateIndex.POWER_RATE.getDesc());
             failureRateDetailResDTO.setPowerRate(reliabilityDetailResDTO);
         }
+        //没做 产品没要求 2024 04 01
         if (reqDTO.getIndex().contains(RateIndex.PSD_RATE)) {
             //<!--屏蔽门故障率-->
             List<FailureRateResDTO> psDrate = failureRateMapper.PSDrate(reqDTO);
