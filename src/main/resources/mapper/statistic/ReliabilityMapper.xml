@@ -9,7 +9,7 @@
                        (1 - (round((sum(
                                (case
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
@@ -20,11 +20,11 @@
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
@@ -34,20 +34,16 @@
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
                                              from T_EQUIPMENT
-                                             where (EQUIP_TYPE_CODE = '110201' or EQUIP_TYPE_CODE = '110202' or EQUIP_TYPE_CODE = '110204')
-                                               and MAJOR_CODE = '11')), 4))) * 100
+                                             where (EQUIP_TYPE_CODE='110201' or EQUIP_TYPE_CODE='110202' or EQUIP_TYPE_CODE='110204')
+                                               and MAJOR_CODE='11')), 4))) * 100
                    )        as "precent"
         from (select a.FAULT_NO,
                      a.FILLIN_TIME,
-                     (select max(b.CLOSE_TIME) from T_FAULT_ORDER b where a.FAULT_NO = b.FAULT_NO) as CLOSE_TIME
+                     NVL((SELECT MAX(b.CLOSE_TIME) FROM T_FAULT_ORDER b WHERE a.FAULT_NO=b.FAULT_NO ),TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MM:SS')) AS CLOSE_TIME
               from T_FAULT_INFO a
-              where not exists(select 1
-                               from T_FAULT_ORDER b
-                               where a.FAULT_NO = b.FAULT_NO
-                                 and b.ORDER_STATUS<![CDATA[ <>]]> '70')
-                and rtrim(a.FAULT_FLAG) is null
-                and a.MAJOR_CODE = '11'
-                and (a.EQUIP_TYPE_CODE = '110201' or a.EQUIP_TYPE_CODE = '110202' or a.EQUIP_TYPE_CODE = '110204')) t,
+              where rtrim(a.FAULT_FLAG) is null
+                and a.MAJOR_CODE='11'
+                and (a.EQUIP_TYPE_CODE='110201' or a.EQUIP_TYPE_CODE='110202' or a.EQUIP_TYPE_CODE='110204')) t,
              (select to_char(add_months(to_date(#{startTime}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') as YEAR_MONTH
               from dual
                   connect by rownum <![CDATA[ <=]]> months_between(to_date(#{endTime}, 'YYYY-MM'), to_date(#{startTime}, 'YYYY-MM')) + 1) c
@@ -64,7 +60,7 @@
                        (1 - (round((sum(
                                (case
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
@@ -75,11 +71,11 @@
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
@@ -89,18 +85,15 @@
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
                                              from T_EQUIPMENT
-                                             where EQUIP_TYPE_CODE = '110203' and MAJOR_CODE = '11')), 4))) * 100
+                                             where EQUIP_TYPE_CODE='110203' and MAJOR_CODE='11')), 4))) * 100
                    )        as "precent"
         from (select a.FAULT_NO,
                      a.FILLIN_TIME,
-                     (select max(b.CLOSE_TIME) from T_FAULT_ORDER b where a.FAULT_NO = b.FAULT_NO) as CLOSE_TIME
+                     NVL((SELECT MAX(b.CLOSE_TIME) FROM T_FAULT_ORDER b WHERE a.FAULT_NO=b.FAULT_NO),TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MM:SS')) AS CLOSE_TIME
               from T_FAULT_INFO a
-              where not exists(select 1
-                               from T_FAULT_ORDER b
-                               where a.FAULT_NO = b.FAULT_NO and b.ORDER_STATUS<![CDATA[ <>]]> '70')
-                and rtrim(a.FAULT_FLAG) is null
-                and a.MAJOR_CODE = '11'
-                and a.EQUIP_TYPE_CODE = '110203') t,
+              where rtrim(a.FAULT_FLAG) is null
+                and a.MAJOR_CODE='11'
+                and a.EQUIP_TYPE_CODE='110203') t,
              (select to_char(add_months(to_date(#{startTime}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') as YEAR_MONTH
               from dual
                   connect by rownum <![CDATA[ <=]]> months_between(to_date(#{endTime}, 'YYYY-MM'), to_date(#{startTime}, 'YYYY-MM')) + 1) c
@@ -117,7 +110,7 @@
                        (1 - (round((sum(
                                (case
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
@@ -128,11 +121,11 @@
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
@@ -142,20 +135,16 @@
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
                                              from T_EQUIPMENT
-                                             where EQUIP_TYPE_CODE = '020102'
-                                               and MAJOR_CODE = '02')), 4))) * 100
+                                             where EQUIP_TYPE_CODE='020102'
+                                               and MAJOR_CODE='02')), 4))) * 100
                    )        as "precent"
         from (select a.FAULT_NO,
                      a.FILLIN_TIME,
-                     (select max(b.CLOSE_TIME) from T_FAULT_ORDER b where a.FAULT_NO = b.FAULT_NO) as CLOSE_TIME
+                     NVL((SELECT MAX(b.CLOSE_TIME) FROM T_FAULT_ORDER b WHERE a.FAULT_NO=b.FAULT_NO),TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MM:SS')) AS CLOSE_TIME
               from T_FAULT_INFO a
-              where not exists(select 1
-                               from T_FAULT_ORDER b
-                               where a.FAULT_NO = b.FAULT_NO
-                                 and b.ORDER_STATUS<![CDATA[ <>]]> '70')
-                and rtrim(a.FAULT_FLAG) is null
-                and a.MAJOR_CODE = '02'
-                and a.EQUIP_TYPE_CODE = '020102') t,
+              where rtrim(a.FAULT_FLAG) is null
+                and a.MAJOR_CODE='02'
+                and a.EQUIP_TYPE_CODE='020102') t,
              (select to_char(add_months(to_date(#{startTime}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') as YEAR_MONTH
               from dual
                   connect by rownum <![CDATA[ <=]]> months_between(to_date(#{endTime}, 'YYYY-MM'), to_date(#{startTime}, 'YYYY-MM')) + 1) c
@@ -172,7 +161,7 @@
                        (1 - (round((sum(
                                (case
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
@@ -183,11 +172,11 @@
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
@@ -197,20 +186,16 @@
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
                                              from T_EQUIPMENT
-                                             where EQUIP_TYPE_CODE = '020101'
-                                               and MAJOR_CODE = '02')), 4))) * 100
+                                             where EQUIP_TYPE_CODE='020101'
+                                               and MAJOR_CODE='02')), 4))) * 100
                    )        as "precent"
         from (select a.FAULT_NO,
                      a.FILLIN_TIME,
-                     (select max(b.CLOSE_TIME) from T_FAULT_ORDER b where a.FAULT_NO = b.FAULT_NO) as CLOSE_TIME
+                     NVL((SELECT MAX(b.CLOSE_TIME) FROM T_FAULT_ORDER b WHERE a.FAULT_NO=b.FAULT_NO),TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MM:SS')) AS CLOSE_TIME
               from T_FAULT_INFO a
-              where not exists(select 1
-                               from T_FAULT_ORDER b
-                               where a.FAULT_NO = b.FAULT_NO
-                                 and b.ORDER_STATUS<![CDATA[ <>]]> '70')
-                and rtrim(a.FAULT_FLAG) is null
-                and a.MAJOR_CODE = '02'
-                and a.EQUIP_TYPE_CODE = '020101') t,
+              where rtrim(a.FAULT_FLAG) is null
+                and a.MAJOR_CODE='02'
+                and a.EQUIP_TYPE_CODE='020101') t,
              (select to_char(add_months(to_date(#{startTime}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') as YEAR_MONTH
               from dual
                   connect by rownum <![CDATA[ <=]]> months_between(to_date(#{endTime}, 'YYYY-MM'), to_date(#{startTime}, 'YYYY-MM')) + 1) c
@@ -228,7 +213,7 @@
                        (1 - (round((sum(
                                (case
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
@@ -239,11 +224,11 @@
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
@@ -257,12 +242,9 @@
                    )        as "precent"
         from (select a.FAULT_NO,
                      a.FILLIN_TIME,
-                     (select max(b.CLOSE_TIME) from T_FAULT_ORDER b where a.FAULT_NO = b.FAULT_NO) as CLOSE_TIME
+                     NVL((SELECT MAX(b.CLOSE_TIME) FROM T_FAULT_ORDER b WHERE a.FAULT_NO=b.FAULT_NO),TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MM:SS')) AS CLOSE_TIME
               from T_FAULT_INFO a
-              where not exists(select 1
-                               from T_FAULT_ORDER b
-                               where a.FAULT_NO = b.FAULT_NO and b.ORDER_STATUS<![CDATA[ <>]]> '70')
-                and a.MAJOR_CODE = '07'
+              where a.MAJOR_CODE='07'
                 and rtrim(a.FAULT_FLAG) is null
                 and a.FAULT_MODULE_ID in (select tt.ENAME
                                           from T_BOM tt
@@ -284,7 +266,7 @@
                        (1 - (round((sum(
                                (case
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
@@ -295,11 +277,11 @@
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
@@ -309,20 +291,16 @@
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
                                              from T_EQUIPMENT
-                                             where SYSTEM_CODE = '0808'
-                                               and MAJOR_CODE = '08')), 4))) * 100
+                                             where SYSTEM_CODE='0808'
+                                               and MAJOR_CODE='08')), 4))) * 100
                    )        as "precent"
         from (select a.FAULT_NO,
                      a.FILLIN_TIME,
-                     (select max(b.CLOSE_TIME) from T_FAULT_ORDER b where a.FAULT_NO = b.FAULT_NO) as CLOSE_TIME
+                     NVL((SELECT MAX(b.CLOSE_TIME) FROM T_FAULT_ORDER b WHERE a.FAULT_NO=b.FAULT_NO),TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MM:SS')) AS CLOSE_TIME
               from T_FAULT_INFO a
-              where not exists(select 1
-                               from T_FAULT_ORDER b
-                               where a.FAULT_NO = b.FAULT_NO
-                                 and b.ORDER_STATUS<![CDATA[ <>]]> '70')
-                and rtrim(a.FAULT_FLAG) is null
-                and a.MAJOR_CODE = '08'
-                and a.SYSTEM_CODE = '0808') t,
+              where rtrim(a.FAULT_FLAG) is null
+                and a.MAJOR_CODE='08'
+                and a.SYSTEM_CODE='0808') t,
              (select to_char(add_months(to_date(#{startTime}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') as YEAR_MONTH
               from dual
                   connect by rownum <![CDATA[ <=]]> months_between(to_date(#{endTime}, 'YYYY-MM'), to_date(#{startTime}, 'YYYY-MM')) + 1) c
@@ -340,7 +318,7 @@
                        (1 - (round((sum(
                                (case
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
@@ -351,11 +329,11 @@
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
                                                    16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
-                                         substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
+                                         substr(t.CLOSE_TIME, 1, 7)=c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
-                                    when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
+                                    when substr(t.FILLIN_TIME, 1, 7)=c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
@@ -365,18 +343,15 @@
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
                                              from T_EQUIPMENT
-                                             where SYSTEM_CODE = '1002' and MAJOR_CODE = '10')), 4))) * 100
+                                             where SYSTEM_CODE='1002' and MAJOR_CODE='10')), 4))) * 100
                    )        as "precent"
         from (select a.FAULT_NO,
                      a.FILLIN_TIME,
-                     (select max(b.CLOSE_TIME) from T_FAULT_ORDER b where a.FAULT_NO = b.FAULT_NO) as CLOSE_TIME
+                     NVL((SELECT MAX(b.CLOSE_TIME) FROM T_FAULT_ORDER b WHERE a.FAULT_NO=b.FAULT_NO),TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MM:SS')) AS CLOSE_TIME
               from T_FAULT_INFO a
-              where not exists(select 1
-                               from T_FAULT_ORDER b
-                               where a.FAULT_NO = b.FAULT_NO and b.ORDER_STATUS<![CDATA[ <>]]> '70')
-                and rtrim(a.FAULT_FLAG) is null
-                and a.MAJOR_CODE = '10'
-                and a.SYSTEM_CODE = '1002') t,
+              where rtrim(a.FAULT_FLAG) is null
+                and a.MAJOR_CODE='10'
+                and a.SYSTEM_CODE='1002') t,
              (select to_char(add_months(to_date(#{startTime}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') as YEAR_MONTH
               from dual
                   connect by rownum <![CDATA[ <=]]> months_between(to_date(#{endTime}, 'YYYY-MM'), to_date(#{startTime}, 'YYYY-MM')) + 1) c
