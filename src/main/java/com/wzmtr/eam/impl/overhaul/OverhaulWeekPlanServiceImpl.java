@@ -646,7 +646,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulPlanReqDTO.setTrialStatus(" ");
         overhaulPlanReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         overhaulPlanReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        String planCode = CodeUtils.getNextCode(overhaulPlanMapper.getMaxCode(), 2);
+        String planCode = overhaulPlanMapper.getMaxCode();
+        if (StringUtils.isEmpty(planCode)) {
+            planCode = "JX00000000";
+        }
+        planCode = CodeUtils.getNextCode(planCode, 2);
         overhaulPlanReqDTO.setPlanCode(planCode);
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanReqDTO.setRelationCode(" ");
