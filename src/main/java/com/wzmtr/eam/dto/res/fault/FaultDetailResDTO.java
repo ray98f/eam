@@ -201,7 +201,7 @@ public class FaultDetailResDTO {
     private String publishUserId;
     @ApiModelProperty(value = "下发时间")
     private String publishTime;
-    @ApiModelProperty(value = "故障等级")
+    @ApiModelProperty(value = "故障紧急程度")
     private String faultLevel;
     @ApiModelProperty(value = "故障状态")
     private String faultStatus;
