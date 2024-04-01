@@ -170,6 +170,14 @@ public class FaultReportReqDTO {
         if (!Objects.isNull(req.getMaintenance())) {
             convert.setExt4(req.getMaintenance().toString());
         }
+        //前端这里 1 是  0 否 我这里统一下把。。
+        String reliability = req.getIfReliability();
+        if (StringUtils.isNotEmpty(reliability) && "1".equals(reliability)) {
+            convert.setIfReliability("0");
+        }
+        if (StringUtils.isNotEmpty(reliability) && "0".equals(reliability)) {
+            convert.setIfReliability("1");
+        }
         convert.setTrainTag(req.getTraintag());
         if (StringUtils.isEmpty(req.getFillinDeptCode())) {
             convert.setFillinDeptCode(" ");
