@@ -380,6 +380,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "您选择触发的周计划中没有检修项！");
         }
         for (OverhaulPlanResDTO plan : planList) {
+            if (!checkHasNotOrder(plan.getPlanCode())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "选择触发的检修周计划中的检修计划存在未做完的工单，请优先做完工单后再进行触发。");
+            }
+        }
+        for (OverhaulPlanResDTO plan : planList) {
             List<OverhaulTplDetailResDTO> orderIsValid = overhaulPlanMapper.getOrderIsValid(plan.getPlanCode());
             if (StringUtils.isEmpty(orderIsValid)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您选择触发的周计划中没有检修项！");
@@ -408,7 +413,19 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             insertInspectObject(plan.getPlanCode(), orderCode);
             insertWorker(plan.getPlanCode(), orderCode);
         }
+    }
 
+    /**
+     * 检查检修计划是否存在未做完的工单
+     * @param planCode 检修计划编号
+     * @return 是否存在
+     */
+    public boolean checkHasNotOrder(String planCode) {
+        OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
+        overhaulOrderListReqDTO.setPlanCode(planCode);
+        overhaulOrderListReqDTO.setNewTime("flag");
+        List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
+        return StringUtils.isEmpty(list);
     }
 
     public void insertInspectPlan(String planCode, String[] orderCodes) throws Exception {
