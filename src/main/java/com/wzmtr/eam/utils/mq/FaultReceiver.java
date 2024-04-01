@@ -51,13 +51,17 @@ public class FaultReceiver {
 
     @Autowired
     private FaultReportMapper faultReportMapper;
-    private static final List<String> zcList = Arrays.asList("07", "06");
     @Autowired
     private OverTodoService overTodoService;
     @Autowired
     private PersonMapper personMapper;
     @Autowired
     private OrgMajorMapper orgMajorMapper;
+
+    /**
+     * 以下为代码中用到的常量
+     */
+    private static final List<String> ZC_LIST = Arrays.asList("07", "06");
 
     /**
      * 故障队列消费
@@ -100,10 +104,9 @@ public class FaultReceiver {
                 // 来源系统名称填充创建人
                 faultOrderDO.setRecCreator(fault.getSysName());
                 insertToFaultOrder(faultOrderDO, fault.getFaultNo(), faultWorkNo);
-
                 // 中铁通的直接变更为派工状态并发送待办给工班人员
                 zttSendOverTodo(majorCode, req, faultInfoDO, faultOrderDO, faultWorkNo);
-
+                // 添加工单流程
                 addFaultFlow(fault.getFaultNo(), faultWorkNo);
             }
         } catch (Exception e) {
@@ -113,7 +116,7 @@ public class FaultReceiver {
     }
 
     private void zttSendOverTodo(String majorCode, FaultReportReqDTO req, FaultInfoDO faultInfoDO, FaultOrderDO faultOrderDO, String faultWorkNo) {
-        if (!zcList.contains(majorCode)) {
+        if (!ZC_LIST.contains(majorCode)) {
             String positionCode = req.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                 // 专业和位置查维修部门

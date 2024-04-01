@@ -4,6 +4,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulWorkRecordReqDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulWorkRecordMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
@@ -64,15 +65,13 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
                     // 流程流转
                     try {
                         if (CommonConstants.TWO_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
-                            //TODO 锐鹏
-                            overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,overhaulOrderReqDTO.getOrderCode(),"检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workRecord.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtils.getCurrentPersonId(),null);
+                            overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,overhaulOrderReqDTO.getOrderCode(),"检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workRecord.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
                         } else if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
                             // 根据角色获取用户列表
                             List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), CommonConstants.DM_007);
                             for (BpmnExaminePersonRes map : userList) {
-                                // TODO 锐鹏
                                 overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,overhaulOrderReqDTO.getOrderCode(),"检修"), overhaulOrderReqDTO.getRecId(),
-                                        overhaulOrderReqDTO.getOrderCode(), map.getUserId(), "检修工单下达", "DMER0200", TokenUtils.getCurrentPersonId(),null);
+                                        overhaulOrderReqDTO.getOrderCode(), map.getUserId(), "检修工单下达", "DMER0200", TokenUtils.getCurrentPersonId(),BpmnFlowEnum.OVERHAUL_ORDER.value());
                             }
                         }
                     } catch (Exception e) {
