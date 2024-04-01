@@ -12,24 +12,24 @@
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     else 0 end))
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
@@ -67,24 +67,24 @@
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     else 0 end))
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
@@ -120,24 +120,24 @@
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     else 0 end))
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
@@ -175,24 +175,24 @@
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     else 0 end))
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
@@ -231,24 +231,24 @@
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     else 0 end))
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             to_number((select count(1)
@@ -287,24 +287,24 @@
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     else 0 end))
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
@@ -343,24 +343,24 @@
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) <![CDATA[ <]]> c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
                                                              TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')) *
-                                                   4)
+                                                   16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) = c.YEAR_MONTH
                                         then round(TO_NUMBER(TO_DATE(t.CLOSE_TIME, 'YYYY-MM-DD HH24:MI:SS') -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     when substr(t.FILLIN_TIME, 1, 7) = c.YEAR_MONTH and
                                          substr(t.CLOSE_TIME, 1, 7) > c.YEAR_MONTH
                                         then round(TO_NUMBER(add_months(
                                                                      TO_DATE(c.YEAR_MONTH || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),
                                                                      1) -
-                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 4)
+                                                             TO_DATE(t.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS')) * 16)
                                     else 0 end))
                                        ) / (to_number(to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd')) * 24 *
                                             (select count(1)
