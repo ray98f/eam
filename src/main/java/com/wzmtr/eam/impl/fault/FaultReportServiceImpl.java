@@ -13,8 +13,10 @@ import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.enums.OrderStatus;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -69,9 +72,12 @@ public class FaultReportServiceImpl implements FaultReportService {
     FaultSender faultSender;
     @Autowired
     private PersonMapper personMapper;
-    private static final List<String> zcList = Arrays.asList("06", "07");
     @Autowired
     private FaultQueryServiceImpl faultQueryServiceImpl;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+
+    private static final List<String> ZC_LIST = Arrays.asList("06", "07");
 
     @Override
     public String addToFault(FaultReportReqDTO reqDTO) {
@@ -88,7 +94,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         addFaultFlow(nextFaultNo, nextFaultWorkNo);
         String majorCode = reqDTO.getMajorCode();
         // 中铁通 且不是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
-        if (!zcList.contains(majorCode)) {
+        if (!ZC_LIST.contains(majorCode)) {
             if (!"10".equals(reqDTO.getFaultType())) {
                 String positionCode = reqDTO.getPositionCode();
                 if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
@@ -170,7 +176,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         //中铁通 且是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         String majorCode = reqDTO.getMajorCode();
-        if (!zcList.contains(majorCode) && !"10".equals(reqDTO.getFaultType())) {
+        if (!ZC_LIST.contains(majorCode) && !"10".equals(reqDTO.getFaultType())) {
             String positionCode = reqDTO.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                 // 专业和位置查维修部门
@@ -195,15 +201,30 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public String addToFaultOpen(FaultReportOpenReqDTO reqDTO) {
-        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
-        reqDTO.setFaultNo(nextFaultNo);
-        reqDTO.setFaultWorkNo(nextFaultWorkNo);
-        // 推送消息至mq
-        faultSender.sendFault(reqDTO);
-        return nextFaultNo;
+        String authorization = httpServletRequest.getHeader("app-key");
+        if (!CommonConstants.FAULT_OPEN_APP_KEY.equals(authorization)) {
+            throw new CommonException(ErrorCode.FAULT_OPEN_TOKEN_ERROR);
+        }
+        String nextFaultNo;
+        try {
+            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
+            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+            nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+            String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+            reqDTO.setFaultNo(nextFaultNo);
+            reqDTO.setFaultWorkNo(nextFaultWorkNo);
+        } catch (Exception e) {
+            log.error("open exception message", e);
+            throw new CommonException(ErrorCode.FAULT_OPEN_ERROR);
+        }
+        try {
+            // 推送消息至mq
+            faultSender.sendFault(reqDTO);
+            return nextFaultNo;
+        } catch (Exception e) {
+            log.error("open exception message", e);
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "推送异常！");
+        }
     }
 
     public void insertToFaultInfo(FaultInfoDO faultInfoDO, String nextFaultNo) {
