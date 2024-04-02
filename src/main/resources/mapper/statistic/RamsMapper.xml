@@ -333,7 +333,7 @@
         ORDER BY d.FAULT_NO DESC
     </select>
     <select id="getMileSubtract" resultType="java.lang.Double">
-        SELECT SUM(TOTAL_WORK_MILE)
+        SELECT SUM(DAILY_WORK_MILE)
         from T_TRAIN_MILE where "DAY">=#{startDate} and #{endDate}>="DAY"
         and EQUIP_NAME=#{trainNo} and DELETE_FLAG='0'
 <!--        SELECT-->

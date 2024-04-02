@@ -1174,16 +1174,16 @@ public class StatisticServiceImpl implements StatisticService {
         double delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'","0");
         double notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'","0");
         double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null,"0");
-        // double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
-        Double start = ramsMapper.getMileByTrainNoStart(startTime, trainNo);
-        Double end = ramsMapper.getMileByTrainNoEnd(endTime, trainNo);
-        double miles = 0.0;
-        if (null != start && null != end) {
-            miles = end - start;
+         double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
+//        Double start = ramsMapper.getMileByTrainNoStart(startTime, trainNo);
+//        Double end = ramsMapper.getMileByTrainNoEnd(endTime, trainNo);
+//        double miles = 0.0;
+//        if (null != start && null != end) {
+//            miles = end - start;
+//        }
+        if (miles == 0) {
+         throw new CommonException(ErrorCode.NORMAL_ERROR, "选定统计周期内累计运营里程为0，无法计算");
         }
-        // if (miles == 0) {
-        //     throw new CommonException(ErrorCode.NORMAL_ERROR, "选定统计周期内累计运营里程为0，无法计算");
-        // }
         res.setTotalMile(miles);
         // 实际指标计算
         res.setRealDelay(countTrainReliabilityIndex(delayCount, miles));
