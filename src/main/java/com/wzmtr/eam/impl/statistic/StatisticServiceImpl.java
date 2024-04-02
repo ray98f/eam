@@ -908,7 +908,7 @@ public class StatisticServiceImpl implements StatisticService {
         Map<String, FaultConditionResDTO> map = new HashMap<>();
         for (FaultConditionResDTO a : list) {
 
-            //TODO 20210331 先让前端暂时显示一下，逻辑需要重新理一下
+            //TODO 20210331 先让前端暂时显示一下，逻辑需要重新理一下  字典中的编码 dm.sysCode4Train 已更新
             switch (a.getSC()) {
                 case "01":
                 case "02":
