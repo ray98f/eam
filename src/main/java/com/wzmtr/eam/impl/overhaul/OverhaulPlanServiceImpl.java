@@ -580,14 +580,6 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                     if (i > 0) {
                         overhaulOrder.setOrderCode(CodeUtils.getNextCodeByAddNum(overhaulOrder.getOrderCode(), 10, i));
                     }
-                    if (StringUtils.isNotEmpty(overhaulOrder.getWorkerGroupCode())) {
-                        // 派工 直接派工至该工班人员
-                        overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrder.getOrderCode(), "检修"), overhaulOrder.getRecId(), overhaulOrder.getOrderCode(), overhaulOrder.getWorkerGroupCode(), "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
-                        overhaulOrder.setWorkStatus("3");
-                        overhaulOrder.setSendPersonId(TokenUtils.getCurrentPersonId());
-                        overhaulOrder.setSendPersonName(TokenUtils.getCurrentPerson().getPersonName());
-                        overhaulOrder.setSendTime(DateUtils.getCurrentTime());
-                    }
                     overhaulOrderMapper.addOverhaulOrder(overhaulOrder);
                     i++;
                 }
