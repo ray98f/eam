@@ -66,16 +66,16 @@
 
     <update id="updateTrainMile">
         update T_EQUIPMENT set
-        <if test="totalMiles!=null and totalMiles!=''">
+        <if test="totalMiles!=null">
             TOTAL_MILES=#{totalMiles},
         </if>
-        <if test="totalTractionEnergy!=null and totalTractionEnergy!=''">
+        <if test="totalTractionEnergy!=null">
             TOTAL_TRACTION_ENERGY = #{totalTractionEnergy},
         </if>
-        <if test="totalAuxiliaryEnergy!=null and totalAuxiliaryEnergy!=''">
+        <if test="totalAuxiliaryEnergy!=null">
             TOTAL_AUXILIARY_ENERGY = #{totalAuxiliaryEnergy},
         </if>
-        <if test="totalRegenratedElectricity!=null and totalRegenratedElectricity!=''">
+        <if test="totalRegenratedElectricity!=null">
             TOTAL_REGENERATED_ELECTRICITY = #{totalRegenratedElectricity},
         </if>
         DELETE_FLAG='0'
