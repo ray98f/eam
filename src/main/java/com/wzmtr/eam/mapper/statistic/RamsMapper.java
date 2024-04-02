@@ -2,10 +2,12 @@ package com.wzmtr.eam.mapper.statistic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.res.statistic.*;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,7 +23,12 @@ public interface RamsMapper {
 
     List<RamsResult2ResDTO> queryresult2(String startDate, String endDate);
 
+    /**
+     * 屎山
+     * @return
+     */
     List<FaultConditionResDTO> queryCountFautType4Rams();
+    List<FaultConditionResDTO> queryCountFaut();
 
     List<RamsSysPerformResDTO> querySysPerform();
 
@@ -57,10 +64,13 @@ public interface RamsMapper {
      * @return 累计运营里程相减值
      */
     Double getMileSubtract(String startDate, String endDate, String trainNo);
+    Double getMileByTrainNoEnd(String endDate, String trainNo);
+    Double getMileByTrainNoStart(String startDate, String trainNo);
 
     /**
      * 故障列表更换部件查询
      * @return
      */
     FaultRamsResDTO queryPart(String faultWorkNo);
+
 }
