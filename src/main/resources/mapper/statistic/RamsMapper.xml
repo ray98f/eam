@@ -9,7 +9,7 @@
                 and df.order_Status != '99'
               and d.IF_RELIABILITY = '0'
                 and d.FAULT_TYPE in ('10')
-                 and  df.FAULT_AFFEC in ('01', '10', '11')
+                 and  df.FAULT_AFFECT in ('01', '10', '11')
             )
             as "faultNum",
             (SELECT count(1)
@@ -19,7 +19,7 @@
                 and d.MAJOR_CODE  in('06','07')
               and df.order_Status != '99'
               and d.IF_RELIABILITY = '0'
-                and df.FAULT_AFFEC in ('03', '04', '05'))       as "affect11",
+                and df.FAULT_AFFECT in ('03', '04', '05'))       as "affect11",
             (SELECT count(1)
             FROM T_FAULT_INFO d
             left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
