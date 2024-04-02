@@ -147,9 +147,10 @@
                   and nvl(df.IS_FAULT, '10') = '10'
                   and d.MAJOR_CODE = '07'
                   and df.order_Status != '99')                    as "sum",
-               (select sum(a.MILES_INCREMENT)
-                from T_TRAIN_MILEAGE a
-                where substr(a.FILLIN_TIME, 1, 7) = c.YEAR_MONTH) as "miles"
+               (
+                   select sum(t.DAILY_WORK_MILE) / 10000
+                   from T_TRAIN_MILE t
+                   where substr(t.DAY, 1, 7) = c.YEAR_MONTH ) as "miles"
         from T_FAULT_INFO t,
              (select to_char(add_months(to_date(#{startDate}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') AS YEAR_MONTH
               from dual
