@@ -202,10 +202,18 @@ public class TrainMileServiceImpl implements TrainMileService {
         TrainMileReqDTO trainMileReqDTO = new TrainMileReqDTO();
         BeanUtils.copyProperties(trainMileDailyReqDTO, trainMileReqDTO);
         trainMileReqDTO.setRecId(null);
-        trainMileReqDTO.setTotalMiles(String.valueOf(trainMileDailyReqDTO.getTotalWorkMile()));
-        trainMileReqDTO.setTotalTractionEnergy(String.valueOf(trainMileDailyReqDTO.getTotalTractionEnergy()));
-        trainMileReqDTO.setTotalAuxiliaryEnergy(String.valueOf(trainMileDailyReqDTO.getTotalAuxiliaryEnergy()));
-        trainMileReqDTO.setTotalRegenratedElectricity(String.valueOf(trainMileDailyReqDTO.getTotalRegenratedElectricity()));
+        if (StringUtils.isNotNull(trainMileDailyReqDTO.getTotalWorkMile())) {
+            trainMileReqDTO.setTotalMiles(String.valueOf(trainMileDailyReqDTO.getTotalWorkMile()));
+        }
+        if (StringUtils.isNotNull(trainMileDailyReqDTO.getTotalTractionEnergy())) {
+            trainMileReqDTO.setTotalTractionEnergy(String.valueOf(trainMileDailyReqDTO.getTotalTractionEnergy()));
+        }
+        if (StringUtils.isNotNull(trainMileDailyReqDTO.getTotalAuxiliaryEnergy())) {
+            trainMileReqDTO.setTotalAuxiliaryEnergy(String.valueOf(trainMileDailyReqDTO.getTotalAuxiliaryEnergy()));
+        }
+        if (StringUtils.isNotNull(trainMileDailyReqDTO.getTotalRegenratedElectricity())) {
+            trainMileReqDTO.setTotalRegenratedElectricity(String.valueOf(trainMileDailyReqDTO.getTotalRegenratedElectricity()));
+        }
         trainMileMapper.updateTrainMile(trainMileReqDTO);
     }
 
