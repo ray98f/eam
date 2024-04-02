@@ -327,6 +327,9 @@
         <if test="faultAffect!=null and faultAffect!=''">
             AND df.FAULT_AFFECT in (${faultAffect})
         </if>
+        <if test="ifReliability!=null and ifReliability!=''">
+            and d.IF_RELIABILITY = #{ifReliability}
+        </if>
         ORDER BY d.FAULT_NO DESC
     </select>
     <select id="getMileSubtract" resultType="java.lang.Double">

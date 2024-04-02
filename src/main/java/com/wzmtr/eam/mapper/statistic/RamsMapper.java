@@ -54,7 +54,7 @@ public interface RamsMapper {
      * @param faultAffect 故障影响
      * @return 故障数量
      */
-    Double countRamsFaultList(String startDate, String endDate, String trainNo, String faultType, String faultAffect);
+    Double countRamsFaultList(String startDate, String endDate, String trainNo, String faultType, String faultAffect,String ifReliability);
 
     /**
      * 获取时间段内累计运营里程相减值
