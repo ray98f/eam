@@ -422,7 +422,9 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearReqDTO reqDTO) {
         List<OneCarOneGearResDTO> query = oneCarOneGearMapper.query(reqDTO.getEquipName());
-        OneCarOneGearResDTO summary = oneCarOneGearMapper.querySummary(reqDTO.getEndTime(), reqDTO.getStartTime(), reqDTO.getEquipName());
+        OneCarOneGearResDTO summary = oneCarOneGearMapper.querySummary(
+                reqDTO.getEndTime() + " 23:59:59", reqDTO.getStartTime() + " 00:00:00",
+                reqDTO.getEndTime(), reqDTO.getStartTime(), reqDTO.getEquipName());
         if (query != null) {
             summary.setStartUseDate(query.get(0).getStartUseDate());
             summary.setManufactureDate(query.get(0).getManufactureDate());
@@ -910,96 +912,143 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     /**
+     * 真的屎山
      * 各系统故障情况统计
      */
     @Override
     public List<FaultConditionResDTO> queryCountFaultType() {
-        List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4Rams();
+        List<FaultConditionResDTO> list = ramsMapper.queryCountFaut();
+
         List<RamsResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
         RamsResDTO ramsResDTO = ramsResDTOS.get(0);
         Set<String> names = Sets.newHashSet();
         Map<String, FaultConditionResDTO> map = new HashMap<>();
+        mapInit(map);
         for (FaultConditionResDTO a : list) {
-
-            //TODO 20210331 先让前端暂时显示一下，逻辑需要重新理一下  字典中的编码 dm.sysCode4Train 已更新
-            switch (a.getSC()) {
-                case "01":
-                case "02":
-                case "03":
-                case "04":
+            //TODO 合同指标 产品还没给
+            if (StringUtils.isEmpty(a.getSC())){
+                continue;
+            }
+            switch (substringFirstThree(a.getSC())) {
+                    //气动装置和空气分配系统1'
+                case "B09":
+                    //气动装置和空气分配系统2'
+                case "B10":
+                    rebuildBlock(a, names, "气动装置和空气分配系统", "9000");
+                    break;
+                    //客室门
+                case "B15":
+                case "B16":
+                case "B17":
+                case "B27":
                     rebuildBlock(a, names, "门窗系统", "9000");
                     break;
-                case "12":
-                    rebuildBlock(a, names, "制动系统", "43000");
+                case "B08":
+                    rebuildBlock(a, names, "制动系统", "9000");
                     break;
-                case "13":
-                    rebuildBlock(a, names, "空调及通风系统", "85000");
+                case "B19":
+                case "B20":
+                    rebuildBlock(a, names, "空调及通风系统", "9000");
                     break;
-                case "14":
-                    rebuildBlock(a, names, "转向架", "381000");
+                case "B03":
+                    rebuildBlock(a, names, "转向架", "9000");
                     break;
-                case "17":
-                    rebuildBlock(a, names, "旅客信息系统雷达辅助系统", "191000");
+                case "B25":
+                    rebuildBlock(a, names, "雷达辅助系统", "9000");
                     break;
-                case "10":
-                    rebuildBlock(a, names, "网络系统", "254000");
+                case "B01":
+                case "B02":
+                case "B12":
+                case "B18":
+                case "B21":
+                    rebuildBlock(a, names, "车体结构及内装", "9000");
                     break;
-                case "05":
-                case "08":
-                case "09":
-                case "21":
-                    rebuildBlock(a, names, "车体结构及内装", "191000");
+                case "B06":
+                case "B07":
+                    rebuildBlock(a, names, "牵引及高压系统", "9000");
                     break;
-                case "06":
-                    rebuildBlock(a, names, "牵引及高压系统", "11000");
+                case "B04":
+                case "B05":
+                    rebuildBlock(a, names, "贯通道和车钩", "9000");
                     break;
-                case "07":
-                    rebuildBlock(a, names, "贯通道和车钩", "381000");
+                case "B22":
+                    rebuildBlock(a, names, "列车管理及列车控制系统", "9000");
                     break;
-                //列车管理及列车控制系统 、  走行部检测系统 弓网检测系统 轨道检测系统 运行性能检测系统
-                case "18":
-                    rebuildBlock(a, names, "列车管理及列车控制系统", "11000");
+                case "B23":
+                case "B24":
+                    rebuildBlock(a, names, "旅客信息系统", "9000");
                     break;
-                case "19":
-                    rebuildBlock(a, names, "运行性能检测系统", "11000");
+                case "B30":
+                    rebuildBlock(a, names, "运行性能检测系统", "9000");
                     break;
-                case "11":
-                    rebuildBlock(a, names, "轨道检测系统", "11000");
+                case "B26":
+                    rebuildBlock(a, names, "走行部监测系统", "9000");
                     break;
-                case "15":
-                    rebuildBlock(a, names, "弓网检测系统", "11000");
+                case "B29":
+                    rebuildBlock(a, names, "轨道检测系统", "9000");
                     break;
-                case "16":
-                    rebuildBlock(a, names, "走行部检测系统", "11000");
-                    break;
-                case "20":
-                    rebuildBlock(a, names, "辅助供电设备系统", "38000");
+                case "B28":
+                    rebuildBlock(a, names, "弓网检测系统", "9000");
                     break;
                 default:
                     break;
             }
-            FaultConditionResDTO last = map.get(a.getModuleName());
-            if (map.containsKey(a.getModuleName())) {
-                a.setCRK(String.valueOf(Integer.parseInt(a.getCRK() == null ? CommonConstants.ZERO_STRING:a.getCRK()) + Integer.parseInt(last.getCRK()== null ? CommonConstants.ZERO_STRING:last.getCRK())));
-                a.setZX(String.valueOf(Integer.parseInt(a.getZX() == null ? CommonConstants.ZERO_STRING:a.getZX()) + Integer.parseInt(last.getZX()== null ? CommonConstants.ZERO_STRING:last.getZX())));
-                a.setZS(String.valueOf(Integer.parseInt(a.getZS()== null ? CommonConstants.ZERO_STRING:a.getZS()) + Integer.parseInt(last.getZS()== null ? CommonConstants.ZERO_STRING:last.getZS())));
-                a.setYF(String.valueOf(Integer.parseInt(a.getYF() == null ? CommonConstants.ZERO_STRING:a.getYF()) + Integer.parseInt(last.getYF()== null ? CommonConstants.ZERO_STRING:last.getYF())));
-                a.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()== null ? CommonConstants.ZERO_STRING:a.getNOYF()) + Integer.parseInt(last.getNOYF()== null ? CommonConstants.ZERO_STRING:last.getNOYF())));
-                map.put(a.getModuleName(), a);
-            } else {
-                a.setCRK(String.valueOf(Integer.parseInt(a.getCRK() == null ? CommonConstants.ZERO_STRING:a.getCRK())));
-                a.setZX(String.valueOf(Integer.parseInt(a.getZX() == null ? CommonConstants.ZERO_STRING:a.getZX())));
-                a.setZS(String.valueOf(Integer.parseInt(a.getZS()== null ? CommonConstants.ZERO_STRING:a.getZS())));
-                a.setYF(String.valueOf(Integer.parseInt(a.getYF() == null ? CommonConstants.ZERO_STRING:a.getYF())));
-                a.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()== null ? CommonConstants.ZERO_STRING:a.getNOYF())));
-                map.put(a.getModuleName(), a);
+
+
+            String moduleName = a.getModuleName();
+            FaultConditionResDTO last = map.get(moduleName);
+            if (map.containsKey(moduleName)) {
+                last.setCRK(String.valueOf(Integer.parseInt(a.getCRK() == null ? CommonConstants.ZERO_STRING:a.getCRK()) + Integer.parseInt(last.getCRK()== null ? CommonConstants.ZERO_STRING:last.getCRK())));
+                last.setZX(String.valueOf(Integer.parseInt(a.getZX() == null ? CommonConstants.ZERO_STRING:a.getZX()) + Integer.parseInt(last.getZX()== null ? CommonConstants.ZERO_STRING:last.getZX())));
+                last.setZS(String.valueOf(Integer.parseInt(a.getZS()== null ? CommonConstants.ZERO_STRING:a.getZS()) + Integer.parseInt(last.getZS()== null ? CommonConstants.ZERO_STRING:last.getZS())));
+                last.setYF(String.valueOf(Integer.parseInt(a.getYF() == null ? CommonConstants.ZERO_STRING:a.getYF()) + Integer.parseInt(last.getYF()== null ? CommonConstants.ZERO_STRING:last.getYF())));
+                last.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()== null ? CommonConstants.ZERO_STRING:a.getNOYF()) + Integer.parseInt(last.getNOYF()== null ? CommonConstants.ZERO_STRING:last.getNOYF())));
+                last.setModuleName(moduleName);
             }
         }
 
         buildFaultTypeIsCompliance(map, ramsResDTO);
+
         return new ArrayList<>(map.values());
     }
 
+    private void mapInit(Map<String, FaultConditionResDTO> map) {
+        mapInit(map,"气动装置和空气分配系统");
+        mapInit(map,"门窗系统");
+        mapInit(map,"制动系统");
+        mapInit(map,"空调及通风系统");
+        mapInit(map,"转向架");
+        mapInit(map,"雷达辅助系统");
+        mapInit(map,"车体结构及内装");
+        mapInit(map,"牵引及高压系统");
+        mapInit(map,"贯通道和车钩");
+        mapInit(map,"列车管理及列车控制系统");
+        mapInit(map,"旅客信息系统");
+        mapInit(map,"运行性能检测系统");
+        mapInit(map,"走行部监测系统");
+        mapInit(map,"轨道检测系统");
+        mapInit(map,"弓网检测系统");
+    }
+
+    public void mapInit(Map<String, FaultConditionResDTO> map,String name) {
+        FaultConditionResDTO a = new FaultConditionResDTO();
+        a.setCRK(CommonConstants.ZERO_STRING);
+        a.setZX(CommonConstants.ZERO_STRING);
+        a.setZS(CommonConstants.ZERO_STRING);
+        a.setYF(CommonConstants.ZERO_STRING);
+        a.setContractZB(CommonConstants.ZERO_STRING);
+        a.setIsDB(CommonConstants.ZERO_STRING);
+        a.setNOYF(CommonConstants.ZERO_STRING);
+        a.setModuleName(name);
+        map.put(name, a);
+    }
+
+    public static String substringFirstThree(String str) {
+        if (str == null || str.length() < 3) {
+            return str; // 如果字符串为空或者长度小于3，直接返回原字符串
+        }
+        return str.substring(0, 3);
+    }
     /**
      * 各系统故障情况统计-构建是否达标标识
      * @param map 集合
@@ -1094,41 +1143,48 @@ public class StatisticServiceImpl implements StatisticService {
         }
     }
 
-    public void rebuildBlock(FaultConditionResDTO map, Set<String> module, String moduleName, String contractZB) {
+    public void rebuildBlock(FaultConditionResDTO res, Set<String> module, String moduleName, String contractZB) {
         DecimalFormat df = new DecimalFormat("#0");
-        String ZX = map.getZX();
-        String CRK = map.getCRK();
-        String YF = map.getYF();
-        String ZS = map.getZS();
-        String NOYF = map.getNOYF();
-        map.setContractZB(contractZB);
-        map.setModuleName(moduleName);
-        if (module.contains(moduleName)) {
-            map.setZX(df.format(Double.parseDouble(ZX) + ZX));
-            map.setCRK(df.format(Double.parseDouble(CRK) + CRK));
-            map.setYF(df.format(Double.parseDouble(YF) + YF));
-            map.setZS(df.format(Double.parseDouble(ZS) + ZS));
-            map.setNOYF(df.format(Double.parseDouble(NOYF) + NOYF));
-        } else {
-            map.setModuleName(moduleName);
-            map.setZX(ZX);
-            map.setCRK(CRK);
-            map.setYF(YF);
-            map.setZS(ZS);
-            map.setNOYF(NOYF);
-        }
+        String ZX = res.getZX();
+        String CRK = res.getCRK();
+        String YF = res.getYF();
+        String ZS = res.getZS();
+        String NOYF = res.getNOYF();
+        res.setContractZB(contractZB);
+        res.setModuleName(moduleName);
+        // 到底想要干嘛？ 无语
+        // if (module.contains(moduleName)) {
+        //     res.setZX(df.format(Double.parseDouble(ZX) + ZX));
+        //     res.setCRK(df.format(Double.parseDouble(CRK) + CRK));
+        //     res.setYF(df.format(Double.parseDouble(YF) + YF));
+        //     res.setZS(df.format(Double.parseDouble(ZS) + ZS));
+        //     res.setNOYF(df.format(Double.parseDouble(NOYF) + NOYF));
+        // } else {
+        //     res.setModuleName(moduleName);
+        //     res.setZX(ZX);
+        //     res.setCRK(CRK);
+        //     res.setYF(YF);
+        //     res.setZS(ZS);
+        //     res.setNOYF(NOYF);
+        // }
     }
 
     @Override
     public RamsTrainReliabilityResDTO trainReliability(String startTime, String endTime, String trainNo) {
         RamsTrainReliabilityResDTO res = new RamsTrainReliabilityResDTO();
         // 获取各指标项的故障次数
-        double delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'");
-        double notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'");
-        double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null);
-        double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
+        double delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'","0");
+        double notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'","0");
+        double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null,"0");
+         double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
+//        Double start = ramsMapper.getMileByTrainNoStart(startTime, trainNo);
+//        Double end = ramsMapper.getMileByTrainNoEnd(endTime, trainNo);
+//        double miles = 0.0;
+//        if (null != start && null != end) {
+//            miles = end - start;
+//        }
         if (miles == 0) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "选定统计周期内累计运营里程为0，无法计算");
+         throw new CommonException(ErrorCode.NORMAL_ERROR, "选定统计周期内累计运营里程为0，无法计算");
         }
         res.setTotalMile(miles);
         // 实际指标计算
@@ -1150,7 +1206,7 @@ public class StatisticServiceImpl implements StatisticService {
         if (miles != 0) {
             return count * 1000000 / (4 * miles);
         }
-        return null;
+        return 0.0;
     }
 
     @Override

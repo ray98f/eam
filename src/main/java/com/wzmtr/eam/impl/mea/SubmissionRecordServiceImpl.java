@@ -277,7 +277,13 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public SubmissionRecordDetailResDTO getSubmissionRecordDetailDetail(String id) {
-        return submissionRecordMapper.getSubmissionRecordDetailDetail(id);
+        SubmissionRecordDetailResDTO res = submissionRecordMapper.getSubmissionRecordDetailDetail(id);
+        if (StringUtils.isNotNull(res)) {
+            if (StringUtils.isNotEmpty(res.getVerifyReportFileid())) {
+                res.setVerifyReportFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportFileid().split(","))));
+            }
+        }
+        return res;
     }
 
     @Override
