@@ -16,7 +16,6 @@ import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
-import com.wzmtr.eam.dto.res.statistic.excel.ExcelFaultDetailResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import com.wzmtr.eam.dto.res.statistic.excel.*;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -35,6 +34,7 @@ import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StreamUtils;
 import com.wzmtr.eam.utils.StringUtils;
@@ -50,7 +50,9 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Author: Li.Wang
@@ -145,6 +147,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setName(RateIndex.POWER_RATE.getDesc());
             failureRateDetailResDTO.setPowerRate(reliabilityDetailResDTO);
         }
+        //没做 产品没要求 2024 04 01
         if (reqDTO.getIndex().contains(RateIndex.PSD_RATE)) {
             //<!--屏蔽门故障率-->
             List<FailureRateResDTO> psDrate = failureRateMapper.PSDrate(reqDTO);
@@ -189,7 +192,7 @@ public class StatisticServiceImpl implements StatisticService {
                 planNameList.addAll(overhaulOrderMapper.queryPlan(dictionaries.getItemCname()));
             }
         }
-        planNameList = planNameList.stream().distinct().filter(Objects::nonNull).collect(Collectors.toList());
+        planNameList = planNameList.stream().distinct().filter(Objects::nonNull).collect(toList());
         Page<MaterialResDTO> page = materialMapper.query(reqDTO.of(), planNameList, reqDTO.getMatName(), reqDTO.getStartTime(), reqDTO.getEndTime(), reqDTO.getTrainNo());
         if (StringUtils.isEmpty(page.getRecords())) {
             return new Page<>();
@@ -281,22 +284,23 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public ReliabilityListResDTO reliabilityQuery(FailreRateQueryReqDTO reqDTO) {
         // todo 代码结构过于冗余，后期优化。
-        if (StringUtils.isEmpty(reqDTO.getStartTime()) && StringUtils.isEmpty(reqDTO.getEndTime())) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            String starDate = calendar.get(Calendar.YEAR) + "-01-01";
-            Date parse = null;
-            try {
-                parse = sdf.parse(starDate);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-            calendar.setTime(parse);
-            reqDTO.setStartTime(sdf.format(calendar.getTime()));
-            calendar.add(Calendar.YEAR, 1);
-            reqDTO.setEndTime(sdf.format(calendar.getTime()));
-        }
+//        if (StringUtils.isEmpty(reqDTO.getStartTime()) && StringUtils.isEmpty(reqDTO.getEndTime())) {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(new Date());
+//            String starDate = calendar.get(Calendar.YEAR) + "-01-01";
+//            Date parse = null;
+//            try {
+//                parse = sdf.parse(starDate);
+//            } catch (ParseException e) {
+//                throw new RuntimeException(e);
+//            }
+//            calendar.setTime(parse);
+//            reqDTO.setStartTime(sdf.format(calendar.getTime()));
+//            calendar.add(Calendar.YEAR, 1);
+//            reqDTO.setEndTime(sdf.format(calendar.getTime()));
+//        }
+        List<String> months = DateUtils.getMonthBetweenDate(reqDTO.getStartTime(), reqDTO.getEndTime());
         ReliabilityListResDTO reliabilityListResDTO = new ReliabilityListResDTO();
         if (reqDTO.getSystemType().contains(SystemType.TICKET)) {
             // 售票机可靠度
@@ -311,6 +315,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.TICKET.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryTicketFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.GATE_BRAKE)) {
@@ -326,6 +331,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.GATE_BRAKE.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryGateBrakeFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.ESCALATOR)) {
@@ -341,6 +347,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.ESCALATOR.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryEscalatorFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.VERTICAL_ESCALATOR)) {
@@ -356,6 +363,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.VERTICAL_ESCALATOR.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryVerticalEscalatorFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.TRAIN_PASSENGER)) {
@@ -371,6 +379,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.TRAIN_PASSENGER.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryTrainPassengerInformationFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.STATION_PASSENGER)) {
@@ -386,6 +395,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.STATION_PASSENGER.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryStationPassengerInformationFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.FIRE_FIGHTING)) {
@@ -401,9 +411,22 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.FIRE_FIGHTING.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryFireFightingEquipmentFault(reliabilityDetailResDTO);
         }
         return reliabilityListResDTO;
+    }
+
+    /**
+     * 填充统计对象中不存在的月份数据
+     *
+     * @param res 统计对象
+     */
+    private void buildResMonth(ReliabilityDetailResDTO res, List<String> months) {
+        if (StringUtils.isNull(res) || res.getMonth().isEmpty()) {
+            res.setMonth(months);
+            res.setData(Stream.generate(() -> "100").limit(res.getMonth().size()).collect(toList()));
+        }
     }
 
     @Override

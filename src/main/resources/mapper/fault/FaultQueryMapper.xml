@@ -195,7 +195,9 @@
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS "majorName",
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(df.REPORT_FINISH_USER_ID)) as "reportFinishUserName",
         (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
+        df.REPORT_FINISH_TIME as reportFinishTime,
         d.MAJOR_CODE AS "majorCode",
         d.SYSTEM_CODE AS "systemCode",
         d.EQUIP_TYPE_CODE AS "equipTypeCode",
@@ -218,7 +220,6 @@
         d.REPAIR_DEPT_CODE AS "repairDeptCode",
         d.PUBLISH_USER_ID AS "publishUserId",
         d.PUBLISH_TIME AS "publishTime",
-        d.FAULT_LEVEL AS "faultLevel",
         d.FAULT_STATUS AS "faultStatus",
         d.WORK_FLOW_INST_ID AS "workFlowInstId",
         d.WORK_FLOW_INST_STATUS AS "workFlowInstStatus",
@@ -248,7 +249,7 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
-        df.EXT1 AS "levelfault"
+        df.EXT1 AS "faultLevel"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
