@@ -262,6 +262,7 @@
         d.FAULT_MODULE_ID	as "faultModuleId",
         d.FAULT_TYPE	as "faultType",  <!-- 故障分类（10-运营故障；20-自检故障；30-新线调试；40-正线故障；50-出库故障） -->
         d.SOURCE_CODE	as "sourceCode",  <!-- 来源编号 -->
+        df.FAULT_AFFECT	as "faultAffect",  <!-- 故障影响 -->
         d.FAULT_DISPLAY_CODE	as "faultDisplayCode",  <!-- 故障现象 -->
         d.FAULT_DISPLAY_DETAIL as "faultDisplayDetail",
         d.FAULT_DETAIL	as "faultDetail",  <!-- 故障详情 -->
@@ -304,13 +305,13 @@
         left join SYS_USER u on u.LOGIN_NAME=df.REPORT_FINISH_USER_ID
         WHERE 1=1 and d.MAJOR_CODE='07' and nvl(df.IS_FAULT,'10')='10'
         <if test="equipName!=null and equipName != ''">
-            and d.OBJECT_NAME = #{equipName}
+            and d.OBJECT_NAME=#{equipName}
         </if>
         <if test="startTime!=null and startTime!=''">
-            and to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            and to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -402,7 +403,7 @@
         EXT5 as "ext5",  <!-- 扩展字段5 -->
         EXT6 as "ext6",  <!-- 扩展字段6 -->
         EXT7 as "ext7" <!-- 扩展字段7 -->
-        FROM T_PART_REPLACEMENT WHERE 1=1
+        FROM T_PART_REPLACEMENT WHERE DELETE_FLAG='0'
         <if test="equipName!=null and equipName!=''">
             AND EQUIP_NAME = #{equipName}
         </if>
@@ -461,5 +462,135 @@
         </if>
         group BY DM06.DAY
         ORDER BY DM06.DAY DESC
+    </select>
+
+    <select id="listGearboxChangeOil" resultType="com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO">
+        SELECT
+        a.REC_ID	as "recId",  <!-- 记录编号 -->
+        a.TRAIN_NO	as "trainNo",  <!-- 列车号 -->
+        a.TOTAL_MILES  as "totalMiles",  <!-- 里程(公里) -->
+        a.COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
+        a.ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        a.OPERATOR	as "operator",  <!-- 作业人员 -->
+        a.CONFIRMOR	as "confirmor",  <!-- 确认人员 -->
+        a.REMARK	as "remark",  <!-- 备注 -->
+        a.DOC_ID	as "docId",  <!-- 附件编号 -->
+        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        a.EXT5	as "ext5",  <!-- 扩展字段5 -->
+        a.EXT6	as "ext6",  <!-- 扩展字段6 -->
+        a.EXT7	as "ext7" <!-- 扩展字段7 -->
+        FROM T_GEARBOX_CHANGE_OIL a
+        LEFT JOIN T_EQUIPMENT b on b.EQUIP_NAME=a.TRAIN_NO and b.DELETE_FLAG='0' and b.MAJOR_CODE='07'
+        WHERE 1=1 and a.DELETE_FLAG='0'
+        <if test="req.equipName!=null and req.equipName!=''">
+            and a.TRAIN_NO like '%' || #{req.equipName} || '%'
+        </if>
+        <if test="req.startTime!=null and req.startTime!=''">
+            and a.COMPLETE_DATE>=#{req.startTime}
+        </if>
+        <if test="req.endTime!=null and req.endTime!=''">
+            and #{req.endTime}>=a.COMPLETE_DATE
+        </if>
+        ORDER BY a.REC_CREATE_TIME desc
+    </select>
+
+    <select id="listWheelsetLathing" resultType="com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        TRAIN_NO	as "trainNo",  <!-- 列车号 -->
+        CARRIAGE_NO	as "carriageNo",  <!-- 车厢号 -->
+        AXLE_NO	as "axleNo",  <!-- 镟修轮对车轴 -->
+        WHEEL_NO  as "wheelNo",  <!-- 镟修轮对号 -->
+        WHEEL_HEIGHT  as "wheelHeight",  <!-- 轮高 -->
+        WHEEL_THICK  as "wheelThick",  <!-- 轮厚 -->
+        WHEEL_DIAMETER  as "wheelDiameter",  <!-- 轮径 -->
+        REPAIR_DETAIL  as "repairDetail",  <!-- 镟修详情 -->
+        START_DATE	as "startDate",  <!-- 开始日期 -->
+        COMPLETE_DATE	as "completeDate",  <!-- 完成日期 -->
+        RESP_PEOPLE	as "respPeople",  <!-- 负责人 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7" <!-- 扩展字段7 -->
+        FROM T_WHEELSET_LATHING
+        WHERE 1=1 and DELETE_FLAG='0'
+        <if test="req.equipName!=null and req.equipName!=''">
+            and TRAIN_NO like '%' || #{req.equipName} || '%'
+        </if>
+        <if test="req.startTime!=null and req.startTime!=''">
+            and START_DATE>=#{req.startTime}
+        </if>
+        <if test="req.endTime!=null and req.endTime!=''">
+            and #{req.endTime}>=START_DATE
+        </if>
+        ORDER BY REC_CREATE_TIME desc
+    </select>
+
+    <select id="listGeneralSurvey" resultType="com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        TRAIN_NO	as "trainNo",  <!-- 列车号 -->
+        REC_TYPE	as "recType",  <!-- 类别 -->
+        REC_NOTIFY_NO	as "recNotifyNo",  <!-- 技术通知单编号 -->
+        REC_DETAIL	as "recDetail",  <!-- 项目内容 -->
+        COMPLETE_DATE	as "completeDate",  <!-- 完成时间 -->
+        ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        RECORD_ID	as "recordId",  <!-- 作业记录编号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7" <!-- 扩展字段7 -->
+        FROM T_GENERAL_SURVEY
+        WHERE 1=1 and DELETE_FLAG='0'
+        <if test="req.equipName!=null and req.equipName!=''">
+            and TRAIN_NO like '%' || #{req.equipName} || '%'
+        </if>
+        <if test="req.startTime!=null and req.startTime!=''">
+            and COMPLETE_DATE>=#{req.startTime}
+        </if>
+        <if test="req.endTime!=null and req.endTime!=''">
+            and #{req.endTime}>=COMPLETE_DATE
+        </if>
+        ORDER BY REC_CREATE_TIME desc
     </select>
 </mapper>

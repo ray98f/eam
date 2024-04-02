@@ -79,11 +79,15 @@ public interface StatisticService {
      */
     Page<GearboxChangeOilResDTO> pageGearboxChangeOil(OneCarOneGearQueryReqDTO reqDTO);
 
+    void pageGearboxChangeOilExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException;
+
     Page<WheelsetLathingResDTO> pageWheelsetLathing(OneCarOneGearQueryReqDTO reqDTO);
+
+    void pageWheelsetLathingExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
     Page<GeneralSurveyResDTO> pageGeneralSurvey(OneCarOneGearQueryReqDTO reqDTO);
 
-    void pageGeneralSurveyExport(String equipName, HttpServletResponse response) throws IOException;
+    void pageGeneralSurveyExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
     Page<InspectionJobListResDTO> queryER2(OneCarOneGearQueryReqDTO reqDTO);
 
@@ -105,15 +109,11 @@ public interface StatisticService {
 
     void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
-    void pageGearboxChangeOilExport(String equipName, HttpServletResponse response) throws IOException;
-
     void querydmer3Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
     void queryER4Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
     void queryER1Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
-
-    void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
     /**
      * 故障统计报表列表导出

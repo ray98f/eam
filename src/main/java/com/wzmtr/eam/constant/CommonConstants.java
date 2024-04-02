@@ -149,4 +149,6 @@ public class CommonConstants {
 
     public static final String ERROR = "异常";
 
+    public static final String FAULT_OPEN_APP_KEY = "ubcrjTM9BE1F79Cc";
+
 }

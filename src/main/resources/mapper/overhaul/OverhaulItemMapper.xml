@@ -103,7 +103,10 @@
         EXT3	as "ext3",  <!-- 扩展字段3 -->
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5" <!-- 扩展字段5 -->
-        FROM T_OVERHAUL_ITEM WHERE OBJECT_CODE=#{objectCode} and ORDER_CODE=#{orderCode} and MODEL_NAME=#{modelName}
+        FROM T_OVERHAUL_ITEM WHERE OBJECT_CODE=#{objectCode} and ORDER_CODE=#{orderCode}
+        <if test="modelName!=null and !modelName.equals('默认模块')">
+            and MODEL_NAME=#{modelName}
+        </if>
         order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
     </select>
 
