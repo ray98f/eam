@@ -25,7 +25,7 @@ public interface OneCarOneGearMapper {
 
     List<OneCarOneGearResDTO> query(String equipName);
 
-    OneCarOneGearResDTO querySummary(String endTime, String startTime, String equipName);
+    OneCarOneGearResDTO querySummary(String endTime, String startTime, String endTime1, String startTime1, String equipName);
 
     /**
      * 二级修(90天

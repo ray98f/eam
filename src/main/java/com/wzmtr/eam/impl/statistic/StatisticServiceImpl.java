@@ -422,7 +422,9 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearReqDTO reqDTO) {
         List<OneCarOneGearResDTO> query = oneCarOneGearMapper.query(reqDTO.getEquipName());
-        OneCarOneGearResDTO summary = oneCarOneGearMapper.querySummary(reqDTO.getEndTime() + " 23:59:59", reqDTO.getStartTime() + " 00:00:00", reqDTO.getEquipName());
+        OneCarOneGearResDTO summary = oneCarOneGearMapper.querySummary(
+                reqDTO.getEndTime() + " 23:59:59", reqDTO.getStartTime() + " 00:00:00",
+                reqDTO.getEndTime(), reqDTO.getStartTime(), reqDTO.getEquipName());
         if (query != null) {
             summary.setStartUseDate(query.get(0).getStartUseDate());
             summary.setManufactureDate(query.get(0).getManufactureDate());

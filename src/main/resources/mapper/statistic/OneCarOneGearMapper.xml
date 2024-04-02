@@ -22,7 +22,7 @@
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
-           and to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
+           and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="endTime!=null">
            and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
@@ -38,7 +38,7 @@
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
-          and to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
+          and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="endTime!=null">
           and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
@@ -54,7 +54,7 @@
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
-          and to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
+          and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="endTime!=null">
           and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
@@ -70,7 +70,7 @@
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
-          and to_date(t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
+          and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="endTime!=null">
           and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
@@ -99,7 +99,7 @@
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
-           and to_date( t1.REAL_END_TIME , 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
+           and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="endTime!=null">
            and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
@@ -133,10 +133,10 @@
         WHERE
         DM06.EQUIP_NAME =#{equipName}
         <if test="startTime!=null">
-           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime1}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime1}, 'YYYY-MM-DD')
         </if>
         ) as "minusMile",
         (SELECT
@@ -146,10 +146,10 @@
         WHERE
         DM06.EQUIP_NAME =#{equipName}
         <if test="startTime!=null">
-           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime1}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime1}, 'YYYY-MM-DD')
         </if>
         ) as "minuskWh",
         (SELECT
@@ -159,10 +159,10 @@
         WHERE
         DM06.EQUIP_NAME =#{equipName}
         <if test="startTime!=null">
-           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime1}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime1}, 'YYYY-MM-DD')
         </if>
         ) as "minusReEle"
         from dual
