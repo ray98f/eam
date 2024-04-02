@@ -18,7 +18,7 @@
         T_OVERHAUL_ORDER
         WHERE
         T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修(30天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修（30天%')
+        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修30天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修30天%')
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
@@ -34,7 +34,7 @@
         T_OVERHAUL_ORDER
         WHERE
         T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修(90天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修（90天%')
+        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修90天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修90天%')
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
@@ -50,7 +50,7 @@
         T_OVERHAUL_ORDER
         WHERE
         T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修(180天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修（180天%')
+        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修180天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修180天%')
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
@@ -66,7 +66,7 @@
         T_OVERHAUL_ORDER
         WHERE
         T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修(360天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修（360天%')
+        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修360天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修360天%')
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
@@ -180,7 +180,7 @@
         T_OVERHAUL_ORDER ER21
         WHERE
         ER21.PLAN_NAME like '%' || #{equipName} || '%'
-        AND (ER21.PLAN_NAME LIKE '%二级修(90天%' or ER21.PLAN_NAME LIKE '%二级修（90天%')
+        AND (ER21.PLAN_NAME LIKE '%二级修90天%' or ER21.PLAN_NAME LIKE '%二级修90天%')
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startTime!=null">
             AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
@@ -204,7 +204,7 @@
         T_OVERHAUL_ORDER ER21
         WHERE
         ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (ER21.PLAN_NAME LIKE '%二级修(180天%' or ER21.PLAN_NAME LIKE '%二级修（180天%')
+        AND (ER21.PLAN_NAME LIKE '%二级修180天%' or ER21.PLAN_NAME LIKE '%二级修180天%')
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startTime!=null">
           and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
@@ -228,7 +228,7 @@
         T_OVERHAUL_ORDER ER21
         WHERE
         ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (ER21.PLAN_NAME LIKE '%二级修(360天%' or ER21.PLAN_NAME LIKE '%二级修（360天%')
+        AND (ER21.PLAN_NAME LIKE '%二级修360天%' or ER21.PLAN_NAME LIKE '%二级修360天%')
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startTime!=null">
             AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
@@ -422,7 +422,7 @@
         T_OVERHAUL_ORDER ER21
         WHERE
         ER21.PLAN_NAME  like '%' || #{equipName} || '%'
-        AND (ER21.PLAN_NAME LIKE '%二级修(30天%' or ER21.PLAN_NAME LIKE '%二级修（30天%')
+        AND (ER21.PLAN_NAME LIKE '%二级修30天%' or ER21.PLAN_NAME LIKE '%二级修30天%')
         AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
         <if test="startTime != null">
             AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
