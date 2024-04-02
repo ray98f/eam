@@ -54,7 +54,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -638,33 +637,35 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         List<OverhaulItemResDTO> modelList = overhaulItemMapper.listOverhaulItemModel(objectCode, orderCode);
         List<OverhaulItemTreeResDTO> models = new ArrayList<>();
         if (StringUtils.isNotEmpty(modelList)) {
-            String flag ="";
-            for(OverhaulItemResDTO rs: modelList){
-                if(rs != null){
-                    flag = "1";
-                }
+            modelList = modelList.stream().filter(Objects::nonNull).collect(Collectors.toList());
+            modelList = new ArrayList<>(modelList.stream().collect(Collectors.toCollection(() ->
+                    new TreeSet<>(Comparator.comparing(OverhaulItemResDTO::getModelName)))));
+            // 当模块数组为空时，添加默认模块
+            if (StringUtils.isEmpty(modelList)) {
+                OverhaulItemResDTO model = new OverhaulItemResDTO();
+                model.setModelName("默认模块");
+                modelList.add(model);
             }
-
-            if(StringUtils.isNotEmpty(flag)){
-                modelList = new ArrayList<>(modelList.stream().collect(Collectors.toCollection(() ->
-                        new TreeSet<>(Comparator.comparing(OverhaulItemResDTO::getModelName)))));
-                modelList = modelList.stream().filter(Objects::nonNull).collect(Collectors.toList());
-                for (OverhaulItemResDTO model : modelList) {
-                    OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
-                    org.springframework.beans.BeanUtils.copyProperties(model, res);
-                    List<OverhaulItemResDTO> list = overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, model.getModelName());
-                    if (StringUtils.isNotEmpty(list)) {
-                        for (OverhaulItemResDTO itemRes : list) {
-                            if (StringUtils.isNotEmpty(itemRes.getDocId())) {
-                                itemRes.setDocFile(fileMapper.selectFileInfo(Arrays.asList(itemRes.getDocId().split(","))));
-                            }
+            for (OverhaulItemResDTO model : modelList) {
+                OverhaulItemTreeResDTO res = new OverhaulItemTreeResDTO();
+                org.springframework.beans.BeanUtils.copyProperties(model, res);
+                List<OverhaulItemResDTO> list = overhaulItemMapper.listOverhaulItemByModel(objectCode, orderCode, model.getModelName());
+                if (StringUtils.isNotEmpty(list)) {
+                    for (OverhaulItemResDTO itemRes : list) {
+                        if (StringUtils.isNotEmpty(itemRes.getDocId())) {
+                            itemRes.setDocFile(fileMapper.selectFileInfo(Arrays.asList(itemRes.getDocId().split(","))));
+                        }
+                        // 提交结果为空时填充提交处理信息
+                        if (StringUtils.isNull(res.getWorkResult())) {
+                            res.setWorkResult(itemRes.getWorkResult());
+                            res.setWorkUserId(itemRes.getWorkUserId());
+                            res.setWorkUserName(itemRes.getWorkUserName());
                         }
                     }
-                    res.setItemList(list);
-                    models.add(res);
                 }
+                res.setItemList(list);
+                models.add(res);
             }
-
         }
         return models;
     }

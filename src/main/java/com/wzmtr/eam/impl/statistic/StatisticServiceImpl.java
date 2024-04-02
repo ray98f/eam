@@ -476,7 +476,8 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<FaultDetailResDTO> queryFMHistory(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return oneCarOneGearMapper.queryFMHistory(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
+        return oneCarOneGearMapper.queryFMHistory(reqDTO.of(), reqDTO.getEquipName(),
+                reqDTO.getStartTime() + " 00:00:00", reqDTO.getEndTime() + " 23:59:59");
     }
 
     @Override

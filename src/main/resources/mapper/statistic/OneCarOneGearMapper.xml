@@ -262,6 +262,7 @@
         d.FAULT_MODULE_ID	as "faultModuleId",
         d.FAULT_TYPE	as "faultType",  <!-- 故障分类（10-运营故障；20-自检故障；30-新线调试；40-正线故障；50-出库故障） -->
         d.SOURCE_CODE	as "sourceCode",  <!-- 来源编号 -->
+        df.FAULT_AFFECT	as "faultAffect",  <!-- 故障影响 -->
         d.FAULT_DISPLAY_CODE	as "faultDisplayCode",  <!-- 故障现象 -->
         d.FAULT_DISPLAY_DETAIL as "faultDisplayDetail",
         d.FAULT_DETAIL	as "faultDetail",  <!-- 故障详情 -->
@@ -304,13 +305,13 @@
         left join SYS_USER u on u.LOGIN_NAME=df.REPORT_FINISH_USER_ID
         WHERE 1=1 and d.MAJOR_CODE='07' and nvl(df.IS_FAULT,'10')='10'
         <if test="equipName!=null and equipName != ''">
-            and d.OBJECT_NAME = #{equipName}
+            and d.OBJECT_NAME=#{equipName}
         </if>
         <if test="startTime!=null and startTime!=''">
-            and to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            and to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND to_date(d.DISCOVERY_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>

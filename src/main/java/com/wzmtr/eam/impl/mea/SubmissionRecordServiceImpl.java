@@ -283,7 +283,17 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     @Override
     public Page<SubmissionRecordDetailResDTO> getSubmissionRecordDetailByEquip(String equipCode,PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return submissionRecordMapper.getSubmissionRecordDetailByEquip(pageReqDTO.of(),equipCode);
+        Page<SubmissionRecordDetailResDTO> page = submissionRecordMapper.getSubmissionRecordDetailByEquip(pageReqDTO.of(), equipCode);
+        List<SubmissionRecordDetailResDTO> list = page.getRecords();
+        if (StringUtils.isNotEmpty(list)) {
+            for (SubmissionRecordDetailResDTO res : list) {
+                if (StringUtils.isNotEmpty(res.getVerifyReportFileid())) {
+                    res.setVerifyReportFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportFileid().split(","))));
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override

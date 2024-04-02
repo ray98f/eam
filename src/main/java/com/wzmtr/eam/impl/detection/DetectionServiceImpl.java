@@ -22,6 +22,7 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.detection.DetectionMapper;
 import com.wzmtr.eam.mapper.detection.SpecialEquipMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.detection.DetectionService;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,6 +65,9 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Autowired
     private IWorkFlowLogService workFlowLogService;
+
+    @Autowired
+    private FileMapper fileMapper;
 
     @Override
     public Page<DetectionResDTO> pageDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, PageReqDTO pageReqDTO) {
@@ -277,12 +282,28 @@ public class DetectionServiceImpl implements DetectionService {
     @Override
     public Page<DetectionDetailResDTO> pageDetectionDetail(String equipCode, String testRecId, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return detectionMapper.pageDetectionDetail(pageReqDTO.of(), equipCode, testRecId);
+        Page<DetectionDetailResDTO> page = detectionMapper.pageDetectionDetail(pageReqDTO.of(), equipCode, testRecId);
+        List<DetectionDetailResDTO> list = page.getRecords();
+        if (StringUtils.isNotEmpty(list)) {
+            for (DetectionDetailResDTO res : list) {
+                if (StringUtils.isNotEmpty(res.getVerifyReportAtt())) {
+                    res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(","))));
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public DetectionDetailResDTO getDetectionDetailDetail(String id) {
-        return detectionMapper.getDetectionDetailDetail(id);
+        DetectionDetailResDTO res = detectionMapper.getDetectionDetailDetail(id);
+        if (StringUtils.isNotNull(res)) {
+            if (StringUtils.isNotEmpty(res.getVerifyReportAtt())) {
+                res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(","))));
+            }
+        }
+        return res;
     }
 
     @Override
