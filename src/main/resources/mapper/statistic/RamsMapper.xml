@@ -37,7 +37,7 @@
         FROM T_FAULT_INFO d, T_FAULT_ORDER df
         WHERE d.FAULT_NO = df.FAULT_NO
         AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-        AND d.MAJOR_CODE = ('07','06')
+        AND d.MAJOR_CODE in ('07','06')
         AND df.ORDER_STATUS != '99'
         AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
         <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
