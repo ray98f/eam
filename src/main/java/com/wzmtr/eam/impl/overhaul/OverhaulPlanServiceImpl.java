@@ -478,7 +478,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         selectMap.setPlanCode(planCode);
         OverhaulOrderReqDTO insertMap = new OverhaulOrderReqDTO();
         insertMap.setOrderCode(orderCode);
+
         insertMap.setWorkStatus("1");
+
         String trigerTime = "";
         OverhaulPlanListReqDTO queryMap1 = new OverhaulPlanListReqDTO();
         queryMap1.setPlanCode(planCode);
@@ -489,6 +491,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             insertMap.setWorkerCode(TokenUtils.getCurrentPersonId());
             insertMap.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
             OverhaulOrderReqDTO dmer21 = buildOverhaulOrder(planCode, orderCode, list11);
+
             try {
                 overhaulWorkRecordService.insertRepair(dmer21);
             } catch (Exception e) {
@@ -576,6 +579,14 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                     overhaulOrder.setRecId(TokenUtils.getUuId());
                     if (i > 0) {
                         overhaulOrder.setOrderCode(CodeUtils.getNextCodeByAddNum(overhaulOrder.getOrderCode(), 10, i));
+                    }
+                    if (StringUtils.isNotEmpty(overhaulOrder.getWorkerGroupCode())) {
+                        // 派工 直接派工至该工班人员
+                        overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrder.getOrderCode(), "检修"), overhaulOrder.getRecId(), overhaulOrder.getOrderCode(), overhaulOrder.getWorkerGroupCode(), "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+                        overhaulOrder.setWorkStatus("3");
+                        overhaulOrder.setSendPersonId(TokenUtils.getCurrentPersonId());
+                        overhaulOrder.setSendPersonName(TokenUtils.getCurrentPerson().getPersonName());
+                        overhaulOrder.setSendTime(DateUtils.getCurrentTime());
                     }
                     overhaulOrderMapper.addOverhaulOrder(overhaulOrder);
                     i++;
