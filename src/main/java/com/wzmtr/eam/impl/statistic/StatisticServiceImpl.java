@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.dto.req.equipment.GeneralSurveyExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
@@ -26,9 +25,6 @@ import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
-import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
-import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
-import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
@@ -74,12 +70,6 @@ public class StatisticServiceImpl implements StatisticService {
     private ReliabilityMapper reliabilityMapper;
     @Autowired
     private OneCarOneGearMapper oneCarOneGearMapper;
-    @Autowired
-    private GearboxChangeOilMapper gearboxChangeOilMapper;
-    @Autowired
-    private WheelsetLathingMapper wheelsetLathingMapper;
-    @Autowired
-    private GeneralSurveyMapper generalSurveyMapper;
     @Autowired
     private OverhaulOrderMapper overhaulOrderMapper;
     @Autowired
@@ -482,7 +472,8 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
-        List<FaultDetailResDTO> faultDetailResDTOS = oneCarOneGearMapper.queryFMHistory(equipName, startTime, endTime);
+        List<FaultDetailResDTO> faultDetailResDTOS = oneCarOneGearMapper.queryFMHistory(equipName,
+                startTime + " 00:00:00", endTime + " 23:59:59");
         List<ExcelFmFaultDetailResDTO> list = new ArrayList<>();
         if (StringUtils.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
@@ -528,12 +519,12 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<GearboxChangeOilResDTO> pageGearboxChangeOil(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return gearboxChangeOilMapper.pageGearboxChangeOil(reqDTO.of(), reqDTO.getEquipName());
+        return oneCarOneGearMapper.listGearboxChangeOil(reqDTO.of(), reqDTO);
     }
 
     @Override
-    public void pageGearboxChangeOilExport(String equipName, HttpServletResponse response) throws IOException {
-        List<GearboxChangeOilResDTO> gearboxChangeOilList = gearboxChangeOilMapper.listGearboxChangeOil(equipName);
+    public void pageGearboxChangeOilExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<GearboxChangeOilResDTO> gearboxChangeOilList = oneCarOneGearMapper.listGearboxChangeOil(reqDTO);
         if (StringUtils.isNotEmpty(gearboxChangeOilList)) {
             List<ExcelStatisticGearboxChangeOilResDTO> list = new ArrayList<>();
             for (GearboxChangeOilResDTO resDTO : gearboxChangeOilList) {
@@ -589,20 +580,6 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
-        List<WheelsetLathingResDTO> wheelsetLathingList = wheelsetLathingMapper.listWheelsetLathing(equipName, null, null, null);
-        if (StringUtils.isNotEmpty(wheelsetLathingList)) {
-            List<ExcelStatisticWheelsetLathingResDTO> list = new ArrayList<>();
-            for (WheelsetLathingResDTO resDTO : wheelsetLathingList) {
-                ExcelStatisticWheelsetLathingResDTO res = new ExcelStatisticWheelsetLathingResDTO();
-                BeanUtils.copyProperties(resDTO, res);
-                list.add(res);
-            }
-            EasyExcelUtils.export(response, "轮对镟修记录", list);
-        }
-    }
-
-    @Override
     public void faultListExport(FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
         List<FaultDetailResDTO> faultDetailList = faultQueryMapper.getByIds(reqDTO);
         List<Dictionaries> orderStatus = dictionariesMapper.list("dm.faultStatus", null, null);
@@ -633,7 +610,21 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<WheelsetLathingResDTO> pageWheelsetLathing(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return wheelsetLathingMapper.pageWheelsetLathing(reqDTO.of(), reqDTO.getEquipName(), null, null, null);
+        return oneCarOneGearMapper.listWheelsetLathing(reqDTO.of(), reqDTO);
+    }
+
+    @Override
+    public void pageWheelsetLathingExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<WheelsetLathingResDTO> wheelsetLathingList = oneCarOneGearMapper.listWheelsetLathing(reqDTO);
+        if (StringUtils.isNotEmpty(wheelsetLathingList)) {
+            List<ExcelStatisticWheelsetLathingResDTO> list = new ArrayList<>();
+            for (WheelsetLathingResDTO resDTO : wheelsetLathingList) {
+                ExcelStatisticWheelsetLathingResDTO res = new ExcelStatisticWheelsetLathingResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
+            }
+            EasyExcelUtils.export(response, "轮对镟修记录", list);
+        }
     }
 
     /**
@@ -642,14 +633,12 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<GeneralSurveyResDTO> pageGeneralSurvey(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return generalSurveyMapper.pageGeneralSurvey(reqDTO.of(), reqDTO.getEquipName(), null, null, null);
+        return oneCarOneGearMapper.listGeneralSurvey(reqDTO.of(), reqDTO);
     }
 
     @Override
-    public void pageGeneralSurveyExport(String equipName, HttpServletResponse response) throws IOException {
-        GeneralSurveyExportReqDTO generalSurveyExportReqDTO = new GeneralSurveyExportReqDTO();
-        generalSurveyExportReqDTO.setTrainNo(equipName);
-        List<GeneralSurveyResDTO> generalSurveyList = generalSurveyMapper.listGeneralSurvey(generalSurveyExportReqDTO);
+    public void pageGeneralSurveyExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<GeneralSurveyResDTO> generalSurveyList = oneCarOneGearMapper.listGeneralSurvey(reqDTO);
         if (StringUtils.isNotEmpty(generalSurveyList)) {
             List<ExcelStatisticGeneralSurveyResDTO> list = new ArrayList<>();
             for (GeneralSurveyResDTO resDTO : generalSurveyList) {

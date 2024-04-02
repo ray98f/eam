@@ -187,10 +187,10 @@ public class StatisticController {
         return PageResponse.of(statisticService.pageGearboxChangeOil(reqDTO));
     }
 
-    @GetMapping("/one/car/one/gear/job/pageGearboxChangeOilExport")
+    @PostMapping("/one/car/one/gear/job/pageGearboxChangeOilExport")
     @ApiOperation(value = "一车一档齿轮箱换油台账导出")
-    public void pageGearboxChangeOilExport(@RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
-        statisticService.pageGearboxChangeOilExport(equipName, response);
+    public void pageGearboxChangeOilExport(@RequestBody OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        statisticService.pageGearboxChangeOilExport(reqDTO, response);
     }
 
     @PostMapping("/one/car/one/gear/job/pageWheelsetLathing")
@@ -199,10 +199,10 @@ public class StatisticController {
         return PageResponse.of(statisticService.pageWheelsetLathing(reqDTO));
     }
 
-    @GetMapping("/one/car/one/gear/job/pageWheelsetLathingExport")
+    @PostMapping("/one/car/one/gear/job/pageWheelsetLathingExport")
     @ApiOperation(value = "一车一档轮对镟修记录导出")
-    public void pageWheelsetLathingExport(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
-        statisticService.pageWheelsetLathingExport(startTime, endTime, equipName, response);
+    public void pageWheelsetLathingExport(@RequestBody OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        statisticService.pageWheelsetLathingExport(reqDTO, response);
     }
 
     @PostMapping("/one/car/one/gear/job/pageGeneralSurvey")
@@ -211,10 +211,10 @@ public class StatisticController {
         return PageResponse.of(statisticService.pageGeneralSurvey(reqDTO));
     }
 
-    @GetMapping("/one/car/one/gear/job/pageGeneralSurveyExport")
+    @PostMapping("/one/car/one/gear/job/pageGeneralSurveyExport")
     @ApiOperation(value = "一车一档普查与技改导出")
-    public void pageGeneralSurveyExport(@RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
-        statisticService.pageGeneralSurveyExport(equipName, response);
+    public void pageGeneralSurveyExport(@RequestBody OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        statisticService.pageGeneralSurveyExport(reqDTO, response);
     }
 
     @PostMapping("/one/car/one/gear/job/queryER2")
