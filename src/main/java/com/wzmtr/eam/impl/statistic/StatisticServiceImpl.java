@@ -1171,9 +1171,9 @@ public class StatisticServiceImpl implements StatisticService {
     public RamsTrainReliabilityResDTO trainReliability(String startTime, String endTime, String trainNo) {
         RamsTrainReliabilityResDTO res = new RamsTrainReliabilityResDTO();
         // 获取各指标项的故障次数
-        double delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'");
-        double notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'");
-        double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null);
+        double delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'","0");
+        double notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'","0");
+        double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null,"0");
         // double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
         Double start = ramsMapper.getMileByTrainNoStart(startTime, trainNo);
         Double end = ramsMapper.getMileByTrainNoEnd(endTime, trainNo);
