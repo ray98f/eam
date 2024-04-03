@@ -511,9 +511,20 @@
     </select>
 
     <insert id="importTrainDailyMile">
-        insert ALL
+        update T_TRAIN_MILE set
+        DAILY_WORK_MILE=#{dailyWorkMile,jdbcType=DECIMAL},
+        TOTAL_WORK_MILE=#{totalWorkMile,jdbcType=DECIMAL},
+        REMARK=#{remark,jdbcType=VARCHAR},
+        REC_REVISOR=#{recRevisor,jdbcType=VARCHAR},
+        REC_REVISE_TIME=#{recReviseTime,jdbcType=VARCHAR}
+        WHERE EQUIP_CODE=#{equipCode,jdbcType=VARCHAR}
+        and EQUIP_NAME=#{equipName,jdbcType=VARCHAR}
+        and "DAY"=#{day,jdbcType=VARCHAR}
+    </insert>
+
+    <insert id="batchAddTrainMile">
+        INSERT ALL
         <foreach collection="list" index="index" item="mile" separator=" ">
-            WHEN NOT EXISTS (SELECT 1 FROM T_TRAIN_MILE WHERE EQUIP_CODE=#{mile.equipCode} and "DAY"=#{mile.day}) THEN
             INTO T_TRAIN_MILE (
             REC_ID,
             EQUIP_CODE,
@@ -521,7 +532,6 @@
             "DAY",
             DAILY_WORK_MILE,
             TOTAL_WORK_MILE,
-            REMARK,
             REC_CREATOR,
             REC_CREATE_TIME)
             VALUES (
@@ -531,8 +541,6 @@
             #{mile.day,jdbcType=VARCHAR},
             #{mile.dailyWorkMile,jdbcType=DECIMAL},
             #{mile.totalWorkMile,jdbcType=DECIMAL},
-            #{mile.remark,jdbcType=VARCHAR},
-            #{mile.recCreator,jdbcType=VARCHAR},
             #{mile.recCreateTime,jdbcType=VARCHAR})
         </foreach>
         SELECT * FROM dual

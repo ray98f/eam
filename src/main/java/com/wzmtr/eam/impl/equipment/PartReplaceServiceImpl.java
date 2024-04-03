@@ -53,15 +53,13 @@ public class PartReplaceServiceImpl implements PartReplaceService {
 
     @Override
     public List<PartReplaceBomResDTO> getBom(String equipCode, String node) {
-        if (StringUtils.isNotEmpty(equipCode)) {
-            String lineNo = partReplaceMapper.getEquipLineNo(equipCode);
-            String type = CommonConstants.LINE_CODE_ONE.equals(lineNo) ? "1" : "2";
-            node = partReplaceMapper.selectBomCode(equipCode, "1");
+        if (StringUtils.isNotEmpty(equipCode) && StringUtils.isEmpty(node)) {
+            node = partReplaceMapper.selectBomCode(equipCode);
         }
         if (StringUtils.isEmpty(node)) {
             return null;
         }
-        return partReplaceMapper.getBom(node, "1");
+        return partReplaceMapper.getBom(node, equipCode);
     }
 
     @Override

@@ -76,7 +76,7 @@
         <if test="useLineNo != null and useLineNo != ''">
             and USE_LINE_NO = #{useLineNo}
         </if>
-        order by EQUIP_CODE asc
+        order by EQUIP_NAME asc
     </select>
     <select id="queryForCarEquip" resultType="com.wzmtr.eam.dto.res.fault.car.CarTreeListObjResDTO">
         SELECT
