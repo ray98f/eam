@@ -14,6 +14,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.equipment.GeneralSurveyService;
 import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -44,6 +45,9 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
 
     @Autowired
     private FileMapper fileMapper;
+
+    @Autowired
+    private OverTodoService overTodoService;
 
     @Override
     public Page<GeneralSurveyResDTO> pageGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, PageReqDTO pageReqDTO) {
@@ -85,6 +89,9 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         generalSurveyReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         generalSurveyReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         generalSurveyMapper.addGeneralSurvey(generalSurveyReqDTO);
+        // 工班还不知道发给谁
+        // 这里要根据工班查人
+        // overTodoService.insertTodoWithUserList();
     }
 
     @Override
