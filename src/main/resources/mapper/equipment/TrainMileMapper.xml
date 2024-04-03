@@ -549,6 +549,6 @@
     <select id="getLastTotalWorkMile" resultType="java.lang.Double">
         SELECT CASE WHEN MAX(TOTAL_WORK_MILE) IS NULL THEN 0 ELSE MAX(TOTAL_WORK_MILE) END
         FROM T_TRAIN_MILE
-        WHERE EQUIP_CODE=#{equipName} AND #{day}>"DAY"
+        WHERE EQUIP_CODE=#{equipCode} AND #{day}>"DAY"
     </select>
 </mapper>
