@@ -1179,7 +1179,6 @@ public class StatisticServiceImpl implements StatisticService {
         String NOYF = res.getNOYF();
         res.setContractZB(contractZB);
         res.setModuleName(moduleName);
-        // 到底想要干嘛？ 无语
         // if (module.contains(moduleName)) {
         //     res.setZX(df.format(Double.parseDouble(ZX) + ZX));
         //     res.setCRK(df.format(Double.parseDouble(CRK) + CRK));
