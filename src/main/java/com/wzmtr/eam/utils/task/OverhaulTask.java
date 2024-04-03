@@ -57,7 +57,7 @@ public class OverhaulTask {
      * 检修计划自动触发
      * 因原先检修计划触发接口中需要用到登录用户的id，所以此处采用调用接口的方式进行自动触发操作
      */
-    @Scheduled(cron = "0 0 3 * * ?")
+    @Scheduled(cron = "0 30 3 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void trigger() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMdd");

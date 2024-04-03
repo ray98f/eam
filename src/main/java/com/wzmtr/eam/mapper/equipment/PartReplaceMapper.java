@@ -22,9 +22,9 @@ public interface PartReplaceMapper {
 
     String getEquipLineNo(String equipCode);
 
-    String selectBomCode(String equipCode, String type);
+    String selectBomCode(String equipCode);
 
-    List<PartReplaceBomResDTO> getBom(String node, String type);
+    List<PartReplaceBomResDTO> getBom(String node, String equipCode);
 
     void addPartReplace(PartReplaceReqDTO equipmentChargeReqDTO);
 

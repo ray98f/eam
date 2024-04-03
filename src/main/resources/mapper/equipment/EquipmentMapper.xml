@@ -6,13 +6,14 @@
         SELECT REC_ID, EQUIP_CODE as NODE_CODE, EQUIP_NAME as NODE_NAME
         FROM T_EQUIPMENT
         WHERE MAJOR_CODE='07' and APPROVAL_STATUS ='30'
+        AND regexp_like(asciistr(EQUIP_NAME),'^S0')
         <if test="lineCode!=null and lineCode!=''">
             AND USE_LINE_NO=#{lineCode}
         </if>
         <if test="lineCode==null or lineCode==''">
             AND USE_LINE_NO='02'
         </if>
-        order by EQUIP_CODE asc
+        order by EQUIP_NAME asc
     </select>
 
     <select id="listLine" resultType="com.wzmtr.eam.dto.res.basic.RegionResDTO">
@@ -185,7 +186,7 @@
         <if test="equipTypeCode!=null and equipTypeCode!=''">
             and EQUIP_TYPE_CODE=#{equipTypeCode}
         </if>
-        ORDER BY EQUIP_CODE ASC
+        ORDER BY EQUIP_NAME ASC
     </select>
 
     <select id="allList" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
@@ -231,7 +232,7 @@
         <if test="equipTypeCode!=null and equipTypeCode!=''">
             and EQUIP_TYPE_CODE=#{equipTypeCode}
         </if>
-        ORDER BY EQUIP_CODE ASC
+        ORDER BY EQUIP_NAME ASC
     </select>
 
     <select id="getEquipmentDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
@@ -689,7 +690,7 @@
             #{id}
         </foreach>
         )
-        ORDER BY EQUIP_CODE ASC
+        ORDER BY EQUIP_NAME ASC
     </select>
 
     <select id="pageSiftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
@@ -752,7 +753,7 @@
         <if test="req.lineNo!=null and req.lineNo!=''">
             and USE_LINE_NO=#{req.lineNo}
         </if>
-        ORDER BY EQUIP_CODE ASC
+        ORDER BY EQUIP_NAME ASC
     </select>
 
     <select id="siftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
@@ -815,13 +816,13 @@
         <if test="lineNo!=null and lineNo!=''">
             and USE_LINE_NO=#{lineNo}
         </if>
-        ORDER BY EQUIP_CODE ASC
+        ORDER BY EQUIP_NAME ASC
     </select>
 
     <select id="getSplitTransferDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE 1=1 and REC_ID=#{id}
-        ORDER BY EQUIP_CODE ASC
+        ORDER BY EQUIP_NAME ASC
     </select>
 
     <select id="selectByEquipName" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
@@ -833,7 +834,7 @@
         <if test="equipName!=null and equipName!=''">
             and EQUIP_NAME = #{equipName}
         </if>
-        order by EQUIP_NAME
+        order by EQUIP_NAME ASC
     </select>
 
 

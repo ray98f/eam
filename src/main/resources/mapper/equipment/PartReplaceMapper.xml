@@ -164,29 +164,21 @@
     <select id="selectBomCode" resultType="java.lang.String">
         select u.REC_ID
         from T_EQUIPMENT d
-        <if test="type=='1'.toString()">
-            LEFT JOIN T_BOM u ON u.ENAME=d.BOM_TYPE
-        </if>
-        <if test="type=='2'.toString()">
-            LEFT JOIN T_BOM_TEST u ON u.ENAME=d.BOM_TYPE
-        </if>
+        LEFT JOIN T_BOM u ON u.ENAME=d.BOM_TYPE
         WHERE d.EQUIP_CODE=#{equipCode}
     </select>
 
     <select id="getBom" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO">
         SELECT
-        REC_ID,
-        ENAME	as "ename",  <!-- 代码编号 -->
-        CNAME	as "text",
-        PARENT_ID    as "parentId"
-        <if test="type=='1'.toString()">
-            FROM T_BOM
-        </if>
-        <if test="type=='2'.toString()">
-            FROM T_BOM_TEST
-        </if>
-        where PARENT_ID=#{node}
-        order by ENAME asc
+        b.REC_ID,
+        b.ENAME	as "bEname",  <!-- 代码编号 -->
+        ep.PART_CODE	as "ename",  <!-- 代码编号 -->
+        ep.PART_NAME	as "text",
+        b.PARENT_ID    as "parentId"
+        FROM T_BOM b
+        LEFT JOIN T_EQUIPMENT_PART ep ON ep.BOM_ENAME=b.ENAME
+        where b.PARENT_ID=#{node} AND ep.EQUIP_CODE=#{equipCode}
+        order by ep.PART_CODE asc
     </select>
 
     <insert id="addPartReplace">

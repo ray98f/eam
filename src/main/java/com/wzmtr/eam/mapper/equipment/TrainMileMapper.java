@@ -89,9 +89,15 @@ public interface TrainMileMapper {
 
     /**
      * 导入每日列车里程及能耗列表
-     * @param list 每日列车里程及能耗列表
+     * @param req 每日列车里程及能耗
      */
-    void importTrainDailyMile(List<TrainMileDailyReqDTO> list);
+    void importTrainDailyMile(TrainMileDailyReqDTO req);
+
+    /**
+     * 批量新增每日列车里程及能耗
+     * @param list 列表
+     */
+    void batchAddTrainMile(List<TrainMileDailyReqDTO> list);
 
     /**
      * 获取前一天的列车累计运营里程
