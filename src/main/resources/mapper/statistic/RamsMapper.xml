@@ -107,7 +107,6 @@
                      T_FAULT_ORDER df
                 where d.FAULT_NO = df.FAULT_NO
                   and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-                  and nvl(df.IS_FAULT, '10') = '10'
                   and d.MAJOR_CODE in ('07')
                   and df.order_Status != '99'
                   and df.FAULT_AFFECT in ('03', '04', '05'))                as "late",
@@ -131,41 +130,15 @@
         ORDER by c.YEAR_MONTH desc
     </select>
     <select id="querySysPerform" resultType="com.wzmtr.eam.dto.res.statistic.RamsSysPerformResDTO">
-        SELECT LATE.SC       AS "moduleName",
-               LATE.NUM_LATE AS "numLate",
-               NOS.NUM_NOS   AS "numNos"
-        FROM (
-                 (SELECT c."SC",
-                         SUM(CASE WHEN t."moId" = c."SC" THEN 1 ELSE 0 END) AS "NUM_LATE"
-                  FROM (SELECT COUNT(1),
-                               nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') AS "moId"
-                        FROM T_FAULT_INFO a
-                                 LEFT JOIN T_FAULT_ORDER df ON a.FAULT_NO = df.FAULT_NO
-                        WHERE a.MAJOR_CODE = '07'
-                          AND a.EXT3 IN ('02', '03', '04')
-                          AND NVL(df.IS_FAULT, '10') = '10'
-                          AND df.order_Status != '99'
-                        GROUP BY a.FAULT_MODULE_ID) t,
-                       (SELECT lpad(ROWNUM, 2, '0') AS "SC" FROM dual CONNECT BY ROWNUM <![CDATA[<=]]> 21) c
-                  WHERE c."SC" IS NOT NULL
-                  GROUP BY c."SC"
-                  ORDER BY c."SC" ASC) LATE
-                     LEFT JOIN (SELECT c."SC",
-                                       SUM(CASE WHEN t."moId" = c."SC" THEN 1 ELSE 0 END) AS "NUM_NOS"
-                                FROM (SELECT COUNT(1),
-                                             nvl(SUBSTR(a.FAULT_MODULE_ID, 4, 2), '21') AS "moId"
-                                      FROM T_FAULT_INFO a
-                                               LEFT JOIN T_FAULT_ORDER df ON a.FAULT_NO = df.FAULT_NO
-                                      WHERE a.MAJOR_CODE = '07'
-                                        AND a.EXT3 IN ('05', '06', '08', '09')
-                                        AND NVL(df.IS_FAULT, '10') = '10'
-                                        AND df.order_Status != '99'
-                                      GROUP BY a.FAULT_MODULE_ID) t,
-                                     (SELECT lpad(ROWNUM, 2, '0') AS "SC" FROM dual CONNECT BY ROWNUM <![CDATA[<=]]> 21) c
-                                WHERE c."SC" IS NOT NULL
-                                GROUP BY c."SC"
-                                ORDER BY c."SC" ASC) NOS ON NOS.SC = LATE.SC
-                 )
+        SELECT t.FAULT_MODULE_ID                                                            AS "moduleName",
+               SUM(CASE WHEN df.FAULT_AFFECT in ('03', '04', '05') THEN 1 ELSE 0 END)           AS numLate,
+               SUM(CASE WHEN df.FAULT_AFFECT IN ('06', '07', '08', '09') THEN 1 ELSE 0 END) AS numNos
+        FROM T_FAULT_INFO t
+                 LEFT JOIN T_FAULT_ORDER df ON t.FAULT_NO = df.FAULT_NO
+        WHERE t.MAJOR_CODE in ('07')
+          and t.IF_RELIABILITY = '0'
+          AND df.order_Status != '99'
+        GROUP BY t.FAULT_MODULE_ID
     </select>
     <select id="querytotalMiles" resultType="com.wzmtr.eam.dto.res.statistic.RamsResDTO">
         select sum(a.TOTAL_MILES) as "totalMiles"
