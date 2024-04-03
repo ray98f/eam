@@ -346,7 +346,7 @@
             T_FAULT_INFO t
                 LEFT JOIN T_FAULT_ORDER df ON t.FAULT_NO = df.FAULT_NO
         WHERE
-            t.MAJOR_CODE in ('06')
+            t.MAJOR_CODE in ('07')
           AND df.order_Status != '99'
         GROUP BY
             t.FAULT_MODULE_ID
