@@ -920,7 +920,8 @@
         (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) as "fillinUserName",
         df.FAULT_WORK_NO as "faultWorkNo",  <!-- 故障工单号 -->
         df.ORDER_STATUS as "orderStatus" , <!-- 工单状态 -->
-        df.EXT1 as "levelfault"  <!-- 派工状态 -->
+        df.EXT1 as "levelfault",  <!-- 派工状态 -->
+        df.FAULT_AFFECT as "faultAffect"  <!-- 故障影响 -->
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
