@@ -27,7 +27,8 @@
               and d.IF_RELIABILITY = '0'
               and df.order_Status != '99'
                 and df.FAULT_AFFECT in ('06', '07' ,'08' ,'09')) as "affect21",
-                round((select sum(a.TOTAL_MILES) from T_EQUIPMENT a where a.MAJOR_CODE = '07') / 1000000, 2)   as "millionMiles"
+                round((select sum(t.TOTAL_WORK_MILE)
+                       from T_TRAIN_MILE t) / 10000, 2)   as "millionMiles"
         from dual
     </select>
     <select id="queryFautTypeByMonthBySys" resultType="com.wzmtr.eam.dto.res.statistic.SystemFaultsResDTO">
@@ -40,7 +41,7 @@
         AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
         AND d.MAJOR_CODE in ('07','06')
         AND df.ORDER_STATUS != '99'
-        AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
+        AND SUBSTR(d.FAULT_MODULE_ID, 0, 3) IN
         <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
             #{moduleId}
         </foreach>
@@ -51,10 +52,9 @@
         FROM T_FAULT_INFO d, T_FAULT_ORDER df
         WHERE d.FAULT_NO = df.FAULT_NO
         AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-        AND NVL(df.IS_FAULT, '10') = '10'
-        AND d.MAJOR_CODE = '07'
+        AND d.MAJOR_CODE in ('07','06')
         AND df.ORDER_STATUS != '99'
-        AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
+        AND SUBSTR(d.FAULT_MODULE_ID, 0, 3) IN
         <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
             #{moduleId}
         </foreach>
@@ -65,16 +65,16 @@
         FROM T_FAULT_INFO d, T_FAULT_ORDER df
         WHERE d.FAULT_NO = df.FAULT_NO
         AND SUBSTR(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-        AND d.MAJOR_CODE = '07'
+        AND d.MAJOR_CODE in ('07','06')
         AND df.ORDER_STATUS != '99'
-        AND SUBSTR(d.FAULT_MODULE_ID, 4, 2) IN
+        AND SUBSTR(d.FAULT_MODULE_ID, 0, 3) IN
         <foreach item="moduleId" collection="moduleIds" open="(" close=")" separator=",">
             #{moduleId}
         </foreach>
         AND d.FAULT_TYPE = '30'
         ) AS "yf",
         (
-        select sum(t.DAILY_WORK_MILE)
+        select sum(t.TOTAL_MILE)
         from T_TRAIN_MILE t
         where substr(t.DAY, 1, 7) = c.YEAR_MONTH
         ) AS "miles"
@@ -93,64 +93,34 @@
         ORDER BY c.YEAR_MONTH DESC
     </select>
     <select id="queryresult2" resultType="com.wzmtr.eam.dto.res.statistic.RamsResult2ResDTO">
-        select c.YEAR_MONTH                                       as "yearMonth",
-               (select count(1)
-                from T_FAULT_INFO d,
-                     T_FAULT_ORDER df
-                where d.FAULT_NO = df.FAULT_NO
+        select c.YEAR_MONTH                                        as "yearMonth",
+               (SELECT count(1)
+                FROM T_FAULT_INFO d
+                         left join T_FAULT_ORDER df on d.FAULT_NO = df.FAULT_NO
+                WHERE d.MAJOR_CODE in ('06', '07')
+                  and d.IF_RELIABILITY = '0'
                   and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-                  and nvl(df.IS_FAULT, '10') = '10'
-                  and d.MAJOR_CODE = '07'
                   and df.order_Status != '99'
-                  and d.EXT3 in ('05', '06', '08', '09'))         as "noService",
+                  and df.FAULT_AFFECT in ('06', '07', '08', '09')) as "noService",
                (select count(1)
                 from T_FAULT_INFO d,
                      T_FAULT_ORDER df
                 where d.FAULT_NO = df.FAULT_NO
                   and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
                   and nvl(df.IS_FAULT, '10') = '10'
-                  and d.MAJOR_CODE = '07'
+                  and d.MAJOR_CODE in ('06', '07')
                   and df.order_Status != '99'
-                  and d.EXT3 = '02')                              as "late3",
+                  and df.FAULT_AFFECT in ('03', '04', '05'))                as "late",
                (select count(1)
                 from T_FAULT_INFO d,
                      T_FAULT_ORDER df
                 where d.FAULT_NO = df.FAULT_NO
                   and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-                  and nvl(df.IS_FAULT, '10') = '10'
-                  and d.MAJOR_CODE = '07'
-                  and df.order_Status != '99'
-                  and d.EXT3 = '03')                              as "late5to15",
-               (select count(1)
-                from T_FAULT_INFO d,
-                     T_FAULT_ORDER df
-                where d.FAULT_NO = df.FAULT_NO
-                  and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-                  and nvl(df.IS_FAULT, '10') = '10'
-                  and d.MAJOR_CODE = '07'
-                  and df.order_Status != '99'
-                  and d.EXT3 = '04')                              as "late15",
-               (select count(1)
-                from T_FAULT_INFO d,
-                     T_FAULT_ORDER df
-                where d.FAULT_NO = df.FAULT_NO
-                  and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-                  and nvl(df.IS_FAULT, '10') = '10'
-                  and d.MAJOR_CODE = '07'
-                  and df.order_Status != '99'
-                  and d.EXT3 in ('02', '03', '04'))               as "late",
-               (select count(1)
-                from T_FAULT_INFO d,
-                     T_FAULT_ORDER df
-                where d.FAULT_NO = df.FAULT_NO
-                  and substr(DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-                  and nvl(df.IS_FAULT, '10') = '10'
-                  and d.MAJOR_CODE = '07'
-                  and df.order_Status != '99')                    as "sum",
-               (
-                   select sum(t.DAILY_WORK_MILE) / 10000
-                   from T_TRAIN_MILE t
-                   where substr(t.DAY, 1, 7) = c.YEAR_MONTH ) as "miles"
+                  and d.MAJOR_CODE in ('06', '07')
+                  and df.order_Status != '99')                     as "sum",
+               (select sum(t.DAILY_WORK_MILE) / 10000
+                from T_TRAIN_MILE t
+                where substr(t.DAY, 1, 7) = c.YEAR_MONTH)          as "miles"
         from T_FAULT_INFO t,
              (select to_char(add_months(to_date(#{startDate}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') AS YEAR_MONTH
               from dual

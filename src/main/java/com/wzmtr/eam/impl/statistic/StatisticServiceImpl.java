@@ -80,10 +80,6 @@ public class StatisticServiceImpl implements StatisticService {
     private DictionariesMapper dictionariesMapper;
     @Autowired
     private FaultQueryMapper faultQueryMapper;
-    @Autowired
-    private FileMapper fileMapper;
-    @Autowired
-    private OrganizationMapper organizationMapper;
 
     @Override
     public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
@@ -675,12 +671,14 @@ public class StatisticServiceImpl implements StatisticService {
         DecimalFormat df = new DecimalFormat("#0.00");
         RamsCarResDTO ramsCarResDTO = records.get(0);
         String millionMiles = ramsCarResDTO.getMillionMiles();
+        //晚点故障数
         String affect11 = ramsCarResDTO.getAffect11();
+        //不适合继续服务
         String affect21 = ramsCarResDTO.getAffect21();
         String faultNum = ramsCarResDTO.getFaultNum();
-
-        String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles) * 4.0D);
-        String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles) * 4.0D);
+        //晚点
+        String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles));
+        String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles));
         if (Double.parseDouble(affect12) > ONE_POINT_FIVE) {
             ramsCarResDTO.setAffect13("未达标");
         } else {
@@ -699,8 +697,9 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public List<SystemFaultsResDTO> queryresult3(String startDate, String endDate, String sys) {
-        if (sys == null) {
-            sys = "01";
+        // 取dm.sysCode4Train字典列表
+        if (StringUtils.isEmpty(sys)){
+            return null;
         }
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
@@ -714,52 +713,75 @@ public class StatisticServiceImpl implements StatisticService {
         }
         Set<String> moduleIds = new HashSet<>();
         switch (sys) {
+            case "01":
+                moduleIds.add("B27");
+                moduleIds.add("B17");
+                break;
             case "02":
-                moduleIds.add("12");
+                moduleIds.add("B08");
                 break;
             case "03":
-                moduleIds.add("13");
+                moduleIds.add("B19");
+                moduleIds.add("B20");
                 break;
             case "04":
-                moduleIds.add("14");
+                moduleIds.add("B03");
                 break;
             case "05":
-                moduleIds.add("17");
+                moduleIds.add("B25");
                 break;
             case "06":
-                moduleIds.add("10");
+                moduleIds.add("B28");
                 break;
             case "07":
-                moduleIds.add("05");
-                moduleIds.add("08");
-                moduleIds.add("09");
-                moduleIds.add("21");
+                moduleIds.add("B01");
+                moduleIds.add("B02");
+                moduleIds.add("B12");
+                moduleIds.add("B18");
+                moduleIds.add("B21");
                 break;
             case "08":
-                moduleIds.add("06");
-                moduleIds.add("07");
+                moduleIds.add("B04");
+                moduleIds.add("B05");
                 break;
             case "09":
-                moduleIds.add("18");
-                moduleIds.add("19");
+                moduleIds.add("B06");
+                moduleIds.add("B07");
                 break;
             case "10":
-                moduleIds.add("11");
-                moduleIds.add("15");
-                moduleIds.add("16");
-                moduleIds.add("20");
+                moduleIds.add("B11");
+                moduleIds.add("B14");
+                moduleIds.add("B13");
                 break;
-            case "01":
+            case "11":
+                moduleIds.add("B22");
+                break;
+            case "12":
+                moduleIds.add("B09");
+                moduleIds.add("B10");
+                moduleIds.add("B15");
+                moduleIds.add("B16");
+                break;
+            case "13":
+                moduleIds.add("B29");
+                break;
+            case "14":
+                moduleIds.add("B26");
+                break;
+            case "15":
+                moduleIds.add("B30");
+                break;
             default:
-                moduleIds.add("01");
-                moduleIds.add("02");
-                moduleIds.add("03");
-                moduleIds.add("04");
                 break;
         }
         return ramsMapper.queryFautTypeByMonthBySys(moduleIds, startDate, endDate);
     }
 
+    /**
+     * 这段代码的作用是获取当前时间，然后回退i月
+     * @param i
+     * @return
+     */
     private static String getLastMouths(int i) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Calendar c = Calendar.getInstance();
@@ -798,12 +820,12 @@ public class StatisticServiceImpl implements StatisticService {
             if (Double.parseDouble(a.getLate()) == ZERO) {
                 lateZ = Double.parseDouble("0");
             } else {
-                lateZ = Double.parseDouble(a.getLate()) * 1000000.0D / miles / 4.0D;
+                lateZ = Double.parseDouble(a.getLate())  / miles / 10000;
             }
             if (Double.parseDouble(a.getNoService()) == ZERO) {
                 noServiceZ = Double.parseDouble("0");
             } else {
-                noServiceZ = Double.parseDouble(a.getNoService()) * 1000000.0D / miles / 4.0D;
+                noServiceZ = Double.parseDouble(a.getNoService()) / miles /10000;
             }
             a.setLate(df.format(lateZ));
             a.setNoService(df.format(noServiceZ));
@@ -936,7 +958,6 @@ public class StatisticServiceImpl implements StatisticService {
                 case "B10":
                     rebuildBlock(a, names, "气动装置和空气分配系统", "9000");
                     break;
-                    //客室门
                 case "B15":
                 case "B16":
                 case "B17":
@@ -949,6 +970,11 @@ public class StatisticServiceImpl implements StatisticService {
                 case "B19":
                 case "B20":
                     rebuildBlock(a, names, "空调及通风系统", "9000");
+                    break;
+                case "B11":
+                case "B14":
+                case "B13":
+                    rebuildBlock(a, names, "辅助供电设备系统", "9000");
                     break;
                 case "B03":
                     rebuildBlock(a, names, "转向架", "9000");
@@ -1017,6 +1043,7 @@ public class StatisticServiceImpl implements StatisticService {
         mapInit(map,"门窗系统");
         mapInit(map,"制动系统");
         mapInit(map,"空调及通风系统");
+        mapInit(map,"辅助供电设备系统");
         mapInit(map,"转向架");
         mapInit(map,"雷达辅助系统");
         mapInit(map,"车体结构及内装");
