@@ -62,7 +62,8 @@ public interface FaultReportMapper {
     Page<FaultReportResDTO> carFaultReportList(Page<Object> of, String faultNo, String objectCode, String objectName,
                                                String faultModuleId, String majorCode, String systemCode,
                                                String equipTypeCode, String fillinTimeStart, String fillinTimeEnd,
-                                               String positionCode, String orderStatus,List<String> majors);
+                                               String positionCode, String orderStatus,String faultAffect,
+                                               List<String> majors);
 
     /**
      * 根据故障编号和工单编号查询工单列表

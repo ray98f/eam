@@ -941,7 +941,9 @@
             </foreach>
             )
         </if>
-
+        <if test="faultAffect!=null and faultAffect!=''">
+            and df.FAULT_AFFECT=#{faultAffect}
+        </if>
         <if test="faultModuleId!=null and faultModuleId!=''">
            and d.FAULT_MODULE_ID=#{faultModuleId}
         </if>
