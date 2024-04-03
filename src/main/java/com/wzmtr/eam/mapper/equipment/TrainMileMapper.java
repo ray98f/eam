@@ -93,4 +93,12 @@ public interface TrainMileMapper {
      */
     void importTrainDailyMile(List<TrainMileDailyReqDTO> list);
 
+    /**
+     * 获取前一天的列车累计运营里程
+     * @param equipCode 设备编码
+     * @param day 日期
+     * @return 前一天的列车累计运营里程
+     */
+    Double getLastTotalWorkMile(String equipCode, String day);
+
 }
