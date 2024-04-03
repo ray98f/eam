@@ -268,6 +268,10 @@ public class TrainMileServiceImpl implements TrainMileService {
             if (StringUtils.isNotNull(equipment)) {
                 req.setEquipCode(equipment.getEquipCode());
             }
+            Double totalWorkMile = trainMileMapper.getLastTotalWorkMile(req.getEquipCode(), req.getDay());
+            if (StringUtils.isNotNull(totalWorkMile)) {
+                req.setTotalWorkMile(BigDecimal.valueOf(totalWorkMile).add(req.getDailyWorkMile()));
+            }
             req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(DateUtils.getCurrentTime());
             temp.add(req);
