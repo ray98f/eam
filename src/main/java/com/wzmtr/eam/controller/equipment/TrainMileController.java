@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Objects;
 
 /**
@@ -180,12 +181,13 @@ public class TrainMileController {
 
     /**
      * 导入每日列车里程及能耗列表
-     * @param file 导入文件
-     * @return 导入成功状态
+     * @param file 文件
+     * @return 导入成功
+     * @throws ParseException 异常
      */
     @PostMapping("/mile/daily/import")
     @ApiOperation(value = "导入每日列车里程及能耗列表")
-    public DataResponse<T> importTrainDailyMile(@RequestParam MultipartFile file) {
+    public DataResponse<T> importTrainDailyMile(@RequestParam MultipartFile file) throws ParseException {
         trainMileService.importTrainDailyMile(file);
         return DataResponse.success();
     }

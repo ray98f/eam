@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author frp
@@ -91,4 +90,11 @@ public interface RegionMapper extends BaseMapper<RegionDO> {
     List<RegionResDTO> listRegion(List<String> ids);
 
     List<RegionResDTO> selectByQuery(@Param("query") RegionQuery query);
+
+    /**
+     * 根据位置编号获取位置信息
+     * @param regionCode 位置编号
+     * @return 位置信息
+     */
+    RegionResDTO getRegionByRegionCode(String regionCode);
 }

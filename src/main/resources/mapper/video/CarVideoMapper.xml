@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.video.CarVideoMapper">
+    <insert id="add">
+        INSERT INTO T_VIDEO_ACCESS (REC_ID,
+                                    COMPANY_CODE,
+                                    COMPANY_NAME,
+                                    APPLY_NO,
+                                    TRAIN_NO,
+                                    EQUIP_CODE,
+                                    APPLY_REASON,
+                                    APPLY_TYPE,
+                                    APPLIER_ID,
+                                    APPLIER_MOB_PHONE,
+                                    APPLY_DEPT_CODE,
+                                    APPLY_DEPT_LEADER,
+                                    APPLY_TIME,
+                                    VIDEO_START_TIME,
+                                    VIDEO_END_TIME,
+                                    ENGINEER_ID,
+                                    REPAIR_MANAGER_ID,
+                                    DISPATCH_USER_ID,
+                                    DISPATCH_TIME,
+                                    WORK_TIME,
+                                    WORK_FLOW_INST_ID,
+                                    WORK_FLOW_INST_STATUS,
+                                    REMARK,
+                                    REC_CREATOR,
+                                    REC_CREATE_TIME,
+                                    REC_REVISOR,
+                                    REC_REVISE_TIME,
+                                    REC_DELETOR,
+                                    REC_DELETE_TIME,
+                                    DELETE_FLAG,
+                                    ARCHIVE_FLAG,
+                                    REC_STATUS,
+                                    EXT1,
+                                    EXT2,
+                                    EXT3,
+                                    EXT4,
+                                    EXT5,
+                                    WORK_CLASS)
+        VALUES (#{recId,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
+                #{applyNo,jdbcType=VARCHAR}, #{trainNo,jdbcType=VARCHAR}, #{equipCode,jdbcType=VARCHAR},
+                #{applyReason,jdbcType=VARCHAR}, #{applyType,jdbcType=VARCHAR}, #{applierId,jdbcType=VARCHAR},
+                #{applierMobPhone,jdbcType=VARCHAR}, #{applyDeptCode,jdbcType=VARCHAR},
+                #{applyDeptLeader,jdbcType=VARCHAR}, #{applyTime,jdbcType=VARCHAR},
+                #{videoStartTime,jdbcType=VARCHAR}, #{videoEndTime,jdbcType=VARCHAR},
+                #{engineerId,jdbcType=VARCHAR}, #{repairManagerId,jdbcType=VARCHAR},
+                #{dispatchUserId,jdbcType=VARCHAR}, #{dispatchTime,jdbcType=VARCHAR}, #{workTime,jdbcType=VARCHAR},
+                #{workFlowInstId,jdbcType=VARCHAR}, #{workFlowInstStatus,jdbcType=VARCHAR},
+                #{remark,jdbcType=VARCHAR}, #{recCreator,jdbcType=VARCHAR}, #{recCreateTime,jdbcType=VARCHAR},
+                #{recRevisor,jdbcType=VARCHAR}, #{recReviseTime,jdbcType=VARCHAR}, #{recDeletor,jdbcType=VARCHAR},
+                #{recDeleteTime,jdbcType=VARCHAR}, #{deleteFlag,jdbcType=VARCHAR}, #{archiveFlag,jdbcType=VARCHAR},
+                #{recStatus,jdbcType=VARCHAR}, #{ext1,jdbcType=VARCHAR}, #{ext2,jdbcType=VARCHAR},
+                #{ext3,jdbcType=VARCHAR}, #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR},
+                #{workClass,jdbcType=VARCHAR})
+    </insert>
+    <update id="update">
+        UPDATE T_VIDEO_ACCESS
+        SET
+        REC_REVISE_TIME = #{recReviseTime}
+        , REC_REVISOR = #{recRevisor}
+        <if test="trainNo != null and trainNo != ''">
+           , TRAIN_NO = #{trainNo}
+        </if>
+        <if test="applyReason != null and applyReason != ''">
+           , APPLY_REASON = #{applyReason}
+        </if>
+        <if test="applyType != null and applyType != ''">
+           , APPLY_TYPE = #{applyType}
+        </if>
+        <if test="applierId != null and applierId != ''">
+           , APPLIER_ID = #{applierId}
+        </if>
+        <if test="applierMobPhone != null and applierMobPhone != ''">
+           , APPLIER_MOB_PHONE = #{applierMobPhone}
+        </if>
+        <if test="applyDeptCode != null and applyDeptCode != ''">
+          ,  APPLY_DEPT_CODE = #{applyDeptCode}
+        </if>
+        <if test="applyDeptLeader != null and applyDeptLeader != ''">
+           , APPLY_DEPT_LEADER = #{applyDeptLeader}
+        </if>
+        <if test="applyTime != null and applyTime != ''">
+           , APPLY_TIME = #{applyTime}
+        </if>
+        <if test="videoStartTime != null and videoStartTime != ''">
+           , VIDEO_START_TIME = #{videoStartTime}
+        </if>
+        <if test="videoEndTime != null and videoEndTime != ''">
+           , VIDEO_END_TIME = #{videoEndTime}
+        </if>
+        <if test="equipCode != null and equipCode != ''">
+           , EQUIP_CODE = #{equipCode}
+        </if>
+        <if test="engineerId != null and engineerId != ''">
+            ,ENGINEER_ID = #{engineerId}
+        </if>
+        <if test="repairManagerId != null and repairManagerId != ''">
+           , REPAIR_MANAGER_ID = #{repairManagerId}
+        </if>
+        <if test="remark != null and remark != ''">
+            ,REMARK = #{remark}
+        </if>
+        <if test="dispatchUserId != null and dispatchUserId != ''">
+           , DISPATCH_USER_ID = #{dispatchUserId}
+        </if>
+        WHERE REC_ID = #{recId}
+    </update>
+    <update id="deleteByIds">
+        update
+        T_VIDEO_ACCESS
+        set
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID in
+        <foreach collection="ids" item="id" index="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="operate">
+        UPDATE T_VIDEO_ACCESS set
+        REC_STATUS=#{recStatus}
+        <if test="dispatchTime != null">
+            ,DISPATCH_TIME=#{dispatchTime}
+        </if>
+        <if test="dispatchUserId != null">
+            , DISPATCH_USER_ID=#{dispatchUserId}
+        </if>
+        <if test="workerId != null">
+            , WORKER_ID=#{workerId}
+        </if>
+        <if test="workTime != null">
+            , WORK_TIME=#{workTime}
+        </if>
+        <if test="closerId != null">
+            , CLOSER_ID=#{closerId}
+        </if>
+        <if test="closeTime != null">
+            , CLOSE_TIME=#{closeTime}
+        </if>
+        <if test="workClass != null">
+            , WORK_CLASS=#{workClass}
+        </if>
+        WHERE REC_ID=#{recId}
+    </update>
+    <select id="query" resultType="com.wzmtr.eam.dto.res.video.CarVideoResDTO">
+        SELECT
+        REC_ID as "recId",
+        COMPANY_CODE as "companyCode",
+        COMPANY_NAME as "companyName",
+        APPLY_NO as "applyNo",
+        TRAIN_NO as "trainNo",
+        APPLY_REASON as "applyReason",
+        APPLY_TYPE as "applyType",
+        APPLIER_ID as "applierId",
+        APPLIER_MOB_PHONE as "applierMobPhone",
+        APPLY_DEPT_CODE as "applyDeptCode",
+        APPLY_DEPT_LEADER as "applyDeptLeader",
+        APPLY_TIME as "applyTime",
+        VIDEO_START_TIME as "videoStartTime",
+        VIDEO_END_TIME as "videoEndTime",
+        ENGINEER_ID as "engineerId",
+        REPAIR_MANAGER_ID as "repairManagerId",
+        DISPATCH_USER_ID as "dispatchUserId",
+        DISPATCH_TIME as "dispatchTime",
+        WORKER_ID as "workerId",
+        WORK_TIME as "workTime",
+        CLOSER_ID as "closerId",
+        CLOSE_TIME as "closeTime",
+        WORK_FLOW_INST_ID as "workFlowInstId",
+        WORK_FLOW_INST_STATUS as "workFlowInstStatus",
+        REMARK as "remark",
+        REC_CREATOR as "recCreator",
+        REC_CREATE_TIME as "recCreateTime",
+        REC_REVISOR as "recRevisor",
+        REC_REVISE_TIME as "recReviseTime",
+        REC_DELETOR as "recDeletor",
+        REC_DELETE_TIME as "recDeleteTime",
+        DELETE_FLAG as "deleteFlag",
+        ARCHIVE_FLAG as "archiveFlag",
+        REC_STATUS as "recStatus",
+        EXT1 as "ext1",
+        EXT2 as "ext2",
+        EXT3 as "ext3",
+        EXT4 as "ext4",
+        EXT5 as "ext5",
+        WORK_CLASS as "workClass"
+        FROM T_VIDEO_ACCESS
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="applyNo!=null and applyNo!=''">
+                and APPLY_NO = #{applyNo}
+            </if>
+            <if test="recStatus!=null and recStatus!=''">
+                and REC_STATUS = #{recStatus}
+            </if>
+            <if test="startApplyTime!=null and startApplyTime!=''">
+                and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{startApplyTime},'YYYY-MM-DD')
+            </if>
+            <if test="endApplyTime!=null and endApplyTime!=''">
+                and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{endApplyTime},'YYYY-MM-DD')
+            </if>
+            and DELETE_FLAG = '0'
+        </trim>
+    </select>
+    <select id="detail" resultType="com.wzmtr.eam.dto.res.video.CarVideoResDTO">
+        SELECT
+        REC_ID as "recId",
+        COMPANY_CODE as "companyCode",
+        COMPANY_NAME as "companyName",
+        APPLY_NO as "applyNo",
+        TRAIN_NO as "trainNo",
+        APPLY_REASON as "applyReason",
+        APPLY_TYPE as "applyType",
+        APPLIER_ID as "applierId",
+        APPLIER_MOB_PHONE as "applierMobPhone",
+        APPLY_DEPT_CODE as "applyDeptCode",
+        APPLY_DEPT_LEADER as "applyDeptLeader",
+        APPLY_TIME as "applyTime",
+        VIDEO_START_TIME as "videoStartTime",
+        VIDEO_END_TIME as "videoEndTime",
+        ENGINEER_ID as "engineerId",
+        REPAIR_MANAGER_ID as "repairManagerId",
+        DISPATCH_USER_ID as "dispatchUserId",
+        DISPATCH_TIME as "dispatchTime",
+        ( SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=WORKER_ID ) AS "workerId",
+        WORK_TIME as "workTime",
+        CLOSER_ID as "closerId",
+        CLOSE_TIME as "closeTime",
+        WORK_FLOW_INST_ID as "workFlowInstId",
+        WORK_FLOW_INST_STATUS as "workFlowInstStatus",
+        REMARK as "remark",
+        REC_CREATOR as "recCreator",
+        REC_CREATE_TIME as "recCreateTime",
+        REC_REVISOR as "recRevisor",
+        REC_REVISE_TIME as "recReviseTime",
+        REC_DELETOR as "recDeletor",
+        REC_DELETE_TIME as "recDeleteTime",
+        DELETE_FLAG as "deleteFlag",
+        ARCHIVE_FLAG as "archiveFlag",
+        REC_STATUS as "recStatus",
+        EXT1 as "ext1",
+        EXT2 as "ext2",
+        EXT3 as "ext3",
+        EXT4 as "ext4",
+        EXT5 as "ext5",
+        WORK_CLASS as "workClass"
+        FROM T_VIDEO_ACCESS
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="recId!=null and recId!=''">
+                and REC_ID = #{recId}
+            </if>
+        </trim>
+    </select>
+    <select id="list" resultType="com.wzmtr.eam.dto.res.video.CarVideoResDTO">
+        SELECT
+        REC_ID	as "recId",
+        COMPANY_CODE	as "companyCode",
+        COMPANY_NAME	as "companyName",
+        APPLY_NO	as "applyNo",
+        TRAIN_NO	as "trainNo",
+        APPLY_REASON	as "applyReason",
+        APPLY_TYPE	as "applyType",
+        APPLIER_ID	as "applierId",
+        APPLIER_MOB_PHONE	as "applierMobPhone",
+        APPLY_DEPT_CODE	as "applyDeptCode",
+        APPLY_DEPT_LEADER	as "applyDeptLeader",
+        APPLY_TIME	as "applyTime",
+        VIDEO_START_TIME	as "videoStartTime",
+        VIDEO_END_TIME	as "videoEndTime",
+        ENGINEER_ID	as "engineerId",
+        REPAIR_MANAGER_ID	as "repairManagerId",
+        DISPATCH_USER_ID	as "dispatchUserId",
+        DISPATCH_TIME	as "dispatchTime",
+        WORKER_ID	as "workerId",
+        WORK_TIME	as "workTime",
+        CLOSER_ID	as "closerId",
+        CLOSE_TIME	as "closeTime",
+        WORK_FLOW_INST_ID	as "workFlowInstId",
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",
+        REMARK	as "remark",
+        REC_CREATOR	as "recCreator",
+        REC_CREATE_TIME	as "recCreateTime",
+        REC_REVISOR	as "recRevisor",
+        REC_REVISE_TIME	as "recReviseTime",
+        REC_DELETOR	as "recDeletor",
+        REC_DELETE_TIME	as "recDeleteTime",
+        DELETE_FLAG	as "deleteFlag",
+        ARCHIVE_FLAG	as "archiveFlag",
+        REC_STATUS	as "recStatus",
+        EXT1	as "ext1",
+        EXT2	as "ext2",
+        EXT3	as "ext3",
+        EXT4	as "ext4",
+        EXT5	as "ext5",
+        WORK_CLASS as "workClass"
+        FROM T_VIDEO_ACCESS
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="applyNo!=null and applyNo.size() > 0">
+                AND APPLY_NO IN
+                <foreach collection="applyNo" item="code" open="(" close=")" separator=",">
+                    #{code}
+                </foreach>
+            </if>
+            <if test="recStatus!=null and recStatus!=''">
+                and REC_STATUS = #{recStatus}
+            </if>
+            <if test="startApplyTime!=null and startApplyTime!=''">
+                and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{startApplyTime},'YYYY-MM-DD')
+            </if>
+            <if test="endApplyTime!=null and endApplyTime!=''">
+                and TO_DATE(APPLY_TIME,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{endApplyTime},'YYYY-MM-DD')
+            </if>
+            and DELETE_FLAG = '0'
+        </trim>
+    </select>
+    <select id="selectMaxCode" resultType="java.lang.String">
+            SELECT max(APPLY_NO)
+            FROM T_VIDEO_ACCESS
+    </select>
+
+</mapper>

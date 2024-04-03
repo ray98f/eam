@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.basic.OrgRegionMapper">
+
+    <select id="pageOrgRegion" resultType="com.wzmtr.eam.dto.res.basic.OrgRegionResDTO">
+        SELECT om.REC_ID, om.ORG_CODE, om.ORG_NAME, om.REGION_CODE,
+        om.REC_STATUS, om.REMARK, u.NAME AS REC_CREATOR, om.REC_CREATE_TIME
+        FROM SYS_ORG_REGION om
+        LEFT JOIN SYS_USER u ON om.REC_CREATOR=u.ID
+        where om.DELETE_FLAG='0'
+        <if test="orgCodes!=null and orgCodes.size()>0">
+            and
+            <foreach collection="orgCodes" item="orgCode" separator="or">
+                om.ORG_CODE in
+                <foreach collection="orgCode" item="x" separator="," open="(" close=")">
+                    #{x}
+                </foreach>
+            </foreach>
+        </if>
+        <if test="regionCode!=null and regionCode!=''">
+            and om.REGION_CODE=#{regionCode}
+        </if>
+        ORDER BY om.REC_CREATE_TIME ASC
+    </select>
+
+    <select id="listUseOrgRegion" resultType="com.wzmtr.eam.dto.res.basic.OrgRegionResDTO">
+        SELECT om.REC_ID, om.ORG_CODE, om.ORG_NAME, om.REGION_CODE,
+        om.REC_STATUS, om.REMARK, u.NAME AS REC_CREATOR, om.REC_CREATE_TIME
+        FROM SYS_ORG_REGION om
+        LEFT JOIN SYS_USER u ON om.REC_CREATOR=u.ID
+        where om.DELETE_FLAG='0' and om.REGION_CODE=#{regionCode} and om.REC_STATUS='10'
+        ORDER BY om.REC_CREATE_TIME ASC
+    </select>
+
+    <select id="getOrgRegionDetail" resultType="com.wzmtr.eam.dto.res.basic.OrgRegionResDTO">
+        SELECT om.REC_ID, om.ORG_CODE, om.ORG_NAME, om.REGION_CODE,
+        om.REC_STATUS, om.REMARK, u.NAME AS REC_CREATOR, om.REC_CREATE_TIME
+        FROM SYS_ORG_REGION om
+        LEFT JOIN SYS_USER u ON om.REC_CREATOR=u.ID
+        where om.REC_ID=#{id}
+    </select>
+
+    <select id="selectOrgRegionIsExist" resultType="java.lang.Integer">
+        SELECT COUNT(REC_ID)
+        FROM SYS_ORG_REGION
+        WHERE ORG_CODE=#{orgCode} AND REGION_CODE=#{regionCode} AND DELETE_FLAG='0'
+        <if test="recId!=null and recId!=''">
+            AND REC_ID!=#{recId}
+        </if>
+    </select>
+
+    <insert id="addOrgRegion">
+        INSERT INTO SYS_ORG_REGION (REC_ID, ORG_CODE, ORG_NAME, REGION_CODE, REC_STATUS,
+        <if test="remark!=null and remark!=''">
+            REMARK,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME)
+        VALUES (#{recId}, #{orgCode}, #{orgName}, #{regionCode}, #{recStatus},
+        <if test="remark!=null and remark!=''">
+            #{remark},
+        </if>
+        #{recCreator}, #{recCreateTime})
+    </insert>
+
+    <update id="modifyOrgRegion">
+        UPDATE SYS_ORG_REGION SET
+        <if test="orgCode!=null">
+            ORG_CODE=#{orgCode},
+        </if>
+        <if test="orgName!=null">
+            ORG_NAME=#{orgName},
+        </if>
+        <if test="regionCode!=null">
+            REGION_CODE=#{regionCode},
+        </if>
+        <if test="recStatus!=null">
+            REC_STATUS=#{recStatus},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <update id="deleteOrgRegion">
+        UPDATE SYS_ORG_REGION SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <select id="listOrgRegion" resultType="com.wzmtr.eam.dto.res.basic.OrgRegionResDTO">
+        SELECT om.REC_ID, om.ORG_CODE, om.ORG_NAME, om.REGION_CODE,
+        om.REC_STATUS, om.REMARK, u.NAME AS REC_CREATOR, om.REC_CREATE_TIME
+        FROM SYS_ORG_REGION om
+        LEFT JOIN SYS_USER u ON om.REC_CREATOR=u.ID
+        where om.DELETE_FLAG='0'
+        AND om.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY om.REC_CREATE_TIME ASC
+    </select>
+</mapper>

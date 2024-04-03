@@ -90,6 +90,8 @@ public class FaultDetailResDTO {
     private String dispatchUserName;
     @ApiModelProperty(value = "维修负责人")
     private String repairRespUserName;
+    @ApiModelProperty(value = "维修负责人电话")
+    private String repairRespUserMobile;
     @ApiModelProperty(value = "验收人")
     private String checkUserName;
     @ApiModelProperty(value = "关闭人")
@@ -199,7 +201,7 @@ public class FaultDetailResDTO {
     private String publishUserId;
     @ApiModelProperty(value = "下发时间")
     private String publishTime;
-    @ApiModelProperty(value = "故障等级")
+    @ApiModelProperty(value = "故障紧急程度")
     private String faultLevel;
     @ApiModelProperty(value = "故障状态")
     private String faultStatus;
@@ -250,4 +252,6 @@ public class FaultDetailResDTO {
      */
     @ApiModelProperty(value = "故障流程数据")
     private List<FaultFlowResDTO> flows;
+
+    private String repairLimitTime;
 }

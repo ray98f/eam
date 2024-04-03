@@ -35,6 +35,22 @@ public interface OverhaulOrderMapper {
 
     Page<OverhaulOrderResDTO> pageOrder(Page<OverhaulOrderResDTO> page, OverhaulOrderListReqDTO req);
 
+    /**
+     * 根据工单编号和计划编号获取工单详情
+     * @param orderCode 工单编号
+     * @param planCode 计划编号
+     * @return 工单详情
+     */
+    OverhaulOrderResDTO getCarOrderExt(String orderCode, String planCode);
+
+    /**
+     * 根据工单编号和计划编号获取工单规则时间和公路数
+     * @param orderCode 工单编号
+     * @param planCode 计划编号
+     * @return 工单规则时间和公路数
+     */
+    OverhaulOrderResDTO getCarOrderRuleExt(String orderCode, String planCode);
+
     OverhaulOrderResDTO getOrder(String recId, String objectFlag);
 
     /**
@@ -58,6 +74,12 @@ public interface OverhaulOrderMapper {
     Page<OverhaulOrderDetailResDTO> pageOverhaulObject(Page<OverhaulOrderDetailResDTO> page, String orderCode, String planCode, String planName, String objectCode);
 
     OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id);
+
+    /**
+     * 编辑检修对象
+     * @param req 检修对象参数
+     */
+    void modifyOverhaulObject(OverhaulOrderDetailReqDTO req);
 
     List<OverhaulOrderDetailResDTO> listOverhaulObject(String orderCode, String planCode, String planName, String objectCode);
 

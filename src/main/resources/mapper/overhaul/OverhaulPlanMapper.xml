@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper">
+
+    <select id="pageOverhaulPlan" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        RULE_CODE	as "ruleCode",  <!-- 规则编号 -->
+        RULE_NAME	as "ruleName",  <!-- 规则名称 -->
+        FIRST_BEGIN_TIME	as "firstBeginTime",  <!-- 首次开始时间 -->
+        PLAN_FINISH_TIME	as "planFinishTime",  <!-- 计划结束时间 -->
+        LAST_ACTION_TIME	as "lastActionTime",  <!-- 上次执行时间 -->
+        TRIGER_TIME	as "trigerTime",  <!-- 触发时间 -->
+        PLAN_STATUS	as "planStatus",  <!-- 计划状态 -->
+        PLAN_EDITOR	as "planEditor",  <!-- 计划编制人 -->
+        PLAN_EDITOR_TIME	as "planEditorTime",  <!-- 计划编制日期 -->
+        ALLOW_DELAY_TIME	as "allowDelayTime",  <!-- 允许提前时间 -->
+        TASK_FIXED_TIME	as "taskFixedTime",  <!-- 作业规定用时时间 -->
+        TASK_FIXED_TIME_UNIT	as "taskFixedTimeUnit",  <!-- 作业规定用时单位 -->
+        BEFORE_TRIGGER_TIME	as "beforeTriggerTime",  <!-- 提前触发时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        PARENT_NODE_REC_ID	as "parentNodeRecId",  <!-- 父节点 -->
+        NODE_LEVEL	as "nodeLevel",  <!-- 节点层级 -->
+        COUNT_FLAG	as "countFlag",  <!-- 计数标记 -->
+        COUNT	as "count",  <!-- 计数 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        <if test="req.objectFlag!=null and req.objectFlag!=''">
+            <!-- RELATION_CODE	as "relationCode",  关联编码 -->
+            (CASE WHEN TRIM(RELATION_CODE) IS NULL THEN '不关联' ELSE '关联' END) as "deleteFlag",  <!-- 关联编码 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE = T_OVERHAUL_PLAN.PLAN_CODE and a.DELETE_FLAG ='0') as "ext1", <!-- 设备对象拼接 -->
+        </if>
+        <if test="req.objectFlag==null or req.objectFlag==''">
+            DELETE_FLAG	as "deleteFlag",
+            EXT1 as "ext1",  <!-- 扩展字段1 -->
+        </if>
+        RELATION_CODE	as "relationCode", <!-- 关联编码 -->
+        <!-- EXT1 as "ext1", 扩展字段1 -->
+        EXT2 as "ext2",  <!-- 扩展字段2 -->
+        EXT3 as "ext3",  <!-- 扩展字段3 -->
+        EXT4 as "ext4",  <!-- 扩展字段4 -->
+        EXT5 as "ext5", <!-- 扩展字段5 -->
+        WEEK_PLAN_CODE	as "weekPlanCode",  <!-- 周计划编号 -->
+        KILOMETER_SCALE	as "kilometerScale",  <!-- 公里标 -->
+        CONSTRUCTION_TYPE	as "constructionType" <!-- 施工类型 -->
+        FROM T_OVERHAUL_PLAN WHERE 1=1 and DELETE_FLAG='0'
+        <if test="req.weekPlanCode!=null and req.weekPlanCode!=''">
+            and WEEK_PLAN_CODE=#{req.weekPlanCode}
+        </if>
+        <if test="req.planCode!=null and req.planCode!=''">
+            and PLAN_CODE like '%' || #{req.planCode} || '%'
+        </if>
+        <if test="req.planName!=null and req.planName!=''">
+            and PLAN_NAME like '%' || #{req.planName} || '%'
+        </if>
+        <if test="req.lineNo!=null and req.lineNo!=''">
+            and LINE_NO=#{req.lineNo}
+        </if>
+        <if test="req.position1Code!=null and req.position1Code!=''">
+            and POSITION1_CODE=#{req.position1Code}
+        </if>
+        <if test="req.subjectCode!=null and req.subjectCode!=''">
+            and SUBJECT_CODE=#{req.subjectCode}
+        </if>
+        <if test="req.systemCode!=null and req.systemCode!=''">
+            and SYSTEM_CODE=#{req.systemCode}
+        </if>
+        <if test="req.equipTypeCode!=null and req.equipTypeCode!=''">
+            and EQUIP_TYPE_CODE=#{req.equipTypeCode}
+        </if>
+        <if test="req.trialStatus!=null and req.trialStatus!=''">
+            and TRIAL_STATUS IN (${req.trialStatus})
+        </if>
+        ORDER BY PLAN_CODE desc
+    </select>
+
+    <select id="getOverhaulPlanDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        RULE_CODE	as "ruleCode",  <!-- 规则编号 -->
+        RULE_NAME	as "ruleName",  <!-- 规则名称 -->
+        FIRST_BEGIN_TIME	as "firstBeginTime",  <!-- 首次开始时间 -->
+        PLAN_FINISH_TIME	as "planFinishTime",  <!-- 计划结束时间 -->
+        LAST_ACTION_TIME	as "lastActionTime",  <!-- 上次执行时间 -->
+        TRIGER_TIME	as "trigerTime",  <!-- 触发时间 -->
+        PLAN_STATUS	as "planStatus",  <!-- 计划状态 -->
+        PLAN_EDITOR	as "planEditor",  <!-- 计划编制人 -->
+        PLAN_EDITOR_TIME	as "planEditorTime",  <!-- 计划编制日期 -->
+        ALLOW_DELAY_TIME	as "allowDelayTime",  <!-- 允许提前时间 -->
+        TASK_FIXED_TIME	as "taskFixedTime",  <!-- 作业规定用时时间 -->
+        TASK_FIXED_TIME_UNIT	as "taskFixedTimeUnit",  <!-- 作业规定用时单位 -->
+        BEFORE_TRIGGER_TIME	as "beforeTriggerTime",  <!-- 提前触发时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        PARENT_NODE_REC_ID	as "parentNodeRecId",  <!-- 父节点 -->
+        NODE_LEVEL	as "nodeLevel",  <!-- 节点层级 -->
+        COUNT_FLAG	as "countFlag",  <!-- 计数标记 -->
+        COUNT	as "count",  <!-- 计数 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        <if test="objectFlag!=null and objectFlag!=''">
+            <!-- RELATION_CODE	as "relationCode",  关联编码 -->
+            (CASE WHEN TRIM(RELATION_CODE) IS NULL THEN '不关联' ELSE '关联' END) as "deleteFlag",  <!-- 关联编码 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE = T_OVERHAUL_PLAN.PLAN_CODE and a.DELETE_FLAG ='0') as "ext1", <!-- 设备对象拼接 -->
+        </if>
+        <if test="objectFlag==null or objectFlag==''">
+            DELETE_FLAG	as "deleteFlag",
+            EXT1 as "ext1",  <!-- 扩展字段1 -->
+        </if>
+        RELATION_CODE	as "relationCode", <!-- 关联编码 -->
+        <!-- EXT1 as "ext1", 扩展字段1 -->
+        EXT2 as "ext2",  <!-- 扩展字段2 -->
+        EXT3 as "ext3",  <!-- 扩展字段3 -->
+        EXT4 as "ext4",  <!-- 扩展字段4 -->
+        EXT5 as "ext5", <!-- 扩展字段5 -->
+        WEEK_PLAN_CODE	as "weekPlanCode",  <!-- 周计划编号 -->
+        KILOMETER_SCALE	as "kilometerScale",  <!-- 公里标 -->
+        CONSTRUCTION_TYPE	as "constructionType" <!-- 施工类型 -->
+        FROM T_OVERHAUL_PLAN WHERE REC_ID=#{id}
+    </select>
+
+    <select id="getSubjectByUserId" resultType="java.lang.String">
+        SELECT NODE_CODE as "nodeCode"
+        FROM T_EQUIPMENT_CATEGORY where 1=1 AND NODE_CODE IN (
+        SELECT MAJOR_CODE as "majorCode"
+        FROM SYS_ORG_MAJOR where 1=1 AND REC_STATUS = '10' AND
+        ORG_CODE = (SELECT CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END
+        FROM SYS_OFFICE WHERE ID=(SELECT OFFICE_ID from SYS_USER where LOGIN_NAME=#{userId} AND ROWNUM=1)
+        AND ROWNUM=1))
+    </select>
+
+    <select id="getOrderIsValid" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO">
+        SELECT TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName"  <!-- 模板名称 -->
+        FROM T_OVERHAUL_TPL_DETAIL
+        WHERE TEMPLATE_ID IN
+        (SELECT TEMPLATE_ID
+        FROM T_OVERHAUL_OBJECT
+        WHERE PLAN_CODE=#{planCode})
+    </select>
+
+    <update id="updateTrigerTime">
+        UPDATE T_OVERHAUL_PLAN
+        SET BEFORE_TRIGGER_TIME=#{beforeTriggerTime}
+        WHERE PLAN_CODE=#{planCode}
+    </update>
+
+    <select id="getMaxCode" resultType="java.lang.String">
+        select max(PLAN_CODE) from T_OVERHAUL_PLAN
+    </select>
+
+    <insert id="addOverhaulPlan">
+        INSERT INTO T_OVERHAUL_PLAN (
+        REC_ID,  <!-- 记录ID -->
+        PLAN_CODE,  <!-- 计划编号 -->
+        PLAN_NAME,  <!-- 计划名称 -->
+        LINE_NO,  <!-- 线路编码 -->
+        LINE_NAME,  <!-- 线路名称 -->
+        POSITION1_NAME,  <!-- 位置1  -->
+        POSITION1_CODE,  <!-- 位置1代码 -->
+        SUBJECT_CODE,  <!-- 设备专业编码 -->
+        SUBJECT_NAME,  <!-- 设备专业名称 -->
+        SYSTEM_CODE,  <!-- 系统编码 -->
+        SYSTEM_NAME,  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE,  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME,  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE,  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME,  <!-- 作业工班名称 -->
+        WORKER_NAME,  <!-- 作业人员姓名 -->
+        WORKER_CODE,  <!-- 作业人员工号 -->
+        RULE_CODE,  <!-- 规则编号 -->
+        RULE_NAME,  <!-- 规则名称 -->
+        FIRST_BEGIN_TIME,  <!-- 首次开始时间 -->
+        PLAN_FINISH_TIME,  <!-- 计划结束时间 -->
+        LAST_ACTION_TIME,  <!-- 上次执行时间 -->
+        TRIGER_TIME,  <!-- 触发时间 -->
+        PLAN_STATUS,  <!-- 计划状态 -->
+        PLAN_EDITOR,  <!-- 计划编制人 -->
+        PLAN_EDITOR_TIME,  <!-- 计划编制日期 -->
+        ALLOW_DELAY_TIME,  <!-- 允许提前时间 -->
+        TASK_FIXED_TIME,  <!-- 作业规定用时时间 -->
+        TASK_FIXED_TIME_UNIT,  <!-- 作业规定用时单位 -->
+        BEFORE_TRIGGER_TIME,  <!-- 提前触发时间 -->
+        TRIAL_STATUS,  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID,  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS,  <!-- 工作流实例状态 -->
+        PARENT_NODE_REC_ID,  <!-- 父节点 -->
+        NODE_LEVEL,  <!-- 节点层级 -->
+        RELATION_CODE,  <!-- 关联编码 -->
+        COUNT_FLAG,  <!-- 计数标记 -->
+        COUNT,  <!-- 计数 -->
+        COMPANY_CODE,  <!-- 公司代码 -->
+        COMPANY_NAME,  <!-- 公司名称 -->
+        REC_CREATOR,  <!-- 记录创建者 -->
+        REC_CREATE_TIME,  <!-- 记录创建时间 -->
+        REC_REVISOR,  <!-- 记录修改者 -->
+        REC_REVISE_TIME,  <!-- 记录修改时间 -->
+        REC_DELETOR,  <!-- 记录删除者 -->
+        REC_DELETE_TIME,  <!-- 记录删除时间 -->
+        DELETE_FLAG,  <!-- 删除标记 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REMARK,  <!-- 说明 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5,  <!-- 扩展字段5 -->
+        WEEK_PLAN_CODE,  <!-- 周计划编号 -->
+        KILOMETER_SCALE,  <!-- 公里标 -->
+        CONSTRUCTION_TYPE  <!-- 施工类型 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{planCode,jdbcType=VARCHAR},
+        #{planName,jdbcType=VARCHAR},
+        #{lineNo,jdbcType=VARCHAR},
+        #{lineName,jdbcType=VARCHAR},
+        #{position1Name,jdbcType=VARCHAR},
+        #{position1Code,jdbcType=VARCHAR},
+        #{subjectCode,jdbcType=VARCHAR},
+        #{subjectName,jdbcType=VARCHAR},
+        #{systemCode,jdbcType=VARCHAR},
+        #{systemName,jdbcType=VARCHAR},
+        #{equipTypeCode,jdbcType=VARCHAR},
+        #{equipTypeName,jdbcType=VARCHAR},
+        #{workerGroupCode,jdbcType=VARCHAR},
+        #{workGroupName,jdbcType=VARCHAR},
+        #{workerName,jdbcType=VARCHAR},
+        #{workerCode,jdbcType=VARCHAR},
+        #{ruleCode,jdbcType=VARCHAR},
+        #{ruleName,jdbcType=VARCHAR},
+        #{firstBeginTime,jdbcType=VARCHAR},
+        #{planFinishTime,jdbcType=VARCHAR},
+        #{lastActionTime,jdbcType=VARCHAR},
+        #{trigerTime,jdbcType=VARCHAR},
+        #{planStatus,jdbcType=VARCHAR},
+        #{planEditor,jdbcType=VARCHAR},
+        #{planEditorTime,jdbcType=VARCHAR},
+        #{allowDelayTime,jdbcType=VARCHAR},
+        #{taskFixedTime,jdbcType=VARCHAR},
+        #{taskFixedTimeUnit,jdbcType=VARCHAR},
+        #{beforeTriggerTime,jdbcType=VARCHAR},
+        #{trialStatus,jdbcType=VARCHAR},
+        #{workFlowInstId,jdbcType=VARCHAR},
+        #{workFlowInstStatus,jdbcType=VARCHAR},
+        #{parentNodeRecId,jdbcType=VARCHAR},
+        #{nodeLevel,jdbcType=NUMERIC},
+        #{relationCode,jdbcType=VARCHAR},
+        #{countFlag,jdbcType=NUMERIC},
+        #{count,jdbcType=NUMERIC},
+        #{companyCode,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR},
+        #{weekPlanCode,jdbcType=VARCHAR},
+        #{kilometerScale,jdbcType=VARCHAR},
+        #{constructionType,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="modifyOverhaulPlan">
+        UPDATE T_OVERHAUL_PLAN SET
+        <if test="planCode!=null">
+            PLAN_CODE =#{planCode},
+        </if>
+        <if test="planName!=null">
+            PLAN_NAME =#{planName},
+        </if>
+        <if test="lineNo!=null">
+            LINE_NO =#{lineNo},
+        </if>
+        <if test="lineName!=null">
+            LINE_NAME =#{lineName},
+        </if>
+        <if test="position1Name!=null">
+            POSITION1_NAME =#{position1Name},
+        </if>
+        <if test="position1Code!=null">
+            POSITION1_CODE =#{position1Code},
+        </if>
+        <if test="subjectCode!=null and subjectCode!=''">
+            SUBJECT_CODE =#{subjectCode},
+        </if>
+        <if test="subjectName!=null and subjectName!=''">
+            SUBJECT_NAME =#{subjectName},
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            SYSTEM_CODE =#{systemCode},
+        </if>
+        <if test="systemName!=null and systemName!=''">
+            SYSTEM_NAME =#{systemName},
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            EQUIP_TYPE_CODE =#{equipTypeCode},
+        </if>
+        <if test="equipTypeName!=null and equipTypeName!=''">
+            EQUIP_TYPE_NAME =#{equipTypeName},
+        </if>
+        <if test="workerGroupCode!=null">
+            WORKER_GROUP_CODE =#{workerGroupCode},
+        </if>
+        <if test="workGroupName!=null">
+            WORK_GROUP_NAME =#{workGroupName},
+        </if>
+        <if test="workerName!=null">
+            WORKER_NAME =#{workerName},
+        </if>
+        <if test="workerCode!=null">
+            WORKER_CODE =#{workerCode},
+        </if>
+        <if test="ruleCode!=null">
+            RULE_CODE =#{ruleCode},
+        </if>
+        <if test="ruleName!=null">
+            RULE_NAME =#{ruleName},
+        </if>
+        <if test="firstBeginTime!=null">
+            FIRST_BEGIN_TIME =#{firstBeginTime},
+        </if>
+        <if test="planFinishTime!=null">
+            PLAN_FINISH_TIME =#{planFinishTime},
+        </if>
+        <if test="lastActionTime!=null">
+            LAST_ACTION_TIME =#{lastActionTime},
+        </if>
+        <if test="trigerTime!=null">
+            TRIGER_TIME =#{trigerTime},
+        </if>
+        <if test="planStatus!=null">
+            PLAN_STATUS =#{planStatus},
+        </if>
+        <if test="planEditor!=null">
+            PLAN_EDITOR =#{planEditor},
+        </if>
+        <if test="planEditorTime!=null">
+            PLAN_EDITOR_TIME =#{planEditorTime},
+        </if>
+        <if test="allowDelayTime!=null">
+            ALLOW_DELAY_TIME =#{allowDelayTime},
+        </if>
+        <if test="taskFixedTime!=null">
+            TASK_FIXED_TIME =#{taskFixedTime},
+        </if>
+        <if test="taskFixedTimeUnit!=null">
+            TASK_FIXED_TIME_UNIT =#{taskFixedTimeUnit},
+        </if>
+        <if test="beforeTriggerTime!=null">
+            BEFORE_TRIGGER_TIME =#{beforeTriggerTime},
+        </if>
+        <if test="trialStatus!=null">
+            TRIAL_STATUS =#{trialStatus},
+        </if>
+        <if test="workFlowInstId!=null">
+            WORK_FLOW_INST_ID =#{workFlowInstId},
+        </if>
+        <if test="workFlowInstStatus!=null">
+            WORK_FLOW_INST_STATUS =#{workFlowInstStatus},
+        </if>
+        <if test="parentNodeRecId!=null">
+            PARENT_NODE_REC_ID =#{parentNodeRecId},
+        </if>
+        <if test="nodeLevel!=null">
+            NODE_LEVEL =#{nodeLevel},
+        </if>
+        <if test="relationCode!=null">
+            RELATION_CODE =#{relationCode},
+        </if>
+        <if test="countFlag!=null">
+            COUNT_FLAG =#{countFlag},
+        </if>
+        <if test="count!=null">
+            COUNT =#{count},
+        </if>
+        <if test="companyCode!=null">
+            COMPANY_CODE =#{companyCode},
+        </if>
+        <if test="companyName!=null">
+            COMPANY_NAME =#{companyName},
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG =#{archiveFlag},
+        </if>
+        <if test="remark!=null">
+            REMARK =#{remark},
+        </if>
+        <if test="ext1!=null">
+            EXT1 =#{ext1},
+        </if>
+        <if test="ext2!=null">
+            EXT2 =#{ext2},
+        </if>
+        <if test="ext3!=null">
+            EXT3 =#{ext3},
+        </if>
+        <if test="ext4!=null">
+            EXT4 =#{ext4},
+        </if>
+        <if test="ext5!=null">
+            EXT5 =#{ext5},
+        </if>
+        <if test="weekPlanCode!=null">
+            WEEK_PLAN_CODE =#{weekPlanCode},
+        </if>
+        <if test="kilometerScale!=null">
+            KILOMETER_SCALE =#{kilometerScale},
+        </if>
+        <if test="constructionType!=null">
+            CONSTRUCTION_TYPE =#{constructionType},
+        </if>
+        REC_REVISOR =#{recRevisor},
+        REC_REVISE_TIME =#{recReviseTime}
+        WHERE REC_ID =#{recId}
+    </update>
+
+    <update id="deleteOverhaulPlanDetail">
+        UPDATE T_OVERHAUL_OBJECT SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        <if test="planCode!=null and planCode!=''">
+            WHERE PLAN_CODE=#{planCode}
+        </if>
+        <if test="id!=null and id!=''">
+            WHERE REC_ID=#{id}
+        </if>
+    </update>
+
+    <update id="deleteOverhaulPlan">
+        UPDATE T_OVERHAUL_PLAN SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID=#{id}
+    </update>
+
+    <select id="listOverhaulPlan" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        (SELECT t1.NODE_NAME FROM T_EQUIPMENT_CATEGORY t1 WHERE t1.NODE_CODE=SUBJECT_CODE AND t1.DELETE_FLAG='0' AND t1.REC_STATUS='10') as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        (SELECT t2.NODE_NAME FROM T_EQUIPMENT_CATEGORY t2 WHERE t2.NODE_CODE=SYSTEM_CODE AND t2.DELETE_FLAG='0' AND t2.REC_STATUS='10')	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        (SELECT t3.NODE_NAME FROM T_EQUIPMENT_CATEGORY t3 WHERE t3.NODE_CODE=EQUIP_TYPE_CODE AND t3.DELETE_FLAG='0' AND t3.REC_STATUS='10')	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        RULE_CODE	as "ruleCode",  <!-- 规则编号 -->
+        RULE_NAME	as "ruleName",  <!-- 规则名称 -->
+        FIRST_BEGIN_TIME	as "firstBeginTime",  <!-- 首次开始时间 -->
+        PLAN_FINISH_TIME	as "planFinishTime",  <!-- 计划结束时间 -->
+        LAST_ACTION_TIME	as "lastActionTime",  <!-- 上次执行时间 -->
+        TRIGER_TIME	as "trigerTime",  <!-- 触发时间 -->
+        PLAN_STATUS	as "planStatus",  <!-- 计划状态 -->
+        PLAN_EDITOR	as "planEditor",  <!-- 计划编制人 -->
+        PLAN_EDITOR_TIME	as "planEditorTime",  <!-- 计划编制日期 -->
+        ALLOW_DELAY_TIME	as "allowDelayTime",  <!-- 允许提前时间 -->
+        TASK_FIXED_TIME	as "taskFixedTime",  <!-- 作业规定用时时间 -->
+        TASK_FIXED_TIME_UNIT	as "taskFixedTimeUnit",  <!-- 作业规定用时单位 -->
+        BEFORE_TRIGGER_TIME	as "beforeTriggerTime",  <!-- 提前触发时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        PARENT_NODE_REC_ID	as "parentNodeRecId",  <!-- 父节点 -->
+        NODE_LEVEL	as "nodeLevel",  <!-- 节点层级 -->
+        COUNT_FLAG	as "countFlag",  <!-- 计数标记 -->
+        COUNT	as "count",  <!-- 计数 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        <if test="objectFlag!=null and objectFlag!=''">
+            <!-- RELATION_CODE	as "relationCode",  关联编码 -->
+            (CASE WHEN TRIM(RELATION_CODE) IS NULL THEN '不关联' ELSE '关联' END) as "deleteFlag",  <!-- 关联编码 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE = T_OVERHAUL_PLAN.PLAN_CODE and a.DELETE_FLAG ='0') as "ext1", <!-- 设备对象拼接 -->
+        </if>
+        <if test="objectFlag==null or objectFlag==''">
+            DELETE_FLAG	as "deleteFlag",
+            EXT1 as "ext1",  <!-- 扩展字段1 -->
+        </if>
+        RELATION_CODE	as "relationCode", <!-- 关联编码 -->
+        <!-- EXT1 as "ext1", 扩展字段1 -->
+        EXT2 as "ext2",  <!-- 扩展字段2 -->
+        EXT3 as "ext3",  <!-- 扩展字段3 -->
+        EXT4 as "ext4",  <!-- 扩展字段4 -->
+        EXT5 as "ext5", <!-- 扩展字段5 -->
+        WEEK_PLAN_CODE	as "weekPlanCode",  <!-- 周计划编号 -->
+        KILOMETER_SCALE	as "kilometerScale",  <!-- 公里标 -->
+        CONSTRUCTION_TYPE	as "constructionType" <!-- 施工类型 -->
+        FROM T_OVERHAUL_PLAN WHERE 1=1 and DELETE_FLAG='0'
+        <if test="weekPlanCode!=null and weekPlanCode!=''">
+            and WEEK_PLAN_CODE=#{weekPlanCode}
+        </if>
+        <if test="planCode!=null and planCode!=''">
+            and PLAN_CODE like '%' || #{planCode} || '%'
+        </if>
+        <if test="planName!=null and planName!=''">
+            and PLAN_NAME like '%' || #{planName} || '%'
+        </if>
+        <if test="lineNo!=null and lineNo!=''">
+            and LINE_NO=#{lineNo}
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            and POSITION1_CODE=#{position1Code}
+        </if>
+        <if test="subjectCode!=null and subjectCode!=''">
+            and SUBJECT_CODE=#{subjectCode}
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            and SYSTEM_CODE=#{systemCode}
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            and EQUIP_TYPE_CODE=#{equipTypeCode}
+        </if>
+        <if test="trialStatus!=null and trialStatus!=''">
+            and TRIAL_STATUS IN (${trialStatus})
+        </if>
+        <if test="parentNode!=null and parentNode!=''">
+            and PARENT_NODE_REC_ID=#{parentNode}
+        </if>
+        <if test="firstBegin!=null and firstBegin!=''">
+            and TO_CHAR(TRUNC(SYSDATE),'yyyymmdd')>=FIRST_BEGIN_TIME
+        </if>
+        <if test="trialStatus1!=null and trialStatus1!=''">
+            and TRIAL_STATUS=#{trialStatus1}
+        </if>
+        <if test="ids!=null and ids.size()>0">
+            and REC_ID in (
+            <foreach collection="ids" index="index" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+        ORDER BY PLAN_CODE desc
+    </select>
+
+    <select id="queryWeekObj" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
+        select PLAN_CODE	as "planCode"  <!-- 计划编号 -->
+        from T_OVERHAUL_PLAN t
+        where not exists(select 1 from T_OVERHAUL_OBJECT a where a.PLAN_CODE=t.PLAN_CODE)
+        AND t.WEEK_PLAN_CODE = #{weekPlanCode} and t.DELETE_FLAG ='0'
+    </select>
+
+    <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
+        SELECT
+        t2.REC_ID	as "recId",  <!-- 记录ID -->
+        t2.PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        t2.PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        t2.OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        t2.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        t2.TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        t2.TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        t2.TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        t2.TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        t2.TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        (SELECT t1.TEMPLATE_NAME FROM T_OVERHAUL_TPL t1 WHERE t1.TEMPLATE_ID=t2.TEMPLATE_ID AND t1.DELETE_FLAG='0') as "templateName",  <!-- 模板名称 -->
+        t2.TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        t2.REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        t2.REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        t2.REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        t2.REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        t2.REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        t2.REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        t2.DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        t2.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        t2.REMARK	as "remark",  <!-- 说明 -->
+        t2.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        t2.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        t2.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        t2.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        t2.EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_OBJECT t2
+        WHERE t2.PLAN_CODE=#{planCode} and t2.DELETE_FLAG='0'
+        <if test="recId!=null and recId!=''">
+            and t2.REC_ID=#{recId}
+        </if>
+        <if test="planName!=null and planName!=''">
+            and t2.PLAN_NAME=#{planName}
+        </if>
+        <if test="objectCode!=null and objectCode!=''">
+            and t2.OBJECT_CODE=#{objectCode}
+        </if>
+        <if test="objectName!=null and objectName!=''">
+            and t2.OBJECT_NAME=#{objectName}
+        </if>
+        <if test="templateId1!=null and templateId1!=''">
+            and TRIM(t2.TEMPLATE_ID) IS NOT NULL
+        </if>
+        ORDER BY t2.REC_ID desc
+    </select>
+
+    <select id="queryObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
+        SELECT
+        (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME), ',')
+        WITHIN GROUP (
+        ORDER BY a.OBJECT_NAME)
+        FROM T_OVERHAUL_OBJECT a
+        WHERE a.PLAN_CODE = #{planCode}) as objectName,
+        (SELECT LISTAGG(TO_CHAR(a.OBJECT_CODE), ',')
+        WITHIN GROUP (
+        ORDER BY a.OBJECT_CODE)
+        FROM T_OVERHAUL_OBJECT a
+        WHERE a.PLAN_CODE = #{planCode}) as objectCode
+        FROM DUAL
+    </select>
+
+    <update id="updatePlanSta">
+        UPDATE T_OVERHAUL_PLAN
+        SET PLAN_STATUS=#{planStatus}
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <select id="queryAllRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
+        SELECT T1.REC_ID as "recId",  <!-- 记录ID -->
+        T1.PLAN_CODE as "ext1",
+        T2.PERIOD as "period"
+        FROM T_OVERHAUL_PLAN T1
+        LEFT JOIN T_WO_RULE_DETAIL T2
+        ON T1.RULE_CODE = T2.RULE_CODE
+        WHERE PLAN_CODE IN (${planCodeAndIn})
+        ORDER BY T2.PERIOD DESC
+    </select>
+
+    <select id="pageOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
+        SELECT
+        t2.REC_ID	as "recId",  <!-- 记录ID -->
+        t2.PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        t2.PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        t2.OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        t2.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        t2.TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        t2.TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        t2.TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        t2.TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        t2.TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        (SELECT t1.TEMPLATE_NAME FROM T_OVERHAUL_TPL t1 WHERE t1.TEMPLATE_ID=t2.TEMPLATE_ID AND t1.DELETE_FLAG='0') as "templateName",  <!-- 模板名称 -->
+        t2.TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        t2.REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        t2.REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        t2.REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        t2.REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        t2.REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        t2.REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        t2.DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        t2.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        t2.REMARK	as "remark",  <!-- 说明 -->
+        t2.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        t2.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        t2.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        t2.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        t2.EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_OBJECT t2
+        WHERE t2.PLAN_CODE=#{planCode} and t2.DELETE_FLAG='0'
+        <if test="recId!=null and recId!=''">
+            and t2.REC_ID=#{recId}
+        </if>
+        <if test="planName!=null and planName!=''">
+            and t2.PLAN_NAME=#{planName}
+        </if>
+        <if test="objectCode!=null and objectCode!=''">
+            and t2.OBJECT_CODE=#{objectCode}
+        </if>
+        <if test="objectName!=null and objectName!=''">
+            and t2.OBJECT_NAME=#{objectName}
+        </if>
+        <if test="templateId1!=null and templateId1!=''">
+            and TRIM(t2.TEMPLATE_ID) IS NOT NULL
+        </if>
+        ORDER BY t2.REC_ID desc
+    </select>
+
+    <select id="getOverhaulObjectDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
+        SELECT
+        t2.REC_ID	as "recId",  <!-- 记录ID -->
+        t2.PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        t2.PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        t2.OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        t2.OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        t2.TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        t2.TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        t2.TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        t2.TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        t2.TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        (SELECT t1.TEMPLATE_NAME FROM T_OVERHAUL_TPL t1 WHERE t1.TEMPLATE_ID=t2.TEMPLATE_ID AND t1.DELETE_FLAG='0') as "templateName",  <!-- 模板名称 -->
+        t2.TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        t2.REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        t2.REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        t2.REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        t2.REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        t2.REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        t2.REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        t2.DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        t2.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        t2.REMARK	as "remark",  <!-- 说明 -->
+        t2.EXT1	as "ext1",  <!-- 扩展字段1 -->
+        t2.EXT2	as "ext2",  <!-- 扩展字段2 -->
+        t2.EXT3	as "ext3",  <!-- 扩展字段3 -->
+        t2.EXT4	as "ext4",  <!-- 扩展字段4 -->
+        t2.EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_OBJECT t2
+        WHERE t2.REC_ID=#{id}
+    </select>
+
+    <insert id="addOverhaulObject">
+        INSERT INTO T_OVERHAUL_OBJECT (
+        REC_ID,  <!-- 记录ID -->
+        PLAN_CODE,  <!-- 计划编号 -->
+        PLAN_NAME,  <!-- 计划名称 -->
+        OBJECT_CODE,  <!-- 对象编码 -->
+        OBJECT_NAME,  <!-- 对象名称 -->
+        TASK_CONTENT,  <!-- 作业内容 -->
+        TASK_AREA,  <!-- 作业区域 -->
+        TASK_REQUEST,  <!-- 作业需求 -->
+        TASK_REMARK,  <!-- 作业备注 -->
+        TEMPLATE_ID,  <!-- 模板编号 -->
+        TEMPLATE_NAME,  <!-- 模板名称 -->
+        TASK_SPOT,  <!-- 作业场 -->
+        REC_CREATOR,  <!-- 记录创建者 -->
+        REC_CREATE_TIME,  <!-- 记录创建时间 -->
+        REC_REVISOR,  <!-- 记录修改者 -->
+        REC_REVISE_TIME,  <!-- 记录修改时间 -->
+        REC_DELETOR,  <!-- 记录删除者 -->
+        REC_DELETE_TIME,  <!-- 记录删除时间 -->
+        DELETE_FLAG,  <!-- 删除标记 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REMARK,  <!-- 说明 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{planCode,jdbcType=VARCHAR},
+        #{planName,jdbcType=VARCHAR},
+        #{objectCode,jdbcType=VARCHAR},
+        #{objectName,jdbcType=VARCHAR},
+        #{taskContent,jdbcType=VARCHAR},
+        #{taskArea,jdbcType=VARCHAR},
+        #{taskRequest,jdbcType=VARCHAR},
+        #{taskRemark,jdbcType=VARCHAR},
+        #{templateId,jdbcType=VARCHAR},
+        #{templateName,jdbcType=VARCHAR},
+        #{taskSpot,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="modifyOverhaulObject">
+        UPDATE T_OVERHAUL_OBJECT SET
+        <if test="planCode!=null">
+            PLAN_CODE=#{planCode},   <!-- 计划编号 -->
+        </if>
+        <if test="planName!=null">
+            PLAN_NAME=#{planName},   <!-- 计划名称 -->
+        </if>
+        <if test="objectCode!=null">
+            OBJECT_CODE=#{objectCode},   <!-- 对象编码 -->
+        </if>
+        <if test="objectName!=null">
+            OBJECT_NAME=#{objectName},   <!-- 对象名称 -->
+        </if>
+        <if test="taskContent!=null">
+            TASK_CONTENT=#{taskContent},   <!-- 作业内容 -->
+        </if>
+        <if test="taskArea!=null">
+            TASK_AREA=#{taskArea},   <!-- 作业区域 -->
+        </if>
+        <if test="taskRequest!=null">
+            TASK_REQUEST=#{taskRequest},   <!-- 作业需求 -->
+        </if>
+        <if test="taskRemark!=null">
+            TASK_REMARK=#{taskRemark},   <!-- 作业备注 -->
+        </if>
+        <if test="templateId!=null">
+            TEMPLATE_ID=#{templateId},   <!-- 模板编号 -->
+        </if>
+        <if test="templateName!=null">
+            TEMPLATE_NAME=#{templateName},   <!-- 模板名称 -->
+        </if>
+        <if test="taskSpot!=null">
+            TASK_SPOT=#{taskSpot},   <!-- 作业场 -->
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG=#{archiveFlag},   <!-- 归档标记 -->
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},   <!-- 说明 -->
+        </if>
+        <if test="ext1!=null">
+            EXT1=#{ext1},   <!-- 扩展字段1 -->
+        </if>
+        <if test="ext2!=null">
+            EXT2=#{ext2},   <!-- 扩展字段2 -->
+        </if>
+        <if test="ext3!=null">
+            EXT3=#{ext3},   <!-- 扩展字段3 -->
+        </if>
+        <if test="ext4!=null">
+            EXT4=#{ext4},   <!-- 扩展字段4 -->
+        </if>
+        <if test="ext5!=null">
+            EXT5=#{ext5},  <!-- 扩展字段5 -->
+        </if>
+        REC_REVISOR=#{recRevisor},   <!-- 记录修改者 -->
+        REC_REVISE_TIME=#{recReviseTime}   <!-- 记录修改时间 -->
+        WHERE REC_ID =#{recId}
+    </update>
+
+    <update id="deleteOverhaulObject">
+        UPDATE T_OVERHAUL_OBJECT SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID=#{id}
+    </update>
+
+    <select id="getTriggerOverhaulPlan" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO">
+        SELECT DISTINCT a.*
+        FROM (SELECT op.PLAN_CODE, op.SUBJECT_CODE
+        FROM T_OVERHAUL_PLAN op
+        LEFT JOIN T_WO_RULE_DETAIL rd ON rd.RULE_CODE=op.RULE_CODE AND rd.DELETE_FLAG='0'
+        WHERE op.RULE_CODE IS NOT NULL AND #{nowDay}>=rd.START_DATE AND rd.END_DATE>=#{nowDay}
+        AND to_date(op.BEFORE_TRIGGER_TIME,'YYYY-MM-DD HH24:MI:SS')>sysdate-((rd.PERIOD+rd.BEFORE_TIME)/24)
+        UNION ALL
+        SELECT op.PLAN_CODE, op.SUBJECT_CODE
+        FROM T_OVERHAUL_PLAN op
+        LEFT JOIN T_WO_RULE_DETAIL rd ON rd.RULE_CODE=op.RULE_CODE AND rd.DELETE_FLAG='0'
+        LEFT JOIN T_OVERHAUL_OBJECT oo ON oo.PLAN_CODE=op.PLAN_CODE AND oo.DELETE_FLAG='0'
+        LEFT JOIN T_TRAIN_MILE tm1 ON tm1.EQUIP_CODE=oo.OBJECT_CODE AND tm1."DAY"=to_char(to_date(op.BEFORE_TRIGGER_TIME,'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD')
+        LEFT JOIN T_TRAIN_MILE tm2 ON tm2.EQUIP_CODE=oo.OBJECT_CODE AND tm2."DAY"=to_char(SYSDATE,'YYYY-MM-DD')
+        WHERE op.RULE_CODE IS NOT NULL AND #{nowDay}>=rd.START_DATE AND rd.END_DATE>=#{nowDay} AND op.SUBJECT_CODE='07'
+        AND tm2.TOTAL_WORK_MILE-tm1.TOTAL_WORK_MILE>=TO_NUMBER(NVL(rd.EXT1,'0'))-TO_NUMBER(NVL(rd.EXT2,'0'))) a
+    </select>
+
+</mapper>

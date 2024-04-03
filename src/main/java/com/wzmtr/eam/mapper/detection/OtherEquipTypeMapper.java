@@ -82,4 +82,12 @@ public interface OtherEquipTypeMapper {
      * @return 其他设备分类列表
      */
     List<OtherEquipTypeResDTO> listOtherEquipType(String typeCode, String typeName);
+
+    /**
+     * 根据其他设备分类参数获取其他设备分类详情
+     * @param code 编号
+     * @param name 名称
+     * @return 其他设备分类详情
+     */
+    OtherEquipTypeResDTO getOtherEquipTypeDetailByType(String code, String name);
 }

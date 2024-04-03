@@ -410,7 +410,12 @@ public class BpmnServiceImpl implements BpmnService {
     public String getDefKeyByTaskId(String taskId) {
         log.info("流程引擎调用入参getDefKeyByTaskId:[{}]", taskId);
         String processDefinitionId = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.GET_DEF_KEY + taskId, null)).getString("processDefinitionId");
-        return processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
+        if(!StringUtils.isEmpty(processDefinitionId)){
+            processDefinitionId = processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
+        }else{
+            processDefinitionId = "";
+        }
+        return processDefinitionId;
     }
 
     @Override

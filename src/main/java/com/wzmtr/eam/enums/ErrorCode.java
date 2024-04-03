@@ -135,7 +135,15 @@ public enum ErrorCode {
     /**
      * 导出失败
      */
-    EXPORT_ERROR(32100053, "export.error");
+    EXPORT_ERROR(32100053, "export.error"),
+    /**
+     * 开放接口故障接收错误
+     */
+    FAULT_OPEN_ERROR(32500001, "fault.open.error"),
+    /**
+     * 开放接口故障接收鉴权错误
+     */
+    FAULT_OPEN_TOKEN_ERROR(32500000, "fault.open.token.error");
 
     private Integer code;
 

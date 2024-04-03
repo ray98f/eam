@@ -41,9 +41,9 @@ public class PartReplaceServiceImpl implements PartReplaceService {
     private PartReplaceMapper partReplaceMapper;
 
     @Override
-    public Page<PartReplaceResDTO> pagePartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason, PageReqDTO pageReqDTO) {
+    public Page<PartReplaceResDTO> pagePartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason,String workOrderType, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return partReplaceMapper.pagePartReplace(pageReqDTO.of(), equipName, replacementName, faultWorkNo, orgType, replaceReason);
+        return partReplaceMapper.pagePartReplace(pageReqDTO.of(), equipName, replacementName, faultWorkNo, orgType, replaceReason,workOrderType);
     }
 
     @Override
@@ -53,17 +53,27 @@ public class PartReplaceServiceImpl implements PartReplaceService {
 
     @Override
     public List<PartReplaceBomResDTO> getBom(String equipCode, String node) {
-        if (StringUtils.isNotEmpty(equipCode)) {
+        if (StringUtils.isNotEmpty(equipCode) && StringUtils.isEmpty(node)) {
             node = partReplaceMapper.selectBomCode(equipCode);
-            if (StringUtils.isEmpty(node)) {
-                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
-            }
         }
-        return partReplaceMapper.getBom(node);
+        if (StringUtils.isEmpty(node)) {
+            return null;
+        }
+        return partReplaceMapper.getBom(node, equipCode);
     }
 
     @Override
     public void addPartReplace(PartReplaceReqDTO partReplaceReqDTO) {
+        //默认为 1故障工单，2为检修工单
+        if(StringUtils.isNotEmpty(partReplaceReqDTO.getFaultWorkNo())){
+            if(StringUtils.isEmpty(partReplaceReqDTO.getWorkOrderType())){
+                partReplaceReqDTO.setWorkOrderType(CommonConstants.ONE_STRING);
+            }else{
+                partReplaceReqDTO.setWorkOrderType(CommonConstants.TWO_STRING);
+            }
+        }else{
+            partReplaceReqDTO.setWorkOrderType(CommonConstants.THREE_STRING);
+        }
         partReplaceReqDTO.setRecId(TokenUtils.getUuId());
         partReplaceReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         partReplaceReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
@@ -92,7 +102,7 @@ public class PartReplaceServiceImpl implements PartReplaceService {
             for (ExcelPartReplaceReqDTO reqDTO : list) {
                 PartReplaceReqDTO req = new PartReplaceReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
-                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+                req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "检修工班".equals(reqDTO.getOrgType()) ? "10" : "20");
                 req.setRecId(TokenUtils.getUuId());
                 req.setDeleteFlag("0");
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
@@ -113,9 +123,7 @@ public class PartReplaceServiceImpl implements PartReplaceService {
             for (PartReplaceResDTO resDTO : partReplaceResDTOList) {
                 ExcelPartReplaceResDTO res = new ExcelPartReplaceResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" :
-                        CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "售后服务站" :
-                                CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : "二级修工班");
+                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "检修工班" : "售后服务站");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "部件更换台账信息", list);

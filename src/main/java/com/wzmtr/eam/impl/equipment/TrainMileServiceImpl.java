@@ -33,7 +33,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -202,6 +205,18 @@ public class TrainMileServiceImpl implements TrainMileService {
         TrainMileReqDTO trainMileReqDTO = new TrainMileReqDTO();
         BeanUtils.copyProperties(trainMileDailyReqDTO, trainMileReqDTO);
         trainMileReqDTO.setRecId(null);
+        if (StringUtils.isNotNull(trainMileDailyReqDTO.getTotalWorkMile())) {
+            trainMileReqDTO.setTotalMiles(String.valueOf(trainMileDailyReqDTO.getTotalWorkMile()));
+        }
+        if (StringUtils.isNotNull(trainMileDailyReqDTO.getTotalTractionEnergy())) {
+            trainMileReqDTO.setTotalTractionEnergy(String.valueOf(trainMileDailyReqDTO.getTotalTractionEnergy()));
+        }
+        if (StringUtils.isNotNull(trainMileDailyReqDTO.getTotalAuxiliaryEnergy())) {
+            trainMileReqDTO.setTotalAuxiliaryEnergy(String.valueOf(trainMileDailyReqDTO.getTotalAuxiliaryEnergy()));
+        }
+        if (StringUtils.isNotNull(trainMileDailyReqDTO.getTotalRegenratedElectricity())) {
+            trainMileReqDTO.setTotalRegenratedElectricity(String.valueOf(trainMileDailyReqDTO.getTotalRegenratedElectricity()));
+        }
         trainMileMapper.updateTrainMile(trainMileReqDTO);
     }
 
@@ -245,23 +260,40 @@ public class TrainMileServiceImpl implements TrainMileService {
      * @param file 文件
      */
     @Override
-    public void importTrainDailyMile(MultipartFile file) {
+    public void importTrainDailyMile(MultipartFile file) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = sdf.parse(sdf.format(new Date()));
         List<ExcelTrainMileDailyReqDTO> list = EasyExcelUtils.read(file, ExcelTrainMileDailyReqDTO.class);
-        List<TrainMileDailyReqDTO> temp = new ArrayList<>();
-        for (ExcelTrainMileDailyReqDTO reqDTO : list) {
-            TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
-            BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtils.getUuId());
-            EquipmentResDTO equipment = equipmentMapper.getEquipByName(req.getEquipName());
-            if (StringUtils.isNotNull(equipment)) {
-                req.setEquipCode(equipment.getEquipCode());
+        if (StringUtils.isNotEmpty(list)) {
+            // 判断导入的日期是否在当前日期周期之前
+            for (ExcelTrainMileDailyReqDTO reqDTO : list) {
+                if (now.before(sdf.parse(reqDTO.getDay() + " 03:00:00"))) {
+                    throw new CommonException(ErrorCode.NORMAL_ERROR, "导入文件中存在当前日期周期后的数据，请修改后重新导入");
+                }
             }
-            req.setRecCreator(TokenUtils.getCurrentPersonId());
-            req.setRecCreateTime(DateUtils.getCurrentTime());
-            temp.add(req);
-        }
-        if (!temp.isEmpty()) {
-            trainMileMapper.importTrainDailyMile(temp);
+            List<TrainMileDailyReqDTO> temp = new ArrayList<>();
+            for (ExcelTrainMileDailyReqDTO reqDTO : list) {
+                TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
+                BeanUtils.copyProperties(reqDTO, req);
+                req.setRecId(TokenUtils.getUuId());
+                EquipmentResDTO equipment = equipmentMapper.getEquipByName(req.getEquipName());
+                if (StringUtils.isNotNull(equipment)) {
+                    req.setEquipCode(equipment.getEquipCode());
+                }
+                Double totalWorkMile = trainMileMapper.getLastTotalWorkMile(req.getEquipCode(), req.getDay());
+                if (StringUtils.isNotNull(totalWorkMile)) {
+                    req.setTotalWorkMile(BigDecimal.valueOf(totalWorkMile).add(req.getDailyWorkMile()));
+                }
+                req.setRecRevisor(TokenUtils.getCurrentPersonId());
+                req.setRecReviseTime(DateUtils.getCurrentTime());
+                temp.add(req);
+            }
+            // 根绝导入数据修改值
+            if (!temp.isEmpty()) {
+                for (TrainMileDailyReqDTO req : temp) {
+                    trainMileMapper.importTrainDailyMile(req);
+                }
+            }
         }
     }
 

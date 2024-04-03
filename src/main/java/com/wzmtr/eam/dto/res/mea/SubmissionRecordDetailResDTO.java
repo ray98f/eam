@@ -1,10 +1,12 @@
 package com.wzmtr.eam.dto.res.mea;
 
+import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author frp
@@ -87,6 +89,9 @@ public class SubmissionRecordDetailResDTO {
     
     @ApiModelProperty(value = "检定报告附件")
     private String verifyReportFileid;
+
+    @ApiModelProperty(value = "检定报告附件文件列表")
+    private List<File> verifyReportFile;
     
     @ApiModelProperty(value = "上次检定日期")
     private String lastVerifyDate;

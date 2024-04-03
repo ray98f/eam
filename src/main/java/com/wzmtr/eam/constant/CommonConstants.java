@@ -36,12 +36,24 @@ public class CommonConstants {
     /**
      * 权限
      */
-    public static final String ADMIN = "admin";
-    public static final String DM_006 = "DM_006";
-    public static final String DM_007 = "DM_007";
-    public static final String DM_012 = "DM_012";
-    public static final String DM_037 = "DM_037";
-    public static final String DM_045 = "DM_045";
+
+    public static final String SYS_ALL_01 = "SYS_ALL_01";  //查看全专业角色
+    public static final String ADMIN = "admin";  //系统管理员
+    public static final String DM_006 = "DM_006";//中铁通-专业工程师
+    public static final String DM_007 = "DM_007";//中铁通-生产调度
+    public static final String DM_012 = "DM_012";//中车-工班长
+    public static final String DM_051 = "DM_051";//中铁通-工班长
+    public static final String DM_037 = "DM_048";//中车-生产调度
+    public static final String DM_045 = "DM_045";//工程车工程师
+    public static final String ZCJD = "ZCJD";//中车-检调
+    public static final String DM_048 = "DM_048";//中车-生产调度
+
+
+
+    public static final String TODO_GD_TPL =  "收到工单编号为:%s的%s工单，请及时办理";
+
+
+    public static final String EQUIPMENT_ROOM_CODE_0 = "R100000";
 
     /**
      * 故障分析流程--部长审核节点
@@ -66,6 +78,7 @@ public class CommonConstants {
     public static final String EIGHT_STRING = "8";
     public static final String NINE_STRING = "9";
     public static final String TEN_STRING = "10";
+    public static final String FOURTEEN_STRING = "14";
     public static final String TWENTY_STRING = "20";
     public static final String THIRTY_STRING = "30";
     public static final String FORTY_STRING = "40";
@@ -87,8 +100,11 @@ public class CommonConstants {
     public static final int EIGHT = 8;
     public static final int NINE = 9;
     public static final int TEN = 10;
+    public static final int FOURTEEN = 14;
     public static final int TWENTY = 20;
     public static final int THIRTY = 30;
+
+    public static final String MESSAGE = "message";
 
     /**
      * 流程相关
@@ -130,5 +146,9 @@ public class CommonConstants {
     public static final String FAULT_FINISHED_CONFIRM_CN = "故障完工确认";
     public static final String FAULT_FINISHED_CONFIRM_AND_DISPATCH_CN = "工单完工确认并故障再派工";
     public static final String FAULT_TUNING_CONFIRM_CN = "故障设调确认";
+
+    public static final String ERROR = "异常";
+
+    public static final String FAULT_OPEN_APP_KEY = "ubcrjTM9BE1F79Cc";
 
 }

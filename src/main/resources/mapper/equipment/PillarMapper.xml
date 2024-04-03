@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.equipment.PillarMapper">
+
+    <select id="pagePillar" resultType="com.wzmtr.eam.dto.res.equipment.PillarResDTO">
+        SELECT
+        REC_ID	as "recId",
+        POWER_SUPPLY_SECTION	as "powerSupplySection",
+        ANCHOR_NUMBER as "anchorNumber",
+        INTERVAL_STATION as "intervalStation",
+        PILLAR_NUMBER	as "pillarNumber",
+        NEXT_PILLAR_NUMBER	as "nextPillarNumber",
+        WRISTARM_INSTALLATION_NUMBER	as "wristarmInstallationNumber",
+        BACKFLOW_INSTALLATION_NUMBER	as "backflowInstallationNumber",
+        MILEAGE_DK	as "mileageDk",
+        CONTACT_WIRE	as "contactWire",
+        PULLOUT_VALUE	as "pulloutValue",
+        SIDE_CLEARANCE	as "sideClearance",
+        OUTERRAIL_SUPERELEVATION	as "outerrailSuperelevation",
+        STRUCTURAL_HEIGHT	as "structuralHeight",
+        REMARK	as "remark",
+        REC_CREATOR	as "recCreator",
+        REC_CREATE_TIME	as "recCreateTime",
+        REC_REVISOR	as "recRevisor",
+        REC_REVISE_TIME	as "recReviseTime",
+        REC_DELETOR	as "recDeletor",
+        REC_DELETE_TIME	as "recDeleteTime",
+        DELETE_FLAG	as "deleteFlag",
+        ARCHIVE_FLAG	as "archiveFlag",
+        REC_STATUS	as "recStatus",
+        EXT1	as "ext1",
+        EXT2	as "ext2",
+        EXT3	as "ext3",
+        EXT4	as "ext4",
+        EXT5	as "ext5"
+        FROM T_PILLAR
+        WHERE 1=1
+        <if test="pillarNumber!=null and pillarNumber!=''">
+            and PILLAR_NUMBER like '%' || #{pillarNumber} || '%'
+        </if>
+        <if test="powerSupplySection!=null and powerSupplySection!=''">
+            and POWER_SUPPLY_SECTION like '%' || #{powerSupplySection} || '%'
+        </if>
+        ORDER BY REC_ID asc
+    </select>
+
+    <insert id="add">
+        INSERT INTO T_PILLAR
+        (REC_ID,
+        POWER_SUPPLY_SECTION,
+        PILLAR_NUMBER,
+        NEXT_PILLAR_NUMBER,
+        WRISTARM_INSTALLATION_NUMBER,
+        BACKFLOW_INSTALLATION_NUMBER,
+        MILEAGE_DK,
+        CONTACT_WIRE,
+        STRUCTURAL_HEIGHT,
+        REMARK,
+        REC_CREATOR,
+        REC_CREATE_TIME,
+        REC_REVISOR,
+        REC_REVISE_TIME,
+        REC_DELETOR,
+        REC_DELETE_TIME,
+        DELETE_FLAG,
+        ARCHIVE_FLAG,
+        REC_STATUS,
+        EXT1,
+        EXT2,
+        EXT3,
+        EXT4,
+        EXT5,
+        ANCHOR_NUMBER ,
+        INTERVAL_STATION)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{powerSupplySection,jdbcType=VARCHAR},
+        #{pillarNumber,jdbcType=VARCHAR},
+        #{nextPillarNumber,jdbcType=VARCHAR},
+        #{wristarmInstallationNumber,jdbcType=VARCHAR},
+        #{backflowInstallationNumber,jdbcType=VARCHAR},
+        #{mileageDk,jdbcType=VARCHAR},
+        #{contactWire,jdbcType=VARCHAR},
+        #{structuralHeight,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{recStatus,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR},
+        #{anchorNumber,jdbcType=VARCHAR},
+        #{intervalStation,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM T_PILLAR
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
+</mapper>

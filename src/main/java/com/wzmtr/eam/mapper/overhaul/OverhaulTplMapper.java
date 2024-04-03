@@ -20,13 +20,20 @@ import java.util.List;
 public interface OverhaulTplMapper {
 
     Page<OverhaulTplResDTO> pageOverhaulTpl(Page<OverhaulTplResDTO> page, String templateId, String templateName, String lineCode, String position1Code,
-                                            String subjectCode, String systemCode, String equipTypeCode, String trialStatus);
+                                            String subjectCode, String systemCode, String equipTypeCode, String trialStatus,List<String> majors);
 
     OverhaulTplResDTO getOverhaulTplDetail(String id);
 
     List<String> getSubjectByUserId(String userId);
 
     String getMaxCode();
+
+    /**
+     * 判断检修计划是否已存在
+     * @param overhaulTplReqDTO 检修计划信息
+     * @return 检修计划是否已存在
+     */
+    Integer selectOverhaulTplIsExist(OverhaulTplReqDTO overhaulTplReqDTO);
 
     void addOverhaulTpl(OverhaulTplReqDTO overhaulTplReqDTO);
 

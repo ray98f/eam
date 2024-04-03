@@ -10,6 +10,7 @@ import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.service.fault.FaultQueryService;
+import com.wzmtr.eam.service.fault.FaultReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.ss.formula.functions.T;
@@ -29,6 +30,10 @@ import java.util.List;
 @RequestMapping("/fault/query")
 @Api(tags = "故障管理-故障查询")
 public class FaultQueryController {
+
+    @Autowired
+    private FaultReportService reportService;
+
     @Autowired
     private FaultQueryService faultQueryService;
 
@@ -38,10 +43,23 @@ public class FaultQueryController {
         return PageResponse.of(faultQueryService.list(reqDTO));
     }
 
+    @ApiOperation(value = "当前用户超过限时列表")
+    @PostMapping("/queryLimit")
+    public DataResponse<List<FaultDetailResDTO>> queryLimit() {
+        return DataResponse.of(faultQueryService.queryLimit());
+    }
+
     @ApiOperation(value = "查询订单状态")
     @PostMapping("/queryOrderStatus")
     public DataResponse<String> queryOrderStatus(@RequestBody SidEntity reqDTO) {
         return DataResponse.of(faultQueryService.queryOrderStatus(reqDTO));
+    }
+
+    @ApiOperation(value = "转报")
+    @PostMapping("/changeReport")
+    public DataResponse<String> changeReport(@RequestBody FaultReportReqDTO reqDTO) {
+        reportService.changeReport(reqDTO);
+        return DataResponse.success();
     }
 
     @ApiOperation(value = "下发")

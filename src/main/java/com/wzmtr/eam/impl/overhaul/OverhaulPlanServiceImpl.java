@@ -27,6 +27,7 @@ import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.overhaul.OverhaulPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.*;
@@ -85,6 +86,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Autowired
     private IWorkFlowLogService workFlowLogService;
+
+    @Autowired
+    private OverTodoService overTodoService;
 
     @Override
     public Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO) {
@@ -145,7 +149,11 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanReqDTO.setPlanStatus("10");
         overhaulPlanReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         overhaulPlanReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        String planCode = CodeUtils.getNextCode(overhaulPlanMapper.getMaxCode(), 2);
+        String code = overhaulPlanMapper.getMaxCode();
+        if (StringUtils.isEmpty(code)) {
+            code = "JX00000000";
+        }
+        String planCode = CodeUtils.getNextCode(code, 2);
         overhaulPlanReqDTO.setPlanCode(planCode);
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanReqDTO.setRelationCode(" ");
@@ -217,6 +225,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void triggerOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
+        if (!CommonConstants.THIRTY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "检修计划未审批完成，无法触发");
+        }
         if (checkHasNotOrder(overhaulPlanReqDTO.getPlanCode())) {
             if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
                 if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
@@ -235,6 +246,13 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void submitOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
+        _check(overhaulPlanReqDTO);
+        //为啥要设置删除时间？？
+        overhaulPlanReqDTO.setRecDeleteTime(overhaulPlanReqDTO.getOpinion());
+        submitOrderPlan(overhaulPlanReqDTO);
+    }
+
+    private void _check(OverhaulPlanReqDTO overhaulPlanReqDTO) {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
@@ -254,13 +272,13 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (list12 == null || list12.size() <= 0) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中没有检修对象和检修模板！");
         }
-        overhaulPlanReqDTO.setRecDeleteTime(overhaulPlanReqDTO.getOpinion());
-        submitOrderPlan(overhaulPlanReqDTO);
     }
 
     @Override
     public void examineOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
         workFlowLogService.ifReviewer(overhaulPlanReqDTO.getWorkFlowInstId());
+        String opinion = overhaulPlanReqDTO.getExamineReqDTO().getOpinion();
+        String recId = overhaulPlanReqDTO.getRecId();
         if (overhaulPlanReqDTO.getExamineReqDTO().getExamineStatus() == 0) {
             if (CommonConstants.THIRTY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
                 throw new CommonException(ErrorCode.EXAMINE_DONE);
@@ -270,9 +288,11 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             }
             String processId = overhaulPlanReqDTO.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
-            bpmnService.agree(taskId, overhaulPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + overhaulPlanReqDTO.getPlanCode() + "\"}", null);
+            //TODO
+            //bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulPlanReqDTO.getPlanCode() + "\"}", null);
             overhaulPlanReqDTO.setWorkFlowInstStatus("已完成");
             overhaulPlanReqDTO.setTrialStatus("30");
+            overTodoService.overTodo(recId,opinion);
             // 记录日志
             workFlowLogService.add(WorkFlowLogBO.builder()
                     .status(BpmnStatus.PASS.getDesc())
@@ -285,7 +305,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             } else {
                 String processId = overhaulPlanReqDTO.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
-                bpmnService.reject(taskId, overhaulPlanReqDTO.getExamineReqDTO().getOpinion());
+                bpmnService.reject(taskId, opinion);
+                overTodoService.cancelTodo(recId);
                 overhaulPlanReqDTO.setWorkFlowInstId("");
                 overhaulPlanReqDTO.setWorkFlowInstStatus("");
                 overhaulPlanReqDTO.setTrialStatus("10");
@@ -406,8 +427,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void triggerOne(String planCode) {
         if (checkHasNotOrder(planCode)) {
             createInsepectRecordByPlanCode(new String[]{planCode});
-            if (querySonOrder(planCode) != null && checkHasNotOrder(querySonOrder(planCode))) {
-                triggerOne(querySonOrder(planCode));
+            String str = querySonOrder(planCode);
+            if (StringUtils.isNotEmpty(str) && checkHasNotOrder(str)) {
+                triggerOne(str);
             }
         }
     }
@@ -456,7 +478,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         selectMap.setPlanCode(planCode);
         OverhaulOrderReqDTO insertMap = new OverhaulOrderReqDTO();
         insertMap.setOrderCode(orderCode);
+
         insertMap.setWorkStatus("1");
+
         String trigerTime = "";
         OverhaulPlanListReqDTO queryMap1 = new OverhaulPlanListReqDTO();
         queryMap1.setPlanCode(planCode);
@@ -467,6 +491,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             insertMap.setWorkerCode(TokenUtils.getCurrentPersonId());
             insertMap.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
             OverhaulOrderReqDTO dmer21 = buildOverhaulOrder(planCode, orderCode, list11);
+
             try {
                 overhaulWorkRecordService.insertRepair(dmer21);
             } catch (Exception e) {
@@ -641,23 +666,25 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     public void submitOrderPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
         // OrderPlan  submitOrderPlan
         // /iam/org/getZcOverhaulPlanExamineUser接口获取审核人
-        String processId = bpmnService.commit(overhaulPlanReqDTO.getPlanCode(), BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(), null, null, overhaulPlanReqDTO.getExamineReqDTO().getUserIds(), null);
+        List<String> userIds = overhaulPlanReqDTO.getExamineReqDTO().getUserIds();
+        String planCode = overhaulPlanReqDTO.getPlanCode();
+        String recId = overhaulPlanReqDTO.getRecId();
+        String currentPersonId = TokenUtils.getCurrentPersonId();
+        String processId = bpmnService.commit(planCode, BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(), null, null, userIds, null);
         if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
         }
         overhaulPlanReqDTO.setWorkFlowInstId(processId);
-        overhaulPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(),null));
+        overhaulPlanReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.ORDER_PLAN_SUBMIT.value(), null));
         overhaulPlanReqDTO.setTrialStatus("20");
-        overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulPlanReqDTO.setRecRevisor(currentPersonId);
         overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
+        // 添加待办
+        overTodoService.insertTodoWithUserList(userIds, "收到一条检修计划编号为：" + planCode + "的审批流程", recId, planCode, "检修计划审核", "?", currentPersonId, null, BpmnFlowEnum.ORDER_PLAN_SUBMIT.value());
         // 记录日志
-        workFlowLogService.add(WorkFlowLogBO.builder()
-                .status(BpmnStatus.SUBMIT.getDesc())
-                .userIds(overhaulPlanReqDTO.getExamineReqDTO().getUserIds())
-                .workFlowInstId(processId)
-                .build());
+        workFlowLogService.add(WorkFlowLogBO.builder().status(BpmnStatus.SUBMIT.getDesc()).userIds(userIds).workFlowInstId(processId).build());
     }
 
     @Override

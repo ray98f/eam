@@ -1,8 +1,11 @@
 package com.wzmtr.eam.dto.res.overhaul;
 
+import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author frp
@@ -55,6 +58,9 @@ public class OverhaulItemResDTO {
     
     @ApiModelProperty(value = "附件")
     private String docId;
+
+    @ApiModelProperty(value = "附件文件列表")
+    private List<File> docFile;
     
     @ApiModelProperty(value = "工作说明")
     private String workDetail;

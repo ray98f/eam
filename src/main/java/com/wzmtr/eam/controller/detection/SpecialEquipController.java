@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Objects;
 
 /**
@@ -65,7 +66,7 @@ public class SpecialEquipController {
 
     @PostMapping("/import")
     @ApiOperation(value = "导入特种设备台账")
-    public DataResponse<T> importSpecialEquip(@RequestParam MultipartFile file) {
+    public DataResponse<T> importSpecialEquip(@RequestParam MultipartFile file) throws ParseException {
         specialEquipService.importSpecialEquip(file);
         return DataResponse.success();
     }

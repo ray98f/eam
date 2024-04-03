@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.detection;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.detection.DetectionDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionDetailResDTO;
@@ -35,7 +36,7 @@ public interface DetectionMapper {
 
     List<DetectionResDTO> listDetection(String recId, String checkNo, String sendVerifyNo, String editDeptCode, String recStatus);
 
-    Page<DetectionDetailResDTO> pageDetectionDetail(Page<DetectionResDTO> page, String testRecId);
+    Page<DetectionDetailResDTO> pageDetectionDetail(Page<DetectionResDTO> page, String equipCode, String testRecId);
 
     DetectionDetailResDTO getDetectionDetailDetail(String id);
 
@@ -43,7 +44,7 @@ public interface DetectionMapper {
 
     void modifyDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO);
 
-    List<DetectionDetailResDTO> listDetectionDetail(String testRecId);
+    List<DetectionDetailResDTO> listDetectionDetail(DetectionDetailExportReqDTO detectionDetailExportReqDTO);
 
     List<DetectionDetailResDTO> queryMsg(String testRecId);
 

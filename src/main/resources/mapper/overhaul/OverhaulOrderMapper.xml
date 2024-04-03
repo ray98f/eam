@@ -1,0 +1,1488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper">
+
+    <select id="pageOverhaulOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        SEND_PERSON_ID	as "sendPersonId",  <!-- 派工人工号 -->
+        SEND_PERSON_NAME	as "sendPersonName",  <!-- 派工人姓名 -->
+        SEND_TIME	as "sendTime",  <!-- 派工时间 -->
+        ACK_TIME	as "ackTime",  <!-- 完工时间 -->
+        ACK_PERSON_ID	as "ackPersonId",  <!-- 确认人工号 -->
+        ACK_PERSON_NAME	as "ackPersonName",  <!-- 确认人姓名 -->
+        CONFIR_TIME	as "confirTime",  <!-- 确认时间 -->
+        PLAN_START_TIME	as "planStartTime",  <!-- 计划开始时间 -->
+        PLAN_END_TIME	as "planEndTime",  <!-- 计划完成时间 -->
+        REAL_START_TIME	as "realStartTime",  <!-- 实际开始时间 -->
+        REAL_END_TIME	as "realEndTime",  <!-- 实际完成时间 -->
+        WORK_STATUS	as "workStatus",  <!-- 工单当前状态 -->
+        WORK_FINISH_STATUS	as "workFinishStatus",  <!-- 检修结果 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        WORK_DETAIL	as "workDetail",  <!-- 检修描述 -->
+        STARTWORK_TIME	as "startworkTime",  <!-- 开工时间 -->
+        CANCEL_PERSON_ID	as "cancelPersonId",  <!-- 作废人工号 -->
+        CANCEL_PERSON_NAME	as "cancelPersonName",  <!-- 作废人姓名 -->
+        CANCEL_TIME	as "cancelTime",  <!-- 作废时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
+        <if test="req.objectFlag!=null and req.objectFlag!=''">
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+        </if>
+        <if test="req.objectFlag==null or req.objectFlag==''">
+            REC_DELETOR 	as "recDeletor",
+            EXT1	as "ext1",  <!-- 扩展字段1 -->
+            EXT3	as "ext3",  <!-- 扩展字段3 -->
+        </if>
+        <!-- EXT1	as "ext1",  扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5", <!-- 扩展字段5 -->
+        (
+        case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
+        and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
+        else 9
+        end
+        ) as sort
+        FROM T_OVERHAUL_ORDER WHERE 1=1 and DELETE_FLAG='0'
+        <if test="req.orderCode!=null and req.orderCode!=''">
+            and ORDER_CODE like '%' || #{req.orderCode} || '%'
+        </if>
+        <if test="req.planCode!=null and req.planCode!=''">
+            and PLAN_CODE=#{req.planCode}
+        </if>
+        <if test="req.planName!=null and req.planName!=''">
+            and PLAN_NAME like '%' || #{req.planName} || '%'
+        </if>
+        <if test="req.lineNo!=null and req.lineNo!=''">
+            and LINE_NO=#{req.lineNo}
+        </if>
+        <if test="req.position1Code!=null and req.position1Code!=''">
+            and POSITION1_CODE=#{req.position1Code}
+        </if>
+        <if test="req.subjectCode!=null and req.subjectCode!=''">
+            and SUBJECT_CODE=#{req.subjectCode}
+        </if>
+        <if test="req.systemCode!=null and req.systemCode!=''">
+            and SYSTEM_CODE=#{req.systemCode}
+        </if>
+        <if test="req.workerGroupCode!=null and req.workerGroupCode!=''">
+            and WORKER_GROUP_CODE=#{req.workerGroupCode}
+        </if>
+        <if test="req.workStatus!=null and req.workStatus!=''">
+            and WORK_STATUS=#{req.workStatus}
+        </if>
+        <if test="req.workStatus1!=null and req.workStatus1!=''">
+            and WORK_STATUS != '8'
+        </if>
+        <if test="req.workFinishStatus!=null and req.workFinishStatus!=''">
+            and WORK_FINISH_STATUS=#{req.workFinishStatus}
+        </if>
+        <if test="req.startTime!=null and req.startTime!=''">
+            and PLAN_START_TIME>=#{req.startTime}
+        </if>
+        <if test="req.endTime!=null and req.endTime!=''">
+            and #{req.endTime}>=PLAN_START_TIME
+        </if>
+        <if test="req.workFlowInstId!=null and req.workFlowInstId!=''">
+            and REC_ID=#{req.workFlowInstId}
+        </if>
+        <if test="req.newTime!=null and req.newTime!=''">
+            and WORK_STATUS NOT IN ('5','8')
+        </if>
+        ORDER BY sort,ORDER_CODE DESC
+    </select>
+
+    <select id="getOverhaulOrderDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        SEND_PERSON_ID	as "sendPersonId",  <!-- 派工人工号 -->
+        SEND_PERSON_NAME	as "sendPersonName",  <!-- 派工人姓名 -->
+        SEND_TIME	as "sendTime",  <!-- 派工时间 -->
+        ACK_TIME	as "ackTime",  <!-- 完工时间 -->
+        ACK_PERSON_ID	as "ackPersonId",  <!-- 确认人工号 -->
+        ACK_PERSON_NAME	as "ackPersonName",  <!-- 确认人姓名 -->
+        CONFIR_TIME	as "confirTime",  <!-- 确认时间 -->
+        PLAN_START_TIME	as "planStartTime",  <!-- 计划开始时间 -->
+        PLAN_END_TIME	as "planEndTime",  <!-- 计划完成时间 -->
+        REAL_START_TIME	as "realStartTime",  <!-- 实际开始时间 -->
+        REAL_END_TIME	as "realEndTime",  <!-- 实际完成时间 -->
+        WORK_STATUS	as "workStatus",  <!-- 工单当前状态 -->
+        WORK_FINISH_STATUS	as "workFinishStatus",  <!-- 检修结果 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        WORK_DETAIL	as "workDetail",  <!-- 检修描述 -->
+        STARTWORK_TIME	as "startworkTime",  <!-- 开工时间 -->
+        CANCEL_PERSON_ID	as "cancelPersonId",  <!-- 作废人工号 -->
+        CANCEL_PERSON_NAME	as "cancelPersonName",  <!-- 作废人姓名 -->
+        CANCEL_TIME	as "cancelTime",  <!-- 作废时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
+        <if test="objectFlag!=null and objectFlag!=''">
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+        </if>
+        <if test="objectFlag==null or objectFlag==''">
+            REC_DELETOR 	as "recDeletor",
+            EXT1	as "ext1",  <!-- 扩展字段1 -->
+            EXT3	as "ext3",  <!-- 扩展字段3 -->
+        </if>
+        <!-- EXT1	as "ext1",  扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5", <!-- 扩展字段5 -->
+        (
+        case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
+        and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
+        else 9
+        end
+        ) as sort
+        FROM T_OVERHAUL_ORDER WHERE REC_ID=#{id}
+    </select>
+
+    <select id="getMaxCode" resultType="java.lang.String">
+        select max(ORDER_CODE)
+        FROM T_OVERHAUL_ORDER
+    </select>
+    
+    <insert id="addOverhaulOrder">
+        INSERT INTO T_OVERHAUL_ORDER (
+        REC_ID,  <!-- 记录ID -->
+        ORDER_CODE,  <!-- 工单编号 -->
+        PLAN_CODE,  <!-- 计划编号 -->
+        PLAN_NAME,  <!-- 计划名称 -->
+        LINE_NO,  <!-- 线路编码 -->
+        LINE_NAME,  <!-- 线路名称 -->
+        POSITION1_NAME,  <!-- 位置1  -->
+        POSITION1_CODE,  <!-- 位置1代码 -->
+        SUBJECT_CODE,  <!-- 设备专业编码 -->
+        SUBJECT_NAME,  <!-- 设备专业名称 -->
+        SYSTEM_CODE,  <!-- 系统编码 -->
+        SYSTEM_NAME,  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE,  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME,  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE,  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME,  <!-- 作业工班名称 -->
+        WORKER_NAME,  <!-- 作业人员姓名 -->
+        WORKER_CODE,  <!-- 作业人员工号 -->
+        SEND_PERSON_ID,  <!-- 派工人工号 -->
+        SEND_PERSON_NAME,  <!-- 派工人姓名 -->
+        SEND_TIME,  <!-- 派工时间 -->
+        ACK_TIME,  <!-- 完工时间 -->
+        ACK_PERSON_ID,  <!-- 确认人工号 -->
+        ACK_PERSON_NAME,  <!-- 确认人姓名 -->
+        CONFIR_TIME,  <!-- 确认时间 -->
+        PLAN_START_TIME,  <!-- 计划开始时间 -->
+        PLAN_END_TIME,  <!-- 计划完成时间 -->
+        REAL_START_TIME,  <!-- 实际开始时间 -->
+        REAL_END_TIME,  <!-- 实际完成时间 -->
+        WORK_STATUS,  <!-- 工单当前状态 -->
+        WORK_FINISH_STATUS,  <!-- 检修结果 -->
+        ABNORMAL_NUMBER,  <!-- 异常数量 -->
+        WORK_DETAIL,  <!-- 检修描述 -->
+        STARTWORK_TIME,  <!-- 开工时间 -->
+        CANCEL_PERSON_ID,  <!-- 作废人工号 -->
+        CANCEL_PERSON_NAME,  <!-- 作废人姓名 -->
+        CANCEL_TIME,  <!-- 作废时间 -->
+        TRIAL_STATUS,  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID,  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS,  <!-- 工作流实例状态 -->
+        COMPANY_CODE,  <!-- 公司代码 -->
+        COMPANY_NAME,  <!-- 公司名称 -->
+        REC_CREATOR,  <!-- 记录创建者 -->
+        REC_CREATE_TIME,  <!-- 记录创建时间 -->
+        REC_REVISOR,  <!-- 记录修改者 -->
+        REC_REVISE_TIME,  <!-- 记录修改时间 -->
+        REC_DELETOR,  <!-- 记录删除者 -->
+        REC_DELETE_TIME,  <!-- 记录删除时间 -->
+        DELETE_FLAG,  <!-- 删除标记 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REMARK,  <!-- 说明 -->
+        LAST_UPDATE_PERSON,  <!-- 最后修改人 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{orderCode,jdbcType=VARCHAR},
+        #{planCode,jdbcType=VARCHAR},
+        #{planName,jdbcType=VARCHAR},
+        #{lineNo,jdbcType=VARCHAR},
+        #{lineName,jdbcType=VARCHAR},
+        #{position1Name,jdbcType=VARCHAR},
+        #{position1Code,jdbcType=VARCHAR},
+        #{subjectCode,jdbcType=VARCHAR},
+        #{subjectName,jdbcType=VARCHAR},
+        #{systemCode,jdbcType=VARCHAR},
+        #{systemName,jdbcType=VARCHAR},
+        #{equipTypeCode,jdbcType=VARCHAR},
+        #{equipTypeName,jdbcType=VARCHAR},
+        #{workerGroupCode,jdbcType=VARCHAR},
+        #{workGroupName,jdbcType=VARCHAR},
+        #{workerName,jdbcType=VARCHAR},
+        #{workerCode,jdbcType=VARCHAR},
+        #{sendPersonId,jdbcType=VARCHAR},
+        #{sendPersonName,jdbcType=VARCHAR},
+        #{sendTime,jdbcType=VARCHAR},
+        #{ackTime,jdbcType=VARCHAR},
+        #{ackPersonId,jdbcType=VARCHAR},
+        #{ackPersonName,jdbcType=VARCHAR},
+        #{confirTime,jdbcType=VARCHAR},
+        #{planStartTime,jdbcType=VARCHAR},
+        #{planEndTime,jdbcType=VARCHAR},
+        #{realStartTime,jdbcType=VARCHAR},
+        #{realEndTime,jdbcType=VARCHAR},
+        #{workStatus,jdbcType=VARCHAR},
+        #{workFinishStatus,jdbcType=VARCHAR},
+        '0',
+        '0',
+        #{startworkTime,jdbcType=VARCHAR},
+        #{cancelPersonId,jdbcType=VARCHAR},
+        #{cancelPersonName,jdbcType=VARCHAR},
+        #{cancelTime,jdbcType=VARCHAR},
+        #{trialStatus,jdbcType=VARCHAR},
+        #{workFlowInstId,jdbcType=VARCHAR},
+        #{workFlowInstStatus,jdbcType=VARCHAR},
+        #{companyCode,jdbcType=VARCHAR},
+        #{companyName,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{lastUpdatePerson,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+    
+    <update id="modifyOverhaulOrder">
+        UPDATE T_OVERHAUL_ORDER SET
+        <if test="orderCode!=null">
+            ORDER_CODE=#{orderCode},
+        </if>
+        <if test="planCode!=null">
+            PLAN_CODE=#{planCode},
+        </if>
+        <if test="planName!=null">
+            PLAN_NAME=#{planName},
+        </if>
+        <if test="lineNo!=null">
+            LINE_NO=#{lineNo},
+        </if>
+        <if test="lineName!=null">
+            LINE_NAME=#{lineName},
+        </if>
+        <if test="position1Name!=null">
+            POSITION1_NAME=#{position1Name},
+        </if>
+        <if test="position1Code!=null">
+            POSITION1_CODE=#{position1Code},
+        </if>
+        <if test="subjectCode!=null">
+            SUBJECT_CODE=#{subjectCode},
+        </if>
+        <if test="subjectName!=null">
+            SUBJECT_NAME=#{subjectName},
+        </if>
+        <if test="systemCode!=null">
+            SYSTEM_CODE=#{systemCode},
+        </if>
+        <if test="systemName!=null">
+            SYSTEM_NAME=#{systemName},
+        </if>
+        <if test="equipTypeCode!=null">
+            EQUIP_TYPE_CODE=#{equipTypeCode},
+        </if>
+        <if test="equipTypeName!=null">
+            EQUIP_TYPE_NAME=#{equipTypeName},
+        </if>
+        <if test="workerGroupCode!=null">
+            WORKER_GROUP_CODE=#{workerGroupCode},
+        </if>
+        <if test="workGroupName!=null">
+            WORK_GROUP_NAME=#{workGroupName},
+        </if>
+        <if test="workerName!=null">
+            WORKER_NAME=#{workerName},
+        </if>
+        <if test="workerCode!=null">
+            WORKER_CODE=#{workerCode},
+        </if>
+        <if test="sendPersonId!=null">
+            SEND_PERSON_ID=#{sendPersonId},
+        </if>
+        <if test="sendPersonName!=null">
+            SEND_PERSON_NAME=#{sendPersonName},
+        </if>
+        <if test="sendTime!=null">
+            SEND_TIME=#{sendTime},
+        </if>
+        <if test="ackTime!=null">
+            ACK_TIME=#{ackTime},
+        </if>
+        <if test="ackPersonId!=null">
+            ACK_PERSON_ID=#{ackPersonId},
+        </if>
+        <if test="ackPersonName!=null">
+            ACK_PERSON_NAME=#{ackPersonName},
+        </if>
+        <if test="confirTime!=null">
+            CONFIR_TIME=#{confirTime},
+        </if>
+        <if test="planStartTime!=null">
+            PLAN_START_TIME=#{planStartTime},
+        </if>
+        <if test="planEndTime!=null">
+            PLAN_END_TIME=#{planEndTime},
+        </if>
+        <if test="realStartTime!=null">
+            REAL_START_TIME=#{realStartTime},
+        </if>
+        <if test="realEndTime!=null">
+            REAL_END_TIME=#{realEndTime},
+        </if>
+        <if test="workStatus!=null">
+            WORK_STATUS=#{workStatus},
+        </if>
+        <if test="workFinishStatus!=null">
+            WORK_FINISH_STATUS=#{workFinishStatus},
+        </if>
+        <if test="abnormalNumber!=null">
+            ABNORMAL_NUMBER=#{abnormalNumber},
+        </if>
+        <if test="workDetail!=null">
+            WORK_DETAIL=#{workDetail},
+        </if>
+        <if test="startworkTime!=null">
+            STARTWORK_TIME=#{startworkTime},
+        </if>
+        <if test="cancelPersonId!=null">
+            CANCEL_PERSON_ID=#{cancelPersonId},
+        </if>
+        <if test="cancelPersonName!=null">
+            CANCEL_PERSON_NAME=#{cancelPersonName},
+        </if>
+        <if test="cancelTime!=null">
+            CANCEL_TIME=#{cancelTime},
+        </if>
+        <if test="trialStatus!=null">
+            TRIAL_STATUS=#{trialStatus},
+        </if>
+        <if test="workFlowInstId!=null">
+            WORK_FLOW_INST_ID=#{workFlowInstId},
+        </if>
+        <if test="workFlowInstStatus!=null">
+            WORK_FLOW_INST_STATUS=#{workFlowInstStatus},
+        </if>
+        <if test="companyCode!=null">
+            COMPANY_CODE=#{companyCode},
+        </if>
+        <if test="companyName!=null">
+            COMPANY_NAME=#{companyName},
+        </if>
+        <if test="archiveFlag!=null">
+            ARCHIVE_FLAG=#{archiveFlag},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        <if test="lastUpdatePerson!=null">
+            LAST_UPDATE_PERSON=#{lastUpdatePerson},
+        </if>
+        <if test="ext1!=null">
+            EXT1=#{ext1},
+        </if>
+        <if test="ext2!=null">
+            EXT2=#{ext2},
+        </if>
+        <if test="ext3!=null">
+            EXT3=#{ext3},
+        </if>
+        <if test="ext4!=null">
+            EXT4=#{ext4},
+        </if>
+        <if test="ext5!=null">
+            EXT5=#{ext5},
+        </if>
+        <if test="actualStartTime!=null">
+            ACTUAL_START_TIME=#{actualStartTime},
+        </if>
+        <if test="actualEndTime!=null">
+            ACTUAL_END_TIME=#{actualEndTime},
+        </if>
+        <if test="startMile!=null">
+            START_MILE=#{startMile},
+        </if>
+        <if test="endMile!=null">
+            END_MILE=#{endMile},
+        </if>
+        REC_REVISOR=#{recRevisor},
+        REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <select id="listOverhaulOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        SEND_PERSON_ID	as "sendPersonId",  <!-- 派工人工号 -->
+        SEND_PERSON_NAME	as "sendPersonName",  <!-- 派工人姓名 -->
+        SEND_TIME	as "sendTime",  <!-- 派工时间 -->
+        ACK_TIME	as "ackTime",  <!-- 完工时间 -->
+        ACK_PERSON_ID	as "ackPersonId",  <!-- 确认人工号 -->
+        ACK_PERSON_NAME	as "ackPersonName",  <!-- 确认人姓名 -->
+        CONFIR_TIME	as "confirTime",  <!-- 确认时间 -->
+        PLAN_START_TIME	as "planStartTime",  <!-- 计划开始时间 -->
+        PLAN_END_TIME	as "planEndTime",  <!-- 计划完成时间 -->
+        REAL_START_TIME	as "realStartTime",  <!-- 实际开始时间 -->
+        REAL_END_TIME	as "realEndTime",  <!-- 实际完成时间 -->
+        WORK_STATUS	as "workStatus",  <!-- 工单当前状态 -->
+        WORK_FINISH_STATUS	as "workFinishStatus",  <!-- 检修结果 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        WORK_DETAIL	as "workDetail",  <!-- 检修描述 -->
+        STARTWORK_TIME	as "startworkTime",  <!-- 开工时间 -->
+        CANCEL_PERSON_ID	as "cancelPersonId",  <!-- 作废人工号 -->
+        CANCEL_PERSON_NAME	as "cancelPersonName",  <!-- 作废人姓名 -->
+        CANCEL_TIME	as "cancelTime",  <!-- 作废时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
+        <if test="objectFlag!=null and objectFlag!=''">
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+        </if>
+        <if test="objectFlag==null or objectFlag==''">
+            REC_DELETOR 	as "recDeletor",
+            EXT1	as "ext1",  <!-- 扩展字段1 -->
+            EXT3	as "ext3",  <!-- 扩展字段3 -->
+        </if>
+        <!-- EXT1	as "ext1",  扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5", <!-- 扩展字段5 -->
+        (
+        case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
+        and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
+        else 9
+        end
+        ) as sort
+        FROM T_OVERHAUL_ORDER WHERE 1=1
+        <if test="orderCode!=null and orderCode!=''">
+            and ORDER_CODE like '%' || #{orderCode} || '%'
+        </if>
+        <if test="planCode!=null and planCode!=''">
+            and PLAN_CODE=#{planCode}
+        </if>
+        <if test="planName!=null and planName!=''">
+            and PLAN_NAME like '%' || #{planName} || '%'
+        </if>
+        <if test="lineNo!=null and lineNo!=''">
+            and LINE_NO=#{lineNo}
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            and POSITION1_CODE=#{position1Code}
+        </if>
+        <if test="subjectCode!=null and subjectCode!=''">
+            and SUBJECT_CODE=#{subjectCode}
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            and SYSTEM_CODE=#{systemCode}
+        </if>
+        <if test="workerGroupCode!=null and workerGroupCode!=''">
+            and WORKER_GROUP_CODE=#{workerGroupCode}
+        </if>
+        <if test="workStatus!=null and workStatus!=''">
+            and WORK_STATUS=#{workStatus}
+        </if>
+        <if test="workStatus1!=null and workStatus1!=''">
+            and WORK_STATUS != '8'
+        </if>
+        <if test="workFinishStatus!=null and workFinishStatus!=''">
+            and WORK_FINISH_STATUS=#{workFinishStatus}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and PLAN_START_TIME>=#{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and #{endTime}>=PLAN_START_TIME
+        </if>
+        <if test="workFlowInstId!=null and workFlowInstId!=''">
+            and REC_ID=#{workFlowInstId}
+        </if>
+        <if test="newTime!=null and newTime!=''">
+            and WORK_STATUS NOT IN ('5','8')
+        </if>
+        ORDER BY sort,ORDER_CODE DESC
+    </select>
+
+    <insert id="addOverhaulOrderDetail">
+        INSERT INTO T_OVERHAUL_ORDER_DETAIL (
+        REC_ID,  <!-- 记录ID -->
+        PLAN_CODE,  <!-- 计划编号 -->
+        PLAN_NAME,  <!-- 计划名称 -->
+        OBJECT_CODE,  <!-- 对象编码 -->
+        OBJECT_NAME,  <!-- 对象名称 -->
+        TASK_CONTENT,  <!-- 作业内容 -->
+        TASK_AREA,  <!-- 作业区域 -->
+        TASK_REQUEST,  <!-- 作业需求 -->
+        TASK_REMARK,  <!-- 作业备注 -->
+        TASK_PERSON_ID,  <!-- 作业人员工号 -->
+        TASK_PERSON_NAME,  <!-- 作业人员姓名 -->
+        OBJECT_STATUS,  <!-- 对象状态 -->
+        TEMPLATE_ID,  <!-- 模板编号 -->
+        TEMPLATE_NAME,  <!-- 模板名称 -->
+        LINE_NO,  <!-- 线路编码 -->
+        LINE_NAME,  <!-- 线路名称 -->
+        POSITION1_NAME,  <!-- 位置1  -->
+        POSITION2_CODE,  <!-- 位置2代码 -->
+        SUBJECT_CODE,  <!-- 设备专业编码 -->
+        SUBJECT_NAME,  <!-- 设备专业名称 -->
+        SYSTEM_CODE,  <!-- 系统编码 -->
+        SYSTEM_NAME,  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE,  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME,  <!-- 设备类别名称 -->
+        ORDER_CODE,  <!-- 检修工单 -->
+        TASK_SPOT,  <!-- 作业场 -->
+        STOP_TIME,  <!-- 停时 -->
+        REPAIR_STATUS,  <!-- 检修情况 -->
+        REPAIR_DETAIL,  <!-- 检修情况说明 -->
+        START_TIME,  <!-- 开始时间 -->
+        COMPLITE_TIME,  <!-- 结束时间 -->
+        REPAIR_PERSON,  <!-- 检修人 -->
+        ABNORMAL_NUMBER,  <!-- 异常数量 -->
+        SELF_CHECK,  <!-- 自检人 -->
+        SELF_CHECK_TIME,  <!-- 自检时间 -->
+        SELF_CHECK_REMARK,  <!-- 自检备注 -->
+        MUTUAL_CHECK,  <!-- 互检人 -->
+        MUTUAL_CHECK_TIME,  <!-- 互检时间 -->
+        MUTUAL_CHECK_REMARK,  <!-- 互检备注 -->
+        EXPERT_CHECK,  <!-- 专检人 -->
+        EXPERT_CHECK_TIME,  <!-- 专检时间 -->
+        EXPERT_CHECK_REMARK,  <!-- 专检备注 -->
+        REC_CREATOR,  <!-- 记录创建者 -->
+        REC_CREATE_TIME,  <!-- 记录创建时间 -->
+        REC_REVISOR,  <!-- 记录修改者 -->
+        REC_REVISE_TIME,  <!-- 记录修改时间 -->
+        REC_DELETOR,  <!-- 记录删除者 -->
+        REC_DELETE_TIME,  <!-- 记录删除时间 -->
+        DELETE_FLAG,  <!-- 删除标记 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REMARK,  <!-- 说明 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5  <!-- 扩展字段5 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{planCode,jdbcType=VARCHAR},
+        #{planName,jdbcType=VARCHAR},
+        #{objectCode,jdbcType=VARCHAR},
+        #{objectName,jdbcType=VARCHAR},
+        #{taskContent,jdbcType=VARCHAR},
+        #{taskArea,jdbcType=VARCHAR},
+        #{taskRequest,jdbcType=VARCHAR},
+        #{taskRemark,jdbcType=VARCHAR},
+        #{taskPersonId,jdbcType=VARCHAR},
+        #{taskPersonName,jdbcType=VARCHAR},
+        #{objectStatus,jdbcType=VARCHAR},
+        #{templateId,jdbcType=VARCHAR},
+        #{templateName,jdbcType=VARCHAR},
+        #{lineNo,jdbcType=VARCHAR},
+        #{lineName,jdbcType=VARCHAR},
+        #{position1Name,jdbcType=VARCHAR},
+        #{position2Code,jdbcType=VARCHAR},
+        #{subjectCode,jdbcType=VARCHAR},
+        #{subjectName,jdbcType=VARCHAR},
+        #{systemCode,jdbcType=VARCHAR},
+        #{systemName,jdbcType=VARCHAR},
+        #{equipTypeCode,jdbcType=VARCHAR},
+        #{equipTypeName,jdbcType=VARCHAR},
+        #{orderCode,jdbcType=VARCHAR},
+        #{taskSpot,jdbcType=VARCHAR},
+        #{stopTime,jdbcType=VARCHAR},
+        #{repairStatus,jdbcType=VARCHAR},
+        #{repairDetail,jdbcType=VARCHAR},
+        #{startTime,jdbcType=VARCHAR},
+        #{compliteTime,jdbcType=VARCHAR},
+        #{repairPerson,jdbcType=VARCHAR},
+        '0',
+        #{selfCheck,jdbcType=VARCHAR},
+        #{selfCheckTime,jdbcType=VARCHAR},
+        #{selfCheckRemark,jdbcType=VARCHAR},
+        #{mutualCheck,jdbcType=VARCHAR},
+        #{mutualCheckTime,jdbcType=VARCHAR},
+        #{mutualCheckRemark,jdbcType=VARCHAR},
+        #{expertCheck,jdbcType=VARCHAR},
+        #{expertCheckTime,jdbcType=VARCHAR},
+        #{expertCheckRemark,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="pageOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        (select NAME from SYS_OFFICE where (ID=WORKER_GROUP_CODE or AREA_ID=WORKER_GROUP_CODE))	as "workGroupName",  <!-- 作业工班名称 -->
+        (select tog.ORG_NAME  from RPLAT60.T_WW_ORG tog WHERE  tog.ORG_CODE=WORKER_GROUP_CODE) as "workerOrgName",
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        SEND_PERSON_ID	as "sendPersonId",  <!-- 派工人工号 -->
+        SEND_PERSON_NAME	as "sendPersonName",  <!-- 派工人姓名 -->
+        SEND_TIME	as "sendTime",  <!-- 派工时间 -->
+        ACK_TIME	as "ackTime",  <!-- 完工时间 -->
+        ACK_PERSON_ID	as "ackPersonId",  <!-- 确认人工号 -->
+        ACK_PERSON_NAME	as "ackPersonName",  <!-- 确认人姓名 -->
+        CONFIR_TIME	as "confirTime",  <!-- 确认时间 -->
+        PLAN_START_TIME	as "planStartTime",  <!-- 计划开始时间 -->
+        PLAN_END_TIME	as "planEndTime",  <!-- 计划完成时间 -->
+        REAL_START_TIME	as "realStartTime",  <!-- 实际开始时间 -->
+        REAL_END_TIME	as "realEndTime",  <!-- 实际完成时间 -->
+        WORK_STATUS	as "workStatus",  <!-- 工单当前状态 -->
+        WORK_FINISH_STATUS	as "workFinishStatus",  <!-- 检修结果 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        WORK_DETAIL	as "workDetail",  <!-- 检修描述 -->
+        STARTWORK_TIME	as "startworkTime",  <!-- 开工时间 -->
+        CANCEL_PERSON_ID	as "cancelPersonId",  <!-- 作废人工号 -->
+        CANCEL_PERSON_NAME	as "cancelPersonName",  <!-- 作废人姓名 -->
+        CANCEL_TIME	as "cancelTime",  <!-- 作废时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
+        <if test="req.objectFlag!=null and req.objectFlag!=''">
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+        </if>
+        <if test="req.objectFlag==null or req.objectFlag==''">
+            REC_DELETOR 	as "recDeletor",
+            EXT1	as "ext1",  <!-- 扩展字段1 -->
+            EXT3	as "ext3",  <!-- 扩展字段3 -->
+        </if>
+        <!-- EXT1	as "ext1",  扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5", <!-- 扩展字段5 -->
+        (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
+        (case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
+        and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
+        else 9
+        end
+        ) as sort,
+        ACTUAL_END_TIME as REAL_DAY,
+        END_MILE as REAL_MILE
+        FROM T_OVERHAUL_ORDER WHERE DELETE_FLAG='0'
+        <if test="req.orderCode!=null and req.orderCode!=''">
+            and ORDER_CODE like '%' || #{req.orderCode} || '%'
+        </if>
+        <if test="req.planCode!=null and req.planCode!=''">
+            and PLAN_CODE=#{req.planCode}
+        </if>
+        <if test="req.planName!=null and req.planName!=''">
+            and PLAN_NAME like '%' || #{req.planName} || '%'
+        </if>
+        <if test="req.objectName!=null and req.objectName!=''">
+            and ext1 like '%' || #{req.objectName} || '%'
+        </if>
+        <if test="req.lineNo!=null and req.lineNo!=''">
+            and LINE_NO=#{req.lineNo}
+        </if>
+        <if test="req.position1Code!=null and req.position1Code!=''">
+            and POSITION1_CODE=#{req.position1Code}
+        </if>
+        <if test="req.subjectCode!=null and req.subjectCode!=''">
+            and SUBJECT_CODE=#{req.subjectCode}
+        </if>
+        <if test="req.subjectCode==null or req.subjectCode==''.toString()">
+            and SUBJECT_CODE!='07'
+        </if>
+        <if test="req.systemCode!=null and req.systemCode!=''">
+            and SYSTEM_CODE=#{req.systemCode}
+        </if>
+        <if test="req.workerGroupCode!=null and req.workerGroupCode!=''">
+            and WORKER_GROUP_CODE=#{req.workerGroupCode}
+        </if>
+        <if test="req.workStatus!=null and req.workStatus!=''">
+            and WORK_STATUS=#{req.workStatus}
+        </if>
+        <if test="req.workStatus1!=null and req.workStatus1!=''">
+            and WORK_STATUS != '8'
+        </if>
+        <if test="req.workFinishStatus!=null and req.workFinishStatus!=''">
+            and WORK_FINISH_STATUS=#{req.workFinishStatus}
+        </if>
+        <if test="req.startTime!=null and req.startTime!=''">
+            and PLAN_START_TIME>=#{req.startTime}
+        </if>
+        <if test="req.endTime!=null and req.endTime!=''">
+            and #{req.endTime}>=PLAN_START_TIME
+        </if>
+        <if test="req.workFlowInstId!=null and req.workFlowInstId!=''">
+            and REC_ID=#{req.workFlowInstId}
+        </if>
+        <if test="req.newTime!=null and req.newTime!=''">
+            and WORK_STATUS NOT IN ('5','8')
+        </if>
+        <if test="req.workDetail!=null and req.workDetail!=''">
+            and WORK_DETAIL=#{req.workDetail}
+        </if>
+        ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
+    </select>
+
+    <select id="getCarOrderExt" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT END_MILE AS LAST_MILE, ACTUAL_END_TIME AS LAST_DAY
+        FROM T_OVERHAUL_ORDER
+        WHERE REC_CREATE_TIME IS NOT NULL AND rownum=2 AND PLAN_CODE=#{planCode}
+        ORDER BY REC_CREATE_TIME
+    </select>
+
+    <select id="getCarOrderRuleExt" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT MAX(wrd.EXT1) AS PROVIDE_MILE, MAX(wrd.PERIOD) AS PROVIDE_TIME
+        FROM T_OVERHAUL_ORDER oo
+        LEFT JOIN T_OVERHAUL_PLAN op ON op.PLAN_CODE=oo.PLAN_CODE AND op.DELETE_FLAG='0'
+        LEFT JOIN T_WO_RULE_DETAIL wrd ON wrd.RULE_CODE=op.RULE_CODE AND wrd.DELETE_FLAG='0'
+        WHERE oo.ORDER_CODE=#{orderCode} AND oo.PLAN_CODE=#{planCode}
+    </select>
+
+    <select id="getOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT DISTINCT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        (select tog.ORG_NAME  from RPLAT60.T_WW_ORG tog WHERE  tog.ORG_CODE=WORKER_GROUP_CODE) as "workerOrgName",
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        SEND_PERSON_ID	as "sendPersonId",  <!-- 派工人工号 -->
+        SEND_PERSON_NAME	as "sendPersonName",  <!-- 派工人姓名 -->
+        SEND_TIME	as "sendTime",  <!-- 派工时间 -->
+        ACK_TIME	as "ackTime",  <!-- 完工时间 -->
+        ACK_PERSON_ID	as "ackPersonId",  <!-- 确认人工号 -->
+        ACK_PERSON_NAME	as "ackPersonName",  <!-- 确认人姓名 -->
+        CONFIR_TIME	as "confirTime",  <!-- 确认时间 -->
+        PLAN_START_TIME	as "planStartTime",  <!-- 计划开始时间 -->
+        PLAN_END_TIME	as "planEndTime",  <!-- 计划完成时间 -->
+        REAL_START_TIME	as "realStartTime",  <!-- 实际开始时间 -->
+        REAL_END_TIME	as "realEndTime",  <!-- 实际完成时间 -->
+        WORK_STATUS	as "workStatus",  <!-- 工单当前状态 -->
+        WORK_FINISH_STATUS	as "workFinishStatus",  <!-- 检修结果 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        WORK_DETAIL	as "workDetail",  <!-- 检修描述 -->
+        STARTWORK_TIME	as "startworkTime",  <!-- 开工时间 -->
+        CANCEL_PERSON_ID	as "cancelPersonId",  <!-- 作废人工号 -->
+        CANCEL_PERSON_NAME	as "cancelPersonName",  <!-- 作废人姓名 -->
+        CANCEL_TIME	as "cancelTime",  <!-- 作废时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
+        <if test="objectFlag!=null and objectFlag!=''">
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+        </if>
+        <if test="objectFlag==null or objectFlag==''">
+            REC_DELETOR 	as "recDeletor",
+            EXT1	as "ext1",  <!-- 扩展字段1 -->
+            EXT3	as "ext3",  <!-- 扩展字段3 -->
+        </if>
+        <!-- EXT1	as "ext1",  扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5", <!-- 扩展字段5 -->
+        (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
+        (
+        case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
+        and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
+        else 9
+        end
+        ) as sort,
+        ACTUAL_END_TIME as REAL_DAY,
+        END_MILE as REAL_MILE
+        FROM T_OVERHAUL_ORDER WHERE REC_ID=#{recId}
+    </select>
+
+    <select id="pageMateBorrow" resultType="com.wzmtr.eam.dto.res.overhaul.MateBorrowResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        MATE_CODE	as "mateCode",  <!-- 物资编码 -->
+        MATE_NAME	as "mateName",  <!-- 物资名称 -->
+        BORROW_CODE	as "borrowCode",  <!-- 借用人工号 -->
+        BORROW_NAME	as "borrowName",  <!-- 借用人姓名 -->
+        BORROW_TIME	as "borrowTime",  <!-- 借用时间 -->
+        RETURN_NAME	as "returnName",  <!-- 归还人姓名 -->
+        RETURN_CODE	as "returnCode",  <!-- 归还人工号 -->
+        RETURN_TIME	as "returnTime",  <!-- 归还时间 -->
+        STATE	as "state",  <!-- 状态 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_MATE_BORROW WHERE 1=1
+        <if test="orderCode!=null and orderCode!=''">
+            and ORDER_CODE=#{orderCode}
+        </if>
+        <if test="mateCode!=null and mateCode!=''">
+            and MATE_CODE like '%' || #{mateCode} || '%'
+        </if>
+        <if test="mateName!=null and mateName!=''">
+            and MATE_NAME like '%' || #{mateName} || '%'
+        </if>
+        order by REC_ID asc
+    </select>
+
+    <select id="listOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        WORK_GROUP_NAME	as "workGroupName",  <!-- 作业工班名称 -->
+        (select tog.ORG_NAME  from RPLAT60.T_WW_ORG tog WHERE  tog.ORG_CODE=WORKER_GROUP_CODE) as "workerOrgName",
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        SEND_PERSON_ID	as "sendPersonId",  <!-- 派工人工号 -->
+        SEND_PERSON_NAME	as "sendPersonName",  <!-- 派工人姓名 -->
+        SEND_TIME	as "sendTime",  <!-- 派工时间 -->
+        ACK_TIME	as "ackTime",  <!-- 完工时间 -->
+        ACK_PERSON_ID	as "ackPersonId",  <!-- 确认人工号 -->
+        ACK_PERSON_NAME	as "ackPersonName",  <!-- 确认人姓名 -->
+        CONFIR_TIME	as "confirTime",  <!-- 确认时间 -->
+        PLAN_START_TIME	as "planStartTime",  <!-- 计划开始时间 -->
+        PLAN_END_TIME	as "planEndTime",  <!-- 计划完成时间 -->
+        REAL_START_TIME	as "realStartTime",  <!-- 实际开始时间 -->
+        REAL_END_TIME	as "realEndTime",  <!-- 实际完成时间 -->
+        WORK_STATUS	as "workStatus",  <!-- 工单当前状态 -->
+        WORK_FINISH_STATUS	as "workFinishStatus",  <!-- 检修结果 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        WORK_DETAIL	as "workDetail",  <!-- 检修描述 -->
+        STARTWORK_TIME	as "startworkTime",  <!-- 开工时间 -->
+        CANCEL_PERSON_ID	as "cancelPersonId",  <!-- 作废人工号 -->
+        CANCEL_PERSON_NAME	as "cancelPersonName",  <!-- 作废人姓名 -->
+        CANCEL_TIME	as "cancelTime",  <!-- 作废时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
+        <if test="objectFlag!=null and objectFlag!=''">
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+        </if>
+        <if test="objectFlag==null or objectFlag==''">
+            REC_DELETOR 	as "recDeletor",
+            EXT1	as "ext1",  <!-- 扩展字段1 -->
+            EXT3	as "ext3",  <!-- 扩展字段3 -->
+        </if>
+        <!-- EXT1	as "ext1",  扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5", <!-- 扩展字段5 -->
+        (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
+        (
+        case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
+        and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
+        else 9
+        end
+        ) as sort,
+        ACTUAL_END_TIME as REAL_DAY,
+        END_MILE as REAL_MILE
+        FROM T_OVERHAUL_ORDER WHERE DELETE_FLAG='0'
+        <if test="orderCode!=null and orderCode!=''">
+            and ORDER_CODE like '%' || #{orderCode} || '%'
+        </if>
+        <if test="planCode!=null and planCode!=''">
+            and PLAN_CODE=#{planCode}
+        </if>
+        <if test="planName!=null and planName!=''">
+            and PLAN_NAME like '%' || #{planName} || '%'
+        </if>
+        <if test="lineNo!=null and lineNo!=''">
+            and LINE_NO=#{lineNo}
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            and POSITION1_CODE=#{position1Code}
+        </if>
+        <if test="subjectCode!=null and subjectCode!=''">
+            and SUBJECT_CODE=#{subjectCode}
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            and SYSTEM_CODE=#{systemCode}
+        </if>
+        <if test="workerGroupCode!=null and workerGroupCode!=''">
+            and WORKER_GROUP_CODE=#{workerGroupCode}
+        </if>
+        <if test="workStatus!=null and workStatus!=''">
+            and WORK_STATUS=#{workStatus}
+        </if>
+        <if test="workStatus1!=null and workStatus1!=''">
+            and WORK_STATUS != '8'
+        </if>
+        <if test="workFinishStatus!=null and workFinishStatus!=''">
+            and WORK_FINISH_STATUS=#{workFinishStatus}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and PLAN_START_TIME>=#{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and #{endTime}>=PLAN_START_TIME
+        </if>
+        <if test="workFlowInstId!=null and workFlowInstId!=''">
+            and REC_ID=#{workFlowInstId}
+        </if>
+        <if test="newTime!=null and newTime!=''">
+            and WORK_STATUS NOT IN ('5','8')
+        </if>
+        ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
+    </select>
+
+    <select id="getOrderByIds" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION1_CODE	as "position1Code",  <!-- 位置1代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        (SELECT t1.NODE_NAME FROM T_EQUIPMENT_CATEGORY t1 WHERE t1.NODE_CODE=SUBJECT_CODE AND t1.DELETE_FLAG='0' AND t1.REC_STATUS='10') as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        (SELECT t2.NODE_NAME FROM T_EQUIPMENT_CATEGORY t2 WHERE t2.NODE_CODE=SYSTEM_CODE AND t2.DELETE_FLAG='0' AND t2.REC_STATUS='10')	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        (SELECT t3.NODE_NAME FROM T_EQUIPMENT_CATEGORY t3 WHERE t3.NODE_CODE=EQUIP_TYPE_CODE AND t3.DELETE_FLAG='0' AND t3.REC_STATUS='10')	as "equipTypeName",  <!-- 设备类别名称 -->
+        WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
+        (select NAME from SYS_OFFICE where (ID=WORKER_GROUP_CODE or AREA_ID=WORKER_GROUP_CODE))	as "workGroupName",  <!-- 作业工班名称 -->
+        (select tog.ORG_NAME  from RPLAT60.T_WW_ORG tog WHERE  tog.ORG_CODE=WORKER_GROUP_CODE) as "workerOrgName",
+        WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
+        WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
+        SEND_PERSON_ID	as "sendPersonId",  <!-- 派工人工号 -->
+        SEND_PERSON_NAME	as "sendPersonName",  <!-- 派工人姓名 -->
+        SEND_TIME	as "sendTime",  <!-- 派工时间 -->
+        ACK_TIME	as "ackTime",  <!-- 完工时间 -->
+        ACK_PERSON_ID	as "ackPersonId",  <!-- 确认人工号 -->
+        ACK_PERSON_NAME	as "ackPersonName",  <!-- 确认人姓名 -->
+        CONFIR_TIME	as "confirTime",  <!-- 确认时间 -->
+        PLAN_START_TIME	as "planStartTime",  <!-- 计划开始时间 -->
+        PLAN_END_TIME	as "planEndTime",  <!-- 计划完成时间 -->
+        REAL_START_TIME	as "realStartTime",  <!-- 实际开始时间 -->
+        REAL_END_TIME	as "realEndTime",  <!-- 实际完成时间 -->
+        WORK_STATUS	as "workStatus",  <!-- 工单当前状态 -->
+        WORK_FINISH_STATUS	as "workFinishStatus",  <!-- 检修结果 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        WORK_DETAIL	as "workDetail",  <!-- 检修描述 -->
+        STARTWORK_TIME	as "startworkTime",  <!-- 开工时间 -->
+        CANCEL_PERSON_ID	as "cancelPersonId",  <!-- 作废人工号 -->
+        CANCEL_PERSON_NAME	as "cancelPersonName",  <!-- 作废人姓名 -->
+        CANCEL_TIME	as "cancelTime",  <!-- 作废时间 -->
+        TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
+        WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
+        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
+        COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        LAST_UPDATE_PERSON	as "lastUpdatePerson",  <!-- 最后修改人 -->
+        <if test="objectFlag!=null and objectFlag!=''">
+            (SELECT COUNT(*) FROM T_MATE_BORROW T26 WHERE T26.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE)	as "recDeletor",  <!-- 工器具数量 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_ORDER_DETAIL a WHERE a.ORDER_CODE=T_OVERHAUL_ORDER.ORDER_CODE) as "ext1", <!-- 设备对象拼接 -->
+            <!--(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')) as "ext2",  &lt;!&ndash; 扩展字段2 &ndash;&gt;-->
+            <!--需要考虑计划表ext1字段赋值，到工单表ext1 ，考虑将该字段改为ext3-->
+            NVL2(TRIM(EXT2),(SELECT MAX(T_OVERHAUL_PLAN.LAST_ACTION_TIME-T_EQUIPMENT.TOTAL_MILES) FROM T_OVERHAUL_PLAN LEFT JOIN T_OVERHAUL_OBJECT ON T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_OBJECT.PLAN_CODE LEFT JOIN T_EQUIPMENT ON T_OVERHAUL_OBJECT.OBJECT_CODE=T_EQUIPMENT.EQUIP_CODE WHERE T_OVERHAUL_PLAN.PLAN_CODE=T_OVERHAUL_ORDER.PLAN_CODE AND T_OVERHAUL_PLAN.SUBJECT_CODE='07' AND T_OVERHAUL_ORDER.WORK_STATUS IN ('1','2','3')),'4000')  as "ext3",  <!-- 扩展字段2 -->
+        </if>
+        <if test="objectFlag==null or objectFlag==''">
+            REC_DELETOR 	as "recDeletor",
+            EXT1	as "ext1",  <!-- 扩展字段1 -->
+            EXT3	as "ext3",  <!-- 扩展字段3 -->
+        </if>
+        <!-- EXT1	as "ext1",  扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5", <!-- 扩展字段5 -->
+        (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
+        (
+        case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
+        and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
+        else 9
+        end
+        ) as sort,
+        ACTUAL_END_TIME as REAL_DAY,
+        END_MILE as REAL_MILE
+        FROM T_OVERHAUL_ORDER WHERE DELETE_FLAG='0' and REC_ID IN (
+        <foreach collection="list" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
+    </select>
+
+    <select id="getSubjectByUserId" resultType="java.lang.String">
+        SELECT NODE_CODE as "nodeCode"
+        FROM T_EQUIPMENT_CATEGORY where 1=1 AND NODE_CODE IN (
+        SELECT MAJOR_CODE as "majorCode"
+        FROM SYS_ORG_MAJOR where 1=1 AND REC_STATUS='10' AND
+        ORG_CODE=(SELECT CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END
+        FROM SYS_OFFICE WHERE ID=(SELECT OFFICE_ID from SYS_USER where LOGIN_NAME=#{userId} AND ROWNUM=1)
+        AND ROWNUM=1))
+    </select>
+
+    <select id="queryObjMiles" resultType="java.lang.String">
+        SELECT TOTAL_MILES as "totalMiles"
+        FROM T_EQUIPMENT
+        WHERE EQUIP_CODE=(SELECT OBJECT_CODE
+        FROM T_OVERHAUL_OBJECT
+        WHERE PLAN_CODE=#{planCode})
+    </select>
+
+    <select id="pageOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
+        SELECT
+        REC_ID	as "objectId",
+        REC_ID	as "recId",  <!-- 记录ID -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        TASK_PERSON_ID	as "taskPersonId",  <!-- 作业人员工号 -->
+        TASK_PERSON_NAME	as "taskPersonName",  <!-- 作业人员姓名 -->
+        OBJECT_STATUS	as "objectStatus",  <!-- 对象状态 -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION2_CODE	as "position2Code",  <!-- 位置2代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        STOP_TIME	as "stopTime",  <!-- 停时 -->
+        REPAIR_STATUS	as "repairStatus",  <!-- 检修情况 -->
+        REPAIR_DETAIL	as "repairDetail",  <!-- 检修情况说明 -->
+        START_TIME	as "startTime",  <!-- 开始时间 -->
+        COMPLITE_TIME	as "compliteTime",  <!-- 结束时间 -->
+        REPAIR_PERSON	as "repairPerson",  <!-- 检修人 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        SELF_CHECK	as "selfCheck",  <!-- 自检人 -->
+        SELF_CHECK_TIME	as "selfCheckTime",  <!-- 自检时间 -->
+        SELF_CHECK_REMARK	as "selfCheckRemark",  <!-- 自检备注 -->
+        MUTUAL_CHECK	as "mutualCheck",  <!-- 互检人 -->
+        MUTUAL_CHECK_TIME	as "mutualCheckTime",  <!-- 互检时间 -->
+        MUTUAL_CHECK_REMARK	as "mutualCheckRemark",  <!-- 互检备注 -->
+        EXPERT_CHECK	as "expertCheck",  <!-- 专检人 -->
+        EXPERT_CHECK_TIME	as "expertCheckTime",  <!-- 专检时间 -->
+        EXPERT_CHECK_REMARK	as "expertCheckRemark",  <!-- 专检备注 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_ORDER_DETAIL WHERE 1=1 AND ORDER_CODE=#{orderCode}
+        <if test="planCode!=null and planCode!=''">
+            and PLAN_CODE=#{planCode}
+        </if>
+        <if test="planName!=null and planName!=''">
+            and PLAN_NAME=#{planName}
+        </if>
+        <if test="objectCode!=null and objectCode!=''">
+            and OBJECT_CODE=#{objectCode}
+        </if>
+        order by REC_ID asc
+    </select>
+
+    <select id="getOverhaulObjectDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
+        SELECT
+        REC_ID	as "objectId",
+        REC_ID	as "recId",  <!-- 记录ID -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        TASK_PERSON_ID	as "taskPersonId",  <!-- 作业人员工号 -->
+        TASK_PERSON_NAME	as "taskPersonName",  <!-- 作业人员姓名 -->
+        OBJECT_STATUS	as "objectStatus",  <!-- 对象状态 -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION2_CODE	as "position2Code",  <!-- 位置2代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        STOP_TIME	as "stopTime",  <!-- 停时 -->
+        REPAIR_STATUS	as "repairStatus",  <!-- 检修情况 -->
+        REPAIR_DETAIL	as "repairDetail",  <!-- 检修情况说明 -->
+        START_TIME	as "startTime",  <!-- 开始时间 -->
+        COMPLITE_TIME	as "compliteTime",  <!-- 结束时间 -->
+        REPAIR_PERSON	as "repairPerson",  <!-- 检修人 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        SELF_CHECK	as "selfCheck",  <!-- 自检人 -->
+        SELF_CHECK_TIME	as "selfCheckTime",  <!-- 自检时间 -->
+        SELF_CHECK_REMARK	as "selfCheckRemark",  <!-- 自检备注 -->
+        MUTUAL_CHECK	as "mutualCheck",  <!-- 互检人 -->
+        MUTUAL_CHECK_TIME	as "mutualCheckTime",  <!-- 互检时间 -->
+        MUTUAL_CHECK_REMARK	as "mutualCheckRemark",  <!-- 互检备注 -->
+        EXPERT_CHECK	as "expertCheck",  <!-- 专检人 -->
+        EXPERT_CHECK_TIME	as "expertCheckTime",  <!-- 专检时间 -->
+        EXPERT_CHECK_REMARK	as "expertCheckRemark",  <!-- 专检备注 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_ORDER_DETAIL WHERE REC_ID=#{id}
+    </select>
+
+    <update id="modifyOverhaulObject">
+        update T_OVERHAUL_ORDER_DETAIL set
+        <if test="repairStatus!=null">
+            REPAIR_STATUS=#{repairStatus},
+        </if>
+        <if test="repairDetail!=null">
+            REPAIR_DETAIL=#{repairDetail},
+        </if>
+        <if test="startTime!=null">
+            START_TIME=#{startTime},
+        </if>
+        <if test="compliteTime!=null">
+            COMPLITE_TIME=#{compliteTime},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REPAIR_PERSON=#{repairPerson}
+        where REC_ID=#{recId}
+    </update>
+
+    <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
+        SELECT
+        REC_ID	as "objectId",
+        REC_ID	as "recId",  <!-- 记录ID -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        TASK_PERSON_ID	as "taskPersonId",  <!-- 作业人员工号 -->
+        TASK_PERSON_NAME	as "taskPersonName",  <!-- 作业人员姓名 -->
+        OBJECT_STATUS	as "objectStatus",  <!-- 对象状态 -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION2_CODE	as "position2Code",  <!-- 位置2代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        STOP_TIME	as "stopTime",  <!-- 停时 -->
+        REPAIR_STATUS	as "repairStatus",  <!-- 检修情况 -->
+        REPAIR_DETAIL	as "repairDetail",  <!-- 检修情况说明 -->
+        START_TIME	as "startTime",  <!-- 开始时间 -->
+        COMPLITE_TIME	as "compliteTime",  <!-- 结束时间 -->
+        REPAIR_PERSON	as "repairPerson",  <!-- 检修人 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        SELF_CHECK	as "selfCheck",  <!-- 自检人 -->
+        SELF_CHECK_TIME	as "selfCheckTime",  <!-- 自检时间 -->
+        SELF_CHECK_REMARK	as "selfCheckRemark",  <!-- 自检备注 -->
+        MUTUAL_CHECK	as "mutualCheck",  <!-- 互检人 -->
+        MUTUAL_CHECK_TIME	as "mutualCheckTime",  <!-- 互检时间 -->
+        MUTUAL_CHECK_REMARK	as "mutualCheckRemark",  <!-- 互检备注 -->
+        EXPERT_CHECK	as "expertCheck",  <!-- 专检人 -->
+        EXPERT_CHECK_TIME	as "expertCheckTime",  <!-- 专检时间 -->
+        EXPERT_CHECK_REMARK	as "expertCheckRemark",  <!-- 专检备注 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_ORDER_DETAIL WHERE 1=1 AND ORDER_CODE=#{orderCode}
+        <if test="planCode!=null and planCode!=''">
+            and PLAN_CODE=#{planCode}
+        </if>
+        <if test="planName!=null and planName!=''">
+            and PLAN_NAME=#{planName}
+        </if>
+        <if test="objectCode!=null and objectCode!=''">
+            and OBJECT_CODE=#{objectCode}
+        </if>
+        order by REC_ID asc
+    </select>
+
+    <update id="updateone">
+        UPDATE T_OVERHAUL_STATE SET
+        FAULT_CODE=#{faultCode},   <!-- 故障单号 -->
+        FAULT_STATUS=#{faultStatus} <!-- 故障单号状态 -->
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <select id="queryPlan" resultType="java.lang.String">
+        select distinct PLAN_NAME as "planName"
+        from T_OVERHAUL_ORDER where 1=1 and PLAN_NAME like '%' || #{planName} || '%'
+    </select>
+
+</mapper>

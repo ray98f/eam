@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.common.PersonMapper">
+
+    <select id="searchPersonByNo" resultType="com.wzmtr.eam.shiro.model.Person">
+        SELECT u.ID, u.NO, u.NAME,u.LOGIN_NAME, u.MOBILE,u.PHONE,u.EMAIL,u.OFFICE_ID, o1.NAME as OFFICE_NAME, u.COMPANY_ID, o2.NAME as COMPANY_NAME,
+        o1.AREA_ID as OFFICE_AREA_ID, o2.AREA_ID as COMPANY_AREA_ID, o1.NAMES
+        FROM SYS_USER u
+        LEFT JOIN SYS_OFFICE o1 ON o1.ID=u.OFFICE_ID
+        LEFT JOIN SYS_OFFICE o2 ON o2.ID=u.COMPANY_ID
+        WHERE u.LOGIN_NAME=#{no}
+    </select>
+    <select id="searchLeader" resultType="com.wzmtr.eam.shiro.model.Person">
+        SELECT u.*,so.*
+        FROM SYS_USER u
+                 LEFT JOIN SYS_OFFICE so on u.OFFICE_ID =so.id
+                 LEFT JOIN SYS_USER_ROLE sur on u.LOGIN_NAME = sur.USER_ID
+                 LEFT JOIN SYS_ROLE sr on sr.id = sur.ROLE_ID
+                 LEFT JOIN SYS_ORG_MAJOR t1 on t1.ORG_CODE = so.AREA_ID
+                 LEFT JOIN SYS_ORG_REGION t2 on t2.ORG_CODE = so.AREA_ID
+        where t1.MAJOR_CODE = #{major}
+          and t2.REGION_CODE = #{position}
+          AND sr.ROLE_CODE = #{roleCode}
+    </select>
+
+
+</mapper>

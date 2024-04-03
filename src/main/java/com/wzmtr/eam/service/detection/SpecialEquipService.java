@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 public interface SpecialEquipService {
@@ -18,7 +19,7 @@ public interface SpecialEquipService {
 
     SpecialEquipResDTO getSpecialEquipDetail(String id);
 
-    void importSpecialEquip(MultipartFile file);
+    void importSpecialEquip(MultipartFile file) throws ParseException;
 
     /**
      * 新增特种设备台账

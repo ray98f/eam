@@ -1,7 +1,11 @@
 package com.wzmtr.eam.mapper.statistic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.statistic.OneCarOneGearQueryReqDTO;
+import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
+import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
+import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO;
@@ -21,7 +25,7 @@ public interface OneCarOneGearMapper {
 
     List<OneCarOneGearResDTO> query(String equipName);
 
-    OneCarOneGearResDTO querySummary(String endTime, String startTime, String equipName);
+    OneCarOneGearResDTO querySummary(String endTime, String startTime, String endTime1, String startTime1, String equipName);
 
     /**
      * 二级修(90天
@@ -85,4 +89,27 @@ public interface OneCarOneGearMapper {
     List<InspectionJobListResDTO> queryER1( String equipName, String startTime, String endTime);
 
     List<InspectionJobListResDTO> queryER4(String equipName, String startTime, String endTime);
+
+    Page<GearboxChangeOilResDTO> listGearboxChangeOil(Page<GearboxChangeOilResDTO> page, OneCarOneGearQueryReqDTO req);
+
+    List<GearboxChangeOilResDTO> listGearboxChangeOil(OneCarOneGearQueryReqDTO req);
+
+    Page<WheelsetLathingResDTO> listWheelsetLathing(Page<WheelsetLathingResDTO> page, OneCarOneGearQueryReqDTO req);
+
+    List<WheelsetLathingResDTO> listWheelsetLathing(OneCarOneGearQueryReqDTO req);
+
+    /**
+     * 一车一档-普查技改分页查询
+     * @param page 分页信息
+     * @param req 查询条件
+     * @return 普查技改分页信息
+     */
+    Page<GeneralSurveyResDTO> listGeneralSurvey(Page<GeneralSurveyResDTO> page, OneCarOneGearQueryReqDTO req);
+
+    /**
+     * 获取普查技改列表
+     * @param req 查询条件
+     * @return 普查技改列表
+     */
+    List<GeneralSurveyResDTO> listGeneralSurvey(OneCarOneGearQueryReqDTO req);
 }

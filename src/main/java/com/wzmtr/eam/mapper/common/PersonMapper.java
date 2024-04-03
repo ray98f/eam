@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface PersonMapper {
 
     Person searchPersonByNo(@Param("no") String no);
+    Person searchLeader(String major,String position,String roleCode);
 
 }

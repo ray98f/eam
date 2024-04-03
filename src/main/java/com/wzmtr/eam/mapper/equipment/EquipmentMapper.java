@@ -39,6 +39,9 @@ public interface EquipmentMapper {
     List<EquipmentCategoryResDTO> listEquipmentCategory(String equipmentCategoryCode, String lineCode, String recId, String regionCode);
 
     Page<EquipmentResDTO> pageEquipment(Page<EquipmentResDTO> page, String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
+                                        String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture,List<String> majors);
+
+    List<EquipmentResDTO> allList(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture);
 
     EquipmentResDTO getEquipmentDetail(String id);
@@ -59,6 +62,8 @@ public interface EquipmentMapper {
     void insertEquipment(EquipmentReqDTO equipmentReqDTO);
 
     List<EquipmentResDTO> listEquipment(List<String> ids);
+
+    Page<EquipmentResDTO> pageSiftEquipment(Page<EquipmentResDTO> page, EquipmentSiftReqDTO req);
 
     List<EquipmentResDTO> siftEquipment(EquipmentSiftReqDTO equipmentSiftReqDTO);
 

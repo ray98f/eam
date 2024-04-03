@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.detection;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.detection.DetectionDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionDetailResDTO;
@@ -30,15 +31,17 @@ public interface DetectionService {
 
     void exportDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, HttpServletResponse response) throws IOException;
 
-    Page<DetectionDetailResDTO> pageDetectionDetail(String testRecId, PageReqDTO pageReqDTO);
+    Page<DetectionDetailResDTO> pageDetectionDetail(String equipCode, String testRecId, PageReqDTO pageReqDTO);
 
     DetectionDetailResDTO getDetectionDetailDetail(String id);
 
     void addDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException;
 
+    void addNormalDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException;
+
     void modifyDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException;
 
     void deleteDetectionDetail(BaseIdsEntity baseIdsEntity);
 
-    void exportDetectionDetail(String testRecId, HttpServletResponse response) throws IOException;
+    void exportDetectionDetail(DetectionDetailExportReqDTO detectionDetailExportReqDTO, HttpServletResponse response) throws IOException;
 }

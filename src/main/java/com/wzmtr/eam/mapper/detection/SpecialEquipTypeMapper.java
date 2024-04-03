@@ -80,4 +80,12 @@ public interface SpecialEquipTypeMapper {
      * @return 特种设备分类列表
      */
     List<SpecialEquipTypeResDTO> listSpecialEquipType(String typeCode, String typeName);
+
+    /**
+     * 根据特种设备分类参数获取特种设备分类详情
+     * @param code 编号
+     * @param name 名称
+     * @return 特种设备分类详情
+     */
+    SpecialEquipTypeResDTO getSpecialEquipTypeDetailByType(String code, String name);
 }

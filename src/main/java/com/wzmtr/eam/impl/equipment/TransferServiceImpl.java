@@ -88,10 +88,8 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public void exportTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
-                               String majorCode, String orderNo, String orderName, HttpServletResponse response) throws IOException {
-        List<TransferResDTO> transferResDTOList = transferMapper.listTransfer(transferNo, itemCode, itemName, position1Code, eamProcessStatus,
-                majorCode, orderNo, orderName);
+    public void exportTransfer(TransferExportReqDTO transferExportReqDTO, HttpServletResponse response) throws IOException {
+        List<TransferResDTO> transferResDTOList = transferMapper.listTransfer(transferExportReqDTO);
         if (transferResDTOList != null && !transferResDTOList.isEmpty()) {
             List<ExcelTransferResDTO> list = new ArrayList<>();
             for (TransferResDTO resDTO : transferResDTOList) {
@@ -165,14 +163,13 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Page<EquipmentResDTO> pageSplitTransfer(String sourceRecId, PageReqDTO pageReqDTO) {
-        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         EquipmentSiftReqDTO equipmentReqDTO = new EquipmentSiftReqDTO();
         if (sourceRecId == null) {
             sourceRecId = "flag";
         }
         equipmentReqDTO.setSourceRecId(sourceRecId);
-        List<EquipmentResDTO> list = equipmentMapper.siftEquipment(equipmentReqDTO);
-        return new Page<EquipmentResDTO>().setRecords(list);
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return equipmentMapper.pageSiftEquipment(pageReqDTO.of(), equipmentReqDTO);
     }
 
     @Override

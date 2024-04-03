@@ -121,6 +121,18 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单完工填报
+     * @param req 排查检修项信息
+     * @return 操作成功/失败
+     */
+    @PostMapping("/finish")
+    @ApiOperation(value = "检修工单完工")
+    public DataResponse<T> finishOrder(@RequestBody OverhaulOrderReqDTO req) {
+        overhaulOrderService.finishOrder(req);
+        return DataResponse.success();
+    }
+
     @PostMapping("/auditWorkers")
     @ApiOperation(value = "检修工单完工验收")
     public DataResponse<T> auditWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
@@ -190,6 +202,18 @@ public class OverhaulOrderController {
     @ApiOperation(value = "获取检修对象详情")
     public DataResponse<OverhaulOrderDetailResDTO> getOverhaulObjectDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(overhaulOrderService.getOverhaulObjectDetail(id));
+    }
+
+    /**
+     * 编辑检修对象
+     * @param req 检修对象参数
+     * @return 成功
+     */
+    @PostMapping("/object/modify")
+    @ApiOperation(value = "编辑检修对象")
+    public DataResponse<T> modifyOverhaulObject(@RequestBody OverhaulOrderDetailReqDTO req) {
+        overhaulOrderService.modifyOverhaulObject(req);
+        return DataResponse.success();
     }
 
     @GetMapping("/object/export")
@@ -271,14 +295,27 @@ public class OverhaulOrderController {
     }
 
     /**
+     * 判断是否存在未填报的检修项
+     * @param orderCode 工单编号
+     * @param objectCode 对象编号
+     * @return 是否存在未填报的检修项
+     */
+    @GetMapping("/item/troubleshoot/had")
+    @ApiOperation(value = "判断是否存在未填报的检修项")
+    public DataResponse<Integer> selectHadFinishedOverhaulOrder(@RequestParam @ApiParam("工单编号") String orderCode,
+                                                                @RequestParam(required = false) @ApiParam("对象编号") String objectCode) {
+        return DataResponse.of(overhaulOrderService.selectHadFinishedOverhaulOrder(orderCode, objectCode));
+    }
+
+    /**
      * 排查检修项
-     * @param troubleshootReqDTO 排查检修项信息
+     * @param req 排查检修项信息
      * @return 操作成功/失败
      */
     @PostMapping("/item/troubleshoot")
     @ApiOperation(value = "排查检修项")
-    public DataResponse<T> troubleshootOverhaulItem(@RequestBody OverhaulItemTroubleshootReqDTO troubleshootReqDTO) {
-        overhaulOrderService.troubleshootOverhaulItem(troubleshootReqDTO);
+    public DataResponse<T> troubleshootOverhaulItem(@RequestBody OverhaulItemTroubleshootReqDTO req) {
+        overhaulOrderService.troubleshootOverhaulItem(req);
         return DataResponse.success();
     }
 

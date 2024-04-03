@@ -2,8 +2,10 @@ package com.wzmtr.eam.impl.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
+import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysUserAccount;
@@ -55,8 +57,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         CurrentLoginUser person = new CurrentLoginUser();
             Person p = personService.searchPersonByNo(userId);
             if (p != null) {
-                person.setPersonId(p.getId());
-                person.setPersonNo(p.getNo());
+                person.setPersonId(p.getLoginName());
+                person.setPersonNo(p.getLoginName());
                 person.setPersonName(p.getName());
                 person.setMobile(p.getMobile());
                 person.setPhone(p.getPhone());
@@ -78,7 +80,48 @@ public class UserAccountServiceImpl implements UserAccountService {
     public UserCenterInfoResDTO getUserDetail() {
         UserCenterInfoResDTO res = userAccountMapper.userCenterInfo(TokenUtils.getCurrentPersonId());
         // 获取登录用户角色权限
-        res.setUserRoles(userAccountMapper.getUserRoles(res.getId()));
+        res.setUserRoles(userAccountMapper.getUserRoles(TokenUtils.getCurrentPersonId()));
+        // 获取登录用户相关专业
+        if(res.getUserRoles() != null){
+
+            //如果改用户的角色可以查看全专业
+            UserRoleResDTO r =res.getUserRoles().stream().filter(a-> CommonConstants.SYS_ALL_01.equals(a.getRoleCode())).findFirst().orElse(null);
+            if(r != null){
+                res.setUserMajors( userAccountMapper.getAllMajor());
+            }else{
+                res.setUserMajors( userAccountMapper.getMajor(TokenUtils.getCurrentPersonId()));
+            }
+        }
+
         return res;
     }
+
+    @Override
+    public List<UserRoleResDTO> getUserRolesById(String userId) {
+        List<UserRoleResDTO> res  = userAccountMapper.getUserRoles(userId);
+        return res;
+    }
+
+
+    @Override
+    public List<String> listUserMajor() {
+
+        List<UserRoleResDTO> res = userAccountMapper.getUserRoles(TokenUtils.getCurrentPersonId());
+        List<String> majorList = null;
+        // 获取登录用户相关专业
+        if(res != null){
+
+            //如果改用户的角色可以查看全专业
+            UserRoleResDTO r = res.stream().filter(a-> CommonConstants.SYS_ALL_01.equals(a.getRoleCode())).findFirst().orElse(null);
+            if(r != null){
+                majorList = ( userAccountMapper.getAllMajor());
+            }else{
+                majorList = ( userAccountMapper.getMajor(TokenUtils.getCurrentPersonId()));
+            }
+        }
+
+        return majorList;
+    }
+
+
 }

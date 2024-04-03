@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.detection;
 
+import com.wzmtr.eam.dto.req.detection.DetectionDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionReqDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionDetailResDTO;
@@ -102,9 +103,10 @@ public class DetectionController {
 
     @GetMapping("/detail/page")
     @ApiOperation(value = "获取检测记录明细列表")
-    public PageResponse<DetectionDetailResDTO> pageDetectionDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
+    public PageResponse<DetectionDetailResDTO> pageDetectionDetail(@RequestParam(required = false) @ApiParam("设备编号") String equipCode,
+                                                                   @RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
                                                                    @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(detectionService.pageDetectionDetail(testRecId, pageReqDTO));
+        return PageResponse.of(detectionService.pageDetectionDetail(equipCode, testRecId, pageReqDTO));
     }
 
     @GetMapping("/detail/detail")
@@ -134,10 +136,10 @@ public class DetectionController {
         return DataResponse.success();
     }
 
-    @GetMapping("/detail/export")
+    @PostMapping("/detail/export")
     @ApiOperation(value = "导出检测记录明细")
-    public void exportDetectionDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
+    public void exportDetectionDetail(@RequestBody DetectionDetailExportReqDTO detectionDetailExportReqDTO,
                                       HttpServletResponse response) throws IOException {
-        detectionService.exportDetectionDetail(testRecId, response);
+        detectionService.exportDetectionDetail(detectionDetailExportReqDTO, response);
     }
 }

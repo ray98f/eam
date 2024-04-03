@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class ExcelMeaReqDTO {
-
     @ExcelProperty(value = "计量器具编码")
     private String equipCode;
     @ExcelProperty(value = "计量器具名称")

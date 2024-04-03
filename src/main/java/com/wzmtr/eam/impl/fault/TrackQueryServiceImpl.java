@@ -21,6 +21,7 @@ import com.wzmtr.eam.dto.res.fault.FaultFlowResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.Dictionaries;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.LineCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -64,7 +65,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public Page<TrackQueryResDTO> list(TrackQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<TrackQueryResDTO> list = faultTrackMapper.query(reqDTO.of(), reqDTO.getFaultTrackNo(), reqDTO.getFaultNo(), reqDTO.getFaultTrackWorkNo(), reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), reqDTO.getMajorCode(), reqDTO.getObjectCode(), reqDTO.getPositionCode(), reqDTO.getSystemCode(), reqDTO.getObjectName(), reqDTO.getRecStatus(), reqDTO.getEquipTypeCode());
+        Page<TrackQueryResDTO> list = faultTrackMapper.query(reqDTO.of(), reqDTO);
         List<TrackQueryResDTO> records = list.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();
@@ -140,7 +141,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
 
     @Override
     public void export(TrackQueryReqDTO reqDTO, HttpServletResponse response) {
-        List<TrackQueryResDTO> res = faultTrackMapper.query(reqDTO);
+        List<TrackQueryResDTO> res = faultTrackMapper.export(reqDTO);
         List<FaultTrackExportBO> exportList = new ArrayList<>();
         if (StringUtils.isNotEmpty(res)) {
             res.forEach(resDTO -> {
@@ -205,7 +206,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             } else {
                 dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
             }
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + trackRes.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultTrackWorkBO.getRecId(), faultWorkNo, CommonConstants.DM_007, dictionaries.getItemCname(), "故障跟踪派工", "DMFM0011", "EAM", "10");
+            overTodoService.insertTodoWithUserRoleAndOrg("【" + trackRes.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultTrackWorkBO.getRecId(), faultWorkNo, CommonConstants.DM_007, dictionaries.getItemCname(), "故障跟踪派工", "DMFM0011", "EAM", "10", BpmnFlowEnum.FAULT_TRACK.value());
             return;
         }
         // 更新两张表
@@ -259,7 +260,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
                 Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
                 zcStepOrg = matchControl.getItemCname();
             }
-            overTodoService.insertTodoWithUserGroupAndOrg("【" + dmfm09.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultTrackWorkBO.getRecId(), faultWorkNo, CommonConstants.DM_007, zcStepOrg, "故障跟踪派工", "DMFM0011", "EAM", "10");
+            overTodoService.insertTodoWithUserRoleAndOrg("【" + dmfm09.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultTrackWorkBO.getRecId(), faultWorkNo, CommonConstants.DM_007, zcStepOrg, "故障跟踪派工", "DMFM0011", "EAM", "10",BpmnFlowEnum.FAULT_TRACK.value());
         } catch (Exception e) {
             log.error("save error", e);
         }

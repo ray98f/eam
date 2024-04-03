@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.statistic.MaterialMapper">
+
+    <select id="query" resultType="com.wzmtr.eam.dto.res.statistic.MaterialResDTO">
+        SELECT
+        D.REAL_START_TIME AS "realTime",
+        D.PLAN_NAME AS "planName",
+        A.DELIVERY_NO AS "deliveryNo",
+        c.RELATION_NO AS "relationNo",
+        B.BATCH_NO AS "batchNo",
+        B.MAT_CODE AS "matcode",
+        B.MAT_NAME AS "matname",
+        B.DELIVERY_NUM AS "deliveryNum",
+        B.OBJECT_NAME AS "objectName",
+        B.MAT_SPECIFI AS "specifi",
+        A.PICK_NAME AS "pickName",
+        B.COST_TOTAL AS "costTotal",
+        IPLAT60.GET_ITEM_CNAME(B.UNIT, 'mm.unit', 'WZPLAT') AS "unit",
+        (
+        CASE
+        WHEN c.RELATION_NO LIKE 'GD%' THEN (
+        SELECT b1.NODE_NAME
+        FROM T_FAULT_INFO t1,
+        T_FAULT_ORDER t2,
+        T_EQUIPMENT_CATEGORY b1
+        WHERE b1.NODE_CODE=t1.MAJOR_CODE
+        AND t1.FAULT_NO=t2.FAULT_NO
+        AND t2.FAULT_WORK_NO=c.RELATION_NO
+        )
+        ELSE (
+        SELECT b1.NODE_NAME
+        FROM T_OVERHAUL_ORDER t3,
+        T_EQUIPMENT_CATEGORY b1
+        WHERE b1.NODE_CODE=t3.SUBJECT_CODE
+        AND t3.ORDER_CODE=c.RELATION_NO
+        )
+        END
+        ) AS "majorName",
+        A.DELIVERY_DATE AS "deliveryDate"
+        FROM WLPLAT.T_MM_DELIVERY A,
+        WLPLAT.T_MM_DELIVERY_DETAIL B,
+        WLPLAT.T_MM_DELIVERY_APPLY C,
+        T_OVERHAUL_ORDER D
+        WHERE A.DELIVERY_NO=B.DELIVERY_NO
+        AND A.DELIVERY_APPLY_NO=C.DELIVERY_APPLY_NO
+        AND A.REC_STATUS='2'
+        AND D.ORDER_CODE=c.RELATION_NO
+        AND D.SUBJECT_CODE='07'
+        AND (TRIM(C.RELATION_NO) LIKE 'GD%' OR TRIM(C.RELATION_NO) LIKE 'JX%')
+        <if test="endTime != null and endTime != ''">
+            AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &lt; TO_DATE(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
+        </if>
+        <if test="planName != null and planName.size()>0">
+            AND D.PLAN_NAME in
+            <foreach collection="planName" open="(" close=")" separator="," index="index" item="plan">
+                #{plan}
+            </foreach>
+        </if>
+        <if test="matName != null and matName != ''">
+            AND B.MAT_NAME LIKE CONCAT('%', #{matName}, '%')
+        </if>
+        <if test="trainNo != null and trainNo != ''">
+            AND B.OBJECT_CODE=#{trainNo}
+        </if>
+        ORDER BY "realTime" DESC, "planName" DESC
+    </select>
+    <select id="exportList" resultType="com.wzmtr.eam.dto.res.statistic.MaterialResDTO">
+        SELECT
+        D.REAL_START_TIME AS "realTime",
+        D.PLAN_NAME AS "planName",
+        A.DELIVERY_NO AS "deliveryNo",
+        c.RELATION_NO AS "relationNo",
+        B.BATCH_NO AS "batchNo",
+        B.MAT_CODE AS "matcode",
+        B.MAT_NAME AS "matname",
+        B.DELIVERY_NUM AS "deliveryNum",
+        B.OBJECT_NAME AS "objectName",
+        B.MAT_SPECIFI AS "specifi",
+        A.PICK_NAME AS "pickName",
+        B.COST_TOTAL AS "costTotal",
+        IPLAT60.GET_ITEM_CNAME(B.UNIT, 'mm.unit', 'WZPLAT') AS "unit",
+        (
+        CASE
+        WHEN c.RELATION_NO LIKE 'GD%' THEN (
+        SELECT b1.NODE_NAME
+        FROM T_FAULT_INFO t1,
+        T_FAULT_ORDER t2,
+        T_EQUIPMENT_CATEGORY b1
+        WHERE b1.NODE_CODE=t1.MAJOR_CODE
+        AND t1.FAULT_NO=t2.FAULT_NO
+        AND t2.FAULT_WORK_NO=c.RELATION_NO
+        )
+        ELSE (
+        SELECT b1.NODE_NAME
+        FROM T_OVERHAUL_ORDER t3,
+        T_EQUIPMENT_CATEGORY b1
+        WHERE b1.NODE_CODE=t3.SUBJECT_CODE
+        AND t3.ORDER_CODE=c.RELATION_NO
+        )
+        END
+        ) AS "majorName",
+        A.DELIVERY_DATE AS "deliveryDate"
+        FROM WLPLAT.T_MM_DELIVERY A,
+        WLPLAT.T_MM_DELIVERY_DETAIL B,
+        WLPLAT.T_MM_DELIVERY_APPLY C,
+        T_OVERHAUL_ORDER D
+        WHERE A.DELIVERY_NO=B.DELIVERY_NO
+        AND A.DELIVERY_APPLY_NO=C.DELIVERY_APPLY_NO
+        AND A.REC_STATUS='2'
+        AND D.ORDER_CODE=c.RELATION_NO
+        AND D.SUBJECT_CODE='07'
+        AND (TRIM(C.RELATION_NO) LIKE 'GD%' OR TRIM(C.RELATION_NO) LIKE 'JX%')
+        <if test="endTime != null and endTime != ''">
+            AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{startTime}, 'YYYY-MM-DD HH24:MI:SS')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND TO_DATE(A.DELIVERY_DATE, 'YYYY-MM-DD HH24:MI:SS') &lt; TO_DATE(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
+        </if>
+        <if test="planName != null and planName != ''">
+            AND D.PLAN_NAME=#{planName}
+        </if>
+        <if test="matName != null and matName != ''">
+            AND B.MAT_NAME LIKE CONCAT('%', #{matName}, '%')
+        </if>
+        <if test="equipCode != null and equipCode != ''">
+            AND B.OBJECT_CODE=#{equipCode}
+        </if>
+        ORDER BY "realTime" DESC, "planName" DESC
+    </select>
+</mapper>

@@ -100,4 +100,7 @@ public class FaultReportPageReqDTO extends PageReqDTO {
     private String tenant;
     private String faultWorkNo;
     private Set<String> positionCodes;
+
+    @ApiModelProperty(value = "故障影响")
+    private String faultAffect;
 }

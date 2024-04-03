@@ -78,6 +78,15 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     }
 
     @Override
+    public List<OrgMajorResDTO> allListOrgMajor(String orgCode, String majorCode) {
+        List<String> orgCodes = new ArrayList<>();
+        if (StringUtils.isNotEmpty(orgCode)) {
+            orgCodes = organizationMapper.downRecursion(orgCode);
+        }
+        return orgMajorMapper.allListOrgMajor(StringUtils.getSumArrayList(orgCodes), majorCode);
+    }
+
+    @Override
     public List<OrgMajorResDTO> listUseOrgMajor(String majorCode) {
         return orgMajorMapper.listUseOrgMajor(majorCode);
     }
@@ -85,6 +94,11 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     @Override
     public OrgMajorResDTO getOrgMajorDetail(String id) {
         return orgMajorMapper.getOrgMajorDetail(id);
+    }
+
+
+    public OrgMajorResDTO getOrganByStationAndMajor(String station,String majorCode){
+        return orgMajorMapper.getOrganByStationAndMajor(station,majorCode);
     }
 
     @Override

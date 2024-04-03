@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Objects;
 
 /**
@@ -88,7 +89,7 @@ public class OtherEquipController {
      */
     @PostMapping("/import")
     @ApiOperation(value = "导入其他设备台账")
-    public DataResponse<T> importOtherEquip(@RequestParam MultipartFile file) {
+    public DataResponse<T> importOtherEquip(@RequestParam MultipartFile file) throws ParseException {
         otherEquipService.importOtherEquip(file);
         return DataResponse.success();
     }

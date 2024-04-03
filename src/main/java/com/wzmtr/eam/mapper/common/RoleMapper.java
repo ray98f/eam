@@ -33,6 +33,12 @@ public interface RoleMapper {
 
     void updateRole(RoleReqDTO role);
 
+    /**
+     * 修改流程相关角色信息
+     * @param role 角色信息
+     */
+    void updateBpmnRole(RoleReqDTO role);
+
     List<String> getRolePerms(@Param("id") String id);
 
     void deleteUserRole(UserRoleReqDTO userRoleReqDTO);

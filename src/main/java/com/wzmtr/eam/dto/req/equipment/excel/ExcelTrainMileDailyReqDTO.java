@@ -35,11 +35,6 @@ public class ExcelTrainMileDailyReqDTO {
     @ExcelProperty(value = "当天运营里程")
     private BigDecimal dailyWorkMile;
     /**
-     * 累计运营里程
-     */
-    @ExcelProperty(value = "累计运营里程")
-    private BigDecimal totalWorkMile;
-    /**
      * 备注
      */
     @ExcelProperty(value = "备注")

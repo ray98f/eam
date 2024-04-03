@@ -15,7 +15,6 @@ import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
-import com.wzmtr.eam.dto.res.statistic.excel.ExcelFaultDetailResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
 import com.wzmtr.eam.dto.res.statistic.excel.*;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -26,16 +25,16 @@ import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
-import com.wzmtr.eam.mapper.equipment.GearboxChangeOilMapper;
-import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
-import com.wzmtr.eam.mapper.equipment.WheelsetLathingMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
+import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StreamUtils;
 import com.wzmtr.eam.utils.StringUtils;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
@@ -48,7 +47,9 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Author: Li.Wang
@@ -71,12 +72,6 @@ public class StatisticServiceImpl implements StatisticService {
     @Autowired
     private OneCarOneGearMapper oneCarOneGearMapper;
     @Autowired
-    private GearboxChangeOilMapper gearboxChangeOilMapper;
-    @Autowired
-    private WheelsetLathingMapper wheelsetLathingMapper;
-    @Autowired
-    private GeneralSurveyMapper generalSurveyMapper;
-    @Autowired
     private OverhaulOrderMapper overhaulOrderMapper;
     @Autowired
     private RamsMapper ramsMapper;
@@ -86,10 +81,6 @@ public class StatisticServiceImpl implements StatisticService {
     private DictionariesMapper dictionariesMapper;
     @Autowired
     private FaultQueryMapper faultQueryMapper;
-    @Autowired
-    private FileMapper fileMapper;
-    @Autowired
-    private OrganizationMapper organizationMapper;
 
     @Override
     public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
@@ -143,6 +134,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setName(RateIndex.POWER_RATE.getDesc());
             failureRateDetailResDTO.setPowerRate(reliabilityDetailResDTO);
         }
+        //没做 产品没要求 2024 04 01
         if (reqDTO.getIndex().contains(RateIndex.PSD_RATE)) {
             //<!--屏蔽门故障率-->
             List<FailureRateResDTO> psDrate = failureRateMapper.PSDrate(reqDTO);
@@ -187,7 +179,7 @@ public class StatisticServiceImpl implements StatisticService {
                 planNameList.addAll(overhaulOrderMapper.queryPlan(dictionaries.getItemCname()));
             }
         }
-        planNameList = planNameList.stream().distinct().filter(Objects::nonNull).collect(Collectors.toList());
+        planNameList = planNameList.stream().distinct().filter(Objects::nonNull).collect(toList());
         Page<MaterialResDTO> page = materialMapper.query(reqDTO.of(), planNameList, reqDTO.getMatName(), reqDTO.getStartTime(), reqDTO.getEndTime(), reqDTO.getTrainNo());
         if (StringUtils.isEmpty(page.getRecords())) {
             return new Page<>();
@@ -279,22 +271,23 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public ReliabilityListResDTO reliabilityQuery(FailreRateQueryReqDTO reqDTO) {
         // todo 代码结构过于冗余，后期优化。
-        if (StringUtils.isEmpty(reqDTO.getStartTime()) && StringUtils.isEmpty(reqDTO.getEndTime())) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            String starDate = calendar.get(Calendar.YEAR) + "-01-01";
-            Date parse = null;
-            try {
-                parse = sdf.parse(starDate);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-            calendar.setTime(parse);
-            reqDTO.setStartTime(sdf.format(calendar.getTime()));
-            calendar.add(Calendar.YEAR, 1);
-            reqDTO.setEndTime(sdf.format(calendar.getTime()));
-        }
+//        if (StringUtils.isEmpty(reqDTO.getStartTime()) && StringUtils.isEmpty(reqDTO.getEndTime())) {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(new Date());
+//            String starDate = calendar.get(Calendar.YEAR) + "-01-01";
+//            Date parse = null;
+//            try {
+//                parse = sdf.parse(starDate);
+//            } catch (ParseException e) {
+//                throw new RuntimeException(e);
+//            }
+//            calendar.setTime(parse);
+//            reqDTO.setStartTime(sdf.format(calendar.getTime()));
+//            calendar.add(Calendar.YEAR, 1);
+//            reqDTO.setEndTime(sdf.format(calendar.getTime()));
+//        }
+        List<String> months = DateUtils.getMonthBetweenDate(reqDTO.getStartTime(), reqDTO.getEndTime());
         ReliabilityListResDTO reliabilityListResDTO = new ReliabilityListResDTO();
         if (reqDTO.getSystemType().contains(SystemType.TICKET)) {
             // 售票机可靠度
@@ -309,6 +302,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.TICKET.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryTicketFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.GATE_BRAKE)) {
@@ -324,6 +318,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.GATE_BRAKE.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryGateBrakeFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.ESCALATOR)) {
@@ -339,6 +334,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.ESCALATOR.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryEscalatorFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.VERTICAL_ESCALATOR)) {
@@ -354,6 +350,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.VERTICAL_ESCALATOR.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryVerticalEscalatorFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.TRAIN_PASSENGER)) {
@@ -369,6 +366,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.TRAIN_PASSENGER.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryTrainPassengerInformationFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.STATION_PASSENGER)) {
@@ -384,6 +382,7 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.STATION_PASSENGER.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryStationPassengerInformationFault(reliabilityDetailResDTO);
         }
         if (reqDTO.getSystemType().contains(SystemType.FIRE_FIGHTING)) {
@@ -399,15 +398,30 @@ public class StatisticServiceImpl implements StatisticService {
             reliabilityDetailResDTO.setMonth(month);
             reliabilityDetailResDTO.setData(data);
             reliabilityDetailResDTO.setName(SystemType.FIRE_FIGHTING.getDesc());
+            buildResMonth(reliabilityDetailResDTO, months);
             reliabilityListResDTO.setQueryFireFightingEquipmentFault(reliabilityDetailResDTO);
         }
         return reliabilityListResDTO;
     }
 
+    /**
+     * 填充统计对象中不存在的月份数据
+     *
+     * @param res 统计对象
+     */
+    private void buildResMonth(ReliabilityDetailResDTO res, List<String> months) {
+        if (StringUtils.isNull(res) || res.getMonth().isEmpty()) {
+            res.setMonth(months);
+            res.setData(Stream.generate(() -> "100").limit(res.getMonth().size()).collect(toList()));
+        }
+    }
+
     @Override
     public OneCarOneGearResDTO oneCarOneGearQuery(OneCarOneGearReqDTO reqDTO) {
         List<OneCarOneGearResDTO> query = oneCarOneGearMapper.query(reqDTO.getEquipName());
-        OneCarOneGearResDTO summary = oneCarOneGearMapper.querySummary(reqDTO.getEndTime(), reqDTO.getStartTime(), reqDTO.getEquipName());
+        OneCarOneGearResDTO summary = oneCarOneGearMapper.querySummary(
+                reqDTO.getEndTime() + " 23:59:59", reqDTO.getStartTime() + " 00:00:00",
+                reqDTO.getEndTime(), reqDTO.getStartTime(), reqDTO.getEquipName());
         if (query != null) {
             summary.setStartUseDate(query.get(0).getStartUseDate());
             summary.setManufactureDate(query.get(0).getManufactureDate());
@@ -451,12 +465,14 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<FaultDetailResDTO> queryFMHistory(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return oneCarOneGearMapper.queryFMHistory(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
+        return oneCarOneGearMapper.queryFMHistory(reqDTO.of(), reqDTO.getEquipName(),
+                reqDTO.getStartTime() + " 00:00:00", reqDTO.getEndTime() + " 23:59:59");
     }
 
     @Override
     public void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
-        List<FaultDetailResDTO> faultDetailResDTOS = oneCarOneGearMapper.queryFMHistory(equipName, startTime, endTime);
+        List<FaultDetailResDTO> faultDetailResDTOS = oneCarOneGearMapper.queryFMHistory(equipName,
+                startTime + " 00:00:00", endTime + " 23:59:59");
         List<ExcelFmFaultDetailResDTO> list = new ArrayList<>();
         if (StringUtils.isNotEmpty(faultDetailResDTOS)) {
             for (FaultDetailResDTO resDTO : faultDetailResDTOS) {
@@ -502,12 +518,12 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<GearboxChangeOilResDTO> pageGearboxChangeOil(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return gearboxChangeOilMapper.pageGearboxChangeOil(reqDTO.of(), reqDTO.getEquipName());
+        return oneCarOneGearMapper.listGearboxChangeOil(reqDTO.of(), reqDTO);
     }
 
     @Override
-    public void pageGearboxChangeOilExport(String equipName, HttpServletResponse response) throws IOException {
-        List<GearboxChangeOilResDTO> gearboxChangeOilList = gearboxChangeOilMapper.listGearboxChangeOil(equipName);
+    public void pageGearboxChangeOilExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<GearboxChangeOilResDTO> gearboxChangeOilList = oneCarOneGearMapper.listGearboxChangeOil(reqDTO);
         if (StringUtils.isNotEmpty(gearboxChangeOilList)) {
             List<ExcelStatisticGearboxChangeOilResDTO> list = new ArrayList<>();
             for (GearboxChangeOilResDTO resDTO : gearboxChangeOilList) {
@@ -563,27 +579,19 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
-        List<WheelsetLathingResDTO> wheelsetLathingList = wheelsetLathingMapper.listWheelsetLathing(equipName, null, null, null);
-        if (StringUtils.isNotEmpty(wheelsetLathingList)) {
-            List<ExcelStatisticWheelsetLathingResDTO> list = new ArrayList<>();
-            for (WheelsetLathingResDTO resDTO : wheelsetLathingList) {
-                ExcelStatisticWheelsetLathingResDTO res = new ExcelStatisticWheelsetLathingResDTO();
-                BeanUtils.copyProperties(resDTO, res);
-                list.add(res);
-            }
-            EasyExcelUtils.export(response, "轮对镟修记录", list);
-        }
-    }
-
-    @Override
     public void faultListExport(FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
         List<FaultDetailResDTO> faultDetailList = faultQueryMapper.getByIds(reqDTO);
+        List<Dictionaries> orderStatus = dictionariesMapper.list("dm.faultStatus", null, null);
+        Map<String, Dictionaries> stringDictionariesMap = StreamUtils.toMap(orderStatus, Dictionaries::getItemCode);
         if (StringUtils.isNotEmpty(faultDetailList)) {
             List<ExcelFaultDetailResDTO> list = new ArrayList<>();
             for (FaultDetailResDTO resDTO : faultDetailList) {
                 ExcelFaultDetailResDTO res = new ExcelFaultDetailResDTO();
                 BeanUtils.copyProperties(resDTO, res);
+                String orderStatus1 = res.getOrderStatus();
+                if (stringDictionariesMap.containsKey(orderStatus1)){
+                    res.setOrderStatus(stringDictionariesMap.get(orderStatus1).getItemCname());
+                }
                 list.add(res);
             }
             EasyExcelUtils.export(response, "故障统计报表列表信息", list);
@@ -601,7 +609,21 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<WheelsetLathingResDTO> pageWheelsetLathing(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return wheelsetLathingMapper.pageWheelsetLathing(reqDTO.of(), reqDTO.getEquipName(), null, null, null);
+        return oneCarOneGearMapper.listWheelsetLathing(reqDTO.of(), reqDTO);
+    }
+
+    @Override
+    public void pageWheelsetLathingExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<WheelsetLathingResDTO> wheelsetLathingList = oneCarOneGearMapper.listWheelsetLathing(reqDTO);
+        if (StringUtils.isNotEmpty(wheelsetLathingList)) {
+            List<ExcelStatisticWheelsetLathingResDTO> list = new ArrayList<>();
+            for (WheelsetLathingResDTO resDTO : wheelsetLathingList) {
+                ExcelStatisticWheelsetLathingResDTO res = new ExcelStatisticWheelsetLathingResDTO();
+                BeanUtils.copyProperties(resDTO, res);
+                list.add(res);
+            }
+            EasyExcelUtils.export(response, "轮对镟修记录", list);
+        }
     }
 
     /**
@@ -610,12 +632,12 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<GeneralSurveyResDTO> pageGeneralSurvey(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return generalSurveyMapper.pageGeneralSurvey(reqDTO.of(), reqDTO.getEquipName(), null, null, null);
+        return oneCarOneGearMapper.listGeneralSurvey(reqDTO.of(), reqDTO);
     }
 
     @Override
-    public void pageGeneralSurveyExport(String equipName, HttpServletResponse response) throws IOException {
-        List<GeneralSurveyResDTO> generalSurveyList = generalSurveyMapper.listGeneralSurvey(equipName, null, null, null);
+    public void pageGeneralSurveyExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<GeneralSurveyResDTO> generalSurveyList = oneCarOneGearMapper.listGeneralSurvey(reqDTO);
         if (StringUtils.isNotEmpty(generalSurveyList)) {
             List<ExcelStatisticGeneralSurveyResDTO> list = new ArrayList<>();
             for (GeneralSurveyResDTO resDTO : generalSurveyList) {
@@ -650,12 +672,14 @@ public class StatisticServiceImpl implements StatisticService {
         DecimalFormat df = new DecimalFormat("#0.00");
         RamsCarResDTO ramsCarResDTO = records.get(0);
         String millionMiles = ramsCarResDTO.getMillionMiles();
+        //晚点故障数
         String affect11 = ramsCarResDTO.getAffect11();
+        //不适合继续服务
         String affect21 = ramsCarResDTO.getAffect21();
         String faultNum = ramsCarResDTO.getFaultNum();
-
-        String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles) * 4.0D);
-        String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles) * 4.0D);
+        //晚点
+        String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles));
+        String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles));
         if (Double.parseDouble(affect12) > ONE_POINT_FIVE) {
             ramsCarResDTO.setAffect13("未达标");
         } else {
@@ -674,8 +698,9 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public List<SystemFaultsResDTO> queryresult3(String startDate, String endDate, String sys) {
-        if (sys == null) {
-            sys = "01";
+        // 取dm.sysCode4Train字典列表
+        if (StringUtils.isEmpty(sys)){
+            return null;
         }
         if (StringUtils.isNotEmpty(startDate)) {
             startDate = startDate.substring(0, 7);
@@ -689,52 +714,75 @@ public class StatisticServiceImpl implements StatisticService {
         }
         Set<String> moduleIds = new HashSet<>();
         switch (sys) {
+            case "01":
+                moduleIds.add("B27");
+                moduleIds.add("B17");
+                break;
             case "02":
-                moduleIds.add("12");
+                moduleIds.add("B08");
                 break;
             case "03":
-                moduleIds.add("13");
+                moduleIds.add("B19");
+                moduleIds.add("B20");
                 break;
             case "04":
-                moduleIds.add("14");
+                moduleIds.add("B03");
                 break;
             case "05":
-                moduleIds.add("17");
+                moduleIds.add("B25");
                 break;
             case "06":
-                moduleIds.add("10");
+                moduleIds.add("B28");
                 break;
             case "07":
-                moduleIds.add("05");
-                moduleIds.add("08");
-                moduleIds.add("09");
-                moduleIds.add("21");
+                moduleIds.add("B01");
+                moduleIds.add("B02");
+                moduleIds.add("B12");
+                moduleIds.add("B18");
+                moduleIds.add("B21");
                 break;
             case "08":
-                moduleIds.add("06");
-                moduleIds.add("07");
+                moduleIds.add("B04");
+                moduleIds.add("B05");
                 break;
             case "09":
-                moduleIds.add("18");
-                moduleIds.add("19");
+                moduleIds.add("B06");
+                moduleIds.add("B07");
                 break;
             case "10":
-                moduleIds.add("11");
-                moduleIds.add("15");
-                moduleIds.add("16");
-                moduleIds.add("20");
+                moduleIds.add("B11");
+                moduleIds.add("B14");
+                moduleIds.add("B13");
                 break;
-            case "01":
+            case "11":
+                moduleIds.add("B22");
+                break;
+            case "12":
+                moduleIds.add("B09");
+                moduleIds.add("B10");
+                moduleIds.add("B15");
+                moduleIds.add("B16");
+                break;
+            case "13":
+                moduleIds.add("B29");
+                break;
+            case "14":
+                moduleIds.add("B26");
+                break;
+            case "15":
+                moduleIds.add("B30");
+                break;
             default:
-                moduleIds.add("01");
-                moduleIds.add("02");
-                moduleIds.add("03");
-                moduleIds.add("04");
                 break;
         }
         return ramsMapper.queryFautTypeByMonthBySys(moduleIds, startDate, endDate);
     }
 
+    /**
+     * 这段代码的作用是获取当前时间，然后回退i月
+     * @param i
+     * @return
+     */
     private static String getLastMouths(int i) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Calendar c = Calendar.getInstance();
@@ -773,12 +821,12 @@ public class StatisticServiceImpl implements StatisticService {
             if (Double.parseDouble(a.getLate()) == ZERO) {
                 lateZ = Double.parseDouble("0");
             } else {
-                lateZ = Double.parseDouble(a.getLate()) * 1000000.0D / miles / 4.0D;
+                lateZ = Double.parseDouble(a.getLate())  / miles / 10000;
             }
             if (Double.parseDouble(a.getNoService()) == ZERO) {
                 noServiceZ = Double.parseDouble("0");
             } else {
-                noServiceZ = Double.parseDouble(a.getNoService()) * 1000000.0D / miles / 4.0D;
+                noServiceZ = Double.parseDouble(a.getNoService()) / miles /10000;
             }
             a.setLate(df.format(lateZ));
             a.setNoService(df.format(noServiceZ));
@@ -793,48 +841,75 @@ public class StatisticServiceImpl implements StatisticService {
         RamsResDTO totalMiles = totalMilesList.get(0);
         Map<String, RamsSysPerformResDTO> map = Maps.newHashMap();
         Set<String> names = Sets.newHashSet();
-        ramsResDTOS.forEach(a -> {
-            switch (a.getModuleName()) {
-                case "01":
-                case "02":
-                case "03":
-                case "04":
-                    rebuildBlock4SP(a, names, "车门系统", "10000", "7000");
+        mapInitSysPerform(map);
+        for (RamsSysPerformResDTO a : ramsResDTOS) {
+            if (StringUtils.isEmpty(a.getModuleName())) {
+                continue;
+            }
+            switch (substringFirstThree(a.getModuleName())) {
+                // 气动装置和空气分配系统1'
+                case "B09":
+                    // 气动装置和空气分配系统2'
+                case "B10":
+                    rebuildBlock4SP(a, names, "气动装置和空气分配系统", "10000", "7000");
                     break;
-                case "12":
+                case "B15":
+                case "B16":
+                case "B17":
+                case "B27":
+                    rebuildBlock4SP(a, names, "门窗系统", "10000", "7000");
+                    break;
+                case "B08":
                     rebuildBlock4SP(a, names, "制动系统", "49500", "49500");
                     break;
-                case "13":
-                    rebuildBlock4SP(a, names, "空调系统", "210000", "46000");
+                case "B19":
+                case "B20":
+                    rebuildBlock4SP(a, names, "空调及通风系统", "210000", "46000");
                     break;
-                case "14":
+                case "B11":
+                case "B14":
+                case "B13":
+                    rebuildBlock4SP(a, names, "辅助供电设备系统", "647749", "323825");
+                    break;
+                case "B03":
                     rebuildBlock4SP(a, names, "转向架", "409500", "409500");
                     break;
-                case "17":
-                    rebuildBlock4SP(a, names, "PIDS", "191000", "91000");
+                case "B25":
+                    rebuildBlock4SP(a, names, "雷达辅助系统", "647749", "323825");
                     break;
-                case "10":
-                    rebuildBlock4SP(a, names, "网络系统", "254000", "254000");
+                case "B01":
+                case "B02":
+                case "B12":
+                case "B18":
+                case "B21":
+                    rebuildBlock4SP(a, names, "车体结构及内装", "204800", "204800");
                     break;
-                case "05":
-                case "08":
-                case "09":
-                case "21":
-                    rebuildBlock4SP(a, names, "车体结构及车身内部", "204800", "204800");
+                case "B06":
+                case "B07":
+                    rebuildBlock4SP(a, names, "牵引及高压系统", "36588", "11000");
                     break;
-                case "06":
-                case "07":
-                    rebuildBlock4SP(a, names, "通道与车钩系统", "409500", "204800");
+                case "B04":
+                case "B05":
+                    rebuildBlock4SP(a, names, "贯通道和车钩", "409500", "204800");
                     break;
-                case "18":
-                case "19":
-                    rebuildBlock4SP(a, names, "牵引设备系统", "36588", "11000");
+                case "B22":
+                    rebuildBlock4SP(a, names, "列车管理及列车控制系统", "191000", "91000");
                     break;
-                case "11":
-                case "15":
-                case "16":
-                case "20":
-                    rebuildBlock4SP(a, names, "辅助供电设备系统", "647749", "323825");
+                case "B23":
+                case "B24":
+                    rebuildBlock4SP(a, names, "旅客信息系统", "191000", "91000");
+                    break;
+                case "B30":
+                    rebuildBlock4SP(a, names, "运行性能检测系统", "36588", "11000");
+                    break;
+                case "B26":
+                    rebuildBlock4SP(a, names, "走行部监测系统", "36588", "11000");
+                    break;
+                case "B29":
+                    rebuildBlock4SP(a, names, "轨道检测系统", "36588", "11000");
+                    break;
+                case "B28":
+                    rebuildBlock4SP(a, names, "弓网检测系统", "36588", "11000");
                     break;
                 default:
                     break;
@@ -859,12 +934,41 @@ public class StatisticServiceImpl implements StatisticService {
                 a.setNumNos(String.valueOf(Integer.parseInt(a.getNumNos()) + Integer.parseInt(last.getNumNos())));
                 a.setMTBF_NOS(String.valueOf(Integer.parseInt(a.getMTBF_NOS()) + Integer.parseInt(last.getMTBF_NOS())));
                 map.put(a.getModuleName(), a);
-            } else {
-                map.put(a.getModuleName(), a);
             }
-        });
+        }
         buildSysPerformIsCompliance(map);
         return new ArrayList<>(map.values());
+    }
+    private void mapInitSysPerform(Map<String, RamsSysPerformResDTO> map ,String name ){
+        RamsSysPerformResDTO a = new RamsSysPerformResDTO();
+        a.setModuleName(CommonConstants.ZERO_STRING);
+        a.setNumLate(CommonConstants.ZERO_STRING);
+        a.setNumNos(CommonConstants.ZERO_STRING);
+        a.setContractZBLATE(CommonConstants.ZERO_STRING);
+        a.setContractZBNOS(CommonConstants.ZERO_STRING);
+        a.setMTBF_LATE(CommonConstants.ZERO_STRING);
+        a.setIsDB_LATE(CommonConstants.ZERO_STRING);
+        a.setIsDB_NOS(CommonConstants.ZERO_STRING);
+        a.setMTBF_NOS(CommonConstants.ZERO_STRING);
+        map.put(name, a);
+    }
+    private void mapInitSysPerform(Map<String, RamsSysPerformResDTO> map) {
+            mapInitSysPerform(map,"气动装置和空气分配系统");
+            mapInitSysPerform(map,"门窗系统");
+            mapInitSysPerform(map,"制动系统");
+            mapInitSysPerform(map,"空调及通风系统");
+            mapInitSysPerform(map,"辅助供电设备系统");
+            mapInitSysPerform(map,"转向架");
+            mapInitSysPerform(map,"雷达辅助系统");
+            mapInitSysPerform(map,"车体结构及内装");
+            mapInitSysPerform(map,"牵引及高压系统");
+            mapInitSysPerform(map,"贯通道和车钩");
+            mapInitSysPerform(map,"列车管理及列车控制系统");
+            mapInitSysPerform(map,"旅客信息系统");
+            mapInitSysPerform(map,"运行性能检测系统");
+            mapInitSysPerform(map,"走行部监测系统");
+            mapInitSysPerform(map,"轨道检测系统");
+            mapInitSysPerform(map,"弓网检测系统");
     }
 
     /**
@@ -887,77 +991,148 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     /**
+     * 真的屎山
      * 各系统故障情况统计
      */
     @Override
     public List<FaultConditionResDTO> queryCountFaultType() {
-        List<FaultConditionResDTO> list = ramsMapper.queryCountFautType4Rams();
+        List<FaultConditionResDTO> list = ramsMapper.queryCountFaut();
+
         List<RamsResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
         RamsResDTO ramsResDTO = ramsResDTOS.get(0);
         Set<String> names = Sets.newHashSet();
         Map<String, FaultConditionResDTO> map = new HashMap<>();
+        mapInit(map);
         for (FaultConditionResDTO a : list) {
-            switch (a.getSC()) {
-                case "01":
-                case "02":
-                case "03":
-                case "04":
-                    rebuildBlock(a, names, "车门系统", "9000");
+            //TODO 合同指标 产品还没给
+            if (StringUtils.isEmpty(a.getSC())){
+                continue;
+            }
+            switch (substringFirstThree(a.getSC())) {
+                    //气动装置和空气分配系统1'
+                case "B09":
+                    //气动装置和空气分配系统2'
+                case "B10":
+                    rebuildBlock(a, names, "气动装置和空气分配系统", "9000");
                     break;
-                case "12":
-                    rebuildBlock(a, names, "制动系统", "43000");
+                case "B15":
+                case "B16":
+                case "B17":
+                case "B27":
+                    rebuildBlock(a, names, "门窗系统", "9000");
                     break;
-                case "13":
-                    rebuildBlock(a, names, "空调系统", "85000");
+                case "B08":
+                    rebuildBlock(a, names, "制动系统", "9000");
                     break;
-                case "14":
-                    rebuildBlock(a, names, "转向架", "381000");
+                case "B19":
+                case "B20":
+                    rebuildBlock(a, names, "空调及通风系统", "9000");
                     break;
-                case "17":
-                    rebuildBlock(a, names, "PIDS", "191000");
+                case "B11":
+                case "B14":
+                case "B13":
+                    rebuildBlock(a, names, "辅助供电设备系统", "9000");
                     break;
-                case "10":
-                    rebuildBlock(a, names, "网络系统", "254000");
+                case "B03":
+                    rebuildBlock(a, names, "转向架", "9000");
                     break;
-                case "05":
-                case "08":
-                case "09":
-                case "21":
-                    rebuildBlock(a, names, "车体结构及车身内部", "191000");
+                case "B25":
+                    rebuildBlock(a, names, "雷达辅助系统", "9000");
                     break;
-                case "06":
-                case "07":
-                    rebuildBlock(a, names, "通道与车钩系统", "381000");
+                case "B01":
+                case "B02":
+                case "B12":
+                case "B18":
+                case "B21":
+                    rebuildBlock(a, names, "车体结构及内装", "9000");
                     break;
-                case "18":
-                case "19":
-                    rebuildBlock(a, names, "牵引设备系统", "11000");
+                case "B06":
+                case "B07":
+                    rebuildBlock(a, names, "牵引及高压系统", "9000");
                     break;
-                case "11":
-                case "15":
-                case "16":
-                case "20":
-                    rebuildBlock(a, names, "辅助供电设备系统", "38000");
+                case "B04":
+                case "B05":
+                    rebuildBlock(a, names, "贯通道和车钩", "9000");
+                    break;
+                case "B22":
+                    rebuildBlock(a, names, "列车管理及列车控制系统", "9000");
+                    break;
+                case "B23":
+                case "B24":
+                    rebuildBlock(a, names, "旅客信息系统", "9000");
+                    break;
+                case "B30":
+                    rebuildBlock(a, names, "运行性能检测系统", "9000");
+                    break;
+                case "B26":
+                    rebuildBlock(a, names, "走行部监测系统", "9000");
+                    break;
+                case "B29":
+                    rebuildBlock(a, names, "轨道检测系统", "9000");
+                    break;
+                case "B28":
+                    rebuildBlock(a, names, "弓网检测系统", "9000");
                     break;
                 default:
                     break;
             }
-            FaultConditionResDTO last = map.get(a.getModuleName());
-            if (map.containsKey(a.getModuleName())) {
-                a.setCRK(String.valueOf(Integer.parseInt(a.getCRK()) + Integer.parseInt(last.getCRK())));
-                a.setZX(String.valueOf(Integer.parseInt(a.getZX()) + Integer.parseInt(last.getZX())));
-                a.setZS(String.valueOf(Integer.parseInt(a.getZS()) + Integer.parseInt(last.getZS())));
-                a.setYF(String.valueOf(Integer.parseInt(a.getYF()) + Integer.parseInt(last.getYF())));
-                a.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()) + Integer.parseInt(last.getNOYF())));
-                map.put(a.getModuleName(), a);
-            } else {
-                map.put(a.getModuleName(), a);
+
+
+            String moduleName = a.getModuleName();
+            FaultConditionResDTO last = map.get(moduleName);
+            if (map.containsKey(moduleName)) {
+                last.setCRK(String.valueOf(Integer.parseInt(a.getCRK() == null ? CommonConstants.ZERO_STRING:a.getCRK()) + Integer.parseInt(last.getCRK()== null ? CommonConstants.ZERO_STRING:last.getCRK())));
+                last.setZX(String.valueOf(Integer.parseInt(a.getZX() == null ? CommonConstants.ZERO_STRING:a.getZX()) + Integer.parseInt(last.getZX()== null ? CommonConstants.ZERO_STRING:last.getZX())));
+                last.setZS(String.valueOf(Integer.parseInt(a.getZS()== null ? CommonConstants.ZERO_STRING:a.getZS()) + Integer.parseInt(last.getZS()== null ? CommonConstants.ZERO_STRING:last.getZS())));
+                last.setYF(String.valueOf(Integer.parseInt(a.getYF() == null ? CommonConstants.ZERO_STRING:a.getYF()) + Integer.parseInt(last.getYF()== null ? CommonConstants.ZERO_STRING:last.getYF())));
+                last.setNOYF(String.valueOf(Integer.parseInt(a.getNOYF()== null ? CommonConstants.ZERO_STRING:a.getNOYF()) + Integer.parseInt(last.getNOYF()== null ? CommonConstants.ZERO_STRING:last.getNOYF())));
+                last.setModuleName(moduleName);
             }
         }
+
         buildFaultTypeIsCompliance(map, ramsResDTO);
+
         return new ArrayList<>(map.values());
     }
 
+    private void mapInit(Map<String, FaultConditionResDTO> map) {
+        mapInit(map,"气动装置和空气分配系统");
+        mapInit(map,"门窗系统");
+        mapInit(map,"制动系统");
+        mapInit(map,"空调及通风系统");
+        mapInit(map,"辅助供电设备系统");
+        mapInit(map,"转向架");
+        mapInit(map,"雷达辅助系统");
+        mapInit(map,"车体结构及内装");
+        mapInit(map,"牵引及高压系统");
+        mapInit(map,"贯通道和车钩");
+        mapInit(map,"列车管理及列车控制系统");
+        mapInit(map,"旅客信息系统");
+        mapInit(map,"运行性能检测系统");
+        mapInit(map,"走行部监测系统");
+        mapInit(map,"轨道检测系统");
+        mapInit(map,"弓网检测系统");
+    }
+
+    public void mapInit(Map<String, FaultConditionResDTO> map,String name) {
+        FaultConditionResDTO a = new FaultConditionResDTO();
+        a.setCRK(CommonConstants.ZERO_STRING);
+        a.setZX(CommonConstants.ZERO_STRING);
+        a.setZS(CommonConstants.ZERO_STRING);
+        a.setYF(CommonConstants.ZERO_STRING);
+        a.setContractZB(CommonConstants.ZERO_STRING);
+        a.setIsDB(CommonConstants.ZERO_STRING);
+        a.setNOYF(CommonConstants.ZERO_STRING);
+        a.setModuleName(name);
+        map.put(name, a);
+    }
+
+    public static String substringFirstThree(String str) {
+        if (str == null || str.length() < 3) {
+            return str; // 如果字符串为空或者长度小于3，直接返回原字符串
+        }
+        return str.substring(0, 3);
+    }
     /**
      * 各系统故障情况统计-构建是否达标标识
      * @param map 集合
@@ -1043,50 +1218,56 @@ public class StatisticServiceImpl implements StatisticService {
         map.setModuleName(moduleName);
         map.setContractZBLATE(contractZB_LATE);
         map.setContractZBNOS(contractZB_NOS);
-        if (module.contains(moduleName)) {
-            map.setNumLate(df.format(Double.parseDouble(NUM_LATE) + NUM_LATE));
-            map.setNumNos(df.format(Double.parseDouble(NUM_NOS) + NUM_NOS));
-        } else {
-            map.setNumLate(NUM_LATE);
-            map.setNumNos(NUM_NOS);
-        }
+        // if (module.contains(moduleName)) {
+        //     map.setNumLate(df.format(Double.parseDouble(NUM_LATE) + NUM_LATE));
+        //     map.setNumNos(df.format(Double.parseDouble(NUM_NOS) + NUM_NOS));
+        // } else {
+        //     map.setNumLate(NUM_LATE);
+        //     map.setNumNos(NUM_NOS);
+        // }
     }
 
-    public void rebuildBlock(FaultConditionResDTO map, Set<String> module, String moduleName, String contractZB) {
+    public void rebuildBlock(FaultConditionResDTO res, Set<String> module, String moduleName, String contractZB) {
         DecimalFormat df = new DecimalFormat("#0");
-        String ZX = map.getZX();
-        String CRK = map.getCRK();
-        String YF = map.getYF();
-        String ZS = map.getZS();
-        String NOYF = map.getNOYF();
-        map.setContractZB(contractZB);
-        map.setModuleName(moduleName);
-        if (module.contains(moduleName)) {
-            map.setZX(df.format(Double.parseDouble(ZX) + ZX));
-            map.setCRK(df.format(Double.parseDouble(CRK) + CRK));
-            map.setYF(df.format(Double.parseDouble(YF) + YF));
-            map.setZS(df.format(Double.parseDouble(ZS) + ZS));
-            map.setNOYF(df.format(Double.parseDouble(NOYF) + NOYF));
-        } else {
-            map.setModuleName(moduleName);
-            map.setZX(ZX);
-            map.setCRK(CRK);
-            map.setYF(YF);
-            map.setZS(ZS);
-            map.setNOYF(NOYF);
-        }
+        String ZX = res.getZX();
+        String CRK = res.getCRK();
+        String YF = res.getYF();
+        String ZS = res.getZS();
+        String NOYF = res.getNOYF();
+        res.setContractZB(contractZB);
+        res.setModuleName(moduleName);
+        // if (module.contains(moduleName)) {
+        //     res.setZX(df.format(Double.parseDouble(ZX) + ZX));
+        //     res.setCRK(df.format(Double.parseDouble(CRK) + CRK));
+        //     res.setYF(df.format(Double.parseDouble(YF) + YF));
+        //     res.setZS(df.format(Double.parseDouble(ZS) + ZS));
+        //     res.setNOYF(df.format(Double.parseDouble(NOYF) + NOYF));
+        // } else {
+        //     res.setModuleName(moduleName);
+        //     res.setZX(ZX);
+        //     res.setCRK(CRK);
+        //     res.setYF(YF);
+        //     res.setZS(ZS);
+        //     res.setNOYF(NOYF);
+        // }
     }
 
     @Override
     public RamsTrainReliabilityResDTO trainReliability(String startTime, String endTime, String trainNo) {
         RamsTrainReliabilityResDTO res = new RamsTrainReliabilityResDTO();
         // 获取各指标项的故障次数
-        double delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'");
-        double notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'");
-        double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null);
-        double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
+        double delayCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'03','04','05'","0");
+        double notCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, "'10'", "'06','07','08','09'","0");
+        double faultCount = ramsMapper.countRamsFaultList(startTime, endTime, trainNo, null, null,"0");
+         double miles = ramsMapper.getMileSubtract(startTime, endTime, trainNo);
+//        Double start = ramsMapper.getMileByTrainNoStart(startTime, trainNo);
+//        Double end = ramsMapper.getMileByTrainNoEnd(endTime, trainNo);
+//        double miles = 0.0;
+//        if (null != start && null != end) {
+//            miles = end - start;
+//        }
         if (miles == 0) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "");
+         throw new CommonException(ErrorCode.NORMAL_ERROR, "选定统计周期内累计运营里程为0，无法计算");
         }
         res.setTotalMile(miles);
         // 实际指标计算
@@ -1108,7 +1289,7 @@ public class StatisticServiceImpl implements StatisticService {
         if (miles != 0) {
             return count * 1000000 / (4 * miles);
         }
-        return null;
+        return 0.0;
     }
 
     @Override

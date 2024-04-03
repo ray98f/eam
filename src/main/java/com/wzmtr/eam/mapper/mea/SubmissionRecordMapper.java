@@ -44,6 +44,8 @@ public interface SubmissionRecordMapper {
 
     SubmissionRecordDetailResDTO getSubmissionRecordDetailDetail(String id);
 
+    Page<SubmissionRecordDetailResDTO> getSubmissionRecordDetailByEquip(Page<SubmissionRecordDetailResDTO> page,String equipCode);
+
     void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO);
 
     void modifySubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO);

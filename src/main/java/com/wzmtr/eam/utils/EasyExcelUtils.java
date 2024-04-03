@@ -4,7 +4,6 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.wzmtr.eam.config.CustomCellWriteHeightConfig;
 import com.wzmtr.eam.config.CustomCellWriteWidthConfig;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -105,14 +104,12 @@ public class EasyExcelUtils {
             EasyExcel.write(outputStream, list.get(0).getClass())
                     .sheet(name)
                     .registerWriteHandler(new CustomCellWriteWidthConfig())
-                    .registerWriteHandler(new CustomCellWriteHeightConfig())
                     .registerWriteHandler(EasyExcelUtils.getStyleStrategy())
                     .doWrite(list);
         }
     }
 
     /**
-     /**
      * 文件导入数据读取
      * @param file 文件
      * @param head 头部

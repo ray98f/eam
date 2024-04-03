@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.equipment.PartReplaceMapper">
+
+    <select id="pagePartReplace" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号/ -->
+        EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        OPERATOR	as "operator",  <!-- 作业人员 -->
+        REPLACEMENT_NO	as "replacementNo",  <!-- 更换配件代码 -->
+        REPLACEMENT_NAME	as "replacementName",  <!-- 更换配件名称 -->
+        REPLACE_REASON	as "replaceReason",  <!-- 更换原因 -->
+        OLD_REP_NO	as "oldRepNo",  <!-- 旧配件编号 -->
+        NEW_REP_NO	as "newRepNo",  <!-- 新配件编号 -->
+        OPERATE_COST_TIME	as "operateCostTime",  <!-- 更换所用时间 -->
+        REPLACE_DATE	as "replaceDate",  <!-- 处理日期 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        CAR_NO	as "carNo",  <!-- 车厢号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7", <!-- 扩展字段7 -->
+        WORK_ORDER_TYPE	as "workOrderType" <!-- 工单类型 -->
+        FROM T_PART_REPLACEMENT
+        WHERE 1=1 and DELETE_FLAG='0'
+        <if test="equipName!=null and equipName!=''">
+            and EQUIP_NAME like '%' || #{equipName} || '%'
+        </if>
+        <if test="replacementName!=null and replacementName!=''">
+            and REPLACEMENT_NAME like '%' || #{replacementName} || '%'
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            and FAULT_WORK_NO like '%' || #{faultWorkNo} || '%'
+        </if>
+        <if test="orgType!=null and orgType!=''">
+            and ORG_TYPE=#{orgType}
+        </if>
+        <if test="workOrderType!=null and workOrderType!=''">
+            and WORK_ORDER_TYPE=#{workOrderType}
+        </if>
+        <if test="replaceReason!=null and replaceReason!=''">
+            and REPLACE_REASON like '%' || #{replaceReason} || '%'
+        </if>
+        ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
+    </select>
+
+    <!-- 车辆专业相关的部件更换 -->
+    <select id="pagePartReplaceByCar" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号/ -->
+        EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        OPERATOR	as "operator",  <!-- 作业人员 -->
+        REPLACEMENT_NO	as "replacementNo",  <!-- 更换配件代码 -->
+        REPLACEMENT_NAME	as "replacementName",  <!-- 更换配件名称 -->
+        REPLACE_REASON	as "replaceReason",  <!-- 更换原因 -->
+        OLD_REP_NO	as "oldRepNo",  <!-- 旧配件编号 -->
+        NEW_REP_NO	as "newRepNo",  <!-- 新配件编号 -->
+        OPERATE_COST_TIME	as "operateCostTime",  <!-- 更换所用时间 -->
+        REPLACE_DATE	as "replaceDate",  <!-- 处理日期 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        CAR_NO	as "carNo",  <!-- 车厢号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7", <!-- 扩展字段7 -->
+        WORK_ORDER_TYPE	as "workOrderType" <!-- 工单类型 -->
+        FROM T_PART_REPLACEMENT
+        WHERE 1=1 and DELETE_FLAG='0'
+        <if test="equipName!=null and equipName!=''">
+            and EQUIP_NAME like '%' || #{equipName} || '%'
+        </if>
+        <if test="replacementName!=null and replacementName!=''">
+            and REPLACEMENT_NAME like '%' || #{replacementName} || '%'
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            and FAULT_WORK_NO like '%' || #{faultWorkNo} || '%'
+        </if>
+        <if test="orgType!=null and orgType!=''">
+            and ORG_TYPE=#{orgType}
+        </if>
+        <if test="workOrderType!=null and workOrderType!=''">
+            and WORK_ORDER_TYPE=#{workOrderType}
+        </if>
+        <if test="replaceReason!=null and replaceReason!=''">
+            and REPLACE_REASON like '%' || #{replaceReason} || '%'
+        </if>
+        ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
+    </select>
+
+    <select id="getPartReplaceDetail" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号 -->
+        EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        OPERATOR	as "operator",  <!-- 作业人员 -->
+        REPLACEMENT_NO	as "replacementNo",  <!-- 更换配件代码 -->
+        REPLACEMENT_NAME	as "replacementName",  <!-- 更换配件名称 -->
+        REPLACE_REASON	as "replaceReason",  <!-- 更换原因 -->
+        OLD_REP_NO	as "oldRepNo",  <!-- 旧配件编号 -->
+        NEW_REP_NO	as "newRepNo",  <!-- 新配件编号 -->
+        OPERATE_COST_TIME	as "operateCostTime",  <!-- 更换所用时间 -->
+        REPLACE_DATE	as "replaceDate",  <!-- 处理日期 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        CAR_NO	as "carNo",  <!-- 车厢号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7" <!-- 扩展字段7 -->
+        FROM T_PART_REPLACEMENT
+        WHERE 1=1 and DELETE_FLAG='0' and REC_ID=#{id}
+    </select>
+
+    <select id="getEquipLineNo" resultType="java.lang.String">
+        select USE_LINE_NO from T_EQUIPMENT where EQUIP_CODE=#{equipCode}
+    </select>
+
+    <select id="selectBomCode" resultType="java.lang.String">
+        select u.REC_ID
+        from T_EQUIPMENT d
+        LEFT JOIN T_BOM u ON u.ENAME=d.BOM_TYPE
+        WHERE d.EQUIP_CODE=#{equipCode}
+    </select>
+
+    <select id="getBom" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO">
+        SELECT
+        b.REC_ID,
+        b.ENAME	as "bEname",  <!-- 代码编号 -->
+        ep.PART_CODE	as "ename",  <!-- 代码编号 -->
+        ep.PART_NAME	as "text",
+        b.PARENT_ID    as "parentId"
+        FROM T_BOM b
+        LEFT JOIN T_EQUIPMENT_PART ep ON ep.BOM_ENAME=b.ENAME
+        where b.PARENT_ID=#{node} AND ep.EQUIP_CODE=#{equipCode}
+        order by ep.PART_CODE asc
+    </select>
+
+    <insert id="addPartReplace">
+        INSERT INTO T_PART_REPLACEMENT (
+        REC_ID,  <!-- 记录编号 -->
+        FAULT_WORK_NO,  <!-- 故障工单编号 -->
+        EQUIP_CODE,  <!-- 设备代码 -->
+        EQUIP_NAME,  <!-- 设备名称 -->
+        ORG_TYPE,  <!-- 作业单位 -->
+        OPERATOR,  <!-- 作业人员 -->
+        REPLACEMENT_NO,  <!-- 更换配件代码 -->
+        REPLACEMENT_NAME,  <!-- 更换配件名称 -->
+        REPLACE_REASON,  <!-- 更换原因 -->
+        OLD_REP_NO,  <!-- 旧配件编号 -->
+        NEW_REP_NO,  <!-- 新配件编号 -->
+        OPERATE_COST_TIME,  <!-- 更换所用时间 -->
+        REPLACE_DATE,  <!-- 处理日期 -->
+        REMARK,  <!-- 备注 -->
+        DOC_ID,  <!-- 附件编号 -->
+        CAR_NO,
+        REC_CREATOR,  <!-- 创建者 -->
+        REC_CREATE_TIME,  <!-- 创建时间 -->
+        REC_REVISOR,  <!-- 修改者 -->
+        REC_REVISE_TIME,  <!-- 修改时间 -->
+        REC_DELETOR,  <!-- 删除者 -->
+        REC_DELETE_TIME,  <!-- 删除时间 -->
+        DELETE_FLAG,  <!-- 删除标志 -->
+        ARCHIVE_FLAG,  <!-- 归档标记 -->
+        REC_STATUS,  <!-- 记录状态 -->
+        EXT1,  <!-- 扩展字段1 -->
+        EXT2,  <!-- 扩展字段2 -->
+        EXT3,  <!-- 扩展字段3 -->
+        EXT4,  <!-- 扩展字段4 -->
+        EXT5,  <!-- 扩展字段5 -->
+        EXT6,  <!-- 扩展字段6 -->
+        EXT7  <!-- 扩展字段7 -->)
+        VALUES (
+        #{recId,jdbcType=VARCHAR},
+        #{faultWorkNo,jdbcType=VARCHAR},
+        #{equipCode,jdbcType=VARCHAR},
+        #{equipName,jdbcType=VARCHAR},
+        #{orgType,jdbcType=VARCHAR},
+        #{operator,jdbcType=VARCHAR},
+        #{replacementNo,jdbcType=VARCHAR},
+        #{replacementName,jdbcType=VARCHAR},
+        #{replaceReason,jdbcType=VARCHAR},
+        #{oldRepNo,jdbcType=VARCHAR},
+        #{newRepNo,jdbcType=VARCHAR},
+        #{operateCostTime,jdbcType=VARCHAR},
+        #{replaceDate,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{docId,jdbcType=VARCHAR},
+        #{carNo,jdbcType=VARCHAR},
+        #{recCreator,jdbcType=VARCHAR},
+        #{recCreateTime,jdbcType=VARCHAR},
+        #{recRevisor,jdbcType=VARCHAR},
+        #{recReviseTime,jdbcType=VARCHAR},
+        #{recDeletor,jdbcType=VARCHAR},
+        #{recDeleteTime,jdbcType=VARCHAR},
+        '0',
+        #{archiveFlag,jdbcType=VARCHAR},
+        #{recStatus,jdbcType=VARCHAR},
+        #{ext1,jdbcType=VARCHAR},
+        #{ext2,jdbcType=VARCHAR},
+        #{ext3,jdbcType=VARCHAR},
+        #{ext4,jdbcType=VARCHAR},
+        #{ext5,jdbcType=VARCHAR},
+        #{ext6,jdbcType=VARCHAR},
+        #{ext7,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="deletePartReplace">
+        UPDATE T_PART_REPLACEMENT SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <insert id="importPartReplace">
+        insert ALL
+        <foreach collection="list" index="index" item="part" separator=" ">
+            INTO T_PART_REPLACEMENT (
+            REC_ID,  <!-- 记录编号 -->
+            FAULT_WORK_NO,  <!-- 故障工单编号 -->
+            EQUIP_CODE,  <!-- 设备代码 -->
+            EQUIP_NAME,  <!-- 设备名称 -->
+            ORG_TYPE,  <!-- 作业单位 -->
+            OPERATOR,  <!-- 作业人员 -->
+            REPLACEMENT_NO,  <!-- 更换配件代码 -->
+            REPLACEMENT_NAME,  <!-- 更换配件名称 -->
+            REPLACE_REASON,  <!-- 更换原因 -->
+            OLD_REP_NO,  <!-- 旧配件编号 -->
+            NEW_REP_NO,  <!-- 新配件编号 -->
+            OPERATE_COST_TIME,  <!-- 更换所用时间 -->
+            REPLACE_DATE,  <!-- 处理日期 -->
+            REMARK,  <!-- 备注 -->
+            DOC_ID,  <!-- 附件编号 -->
+            CAR_NO,
+            REC_CREATOR,  <!-- 创建者 -->
+            REC_CREATE_TIME,  <!-- 创建时间 -->
+            REC_REVISOR,  <!-- 修改者 -->
+            REC_REVISE_TIME,  <!-- 修改时间 -->
+            REC_DELETOR,  <!-- 删除者 -->
+            REC_DELETE_TIME,  <!-- 删除时间 -->
+            DELETE_FLAG,  <!-- 删除标志 -->
+            ARCHIVE_FLAG,  <!-- 归档标记 -->
+            REC_STATUS,  <!-- 记录状态 -->
+            EXT1,  <!-- 扩展字段1 -->
+            EXT2,  <!-- 扩展字段2 -->
+            EXT3,  <!-- 扩展字段3 -->
+            EXT4,  <!-- 扩展字段4 -->
+            EXT5,  <!-- 扩展字段5 -->
+            EXT6,  <!-- 扩展字段6 -->
+            EXT7  <!-- 扩展字段7 -->)
+            VALUES (
+            #{part.recId,jdbcType=VARCHAR},
+            #{part.faultWorkNo,jdbcType=VARCHAR},
+            #{part.equipCode,jdbcType=VARCHAR},
+            #{part.equipName,jdbcType=VARCHAR},
+            #{part.orgType,jdbcType=VARCHAR},
+            #{part.operator,jdbcType=VARCHAR},
+            #{part.replacementNo,jdbcType=VARCHAR},
+            #{part.replacementName,jdbcType=VARCHAR},
+            #{part.replaceReason,jdbcType=VARCHAR},
+            #{part.oldRepNo,jdbcType=VARCHAR},
+            #{part.newRepNo,jdbcType=VARCHAR},
+            #{part.operateCostTime,jdbcType=VARCHAR},
+            #{part.replaceDate,jdbcType=VARCHAR},
+            #{part.remark,jdbcType=VARCHAR},
+            #{part.docId,jdbcType=VARCHAR},
+            #{part.carNo,jdbcType=VARCHAR},
+            #{part.recCreator,jdbcType=VARCHAR},
+            #{part.recCreateTime,jdbcType=VARCHAR},
+            #{part.recRevisor,jdbcType=VARCHAR},
+            #{part.recReviseTime,jdbcType=VARCHAR},
+            #{part.recDeletor,jdbcType=VARCHAR},
+            #{part.recDeleteTime,jdbcType=VARCHAR},
+            '0',
+            #{part.archiveFlag,jdbcType=VARCHAR},
+            #{part.recStatus,jdbcType=VARCHAR},
+            #{part.ext1,jdbcType=VARCHAR},
+            #{part.ext2,jdbcType=VARCHAR},
+            #{part.ext3,jdbcType=VARCHAR},
+            #{part.ext4,jdbcType=VARCHAR},
+            #{part.ext5,jdbcType=VARCHAR},
+            #{part.ext6,jdbcType=VARCHAR},
+            #{part.ext7,jdbcType=VARCHAR})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <select id="listPartReplace" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录编号 -->
+        FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单编号 -->
+        EQUIP_CODE	as "equipCode",  <!-- 设备代码 -->
+        EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
+        ORG_TYPE	as "orgType",  <!-- 作业单位 -->
+        OPERATOR	as "operator",  <!-- 作业人员 -->
+        REPLACEMENT_NO	as "replacementNo",  <!-- 更换配件代码 -->
+        REPLACEMENT_NAME	as "replacementName",  <!-- 更换配件名称 -->
+        REPLACE_REASON	as "replaceReason",  <!-- 更换原因 -->
+        OLD_REP_NO	as "oldRepNo",  <!-- 旧配件编号 -->
+        NEW_REP_NO	as "newRepNo",  <!-- 新配件编号 -->
+        OPERATE_COST_TIME	as "operateCostTime",  <!-- 更换所用时间 -->
+        REPLACE_DATE	as "replaceDate",  <!-- 处理日期 -->
+        REMARK	as "remark",  <!-- 备注 -->
+        DOC_ID	as "docId",  <!-- 附件编号 -->
+        CAR_NO	as "carNo",  <!-- 车厢号 -->
+        REC_CREATOR	as "recCreator",  <!-- 创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REC_STATUS	as "recStatus",  <!-- 记录状态 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5",  <!-- 扩展字段5 -->
+        EXT6	as "ext6",  <!-- 扩展字段6 -->
+        EXT7	as "ext7" <!-- 扩展字段7 -->
+        FROM T_PART_REPLACEMENT
+        WHERE 1=1 and DELETE_FLAG='0'
+        AND REC_ID IN (
+        <foreach collection="list" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
+    </select>
+
+</mapper>

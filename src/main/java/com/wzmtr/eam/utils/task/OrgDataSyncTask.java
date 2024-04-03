@@ -30,7 +30,7 @@ public class OrgDataSyncTask {
     @Value("${local.data-sync}")
     private String dataSync;
 
-    @Scheduled(cron = "0 30 1 * * ?")
+    //@Scheduled(cron = "0 30 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncPerson() {
         if (CommonConstants.OFF.equals(dataSync)) {
@@ -41,7 +41,7 @@ public class OrgDataSyncTask {
         mdmSyncService.syncAllPerson();
     }
 
-    @Scheduled(cron = "0 50 1 * * ?")
+   // @Scheduled(cron = "0 50 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncAllSuppContact() {
         if (CommonConstants.OFF.equals(dataSync)) {
@@ -52,7 +52,7 @@ public class OrgDataSyncTask {
         mdmSyncService.syncAllSuppContact();
     }
 
-    @Scheduled(cron = "0 0 2 * * ?")
+    //@Scheduled(cron = "0 0 2 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncPersonPlus() {
         if (CommonConstants.OFF.equals(dataSync)) {

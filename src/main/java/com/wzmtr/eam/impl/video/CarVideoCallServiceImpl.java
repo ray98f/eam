@@ -152,7 +152,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             Assert.notNull(reqDTO.getDispatchUserId(), ErrorCode.NORMAL_ERROR, "检修调度不能为空");
             carVideoDO.setDispatchUserId(reqDTO.getDispatchUserId());
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
-            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getApplyNo(), reqDTO.getDispatchUserId(), "视频调阅下达", "DMBR0022", TokenUtils.getCurrentPersonId());
+            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getApplyNo(), reqDTO.getDispatchUserId(), "视频调阅下达", "DMBR0022", TokenUtils.getCurrentPersonId(),null);
         }
         // 派工
         if (CommonConstants.THIRTY_STRING.equals(reqDTO.getRecStatus())) {
@@ -163,7 +163,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             overTodoService.overTodo(reqDTO.getRecId(), "");
             String[] split = reqDTO.getWorkerId().split(",");
             for (String s : split) {
-                overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), s, "视频调阅派工", "DMBR0022", TokenUtils.getCurrentPersonId());
+                overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), s, "视频调阅派工", "DMBR0022", TokenUtils.getCurrentPersonId(),null);
             }
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
             carVideoDO.setDispatchTime(DateUtils.getCurrentTime());
@@ -176,7 +176,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非派工状态下不可完工");
             }
             overTodoService.overTodo(reqDTO.getRecId(), "");
-            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getRecId(), reqDTO.getDispatchUserId(), "视频调阅完工", "DMBR0022", TokenUtils.getCurrentPersonId());
+            overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getRecId(), reqDTO.getDispatchUserId(), "视频调阅完工", "DMBR0022", TokenUtils.getCurrentPersonId(),null);
             // TODO: 2023/9/14 发短信
             // Map<Object, Object> User = new HashMap<>();
             // User.put("loginName", (detail.getDispatchUserId()));

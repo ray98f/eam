@@ -51,6 +51,12 @@ public interface OverhaulOrderService {
 
     void dispatchWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
+    /**
+     * 检修工单完工
+     * @param req 排查检修项信息
+     */
+    void finishOrder(OverhaulOrderReqDTO req);
+
     void auditWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
     void confirmWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException;
@@ -70,6 +76,12 @@ public interface OverhaulOrderService {
     Page<OverhaulOrderDetailResDTO> pageOverhaulObject(String orderCode, String planCode, String planName, String objectCode, PageReqDTO pageReqDTO);
 
     OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id);
+
+    /**
+     * 编辑检修对象
+     * @param req 检修对象参数
+     */
+    void modifyOverhaulObject(OverhaulOrderDetailReqDTO req);
 
     void exportOverhaulObject(String orderCode, String planCode, String planName, String objectCode, HttpServletResponse response) throws IOException;
 
@@ -107,10 +119,18 @@ public interface OverhaulOrderService {
     void exportOverhaulItem(OverhaulItemListReqDTO overhaulItemListReqDTO, HttpServletResponse response) throws IOException;
 
     /**
-     * 排查检修项
-     * @param troubleshootReqDTO 排查检修项信息
+     * 判断是否存在未填报的检修项
+     * @param orderCode 工单编号
+     * @param objectCode 对象编号
+     * @return 是否存在未填报的检修项
      */
-    void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO troubleshootReqDTO);
+    Integer selectHadFinishedOverhaulOrder(String orderCode, String objectCode);
+
+    /**
+     * 排查检修项
+     * @param req 排查检修项信息
+     */
+    void troubleshootOverhaulItem(OverhaulItemTroubleshootReqDTO req);
 
     Page<OverhaulStateResDTO> pageOverhaulState(String objectCode, String itemName, String orderCode, String tdmer23RecId, PageReqDTO pageReqDTO);
 

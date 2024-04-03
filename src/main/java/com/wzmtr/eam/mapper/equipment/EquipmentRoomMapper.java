@@ -17,11 +17,13 @@ public interface EquipmentRoomMapper {
 
 
     Page<EquipmentRoomResDTO> pageEquipmentRoom(Page<EquipmentRoomResDTO> page, String equipRoomCode, String equipRoomName, String lineCode,
-                                                String position1Code, String position1Name, String subjectCode);
+                                                String position1Code, String position1Name, String subjectCode,List<String> majors);
 
     EquipmentRoomResDTO getEquipmentRoomDetail(String id);
 
     Integer selectEquipmentRoomIsExist(EquipmentRoomReqDTO equipmentRoomReqDTO);
+
+    String getEquipRoomCodeMaxCode();
 
     String selectMaxEquipmentRoomCode();
 
