@@ -12,13 +12,10 @@
     </select>
     <select id="querySummary" resultType="com.wzmtr.eam.dto.res.statistic.OneCarOneGearResDTO">
         select
-        (SELECT
-        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
-        FROM
-        T_OVERHAUL_ORDER
-        WHERE
-        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修30天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修30天%')
+        (SELECT COUNT(*) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM T_OVERHAUL_ORDER
+        WHERE T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
+        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修30天%')
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
@@ -28,13 +25,10 @@
            and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         ) as "er2",
-        (SELECT
-        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
-        FROM
-        T_OVERHAUL_ORDER
-        WHERE
-        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修90天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修90天%')
+        (SELECT COUNT(*) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM T_OVERHAUL_ORDER
+        WHERE T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
+        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修90天%')
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
@@ -44,13 +38,10 @@
           and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         ) as "er3",
-        (SELECT
-        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
-        FROM
-        T_OVERHAUL_ORDER
-        WHERE
-        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修180天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修180天%')
+        (SELECT COUNT(*) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM T_OVERHAUL_ORDER
+        WHERE T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
+        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修180天%')
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
@@ -60,13 +51,10 @@
           and to_date(t1.REAL_END_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         ) as "er4",
-        (SELECT
-        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
-        FROM
-        T_OVERHAUL_ORDER
-        WHERE
-        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修360天%' or T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修360天%')
+        (SELECT COUNT(*) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM T_OVERHAUL_ORDER
+        WHERE T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
+        AND (T_OVERHAUL_ORDER.PLAN_NAME LIKE '%二级修360天%')
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
         <if test="startTime!=null">
@@ -89,12 +77,9 @@
            and to_date(t1.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD HH24:MI:SS')
         </if>
         ) as "fmCount",
-        (SELECT
-        COUNT(1) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
-        FROM
-        T_OVERHAUL_ORDER
-        WHERE
-        T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
+        (SELECT COUNT(*) from(SELECT T_OVERHAUL_ORDER.REAL_END_TIME
+        FROM T_OVERHAUL_ORDER
+        WHERE T_OVERHAUL_ORDER.PLAN_NAME LIKE '%' || #{equipName} || '%'
         AND T_OVERHAUL_ORDER.PLAN_NAME LIKE '%一级修%'
         AND LENGTH(trim(T_OVERHAUL_ORDER.REAL_END_TIME)) IS NOT null) t1
         WHERE 1=1
@@ -168,76 +153,46 @@
         from dual
     </select>
     <select id="querydmer3" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
-        SELECT
-        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
-        FROM
-        T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
-        WHERE
-        DM06.DAY in
-        (SELECT
-        SUBSTR(ER21.REAL_END_TIME,0,10)
-        FROM
-        T_OVERHAUL_ORDER ER21
-        WHERE
-        ER21.PLAN_NAME like '%' || #{equipName} || '%'
-        AND (ER21.PLAN_NAME LIKE '%二级修90天%' or ER21.PLAN_NAME LIKE '%二级修90天%')
-        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
+        SELECT SUBSTR(ER21.REAL_END_TIME,0,10) as "dmer3date", ER21.END_MILE as "dmer3km"
+        FROM T_OVERHAUL_ORDER ER21
+        WHERE ER21.PLAN_NAME like '%' || #{equipName} || '%'
+        AND (ER21.PLAN_NAME LIKE '%二级修90天%')
+        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL
         <if test="startTime!=null">
-            AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-            AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
-        group BY DM06.DAY
-        ORDER BY DM06.DAY DESC
+        ORDER BY SUBSTR(ER21.REAL_END_TIME,0,10) DESC
     </select>
     <select id="queryER4" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
-        SELECT
-        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
-        FROM
-        T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
-        WHERE
-        DM06.DAY in
-        (SELECT
-        SUBSTR(ER21.REAL_END_TIME,0,10)
-        FROM
-        T_OVERHAUL_ORDER ER21
-        WHERE
-        ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (ER21.PLAN_NAME LIKE '%二级修180天%' or ER21.PLAN_NAME LIKE '%二级修180天%')
-        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
+        SELECT SUBSTR(ER21.REAL_END_TIME,0,10) as "dmer3date", ER21.END_MILE as "dmer3km"
+        FROM T_OVERHAUL_ORDER ER21
+        WHERE ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
+        AND (ER21.PLAN_NAME LIKE '%二级修180天%')
+        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL
         <if test="startTime!=null">
-          and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+          and to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-          and to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+          and to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
-        group BY DM06.DAY
-        ORDER BY DM06.DAY DESC
+        ORDER BY SUBSTR(ER21.REAL_END_TIME,0,10) DESC
     </select>
     <select id="queryER5" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
-        SELECT
-        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
-        FROM
-        T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
-        WHERE
-        DM06.DAY in
-        (SELECT
-        SUBSTR(ER21.REAL_END_TIME,0,10)
-        FROM
-        T_OVERHAUL_ORDER ER21
-        WHERE
-        ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
-        AND (ER21.PLAN_NAME LIKE '%二级修360天%' or ER21.PLAN_NAME LIKE '%二级修360天%')
-        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
+        SELECT SUBSTR(ER21.REAL_END_TIME,0,10) as "dmer3date", ER21.END_MILE as "dmer3km"
+        FROM T_OVERHAUL_ORDER ER21
+        WHERE ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
+        AND (ER21.PLAN_NAME LIKE '%二级修360天%')
+        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL
         <if test="startTime!=null">
-            AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime!=null">
-            AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
-        group BY DM06.DAY
-        ORDER BY DM06.DAY DESC
+        ORDER BY SUBSTR(ER21.REAL_END_TIME,0,10) DESC
     </select>
     <select id="queryFMHistory" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
@@ -410,52 +365,32 @@
         ORDER BY REPLACE_DATE desc,REC_CREATE_TIME desc
     </select>
     <select id="queryER2" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
-        SELECT
-        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
-        FROM
-        T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
-        WHERE
-        DM06.DAY in
-        (SELECT
-        SUBSTR(ER21.REAL_END_TIME,0,10)
-        FROM
-        T_OVERHAUL_ORDER ER21
-        WHERE
-        ER21.PLAN_NAME  like '%' || #{equipName} || '%'
-        AND (ER21.PLAN_NAME LIKE '%二级修30天%' or ER21.PLAN_NAME LIKE '%二级修30天%')
-        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
+        SELECT SUBSTR(ER21.REAL_END_TIME,0,10) as "dmer3date", ER21.END_MILE as "dmer3km"
+        FROM T_OVERHAUL_ORDER ER21
+        WHERE ER21.PLAN_NAME  like '%' || #{equipName} || '%'
+        AND (ER21.PLAN_NAME LIKE '%二级修30天%')
+        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL
         <if test="startTime != null">
-            AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime != null">
-            AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
-        group BY DM06.DAY
-        ORDER BY DM06.DAY DESC
+        ORDER BY SUBSTR(ER21.REAL_END_TIME,0,10) DESC
     </select>
     <select id="queryER1" resultType="com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO">
-        SELECT
-        MAX(DM06.TOTAL_MILE) as "dmer3km", DM06.DAY as "dmer3date"
-        FROM
-        T_TRAIN_MILE DM06,T_OVERHAUL_ORDER ER21
-        WHERE
-        DM06.DAY in
-        (SELECT
-        SUBSTR(ER21.REAL_END_TIME,0,10)
-        FROM
-        T_OVERHAUL_ORDER ER21
-        WHERE
-        ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
+        SELECT SUBSTR(ER21.REAL_END_TIME,0,10) as "dmer3date", ER21.END_MILE as "dmer3km"
+        FROM T_OVERHAUL_ORDER ER21
+        WHERE ER21.PLAN_NAME LIKE '%' || #{equipName} || '%'
         AND ER21.PLAN_NAME LIKE '%一级修%'
-        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL)
+        AND LENGTH(trim(ER21.REAL_END_TIME))IS NOT NULL
         <if test="startTime != null">
-            AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[>=]]> to_date(#{startTime}, 'YYYY-MM-DD')
         </if>
         <if test="endTime != null">
-            AND to_date(DM06.DAY,'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
+            AND to_date(SUBSTR(ER21.REAL_END_TIME,0,10),'YYYY-MM-DD') <![CDATA[<=]]> to_date(#{endTime}, 'YYYY-MM-DD')
         </if>
-        group BY DM06.DAY
-        ORDER BY DM06.DAY DESC
+        ORDER BY SUBSTR(ER21.REAL_END_TIME,0,10) DESC
     </select>
 
     <select id="listGearboxChangeOil" resultType="com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO">
