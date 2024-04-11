@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -33,7 +32,7 @@ public class ModbusServiceImpl implements ModbusTcpService {
         try {
             modbusMasterUtils.createModbusConnector(ModbusClientConstants.IP, ModbusClientConstants.TCP_PORT);
         } catch (Exception e) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus error: Connect slave fail, {}", e.getMessage());
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus异常：连接失败, {}", e.getMessage());
         }
     }
 
@@ -43,32 +42,43 @@ public class ModbusServiceImpl implements ModbusTcpService {
 
     @Override
     public int[] readHoldingRegisters(SlaveReqDTO slaveReqDTO) throws ExecutionException, InterruptedException {
-        if (checkConnectSlave() == null) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus error: Not connect slave");
+        // 连接Modbus
+        try {
+            modbusMasterUtils.createModbusConnector(ModbusClientConstants.IP, ModbusClientConstants.TCP_PORT);
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus异常：连接失败, {}", e.getMessage());
         }
-        CompletableFuture<int[]> registerFuture = modbusMasterUtils.readHoldingRegisters(slaveReqDTO.getSlaveId(), slaveReqDTO.getAddress(), slaveReqDTO.getQuantity());
+        // 读取保持寄存器数据
+        if (checkConnectSlave() == null) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus异常：未连接！");
+        }
+        CompletableFuture<int[]> registerFuture = modbusMasterUtils.readHoldingRegisters(slaveReqDTO.getSlaveId(),
+                slaveReqDTO.getAddress(), slaveReqDTO.getQuantity());
         int[] registerValues = registerFuture.get();
-        log.info("ReadHoldingRegisters info = {}", Arrays.toString(registerValues));
+        // 关闭连接器并释放相关资源
+        modbusMasterUtils.disposeModbusConnector();
         return registerValues;
     }
 
     @Override
     public void writeSingleRegister(WriteSlaveReqDTO writeSlaveReqDTO) {
         if (checkConnectSlave() == null) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus error: Not connect slave");
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus异常：未连接！");
         }
-        modbusMasterUtils.writeSingleRegister(writeSlaveReqDTO.getSlaveId(), writeSlaveReqDTO.getAddress(), writeSlaveReqDTO.getValue());
+        modbusMasterUtils.writeSingleRegister(writeSlaveReqDTO.getSlaveId(),
+                writeSlaveReqDTO.getAddress(), writeSlaveReqDTO.getValue());
     }
 
     @Override
     public void writeMultipleRegisters(WriteSlaveReqDTO writeSlaveReqDTO) {
         if (checkConnectSlave() == null) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus error: Not connect slave");
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus异常：未连接！");
         }
         if (writeSlaveReqDTO.getValues().length != writeSlaveReqDTO.getQuantity()) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus error: Quantity error");
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "Modbus异常：寄存器数量错误！");
         }
-        modbusMasterUtils.writeMultipleRegisters(writeSlaveReqDTO.getSlaveId(), writeSlaveReqDTO.getAddress(), writeSlaveReqDTO.getQuantity(), writeSlaveReqDTO.getValues());
+        modbusMasterUtils.writeMultipleRegisters(writeSlaveReqDTO.getSlaveId(), writeSlaveReqDTO.getAddress(),
+                writeSlaveReqDTO.getQuantity(), writeSlaveReqDTO.getValues());
     }
 
 }

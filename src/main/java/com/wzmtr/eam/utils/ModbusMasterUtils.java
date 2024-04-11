@@ -129,7 +129,7 @@ public class ModbusMasterUtils {
      * @param slaveId  设备id
      * @param address  要读取的寄存器地址
      * @param quantity 要读取的寄存器数量
-     * @return 返回 CompletableFuture<int[]>
+     * @return 点位信息
      */
     public CompletableFuture<int[]> readCoils(int slaveId, int address, int quantity) {
         CompletableFuture<ReadCoilsResponse> futureResponse = modbusMaster.sendRequest(
@@ -156,7 +156,7 @@ public class ModbusMasterUtils {
      * @param slaveId  设备id
      * @param address  要读取的寄存器地址
      * @param quantity 要读取的寄存器数量
-     * @return 返回 CompletableFuture<int[]>
+     * @return 点位信息
      */
     public CompletableFuture<int[]> readDiscreteInputs(int slaveId, int address, int quantity) {
         CompletableFuture<ReadDiscreteInputsResponse> futureResponse = modbusMaster.sendRequest(
@@ -183,7 +183,7 @@ public class ModbusMasterUtils {
      * @param slaveId  设备id
      * @param address  要读取的寄存器地址
      * @param quantity 要读取的寄存器数量
-     * @return 返回 CompletableFuture<int[]>
+     * @return 点位信息
      */
     public CompletableFuture<int[]> readHoldingRegisters(int slaveId, int address, int quantity) {
         CompletableFuture<ReadHoldingRegistersResponse> futureResponse = modbusMaster.sendRequest(
@@ -209,7 +209,7 @@ public class ModbusMasterUtils {
      * @param slaveId  设备id
      * @param address  要读取的寄存器地址
      * @param quantity 要读取的寄存器数量
-     * @return 返回 CompletableFuture<int[]>
+     * @return 点位信息
      */
     public CompletableFuture<int[]> readInputRegisters(int slaveId, int address, int quantity) {
         CompletableFuture<ReadInputRegistersResponse> futureResponse = modbusMaster.sendRequest(
@@ -235,7 +235,7 @@ public class ModbusMasterUtils {
      * @param slaveId 设备id
      * @param address 要读取的寄存器地址
      * @param value   要写入的boolean值
-     * @return 返回 CompletableFuture<Boolean>
+     * @return 写入状态
      */
     public CompletableFuture<Boolean> writeSingleCoil(int slaveId, int address, boolean value) {
         CompletableFuture<WriteSingleCoilResponse> futureResponse = modbusMaster.sendRequest(
@@ -259,8 +259,8 @@ public class ModbusMasterUtils {
      * @param value   要写入的值
      */
     public void writeSingleRegister(int slaveId, int address, int value) {
-        CompletableFuture<WriteSingleRegisterResponse> futureResponse = modbusMaster.sendRequest(new WriteSingleRegisterRequest(address, value),
-                slaveId);
+        CompletableFuture<WriteSingleRegisterResponse> futureResponse = modbusMaster.sendRequest(
+                new WriteSingleRegisterRequest(address, value), slaveId);
         futureResponse.handle((response, ex) -> {
             if (ex != null) {
                 ReferenceCountUtil.release(response);
@@ -279,12 +279,12 @@ public class ModbusMasterUtils {
      * @param address  要写入的寄存器地址
      * @param quantity 要写入的寄存器个数
      * @param values   要写入的boolean[]
-     * @return 返回 CompletableFuture<Boolean>
+     * @return 写入状态
      */
     public CompletableFuture<Boolean> writeMultipleCoils(int slaveId, int address, int quantity, boolean[] values) {
         byte[] bytes = booleanToByte(values);
-        CompletableFuture<WriteMultipleCoilsResponse> futureResponse = modbusMaster.sendRequest(new WriteMultipleCoilsRequest(address, quantity, bytes),
-                slaveId);
+        CompletableFuture<WriteMultipleCoilsResponse> futureResponse = modbusMaster.sendRequest(
+                new WriteMultipleCoilsRequest(address, quantity, bytes), slaveId);
         return futureResponse.handle((response, ex) -> {
             if (ex != null) {
                 ReferenceCountUtil.release(response);
@@ -306,8 +306,8 @@ public class ModbusMasterUtils {
      */
     public void writeMultipleRegisters(int slaveId, int address, int quantity, int[] values) {
         byte[] bytes = intToByte(values);
-        CompletableFuture<WriteMultipleRegistersResponse> futureResponse = modbusMaster.sendRequest(new WriteMultipleRegistersRequest(address, quantity, bytes),
-                slaveId);
+        CompletableFuture<WriteMultipleRegistersResponse> futureResponse = modbusMaster.sendRequest(
+                new WriteMultipleRegistersRequest(address, quantity, bytes), slaveId);
         futureResponse.handle((response, ex) -> {
             if (ex != null) {
                 ReferenceCountUtil.release(response);
