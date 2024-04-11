@@ -511,7 +511,7 @@
     </select>
 
     <insert id="importTrainDailyMile">
-        update T_TRAIN_MILE set
+        UPDATE T_TRAIN_MILE SET
         DAILY_WORK_MILE=#{dailyWorkMile,jdbcType=DECIMAL},
         TOTAL_WORK_MILE=#{totalWorkMile,jdbcType=DECIMAL},
         REMARK=#{remark,jdbcType=VARCHAR},
@@ -541,6 +541,7 @@
             #{mile.day,jdbcType=VARCHAR},
             #{mile.dailyWorkMile,jdbcType=DECIMAL},
             #{mile.totalWorkMile,jdbcType=DECIMAL},
+            #{mile.recCreator,jdbcType=DECIMAL},
             #{mile.recCreateTime,jdbcType=VARCHAR})
         </foreach>
         SELECT * FROM dual

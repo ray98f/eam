@@ -288,7 +288,7 @@ public class TrainMileServiceImpl implements TrainMileService {
                 req.setRecReviseTime(DateUtils.getCurrentTime());
                 temp.add(req);
             }
-            // 根绝导入数据修改值
+            // 根据导入数据修改值
             if (!temp.isEmpty()) {
                 for (TrainMileDailyReqDTO req : temp) {
                     trainMileMapper.importTrainDailyMile(req);
