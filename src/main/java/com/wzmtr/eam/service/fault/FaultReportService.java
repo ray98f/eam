@@ -43,7 +43,7 @@ public interface FaultReportService {
      * @param reqDTO 请求参数
      * @return 已提报故障列表
      */
-    Page<FaultReportResDTO> openApiList(FaultReportPageReqDTO reqDTO);
+    Page<FaultDetailResDTO> openApiList(FaultReportPageReqDTO reqDTO);
     Page<FaultReportResDTO> carReportList(FaultReportPageReqDTO reqDTO);
 
     FaultDetailResDTO detail(FaultDetailReqDTO reqDTO);

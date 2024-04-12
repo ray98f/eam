@@ -67,7 +67,7 @@ public class FaultReportController {
      */
     @ApiOperation(value = "已提报故障-开放接口")
     @PostMapping("/list/open")
-    public PageResponse<FaultReportResDTO> openApiList(@RequestBody FaultReportPageReqDTO reqDTO) {
+    public PageResponse<FaultDetailResDTO> openApiList(@RequestBody FaultReportPageReqDTO reqDTO) {
         return PageResponse.of(reportService.openApiList(reqDTO));
     }
 

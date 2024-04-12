@@ -160,8 +160,8 @@
         LEFT JOIN SYS_USER t3 ON t1.USER_ID=t3.LOGIN_NAME
         WHERE t2.ROLE_CODE=#{groupCname}))
         WHERE LOGIN_NAME IN
-        (SELECT DISTINCT (SELECT t4.LOGIN_NAME FROM SYS_USER t4 WHERE t4.LOGIN_NAME=t5.USER_ID)
-        FROM SYS_ORG_USER t5 WHERE t5.OFFICE_ID=(SELECT t6.ID FROM SYS_OFFICE t6 WHERE t6.AREA_ID=#{dptCode}))
+        (SELECT DISTINCT (SELECT t4.LOGIN_NAME FROM SYS_USER t4 WHERE t4.LOGIN_NAME=t5.LOGIN_NAME)
+        FROM SYS_USER t5 WHERE t5.OFFICE_ID=(SELECT t6.ID FROM SYS_OFFICE t6 WHERE t6.AREA_ID=#{dptCode}))
     </select>
 
     <select id="queryTypeAndDeptCode" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
@@ -184,8 +184,9 @@
         WHERE 1=1
         AND t2.ROLE_CODE='ZCJD'
         AND EXISTS
-        (SELECT 1 FROM SYS_ORG_USER r1
-        WHERE r1.USER_ID=t3.LOGIN_NAME and r1.OFFICE_ID like '01036%')
+        (SELECT 1 FROM SYS_USER r1
+        WHERE r1.LOGIN_NAME=t3.LOGIN_NAME and r1.OFFICE_ID IN
+        (SELECT t6.ID FROM SYS_OFFICE t6 WHERE t6.AREA_ID like '01036%'))
         ORDER BY t3.ORDER_NUM ASC
     </select>
     <select id="getOrganByStationAndMajor" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
