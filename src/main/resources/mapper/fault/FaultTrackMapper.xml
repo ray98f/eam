@@ -362,7 +362,7 @@
         d.OBJECT_CODE AS "objectCode_textField",
         d.OBJECT_NAME AS "objectName",
         d.TRAIN_TRUNK AS "trainTrunk",
-        (SELECT ec.ITEM_CNAME FROM iplat60.tedcm01 ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line')
+        (SELECT ec.ITEM_CNAME FROM SYS_DICT ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line')
         AS "lineName",
         d.LINE_CODE AS "lineCode",
         d.POSITION_CODE AS "positionCode",

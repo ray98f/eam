@@ -28,12 +28,6 @@ public class HomeController {
     @Autowired
     private HomeService homeService;
 
-    @PostMapping("/count")
-    @ApiOperation(value = "数量统计(待办待阅等等。。。)")
-    public DataResponse<HomeCountResDTO> count() {
-        return DataResponse.of(homeService.count());
-    }
-
     /**
      * 获取首页工作台列表
      * @param type 类型 1：待办 2：已办

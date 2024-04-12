@@ -12,8 +12,6 @@ import com.wzmtr.eam.entity.StatusWorkFlowLog;
  */
 public interface HomeService {
 
-    HomeCountResDTO count();
-
     /**
      * 获取首页工作台列表
      * @param type 类型 1：待办 2：已办

@@ -369,10 +369,11 @@
         </if>
     </select>
     <select id="queryCoParent" resultType="com.wzmtr.eam.dto.res.common.PersonResDTO">
-        SELECT PARENT_CODE as "orgCode" FROM RPLAT60.T_WW_ORG
+        SELECT o1.AREA_ID as "orgCode"
+        FROM SYS_OFFICE o1
         WHERE 1=1
         <if test="orgCode!=null">
-            AND ORG_CODE=#{orgCode}
+            AND o1.ID=(select o2.PARENT_ID from SYS_OFFICE o2 where o2.AREA_ID=#{orgCode})
         </if>
     </select>
     <select id="getFaultAnalysisList" resultType="com.wzmtr.eam.dataobject.FaultAnalyzeDO">
