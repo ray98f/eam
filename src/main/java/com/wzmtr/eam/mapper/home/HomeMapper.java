@@ -1,7 +1,6 @@
 package com.wzmtr.eam.mapper.home;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.bizobject.HomeCountBO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 import com.wzmtr.eam.dto.res.home.ShowAResDTO;
 import com.wzmtr.eam.dto.res.home.ShowBCResDTO;
@@ -16,9 +15,6 @@ import java.util.List;
  */
 @Mapper
 public interface HomeMapper {
-    Integer count(HomeCountBO countBO);
-
-    Integer queryForIndex(HomeCountBO countBO);
 
     /**
      * 获取首页工作台列表

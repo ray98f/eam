@@ -334,11 +334,11 @@
         <if test="type==4">
             max(DEV_NO)
         </if>
-        FROM RPLAT60.T_BS_UNITCODE
+        FROM T_BS_UNITCODE
     </select>
 
     <insert id="insertUnitCode">
-        INSERT INTO RPLAT60.T_BS_UNITCODE (REC_ID,  <!-- 统一编号 -->
+        INSERT INTO T_BS_UNITCODE (REC_ID,  <!-- 统一编号 -->
         UNIT_NO,  <!-- 合一码,共计11位，以9开头 -->
         BATCH_NO,  <!-- 物资编码(内),共计11位，以1开头 -->
         ASSET_NO,  <!-- 资产编码(内),共计11位，以2开头 -->
@@ -1115,7 +1115,7 @@
         SELECT
         db.LINE_CODE as "lineCode",
         ec.ITEM_CNAME as "lineName"
-        FROM SYS_REGION db,iplat60.tedcm01 ec
+        FROM SYS_REGION db,SYS_DICT ec
         where db.LINE_CODE = ec.ITEM_CODE and ec.CODESET_CODE='line'
         <if test="recId!=null">
            and db.REC_ID = #{recId}
@@ -1126,7 +1126,7 @@
         SELECT
         ITEM_CODE as "lineCode",
         ITEM_CNAME as "lineName"
-        FROM iplat60.tedcm01
+        FROM SYS_DICT
         where CODESET_CODE='line'
         <if test="lineCode!=null">
             and ITEM_CODE=#{lineCode}

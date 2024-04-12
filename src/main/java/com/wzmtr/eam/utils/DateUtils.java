@@ -5,6 +5,8 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -221,4 +223,24 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return list;
     }
 
+    /**
+     * 获取两个日期之间的所有日期
+     * @param startDateStr 开始日期
+     * @param endDateStr 结束日期
+     * @return 之间的所有日期
+     */
+    public static List<String> getDatesBetween(String startDateStr, String endDateStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+        LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+        List<String> dates = new ArrayList<>();
+        //这里是判断开始日期是否在结束日期之后或者=结束日期
+        while (startDate.isBefore(endDate) || startDate.isEqual(endDate)) {
+            String add = startDate.format(formatter);
+            dates.add(add);
+            startDate = startDate.plusDays(1);
+        }
+        dates.add(endDateStr);
+        return dates;
+    }
 }

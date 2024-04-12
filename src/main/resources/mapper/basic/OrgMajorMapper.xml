@@ -134,32 +134,34 @@
         T05.MAJOR_CODE AS majorCode,
         T06.LINE_CODE AS lineCode
         FROM SYS_ORG_MAJOR T05
-        LEFT JOIN SYS_ORG_LINE T06 ON T05.ORG_CODE = T06.ORG_CODE
-        LEFT JOIN SYS_ORG_TYPE T07 ON T05.ORG_CODE = T07.ORG_CODE
-        WHERE 1 = 1
+        LEFT JOIN SYS_ORG_LINE T06 ON T05.ORG_CODE=T06.ORG_CODE
+        LEFT JOIN SYS_ORG_TYPE T07 ON T05.ORG_CODE=T07.ORG_CODE
+        WHERE 1=1
         <if test="subjectCode != null and subjectCode != ''">
-            AND T05.MAJOR_CODE = #{subjectCode}
+            AND T05.MAJOR_CODE=#{subjectCode}
         </if>
         <if test="line != null and line != ''">
-            AND T06.LINE_CODE = #{line}
+            AND T06.LINE_CODE=#{line}
         </if>
         <if test="orgType != null and orgType != ''">
-            AND T07.ORG_TYPE = #{orgType}
+            AND T07.ORG_TYPE=#{orgType}
         </if>
     </select>
 
     <select id="getDepartmentUserByGroupName" resultType="com.wzmtr.eam.entity.OrganMajorLineType">
         SELECT LOGIN_NAME AS "loginName", USER_NAME AS "userName"
-        FROM (SELECT U.LOGIN_NAME, U.USER_NAME
-              FROM IPLAT60.XS_USER U
-              WHERE U.USER_ID IN
-                    (SELECT MEMBER_ID
-                     FROM IPLAT60.XS_USER_GROUP_MEMBER
-                     WHERE PARENT_ID =
-                           (SELECT ID FROM IPLAT60.XS_USER_GROUP WHERE GROUP_ENAME = #{groupCname})))
-        WHERE LOGIN_NAME IN (SELECT DISTINCT V_CO_ORG_USER.USER_CODE
-                             FROM rplat60.V_CO_ORG_USER
-                             WHERE V_CO_ORG_USER.ORG_CODE = #{dptCode})
+        FROM
+        (SELECT U.LOGIN_NAME, U.NAME AS USER_NAME
+        FROM SYS_USER U
+        WHERE U.USER_ID IN
+        (SELECT t1.USER_ID
+        FROM SYS_USER_ROLE t1
+        LEFT JOIN SYS_ROLE t2 ON t1.ROLE_ID=t2.ID
+        LEFT JOIN SYS_USER t3 ON t1.USER_ID=t3.LOGIN_NAME
+        WHERE t2.ROLE_CODE=#{groupCname}))
+        WHERE LOGIN_NAME IN
+        (SELECT DISTINCT (SELECT t4.LOGIN_NAME FROM SYS_USER t4 WHERE t4.LOGIN_NAME=t5.USER_ID)
+        FROM SYS_ORG_USER t5 WHERE t5.OFFICE_ID=(SELECT t6.ID FROM SYS_OFFICE t6 WHERE t6.AREA_ID=#{dptCode}))
     </select>
 
     <select id="queryTypeAndDeptCode" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
@@ -167,48 +169,31 @@
         FROM SYS_ORG_MAJOR d5,
              SYS_ORG_LINE d6,
              SYS_ORG_TYPE d7
-        where d5.DELETE_FLAG='0' AND d6.DELETE_FLAG='0' AND d7.DELETE_FLAG='0' AND d5.ORG_CODE = d6.ORG_CODE
-          AND d6.ORG_CODE = d7.ORG_CODE
-          AND d5.MAJOR_CODE = #{majorCode}
-          AND d6.LINE_CODE = #{lineCode}
-          AND d7.ORG_TYPE = #{organType}
+        where d5.DELETE_FLAG='0' AND d6.DELETE_FLAG='0' AND d7.DELETE_FLAG='0' AND d5.ORG_CODE=d6.ORG_CODE
+          AND d6.ORG_CODE=d7.ORG_CODE
+          AND d5.MAJOR_CODE=#{majorCode}
+          AND d6.LINE_CODE=#{lineCode}
+          AND d7.ORG_TYPE=#{organType}
         order by d5.ORG_CODE asc
     </select>
     <select id="queryDispatch" resultType="com.wzmtr.eam.dto.res.common.DispatchResDTO">
-        SELECT t1.member_type AS "memberType",
-               CASE t1.MEMBER_TYPE
-                   WHEN 'USER_GROUP' THEN
-                       t2.GROUP_CNAME
-                   ELSE
-                       t3.USER_NAME
-                   END        AS "userName",
-               CASE t1.MEMBER_TYPE
-                   WHEN 'USER_GROUP' THEN
-                       t2.GROUP_ENAME
-                   ELSE
-                       t3.LOGIN_NAME
-                   END        AS "loginName"
-        FROM iplat60.XS_USER_GROUP_MEMBER t1
-                 LEFT JOIN iplat60.XS_USER_GROUP t2 ON t1.MEMBER_ID = t2.ID
-                 LEFT JOIN iplat60.XS_USER t3 ON t1.MEMBER_ID = t3.USER_ID
-                 LEFT JOIN iplat60.XS_USER_GROUP t4 ON t1.PARENT_ID = t4.ID
-        WHERE 1 = 1
-          AND t1.parent_id = '94e9d1b3645d4996bf07671a44be0640'
-          AND t1.member_type = 'USER'
-          AND EXISTS (SELECT 1
-                      FROM RPLAT60.T_WW_USERORG r1
-                      WHERE r1.USER_CODE = t3.LOGIN_NAME
-                        and r1.ORG_CODE like '01036%')
-        ORDER BY t1.SORT_INDEX,
-                 t1.MEMBER_ID,
-                 t1.PARENT_ID
+        SELECT t3.NAME AS "userName", t3.LOGIN_NAME AS "loginName"
+        FROM SYS_USER_ROLE t1
+        LEFT JOIN SYS_ROLE t2 ON t1.ROLE_ID=t2.ID
+        LEFT JOIN SYS_USER t3 ON t1.USER_ID=t3.LOGIN_NAME
+        WHERE 1=1
+        AND t2.ROLE_CODE='ZCJD'
+        AND EXISTS
+        (SELECT 1 FROM SYS_ORG_USER r1
+        WHERE r1.USER_ID=t3.LOGIN_NAME and r1.OFFICE_ID like '01036%')
+        ORDER BY t3.ORDER_NUM ASC
     </select>
     <select id="getOrganByStationAndMajor" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
         SELECT t1.*
         FROM SYS_OFFICE so
-                 LEFT JOIN SYS_ORG_MAJOR t1 on t1.ORG_CODE = so.AREA_ID
-                 LEFT JOIN SYS_ORG_REGION t2 on t2.ORG_CODE = so.AREA_ID
-        where t1.MAJOR_CODE = #{majorCode}
-          and t2.REGION_CODE = #{station}
+                 LEFT JOIN SYS_ORG_MAJOR t1 on t1.ORG_CODE=so.AREA_ID
+                 LEFT JOIN SYS_ORG_REGION t2 on t2.ORG_CODE=so.AREA_ID
+        where t1.MAJOR_CODE=#{majorCode}
+          and t2.REGION_CODE=#{station}
     </select>
 </mapper>

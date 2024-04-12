@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.wzmtr.eam.bizobject.HomeCountBO;
 import com.wzmtr.eam.dto.res.home.EChartResDTO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 import com.wzmtr.eam.dto.res.home.ShowAResDTO;
@@ -12,6 +11,7 @@ import com.wzmtr.eam.dto.res.home.ShowBCResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.StatusWorkFlowLog;
 import com.wzmtr.eam.mapper.home.HomeMapper;
+import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.home.HomeService;
 import com.wzmtr.eam.utils.StreamUtils;
 import com.wzmtr.eam.utils.StringUtils;
@@ -33,40 +33,8 @@ public class HomeServiceImpl implements HomeService {
     @Autowired
     private HomeMapper homeMapper;
 
-    @Override
-    public HomeCountResDTO count() {
-        HomeCountBO count = HomeCountBO.builder()
-                .modelName("DM")
-                .state("open")
-                .userId(TokenUtils.getCurrentPersonId())
-                .todoStatus("1")
-                .build();
-        Integer todoSize = homeMapper.queryForIndex(count);
-        HomeCountBO count2 = HomeCountBO.builder()
-                .modelName("DM")
-                .state("completed")
-                .userId(TokenUtils.getCurrentPersonId())
-                .todoStatus("2")
-                .build();
-        Integer overSize = homeMapper.queryForIndex(count2);
-
-        HomeCountBO count3 = HomeCountBO.builder()
-                .receiveUserId(TokenUtils.getCurrentPersonId())
-                .status("0")
-                .build();
-        Integer messageSize = homeMapper.count(count3);
-        HomeCountBO count4 = HomeCountBO.builder()
-                .receiveUserId(TokenUtils.getCurrentPersonId())
-                .status("1")
-                .build();
-        Integer readSize = homeMapper.count(count4);
-        HomeCountResDTO homeCountResDTO = new HomeCountResDTO();
-        homeCountResDTO.setOverSize(overSize.toString());
-        homeCountResDTO.setTodoSize(todoSize.toString());
-        homeCountResDTO.setReadSize(readSize.toString());
-        homeCountResDTO.setMessageSize(messageSize.toString());
-        return homeCountResDTO;
-    }
+    @Autowired
+    private IDictionariesService dictService;
 
     @Override
     public Page<StatusWorkFlowLog> todoList(String type, PageReqDTO pageReqDTO) {
@@ -110,6 +78,9 @@ public class HomeServiceImpl implements HomeService {
             }
         }
         if (StringUtils.isNotEmpty(listA)){
+            for (ShowAResDTO a : listA) {
+                a.setCNAME(dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackStatus", a.getCNAME()).getItemCname());
+            }
             eChartResDTO.setShowA(listA);
         }
         if (StringUtils.isNotEmpty(list)){

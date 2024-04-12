@@ -81,9 +81,13 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
 
     @Override
     public void modifyOtherEquipType(OtherEquipTypeReqDTO otherEquipTypeReqDTO) {
+        OtherEquipTypeResDTO lastRes = otherEquipTypeMapper.getOtherEquipTypeDetail(otherEquipTypeReqDTO.getRecId());
         otherEquipTypeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         otherEquipTypeReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         otherEquipTypeMapper.modifyOtherEquipType(otherEquipTypeReqDTO);
+        if (!lastRes.getDetectionPeriod().equals(otherEquipTypeReqDTO.getDetectionPeriod())) {
+            otherEquipTypeMapper.modifyOtherEquipValidityDate(otherEquipTypeReqDTO.getDetectionPeriod(), otherEquipTypeReqDTO.getTypeCode());
+        }
     }
 
     @Override

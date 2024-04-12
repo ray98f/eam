@@ -28,7 +28,7 @@
         dd.EQUIP_STATUS as equipStatus,
         dd.SOURCE_APP_NO as sourceAppNo,
         dd.REMARK as remark
-        FROM T_EQUIPMENT dd, IPLAT60.TEDCM01 ec
+        FROM T_EQUIPMENT dd, SYS_DICT ec
         WHERE 1=1
         and dd.USE_LINE_NO = ec.ITEM_CODE
         and ec.CODESET_CODE='line'

@@ -103,6 +103,12 @@
         WHERE REC_ID = #{recId,jdbcType=VARCHAR}
     </update>
 
+    <update id="modifyOtherEquipValidityDate">
+        UPDATE T_EQUIPMENT SET
+        VERIFY_VALIDITY_DATE=ADD_MONTHS(TO_DATE(VERIFY_DATE, 'yyyy-mm-dd hh24:mi:ss'), TO_NUMBER(#{detectionPeriod}))
+        WHERE EQUIP_CODE IN (SELECT EQUIP_CODE FROM T_OTHER_EQUIP_EXT WHERE OTHER_EQUIP_TYPE=#{typeCode})
+    </update>
+
     <update id="deleteOtherEquipType">
         UPDATE T_OTHER_EQUIP_TYPE SET
         DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}

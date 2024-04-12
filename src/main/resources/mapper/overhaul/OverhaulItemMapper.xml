@@ -18,13 +18,6 @@
         WORK_RESULT	as "workResult",  <!-- 结果 -->
         INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 条目值 -->
         WORK_TIME	as "workTime",  <!-- 时间 -->
-        <if test="req.objectFlag!=null and req.objectFlag!=''">
-            (SELECT COUNT(1) FROM RPLAT60.T_WW_ATTACHMENT T60 WHERE T60.BUSINESS_GUID = T_OVERHAUL_ITEM.REC_ID)	as "docId",   <!-- 附件ID -->
-        </if>
-        <!--<isEmpty prepend=" " property="objectFlag">
-            DOC_ID	as "docId",  附件ID
-        </isEmpty>-->
-        <!--DOC_ID	as "docId",  &lt;!&ndash; 附件ID &ndash;&gt;-->
         WORK_DETAIL	as "workDetail",  <!-- 工作说明 -->
         REMARK	as "remark",  <!-- 备注 -->
         ERROR_FLAG	as "errorFlag",  <!-- 异常标识 -->
@@ -126,13 +119,6 @@
         WORK_RESULT	as "workResult",  <!-- 结果 -->
         INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 条目值 -->
         WORK_TIME	as "workTime",  <!-- 时间 -->
-        <if test="objectFlag!=null and objectFlag!=''">
-            (SELECT COUNT(1) FROM RPLAT60.T_WW_ATTACHMENT T60 WHERE T60.BUSINESS_GUID = T_OVERHAUL_ITEM.REC_ID)	as "docId",   <!-- 附件ID -->
-        </if>
-        <!--<isEmpty prepend=" " property="objectFlag">
-            DOC_ID	as "docId",  附件ID
-        </isEmpty>-->
-        <!--DOC_ID	as "docId",  &lt;!&ndash; 附件ID &ndash;&gt;-->
         WORK_DETAIL	as "workDetail",  <!-- 工作说明 -->
         REMARK	as "remark",  <!-- 备注 -->
         ERROR_FLAG	as "errorFlag",  <!-- 异常标识 -->
@@ -171,13 +157,6 @@
         WORK_RESULT	as "workResult",  <!-- 结果 -->
         INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 条目值 -->
         WORK_TIME	as "workTime",  <!-- 时间 -->
-        <if test="objectFlag!=null and objectFlag!=''">
-            (SELECT COUNT(1) FROM RPLAT60.T_WW_ATTACHMENT T60 WHERE T60.BUSINESS_GUID = T_OVERHAUL_ITEM.REC_ID)	as "docId",   <!-- 附件ID -->
-        </if>
-        <!--<isEmpty prepend=" " property="objectFlag">
-            DOC_ID	as "docId",  附件ID
-        </isEmpty>-->
-        <!--DOC_ID	as "docId",  &lt;!&ndash; 附件ID &ndash;&gt;-->
         WORK_DETAIL	as "workDetail",  <!-- 工作说明 -->
         REMARK	as "remark",  <!-- 备注 -->
         ERROR_FLAG	as "errorFlag",  <!-- 异常标识 -->
