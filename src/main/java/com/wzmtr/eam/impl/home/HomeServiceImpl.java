@@ -64,12 +64,12 @@ public class HomeServiceImpl implements HomeService {
         List<ShowAResDTO> listA = homeMapper.queryA();
         EChartResDTO eChartResDTO = new EChartResDTO();
         Map<String, ShowBCResDTO> map = Maps.newHashMap();
-        if (StringUtils.isNotEmpty(listC)){
+        if (StringUtils.isNotEmpty(listC)) {
             map = StreamUtils.toMap(listC, ShowBCResDTO::getMajorName);
         }
         List<ShowBCResDTO> list = Lists.newArrayList();
         for (ShowBCResDTO a : listB) {
-            if (map.containsKey(a.getMajorName())){
+            if (map.containsKey(a.getMajorName())) {
                 ShowBCResDTO showBcRes = new ShowBCResDTO();
                 showBcRes.setMajorName(a.getMajorName());
                 showBcRes.setCNT(a.getCNT());
@@ -77,13 +77,13 @@ public class HomeServiceImpl implements HomeService {
                 list.add(showBcRes);
             }
         }
-        if (StringUtils.isNotEmpty(listA)){
+        if (StringUtils.isNotEmpty(listA)) {
             for (ShowAResDTO a : listA) {
-                a.setCNAME(dictService.queryOneByItemCodeAndCodesetCode("dm.faultTrackStatus", a.getCNAME()).getItemCname());
+                a.setCNAME(dictService.queryOneByItemCodeAndCodesetCode("dm.faultStatus", a.getCNAME()).getItemCname());
             }
             eChartResDTO.setShowA(listA);
         }
-        if (StringUtils.isNotEmpty(list)){
+        if (StringUtils.isNotEmpty(list)) {
             eChartResDTO.setShowCount(list);
         }
         return eChartResDTO;
