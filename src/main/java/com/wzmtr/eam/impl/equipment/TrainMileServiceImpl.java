@@ -272,7 +272,6 @@ public class TrainMileServiceImpl implements TrainMileService {
                     throw new CommonException(ErrorCode.NORMAL_ERROR, "导入文件中存在当前日期周期后的数据，请修改后重新导入");
                 }
             }
-            List<TrainMileDailyReqDTO> temp = new ArrayList<>();
             for (ExcelTrainMileDailyReqDTO reqDTO : list) {
                 TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
@@ -287,13 +286,8 @@ public class TrainMileServiceImpl implements TrainMileService {
                 }
                 req.setRecRevisor(TokenUtils.getCurrentPersonId());
                 req.setRecReviseTime(DateUtils.getCurrentTime());
-                temp.add(req);
-            }
-            // 根据导入数据修改值
-            if (!temp.isEmpty()) {
-                for (TrainMileDailyReqDTO req : temp) {
-                    trainMileMapper.importTrainDailyMile(req);
-                }
+                // 根据导入数据修改值
+                trainMileMapper.importTrainDailyMile(req);
             }
         }
     }

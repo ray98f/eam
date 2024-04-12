@@ -240,6 +240,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
             dates.add(add);
             startDate = startDate.plusDays(1);
         }
+        dates.add(endDateStr);
         return dates;
     }
 }
