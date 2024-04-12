@@ -192,4 +192,18 @@ public class TrainMileController {
         return DataResponse.success();
     }
 
+    /**
+     * 初始化每日列车里程及能耗
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 初始话成功
+     */
+    @GetMapping("/mile/daily/init")
+    @ApiOperation(value = "初始化每日列车里程及能耗")
+    public DataResponse<T> initTrainDailyMile(@RequestParam String startTime,
+                                              @RequestParam String endTime) {
+        trainMileService.initTrainDailyMile(startTime, endTime);
+        return DataResponse.success();
+    }
+
 }

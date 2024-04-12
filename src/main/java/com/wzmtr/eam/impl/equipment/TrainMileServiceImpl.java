@@ -6,6 +6,7 @@ import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelTrainMileDailyReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
@@ -293,6 +294,18 @@ public class TrainMileServiceImpl implements TrainMileService {
                 for (TrainMileDailyReqDTO req : temp) {
                     trainMileMapper.importTrainDailyMile(req);
                 }
+            }
+        }
+    }
+
+    @Override
+    public void initTrainDailyMile(String startTime, String endTime) {
+        List<RegionResDTO> trains = equipmentMapper.listTrainRegion("02");
+        List<String> dates = DateUtils.getDatesBetween(startTime, endTime);
+        if (StringUtils.isNotEmpty(dates) && StringUtils.isNotEmpty(trains)) {
+            int times = (int) Math.ceil(dates.size() / 80.0);
+            for (int i = 0; i < times; i++) {
+                trainMileMapper.initTrainDailyMile(dates.subList(i * 80, Math.min((i + 1) * 80, dates.size() - 1)), trains);
             }
         }
     }

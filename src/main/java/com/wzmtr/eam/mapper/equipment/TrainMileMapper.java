@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
@@ -106,5 +107,12 @@ public interface TrainMileMapper {
      * @return 前一天的列车累计运营里程
      */
     Double getLastTotalWorkMile(String equipCode, String day);
+
+    /**
+     * 初始化每日列车里程及能耗
+     * @param dateDays 初始化日期
+     * @param trains 列车信息
+     */
+    void initTrainDailyMile(List<String> dateDays, List<RegionResDTO> trains);
 
 }

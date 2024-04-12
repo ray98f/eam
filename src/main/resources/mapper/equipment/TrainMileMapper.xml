@@ -552,4 +552,31 @@
         FROM T_TRAIN_MILE
         WHERE EQUIP_CODE=#{equipCode} AND #{day}>"DAY"
     </select>
+
+    <insert id="initTrainDailyMile">
+        INSERT ALL
+        <foreach collection="dateDays" index="index" item="dateDay" separator=" ">
+            <foreach collection="trains" index="index" item="train" separator=" ">
+                INTO T_TRAIN_MILE (
+                REC_ID,
+                EQUIP_CODE,
+                EQUIP_NAME,
+                "DAY",
+                DAILY_WORK_MILE,
+                TOTAL_WORK_MILE,
+                REC_CREATOR,
+                REC_CREATE_TIME)
+                VALUES (
+                sys_guid(),
+                #{train.nodeCode,jdbcType=VARCHAR},
+                #{train.nodeName,jdbcType=VARCHAR},
+                #{dateDay,jdbcType=VARCHAR},
+                0,
+                0,
+                'admin',
+                TO_CHAR(sysdate,'YYYY-MM-DD HH24:MI:SS'))
+            </foreach>
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 </mapper>
