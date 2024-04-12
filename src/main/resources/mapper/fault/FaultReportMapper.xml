@@ -180,6 +180,7 @@
         EXT5,  <!-- 扩展字段5 -->
         IF_PHM,
         IF_RELIABILITY,
+        IF_OTHER,
         TRAIN_TAG)
         VALUES (
         #{recId,jdbcType=VARCHAR},
@@ -240,6 +241,7 @@
         #{ext5,jdbcType=VARCHAR},
         #{ifPhm,jdbcType=VARCHAR},
         #{ifReliability,jdbcType=VARCHAR},
+        #{ifOther,jdbcType=VARCHAR},
         #{trainTag,jdbcType=VARCHAR})
     </insert>
 
@@ -741,6 +743,9 @@
         d.EXT4	as "ext4",  <!-- 扩展字段4 -->
         d.EXT5	as "ext5", <!-- 扩展字段5 -->
         d.TRAIN_TAG as "traintag",
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) as "fillinUserName",
         df.FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单号 -->
         df.ORDER_STATUS	as "orderStatus" , <!-- 工单状态 -->
@@ -875,6 +880,9 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         df.EXT1 AS "levelfault"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
@@ -999,6 +1007,9 @@
         d.EXT3 as "affect",  <!-- 扩展字段3 -->
         d.EXT4 as "ext4",  <!-- 扩展字段4 -->
         d.EXT5 as "ext5", <!-- 扩展字段5 -->
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         d.TRAIN_TAG as "traintag",
         (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) as "fillinUserName",
         df.FAULT_WORK_NO as "faultWorkNo",  <!-- 故障工单号 -->

@@ -79,6 +79,9 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         df.EXT1 AS "levelfault"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
@@ -249,6 +252,9 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         df.EXT1 AS "faultLevel"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
@@ -399,6 +405,9 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         df.EXT1 AS "levelfault"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
@@ -554,6 +563,9 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         df.EXT1 AS "levelfault"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
@@ -802,6 +814,9 @@
         df.REC_ID AS orderRecId,
         df.ORDER_STATUS AS orderStatus,
         df.EXT1 AS levelfault,
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         (
         CASE
         WHEN TO_DATE(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') <![CDATA[<]]> TO_DATE(SYSDATE - 20) AND
@@ -936,6 +951,9 @@
         d.EXT3 AS "affect",
         d.EXT4 AS "ext4",
         d.EXT5 AS "ext5",
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         d.TRAIN_TAG AS "traintag"
         FROM T_FAULT_INFO d
         LEFT JOIN T_FAULT_ORDER df on d.FAULT_NO=df.FAULT_NO
@@ -1103,6 +1121,9 @@
         df.FAULT_WORK_NO AS "faultWorkNo",
         df.REC_ID AS "orderRecId",
         df.ORDER_STATUS AS "orderStatus",
+        d.IF_PHM AS "ifPhm",
+        d.IF_RELIABILITY AS "ifReliability",
+        d.IF_OTHER AS "ifOther",
         df.EXT1 AS "levelfault"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
