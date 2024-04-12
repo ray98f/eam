@@ -312,7 +312,7 @@
         <if test="equipName!=null and equipName!=''">
             AND EQUIP_NAME=#{equipName}
         </if>
-        order by "DAY" desc
+        order by "DAY" desc, EQUIP_NAME ASC
     </select>
 
     <select id="getTrainDailyMileDetail" resultType="com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO">
