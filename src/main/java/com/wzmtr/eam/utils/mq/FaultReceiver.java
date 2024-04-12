@@ -104,8 +104,8 @@ public class FaultReceiver {
                 // 来源系统名称填充创建人
                 faultOrderDO.setRecCreator(fault.getSysName());
                 insertToFaultOrder(faultOrderDO, fault.getFaultNo(), faultWorkNo);
-                // 中铁通的直接变更为派工状态并发送待办给工班人员
-                zttSendOverTodo(majorCode, req, faultInfoDO, faultOrderDO, faultWorkNo);
+                // 中铁通的直接变更为派工状态并发送待办给工班人员（2024-04-12取消自动派工）
+//                zttSendOverTodo(majorCode, req, faultInfoDO, faultOrderDO, faultWorkNo);
                 // 添加工单流程
                 addFaultFlow(fault.getFaultNo(), faultWorkNo);
             }
