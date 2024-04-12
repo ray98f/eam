@@ -152,6 +152,7 @@ public class FaultReceiver {
         faultInfo.setFillinTime(DateUtils.getCurrentTime());
         faultInfo.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
         faultInfo.setRecCreateTime(DateUtils.getCurrentTime());
+        faultInfo.setIfOther("0");
         faultReportMapper.addToFaultInfo(faultInfo);
     }
 
