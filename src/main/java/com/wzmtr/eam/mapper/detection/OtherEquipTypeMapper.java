@@ -59,6 +59,13 @@ public interface OtherEquipTypeMapper {
     void modifyOtherEquipType(OtherEquipTypeReqDTO otherEquipTypeReqDTO);
 
     /**
+     * 修改其他设备检修有效期
+     * @param detectionPeriod 周期
+     * @param typeCode 检修类别编号
+     */
+    void modifyOtherEquipValidityDate(String detectionPeriod, String typeCode);
+
+    /**
      * 删除其他设备分类
      * @param ids ids
      * @param userId 用户id

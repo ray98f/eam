@@ -84,7 +84,7 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
         specialEquipTypeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         specialEquipTypeReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         specialEquipTypeMapper.modifySpecialEquipType(specialEquipTypeReqDTO);
-        if (lastRes.getDetectionPeriod().equals(specialEquipTypeReqDTO.getDetectionPeriod())) {
+        if (!lastRes.getDetectionPeriod().equals(specialEquipTypeReqDTO.getDetectionPeriod())) {
             specialEquipTypeMapper.modifySpecialEquipValidityDate(specialEquipTypeReqDTO.getDetectionPeriod(), specialEquipTypeReqDTO.getTypeCode());
         }
     }
