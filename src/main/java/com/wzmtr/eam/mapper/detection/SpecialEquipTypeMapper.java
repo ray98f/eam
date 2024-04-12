@@ -59,6 +59,13 @@ public interface SpecialEquipTypeMapper {
     void modifySpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO);
 
     /**
+     * 修改特种设备检修有效期
+     * @param detectionPeriod 周期
+     * @param typeCode 检修类别编号
+     */
+    void modifySpecialEquipValidityDate(String detectionPeriod, String typeCode);
+
+    /**
      * 删除特种设备分类
      * @param ids ids
      * @param userId 用户id

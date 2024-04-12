@@ -9,7 +9,10 @@ import com.wzmtr.eam.dto.res.detection.excel.ExcelSpecialEquipTypeResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.mapper.detection.SpecialEquipTypeMapper;
 import com.wzmtr.eam.service.detection.SpecialEquipTypeService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,9 +80,13 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
 
     @Override
     public void modifySpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO) {
+        SpecialEquipTypeResDTO lastRes = specialEquipTypeMapper.getSpecialEquipTypeDetail(specialEquipTypeReqDTO.getRecId());
         specialEquipTypeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         specialEquipTypeReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         specialEquipTypeMapper.modifySpecialEquipType(specialEquipTypeReqDTO);
+        if (lastRes.getDetectionPeriod().equals(specialEquipTypeReqDTO.getDetectionPeriod())) {
+            specialEquipTypeMapper.modifySpecialEquipValidityDate(specialEquipTypeReqDTO.getDetectionPeriod(), specialEquipTypeReqDTO.getTypeCode());
+        }
     }
 
     @Override
