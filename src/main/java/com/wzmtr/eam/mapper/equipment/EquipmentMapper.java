@@ -41,6 +41,8 @@ public interface EquipmentMapper {
     Page<EquipmentResDTO> pageEquipment(Page<EquipmentResDTO> page, String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture,List<String> majors);
 
+    Page<EquipmentResDTO> pageEquipmentByRoom(Page<EquipmentResDTO> page,String roomId, String equipCode, String equipName, String majorCode, String systemCode);
+
     List<EquipmentResDTO> allList(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture);
 
