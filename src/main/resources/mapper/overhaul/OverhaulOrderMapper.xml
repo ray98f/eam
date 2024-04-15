@@ -756,7 +756,7 @@
         EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
         WORKER_GROUP_CODE	as "workerGroupCode",  <!-- 作业工班编码 -->
         (select NAME from SYS_OFFICE where (ID=WORKER_GROUP_CODE or AREA_ID=WORKER_GROUP_CODE))	as "workGroupName",  <!-- 作业工班名称 -->
-        (select tog.SYS_OFFICE from SYS_OFFICE tog WHERE tog.AREA_ID=WORKER_GROUP_CODE) as "workerOrgName",
+        (select tog.NAME from SYS_OFFICE tog WHERE tog.AREA_ID=WORKER_GROUP_CODE) as "workerOrgName",
         WORKER_NAME	as "workerName",  <!-- 作业人员姓名 -->
         WORKER_CODE	as "workerCode",  <!-- 作业人员工号 -->
         SEND_PERSON_ID	as "sendPersonId",  <!-- 派工人工号 -->
