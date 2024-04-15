@@ -189,6 +189,29 @@
         ORDER BY EQUIP_NAME ASC
     </select>
 
+    <select id="pageEquipmentByRoom" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
+        SELECT t1.*
+        FROM T_EQUIPMENT t1
+        LEFT JOIN T_EQUIPMENT_ROOM_RELATION t2 ON t1.REC_ID=t2.EQUIPMENT_ID
+        LEFT JOIN T_EQUIPMENT_ROOM t3 ON t2.ROOM_ID=t3.REC_ID
+        WHERE 1=1 AND t1.APPROVAL_STATUS='30'
+        <if test="equipCode!=null and equipCode!=''">
+            and t1.EQUIP_CODE like '%' || #{equipCode} || '%'
+        </if>
+        <if test="equipName!=null and equipName!=''">
+            and t1.EQUIP_NAME like '%' || #{equipName} || '%'
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            and t1.MAJOR_CODE=#{majorCode}
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            and t1.SYSTEM_CODE=#{systemCode}
+        </if>
+        and t3.REC_ID=#{roomId}
+    </select>
+
+
+
     <select id="allList" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30'

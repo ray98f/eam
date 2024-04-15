@@ -3,13 +3,16 @@ package com.wzmtr.eam.impl.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.equipment.EquipmentRoomRelationReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentRoomReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelEquipRoomResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.equipment.EquipmentRoomService;
@@ -37,6 +40,9 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Autowired
     private EquipmentRoomMapper equipmentRoomMapper;
+
+    @Autowired
+    private EquipmentMapper equipmentMapper;
 
     @Override
     public Page<EquipmentRoomResDTO> listEquipmentRoom(String equipRoomCode, String equipRoomName, String lineCode, String position1Code,
@@ -116,6 +122,34 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
             }
             EasyExcelUtils.export(response, "设备房信息", list);
         }
+    }
+
+    @Override
+    public void addEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
+
+        if(StringUtils.isNotEmpty(equipmentRoomRelationReqDTO.getRoomId()) && equipmentRoomRelationReqDTO.getIds() != null
+        && equipmentRoomRelationReqDTO.getIds().size()>0){
+            equipmentRoomMapper.insertRelationBatch(equipmentRoomRelationReqDTO);
+        }else{
+            throw new CommonException(ErrorCode.INSERT_ERROR);
+        }
+
+    }
+
+    @Override
+    public void deleteEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
+        if(StringUtils.isNotEmpty(equipmentRoomRelationReqDTO.getRoomId()) && equipmentRoomRelationReqDTO.getIds() != null
+                && equipmentRoomRelationReqDTO.getIds().size()>0){
+            equipmentRoomMapper.deleteRelationBatch(equipmentRoomRelationReqDTO);
+        }else{
+            throw new CommonException(ErrorCode.INSERT_ERROR);
+        }
+    }
+
+    @Override
+    public Page<EquipmentResDTO> pageEquipment(String roomId,String equipCode,String equipName, String majorCode, String systemCode, PageReqDTO pageReqDTO) {
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return equipmentMapper.pageEquipmentByRoom(pageReqDTO.of(),roomId, equipCode, equipName, majorCode, systemCode);
     }
 
 }

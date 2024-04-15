@@ -1,6 +1,8 @@
 package com.wzmtr.eam.controller.equipment;
 
+import com.wzmtr.eam.dto.req.equipment.EquipmentRoomRelationReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentRoomReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -86,5 +88,29 @@ public class EquipmentRoomController {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
         }
         equipmentRoomService.exportEquipmentRoom(baseIdsEntity.getIds(), response);
+    }
+
+    @GetMapping("/equipment")
+    @ApiOperation(value = "获取设备房设备列表")
+    public PageResponse<EquipmentResDTO> listEquipment(@RequestParam @ApiParam("设备房") String roomId,
+                                                       @RequestParam(required = false) @ApiParam("设备编码") String equipCode,
+                                                       @RequestParam(required = false) @ApiParam("设备名称") String equipName,
+                                                       @RequestParam(required = false) @ApiParam("专业编号") String majorCode,
+                                                       @RequestParam(required = false) @ApiParam("系统编号") String systemCode,
+                                                       @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(equipmentRoomService.pageEquipment(roomId, equipCode, equipName, majorCode, systemCode, pageReqDTO));
+    }
+    @PostMapping("/deleteEquipment")
+    @ApiOperation(value = "取消关联设备")
+    public DataResponse<T> deleteEquipment(@RequestBody EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
+        equipmentRoomService.deleteEquipment(equipmentRoomRelationReqDTO);
+        return DataResponse.success();
+    }
+
+    @PostMapping("/addEquipment")
+    @ApiOperation(value = "关联设备")
+    public DataResponse<T> addEquipment(@RequestBody EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
+        equipmentRoomService.addEquipment(equipmentRoomRelationReqDTO);
+        return DataResponse.success();
     }
 }
