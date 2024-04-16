@@ -180,7 +180,9 @@
         EXT5,  <!-- 扩展字段5 -->
         IF_PHM,
         IF_RELIABILITY,
-        IF_OTHER,
+        <if test="ifOther!=null and ifOther!=''">
+            IF_OTHER,
+        </if>
         TRAIN_TAG)
         VALUES (
         #{recId,jdbcType=VARCHAR},
@@ -241,7 +243,9 @@
         #{ext5,jdbcType=VARCHAR},
         #{ifPhm,jdbcType=VARCHAR},
         #{ifReliability,jdbcType=VARCHAR},
-        #{ifOther,jdbcType=VARCHAR},
+        <if test="ifOther!=null and ifOther!=''">
+            #{ifOther,jdbcType=VARCHAR},
+        </if>
         #{trainTag,jdbcType=VARCHAR})
     </insert>
 
