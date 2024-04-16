@@ -26,6 +26,8 @@ public interface FaultQueryMapper {
 
     Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req,List<String> majors);
 
+    Page<FaultDetailResDTO> queryByUser(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req,List<String> majors,String userId,String officeAreaId);
+
     List<FaultDetailResDTO> queryLimit(String userDept,List<String> majors);
 
     Page<FaultDetailResDTO> statustucQuery(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);

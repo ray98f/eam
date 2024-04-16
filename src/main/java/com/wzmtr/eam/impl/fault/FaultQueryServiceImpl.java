@@ -16,6 +16,7 @@ import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
+import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
@@ -107,7 +108,18 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
             userMajorList = userAccountService.listUserMajor();
         }
-        Page<FaultDetailResDTO> page = faultQueryMapper.query(reqDTO.of(), reqDTO,userMajorList);
+        Page<FaultDetailResDTO> page;
+        //获取用户当前角色
+        List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
+        //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
+        if(!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))){
+            page = faultQueryMapper.query(reqDTO.of(), reqDTO,userMajorList);
+        }else{
+            page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO,userMajorList,TokenUtils.getCurrentPersonId(),TokenUtils.getCurrentPerson().getOfficeAreaId());
+        }
+
         List<FaultDetailResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
             for (FaultDetailResDTO res : list) {
