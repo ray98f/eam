@@ -78,8 +78,8 @@ public class UserGroupMemberServiceImpl implements UserGroupMemberService {
     @Override
     public List<ZcjxResDTO> queryJXWorker(String dicCode) {
         List<ZcjxResDTO> userList = new ArrayList<>();
-        //中车检修班10
-        if(CommonConstants.TEN_STRING.equals(dicCode)){
+        //中车检修班30
+        if(CommonConstants.THIRTY_STRING.equals(dicCode)){
             userList = orgMajorMapper.queryJXWorker(CommonConstants.ZC_JX);
         //售后服务站20
         }else{
