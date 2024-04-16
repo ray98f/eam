@@ -82,4 +82,5 @@ public class CommonController {
     public void rethrow(HttpServletRequest request) throws Throwable {
         throw (Throwable) request.getAttribute("filter.error");
     }
+
 }

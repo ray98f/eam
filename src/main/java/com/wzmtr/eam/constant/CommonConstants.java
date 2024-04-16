@@ -47,6 +47,8 @@ public class CommonConstants {
     public static final String DM_045 = "DM_045";//工程车工程师
     public static final String ZCJD = "ZCJD";//中车-检调
     public static final String DM_048 = "DM_048";//中车-生产调度
+    public static final String ZC_SHFW = "ZC_SHFW";//中车-售后服务站
+    public static final String ZC_JX = "100000044";//中车-检修班ID
 
 
 
