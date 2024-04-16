@@ -112,7 +112,7 @@
         #{deleteFlag,jdbcType=VARCHAR},
         #{archiveFlag,jdbcType=VARCHAR},
         #{recStatus,jdbcType=VARCHAR},
-        #{dealerUnit,jdbcType=VARCHAR}
+        #{dealerUnit,jdbcType=VARCHAR},
         #{dealerNum,jdbcType=VARCHAR},
         #{ext1,jdbcType=VARCHAR},
         #{ext2,jdbcType=VARCHAR},
