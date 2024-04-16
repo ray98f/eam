@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.common;
 
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.DispatchResDTO;
+import com.wzmtr.eam.dto.res.common.ZcjxResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.service.common.OrganizationService;
@@ -55,5 +56,11 @@ public class UserGroupMemberController {
     @ApiOperation(value = "获取检修调度人")
     public DataResponse<List<DispatchResDTO>> queryDispatch() {
         return DataResponse.of(userGroupMemberService.queryDispatch());
+    }
+
+    @PostMapping("/queryJXWorker")
+    @ApiOperation(value = "获取检修工班/售后服务站")
+    public DataResponse<List<ZcjxResDTO>> queryJXWorker(@RequestParam String dicCode) {
+        return DataResponse.of(userGroupMemberService.queryJXWorker(dicCode));
     }
 }

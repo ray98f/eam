@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.basic.OrgMajorReqDTO;
 import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.common.DispatchResDTO;
+import com.wzmtr.eam.dto.res.common.ZcjxResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -50,6 +51,8 @@ public interface OrgMajorMapper {
 
 
     List<DispatchResDTO> queryDispatch();
+    List<ZcjxResDTO>  queryJXWorker(String officeId);
+    List<ZcjxResDTO>  querySHWorker(String officeId,String roleCode);
 
     /**
      * 根据位置和专业获取部门
