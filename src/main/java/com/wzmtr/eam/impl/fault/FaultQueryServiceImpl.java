@@ -112,7 +112,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //获取用户当前角色
         List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
-        if(!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+        if(CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))){
             page = faultQueryMapper.query(reqDTO.of(), reqDTO,userMajorList);
