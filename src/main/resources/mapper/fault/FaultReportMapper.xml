@@ -1033,7 +1033,7 @@
         <if test="majorCode!=null and majorCode!=''">
            and d.MAJOR_CODE=#{majorCode}
         </if>
-        <if test="majors!=null">
+        <if test="majors!=null and majors.size()>0">
             and d.MAJOR_CODE IN (
             <foreach collection="majors" index="index" item="major" separator=",">
                 #{major}

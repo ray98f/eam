@@ -117,7 +117,7 @@
             <if test="req.majorCode!=null and req.majorCode!=''">
                 AND d.MAJOR_CODE=#{req.majorCode}
             </if>
-            <if test="majors!=null">
+            <if test="majors!=null and majors.size()>0">
                 and d.MAJOR_CODE IN (
                 <foreach collection="majors" index="index" item="major" separator=",">
                     #{major}
@@ -262,7 +262,7 @@
             <if test="req.majorCode!=null and req.majorCode!=''">
                 AND d.MAJOR_CODE=#{req.majorCode}
             </if>
-            <if test="majors!=null">
+            <if test="majors!=null and majors.size()>0">
                 and d.MAJOR_CODE IN (
                 <foreach collection="majors" index="index" item="major" separator=",">
                     #{major}
@@ -308,7 +308,7 @@
             <if test="userDept!=null and userDept!=''">
                 AND u.OFFICE_ID=#{userDept}
             </if>
-            <if test="majors!=null">
+            <if test="majors!=null and majors.size()>0">
                 and d.MAJOR_CODE IN (
                 <foreach collection="majors" index="index" item="major" separator=",">
                     #{major}
