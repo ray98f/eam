@@ -22,7 +22,7 @@
         PLAN_STATUS	as "planStatus",  <!-- 计划状态 -->
         TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
         WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        WORK_FLOW_INST_STATUS as "workFlowInstStatus",  <!-- 工作流实例状态 -->
         COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
         COMPANY_NAME	as "companyName",  <!-- 公司名称 -->
         REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
