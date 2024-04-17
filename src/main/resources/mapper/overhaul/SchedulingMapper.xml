@@ -7,8 +7,8 @@
         SCHEDULING_NAME, PLAN_CODE, PLAN_NAME, "TYPE"
         FROM T_OVERHAUL_ORDER_SCHEDULING
         WHERE DELETE_FLAG='0' AND EQUIP_CODE=#{equipCode}
-        AND TO_DATE("DAY", 'YYYY-MM-DD')>=TO_DATE(TO_CHAR(#{startTime}, 'YYYY-MM-DD'), 'YYYY-MM-DD')
-        AND TO_DATE(TO_CHAR(#{endTime}, 'YYYY-MM-DD'), 'YYYY-MM-DD')>=TO_DATE("DAY", 'YYYY-MM-DD')
+        AND TO_DATE("DAY", 'YYYY-MM-DD')>=TO_DATE(#{startTime}, 'YYYY-MM-DD')
+        AND TO_DATE(#{endTime}, 'YYYY-MM-DD')>=TO_DATE("DAY", 'YYYY-MM-DD')
     </select>
 
     <select id="getSchedulingDetail" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
