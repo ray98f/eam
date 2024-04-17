@@ -48,12 +48,23 @@ public class SchedulingController {
     /**
      * 获取工单排期详情
      * @param id id
-     * @return 工单排期列表
+     * @return 工单排期
      */
     @GetMapping("/detail")
     @ApiOperation(value = "获取工单排期详情")
     public DataResponse<SchedulingResDTO> getSchedulingDetail(@RequestParam String id) {
         return DataResponse.of(schedulingService.getSchedulingDetail(id));
+    }
+
+    /**
+     * 获取上一次工单排期详情
+     * @param id id
+     * @return 工单排期
+     */
+    @GetMapping("/last")
+    @ApiOperation(value = "获取上一次工单排期详情")
+    public DataResponse<SchedulingResDTO> getLastSchedulingDetail(@RequestParam String id) {
+        return DataResponse.of(schedulingService.getLastSchedulingDetail(id));
     }
 
     /**

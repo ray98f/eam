@@ -4,7 +4,9 @@
 
     <select id="listScheduling" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
         SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME,
-        SCHEDULING_NAME, PLAN_CODE, PLAN_NAME, "TYPE"
+        (CASE WHEN "TYPE"='1' THEN '一级修-' || SCHEDULING_NAME || '天包'
+        ELSE '二级修-' || SCHEDULING_NAME || '天包' END) SCHEDULING_NAME,
+        PLAN_CODE, PLAN_NAME, "TYPE"
         FROM T_OVERHAUL_ORDER_SCHEDULING
         WHERE DELETE_FLAG='0' AND EQUIP_CODE=#{equipCode}
         AND TO_DATE("DAY", 'YYYY-MM-DD')>=TO_DATE(#{startTime}, 'YYYY-MM-DD')
@@ -13,9 +15,20 @@
 
     <select id="getSchedulingDetail" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
         SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME,
-        SCHEDULING_NAME, PLAN_CODE, PLAN_NAME, "TYPE"
+        (CASE WHEN "TYPE"='1' THEN '一级修-' || SCHEDULING_NAME || '天包'
+        ELSE '二级修-' || SCHEDULING_NAME || '天包' END) SCHEDULING_NAME,
+        PLAN_CODE, PLAN_NAME, "TYPE"
         FROM T_OVERHAUL_ORDER_SCHEDULING
         WHERE DELETE_FLAG='0' AND REC_ID=#{id}
+    </select>
+
+    <select id="getLastSchedulingDetail" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
+        SELECT * FROM
+        (SELECT "DAY", SCHEDULING_NAME
+        FROM T_OVERHAUL_ORDER_SCHEDULING
+        WHERE EQUIP_CODE=#{equipCode} AND DELETE_FLAG='0'
+        AND "TYPE"=#{type} AND TO_DATE(#{day}, 'YYYY-MM-DD')>TO_DATE("DAY", 'YYYY-MM-DD')
+        ORDER BY "DAY" DESC) WHERE rownum=1
     </select>
 
     <update id="modifyScheduling">
@@ -32,7 +45,7 @@
         REC_REVISOR=#{req.recRevisor},
         REC_REVISE_TIME=TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
         WHERE EQUIP_CODE=#{req.equipCode} AND DELETE_FLAG='0' AND IS_TRIGGER='0'
-        AND TO_DATE("DAY", 'YYYY-MM-DD')>TO_DATE(#{req.day}, 'YYYY-MM-DD')
+        AND TO_DATE("DAY", 'YYYY-MM-DD')>TO_DATE(#{req.day}, 'YYYY-MM-DD') AND REC_ID!=#{req.recId}
     </update>
 
     <update id="removeSchedulingAfterNow">
@@ -60,7 +73,7 @@
         ORDER BY wrd.PERIOD ASC
     </select>
     
-    <select id="getTrainLastTriggerDay" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
+    <select id="getTrainLastTriggerScheduling" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
         SELECT * FROM
         (SELECT "DAY", SCHEDULING_NAME
         FROM T_OVERHAUL_ORDER_SCHEDULING

@@ -15,6 +15,8 @@ public class CommonConstants {
     public static final String UNDERLINE = "_";
     public static final String SINGLE_QUOTATION_MARK = "'";
     public static final String DOUBLE_QUOTATION_MARKS = "\"";
+
+    public static final String DAY = "yyyy-MM-dd";
     public static final String TIME = "yyyy-MM-dd HH:mm:ss";
 
     public static final String XLS = "xls";

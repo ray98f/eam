@@ -31,6 +31,13 @@ public interface SchedulingService {
     SchedulingResDTO getSchedulingDetail(String id);
 
     /**
+     * 获取上一次工单排期详情
+     * @param id id
+     * @return 工单排期
+     */
+    SchedulingResDTO getLastSchedulingDetail(String id);
+
+    /**
      * 编辑工单排期
      * @param req 编辑工单排期传参
      */

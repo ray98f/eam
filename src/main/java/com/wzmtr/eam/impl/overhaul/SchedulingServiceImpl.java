@@ -100,6 +100,15 @@ public class SchedulingServiceImpl implements SchedulingService {
     }
 
     @Override
+    public SchedulingResDTO getLastSchedulingDetail(String id) {
+        SchedulingResDTO res = schedulingMapper.getSchedulingDetail(id);
+        if (StringUtils.isNull(res)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        return schedulingMapper.getLastSchedulingDetail(res.getEquipCode(), res.getType(), res.getDay());
+    }
+
+    @Override
     public void modifyScheduling(SchedulingReqDTO req) {
         SchedulingResDTO old = schedulingMapper.getSchedulingDetail(req.getRecId());
         if (StringUtils.isNull(old)) {
@@ -108,9 +117,10 @@ public class SchedulingServiceImpl implements SchedulingService {
         req.setRecRevisor(TokenUtils.getCurrentPersonId());
         schedulingMapper.modifyScheduling(req);
         // 当修改后的时间比原先的时间大，修改该设备后续所有排期的日期
-        if (DateUtils.dateCompare(req.getDay(), old.getDay(), "yyyy-MM-dd") == 1) {
+        if (DateUtils.dateCompare(req.getDay(), old.getDay(), CommonConstants.DAY) == 1) {
             long days = DateUtils.getDayBetweenDays(old.getDay(), req.getDay());
             if (days > 0) {
+                req.setDay(old.getDay());
                 schedulingMapper.syncModifyScheduling(req, days);
             }
         }
@@ -148,7 +158,7 @@ public class SchedulingServiceImpl implements SchedulingService {
         List<SchedulingRuleResDTO> list = schedulingMapper.getTrainRule(equipCode, type);
         if (StringUtils.isNotEmpty(list)) {
             // 获取车辆上一次已触发的排期信息
-            SchedulingResDTO scheduling = schedulingMapper.getTrainLastTriggerDay(equipCode, type);
+            SchedulingResDTO scheduling = schedulingMapper.getTrainLastTriggerScheduling(equipCode, type);
             // 当上一次已触发的排期信息不为空时，取上次触发时间为起始时间
             String startTimeStr = "", endTimeStr = "";
             // 记录上次触发排期名称为起始排期数字
@@ -298,7 +308,7 @@ public class SchedulingServiceImpl implements SchedulingService {
         }
         // 获取日期范围内，指定日期的固定步长日期的所有日期
         List<String> days = DateUtils.getAllTimesWithinRange(changeStartTime, endTime, dateType);
-        // 去除第一个排期时间
+        // 满足一定条件时，去除第一个排期时间
         if (dateType == MONTH || dateType == ONE_LEVEL_REPAIR_FOUR) {
             if (lastNum != 0 && StringUtils.isNotEmpty(days)) {
                 days.remove(0);

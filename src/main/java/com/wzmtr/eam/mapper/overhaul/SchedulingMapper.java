@@ -36,6 +36,15 @@ public interface SchedulingMapper {
     SchedulingResDTO getSchedulingDetail(String id);
 
     /**
+     * 获取车辆上一次的排期信息
+     * @param equipCode 车辆设备编号
+     * @param type 类型
+     * @param day 日期
+     * @return 上一次的排期信息
+     */
+    SchedulingResDTO getLastSchedulingDetail(String equipCode, String type, String day);
+
+    /**
      * 编辑工单排期
      * @param req 编辑工单排期传参
      */
@@ -69,7 +78,7 @@ public interface SchedulingMapper {
      * @param type 类型
      * @return 已触发的排期信息
      */
-    SchedulingResDTO getTrainLastTriggerDay(String equipCode, String type);
+    SchedulingResDTO getTrainLastTriggerScheduling(String equipCode, String type);
 
     /**
      * 新增检修工单排期
