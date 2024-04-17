@@ -236,7 +236,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         // String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(processId, backOpinion);
         dmfm03.setRecStatus("10");
-        dmfm03.setWorkFlowInstStatus("");
+        dmfm03.setWorkFlowInstStatus(" ");
         dmfm03.setWorkFlowInstId("");
         faultAnalyzeMapper.update(dmfm03);
         workFlowLogService.add(WorkFlowLogBO.builder()
