@@ -139,7 +139,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     private void toZCJD(FaultReportReqDTO reqDTO, FaultOrderDO faultOrderDO, String nextFaultWorkNo) {
-        faultOrderDO.setOrderStatus(OrderStatus.XIA_FA.getCode());
+        faultOrderDO.setOrderStatus(OrderStatus.TI_BAO.getCode());
         faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultReportMapper.updateFaultOrder(faultOrderDO);
@@ -150,7 +150,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     private void toZTTSCDD(FaultReportReqDTO reqDTO, FaultOrderDO faultOrderDO, String nextFaultWorkNo) {
-        faultOrderDO.setOrderStatus(OrderStatus.XIA_FA.getCode());
+        faultOrderDO.setOrderStatus(OrderStatus.TI_BAO.getCode());
         faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultReportMapper.updateFaultOrder(faultOrderDO);

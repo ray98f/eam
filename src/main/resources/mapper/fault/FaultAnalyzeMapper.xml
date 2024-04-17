@@ -186,7 +186,7 @@
             <if test="req.majorCode!=null and req.majorCode!=''">
                 and d3.MAJOR_CODE =#{req.majorCode}
             </if>
-            <if test="majors!=null">
+            <if test="majors!=null and majors.size()>0">
                 and d3.MAJOR_CODE IN (
                 <foreach collection="majors" index="index" item="major" separator=",">
                     #{major}

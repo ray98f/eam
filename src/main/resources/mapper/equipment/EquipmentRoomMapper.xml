@@ -40,7 +40,7 @@
         <if test="subjectCode!=null and subjectCode!=''">
             and SUBJECT_CODE=#{subjectCode}
         </if>
-        <if test="majors!=null">
+        <if test="majors!=null and majors.size()>0">
             and SUBJECT_CODE IN (
             <foreach collection="majors" index="index" item="major" separator=",">
                 #{major}

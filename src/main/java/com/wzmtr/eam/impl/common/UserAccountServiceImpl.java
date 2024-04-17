@@ -111,7 +111,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         // 获取登录用户相关专业
         if(res != null){
 
-            //如果改用户的角色可以查看全专业
+            //如果该用户的角色可以查看全专业
             UserRoleResDTO r = res.stream().filter(a-> CommonConstants.SYS_ALL_01.equals(a.getRoleCode())).findFirst().orElse(null);
             if(r != null){
                 majorList = ( userAccountMapper.getAllMajor());
