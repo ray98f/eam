@@ -281,7 +281,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 //删除待办
                 overTodoService.cancelTodo(recId);
                 overhaulTplReqDTO.setWorkFlowInstId("");
-                overhaulTplReqDTO.setWorkFlowInstStatus("");
+                overhaulTplReqDTO.setWorkFlowInstStatus(" ");
                 overhaulTplReqDTO.setTrialStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()
