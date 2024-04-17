@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -242,5 +243,87 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         }
         dates.add(endDateStr);
         return dates;
+    }
+
+    /**
+     * 获取日期范围内，指定日期的固定步长日期的所有日期
+     * @param startStr 开始时间字符串
+     * @param endStr 结束时间字符串
+     * @param intervalDays 步长日期
+     * @return 日期列表
+     */
+    public static List<String> getAllTimesWithinRange(String startStr, String endStr, int intervalDays) {
+        List<String> times = new ArrayList<>();
+        LocalDate start = string2LocalDate(startStr);
+        LocalDate end = string2LocalDate(endStr);
+        LocalDate current = start;
+        while (current.isBefore(end)) {
+            times.add(localDate2String(current));
+            current = current.plusDays(intervalDays);
+        }
+        return times;
+    }
+
+    /**
+     * LocalDateTime转String
+     * @param time LocalDate
+     * @return String
+     */
+    public static String localDate2String(LocalDate time) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return time.format(df);
+    }
+
+    /**
+     * String转LocalDate
+     * @param dateStr 日期字符串
+     * @return LocalDate
+     */
+    public static LocalDate string2LocalDate(String dateStr) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(dateStr, df);
+    }
+
+    /**
+     * 指定时间往前或往后移动x天
+     * @param specifiedDay 指定时间
+     * @param x 指定天数
+     * @return 移动后的日期
+     * @throws ParseException 异常
+     */
+    public static String getDayBefore(String specifiedDay, int x) throws ParseException {
+        Calendar c = Calendar.getInstance();
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(specifiedDay);
+        c.setTime(date);
+        int day = c.get(Calendar.DATE);
+        // 移动x天
+        c.set(Calendar.DATE, day + x);
+        return new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+    }
+
+    /**
+     * 日期增加指定天数
+     * @param day 日期
+     * @param i 天数
+     * @return 修改后的日期
+     * @throws ParseException 异常
+     */
+    public static String addDayDay(String day, int i) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date d = new Date(sdf.parse(day).getTime() + 24L * 3600L * 1000L * i);
+        return sdf.format(d);
+    }
+
+    /**
+     * 获取两个日期之间的天数间隔
+     * @param startTime 开始日期
+     * @param endTime 结束日期
+     * @return 天数间隔
+     */
+    public static Long getDayBetweenDays(String startTime, String endTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date1 = LocalDate.parse(startTime, formatter);
+        LocalDate date2 = LocalDate.parse(endTime, formatter);
+        return Duration.between(date1.atStartOfDay(), date2.atStartOfDay()).toDays();
     }
 }
