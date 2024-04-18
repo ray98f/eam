@@ -13,6 +13,7 @@ import com.wzmtr.eam.utils.MinioUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.errors.*;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Author: Li.Wang
@@ -77,5 +81,11 @@ public class MinioServiceImpl implements MinioService {
                 .build();
         fileMapper.insertFile(build);
         return fileMapper.getFile(url, proName, oldName);
+    }
+
+    @Override
+    public void clear(String bucketCode) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        minioUtils.clearBucket(bucketCode);
+        minioUtils.removeBucket(bucketCode);
     }
 }
