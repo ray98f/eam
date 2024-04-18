@@ -50,7 +50,7 @@
 
     <update id="removeSchedulingAfterNow">
         UPDATE T_OVERHAUL_ORDER_SCHEDULING SET
-        DELETE_FLAG='1', REC_REVISOR=#{userId}, REC_REVISE_TIME=TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        DELETE_FLAG='1', REC_REVISOR=#{userId}, REC_REVISE_TIME=TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
         WHERE EQUIP_CODE=#{equipCode} AND DELETE_FLAG='0'
         AND TO_DATE("DAY", 'YYYY-MM-DD')>TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 'YYYY-MM-DD')
     </update>
@@ -116,4 +116,18 @@
         </foreach>
         SELECT * FROM dual
     </insert>
+
+    <update id="triggerScheduling">
+        UPDATE T_OVERHAUL_ORDER_SCHEDULING SET
+        IS_TRIGGER='1', REC_REVISOR='admin', REC_REVISE_TIME=TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
+        WHERE "DAY"=TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        <if test="list!=null and list.size()>0">
+            AND PLAN_CODE NOT IN (
+            <foreach collection="list" index="index" item="planCode" separator=",">
+                #{planCode}
+            </foreach>
+            )
+        </if>
+        AND DELETE_FLAG='0'
+    </update>
 </mapper>

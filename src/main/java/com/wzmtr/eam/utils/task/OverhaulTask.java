@@ -9,6 +9,7 @@ import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulPlanMapper;
+import com.wzmtr.eam.mapper.overhaul.SchedulingMapper;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +53,9 @@ public class OverhaulTask {
     private OverhaulOrderMapper overhaulOrderMapper;
 
     @Autowired
+    private SchedulingMapper schedulingMapper;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     /**
@@ -60,6 +65,7 @@ public class OverhaulTask {
     @Scheduled(cron = "0 30 3 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void trigger() {
+        List<String> errorPlanCode = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("MMdd");
         // 获取需要自动触发的检修计划并去重
         List<OverhaulPlanResDTO> plans = overhaulPlanMapper.getTriggerOverhaulPlan(sdf.format(new Date()));
@@ -79,10 +85,12 @@ public class OverhaulTask {
                     JSONObject res = restTemplate.postForObject(url, strEntity, JSONObject.class);
                     if (!CommonConstants.ZERO_STRING.equals(Objects.requireNonNull(res).getString(CommonConstants.CODE))) {
                         log.error("计划编号为：" + req.getPlanCode() + "的检修计划自动触发失败，错误原因为：" + Objects.requireNonNull(res).getString(CommonConstants.MESSAGE));
+                        errorPlanCode.add(req.getPlanCode());
                     }
                 }
             }
         }
+        schedulingMapper.triggerScheduling(errorPlanCode);
     }
 
     /**

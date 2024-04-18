@@ -86,4 +86,10 @@ public interface SchedulingMapper {
      * @param userId 操作人id
      */
     void addOverhaulOrderScheduling(List<SchedulingBuildResDTO> list, String userId);
+
+    /**
+     * 修改触发标识（排除自动触发执行失败检修计划编号列表）
+     * @param list 自动触发执行失败检修计划编号列表
+     */
+    void triggerScheduling(List<String> list);
 }
