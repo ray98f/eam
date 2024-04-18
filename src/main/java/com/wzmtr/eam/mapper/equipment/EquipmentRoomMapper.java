@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.equipment.EquipmentRoomRelationReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentRoomReqDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -42,6 +43,10 @@ public interface EquipmentRoomMapper {
      * @return 设备房台账列表
      */
     List<EquipmentRoomResDTO> exportEquipmentRoom(List<String> ids);
+
+    void insertRelationBatch(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO);
+
+    void deleteRelationBatch(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO);
 
 
 }

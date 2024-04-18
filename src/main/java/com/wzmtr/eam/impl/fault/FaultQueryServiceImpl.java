@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.wzmtr.eam.bizobject.PartBO;
-import com.wzmtr.eam.bizobject.StationBO;
 import com.wzmtr.eam.bizobject.export.FaultExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
@@ -17,6 +16,7 @@ import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
+import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
@@ -38,12 +38,9 @@ import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.OrganizationService;
 import com.wzmtr.eam.service.common.UserAccountService;
-import com.wzmtr.eam.service.common.UserGroupMemberService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
-import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,14 +103,23 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
             userMajorList = userAccountService.listUserMajor();
         }
+        Page<FaultDetailResDTO> page;
+        //获取用户当前角色
+        List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
+        //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
+        if(CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))){
+            page = faultQueryMapper.query(reqDTO.of(), reqDTO,userMajorList);
+        }else{
+            page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO,userMajorList,TokenUtils.getCurrentPersonId(),TokenUtils.getCurrentPerson().getOfficeAreaId());
+        }
 
-        Page<FaultDetailResDTO> page = faultQueryMapper.query(reqDTO.of(), reqDTO,userMajorList);
         List<FaultDetailResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
             for (FaultDetailResDTO res : list) {

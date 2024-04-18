@@ -23,10 +23,8 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
-import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
@@ -34,7 +32,6 @@ import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StreamUtils;
 import com.wzmtr.eam.utils.StringUtils;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
@@ -180,11 +177,12 @@ public class StatisticServiceImpl implements StatisticService {
             }
         }
         planNameList = planNameList.stream().distinct().filter(Objects::nonNull).collect(toList());
-        Page<MaterialResDTO> page = materialMapper.query(reqDTO.of(), planNameList, reqDTO.getMatName(), reqDTO.getStartTime(), reqDTO.getEndTime(), reqDTO.getTrainNo());
-        if (StringUtils.isEmpty(page.getRecords())) {
-            return new Page<>();
-        }
-        return page;
+        return new Page<>();
+//        Page<MaterialResDTO> page = materialMapper.query(reqDTO.of(), planNameList, reqDTO.getMatName(), reqDTO.getStartTime(), reqDTO.getEndTime(), reqDTO.getTrainNo());
+//        if (StringUtils.isEmpty(page.getRecords())) {
+//            return new Page<>();
+//        }
+//        return page;
     }
 
     @Override
@@ -1184,7 +1182,8 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response) throws IOException {
-        List<MaterialResDTO> exportList = materialMapper.exportList(reqDTO);
+//        List<MaterialResDTO> exportList = materialMapper.exportList(reqDTO);
+        List<MaterialResDTO> exportList = new ArrayList<>();
         if (exportList != null && !exportList.isEmpty()) {
             List<ExcelMaterialResDTO> list = new ArrayList<>();
             for (MaterialResDTO resDTO : exportList) {

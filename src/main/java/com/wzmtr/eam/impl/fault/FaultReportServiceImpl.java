@@ -139,7 +139,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     private void toZCJD(FaultReportReqDTO reqDTO, FaultOrderDO faultOrderDO, String nextFaultWorkNo) {
-        faultOrderDO.setOrderStatus(OrderStatus.XIA_FA.getCode());
+        faultOrderDO.setOrderStatus(OrderStatus.TI_BAO.getCode());
         faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultReportMapper.updateFaultOrder(faultOrderDO);
@@ -150,7 +150,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     private void toZTTSCDD(FaultReportReqDTO reqDTO, FaultOrderDO faultOrderDO, String nextFaultWorkNo) {
-        faultOrderDO.setOrderStatus(OrderStatus.XIA_FA.getCode());
+        faultOrderDO.setOrderStatus(OrderStatus.TI_BAO.getCode());
         faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
         faultReportMapper.updateFaultOrder(faultOrderDO);
@@ -263,13 +263,11 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     public Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
             userMajorList = userAccountService.listUserMajor();
         }
-
         Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(),
                 reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                 reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
@@ -283,20 +281,22 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     @Override
-    public Page<FaultReportResDTO> openApiList(FaultReportPageReqDTO reqDTO) {
+    public Page<FaultDetailResDTO> openApiList(FaultReportPageReqDTO reqDTO) {
         if (StringUtils.isNotEmpty(reqDTO.getPositionName())) {
             List<RegionResDTO> regionRes = regionMapper.selectByQuery(RegionQuery.builder().nodeName(reqDTO.getPositionName()).build());
             Set<String> nodeCodes = regionRes.stream().map(RegionResDTO::getNodeCode).collect(Collectors.toSet());
             reqDTO.setPositionCodes(nodeCodes);
         }
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<FaultReportResDTO> list = faultReportMapper.openApiList(reqDTO.of(), reqDTO);
-        List<FaultReportResDTO> records = list.getRecords();
-        if (StringUtils.isEmpty(records)) {
-            return new Page<>();
+        Page<FaultDetailResDTO> page = faultReportMapper.openApiList(reqDTO.of(), reqDTO);
+        List<FaultDetailResDTO> list = page.getRecords();
+        if (StringUtils.isNotEmpty(list)) {
+            for (FaultDetailResDTO res : list) {
+                buildFaultDetailRes(res);
+            }
         }
-        buildRes(records);
-        return list;
+        page.setRecords(list);
+        return page;
     }
 
     @Override
@@ -341,6 +341,18 @@ public class FaultReportServiceImpl implements FaultReportService {
                 a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
             }
         });
+    }
+
+    private void buildFaultDetailRes(FaultDetailResDTO a) {
+        if (StringUtils.isNotEmpty(a.getDocId())) {
+            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
+        }
+        if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
+            a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
+        }
+        if (StringUtils.isNotEmpty(a.getFillinDeptCode())) {
+            a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
+        }
     }
 
 

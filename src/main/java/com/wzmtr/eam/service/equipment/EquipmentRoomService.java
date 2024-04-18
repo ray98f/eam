@@ -1,7 +1,9 @@
 package com.wzmtr.eam.service.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.equipment.EquipmentRoomRelationReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentRoomReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -24,4 +26,10 @@ public interface EquipmentRoomService {
     void deleteEquipmentRoom(BaseIdsEntity baseIdsEntity);
 
     void exportEquipmentRoom(List<String> ids, HttpServletResponse response) throws IOException;
+
+    void addEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO);
+
+    void deleteEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO);
+
+    Page<EquipmentResDTO> pageEquipment(String roomId,String equipCode,String equipName, String majorCode, String systemCode, PageReqDTO pageReqDTO);
 }

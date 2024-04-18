@@ -15,6 +15,8 @@ public class CommonConstants {
     public static final String UNDERLINE = "_";
     public static final String SINGLE_QUOTATION_MARK = "'";
     public static final String DOUBLE_QUOTATION_MARKS = "\"";
+
+    public static final String DAY = "yyyy-MM-dd";
     public static final String TIME = "yyyy-MM-dd HH:mm:ss";
 
     public static final String XLS = "xls";
@@ -47,6 +49,8 @@ public class CommonConstants {
     public static final String DM_045 = "DM_045";//工程车工程师
     public static final String ZCJD = "ZCJD";//中车-检调
     public static final String DM_048 = "DM_048";//中车-生产调度
+    public static final String ZC_SHFW = "ZC_SHFW";//中车-售后服务站
+    public static final String ZC_JX = "100000044";//中车-检修班ID
 
 
 

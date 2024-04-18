@@ -36,7 +36,7 @@
         BEFORE_TRIGGER_TIME	as "beforeTriggerTime",  <!-- 提前触发时间 -->
         TRIAL_STATUS	as "trialStatus",  <!-- 审批状态 -->
         WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
-        WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
+        WORK_FLOW_INST_STATUS as "workFlowInstStatus",  <!-- 工作流实例状态 -->
         PARENT_NODE_REC_ID	as "parentNodeRecId",  <!-- 父节点 -->
         NODE_LEVEL	as "nodeLevel",  <!-- 节点层级 -->
         COUNT_FLAG	as "countFlag",  <!-- 计数标记 -->

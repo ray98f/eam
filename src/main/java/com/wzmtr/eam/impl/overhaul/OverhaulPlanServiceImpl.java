@@ -99,6 +99,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         List<OverhaulPlanResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
             for (OverhaulPlanResDTO res : list) {
+                if(StringUtils.isEmpty(res.getWorkFlowInstStatus())){
+                    res.setWorkFlowInstStatus(" ");
+                }
                 if (StringUtils.isNotEmpty(res.getWorkerGroupCode())) {
                     res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
                 }

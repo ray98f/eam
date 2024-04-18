@@ -177,39 +177,6 @@
             AND t2.OFFICE_ID=#{orgId}
         </if>
     </select>
-
-    <select id="getUserBySubjectAndLineAndRole2" resultType="com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes">
-        SELECT DISTINCT t1.USER_ID, t2.NAME AS USER_NAME, t2.OFFICE_ID
-        FROM SYS_USER_ROLE t1
-        LEFT JOIN SYS_USER t2 on t1.USER_ID=t2.LOGIN_NAME
-        LEFT JOIN SYS_ROLE t3 ON t1.ROLE_ID=t3.ID
-        WHERE 1=1
-        <if test="roleCode!=null and roleCode!=''">
-            AND t3.ROLE_CODE=#{roleCode}
-        </if>
-        AND t1.USER_ID IN
-        (SELECT DISTINCT USER_CODE
-        FROM RPLAT60.V_CO_ORG_USER T01
-        WHERE 1 = 1
-        <if test="lineCode!=null and lineCode!=''">
-            EXISTS (SELECT 1 FROM SYS_ORG_LINE T06 WHERE T06.ORG_CODE=T01.ORG_CODE AND T06.LINE_CODE=#{lineCode})
-        </if>
-        <if test="majorCode!=null and majorCode!=''">
-            EXISTS (SELECT 1 FROM SYS_ORG_MAJOR T05 WHERE T05.ORG_CODE=T01.ORG_CODE AND T05.MAJOR_CODE=#{majorCode})
-        </if>
-        )
-    </select>
-
-    <select id="nextFlowRole" resultType="com.wzmtr.eam.dto.res.common.FlowRoleResDTO">
-        select * from T_BPMN_EXAMINE
-        WHERE 1=1
-        <if test="nodeId!=null and nodeId!=''">
-            AND NODE_ID=#{nodeId}
-        </if>
-        <if test="flowId!=null and flowId!=''">
-            AND FLOW_ID=#{flowId}
-        </if>
-    </select>
     <select id="queryBpmnExamine" resultType="com.wzmtr.eam.dto.res.common.FlowRoleResDTO">
         select * from T_BPMN_EXAMINE
         WHERE 1=1

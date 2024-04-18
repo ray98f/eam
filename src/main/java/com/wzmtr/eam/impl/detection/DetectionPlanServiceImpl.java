@@ -224,7 +224,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion());
                 reqDTO.setWorkFlowInstId("");
-                reqDTO.setWorkFlowInstStatus("");
+                reqDTO.setWorkFlowInstStatus(" ");
                 reqDTO.setPlanStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()

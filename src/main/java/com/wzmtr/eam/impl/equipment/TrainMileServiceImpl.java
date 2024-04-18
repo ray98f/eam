@@ -6,6 +6,7 @@ import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelTrainMileDailyReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
@@ -271,7 +272,6 @@ public class TrainMileServiceImpl implements TrainMileService {
                     throw new CommonException(ErrorCode.NORMAL_ERROR, "导入文件中存在当前日期周期后的数据，请修改后重新导入");
                 }
             }
-            List<TrainMileDailyReqDTO> temp = new ArrayList<>();
             for (ExcelTrainMileDailyReqDTO reqDTO : list) {
                 TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
@@ -286,13 +286,20 @@ public class TrainMileServiceImpl implements TrainMileService {
                 }
                 req.setRecRevisor(TokenUtils.getCurrentPersonId());
                 req.setRecReviseTime(DateUtils.getCurrentTime());
-                temp.add(req);
+                // 根据导入数据修改值
+                trainMileMapper.importTrainDailyMile(req);
             }
-            // 根绝导入数据修改值
-            if (!temp.isEmpty()) {
-                for (TrainMileDailyReqDTO req : temp) {
-                    trainMileMapper.importTrainDailyMile(req);
-                }
+        }
+    }
+
+    @Override
+    public void initTrainDailyMile(String startTime, String endTime) {
+        List<RegionResDTO> trains = equipmentMapper.listTrainRegion("02");
+        List<String> dates = DateUtils.getDatesBetween(startTime, endTime);
+        if (StringUtils.isNotEmpty(dates) && StringUtils.isNotEmpty(trains)) {
+            int times = (int) Math.ceil(dates.size() / 80.0);
+            for (int i = 0; i < times; i++) {
+                trainMileMapper.initTrainDailyMile(dates.subList(i * 80, Math.min((i + 1) * 80, dates.size() - 1)), trains);
             }
         }
     }

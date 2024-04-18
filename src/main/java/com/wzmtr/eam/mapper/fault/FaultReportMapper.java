@@ -7,6 +7,7 @@ import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultErrorReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultFlowReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -29,7 +30,7 @@ public interface FaultReportMapper {
                                  String faultModuleId, String majorCode, String systemCode, String equipTypeCode,
                                  String fillinTimeStart, String fillinTimeEnd, String positionCode, String orderStatus,String faultWorkNo,String lineCode,List<String> majors);
 
-    Page<FaultReportResDTO> openApiList(Page<Object> of, @Param("reqDTO") FaultReportPageReqDTO reqDTO);
+    Page<FaultDetailResDTO> openApiList(Page<Object> of, @Param("reqDTO") FaultReportPageReqDTO reqDTO);
 
     void addToFaultInfo(FaultInfoDO faultInfo);
 

@@ -172,7 +172,7 @@
         <if test="majorCode!=null and majorCode!=''">
             and MAJOR_CODE=#{majorCode}
         </if>
-        <if test="majors!=null">
+        <if test="majors!=null and majors.size()>0">
             and MAJOR_CODE IN (
             <foreach collection="majors" index="index" item="major" separator=",">
                 #{major}
@@ -188,6 +188,29 @@
         </if>
         ORDER BY EQUIP_NAME ASC
     </select>
+
+    <select id="pageEquipmentByRoom" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
+        SELECT t1.*
+        FROM T_EQUIPMENT t1
+        LEFT JOIN T_EQUIPMENT_ROOM_RELATION t2 ON t1.REC_ID=t2.EQUIPMENT_ID
+        LEFT JOIN T_EQUIPMENT_ROOM t3 ON t2.ROOM_ID=t3.REC_ID
+        WHERE 1=1
+        <if test="equipCode!=null and equipCode!=''">
+            and t1.EQUIP_CODE like '%' || #{equipCode} || '%'
+        </if>
+        <if test="equipName!=null and equipName!=''">
+            and t1.EQUIP_NAME like '%' || #{equipName} || '%'
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            and t1.MAJOR_CODE=#{majorCode}
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            and t1.SYSTEM_CODE=#{systemCode}
+        </if>
+        and t3.REC_ID=#{roomId}
+    </select>
+
+
 
     <select id="allList" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
@@ -334,11 +357,11 @@
         <if test="type==4">
             max(DEV_NO)
         </if>
-        FROM RPLAT60.T_BS_UNITCODE
+        FROM T_BS_UNITCODE
     </select>
 
     <insert id="insertUnitCode">
-        INSERT INTO RPLAT60.T_BS_UNITCODE (REC_ID,  <!-- 统一编号 -->
+        INSERT INTO T_BS_UNITCODE (REC_ID,  <!-- 统一编号 -->
         UNIT_NO,  <!-- 合一码,共计11位，以9开头 -->
         BATCH_NO,  <!-- 物资编码(内),共计11位，以1开头 -->
         ASSET_NO,  <!-- 资产编码(内),共计11位，以2开头 -->
@@ -1115,7 +1138,7 @@
         SELECT
         db.LINE_CODE as "lineCode",
         ec.ITEM_CNAME as "lineName"
-        FROM SYS_REGION db,iplat60.tedcm01 ec
+        FROM SYS_REGION db,SYS_DICT ec
         where db.LINE_CODE = ec.ITEM_CODE and ec.CODESET_CODE='line'
         <if test="recId!=null">
            and db.REC_ID = #{recId}
@@ -1126,7 +1149,7 @@
         SELECT
         ITEM_CODE as "lineCode",
         ITEM_CNAME as "lineName"
-        FROM iplat60.tedcm01
+        FROM SYS_DICT
         where CODESET_CODE='line'
         <if test="lineCode!=null">
             and ITEM_CODE=#{lineCode}

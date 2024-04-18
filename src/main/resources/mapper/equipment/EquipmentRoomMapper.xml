@@ -40,7 +40,7 @@
         <if test="subjectCode!=null and subjectCode!=''">
             and SUBJECT_CODE=#{subjectCode}
         </if>
-        <if test="majors!=null">
+        <if test="majors!=null and majors.size()>0">
             and SUBJECT_CODE IN (
             <foreach collection="majors" index="index" item="major" separator=",">
                 #{major}
@@ -319,5 +319,23 @@
         )
         ORDER BY EQUIP_ROOM_CODE desc
     </select>
+    <insert id="insertRelationBatch">
+        INSERT ALL
+        <foreach collection="ids" index="index" item="id" separator=" ">
+            INTO T_EQUIPMENT_ROOM_RELATION( ROOM_ID, EQUIPMENT_ID)
+            VALUES
+            (#{roomId},#{id})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
 
+    <delete id="deleteRelationBatch">
+        DELETE FROM T_EQUIPMENT_ROOM_RELATION
+        WHERE ROOM_ID = #{roomId}
+        AND EQUIPMENT_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
 </mapper>

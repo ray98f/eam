@@ -16,7 +16,7 @@
         B.MAT_SPECIFI AS "specifi",
         A.PICK_NAME AS "pickName",
         B.COST_TOTAL AS "costTotal",
-        IPLAT60.GET_ITEM_CNAME(B.UNIT, 'mm.unit', 'WZPLAT') AS "unit",
+        B.UNIT AS "unit",
         (
         CASE
         WHEN c.RELATION_NO LIKE 'GD%' THEN (
@@ -82,7 +82,7 @@
         B.MAT_SPECIFI AS "specifi",
         A.PICK_NAME AS "pickName",
         B.COST_TOTAL AS "costTotal",
-        IPLAT60.GET_ITEM_CNAME(B.UNIT, 'mm.unit', 'WZPLAT') AS "unit",
+        B.UNIT AS "unit",
         (
         CASE
         WHEN c.RELATION_NO LIKE 'GD%' THEN (
