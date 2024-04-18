@@ -129,7 +129,8 @@ public class MinioUtils {
     /**
      * 删除存储桶
      */
-    public void removeBucket(String bucketName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public void removeBucket(String bucketName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         instance.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
     }
 

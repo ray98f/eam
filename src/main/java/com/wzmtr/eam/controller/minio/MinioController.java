@@ -56,7 +56,8 @@ public class MinioController {
      */
     @ApiOperation(value = "清空桶")
     @GetMapping("/clear")
-    public DataResponse<T> clear(@RequestParam String bucketCode) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public DataResponse<T> clear(@RequestParam String bucketCode) throws ServerException, InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         minioService.clear(bucketCode);
         return DataResponse.success();
     }

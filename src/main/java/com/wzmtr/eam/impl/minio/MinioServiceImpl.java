@@ -84,8 +84,11 @@ public class MinioServiceImpl implements MinioService {
     }
 
     @Override
-    public void clear(String bucketCode) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        minioUtils.clearBucket(bucketCode);
-        minioUtils.removeBucket(bucketCode);
+    public void clear(String bucketCode) throws ServerException, InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        if (minioUtils.bucketExists(bucketCode)) {
+            minioUtils.clearBucket(bucketCode);
+            minioUtils.removeBucket(bucketCode);
+        }
     }
 }

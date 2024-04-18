@@ -15,5 +15,6 @@ import java.security.NoSuchAlgorithmException;
 public interface MinioService {
     File upload(MultipartFile file, String bucketCode);
 
-    void clear(String bucketCode) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
+    void clear(String bucketCode) throws ServerException, InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 }
