@@ -11,9 +11,9 @@ public class FileUploadUtils {
     /**
      * 编码文件名
      */
-    public static String extractFilename(MultipartFile file) {
+    public static String extractFilename(MultipartFile file, String bucket) {
         String extension = getExtension(file);
-        return DateUtils.datePath() + "/" + UUID.randomUUID() + "." + extension;
+        return bucket + "/" + DateUtils.datePath() + "/" + UUID.randomUUID() + "." + extension;
     }
 
     /**

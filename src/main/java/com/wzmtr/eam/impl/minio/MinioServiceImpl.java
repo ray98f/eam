@@ -16,6 +16,7 @@ import io.minio.PutObjectArgs;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +29,9 @@ import java.io.InputStream;
 @Service
 @Slf4j
 public class MinioServiceImpl implements MinioService {
+
+    @Value("${pro.name}")
+    private String proName;
 
     @Autowired
     private MinioUtils minioUtils;
@@ -43,16 +47,16 @@ public class MinioServiceImpl implements MinioService {
 
     @Override
     public File upload(MultipartFile file, String bucket) {
-        if (!minioUtils.bucketExists(bucket)) {
-            minioUtils.makeBucket(bucket);
+        if (!minioUtils.bucketExists(proName)) {
+            minioUtils.makeBucket(proName);
         }
         String oldName = file.getOriginalFilename();
-        String fileName = FileUploadUtils.extractFilename(file);
+        String fileName = FileUploadUtils.extractFilename(file, bucket);
         try {
             @Cleanup
             InputStream inputStream = file.getInputStream();
             PutObjectArgs args = PutObjectArgs.builder()
-                    .bucket(bucket)
+                    .bucket(proName)
                     .object(fileName)
                     .stream(inputStream, file.getSize(), -1)
                     .contentType(file.getContentType())
@@ -61,9 +65,9 @@ public class MinioServiceImpl implements MinioService {
         } catch (Exception e) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "上传失败");
         }
-        String url = minioConfig.getImgPath() + "/" + bucket + "/" + fileName;
+        String url = minioConfig.getImgPath() + "/" + proName + "/" + fileName;
         FileReqDTO build = FileReqDTO.builder()
-                .bucket(bucket)
+                .bucket(proName)
                 .fileName(fileName)
                 .id(TokenUtils.getUuId())
                 .oldName(oldName)
@@ -72,6 +76,6 @@ public class MinioServiceImpl implements MinioService {
                 .recCreator(TokenUtils.getCurrentPersonId())
                 .build();
         fileMapper.insertFile(build);
-        return fileMapper.getFile(url, bucket, oldName);
+        return fileMapper.getFile(url, proName, oldName);
     }
 }
