@@ -27,8 +27,10 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/11 15:38
+ * 公共分类-文件管理
+ * @author Li.Wang
+ * @version 1.0
+ * @date 2023/8/11 11:00
  */
 @Service
 @Slf4j
