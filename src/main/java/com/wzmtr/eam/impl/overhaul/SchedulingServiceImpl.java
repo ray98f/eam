@@ -342,6 +342,7 @@ public class SchedulingServiceImpl implements SchedulingService {
         res.setType("1");
         res.setDateType(ONE_LEVEL_REPAIR_FOUR);
         res.setIsDuration("1");
+        res.setPackageType("");
         return res;
     }
 
@@ -370,6 +371,7 @@ public class SchedulingServiceImpl implements SchedulingService {
         } else {
             res.setIsDuration("1");
         }
+        res.setPackageType(String.valueOf(dateType));
         return res;
     }
 

@@ -3,7 +3,7 @@
 <mapper namespace="com.wzmtr.eam.mapper.overhaul.SchedulingMapper">
 
     <select id="listScheduling" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
-        SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME,
+        SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME, PACKAGE_TYPE,
         (CASE WHEN "TYPE"='1' THEN '一级修-' || SCHEDULING_NAME || '天包'
         ELSE '二级修-' || SCHEDULING_NAME || '天包' END) SCHEDULING_NAME,
         PLAN_CODE, PLAN_NAME, "TYPE"
@@ -14,7 +14,7 @@
     </select>
 
     <select id="getSchedulingDetail" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
-        SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME,
+        SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME, PACKAGE_TYPE,
         (CASE WHEN "TYPE"='1' THEN '一级修-' || SCHEDULING_NAME || '天包'
         ELSE '二级修-' || SCHEDULING_NAME || '天包' END) SCHEDULING_NAME,
         PLAN_CODE, PLAN_NAME, "TYPE"
@@ -99,6 +99,7 @@
             SCHEDULING_NAME,
             PLAN_CODE,
             PLAN_NAME,
+            PACKAGE_TYPE,
             "TYPE")
             VALUES (
             #{scheduling.recId,jdbcType=VARCHAR},
@@ -112,6 +113,7 @@
             #{scheduling.schedulingName,jdbcType=VARCHAR},
             #{scheduling.planCode,jdbcType=VARCHAR},
             #{scheduling.planName,jdbcType=VARCHAR},
+            #{scheduling.packageType,jdbcType=VARCHAR},
             #{scheduling.type,jdbcType=VARCHAR})
         </foreach>
         SELECT * FROM dual

@@ -59,4 +59,9 @@ public class SchedulingResDTO {
      */
     @ApiModelProperty(value = "类型 1一级修 2二级修")
     private String type;
+    /**
+     * 二级修包类型
+     */
+    @ApiModelProperty(value = "二级修包类型")
+    private String packageType;
 }
