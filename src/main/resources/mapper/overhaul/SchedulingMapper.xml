@@ -86,8 +86,9 @@
 
     <select id="getLastLevelOneRepairDay" resultType="java.lang.String">
         SELECT "DAY" FROM T_OVERHAUL_ORDER_SCHEDULING
-        WHERE TYPE='1' AND IS_TRIGGER='0' AND TO_DATE(#{day}, 'YYYY-MM-DD')>TO_DATE("DAY", 'YYYY-MM-DD')
-        AND TO_DATE("DAY", 'YYYY-MM-DD')>=TO_DATE(#{day}, 'YYYY-MM-DD')
+        WHERE DELETE_FLAG='0' AND TYPE='1' AND IS_TRIGGER='0'
+        AND TO_DATE(#{endTime}, 'YYYY-MM-DD')>TO_DATE("DAY", 'YYYY-MM-DD')
+        AND TO_DATE("DAY", 'YYYY-MM-DD')>=TO_DATE(#{startTime}, 'YYYY-MM-DD')
     </select>
 
     <insert id="addOverhaulOrderScheduling">
