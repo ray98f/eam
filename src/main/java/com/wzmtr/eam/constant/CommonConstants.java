@@ -52,8 +52,10 @@ public class CommonConstants {
     public static final String ZC_SHFW = "ZC_SHFW";//中车-售后服务站
     public static final String ZC_JX = "100000044";//中车-检修班ID
 
-
-
+    /**
+     * 代办/待阅
+     */
+    public static final String TODO_GENERAL_SURVEY =  "收到列车号为:%s、完成时间为:%s的普车技改台账，请及时查看";
     public static final String TODO_GD_TPL =  "收到工单编号为:%s的%s工单，请及时办理";
 
 

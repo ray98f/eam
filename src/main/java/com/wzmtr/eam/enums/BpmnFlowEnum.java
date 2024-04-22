@@ -23,7 +23,8 @@ public enum BpmnFlowEnum {
     SUBMISSION_SUBMIT("submission_submit", "计量器具检测单流程"),
     FAULT_REPORT_QUERY("fault_report_query", "故障提报查询流程"),
     FAULT_REPORT_QUERY_ZTT("fault_report_query_ztt", "故障提报查询流程ZTT"),
-    OVERHAUL_ORDER("overhaul_order", "检修工单审批流程");
+    OVERHAUL_ORDER("overhaul_order", "检修工单审批流程"),
+    GENERAL_SURVEY("general_survey", "普查与技改查看流程");
     private String value;
     private String label;
 

@@ -10,6 +10,7 @@ import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelGeneralSurveyResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
@@ -80,6 +81,8 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         if (StringUtils.isNotEmpty(res.getRecordId())) {
             res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
         }
+        // 待阅（实际为代办）更新为已办
+        overTodoService.overTodo(id, "");
         return res;
     }
 
@@ -89,9 +92,13 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         generalSurveyReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         generalSurveyReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         generalSurveyMapper.addGeneralSurvey(generalSurveyReqDTO);
-        // 工班还不知道发给谁
-        // 这里要根据工班查人
-        // overTodoService.insertTodoWithUserList();
+        // 向工班中的所有人发送待阅（实际发送的是代办）
+        String workerGroupCode = generalSurveyReqDTO.getOrgType();
+        if (StringUtils.isNotEmpty(workerGroupCode)) {
+            overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GENERAL_SURVEY, generalSurveyReqDTO.getTrainNo(),
+                            generalSurveyReqDTO.getCompleteDate()), generalSurveyReqDTO.getRecId(), generalSurveyReqDTO.getTrainNo(), workerGroupCode,
+                    "普查与技改", "？", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.GENERAL_SURVEY.value());
+        }
     }
 
     @Override
