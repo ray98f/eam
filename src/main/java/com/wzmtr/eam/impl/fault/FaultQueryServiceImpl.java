@@ -400,7 +400,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
                 faultInfoDO.setFaultNo(faultOrder1.getFaultNo());
                 faultReportMapper.updateFaultInfo(faultInfoDO);
-                sendTodoMessage(faultInfoDO, faultOrder1, workerGroupCode);
+                sendTodoMessage(faultOrder1, workerGroupCode);
 
                 Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "01");
                 String zcStepOrg = dictionaries.getItemEname();
@@ -416,14 +416,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     /**
      * 待办推送
-     * @param faultInfoDO
      * @param faultOrder1
      * @param workerGroupCode
      */
-    private void sendTodoMessage(FaultInfoDO faultInfoDO, FaultOrderDO faultOrder1, String workerGroupCode) {
-        List<BpmnExaminePersonRes> userList = Lists.newArrayList();
+    private void sendTodoMessage(FaultOrderDO faultOrder1, String workerGroupCode) {
         String newId = organizationMapper.getIdByAreaId(workerGroupCode);
-        userList = roleMapper.getUserByOrgAndRole(newId, null);
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, null);
         String faultWorkNo = faultOrder1.getFaultWorkNo();
         overTodoService.overTodo(faultWorkNo);
         if (CollectionUtil.isNotEmpty(userList)) {
