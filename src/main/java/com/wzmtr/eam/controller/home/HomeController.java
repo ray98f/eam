@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.home;
 
+import com.wzmtr.eam.dto.req.home.HomeChartReqDTO;
 import com.wzmtr.eam.dto.res.home.EChartResDTO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -58,9 +59,14 @@ public class HomeController {
         return DataResponse.success();
     }
 
+    /**
+     * 首页图表查询
+     * @param req 传参
+     * @return 图标数据
+     */
     @ApiOperation(value = "图表查询")
     @PostMapping("/queryEChart")
-    public DataResponse<EChartResDTO> queryChart() {
-        return DataResponse.of(homeService.queryChart());
+    public DataResponse<EChartResDTO> queryChart(@RequestBody HomeChartReqDTO req) {
+        return DataResponse.of(homeService.queryChart(req));
     }
 }
