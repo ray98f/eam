@@ -60,7 +60,7 @@ public class HomeServiceImpl implements HomeService {
         EChartResDTO eChartResDTO = new EChartResDTO();
         if (StringUtils.isNotEmpty(listA)) {
             for (ShowAResDTO a : listA) {
-                a.setCNAME(dictService.queryOneByItemCodeAndCodesetCode("dm.faultStatus", a.getCNAME()).getItemCname());
+                a.setCname(dictService.queryOneByItemCodeAndCodesetCode("dm.faultStatus", a.getCname()).getItemCname());
             }
             eChartResDTO.setShowA(listA);
         }

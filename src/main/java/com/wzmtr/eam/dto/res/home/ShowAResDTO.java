@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @ApiModel
 public class ShowAResDTO {
-    private String CNT;
-    private String CNAME;
-    private String STATUS;
+    private String cnt;
+    private String cname;
+    private String status;
 }
