@@ -243,7 +243,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 reqDTO.getFaultWorkNo(), CommonConstants.DM_007, zcStepOrg, "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(),
                 faultInfo1.getMajorCode(), faultInfo1.getLineCode(), "20", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         // 添加流程记录
-        addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null);
     }
 
     @Override
@@ -409,7 +409,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                     sendContractFault(faultOrder1);
                 }
                 // 添加流程记录
-                addFaultFlow(faultOrder1.getFaultNo(), reqDTO.getFaultWorkNo());
+                addFaultFlow(faultOrder1.getFaultNo(), reqDTO.getFaultWorkNo(), null);
             }
         });
     }
@@ -449,7 +449,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             infoUpdate.setRecReviseTime(DateUtils.getCurrentTime());
             faultReportMapper.updateFaultInfo(infoUpdate);
             // 添加流程记录
-            addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+            addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null);
         }
         finishWorkSendMessage(reqDTO);
     }
@@ -577,10 +577,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String current = DateUtils.getCurrentTime();
         switch (reqDTO.getType()) {
             case YAN_SHOU:
-                check(list, cos, currentUser, current, itemEname);
+                check(list, currentUser, current, reqDTO.getStatus(), reqDTO.getRemark());
                 break;
             case WAN_GONG_QUE_REN:
-                finishWorkConfirm(list, cos, currentUser, current);
+                finishWorkConfirm(list, cos, currentUser, current, reqDTO.getStatus(), reqDTO.getRemark());
                 break;
             case GUAN_BI:
                 close(list);
@@ -644,7 +644,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             // 取消代办
             overTodoService.cancelTodo(faultOrderDO.getRecId());
             // 添加流程记录
-            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo());
+            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo(), null);
         });
     }
 
@@ -917,40 +917,42 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
     }
 
-    private void finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current) {
+    private void finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current, String status, String remark) {
         list.forEach(a -> {
             String faultWorkNo = a.getFaultWorkNo();
             FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(a.getFaultNo(), a.getFaultWorkNo());
             FaultOrderDO dmfm02 = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
             dmfm02.setConfirmUserId(currentUser);
             dmfm02.setConfirmTime(current);
-            dmfm02.setOrderStatus(OrderStatus.WAN_GONG_QUE_REN.getCode());
+            if (CommonConstants.ZERO_STRING.equals(status)) {
+                dmfm02.setOrderStatus(OrderStatus.WAN_GONG_QUE_REN.getCode());
+            } else {
+                dmfm02.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+            }
             faultReportMapper.updateFaultOrder(dmfm02);
-            // 完工确认消息发送
-            finishWorkConfirmSendMessage(faultWorkNo, cos, currentUser, current, dmfm02, faultInfo);
+            if (CommonConstants.ZERO_STRING.equals(status)) {
+                // 完工确认消息发送
+                finishWorkConfirmSendMessage(faultWorkNo, currentUser, dmfm02, faultInfo);
+            } else {
+                // todo 发送驳回消息
+            }
             // 添加流程记录
-            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo());
+            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo(), remark);
         });
     }
 
     /**
      * 完工确认消息发送
      * @param faultWorkNo 工单编号
-     * @param cos cos
      * @param currentUser 当前人
-     * @param current 当前
      * @param dmfm02 工单信息
      * @param faultInfo 故障信息
      */
-    private void finishWorkConfirmSendMessage(String faultWorkNo, List<String> cos, String currentUser, String current, FaultOrderDO dmfm02, FaultInfoDO faultInfo) {
+    private void finishWorkConfirmSendMessage(String faultWorkNo, String currentUser, FaultOrderDO dmfm02, FaultInfoDO faultInfo) {
         String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已完工确认，请及时在EAM系统关闭工单！";
         overTodoService.overTodo(dmfm02.getFaultWorkNo());
-        // if (toOcc != null && !toOcc.trim().isEmpty() && Y.equals(toOcc)) {
-        //     overTodoService.insertTodoWithUserRoleAndOrg("【" + majorName + CommonConstants.FAULT_CONTENT_END, dmfm02.getRecId(), faultWorkNo, "DM_021", null, CommonConstants.FAULT_TUNING_CONFIRM_CN, "DMFM0001", currentUser, null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
-        // } else {
         // 谁提报的谁关闭
         overTodoService.insertTodo(content, dmfm02.getRecId(), faultWorkNo, faultInfo.getFillinUserId(), CommonConstants.FAULT_FINISHED_CONFIRM_CN, "?", currentUser, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
-        // }
     }
 
     private void close(List<FaultDetailResDTO> list) {
@@ -966,11 +968,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultReportMapper.updateFaultInfo(faultInfoDO);
             overTodoService.overTodo(faultOrderDO.getFaultWorkNo());
             // 添加流程记录
-            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo());
+            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo(), null);
         });
     }
 
-    private void check(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current, String stepOrg) {
+    private void check(List<FaultDetailResDTO> list, String currentUser, String current, String status, String remark) {
         // 判断是否存在验收状态的数据
         Set<String> orderStatus = StreamUtils.mapToSet(list, FaultDetailResDTO::getOrderStatus);
         Assert.isFalse(orderStatus.contains(OrderStatus.YAN_SHOU.getCode()), "当前勾选的数据中存在验收状态的数据，无法进行重复操作!");
@@ -981,7 +983,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
             // 状态变更为验收
             String recId = faultOrderDO.getRecId();
-            faultOrderDO.setOrderStatus(OrderStatus.YAN_SHOU.getCode());
+            if (CommonConstants.ZERO_STRING.equals(status)) {
+                faultOrderDO.setOrderStatus(OrderStatus.YAN_SHOU.getCode());
+            } else {
+                faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+            }
             faultOrderDO.setCheckUserId(currentUser);
             faultOrderDO.setCheckTime(current);
             faultOrderDO.setRecReviseTime(current);
@@ -994,19 +1000,23 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultReportMapper.updateFaultInfo(faultInfoDO);
             // 完成待办
             overTodoService.overTodo(recId, "故障验收");
-            String majorCode = faultInfoDO.getMajorCode();
-            String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
-            // 中铁通的发给中铁通生产调度 DM_007
-            // 行车设备类 且不是车辆故障
-            if ("10".equals(faultInfoDO.getFaultType()) && !zcList.contains(majorCode)) {
-                List<String> users = getUsersByCompanyAndRole(majorCode, "DM_007", "ZCJD");
-                overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo, CommonConstants.FAULT_FINISHED_CONFIRM_CN, currentPersonId, "?", null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            if (CommonConstants.ZERO_STRING.equals(status)) {
+                String majorCode = faultInfoDO.getMajorCode();
+                String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
+                // 中铁通的发给中铁通生产调度 DM_007
+                // 行车设备类 且不是车辆故障
+                if ("10".equals(faultInfoDO.getFaultType()) && !zcList.contains(majorCode)) {
+                    List<String> users = getUsersByCompanyAndRole(majorCode, "DM_007", "ZCJD");
+                    overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo, CommonConstants.FAULT_FINISHED_CONFIRM_CN, currentPersonId, "?", null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                } else {
+                    //其他的发给工班
+                    overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfoDO.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                }
             } else {
-                //其他的发给工班
-                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfoDO.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                // todo 发送驳回消息
             }
             // 添加流程记录
-            addFaultFlow(faultNo, faultWorkNo);
+            addFaultFlow(faultNo, faultWorkNo, remark);
         });
     }
 
@@ -1027,8 +1037,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
      * 新增工单流程
      * @param faultNo 故障编号
      * @param faultWorkNo 故障工单编号
+     * @param remark 备注
      */
-    public void addFaultFlow(String faultNo, String faultWorkNo) {
+    public void addFaultFlow(String faultNo, String faultWorkNo, String remark) {
         FaultFlowReqDTO faultFlowReqDTO = new FaultFlowReqDTO();
         faultFlowReqDTO.setRecId(TokenUtils.getUuId());
         faultFlowReqDTO.setFaultNo(faultNo);
@@ -1037,8 +1048,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         faultFlowReqDTO.setOperateUserName(TokenUtils.getCurrentPerson().getPersonName());
         faultFlowReqDTO.setOperateTime(DateUtils.getCurrentTime());
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
-        if (!Objects.isNull(faultOrderDO)) {
+        if (StringUtils.isNotNull(faultOrderDO)) {
             faultFlowReqDTO.setOrderStatus(faultOrderDO.getOrderStatus());
+        }
+        if (StringUtils.isNotEmpty(remark)) {
+            faultFlowReqDTO.setRemark(remark);
         }
         faultReportMapper.addFaultFlow(faultFlowReqDTO);
     }
