@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author frp
  */
@@ -244,4 +246,10 @@ public class OverhaulOrderResDTO {
      */
     @ApiModelProperty(value = "结束时公里数")
     private Double endMile;
+
+    /**
+     * 检修工单流程数据
+     */
+    @ApiModelProperty(value = "检修工单流程数据")
+    private List<OverhaulOrderFlowResDTO> flows;
 }
