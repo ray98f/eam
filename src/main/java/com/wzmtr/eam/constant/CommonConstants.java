@@ -34,7 +34,7 @@ public class CommonConstants {
      * 关闭
      */
     public static final String OFF = "off";
-
+    public static final String DEF_PWD = "wzmtr@123456";
     /**
      * 权限
      */
