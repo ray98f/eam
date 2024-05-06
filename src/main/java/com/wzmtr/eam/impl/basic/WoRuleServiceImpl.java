@@ -69,7 +69,20 @@ public class WoRuleServiceImpl implements WoRuleService {
 
     @Override
     public void addWoRule(WoRuleReqDTO woRuleReqDTO) {
-        woRuleReqDTO.setRuleCode(CodeUtils.getNextCode(woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage()), 1));
+        String code = woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage());
+        String prefix = "";
+        switch (woRuleReqDTO.getRuleUseage()){
+            case "10":
+                prefix = "G";
+                break;
+            case "20":
+                prefix = "X";
+                break;
+            default:
+                prefix = "J";
+                break;
+        }
+        woRuleReqDTO.setRuleCode(CodeUtils.getNextCode(code == null? prefix+"000":code, 1));
         woRuleReqDTO.setRecId(TokenUtils.getUuId());
         woRuleReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         woRuleReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
