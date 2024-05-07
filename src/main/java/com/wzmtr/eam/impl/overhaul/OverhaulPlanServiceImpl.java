@@ -656,7 +656,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         dmer24.setPlanCode(planCode);
         dmer24.setOrderCode(orderCode);
         dmer24.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
-        if (workCode.length() > CommonConstants.TWO) {
+        if (StringUtils.isNotEmpty(workCode) && workCode.length() > CommonConstants.TWO) {
             String[] workerCodes = workCode.split(",");
             for (String workerCode : workerCodes) {
                 dmer24.setRecId(TokenUtils.getUuId());
