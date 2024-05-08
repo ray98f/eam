@@ -98,8 +98,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public List<UserRoleResDTO> getUserRolesById(String userId) {
-        List<UserRoleResDTO> res  = userAccountMapper.getUserRoles(userId);
-        return res;
+        return userAccountMapper.getUserRoles(userId);
     }
 
 

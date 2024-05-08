@@ -28,7 +28,8 @@ public interface FaultReportMapper {
      */
     Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName,
                                  String faultModuleId, String majorCode, String systemCode, String equipTypeCode,
-                                 String fillinTimeStart, String fillinTimeEnd, String positionCode, String orderStatus,String faultWorkNo,String lineCode,List<String> majors);
+                                 String fillinTimeStart, String fillinTimeEnd, String positionCode, String orderStatus,
+                                 String faultWorkNo, String lineCode, List<String> majors, String userId, String officeAreaId);
 
     Page<FaultDetailResDTO> openApiList(Page<Object> of, @Param("reqDTO") FaultReportPageReqDTO reqDTO);
 
@@ -40,14 +41,12 @@ public interface FaultReportMapper {
 
     /**
      * update col by faultNo and faultWorkNo
-     *
      * @param faultOrder
      */
     void updateFaultOrder(FaultOrderDO faultOrder);
 
     /**
      * 更新faultInfo表，忽略null值
-     *
      * @param faultInfo
      */
     void updateFaultInfo(FaultInfoDO faultInfo);
@@ -63,12 +62,12 @@ public interface FaultReportMapper {
     Page<FaultReportResDTO> carFaultReportList(Page<Object> of, String faultNo, String objectCode, String objectName,
                                                String faultModuleId, String majorCode, String systemCode,
                                                String equipTypeCode, String fillinTimeStart, String fillinTimeEnd,
-                                               String positionCode, String orderStatus,String faultAffect,
+                                               String positionCode, String orderStatus, String faultAffect,
                                                List<String> majors);
 
     /**
      * 根据故障编号和工单编号查询工单列表
-     * @param faultNo 故障编号
+     * @param faultNo     故障编号
      * @param faultWorkNo 工单编号
      * @return 工单列表
      */

@@ -288,7 +288,11 @@
                 AND df.EXT1=#{req.levelfault}
             </if>
             <if test="userId!=null">
-                AND (df.DISPATCH_USER_ID=#{userId} OR df.WORK_CLASS=#{officeAreaId} OR df.REPAIR_RESP_USER_ID=#{userId} OR df.REPORT_USER_ID=#{userId} OR df.REPORT_START_USER_ID=#{userId} OR df.REPORT_FINISH_USER_ID=#{userId} OR df.CHECK_USER_ID=#{userId} OR df.CONFIRM_USER_ID=#{userId} OR df.CLOSE_USER_ID=#{userId} OR df.CANCEL_USER_ID=#{userId} OR df.REC_CREATOR=#{userId})
+                AND (df.DISPATCH_USER_ID=#{userId} OR df.WORK_CLASS=#{officeAreaId} OR
+                df.REPAIR_RESP_USER_ID=#{userId} OR df.REPORT_USER_ID=#{userId} OR
+                df.REPORT_START_USER_ID=#{userId} OR df.REPORT_FINISH_USER_ID=#{userId} OR
+                df.CHECK_USER_ID=#{userId} OR df.CONFIRM_USER_ID=#{userId} OR df.CLOSE_USER_ID=#{userId} OR
+                df.CANCEL_USER_ID=#{userId} OR df.REC_CREATOR=#{userId})
             </if>
             AND d.FAULT_FLAG!='2'
             AND d.DELETE_FLAG='0'

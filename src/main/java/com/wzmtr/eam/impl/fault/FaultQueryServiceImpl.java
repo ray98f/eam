@@ -28,7 +28,6 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.PartMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
-import com.wzmtr.eam.mapper.common.StationMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
 import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
@@ -59,18 +58,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FaultQueryServiceImpl implements FaultQueryService {
     public static final String IS_TIKAI_CODE = "08";
-    public static final String Y = "Y";
-    public static final String DM_006 = CommonConstants.DM_006;
-    public static final String DM_007 = CommonConstants.DM_007;
-    public static final String DM_013 = "DM_013";
-    public static final String DM_020 = "DM_020";
-    public static final String DM_030 = "DM_030";
-    public static final String DM_031 = "DM_031";
-    public static final String DM_044 = "DM_044";
-
     @Resource
     private UserAccountService userAccountService;
-
     @Autowired
     private FaultQueryMapper faultQueryMapper;
     @Autowired
@@ -84,8 +73,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Autowired
     private FaultAnalyzeMapper faultAnalyzeMapper;
     @Autowired
-    private StationMapper stationMapper;
-    @Autowired
     private PartMapper partMapper;
     @Autowired
     private FileMapper fileMapper;
@@ -93,12 +80,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private FaultInfoMapper faultInfoMapper;
     @Autowired
     private RoleMapper roleMapper;
-
     @Autowired
     private OrganizationService organizationService;
-
     @Autowired
-    private static final List<String> zcList = Arrays.asList("06","07");
+    private static final List<String> ZC_LIST = Arrays.asList("06", "07");
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
@@ -112,12 +97,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //获取用户当前角色
         List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
-        if(CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+        if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
-                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))){
-            page = faultQueryMapper.query(reqDTO.of(), reqDTO,userMajorList);
-        }else{
-            page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO,userMajorList,TokenUtils.getCurrentPersonId(),TokenUtils.getCurrentPerson().getOfficeAreaId());
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))) {
+            page = faultQueryMapper.query(reqDTO.of(), reqDTO, userMajorList);
+        } else {
+            page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
 
         List<FaultDetailResDTO> list = page.getRecords();
@@ -137,14 +122,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             UserCenterInfoResDTO userinfo = userAccountService.getUserDetail();
             userDept = userinfo.getOfficeId();
-            if(userinfo.getUserMajors().size() == 0){
-                userMajorList = null;
-            }else{
+            if (StringUtils.isNotEmpty(userinfo.getUserMajors())) {
                 userMajorList = userinfo.getUserMajors();
             }
         }
-        List<FaultDetailResDTO> list = faultQueryMapper.queryLimit(userDept,userMajorList);
-        return list;
+        return faultQueryMapper.queryLimit(userDept, userMajorList);
     }
 
     @Override
@@ -241,7 +223,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String zcStepOrg = dictionaries.getItemEname();
         overTodoService.insertTodoWithUserGroupAndAllOrg("【" + faultInfo1.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultOrderDO.getRecId(),
                 reqDTO.getFaultWorkNo(), CommonConstants.DM_007, zcStepOrg, "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(),
-                faultInfo1.getMajorCode(), faultInfo1.getLineCode(), "20", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                faultInfo1.getMajorCode(), faultInfo1.getLineCode(), "20", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         // 添加流程记录
         addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null);
     }
@@ -471,10 +453,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String itemEname = dictionaries.getItemEname();
         String[] cos01 = itemEname.split(",");
         List<String> cos = Arrays.asList(cos01);
-         if (DM_013.equals(ext2)) {
+        if (CommonConstants.DM_013.equals(ext2)) {
             overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN);
             // String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已设调确认，请及时在EAM系统关闭工单！";
-            overTodoService.insertTodoWithUserRoleAndOrg("【" + majorName + CommonConstants.FAULT_CONTENT_END, faultOrderDO.getRecId(), faultWorkNo, "DM_013", workClass, "故障关闭", "DMFM0001", currentUser, null,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            overTodoService.insertTodoWithUserRoleAndOrg("【" + majorName + CommonConstants.FAULT_CONTENT_END, faultOrderDO.getRecId(), faultWorkNo, "DM_013", workClass, "故障关闭", "DMFM0001", currentUser, null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         }
         // else if (ext2.equals(CommonConstants.DM_006)) {
         //     overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN);
@@ -524,7 +506,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //     // eiInfo.set("content", content);
         //     // ISendMessage.sendMoblieMessageByGroup(eiInfo);
         // } else {
-        overTodoService.insertTodo("【" + majorName + CommonConstants.FAULT_CONTENT_END,faultOrderDO.getRecId(), faultWorkNo,fillinUserId,"故障关闭","?",currentUser,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+        overTodoService.insertTodo("【" + majorName + CommonConstants.FAULT_CONTENT_END, faultOrderDO.getRecId(), faultWorkNo, fillinUserId, "故障关闭", "?", currentUser, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
     }
 
     public void sendContractFault(FaultOrderDO dmfm02) {
@@ -682,9 +664,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     /**
      * 处理结果（已处理）消息推送
      * @param faultWorkNo 工单编号
-     * @param reqDTO 故障完工返回类
-     * @param cos cos
-     * @param order 工单信息
+     * @param reqDTO      故障完工返回类
+     * @param cos         cos
+     * @param order       工单信息
      */
     public void processedSend(String faultWorkNo, FaultFinishWorkReqDTO reqDTO, List<String> cos, FaultOrderResDTO order) {
         // 基础参数
@@ -695,16 +677,16 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         // 中铁通发给中铁通专业工程师  中车发给中车专业工程师
         // 专业工程师(中铁通) DM_006 专业工程师（中车）DM_032
         List<String> users = getUsersByCompanyAndRole(reqDTO.getMajorCode(), "DM_006", "DM_032");
-        overTodoService.insertTodoWithUserList(users, content,order.getRecId()
-                , faultWorkNo, "故障完工确认", "DMFM0001", userId, TokenUtils.getCurrentPersonId(),BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+        overTodoService.insertTodoWithUserList(users, content, order.getRecId()
+                , faultWorkNo, "故障完工确认", "DMFM0001", userId, TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
     }
 
     /**
      * 根据中车or中铁通 以及角色返回用户列表
      */
-    public List<String> getUsersByCompanyAndRole(String majorCode,String zttRole,String zcRole) {
+    public List<String> getUsersByCompanyAndRole(String majorCode, String zttRole, String zcRole) {
         List<String> userIds = Lists.newArrayList();
-        if (!zcList.contains(majorCode)) {
+        if (!ZC_LIST.contains(majorCode)) {
             if (StringUtils.isNotEmpty(zttRole)) {
                 List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zttRole);
                 userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
@@ -721,9 +703,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     /**
      * 处理结果（跟踪观察）消息推送
      * @param faultWorkNo 工单编号
-     * @param reqDTO 故障完工返回类
-     * @param cos cos
-     * @param order 工单信息
+     * @param reqDTO      故障完工返回类
+     * @param cos         cos
+     * @param order       工单信息
      */
     public void observeSend(String faultWorkNo, FaultFinishWorkReqDTO reqDTO, List<String> cos, FaultOrderResDTO order) {
         // 基础参数
@@ -743,14 +725,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 case "07":
                     overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, bussId,
                             faultWorkNo, CommonConstants.DM_006, zcStepOrg, "故障跟踪", "DMFM0010",
-                            userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content4,BpmnFlowEnum.FAULT_TRACK.value());
+                            userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content4, BpmnFlowEnum.FAULT_TRACK.value());
                     overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(),
                             faultWorkNo, "DM_009", zcStepOrg, "故障验收", "DMFM0001",
-                            userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                            userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                     break;
                 case "06":
                     overTodoService.insertTodoWithUserGroup("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, bussId, faultWorkNo,
-                            CommonConstants.DM_037, "故障跟踪", "DMFM0010", userId,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                            CommonConstants.DM_037, "故障跟踪", "DMFM0010", userId, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                     // todo 发送短信
 //                    content37 = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userOfficeName + "的" + userName + "已提报完工，但需要故障跟踪，请及时在EAM系统完工确认并跟踪观察！";
 //                    messageInfo = new EiInfo();
@@ -758,7 +740,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 //                    messageInfo.set("content", content37);
 //                    ISendMessage.sendMoblieMessageByGroup(messageInfo);
                     overTodoService.insertTodoWithUserGroup("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, bussId, faultWorkNo,
-                            CommonConstants.DM_037, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001", userId,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                            CommonConstants.DM_037, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001", userId, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                     break;
                 default:
                     break;
@@ -768,23 +750,23 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             String zttStepOrg = dictionaries.getItemEname();
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, bussId, faultWorkNo,
                     CommonConstants.DM_045, zttStepOrg, "故障跟踪", "DMFM0010", userId,
-                    reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content4,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content4, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(), faultWorkNo,
                     CommonConstants.DM_045, zttStepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001", userId,
-                    reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         } else if (StringUtils.isNotEmpty(reqDTO.getIsToSubmit()) && CommonConstants.ONE_STRING.equals(reqDTO.getIsToSubmit())) {
             if (StringUtils.isNotEmpty(reqDTO.getUserIds())) {
                 overTodoService.insertTodoWithUserList(reqDTO.getUserIds(), "【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END,
-                        queryFaultWorkRecId(faultWorkNo), faultWorkNo, "故障验收", "DMFM0001", userId, content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                        queryFaultWorkRecId(faultWorkNo), faultWorkNo, "故障验收", "DMFM0001", userId, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 overTodoService.insertTodoWithUserList(reqDTO.getUserIds(), "【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END,
-                        queryFaultWorkRecId(faultWorkNo), faultWorkNo, "故障跟踪", "DMFM0001", userId, content4,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                        queryFaultWorkRecId(faultWorkNo), faultWorkNo, "故障跟踪", "DMFM0001", userId, content4, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             } else {
                 overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, queryFaultWorkRecId(faultWorkNo),
                         faultWorkNo, CommonConstants.DM_006, workClass, "故障验收", "DMFM0001",
-                        userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content,BpmnFlowEnum.FAULT_TRACK.value());
+                        userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content, BpmnFlowEnum.FAULT_TRACK.value());
                 overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, bussId,
                         faultWorkNo, CommonConstants.DM_006, order.getWorkClass(), "故障跟踪", "DMFM0010",
-                        userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content4,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                        userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content4, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
         } else {
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
@@ -792,16 +774,16 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             String content3 = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userOfficeName + "的" + userName + "已验收，请及时在EAM系统完工确认！";
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END,
                     queryFaultWorkRecId(faultWorkNo), faultWorkNo, CommonConstants.DM_007, zcStepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001",
-                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "30", content3,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "30", content3, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         }
     }
 
     /**
      * 处理结果（未处理）消息推送
      * @param faultWorkNo 工单编号
-     * @param reqDTO 故障完工返回类
-     * @param cos cos
-     * @param order 工单信息
+     * @param reqDTO      故障完工返回类
+     * @param cos         cos
+     * @param order       工单信息
      */
     public void untreatedSend(String faultWorkNo, FaultFinishWorkReqDTO reqDTO, List<String> cos, FaultOrderResDTO order) {
         // 基础参数
@@ -820,7 +802,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                     zcStepOrg = dictionaries.getItemEname();
                     overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(),
                             faultWorkNo, CommonConstants.DM_007, zcStepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_AND_DISPATCH_CN, "DMFM0001",
-                            userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                            userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                     break;
                 case "06":
                     content37 = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userOfficeName + "的" + userName + "已提报完工，请及时在EAM系统完工确认并对故障再派工！";
@@ -830,7 +812,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 //                    messageInfo.set("content", content37);
 //                    ISendMessage.sendMoblieMessageByGroup(messageInfo);
                     overTodoService.insertTodoWithUserGroup("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(), faultWorkNo,
-                            CommonConstants.DM_037, CommonConstants.FAULT_FINISHED_CONFIRM_AND_DISPATCH_CN, "DMFM0001", userId,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                            CommonConstants.DM_037, CommonConstants.FAULT_FINISHED_CONFIRM_AND_DISPATCH_CN, "DMFM0001", userId, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                     break;
                 default:
                     break;
@@ -840,13 +822,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             String zttStepOrg = dictionaries.getItemEname();
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(),
                     faultWorkNo, CommonConstants.DM_045, zttStepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_AND_DISPATCH_CN, "DMFM0001",
-                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         } else {
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
             String zcStepOrg = dictionaries.getItemEname();
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(),
                     faultWorkNo, CommonConstants.DM_007, zcStepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_AND_DISPATCH_CN, "DMFM0001",
-                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "10", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
 
         }
     }
@@ -854,9 +836,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     /**
      * 处理结果（无法处理）消息推送
      * @param faultWorkNo 工单编号
-     * @param reqDTO 故障完工返回类
-     * @param cos cos
-     * @param order 工单信息
+     * @param reqDTO      故障完工返回类
+     * @param cos         cos
+     * @param order       工单信息
      */
     public void unProcessSend(String faultWorkNo, FaultFinishWorkReqDTO reqDTO, List<String> cos, FaultOrderResDTO order) {
         // 基础参数
@@ -888,7 +870,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                     stepOrg = dictionaries.getItemEname();
                     overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(),
                             faultWorkNo, CommonConstants.DM_007, stepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001",
-                            userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "30", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                            userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "30", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                     break;
                 case "06":
                     // todo 发送短信
@@ -897,7 +879,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 //                    messageInfo.set("content", content);
 //                    ISendMessage.sendMoblieMessageByGroup(messageInfo);
                     overTodoService.insertTodoWithUserGroup("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(), faultWorkNo,
-                            CommonConstants.DM_037, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001", userId,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                            CommonConstants.DM_037, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001", userId, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                     break;
                 default:
                     break;
@@ -907,13 +889,13 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             String zttStepOrg = dictionaries.getItemEname();
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(),
                     faultWorkNo, CommonConstants.DM_045, zttStepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001",
-                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "20", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         } else {
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
             String zcStepOrg = dictionaries.getItemEname();
             overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, queryFaultWorkRecId(faultWorkNo),
                     faultWorkNo, CommonConstants.DM_007, zcStepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001",
-                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "30", content,BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    userId, reqDTO.getMajorCode(), reqDTO.getLineCode(), "30", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         }
     }
 
@@ -945,8 +927,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
      * 完工确认消息发送
      * @param faultWorkNo 工单编号
      * @param currentUser 当前人
-     * @param dmfm02 工单信息
-     * @param faultInfo 故障信息
+     * @param dmfm02      工单信息
+     * @param faultInfo   故障信息
      */
     private void finishWorkConfirmSendMessage(String faultWorkNo, String currentUser, FaultOrderDO dmfm02, FaultInfoDO faultInfo) {
         String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已完工确认，请及时在EAM系统关闭工单！";
@@ -1005,7 +987,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
                 // 中铁通的发给中铁通生产调度 DM_007
                 // 行车设备类 且不是车辆故障
-                if ("10".equals(faultInfoDO.getFaultType()) && !zcList.contains(majorCode)) {
+                if ("10".equals(faultInfoDO.getFaultType()) && !ZC_LIST.contains(majorCode)) {
                     List<String> users = getUsersByCompanyAndRole(majorCode, "DM_007", "ZCJD");
                     overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo, CommonConstants.FAULT_FINISHED_CONFIRM_CN, currentPersonId, "?", null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 } else {
@@ -1035,9 +1017,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     /**
      * 新增工单流程
-     * @param faultNo 故障编号
+     * @param faultNo     故障编号
      * @param faultWorkNo 故障工单编号
-     * @param remark 备注
+     * @param remark      备注
      */
     public void addFaultFlow(String faultNo, String faultWorkNo, String remark) {
         FaultFlowReqDTO faultFlowReqDTO = new FaultFlowReqDTO();
