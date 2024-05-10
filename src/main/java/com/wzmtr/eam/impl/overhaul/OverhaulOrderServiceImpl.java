@@ -154,7 +154,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public OverhaulOrderResDTO getOverhaulOrderDetail(String id) {
-        return overhaulOrderMapper.getOrder(id, "1");
+        OverhaulOrderResDTO res = overhaulOrderMapper.getOrder(id, "1");
+        if (StringUtils.isNotNull(res) && StringUtils.isNotEmpty(res.getOrderCode())) {
+            res.setFlows(overhaulOrderMapper.orderFlowDetail(res.getOrderCode()));
+        }
+        return res;
     }
 
     @Override
@@ -290,6 +294,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
             overhaulWorkRecordService.insertRepair(overhaulOrderReqDTO);
             overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
+            // 添加流程记录
+            addOverhaulOrderFlow(overhaulOrderReqDTO.getOrderCode(), null);
         }catch (Exception e){
             log.error(e.getMessage());
         }
@@ -312,6 +318,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         for (BpmnExaminePersonRes map2 : userList) {
             overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,req.getOrderCode(),"检修"), req.getRecId(), req.getOrderCode(), map2.getUserId(), "检修工单完工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
         }
+        // 添加流程记录
+        addOverhaulOrderFlow(req.getOrderCode(), null);
     }
 
     @Override
@@ -347,6 +355,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                         map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId(),BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
         }
+        // 添加流程记录
+        addOverhaulOrderFlow(overhaulOrderReqDTO.getOrderCode(), null);
     }
 
     /**
@@ -397,6 +407,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         // ServiceDMER0201  confirmWorkers
         //完成待办
         overTodoService.overTodo(overhaulOrderReqDTO.getOrderCode());
+        // 添加流程记录
+        addOverhaulOrderFlow(overhaulOrderReqDTO.getOrderCode(), null);
     }
 
     /**
@@ -472,6 +484,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
+        // 添加流程记录
+        addOverhaulOrderFlow(overhaulOrderReqDTO.getOrderCode(), null);
     }
 
     public void checkOrderState(OverhaulOrderReqDTO overhaulOrderReqDTO, String orderStates, String msg) {
@@ -883,6 +897,32 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 //            ext2 = "";
 //        }
         return ext2;
+    }
+
+    /**
+     * 新增工单流程
+     * @param orderCode 工单编号
+     * @param remark 备注
+     */
+    public void addOverhaulOrderFlow(String orderCode, String remark) {
+        OverhaulOrderFlowReqDTO orderFlow = new OverhaulOrderFlowReqDTO();
+        orderFlow.setRecId(TokenUtils.getUuId());
+        orderFlow.setOrderCode(orderCode);
+        orderFlow.setOperateUserId(TokenUtils.getCurrentPersonId());
+        orderFlow.setOperateUserName(TokenUtils.getCurrentPerson().getPersonName());
+        orderFlow.setOperateTime(DateUtils.getCurrentTime());
+        OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
+        overhaulOrderListReqDTO.setOrderCode(orderCode);
+        List<OverhaulOrderResDTO> orderDetail = overhaulOrderMapper.listOverhaulOrder(overhaulOrderListReqDTO);
+        if (StringUtils.isNotEmpty(orderDetail)) {
+            if (StringUtils.isNotNull(orderDetail)) {
+                orderFlow.setWorkStatus(orderDetail.get(0).getWorkStatus());
+            }
+        }
+        if (StringUtils.isNotEmpty(remark)) {
+            orderFlow.setRemark(remark);
+        }
+        overhaulOrderMapper.addOverhaulOrderFlow(orderFlow);
     }
 
 }

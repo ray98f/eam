@@ -46,4 +46,7 @@ public class SchedulingBuildResDTO {
 
     @ApiModelProperty(value = "是否已根据持续时间延期 0否 1是")
     private String isDuration;
+
+    @ApiModelProperty(value = "二级修包类型")
+    private String packageType;
 }

@@ -804,6 +804,13 @@
         <if test="orderStatus!=null and orderStatus!=''">
            and df.ORDER_STATUS=#{orderStatus}
         </if>
+        <if test="userId!=null">
+            AND (df.DISPATCH_USER_ID=#{userId} OR df.WORK_CLASS=#{officeAreaId} OR
+            df.REPAIR_RESP_USER_ID=#{userId} OR df.REPORT_USER_ID=#{userId} OR
+            df.REPORT_START_USER_ID=#{userId} OR df.REPORT_FINISH_USER_ID=#{userId} OR
+            df.CHECK_USER_ID=#{userId} OR df.CONFIRM_USER_ID=#{userId} OR df.CLOSE_USER_ID=#{userId} OR
+            df.CANCEL_USER_ID=#{userId} OR df.REC_CREATOR=#{userId})
+        </if>
         and df.DELETE_FLAG='0'
         ORDER BY d.FAULT_NO desc
     </select>
@@ -1148,9 +1155,10 @@
 
     <insert id="addFaultFlow">
         INSERT INTO T_FAULT_FLOW
-        (REC_ID, FAULT_NO, FAULT_WORK_NO, ORDER_STATUS, OPERATE_USER_ID, OPERATE_TIME, OPERATE_USER_NAME)
+        (REC_ID, FAULT_NO, FAULT_WORK_NO, ORDER_STATUS, OPERATE_USER_ID, OPERATE_TIME, OPERATE_USER_NAME, REMARK)
         VALUES (#{recId,jdbcType=VARCHAR}, #{faultNo,jdbcType=VARCHAR}, #{faultWorkNo,jdbcType=VARCHAR},
-        #{orderStatus,jdbcType=VARCHAR}, #{operateUserId,jdbcType=VARCHAR}, #{operateTime,jdbcType=VARCHAR}, #{operateUserName,jdbcType=VARCHAR})
+        #{orderStatus,jdbcType=VARCHAR}, #{operateUserId,jdbcType=VARCHAR}, #{operateTime,jdbcType=VARCHAR},
+        #{operateUserName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
     </insert>
 
     <insert id="addFaultError">

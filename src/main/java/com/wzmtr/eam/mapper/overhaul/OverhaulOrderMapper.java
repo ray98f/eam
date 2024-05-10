@@ -2,10 +2,12 @@ package com.wzmtr.eam.mapper.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderDetailReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderFlowReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 import com.wzmtr.eam.dto.res.overhaul.MateBorrowResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderFlowResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -54,6 +56,13 @@ public interface OverhaulOrderMapper {
     OverhaulOrderResDTO getOrder(String recId, String objectFlag);
 
     /**
+     * 根据工单编号获取检修工单流程信息
+     * @param orderCode 工单编号
+     * @return 检修工单流程信息
+     */
+    List<OverhaulOrderFlowResDTO> orderFlowDetail(String orderCode);
+
+    /**
      * 获取工器具分页列表
      * @param page 分页参数
      * @param orderCode 检修工单
@@ -91,4 +100,10 @@ public interface OverhaulOrderMapper {
      * @return 计划名称列表
      */
     List<String> queryPlan(String planName);
+
+    /**
+     * 新增检修工单流程
+     * @param overhaulOrderFlowReqDTO 检修工单流程信息
+     */
+    void addOverhaulOrderFlow(OverhaulOrderFlowReqDTO overhaulOrderFlowReqDTO);
 }

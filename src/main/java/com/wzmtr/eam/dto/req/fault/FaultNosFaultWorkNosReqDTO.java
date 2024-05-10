@@ -26,4 +26,13 @@ public class FaultNosFaultWorkNosReqDTO {
     private Set<String> faultWorkNos;
     @ApiModelProperty(value = "工单状态")
     private OrderStatus type;
+
+    /**
+     * 状态 0 通过 1 不通过
+     */
+    private String status;
+    /**
+     * 备注理由
+     */
+    private String remark;
 }

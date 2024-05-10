@@ -973,6 +973,19 @@
         FROM T_OVERHAUL_ORDER WHERE REC_ID=#{recId}
     </select>
 
+    <select id="orderFlowDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderFlowResDTO">
+        SELECT ff.REC_ID, ff.ORDER_CODE, ff.WORK_STATUS, ff.OPERATE_USER_ID,
+        ff.OPERATE_TIME, ff.OPERATE_USER_NAME, u.MOBILE as OPERATE_USER_MOBILE, ff.REMARK
+        FROM T_OVERHAUL_ORDER_FLOW ff
+        LEFT JOIN SYS_USER u ON ff.OPERATE_USER_ID=u.LOGIN_NAME
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="orderCode!=null and orderCode!=''">
+                and ff.ORDER_CODE=#{orderCode}
+            </if>
+        </trim>
+        order by ff.OPERATE_TIME asc
+    </select>
+
     <select id="pageMateBorrow" resultType="com.wzmtr.eam.dto.res.overhaul.MateBorrowResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
@@ -1484,5 +1497,13 @@
         select distinct PLAN_NAME as "planName"
         from T_OVERHAUL_ORDER where 1=1 and PLAN_NAME like '%' || #{planName} || '%'
     </select>
+
+    <insert id="addOverhaulOrderFlow">
+        INSERT INTO T_OVERHAUL_ORDER_FLOW
+        (REC_ID, ORDER_CODE, WORK_STATUS, OPERATE_USER_ID, OPERATE_TIME, OPERATE_USER_NAME, REMARK)
+        VALUES (#{recId,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR}, #{workStatus,jdbcType=VARCHAR},
+        #{operateUserId,jdbcType=VARCHAR}, #{operateTime,jdbcType=VARCHAR},
+        #{operateUserName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+    </insert>
 
 </mapper>

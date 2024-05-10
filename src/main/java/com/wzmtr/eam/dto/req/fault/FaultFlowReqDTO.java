@@ -46,4 +46,9 @@ public class FaultFlowReqDTO {
      */
     @ApiModelProperty(value = "操作时间")
     private String operateTime;
+    /**
+     * 备注
+     */
+    @ApiModelProperty(value = "备注")
+    private String remark;
 }

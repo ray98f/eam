@@ -133,13 +133,25 @@ public class SchedulingServiceImpl implements SchedulingService {
                 // 移除设备在今天之后的排期
                 schedulingMapper.removeSchedulingAfterNow(equipCode, TokenUtils.getCurrentPersonId());
                 // 一级修排期
-                List<SchedulingBuildResDTO> allList = scheduling(equipCode, "1");
+                List<SchedulingBuildResDTO> oneList = scheduling(equipCode, "1");
+                oneList.removeIf(Objects::isNull);
+                if (StringUtils.isNotEmpty(oneList)) {
+                    // 一级修排期数据新增数据库
+                    schedulingMapper.addOverhaulOrderScheduling(oneList, TokenUtils.getCurrentPersonId());
+                }
                 // 二级修排期
-                allList.addAll(scheduling(equipCode, "2"));
-                allList.removeIf(Objects::isNull);
-                if (StringUtils.isNotEmpty(allList)) {
-                    // 排期数据新增数据库
-                    schedulingMapper.addOverhaulOrderScheduling(allList, TokenUtils.getCurrentPersonId());
+                List<SchedulingBuildResDTO> twoList = scheduling(equipCode, "2");
+                twoList.removeIf(Objects::isNull);
+                if (StringUtils.isNotEmpty(twoList)) {
+                    for (SchedulingBuildResDTO scheduling : twoList) {
+                        String day = schedulingMapper.getLastLevelOneRepairDay(
+                                DateUtils.addDayDay(scheduling.getDay(), -2), scheduling.getDay());
+                        if (StringUtils.isNotEmpty(day)) {
+                            scheduling.setDay(day);
+                        }
+                        // 二级修排期数据新增数据库
+                        schedulingMapper.addOverhaulOrderScheduling(Collections.singletonList(scheduling), TokenUtils.getCurrentPersonId());
+                    }
                 }
             }
         }
@@ -342,6 +354,7 @@ public class SchedulingServiceImpl implements SchedulingService {
         res.setType("1");
         res.setDateType(ONE_LEVEL_REPAIR_FOUR);
         res.setIsDuration("1");
+        res.setPackageType("");
         return res;
     }
 
@@ -370,6 +383,7 @@ public class SchedulingServiceImpl implements SchedulingService {
         } else {
             res.setIsDuration("1");
         }
+        res.setPackageType(String.valueOf(dateType));
         return res;
     }
 

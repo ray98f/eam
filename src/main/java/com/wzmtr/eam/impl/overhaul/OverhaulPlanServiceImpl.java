@@ -546,17 +546,21 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
                 String nowDate = dateTimeFormat.format(new Date());
                 List<WoRuleResDTO.WoRuleDetail> ruleList = woRuleMapper.queryRuleList(planCode, nowDate.substring(nowDate.length() - 4));
-                long beforeDay = ruleList.get(0).getBeforeTime();
-                if (StringUtils.isEmpty(trigerTime) || CommonConstants.ZERO_STRING.equals(trigerTime)) {
-                    trigerTime = orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN);
+                if (StringUtils.isNotEmpty(ruleList) && StringUtils.isNotNull(ruleList.get(0).getBeforeTime())) {
+                    long beforeDay = ruleList.get(0).getBeforeTime();
+                    if (StringUtils.isEmpty(trigerTime) || CommonConstants.ZERO_STRING.equals(trigerTime)) {
+                        trigerTime = orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN);
+                    } else {
+                        trigerTime = trigerTime.substring(0, 8);
+                    }
+                    Date date = dateTimeFormat.parse(trigerTime);
+                    Calendar ca = Calendar.getInstance();
+                    ca.setTime(date);
+                    ca.add(Calendar.DAY_OF_YEAR, Math.toIntExact(beforeDay));
+                    insertMap.setPlanStartTime(dateTimeFormat.format(ca.getTime()));
                 } else {
-                    trigerTime = trigerTime.substring(0, 8);
+                    insertMap.setPlanStartTime(orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN));
                 }
-                Date date = dateTimeFormat.parse(trigerTime);
-                Calendar ca = Calendar.getInstance();
-                ca.setTime(date);
-                ca.add(Calendar.DAY_OF_YEAR, Math.toIntExact(beforeDay));
-                insertMap.setPlanStartTime(dateTimeFormat.format(ca.getTime()));
             }
         } else {
             insertMap.setPlanStartTime(orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN));
@@ -652,7 +656,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         dmer24.setPlanCode(planCode);
         dmer24.setOrderCode(orderCode);
         dmer24.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
-        if (workCode.length() > CommonConstants.TWO) {
+        if (StringUtils.isNotEmpty(workCode) && workCode.length() > CommonConstants.TWO) {
             String[] workerCodes = workCode.split(",");
             for (String workerCode : workerCodes) {
                 dmer24.setRecId(TokenUtils.getUuId());

@@ -521,7 +521,7 @@
     </select>
     <select id="faultFlowDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultFlowResDTO">
         SELECT ff.REC_ID, ff.FAULT_NO, ff.FAULT_WORK_NO, ff.ORDER_STATUS, ff.OPERATE_USER_ID,
-        ff.OPERATE_TIME, ff.OPERATE_USER_NAME, u.MOBILE as OPERATE_USER_MOBILE
+        ff.OPERATE_TIME, ff.OPERATE_USER_NAME, u.MOBILE as OPERATE_USER_MOBILE, ff.REMARK
         FROM T_FAULT_FLOW ff
         LEFT JOIN SYS_USER u ON ff.OPERATE_USER_ID=u.LOGIN_NAME
         <trim prefix="WHERE" prefixOverrides="AND">

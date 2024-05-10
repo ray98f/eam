@@ -150,7 +150,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             for (String id : baseIdsEntity.getIds()) {
                 OverhaulTplResDTO resDTO = overhaulTplMapper.getOverhaulTplDetail(id);
                 OverhaulTplReqDTO overhaulTplReqDTO = new OverhaulTplReqDTO();
-                BeanUtils.copyProperties(overhaulTplReqDTO, resDTO);
+                BeanUtils.copyProperties(resDTO, overhaulTplReqDTO);
                 if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
                     if (Objects.isNull(overhaulTplReqDTO.getSubjectCode())) {
                         throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);

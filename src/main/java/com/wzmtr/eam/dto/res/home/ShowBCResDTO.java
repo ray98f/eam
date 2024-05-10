@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 @ApiModel
 public class ShowBCResDTO {
-    private String CNT;
-    private String CNTSeven;
+    private String count;
     private String majorName;
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.wzmtr.eam.mapper.overhaul.SchedulingMapper">
 
     <select id="listScheduling" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
-        SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME,
+        SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME, PACKAGE_TYPE,
         (CASE WHEN "TYPE"='1' THEN '一级修-' || SCHEDULING_NAME || '天包'
         ELSE '二级修-' || SCHEDULING_NAME || '天包' END) SCHEDULING_NAME,
         PLAN_CODE, PLAN_NAME, "TYPE"
@@ -14,7 +14,7 @@
     </select>
 
     <select id="getSchedulingDetail" resultType="com.wzmtr.eam.dto.res.overhaul.SchedulingResDTO">
-        SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME,
+        SELECT REC_ID, EQUIP_CODE, "DAY", IS_TRIGGER, EQUIP_NAME, PACKAGE_TYPE,
         (CASE WHEN "TYPE"='1' THEN '一级修-' || SCHEDULING_NAME || '天包'
         ELSE '二级修-' || SCHEDULING_NAME || '天包' END) SCHEDULING_NAME,
         PLAN_CODE, PLAN_NAME, "TYPE"
@@ -50,7 +50,7 @@
 
     <update id="removeSchedulingAfterNow">
         UPDATE T_OVERHAUL_ORDER_SCHEDULING SET
-        DELETE_FLAG='1', REC_REVISOR=#{userId}, REC_REVISE_TIME=TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        DELETE_FLAG='1', REC_REVISOR=#{userId}, REC_REVISE_TIME=TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
         WHERE EQUIP_CODE=#{equipCode} AND DELETE_FLAG='0'
         AND TO_DATE("DAY", 'YYYY-MM-DD')>TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 'YYYY-MM-DD')
     </update>
@@ -84,6 +84,13 @@
         ORDER BY "DAY" DESC) WHERE rownum=1
     </select>
 
+    <select id="getLastLevelOneRepairDay" resultType="java.lang.String">
+        SELECT "DAY" FROM T_OVERHAUL_ORDER_SCHEDULING
+        WHERE DELETE_FLAG='0' AND TYPE='1' AND IS_TRIGGER='0'
+        AND TO_DATE(#{endTime}, 'YYYY-MM-DD')>TO_DATE("DAY", 'YYYY-MM-DD')
+        AND TO_DATE("DAY", 'YYYY-MM-DD')>=TO_DATE(#{startTime}, 'YYYY-MM-DD')
+    </select>
+
     <insert id="addOverhaulOrderScheduling">
         INSERT ALL
         <foreach collection="list" index="index" item="scheduling" separator=" ">
@@ -99,6 +106,7 @@
             SCHEDULING_NAME,
             PLAN_CODE,
             PLAN_NAME,
+            PACKAGE_TYPE,
             "TYPE")
             VALUES (
             #{scheduling.recId,jdbcType=VARCHAR},
@@ -112,8 +120,23 @@
             #{scheduling.schedulingName,jdbcType=VARCHAR},
             #{scheduling.planCode,jdbcType=VARCHAR},
             #{scheduling.planName,jdbcType=VARCHAR},
+            #{scheduling.packageType,jdbcType=VARCHAR},
             #{scheduling.type,jdbcType=VARCHAR})
         </foreach>
         SELECT * FROM dual
     </insert>
+
+    <update id="triggerScheduling">
+        UPDATE T_OVERHAUL_ORDER_SCHEDULING SET
+        IS_TRIGGER='1', REC_REVISOR='admin', REC_REVISE_TIME=TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
+        WHERE "DAY"=TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        <if test="list!=null and list.size()>0">
+            AND PLAN_CODE NOT IN (
+            <foreach collection="list" index="index" item="planCode" separator=",">
+                #{planCode}
+            </foreach>
+            )
+        </if>
+        AND DELETE_FLAG='0'
+    </update>
 </mapper>

@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.home;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.home.HomeChartReqDTO;
 import com.wzmtr.eam.dto.res.home.EChartResDTO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -32,5 +33,5 @@ public interface HomeService {
      */
     void urgingTodo(String todoId);
 
-    EChartResDTO queryChart();
+    EChartResDTO queryChart(HomeChartReqDTO req);
 }

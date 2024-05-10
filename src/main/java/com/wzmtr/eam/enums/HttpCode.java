@@ -18,6 +18,7 @@ public enum HttpCode {
 
     // 未知异常
     UN_KNOW_ERROR(400, "出现系统未知错误"),
+    SERVER_ERROR(500, "服务器错误"),
     INSERT_ERROR(506, "插入数据失败"),
     INSERT_DATA_REPEAT(506, "插入数据重复"),
     UPDATE_ERROR(507,"修改数据失败"),

@@ -2,8 +2,7 @@ package com.wzmtr.eam.impl.home;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.wzmtr.eam.dto.req.home.HomeChartReqDTO;
 import com.wzmtr.eam.dto.res.home.EChartResDTO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 import com.wzmtr.eam.dto.res.home.ShowAResDTO;
@@ -13,7 +12,6 @@ import com.wzmtr.eam.entity.StatusWorkFlowLog;
 import com.wzmtr.eam.mapper.home.HomeMapper;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.home.HomeService;
-import com.wzmtr.eam.utils.StreamUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Author: Li.Wang
@@ -55,36 +52,20 @@ public class HomeServiceImpl implements HomeService {
     }
 
     @Override
-    public EChartResDTO queryChart() {
-        //最近3月
-        List<ShowBCResDTO> listB = homeMapper.queryB();
-        //最近7天
-        List<ShowBCResDTO> listC = homeMapper.queryC();
-        //故障状态统计
-        List<ShowAResDTO> listA = homeMapper.queryA();
+    public EChartResDTO queryChart(HomeChartReqDTO req) {
+        // 柱状图数据查询
+        List<ShowBCResDTO> listB = homeMapper.queryB(req);
+        // 饼图统计数据查询
+        List<ShowAResDTO> listA = homeMapper.queryA(req);
         EChartResDTO eChartResDTO = new EChartResDTO();
-        Map<String, ShowBCResDTO> map = Maps.newHashMap();
-        if (StringUtils.isNotEmpty(listC)) {
-            map = StreamUtils.toMap(listC, ShowBCResDTO::getMajorName);
-        }
-        List<ShowBCResDTO> list = Lists.newArrayList();
-        for (ShowBCResDTO a : listB) {
-            if (map.containsKey(a.getMajorName())) {
-                ShowBCResDTO showBcRes = new ShowBCResDTO();
-                showBcRes.setMajorName(a.getMajorName());
-                showBcRes.setCNT(a.getCNT());
-                showBcRes.setCNTSeven(map.get(a.getMajorName()).getCNT());
-                list.add(showBcRes);
-            }
-        }
         if (StringUtils.isNotEmpty(listA)) {
             for (ShowAResDTO a : listA) {
-                a.setCNAME(dictService.queryOneByItemCodeAndCodesetCode("dm.faultStatus", a.getCNAME()).getItemCname());
+                a.setCname(dictService.queryOneByItemCodeAndCodesetCode("dm.faultStatus", a.getCname()).getItemCname());
             }
             eChartResDTO.setShowA(listA);
         }
-        if (StringUtils.isNotEmpty(list)) {
-            eChartResDTO.setShowCount(list);
+        if (StringUtils.isNotEmpty(listB)) {
+            eChartResDTO.setShowCount(listB);
         }
         return eChartResDTO;
     }

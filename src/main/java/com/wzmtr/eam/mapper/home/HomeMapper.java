@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.home;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.home.HomeChartReqDTO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 import com.wzmtr.eam.dto.res.home.ShowAResDTO;
 import com.wzmtr.eam.dto.res.home.ShowBCResDTO;
@@ -38,9 +39,17 @@ public interface HomeMapper {
      */
     void urgingTodo(String todoId);
 
-    List<ShowBCResDTO> queryC();
+    /**
+     * 柱状图数据查询
+     * @param req 传参
+     * @return 柱状图信息
+     */
+    List<ShowBCResDTO> queryB(HomeChartReqDTO req);
 
-    List<ShowBCResDTO> queryB();
-
-    List<ShowAResDTO> queryA();
+    /**
+     * 饼图统计数据查询
+     * @param req 传参
+     * @return 饼图信息
+     */
+    List<ShowAResDTO> queryA(HomeChartReqDTO req);
 }

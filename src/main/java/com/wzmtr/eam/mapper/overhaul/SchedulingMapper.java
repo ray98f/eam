@@ -81,9 +81,23 @@ public interface SchedulingMapper {
     SchedulingResDTO getTrainLastTriggerScheduling(String equipCode, String type);
 
     /**
+     * 判断二级修日期前两天内是否有一级修，有则返回一级修日期
+     * @param startTime 二级修两天前的日期
+     * @param endTime 二级修日期
+     * @return 一级修日期
+     */
+    String getLastLevelOneRepairDay(String startTime, String endTime);
+
+    /**
      * 新增检修工单排期
      * @param list 排期信息
      * @param userId 操作人id
      */
     void addOverhaulOrderScheduling(List<SchedulingBuildResDTO> list, String userId);
+
+    /**
+     * 修改触发标识（排除自动触发执行失败检修计划编号列表）
+     * @param list 自动触发执行失败检修计划编号列表
+     */
+    void triggerScheduling(List<String> list);
 }

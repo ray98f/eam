@@ -194,7 +194,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                 faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
                 faultReportMapper.updateFaultOrder(faultOrderDO);
                 faultReportMapper.updateFaultInfo(faultInfoDO);
-                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,reqDTO.getFaultWorkNo(),"故障"), faultOrderDO.getRecId(), reqDTO.getFaultWorkNo(), organ.getOrgCode(), "故障派工", " ? ", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL, reqDTO.getFaultWorkNo(), "故障"), faultOrderDO.getRecId(), reqDTO.getFaultWorkNo(), organ.getOrgCode(), "故障派工", " ? ", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
         }
     }
@@ -271,7 +271,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         Page<FaultReportResDTO> list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(),
                 reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                 reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
-                reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),reqDTO.getFaultWorkNo(), reqDTO.getLineCode(),userMajorList);
+                reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(), reqDTO.getFaultWorkNo(),
+                reqDTO.getLineCode(), userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
         List<FaultReportResDTO> records = list.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();
@@ -321,6 +322,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         buildRes(records);
         return list;
     }
+
     private void buildRes(List<FaultReportResDTO> records) {
         Set<String> positionCodes = StreamUtils.mapToSet(records, FaultReportResDTO::getPositionCode);
         List<RegionResDTO> regionRes = regionMapper.selectByQuery(RegionQuery.builder().nodeCodes(positionCodes).build());
@@ -407,8 +409,8 @@ public class FaultReportServiceImpl implements FaultReportService {
             infoUpdate.setDocId(" ");
             orderUpdate.setDocId(" ");
         }
-        if (null != reqDTO.getMaintenance()){
-             infoUpdate.setExt4(reqDTO.getMaintenance().toString());
+        if (null != reqDTO.getMaintenance()) {
+            infoUpdate.setExt4(reqDTO.getMaintenance().toString());
         }
         if (CommonConstants.ZERO_STRING.equals(orderUpdate.getOrderStatus())) {
             orderUpdate.setOrderStatus("10");
@@ -420,7 +422,7 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     /**
      * 新增工单流程
-     * @param faultNo 故障编号
+     * @param faultNo     故障编号
      * @param faultWorkNo 故障工单编号
      */
     public void addFaultFlow(String faultNo, String faultWorkNo) {
