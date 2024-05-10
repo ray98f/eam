@@ -145,6 +145,8 @@ public class CommonConstants {
     public static final String DM_VEHICLE_SPECIALTY_CODE = "dm.vehicleSpecialty";
     public static final String DM_MATCH_CONTROL_CODE = "dm.matchControl";
 
+    public static final String DM_FAULT_FOLLOW_STATUS = "dm.faultFollowStatus";
+
     /**
      * 工单推送内容相关
      */
