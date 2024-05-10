@@ -5,10 +5,7 @@ import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderDetailReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderFlowReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
-import com.wzmtr.eam.dto.res.overhaul.MateBorrowResDTO;
-import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
-import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderFlowResDTO;
-import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
+import com.wzmtr.eam.dto.res.overhaul.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -81,6 +78,14 @@ public interface OverhaulOrderMapper {
     List<String> queryObjMiles(String planCode);
 
     Page<OverhaulOrderDetailResDTO> pageOverhaulObject(Page<OverhaulOrderDetailResDTO> page, String orderCode, String planCode, String planName, String objectCode);
+
+    /**
+     * 获取检修对象列表-开放接口
+     * @param orderCode 工单编号
+     * @param page 分页参数
+     * @return 检修对象列表
+     */
+    Page<OverhaulOrderDetailOpenResDTO> openPageOverhaulObject(Page<OverhaulOrderDetailOpenResDTO> page, String orderCode);
 
     OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id);
 

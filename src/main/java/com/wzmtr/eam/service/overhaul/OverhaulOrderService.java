@@ -75,6 +75,14 @@ public interface OverhaulOrderService {
 
     Page<OverhaulOrderDetailResDTO> pageOverhaulObject(String orderCode, String planCode, String planName, String objectCode, PageReqDTO pageReqDTO);
 
+    /**
+     * 获取检修对象列表-开放接口
+     * @param orderCode 工单编号
+     * @param pageReqDTO 分页参数
+     * @return 检修对象列表
+     */
+    Page<OverhaulOrderDetailOpenResDTO> openPageOverhaulObject(String orderCode, PageReqDTO pageReqDTO);
+
     OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id);
 
     /**

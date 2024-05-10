@@ -1331,6 +1331,69 @@
         order by REC_ID asc
     </select>
 
+    <select id="openPageOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
+        SELECT
+        REC_ID	as "objectId",
+        REC_ID	as "recId",  <!-- 记录ID -->
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName",  <!-- 对象名称 -->
+        TASK_CONTENT	as "taskContent",  <!-- 作业内容 -->
+        TASK_AREA	as "taskArea",  <!-- 作业区域 -->
+        TASK_REQUEST	as "taskRequest",  <!-- 作业需求 -->
+        TASK_REMARK	as "taskRemark",  <!-- 作业备注 -->
+        TASK_PERSON_ID	as "taskPersonId",  <!-- 作业人员工号 -->
+        TASK_PERSON_NAME	as "taskPersonName",  <!-- 作业人员姓名 -->
+        OBJECT_STATUS	as "objectStatus",  <!-- 对象状态 -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        LINE_NO	as "lineNo",  <!-- 线路编码 -->
+        LINE_NAME	as "lineName",  <!-- 线路名称 -->
+        POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
+        POSITION2_CODE	as "position2Code",  <!-- 位置2代码 -->
+        SUBJECT_CODE	as "subjectCode",  <!-- 设备专业编码 -->
+        SUBJECT_NAME	as "subjectName",  <!-- 设备专业名称 -->
+        SYSTEM_CODE	as "systemCode",  <!-- 系统编码 -->
+        SYSTEM_NAME	as "systemName",  <!-- 系统名称 -->
+        EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备类别编码 -->
+        EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备类别名称 -->
+        ORDER_CODE	as "orderCode",  <!-- 检修工单 -->
+        TASK_SPOT	as "taskSpot",  <!-- 作业场 -->
+        STOP_TIME	as "stopTime",  <!-- 停时 -->
+        REPAIR_STATUS	as "repairStatus",  <!-- 检修情况 -->
+        REPAIR_DETAIL	as "repairDetail",  <!-- 检修情况说明 -->
+        START_TIME	as "startTime",  <!-- 开始时间 -->
+        COMPLITE_TIME	as "compliteTime",  <!-- 结束时间 -->
+        REPAIR_PERSON	as "repairPerson",  <!-- 检修人 -->
+        ABNORMAL_NUMBER	as "abnormalNumber",  <!-- 异常数量 -->
+        SELF_CHECK	as "selfCheck",  <!-- 自检人 -->
+        SELF_CHECK_TIME	as "selfCheckTime",  <!-- 自检时间 -->
+        SELF_CHECK_REMARK	as "selfCheckRemark",  <!-- 自检备注 -->
+        MUTUAL_CHECK	as "mutualCheck",  <!-- 互检人 -->
+        MUTUAL_CHECK_TIME	as "mutualCheckTime",  <!-- 互检时间 -->
+        MUTUAL_CHECK_REMARK	as "mutualCheckRemark",  <!-- 互检备注 -->
+        EXPERT_CHECK	as "expertCheck",  <!-- 专检人 -->
+        EXPERT_CHECK_TIME	as "expertCheckTime",  <!-- 专检时间 -->
+        EXPERT_CHECK_REMARK	as "expertCheckRemark",  <!-- 专检备注 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_ORDER_DETAIL WHERE 1=1 AND ORDER_CODE=#{orderCode}
+        order by REC_ID asc
+    </select>
+
     <select id="getOverhaulObjectDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
         SELECT
         REC_ID	as "objectId",
