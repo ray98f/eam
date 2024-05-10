@@ -52,6 +52,8 @@ public class CommonConstants {
     public static final String DM_048 = "DM_048";//中车-生产调度
     public static final String ZC_SHFW = "ZC_SHFW";//中车-售后服务站
     public static final String ZC_JX = "100000044";//中车-检修班ID
+    public static final String ZC = "温州中车四方轨道车辆有限公司";//中车
+    public static final String ZTT = "中铁通轨道运营有限公司";//中铁通
 
     /**
      * 代办/待阅

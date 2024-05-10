@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.fault.FaultFollowMapper">
+    <select id="page" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowResDTO">
+        SELECT REC_ID, FOLLOW_NO, FAULT_NO, FAULT_WORK_NO, MAJOR_CODE, POSITION_CODE, FOLLOW_USER_ID, FOLLOW_USER_NAME,
+        FOLLOW_TIME, FOLLOW_START_DATE, FOLLOW_END_DATE, FOLLOW_CYCLE, FOLLOW_STATUS, FOLLOW_LEADER_ID,
+        FOLLOW_LEADER_NAME, FOLLOW_REASON, REMARK, FOLLOW_CLOSER_ID, FOLLOW_CLOSER_NAME, FOLLOW_CLOSE_TIME,
+        REC_CREATOR, REC_CREATE_TIME, REC_DELETOR, REC_DELETE_TIME, DELETE_FLAG
+        FROM T_FAULT_FOLLOW
+        WHERE DELETE_FLAG='0'
+        <if test="followNo!=null and followNo!=''">
+            AND FOLLOW_NO LIKE '%' || #{followNo} || '%'
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            AND FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
+        </if>
+        <if test="followStatus!=null and followStatus!=''">
+            AND FOLLOW_STATUS=#{followStatus}
+        </if>
+        <if test="userId!=null and userId!=''">
+            AND (FOLLOW_USER_ID=#{userId} OR FOLLOW_LEADER_ID=#{userId} OR FOLLOW_CLOSER_ID=#{userId})
+        </if>
+        ORDER BY REC_CREATOR DESC
+    </select>
+
+    <select id="detail" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowResDTO">
+        SELECT REC_ID, FOLLOW_NO, FAULT_NO, FAULT_WORK_NO, MAJOR_CODE, POSITION_CODE, FOLLOW_USER_ID, FOLLOW_USER_NAME,
+        FOLLOW_TIME, FOLLOW_START_DATE, FOLLOW_END_DATE, FOLLOW_CYCLE, FOLLOW_STATUS, FOLLOW_LEADER_ID,
+        FOLLOW_LEADER_NAME, FOLLOW_REASON, REMARK, FOLLOW_CLOSER_ID, FOLLOW_CLOSER_NAME, FOLLOW_CLOSE_TIME,
+        REC_CREATOR, REC_CREATE_TIME, REC_DELETOR, REC_DELETE_TIME, DELETE_FLAG
+        FROM T_FAULT_FOLLOW
+        WHERE DELETE_FLAG='0'
+        <if test="id!=null and id!=''">
+            AND REC_ID=#{id}
+        </if>
+        <if test="followNo!=null and followNo!=''">
+            AND FOLLOW_NO=#{followNo}
+        </if>
+        ORDER BY REC_CREATOR DESC
+    </select>
+
+    <select id="getReport" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowReportResDTO">
+        SELECT REC_ID, FOLLOW_NO, REPORT_USER_ID, REPORT_USER_NAME, REPORT_TIME, REPORT_DETAIL,
+        DOC_ID, EXAMINE_USER_ID, EXAMINE_USER_NAME, EXAMINE_TIME, EXAMINE_OPINION, EXAMINE_STATUS
+        FROM T_FAULT_FOLLOW_REPORT
+        WHERE DELETE_FLAG='0' AND FOLLOW_NO=#{followNo}
+        ORDER BY REPORT_TIME DESC
+    </select>
+
+    <select id="selectMaxCode" resultType="java.lang.String">
+        select max(FOLLOW_NO)
+        FROM T_FAULT_FOLLOW
+    </select>
+
+    <insert id="add">
+        INSERT INTO T_FAULT_FOLLOW (
+        REC_ID,
+        <if test="followNo!=null and followNo!=''">
+            FOLLOW_NO,
+        </if>
+        <if test="faultNo!=null and faultNo!=''">
+            FAULT_NO,
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            FAULT_WORK_NO,
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            MAJOR_CODE,
+        </if>
+        <if test="positionCode!=null and positionCode!=''">
+            POSITION_CODE,
+        </if>
+        <if test="followUserId!=null and followUserId!=''">
+            FOLLOW_USER_ID,
+        </if>
+        <if test="followUserName!=null and followUserName!=''">
+            FOLLOW_USER_NAME,
+        </if>
+        <if test="followTime!=null and followTime!=''">
+            FOLLOW_TIME,
+        </if>
+        <if test="followStartDate!=null and followStartDate!=''">
+            FOLLOW_START_DATE,
+        </if>
+        <if test="followEndDate!=null and followEndDate!=''">
+            FOLLOW_END_DATE,
+        </if>
+        <if test="followCycle!=null">
+            FOLLOW_CYCLE,
+        </if>
+        <if test="followStatus!=null and followStatus!=''">
+            FOLLOW_STATUS,
+        </if>
+        <if test="followLeaderId!=null and followLeaderId!=''">
+            FOLLOW_LEADER_ID,
+        </if>
+        <if test="followLeaderName!=null and followLeaderName!=''">
+            FOLLOW_LEADER_NAME,
+        </if>
+        <if test="followReason!=null and followReason!=''">
+            FOLLOW_REASON,
+        </if>
+        <if test="remark!=null and remark!=''">
+            REMARK,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME)
+        VALUES (
+        #{recId},
+        <if test="followNo!=null and followNo!=''">
+            #{followNo},
+        </if>
+        <if test="faultNo!=null and faultNo!=''">
+            #{faultNo},
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            #{faultWorkNo},
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            #{majorCode},
+        </if>
+        <if test="positionCode!=null and positionCode!=''">
+            #{positionCode},
+        </if>
+        <if test="followUserId!=null and followUserId!=''">
+            #{followUserId},
+        </if>
+        <if test="followUserName!=null and followUserName!=''">
+            #{followUserName},
+        </if>
+        <if test="followTime!=null and followTime!=''">
+            #{followTime},
+        </if>
+        <if test="followStartDate!=null and followStartDate!=''">
+            #{followStartDate},
+        </if>
+        <if test="followEndDate!=null and followEndDate!=''">
+            #{followEndDate},
+        </if>
+        <if test="followCycle!=null">
+            #{followCycle},
+        </if>
+        <if test="followStatus!=null and followStatus!=''">
+            #{followStatus},
+        </if>
+        <if test="followLeaderId!=null and followLeaderId!=''">
+            #{followLeaderId},
+        </if>
+        <if test="followLeaderName!=null and followLeaderName!=''">
+            #{followLeaderName},
+        </if>
+        <if test="followReason!=null and followReason!=''">
+            #{followReason},
+        </if>
+        <if test="remark!=null and remark!=''">
+            #{remark},
+        </if>
+        #{recCreator}, #{recCreateTime})
+    </insert>
+
+    <update id="modify">
+        UPDATE T_FAULT_FOLLOW SET
+        <if test="followNo!=null">
+            FOLLOW_NO=#{followNo},
+        </if>
+        <if test="faultNo!=null">
+            FAULT_NO=#{faultNo},
+        </if>
+        <if test="faultWorkNo!=null">
+            FAULT_WORK_NO=#{faultWorkNo},
+        </if>
+        <if test="majorCode!=null">
+            MAJOR_CODE=#{majorCode},
+        </if>
+        <if test="positionCode!=null">
+            POSITION_CODE=#{positionCode},
+        </if>
+        <if test="followUserId!=null">
+            FOLLOW_USER_ID=#{followUserId},
+        </if>
+        <if test="followUserName!=null">
+            FOLLOW_USER_NAME=#{followUserName},
+        </if>
+        <if test="followTime!=null">
+            FOLLOW_TIME=#{followTime},
+        </if>
+        <if test="followStartDate!=null">
+            FOLLOW_START_DATE=#{followStartDate},
+        </if>
+        <if test="followEndDate!=null">
+            FOLLOW_END_DATE=#{followEndDate},
+        </if>
+        <if test="followCycle!=null">
+            FOLLOW_CYCLE=#{followCycle},
+        </if>
+        <if test="followStatus!=null">
+            FOLLOW_STATUS=#{followStatus},
+        </if>
+        <if test="followLeaderId!=null">
+            FOLLOW_LEADER_ID=#{followLeaderId},
+        </if>
+        <if test="followLeaderName!=null">
+            FOLLOW_LEADER_NAME=#{followLeaderName},
+        </if>
+        <if test="followReason!=null">
+            FOLLOW_REASON=#{followReason},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE DELETE_FLAG='0'
+        <if test="recId!=null and recId!=''">
+            AND REC_ID=#{recId}
+        </if>
+        <if test="followNo!=null and followNo!=''">
+            AND FOLLOW_NO=#{followNo}
+        </if>
+    </update>
+
+    <update id="close">
+        UPDATE T_FAULT_FOLLOW SET
+        FOLLOW_CLOSER_ID=#{followCloserId,jdbcType=VARCHAR},
+        FOLLOW_CLOSER_NAME=#{followCloserName,jdbcType=VARCHAR},
+        FOLLOW_CLOSE_TIME=#{followCloseTime,jdbcType=VARCHAR},
+        REC_REVISOR=#{recRevisor},
+        REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
+    </update>
+
+    <select id="export" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowResDTO">
+        SELECT REC_ID, FOLLOW_NO, FAULT_NO, FAULT_WORK_NO, MAJOR_CODE, POSITION_CODE, FOLLOW_USER_ID, FOLLOW_USER_NAME,
+        FOLLOW_TIME, FOLLOW_START_DATE, FOLLOW_END_DATE, FOLLOW_CYCLE, FOLLOW_STATUS, FOLLOW_LEADER_ID,
+        FOLLOW_LEADER_NAME, FOLLOW_REASON, REMARK, FOLLOW_CLOSER_ID, FOLLOW_CLOSER_NAME, FOLLOW_CLOSE_TIME,
+        REC_CREATOR, REC_CREATE_TIME, REC_DELETOR, REC_DELETE_TIME, DELETE_FLAG
+        FROM T_FAULT_FOLLOW
+        WHERE DELETE_FLAG='0'
+        <if test="followNo!=null and followNo!=''">
+            AND FOLLOW_NO LIKE '%' || #{followNo} || '%'
+        </if>
+        <if test="faultWorkNo!=null and faultWorkNo!=''">
+            AND FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
+        </if>
+        <if test="followStatus!=null and followStatus!=''">
+            AND FOLLOW_STATUS=#{followStatus}
+        </if>
+        <if test="ids!=null and ids.size()>0">
+            and REC_ID in (
+            <foreach collection="ids" index="index" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+        ORDER BY REC_CREATOR DESC
+    </select>
+
+    <select id="getReportDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowReportResDTO">
+        SELECT REC_ID, FOLLOW_NO, REPORT_USER_ID, REPORT_USER_NAME, REPORT_TIME, REPORT_DETAIL,
+        DOC_ID, EXAMINE_USER_ID, EXAMINE_USER_NAME, EXAMINE_TIME, EXAMINE_OPINION, EXAMINE_STATUS
+        FROM T_FAULT_FOLLOW_REPORT
+        WHERE DELETE_FLAG='0' AND REC_ID=#{id}
+        ORDER BY REPORT_TIME DESC
+    </select>
+
+    <select id="getLastReportByFollowNo" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowReportResDTO">
+        SELECT REC_ID, FOLLOW_NO, REPORT_USER_ID, REPORT_USER_NAME, REPORT_TIME, REPORT_DETAIL,
+        DOC_ID, EXAMINE_USER_ID, EXAMINE_USER_NAME, EXAMINE_TIME, EXAMINE_OPINION, EXAMINE_STATUS
+        FROM T_FAULT_FOLLOW_REPORT
+        WHERE DELETE_FLAG='0' AND FOLLOW_NO=#{followNo} AND rownum=1
+        ORDER BY REPORT_TIME DESC
+    </select>
+
+    <select id="checkReportStep" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM T_FAULT_FOLLOW_REPORT
+        WHERE DELETE_FLAG='0' AND FOLLOW_NO=#{followNo} AND STEP=#{step} AND EXAMINE_STATUS='1' AND rownum=1
+    </select>
+
+    <insert id="addReport">
+        INSERT INTO T_FAULT_FOLLOW_REPORT (
+        REC_ID,
+        <if test="followNo!=null and followNo!=''">
+            FOLLOW_NO,
+        </if>
+        <if test="reportUserId!=null and reportUserId!=''">
+            REPORT_USER_ID,
+        </if>
+        <if test="reportUserName!=null and reportUserName!=''">
+            REPORT_USER_NAME,
+        </if>
+        <if test="reportTime!=null and reportTime!=''">
+            REPORT_TIME,
+        </if>
+        <if test="reportDetail!=null and reportDetail!=''">
+            REPORT_DETAIL,
+        </if>
+        <if test="docId!=null and docId!=''">
+            DOC_ID,
+        </if>
+        <if test="step!=null and step!=''">
+            STEP,
+        </if>
+        <if test="examineUserId!=null and examineUserId!=''">
+            EXAMINE_USER_ID,
+        </if>
+        <if test="examineUserName!=null and examineUserName!=''">
+            EXAMINE_USER_NAME,
+        </if>
+        <if test="examineTime!=null and examineTime!=''">
+            EXAMINE_TIME,
+        </if>
+        <if test="examineOpinion!=null and examineOpinion!=''">
+            EXAMINE_OPINION,
+        </if>
+        <if test="examineStatus!=null and examineStatus!=''">
+            EXAMINE_STATUS,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME)
+        VALUES (
+        #{recId},
+        <if test="followNo!=null and followNo!=''">
+            #{followNo},
+        </if>
+        <if test="reportUserId!=null and reportUserId!=''">
+            #{reportUserId},
+        </if>
+        <if test="reportUserName!=null and reportUserName!=''">
+            #{reportUserName},
+        </if>
+        <if test="reportTime!=null and reportTime!=''">
+            #{reportTime},
+        </if>
+        <if test="reportDetail!=null and reportDetail!=''">
+            #{reportDetail},
+        </if>
+        <if test="docId!=null and docId!=''">
+            #{docId},
+        </if>
+        <if test="step!=null and step!=''">
+            #{step},
+        </if>
+        <if test="examineUserId!=null and examineUserId!=''">
+            #{examineUserId},
+        </if>
+        <if test="examineUserName!=null and examineUserName!=''">
+            #{examineUserName},
+        </if>
+        <if test="examineTime!=null and examineTime!=''">
+            #{examineTime},
+        </if>
+        <if test="examineOpinion!=null and examineOpinion!=''">
+            #{examineOpinion},
+        </if>
+        <if test="examineStatus!=null and examineStatus!=''">
+            #{examineStatus},
+        </if>
+        #{recCreator}, #{recCreateTime})
+    </insert>
+
+    <update id="modifyReport">
+        UPDATE T_FAULT_FOLLOW_REPORT SET
+        <if test="reportDetail!=null">
+            REPORT_DETAIL=#{reportDetail},
+        </if>
+        <if test="docId!=null">
+            DOC_ID=#{docId},
+        </if>
+        EXAMINE_STATUS='0', REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
+    </update>
+
+    <update id="examineReport">
+        UPDATE T_FAULT_FOLLOW_REPORT SET
+        <if test="examineUserId!=null">
+            EXAMINE_USER_ID=#{examineUserId},
+        </if>
+        <if test="examineUserName!=null">
+            EXAMINE_USER_NAME=#{examineUserName},
+        </if>
+        <if test="examineTime!=null">
+            EXAMINE_TIME=#{examineTime},
+        </if>
+        <if test="examineOpinion!=null">
+            EXAMINE_OPINION=#{examineOpinion},
+        </if>
+        <if test="examineStatus!=null">
+            EXAMINE_STATUS=#{examineStatus},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
+    </update>
+</mapper>
