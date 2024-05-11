@@ -166,10 +166,11 @@ public class FaultFollowController {
      * 审核故障跟踪工单报告
      * @param req 故障跟踪工单报告参数
      * @return 成功
+     * @throws ParseException 异常
      */
     @ApiOperation(value = "审核故障跟踪工单报告")
     @PostMapping("/report/examine")
-    public DataResponse<T> examineReport(@RequestBody FaultFollowReportReqDTO req) {
+    public DataResponse<T> examineReport(@RequestBody FaultFollowReportReqDTO req) throws ParseException {
         faultFollowService.examineReport(req);
         return DataResponse.success();
     }

@@ -215,40 +215,57 @@ public class FaultFollowServiceImpl implements FaultFollowService {
      */
     private long checkReport(String followNo) throws ParseException {
         // 获取跟踪工单详情
+        long step;
+        // 获取跟踪工单中上一次报告信息
+        FaultFollowReportResDTO lastRes = faultFollowMapper.getLastReportByFollowNo(followNo);
+        if (StringUtils.isNotNull(lastRes) && CommonConstants.ZERO_STRING.equals(lastRes.getExamineStatus())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "当前跟踪工单中仍存在未审核的跟踪报告，无法填写新的跟踪报告！");
+        }
+        // 获取当前日期在跟踪工单第几跟踪周期
+        step = getFollowDays(followNo, CommonConstants.ONE_STRING);
+        if (step == 0) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "当前时间不在此故障跟踪工单的起止时间范围内，无法填写跟踪报告！");
+        } else {
+            Integer result = faultFollowMapper.checkReportStep(followNo, step);
+            if (result != 0) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "本周期的跟踪报告已提交，无法再次提交！");
+            }
+        }
+        return step;
+    }
+
+    /**
+     * 获取当前日期在跟踪工单第几跟踪周期
+     * @param followNo 跟踪工单号
+     * @param type 类型 1新增时 2审核时
+     * @return 跟踪周期数
+     * @throws ParseException 异常
+     */
+    private long getFollowDays(String followNo, String type) throws ParseException {
         long step = 0L;
         FaultFollowResDTO follow = faultFollowMapper.detail(null, followNo);
         if (StringUtils.isNull(follow)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        // 获取跟踪工单中上一次报告信息
-        FaultFollowReportResDTO lastRes = faultFollowMapper.getLastReportByFollowNo(followNo);
-        if (StringUtils.isNotNull(lastRes)) {
-            if (CommonConstants.ZERO_STRING.equals(lastRes.getExamineStatus())) {
-                throw new CommonException(ErrorCode.NORMAL_ERROR, "当前跟踪工单中仍存在未审核的跟踪报告，无法填写新的跟踪报告！");
-            } else {
-                // 根据开始时间结束时间获取指定时间周期的所有日期
-                List<String> days = DateUtils.getAllTimesWithinRange(follow.getFollowStartDate(),
-                        follow.getFollowEndDate(), follow.getFollowCycle());
-                days.add(follow.getFollowEndDate());
-                for (int i = 1; i < days.size(); i++) {
-                    if (DateUtils.getDateBetweenContainStartExcludeEnd(DateUtils.getDate(), days.get(i - 1), days.get(i))) {
-                        step = i;
-                        break;
-                    }
-                }
-                Integer result = faultFollowMapper.checkReportStep(followNo, step);
-                if (result != 0) {
-                    throw new CommonException(ErrorCode.NORMAL_ERROR, "本周期的跟踪报告已提交，无法再次提交！");
-                }
+        // 根据开始时间结束时间获取指定时间周期的所有日期
+        List<String> days = DateUtils.getAllTimesWithinRange(follow.getFollowStartDate(),
+                follow.getFollowEndDate(), follow.getFollowCycle());
+        days.add(follow.getFollowEndDate());
+        for (int i = 1; i < days.size(); i++) {
+            if (DateUtils.getDateBetweenContainStartExcludeEnd(DateUtils.getDate(), days.get(i - 1), days.get(i))) {
+                step = i;
+                break;
             }
-        } else {
-            step = 1L;
+        }
+        // 当类型为审核时，如果当前周期为最后一个周期，返回0
+        if (CommonConstants.TWO_STRING.equals(type) && step == days.size()) {
+            step = 0L;
         }
         return step;
     }
 
     @Override
-    public void examineReport(FaultFollowReportReqDTO req) {
+    public void examineReport(FaultFollowReportReqDTO req) throws ParseException {
         req.setExamineUserId(TokenUtils.getCurrentPersonId());
         req.setExamineUserName(TokenUtils.getCurrentPerson().getPersonName());
         req.setExamineTime(DateUtils.getCurrentTime());
@@ -265,7 +282,14 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             overTodoService.insertTodo("跟踪工单报告被驳回，需重新提交", req.getRecId(), req.getFollowNo(), req.getReportUserId(),
                     "跟踪工单报告提交", "followReportSubmit", TokenUtils.getCurrentPersonId(), null);
         } else {
-            faultFollow.setFollowStatus(CommonConstants.TWENTY_STRING);
+            // 获取当前日期在跟踪工单第几跟踪周期
+            long step = getFollowDays(req.getFollowNo(), CommonConstants.TWO_STRING);
+            // 当前时间不在周期内或最后一个周期时，审核通过自动关闭工单
+            if (step == 0) {
+                faultFollow.setFollowStatus(CommonConstants.FIFTY_STRING);
+            } else {
+                faultFollow.setFollowStatus(CommonConstants.TWENTY_STRING);
+            }
             // 相关待办修改为已办
             overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告通过：" + req.getExamineOpinion());
         }
