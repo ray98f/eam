@@ -61,7 +61,12 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     public Page<FaultFollowResDTO> page(String followNo, String faultWorkNo,
                                         String followStatus, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return faultFollowMapper.page(pageReqDTO.of(), followNo, faultWorkNo, followStatus, TokenUtils.getCurrentPersonId());
+        if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
+            return faultFollowMapper.page(pageReqDTO.of(), followNo, faultWorkNo, followStatus, null, null);
+        } else {
+            return faultFollowMapper.page(pageReqDTO.of(), followNo, faultWorkNo, followStatus,
+                    TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeId());
+        }
     }
 
     @Override
@@ -121,6 +126,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
         req.setFollowCloserId(TokenUtils.getCurrentPersonId());
         req.setFollowCloserName(TokenUtils.getCurrentPerson().getPersonName());
         req.setFollowCloseTime(DateUtils.getCurrentTime());
+        req.setFollowStatus(CommonConstants.FIFTY_STRING);
         req.setRecRevisor(TokenUtils.getCurrentPersonId());
         req.setRecReviseTime(DateUtils.getCurrentTime());
         faultFollowMapper.close(req);
@@ -199,13 +205,6 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             overTodoService.insertTodo("跟踪工单报告待审核", req.getRecId(), req.getFollowNo(), followRes.getFollowLeaderId(),
                     "跟踪工单报告审核", "followReportExamine", TokenUtils.getCurrentPersonId(), null);
         }
-    }
-
-    @Override
-    public void modifyReport(FaultFollowReportReqDTO req) {
-        req.setRecRevisor(TokenUtils.getCurrentPersonId());
-        req.setRecReviseTime(DateUtils.getCurrentTime());
-        faultFollowMapper.modifyReport(req);
     }
 
     /**

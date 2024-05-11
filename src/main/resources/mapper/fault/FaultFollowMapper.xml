@@ -2,25 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.fault.FaultFollowMapper">
     <select id="page" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowResDTO">
-        SELECT REC_ID, FOLLOW_NO, FAULT_NO, FAULT_WORK_NO, MAJOR_CODE, POSITION_CODE, FOLLOW_USER_ID, FOLLOW_USER_NAME,
-        FOLLOW_TIME, FOLLOW_START_DATE, FOLLOW_END_DATE, FOLLOW_CYCLE, FOLLOW_STATUS, FOLLOW_LEADER_ID,
-        FOLLOW_LEADER_NAME, FOLLOW_REASON, REMARK, FOLLOW_CLOSER_ID, FOLLOW_CLOSER_NAME, FOLLOW_CLOSE_TIME,
-        REC_CREATOR, REC_CREATE_TIME, REC_DELETOR, REC_DELETE_TIME, DELETE_FLAG
-        FROM T_FAULT_FOLLOW
-        WHERE DELETE_FLAG='0'
+        SELECT ff.REC_ID, ff.FOLLOW_NO, ff.FAULT_NO, ff.FAULT_WORK_NO, ff.MAJOR_CODE, ff.POSITION_CODE, ff.FOLLOW_USER_ID,
+        ff.FOLLOW_USER_NAME, ff.FOLLOW_TIME, ff.FOLLOW_START_DATE, ff.FOLLOW_END_DATE, ff.FOLLOW_CYCLE, ff.FOLLOW_STATUS,
+        ff.FOLLOW_LEADER_ID, ff.FOLLOW_LEADER_NAME, ff.FOLLOW_REASON, ff.REMARK, ff.FOLLOW_CLOSER_ID, ff.FOLLOW_CLOSER_NAME,
+        ff.FOLLOW_CLOSE_TIME, ff.REC_CREATOR, ff.REC_CREATE_TIME, ff.REC_DELETOR, ff.REC_DELETE_TIME, ff.DELETE_FLAG
+        FROM T_FAULT_FOLLOW ff
+        LEFT JOIN SYS_USER u ON u.LOGIN_NAME=ff.FOLLOW_LEADER_ID AND u.DEL_FLAG='0'
+        WHERE ff.DELETE_FLAG='0'
         <if test="followNo!=null and followNo!=''">
-            AND FOLLOW_NO LIKE '%' || #{followNo} || '%'
+            AND ff.FOLLOW_NO LIKE '%' || #{followNo} || '%'
         </if>
         <if test="faultWorkNo!=null and faultWorkNo!=''">
-            AND FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
+            AND ff.FAULT_WORK_NO LIKE '%' || #{faultWorkNo} || '%'
         </if>
         <if test="followStatus!=null and followStatus!=''">
-            AND FOLLOW_STATUS=#{followStatus}
+            AND ff.FOLLOW_STATUS=#{followStatus}
         </if>
         <if test="userId!=null and userId!=''">
-            AND (FOLLOW_USER_ID=#{userId} OR FOLLOW_LEADER_ID=#{userId} OR FOLLOW_CLOSER_ID=#{userId})
+            AND (ff.FOLLOW_USER_ID=#{userId} OR ff.FOLLOW_LEADER_ID=#{userId} OR ff.FOLLOW_CLOSER_ID=#{userId}
+            <if test="officeId!=null and officeId!=''">
+                OR u.OFFICE_ID=#{officeId}
+            </if>
+            )
         </if>
-        ORDER BY REC_CREATOR DESC
+        ORDER BY ff.REC_CREATE_TIME DESC
     </select>
 
     <select id="detail" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowResDTO">
@@ -36,7 +41,7 @@
         <if test="followNo!=null and followNo!=''">
             AND FOLLOW_NO=#{followNo}
         </if>
-        ORDER BY REC_CREATOR DESC
+        ORDER BY REC_CREATE_TIME DESC
     </select>
 
     <select id="getReport" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowReportResDTO">
@@ -225,9 +230,10 @@
         FOLLOW_CLOSER_ID=#{followCloserId,jdbcType=VARCHAR},
         FOLLOW_CLOSER_NAME=#{followCloserName,jdbcType=VARCHAR},
         FOLLOW_CLOSE_TIME=#{followCloseTime,jdbcType=VARCHAR},
+        FOLLOW_STATUS=#{followStatus},
         REC_REVISOR=#{recRevisor},
         REC_REVISE_TIME=#{recReviseTime}
-        WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
+        WHERE FOLLOW_NO=#{followNo} AND DELETE_FLAG='0'
     </update>
 
     <select id="export" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowResDTO">
@@ -358,18 +364,6 @@
         </if>
         #{recCreator}, #{recCreateTime})
     </insert>
-
-    <update id="modifyReport">
-        UPDATE T_FAULT_FOLLOW_REPORT SET
-        <if test="reportDetail!=null">
-            REPORT_DETAIL=#{reportDetail},
-        </if>
-        <if test="docId!=null">
-            DOC_ID=#{docId},
-        </if>
-        EXAMINE_STATUS='0', REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
-        WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
-    </update>
 
     <update id="examineReport">
         UPDATE T_FAULT_FOLLOW_REPORT SET

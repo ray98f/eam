@@ -96,12 +96,6 @@ public interface FaultFollowService {
     void addReport(FaultFollowReportReqDTO req) throws ParseException;
 
     /**
-     * 编辑故障跟踪工单报告
-     * @param req 故障跟踪工单报告参数
-     */
-    void modifyReport(FaultFollowReportReqDTO req);
-
-    /**
      * 审核故障跟踪工单报告
      * @param req 故障跟踪工单报告参数
      */

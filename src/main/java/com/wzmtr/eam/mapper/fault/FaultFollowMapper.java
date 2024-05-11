@@ -28,10 +28,11 @@ public interface FaultFollowMapper {
      * @param faultWorkNo 故障单号
      * @param followStatus 跟踪状态
      * @param userId 用户id
+     * @param officeId 部门id
      * @return 故障跟踪工单列表
      */
     Page<FaultFollowResDTO> page(Page<FaultFollowResDTO> page, String followNo, String faultWorkNo,
-                                 String followStatus, String userId);
+                                 String followStatus, String userId, String officeId);
 
     /**
      * 故障跟踪工单详情查询
@@ -44,6 +45,7 @@ public interface FaultFollowMapper {
     /**
      * 查询故障跟踪工单的跟踪报告列表
      * @param followNo 跟踪编号
+     * @param type 查询类型 1查询全部 2查询未审核的报告
      * @return 跟踪报告列表
      */
     List<FaultFollowReportResDTO> getReport(String followNo, String type);
@@ -106,12 +108,6 @@ public interface FaultFollowMapper {
      * @param req 故障跟踪工单报告参数
      */
     void addReport(FaultFollowReportReqDTO req);
-
-    /**
-     * 编辑故障跟踪工单报告
-     * @param req 故障跟踪工单报告参数
-     */
-    void modifyReport(FaultFollowReportReqDTO req);
 
     /**
      * 新增故障跟踪工单报告

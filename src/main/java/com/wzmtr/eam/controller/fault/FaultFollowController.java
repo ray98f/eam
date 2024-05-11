@@ -163,18 +163,6 @@ public class FaultFollowController {
     }
 
     /**
-     * 编辑故障跟踪工单报告
-     * @param req 故障跟踪工单报告参数
-     * @return 成功
-     */
-    @ApiOperation(value = "编辑故障跟踪工单报告")
-    @PostMapping("/report/modify")
-    public DataResponse<T> modifyReport(@RequestBody FaultFollowReportReqDTO req) {
-        faultFollowService.modifyReport(req);
-        return DataResponse.success();
-    }
-
-    /**
      * 审核故障跟踪工单报告
      * @param req 故障跟踪工单报告参数
      * @return 成功
