@@ -76,9 +76,10 @@ public interface FaultFollowService {
     /**
      * 获取故障跟踪工单报告列表
      * @param followNo 故障跟踪工单编号
+     * @param type 查询类型 1查询全部 2查询未审核的报告
      * @return 跟踪工单报告列表
      */
-    List<FaultFollowReportResDTO> listReport(String followNo);
+    List<FaultFollowReportResDTO> listReport(String followNo, String type);
 
     /**
      * 查询故障跟踪工单报告详情

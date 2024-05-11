@@ -68,7 +68,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     public FaultFollowResDTO detail(String id) {
         FaultFollowResDTO res = faultFollowMapper.detail(id, null);
         if (StringUtils.isNotNull(res)) {
-            List<FaultFollowReportResDTO> reportList = faultFollowMapper.getReport(res.getFollowNo());
+            List<FaultFollowReportResDTO> reportList = faultFollowMapper.getReport(res.getFollowNo(), "1");
             if (StringUtils.isNotEmpty(reportList)) {
                 for (FaultFollowReportResDTO report : reportList) {
                     if (StringUtils.isNotEmpty(report.getDocId())) {
@@ -148,8 +148,8 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     }
 
     @Override
-    public List<FaultFollowReportResDTO> listReport(String followNo) {
-        List<FaultFollowReportResDTO> list = faultFollowMapper.getReport(followNo);
+    public List<FaultFollowReportResDTO> listReport(String followNo, String type) {
+        List<FaultFollowReportResDTO> list = faultFollowMapper.getReport(followNo, type);
         if (StringUtils.isNotEmpty(list)) {
             for (FaultFollowReportResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getDocId())) {
@@ -163,7 +163,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     @Override
     public FaultFollowReportResDTO getReportDetail(String id) {
         FaultFollowReportResDTO res = faultFollowMapper.getReportDetail(id);
-        if (StringUtils.isNotEmpty(res.getDocId())) {
+        if (StringUtils.isNotNull(res) && StringUtils.isNotEmpty(res.getDocId())) {
             res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
         }
         return res;
@@ -190,6 +190,8 @@ public class FaultFollowServiceImpl implements FaultFollowService {
         FaultFollowReqDTO faultFollow = new FaultFollowReqDTO();
         faultFollow.setFollowNo(req.getFollowNo());
         faultFollow.setFollowStatus(CommonConstants.THIRTY_STRING);
+        faultFollow.setRecRevisor(TokenUtils.getCurrentPersonId());
+        faultFollow.setRecReviseTime(DateUtils.getCurrentTime());
         faultFollowMapper.modify(faultFollow);
         // 审核待办发送
         FaultFollowResDTO followRes = faultFollowMapper.detail(null, req.getFollowNo());
@@ -268,6 +270,8 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             // 相关待办修改为已办
             overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告通过：" + req.getExamineOpinion());
         }
+        faultFollow.setRecRevisor(TokenUtils.getCurrentPersonId());
+        faultFollow.setRecReviseTime(DateUtils.getCurrentTime());
         faultFollowMapper.modify(faultFollow);
     }
 

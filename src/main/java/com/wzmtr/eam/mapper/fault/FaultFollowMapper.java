@@ -46,7 +46,7 @@ public interface FaultFollowMapper {
      * @param followNo 跟踪编号
      * @return 跟踪报告列表
      */
-    List<FaultFollowReportResDTO> getReport(String followNo);
+    List<FaultFollowReportResDTO> getReport(String followNo, String type);
 
     /**
      * 获取最新的故障跟踪编号

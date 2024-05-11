@@ -44,6 +44,9 @@
         DOC_ID, EXAMINE_USER_ID, EXAMINE_USER_NAME, EXAMINE_TIME, EXAMINE_OPINION, EXAMINE_STATUS
         FROM T_FAULT_FOLLOW_REPORT
         WHERE DELETE_FLAG='0' AND FOLLOW_NO=#{followNo}
+        <if test="type=='2'.toString()">
+            AND EXAMINE_STATUS='0' AND rownum=1
+        </if>
         ORDER BY REPORT_TIME DESC
     </select>
 

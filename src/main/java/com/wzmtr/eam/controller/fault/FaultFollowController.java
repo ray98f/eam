@@ -128,12 +128,14 @@ public class FaultFollowController {
     /**
      * 获取故障跟踪工单报告列表
      * @param followNo 故障跟踪工单编号
+     * @param type 查询类型 1查询全部 2查询未审核的报告
      * @return 跟踪工单报告列表
      */
     @ApiOperation(value = "获取故障跟踪工单报告列表")
-    @PostMapping("/report/list")
-    public DataResponse<List<FaultFollowReportResDTO>> listReport(@RequestParam String followNo) {
-        return DataResponse.of(faultFollowService.listReport(followNo));
+    @GetMapping("/report/list")
+    public DataResponse<List<FaultFollowReportResDTO>> listReport(@RequestParam String followNo,
+                                                                  @RequestParam String type) {
+        return DataResponse.of(faultFollowService.listReport(followNo, type));
     }
 
     /**
@@ -142,7 +144,7 @@ public class FaultFollowController {
      * @return 跟踪工单报告详情
      */
     @ApiOperation(value = "查询故障跟踪工单报告详情")
-    @PostMapping("/report/detail")
+    @GetMapping("/report/detail")
     public DataResponse<FaultFollowReportResDTO> getReportDetail(@RequestParam String id) {
         return DataResponse.of(faultFollowService.getReportDetail(id));
     }
@@ -155,7 +157,7 @@ public class FaultFollowController {
      */
     @ApiOperation(value = "新增故障跟踪工单报告")
     @PostMapping("/report/add")
-    public DataResponse<T> addReport(@RequestParam FaultFollowReportReqDTO req) throws ParseException {
+    public DataResponse<T> addReport(@RequestBody FaultFollowReportReqDTO req) throws ParseException {
         faultFollowService.addReport(req);
         return DataResponse.success();
     }
@@ -167,7 +169,7 @@ public class FaultFollowController {
      */
     @ApiOperation(value = "编辑故障跟踪工单报告")
     @PostMapping("/report/modify")
-    public DataResponse<T> modifyReport(@RequestParam FaultFollowReportReqDTO req) {
+    public DataResponse<T> modifyReport(@RequestBody FaultFollowReportReqDTO req) {
         faultFollowService.modifyReport(req);
         return DataResponse.success();
     }
@@ -179,7 +181,7 @@ public class FaultFollowController {
      */
     @ApiOperation(value = "审核故障跟踪工单报告")
     @PostMapping("/report/examine")
-    public DataResponse<T> examineReport(@RequestParam FaultFollowReportReqDTO req) {
+    public DataResponse<T> examineReport(@RequestBody FaultFollowReportReqDTO req) {
         faultFollowService.examineReport(req);
         return DataResponse.success();
     }
