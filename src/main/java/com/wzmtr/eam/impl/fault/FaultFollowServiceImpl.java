@@ -237,7 +237,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     /**
      * 获取当前日期在跟踪工单第几跟踪周期
      * @param followNo 跟踪工单号
-     * @param type 类型 1新增时 2审核时
+     * @param type     类型 1新增时 2审核时
      * @return 跟踪周期数
      * @throws ParseException 异常
      */
