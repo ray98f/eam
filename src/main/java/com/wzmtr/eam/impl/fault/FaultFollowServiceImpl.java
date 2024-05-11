@@ -203,7 +203,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
         FaultFollowResDTO followRes = faultFollowMapper.detail(null, req.getFollowNo());
         if (StringUtils.isNotNull(followRes)) {
             overTodoService.insertTodo("跟踪工单报告待审核", req.getRecId(), req.getFollowNo(), followRes.getFollowLeaderId(),
-                    "跟踪工单报告审核", "followReportExamine", TokenUtils.getCurrentPersonId(), null);
+                    "跟踪工单报告审核", "followReportExamine", TokenUtils.getCurrentPersonId(), CommonConstants.FAULT_FOLLOW_REPORT);
         }
     }
 
@@ -280,7 +280,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "报告驳回：" + req.getExamineOpinion());
             // 驳回时新增待办
             overTodoService.insertTodo("跟踪工单报告被驳回，需重新提交", req.getRecId(), req.getFollowNo(), req.getReportUserId(),
-                    "跟踪工单报告提交", "followReportSubmit", TokenUtils.getCurrentPersonId(), null);
+                    "跟踪工单报告提交", "followReportSubmit", TokenUtils.getCurrentPersonId(), CommonConstants.FAULT_FOLLOW_REPORT);
         } else {
             // 获取当前日期在跟踪工单第几跟踪周期
             long step = getFollowDays(req.getFollowNo(), CommonConstants.TWO_STRING);

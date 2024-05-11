@@ -162,4 +162,6 @@ public class CommonConstants {
 
     public static final String FAULT_OPEN_APP_KEY = "ubcrjTM9BE1F79Cc";
 
+    public static final String FAULT_FOLLOW_REPORT = "fault_follow_report";
+
 }
