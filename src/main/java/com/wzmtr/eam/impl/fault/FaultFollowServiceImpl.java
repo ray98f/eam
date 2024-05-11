@@ -18,6 +18,7 @@ import com.wzmtr.eam.mapper.common.PersonMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultFollowMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.FaultFollowService;
 import com.wzmtr.eam.shiro.model.Person;
 import com.wzmtr.eam.utils.*;
@@ -53,6 +54,8 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     private DictionariesMapper dictMapper;
     @Autowired
     private FileMapper fileMapper;
+    @Autowired
+    private OverTodoService overTodoService;
 
     @Override
     public Page<FaultFollowResDTO> page(String followNo, String faultWorkNo,
@@ -168,22 +171,32 @@ public class FaultFollowServiceImpl implements FaultFollowService {
 
     @Override
     public void addReport(FaultFollowReportReqDTO req) throws ParseException {
-        // 报告判断
-        long step = checkReport(req.getFollowNo());
-        req.setStep(step);
+        if (StringUtils.isEmpty(req.getRecId())) {
+            // 报告判断
+            long step = checkReport(req.getFollowNo());
+            req.setStep(step);
+            req.setReportUserId(TokenUtils.getCurrentPersonId());
+            req.setReportUserName(TokenUtils.getCurrentPerson().getPersonName());
+            req.setReportTime(DateUtils.getCurrentTime());
+        } else {
+            // 相关待办修改为已办
+            overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告已重新提交");
+        }
         req.setRecId(TokenUtils.getUuId());
-        req.setReportUserId(TokenUtils.getCurrentPersonId());
-        req.setReportUserName(TokenUtils.getCurrentPerson().getPersonName());
-        req.setReportTime(DateUtils.getCurrentTime());
+        req.setExamineStatus(CommonConstants.ZERO_STRING);
         req.setRecCreator(TokenUtils.getCurrentPersonId());
         req.setRecCreateTime(DateUtils.getCurrentTime());
-        req.setExamineStatus(CommonConstants.ZERO_STRING);
         faultFollowMapper.addReport(req);
         FaultFollowReqDTO faultFollow = new FaultFollowReqDTO();
         faultFollow.setFollowNo(req.getFollowNo());
         faultFollow.setFollowStatus(CommonConstants.THIRTY_STRING);
         faultFollowMapper.modify(faultFollow);
-        // todo 新增待办
+        // 审核待办发送
+        FaultFollowResDTO followRes = faultFollowMapper.detail(null, req.getFollowNo());
+        if (StringUtils.isNotNull(followRes)) {
+            overTodoService.insertTodo("跟踪工单报告待审核", req.getRecId(), req.getFollowNo(), followRes.getFollowLeaderId(),
+                    "跟踪工单报告审核", "followReportExamine", TokenUtils.getCurrentPersonId(), null);
+        }
     }
 
     @Override
@@ -245,9 +258,15 @@ public class FaultFollowServiceImpl implements FaultFollowService {
         faultFollow.setFollowNo(req.getFollowNo());
         if (CommonConstants.TWO_STRING.equals(req.getExamineStatus())) {
             faultFollow.setFollowStatus(CommonConstants.FORTY_STRING);
-            // todo 驳回时新增待办
+            // 相关待办修改为已办
+            overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "报告驳回：" + req.getExamineOpinion());
+            // 驳回时新增待办
+            overTodoService.insertTodo("跟踪工单报告被驳回，需重新提交", req.getRecId(), req.getFollowNo(), req.getReportUserId(),
+                    "跟踪工单报告提交", "followReportSubmit", TokenUtils.getCurrentPersonId(), null);
         } else {
             faultFollow.setFollowStatus(CommonConstants.TWENTY_STRING);
+            // 相关待办修改为已办
+            overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告通过：" + req.getExamineOpinion());
         }
         faultFollowMapper.modify(faultFollow);
     }
