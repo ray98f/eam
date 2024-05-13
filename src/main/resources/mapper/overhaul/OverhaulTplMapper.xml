@@ -339,11 +339,13 @@
             #{tpl.lineName,jdbcType=VARCHAR},
             ' ',
             ' ',
-            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{tpl.subjectName} and NODE_LEVEL=1),
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.subjectName} AND NODE_LEVEL=1),
             #{tpl.subjectName,jdbcType=VARCHAR},
-            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{tpl.systemName} and NODE_LEVEL=2),
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.systemName} AND NODE_LEVEL=2 AND
+            PARENT_NODE_REC_ID=(SELECT REC_ID FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.subjectName} AND NODE_LEVEL=1)),
             #{tpl.systemName,jdbcType=VARCHAR},
-            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{tpl.equipTypeName} and NODE_LEVEL=3),
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.equipTypeName} AND NODE_LEVEL=3 AND
+            PARENT_NODE_REC_ID=(SELECT REC_ID FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.systemName} AND NODE_LEVEL=2)),
             #{tpl.equipTypeName,jdbcType=VARCHAR},
             #{tpl.trialStatus,jdbcType=VARCHAR},
             #{tpl.workFlowInstId,jdbcType=VARCHAR},
