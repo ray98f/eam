@@ -3,16 +3,19 @@ package com.wzmtr.eam.impl.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.equipment.GeneralSurveyExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelGeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelGeneralSurveyResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.GeneralSurveyMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
+import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.equipment.GeneralSurveyService;
 import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -43,6 +46,9 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
 
     @Autowired
     private FileMapper fileMapper;
+
+    @Autowired
+    private OverTodoService overTodoService;
 
     @Override
     public Page<GeneralSurveyResDTO> pageGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, PageReqDTO pageReqDTO) {
@@ -75,6 +81,8 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         if (StringUtils.isNotEmpty(res.getRecordId())) {
             res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
         }
+        // 待阅（实际为代办）更新为已办
+        overTodoService.overTodo(id, "");
         return res;
     }
 
@@ -84,6 +92,13 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         generalSurveyReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         generalSurveyReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         generalSurveyMapper.addGeneralSurvey(generalSurveyReqDTO);
+        // 向工班中的所有人发送待阅（实际发送的是代办）
+        String workerGroupCode = generalSurveyReqDTO.getOrgType();
+        if (StringUtils.isNotEmpty(workerGroupCode)) {
+            overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GENERAL_SURVEY, generalSurveyReqDTO.getTrainNo(),
+                            generalSurveyReqDTO.getCompleteDate()), generalSurveyReqDTO.getRecId(), generalSurveyReqDTO.getTrainNo(), workerGroupCode,
+                    "普查与技改", "？", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.GENERAL_SURVEY.value());
+        }
     }
 
     @Override
@@ -115,7 +130,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
             GeneralSurveyReqDTO req = new GeneralSurveyReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
             req.setRecType(Objects.isNull(reqDTO.getRecType()) ? "" : "普查".equals(reqDTO.getRecType()) ? "10" : "20");
-            req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "维保".equals(reqDTO.getOrgType()) ? "10" : "20");
+            req.setOrgType(Objects.isNull(reqDTO.getOrgType()) ? "" : "检修工班".equals(reqDTO.getOrgType()) ? "10" : "20");
             req.setRecId(TokenUtils.getUuId());
             req.setDeleteFlag("0");
             req.setRecCreator(TokenUtils.getCurrentPersonId());
@@ -128,15 +143,15 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
     }
 
     @Override
-    public void exportGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType, HttpServletResponse response) throws IOException {
-        List<GeneralSurveyResDTO> generalSurveyResDTOList = generalSurveyMapper.listGeneralSurvey(trainNo, recNotifyNo, recDetail, orgType);
+    public void exportGeneralSurvey(GeneralSurveyExportReqDTO generalSurveyExportReqDTO, HttpServletResponse response) throws IOException {
+        List<GeneralSurveyResDTO> generalSurveyResDTOList = generalSurveyMapper.listGeneralSurvey(generalSurveyExportReqDTO);
         if (generalSurveyResDTOList != null && !generalSurveyResDTOList.isEmpty()) {
             List<ExcelGeneralSurveyResDTO> list = new ArrayList<>();
             for (GeneralSurveyResDTO resDTO : generalSurveyResDTOList) {
                 ExcelGeneralSurveyResDTO res = new ExcelGeneralSurveyResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setRecType(CommonConstants.TEN_STRING.equals(resDTO.getRecType()) ? "普查" : "技改");
-                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "维保" : CommonConstants.TWENTY_STRING.equals(resDTO.getOrgType()) ? "一级修工班" : CommonConstants.THIRTY_STRING.equals(resDTO.getOrgType()) ? "二级修工班" : "售后服务站");
+                res.setOrgType(CommonConstants.TEN_STRING.equals(resDTO.getOrgType()) ? "检修工班" : "售后服务站");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "普查与技改台账信息", list);

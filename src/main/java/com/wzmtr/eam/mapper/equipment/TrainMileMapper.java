@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
+import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
@@ -89,8 +90,29 @@ public interface TrainMileMapper {
 
     /**
      * 导入每日列车里程及能耗列表
-     * @param list 每日列车里程及能耗列表
+     * @param req 每日列车里程及能耗
      */
-    void importTrainDailyMile(List<TrainMileDailyReqDTO> list);
+    void importTrainDailyMile(TrainMileDailyReqDTO req);
+
+    /**
+     * 批量新增每日列车里程及能耗
+     * @param list 列表
+     */
+    void batchAddTrainMile(List<TrainMileDailyReqDTO> list);
+
+    /**
+     * 获取前一天的列车累计运营里程
+     * @param equipCode 设备编码
+     * @param day 日期
+     * @return 前一天的列车累计运营里程
+     */
+    Double getLastTotalWorkMile(String equipCode, String day);
+
+    /**
+     * 初始化每日列车里程及能耗
+     * @param dateDays 初始化日期
+     * @param trains 列车信息
+     */
+    void initTrainDailyMile(List<String> dateDays, List<RegionResDTO> trains);
 
 }

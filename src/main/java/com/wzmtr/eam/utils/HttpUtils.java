@@ -125,7 +125,7 @@ public class HttpUtils {
             //维持长链接
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-            if (!StringUtils.isEmpty(authorization)) {
+            if (StringUtils.isNotEmpty(authorization)) {
                 conn.setRequestProperty("Authorization", authorization);
             }
 

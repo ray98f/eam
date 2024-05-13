@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.home.HomeMapper">
+    <select id="queryB" resultType="com.wzmtr.eam.dto.res.home.ShowBCResDTO">
+        SELECT db.NODE_NAME as "majorName", count(b.MAJOR_CODE) as cnt
+        FROM T_EQUIPMENT_CATEGORY db
+        LEFT JOIN (SELECT d.MAJOR_CODE
+        FROM T_FAULT_INFO d
+        LEFT JOIN T_FAULT_ORDER d2 ON d.FAULT_NO=d2.FAULT_NO
+        WHERE 1=1
+        <if test="majors!=null and majors.size()>0">
+            AND d.MAJOR_CODE IN (
+            <foreach collection="majors" index="index" item="major" separator=",">
+                #{major}
+            </foreach>
+            )
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND to_date(d.FILLIN_TIME,'yyyy-mm-dd hh24:mi:ss')>=to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')>=to_date(d.FILLIN_TIME,'yyyy-mm-dd hh24:mi:ss')
+        </if>
+        and d.FAULT_FLAG<![CDATA[ <> ]]>'2'
+        and d.DELETE_FLAG='0'
+        and d2.ORDER_STATUS<![CDATA[ <> ]]>'99'
+        ) b
+        ON db.NODE_CODE=b.MAJOR_CODE
+        WHERE db.PARENT_NODE_REC_ID='0'
+        <if test="majors!=null and majors.size()>0">
+            AND db.NODE_CODE IN (
+            <foreach collection="majors" index="index" item="major" separator=",">
+                #{major}
+            </foreach>
+            )
+        </if>
+        GROUP BY db.NODE_NAME,db.NODE_CODE
+        ORDER BY cnt desc,db.NODE_CODE
+    </select>
+    <select id="queryA" resultType="com.wzmtr.eam.dto.res.home.ShowAResDTO">
+        SELECT t.ORDER_STATUS AS status, t.ORDER_STATUS AS cname, count(1) as cnt
+        FROM T_FAULT_INFO d
+        LEFT JOIN T_FAULT_ORDER t ON d.FAULT_NO=t.FAULT_NO
+        WHERE d.DELETE_FLAG='0' AND d.FAULT_FLAG<![CDATA[ <> ]]>'2'
+        <if test="majors!=null and majors.size()>0">
+            AND d.MAJOR_CODE IN (
+            <foreach collection="majors" index="index" item="major" separator=",">
+                #{major}
+            </foreach>
+            )
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND to_date(d.FILLIN_TIME,'yyyy-mm-dd hh24:mi:ss')>=to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')>=to_date(d.FILLIN_TIME,'yyyy-mm-dd hh24:mi:ss')
+        </if>
+        GROUP BY t.ORDER_STATUS
+        ORDER BY cnt DESC
+    </select>
+
+    <select id="todoList" resultType="com.wzmtr.eam.entity.StatusWorkFlowLog">
+        select * from
+        T_FLOW_TASK
+        where USER_ID=#{userId} and TODO_STATUS=#{type}
+        order by KIND_TYPE asc
+        <if test="type=='1'">
+            , TASK_RCV_TIME desc
+        </if>
+        <if test="type=='2'">
+            , TODO_DATE desc
+        </if>
+    </select>
+
+    <select id="todoCount" resultType="com.wzmtr.eam.dto.res.home.HomeCountResDTO">
+        with todoSize AS (select count(*) as todoSize from
+        T_FLOW_TASK
+        where USER_ID=#{userId} and TODO_STATUS='1'),
+        overSize as (select count(*) as overSize from
+        T_FLOW_TASK
+        where USER_ID=#{userId} and TODO_STATUS='2')
+        SELECT * FROM todoSize, overSize
+    </select>
+
+    <update id="urgingTodo">
+        update T_FLOW_TASK set
+        KIND_TYPE='1'
+        where TODO_ID=#{todoId} and TODO_STATUS='1'
+    </update>
+
+</mapper>

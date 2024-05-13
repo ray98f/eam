@@ -20,25 +20,20 @@ import java.math.BigDecimal;
 @Builder
 public class ExcelTrainMileDailyReqDTO {
     /**
-     * 车号
-     */
-    @ExcelProperty(value = "车号")
-    private String equipName;
-    /**
      * 日期
      */
     @ExcelProperty(value = "日期")
     private String day;
     /**
+     * 车号
+     */
+    @ExcelProperty(value = "车号")
+    private String equipName;
+    /**
      * 当天运营里程
      */
-    @ExcelProperty(value = "当天运营里程")
+    @ExcelProperty(value = "当天运营里程（公里）")
     private BigDecimal dailyWorkMile;
-    /**
-     * 累计运营里程
-     */
-    @ExcelProperty(value = "累计运营里程")
-    private BigDecimal totalWorkMile;
     /**
      * 备注
      */

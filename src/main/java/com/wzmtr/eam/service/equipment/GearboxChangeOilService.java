@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public interface GearboxChangeOilService {
 
@@ -22,6 +23,6 @@ public interface GearboxChangeOilService {
 
     void importGearboxChangeOil(MultipartFile file);
 
-    void exportGearboxChangeOil(String trainNo, HttpServletResponse response) throws IOException;
+    void exportGearboxChangeOil(List<String> ids, HttpServletResponse response) throws IOException;
 
 }

@@ -26,6 +26,9 @@ public class OverhaulOrderListReqDTO {
     @ApiModelProperty(value = "计划名称")
     private String planName;
 
+    @ApiModelProperty(value = "对象名称")
+    private String objectName;
+
     @ApiModelProperty(value = "线路编码")
     private String lineNo;
 
@@ -65,4 +68,10 @@ public class OverhaulOrderListReqDTO {
      * 外部调用标识
      */
     private String tenant;
+
+    /**
+     * 检修情况
+     */
+    @ApiModelProperty(value = "检修情况")
+    private String workDetail;
 }

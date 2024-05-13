@@ -2,6 +2,7 @@ package com.wzmtr.eam.service.mea;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
+import com.wzmtr.eam.dto.req.mea.MeaReqDTO;
 import com.wzmtr.eam.dto.res.mea.MeaResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -18,6 +19,12 @@ public interface MeaService {
     MeaResDTO getMeaDetail(String id);
 
     void importMea(MultipartFile file);
+
+    /**
+     * 新增计量器具
+     * @param meaReqDTO 计量器具参数
+     */
+    void addMea(MeaReqDTO meaReqDTO);
 
     void exportMea(List<String> ids, HttpServletResponse response) throws IOException;
 

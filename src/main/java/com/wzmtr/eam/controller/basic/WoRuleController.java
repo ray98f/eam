@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.basic;
 
+import com.wzmtr.eam.dto.req.basic.WoRuleDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.basic.WoRuleReqDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -24,6 +25,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 基础管理-工单触发规则
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/20
+ */
 @Slf4j
 @RestController
 @RequestMapping("/basic/wo-rule")
@@ -115,10 +122,7 @@ public class WoRuleController {
 
     @PostMapping("/detail/export")
     @ApiOperation(value = "导出工单触发规则明细")
-    public void exportWoRuleDetail(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
-        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
-        }
-        woRuleService.exportWoRuleDetail(baseIdsEntity.getIds(), response);
+    public void exportWoRuleDetail(@RequestBody WoRuleDetailExportReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        woRuleService.exportWoRuleDetail(reqDTO, response);
     }
 }

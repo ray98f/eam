@@ -70,6 +70,7 @@ public class RoleServiceImpl implements RoleService {
         }
         role.setCreatedBy(TokenUtils.getCurrentPersonId());
         roleMapper.updateRole(role);
+        roleMapper.updateBpmnRole(role);
     }
 
     @Override

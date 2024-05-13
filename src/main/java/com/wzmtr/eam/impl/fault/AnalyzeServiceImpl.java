@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.fault;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
@@ -24,6 +23,7 @@ import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
+import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.dict.IDictionariesService;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import com.wzmtr.eam.utils.*;
@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +45,10 @@ import java.util.List;
 @Service
 @Slf4j
 public class AnalyzeServiceImpl implements AnalyzeService {
+
+    @Resource
+    private UserAccountService userAccountService;
+
     @Autowired
     private FaultAnalyzeMapper faultAnalyzeMapper;
     @Autowired
@@ -61,47 +66,53 @@ public class AnalyzeServiceImpl implements AnalyzeService {
 
     @Override
     public Page<AnalyzeResDTO> list(AnalyzeReqDTO reqDTO) {
-        Page<AnalyzeResDTO> query = faultAnalyzeMapper.query(reqDTO.of(), reqDTO.getFaultNo(), reqDTO.getMajorCode(), reqDTO.getRecStatus(), reqDTO.getLineCode(), reqDTO.getFrequency(), reqDTO.getPositionCode(), reqDTO.getDiscoveryStartTime(), reqDTO.getDiscoveryEndTime(), reqDTO.getRespDeptCode(), reqDTO.getAffectCodes());
+        // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        List<String> userMajorList = null;
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
+            userMajorList = userAccountService.listUserMajor();
+        }
+
+        Page<AnalyzeResDTO> query = faultAnalyzeMapper.query(reqDTO.of(), reqDTO,userMajorList);
+
+
         List<AnalyzeResDTO> records = query.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();
         }
         records.forEach(a -> {
-                    a.setRespDeptName(organizationMapper.getNamesById(a.getRespDeptCode()));
-                    if (StringUtils.isNotEmpty(a.getDocId())) {
-                        a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
-                    }
-                }
-        );
+            a.setRespDeptName(organizationMapper.getNamesById(a.getRespDeptCode()));
+            if (StringUtils.isNotEmpty(a.getDocId())) {
+                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
+            }
+        });
         return query;
     }
 
     @Override
-    public void export(String faultAnalysisNo, String faultNo, String faultWorkNo, HttpServletResponse response) {
-        List<AnalyzeResDTO> resList = faultAnalyzeMapper.list(faultAnalysisNo, faultNo, faultWorkNo);
+    public void export(AnalyzeReqDTO reqDTO, HttpServletResponse response) {
+        List<AnalyzeResDTO> resList = faultAnalyzeMapper.list(reqDTO);
         if (StringUtils.isEmpty(resList)) {
             return;
         }
         List<FaultAnalizeExportBO> exportList = Lists.newArrayList();
         resList.forEach(item -> {
-                    LineCode lineCode = LineCode.getByCode(item.getLineCode());
-                    FaultFrequency frequency = FaultFrequency.getByCode(item.getFrequency());
-                    String respDeptName = organizationMapper.getOrgById(item.getRespDeptCode());
-                    FaultAnalizeExportBO exportBO = BeanUtils.convert(item, FaultAnalizeExportBO.class);
-                    exportBO.setLineCode(lineCode != null ? lineCode.getDesc() : item.getLineCode());
-                    if (StringUtils.isNotEmpty(item.getFaultLevel())){
-                        exportBO.setFaultLevel(dictService.queryOneByItemCodeAndCodesetCode("dm.faultLevel", item.getFaultLevel()).getItemCname());
-                    }
-                    exportBO.setFrequency(frequency != null ? frequency.getDesc() : item.getFrequency());
-                    exportBO.setRespDeptName(respDeptName == null ? CommonConstants.EMPTY : respDeptName);
-                    exportList.add(exportBO);
-                }
-        );
+            LineCode lineCodeRes = LineCode.getByCode(item.getLineCode());
+            FaultFrequency frequencyRes = FaultFrequency.getByCode(item.getFrequency());
+            String respDeptName = organizationMapper.getOrgById(item.getRespDeptCode());
+            FaultAnalizeExportBO exportBO = BeanUtils.convert(item, FaultAnalizeExportBO.class);
+            exportBO.setLineCode(lineCodeRes != null ? lineCodeRes.getDesc() : item.getLineCode());
+            if (StringUtils.isNotEmpty(item.getFaultLevel())){
+                exportBO.setFaultLevel(dictService.queryOneByItemCodeAndCodesetCode("dm.faultLevel", item.getFaultLevel()).getItemCname());
+            }
+            exportBO.setFrequency(frequencyRes != null ? frequencyRes.getDesc() : item.getFrequency());
+            exportBO.setRespDeptName(respDeptName == null ? CommonConstants.EMPTY : respDeptName);
+            exportList.add(exportBO);
+        });
         try {
-            EasyExcelUtils.export(response, "故障调查及处置情况", exportList);
+            EasyExcelUtils.export(response, "故障分析", exportList);
         } catch (Exception e) {
             log.error("导出失败", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.EXPORT_ERROR);
         }
     }
 
@@ -225,7 +236,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         // String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(processId, backOpinion);
         dmfm03.setRecStatus("10");
-        dmfm03.setWorkFlowInstStatus("");
+        dmfm03.setWorkFlowInstStatus(" ");
         dmfm03.setWorkFlowInstId("");
         faultAnalyzeMapper.update(dmfm03);
         workFlowLogService.add(WorkFlowLogBO.builder()

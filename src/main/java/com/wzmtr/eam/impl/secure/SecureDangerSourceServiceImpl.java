@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.secure;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
@@ -46,7 +45,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     @Override
     public Page<SecureDangerSourceResDTO> dangerSourceList(SecureDangerSourceListReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO.getDangerRiskId(), reqDTO.getDiscDateStart(), reqDTO.getDiscDateEnd());
+        Page<SecureDangerSourceResDTO> query = secureDangerSourceMapper.query(reqDTO.of(), reqDTO);
         List<SecureDangerSourceResDTO> records = query.getRecords();
         if (StringUtils.isNotEmpty(records)) {
             records.forEach(this::assemble);
@@ -67,8 +66,8 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
     }
 
     @Override
-    public void export(String dangerRiskId, String discDate, HttpServletResponse response) {
-        List<SecureDangerSourceResDTO> resList = secureDangerSourceMapper.list(dangerRiskId, discDate);
+    public void export(SecureDangerSourceListReqDTO reqDTO, HttpServletResponse response) {
+        List<SecureDangerSourceResDTO> resList = secureDangerSourceMapper.list(reqDTO);
         if (StringUtils.isNotEmpty(resList)) {
             List<SecureDangerSourceExportBO> exportList = new ArrayList<>();
             for (SecureDangerSourceResDTO resDTO : resList) {
@@ -84,7 +83,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
             try {
                 EasyExcelUtils.export(response, "危险源排查信息", exportList);
             } catch (Exception e) {
-                log.error("导出失败",e);
+                log.error("导出失败", e);
                 throw new CommonException(ErrorCode.NORMAL_ERROR);
             }
         }

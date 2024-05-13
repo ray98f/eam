@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.fault.ObjectMapper">
+
+    <select id="queryObject" resultType="com.wzmtr.eam.dto.res.fault.ObjectResDTO">
+        SELECT
+        dd.EQUIP_CODE as equipCode,
+        dd.EQUIP_NAME as equipName,
+        dd.EQUIP_TYPE_CODE as equipTypeCode,
+        dd.EQUIP_TYPE_NAME as equipTypeName,
+        dd.SYSTEM_CODE as systemCode,
+        dd.SYSTEM_NAME as systemName,
+        dd.POSITION1_CODE as position1Code,
+        dd.POSITION1_NAME as position1Name,
+        dd.MAJOR_CODE as majorCode,
+        dd.MAJOR_NAME as majorName,
+        dd.USE_LINE_NO as useLineNo,
+        ec.ITEM_CNAME as useLineName,
+        dd.USE_SEG_NO as useSegNo,
+        dd.MAT_SPECIFI as matSpecifi,
+        dd.POSITION2_CODE as position2Code,
+        dd.POSITION2_NAME as position2Name,
+        dd.BRAND as brand,
+        dd.MANUFACTURE as manufacture,
+        dd.MANUFACTURE_DATE as manufactureDate,
+        dd.ORDER_NO as orderNo,
+        dd.ORDER_NAME as orderName,
+        dd.EQUIP_STATUS as equipStatus,
+        dd.SOURCE_APP_NO as sourceAppNo,
+        dd.REMARK as remark
+        FROM T_EQUIPMENT dd, SYS_DICT ec
+        WHERE 1=1
+        and dd.USE_LINE_NO = ec.ITEM_CODE
+        and ec.CODESET_CODE='line'
+        and dd.APPROVAL_STATUS='30'
+        <if test="position1Code != null">
+            AND dd.POSITION1_CODE = #{position1Code}
+        </if>
+        <if test="useSegNo != null">
+            AND dd.USE_SEG_NO = #{useSegNo}
+        </if>
+        <if test="useLineNo != null">
+            AND dd.USE_LINE_NO = #{useLineNo}
+        </if>
+        <if test="majorCode != null">
+            AND dd.MAJOR_CODE = #{majorCode}
+        </if>
+        <if test="systemCode != null and systemCode!=''">
+            AND dd.SYSTEM_CODE = #{systemCode}
+        </if>
+        <if test="equipTypeCode != null  and equipTypeCode!='' ">
+            AND dd.EQUIP_TYPE_CODE = #{equipTypeCode}
+        </if>
+        <if test="brand != null">
+            AND dd.BRAND = #{brand}
+        </if>
+        <if test="manufacture != null">
+            AND dd.MANUFACTURE = #{manufacture}
+        </if>
+        <if test="manufactureDateStart!=null and manufactureDateStart!=''">
+            and TO_DATE(MANUFACTURE_DATE,'YYYY-MM-DD') <![CDATA[>=]]> TO_DATE(#{manufactureDateStart},'YYYY-MM-DD')
+        </if>
+        <if test="manufactureDateEnd!=null and manufactureDateEnd!=''">
+            and TO_DATE(MANUFACTURE_DATE,'YYYY-MM-DD') <![CDATA[<=]]> TO_DATE(#{manufactureDateEnd},'YYYY-MM-DD')
+        </if>
+    </select>
+</mapper>

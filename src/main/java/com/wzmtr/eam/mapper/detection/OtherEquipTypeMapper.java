@@ -41,6 +41,12 @@ public interface OtherEquipTypeMapper {
     void importOtherEquipType(List<OtherEquipTypeReqDTO> list);
 
     /**
+     * 获取当前最大的分类编号
+     * @return 最大分类编号
+     */
+    String getMaxTypeCode();
+
+    /**
      * 新增其他设备分类
      * @param otherEquipTypeReqDTO 其他设备分类信息
      */
@@ -51,6 +57,13 @@ public interface OtherEquipTypeMapper {
      * @param otherEquipTypeReqDTO 其他设备分类信息
      */
     void modifyOtherEquipType(OtherEquipTypeReqDTO otherEquipTypeReqDTO);
+
+    /**
+     * 修改其他设备检修有效期
+     * @param detectionPeriod 周期
+     * @param typeCode 检修类别编号
+     */
+    void modifyOtherEquipValidityDate(String detectionPeriod, String typeCode);
 
     /**
      * 删除其他设备分类
@@ -76,4 +89,12 @@ public interface OtherEquipTypeMapper {
      * @return 其他设备分类列表
      */
     List<OtherEquipTypeResDTO> listOtherEquipType(String typeCode, String typeName);
+
+    /**
+     * 根据其他设备分类参数获取其他设备分类详情
+     * @param code 编号
+     * @param name 名称
+     * @return 其他设备分类详情
+     */
+    OtherEquipTypeResDTO getOtherEquipTypeDetailByType(String code, String name);
 }

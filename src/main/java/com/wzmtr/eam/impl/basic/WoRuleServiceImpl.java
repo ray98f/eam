@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.basic.WoRuleDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.basic.WoRuleReqDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelWoRuleDetailResDTO;
@@ -68,7 +69,20 @@ public class WoRuleServiceImpl implements WoRuleService {
 
     @Override
     public void addWoRule(WoRuleReqDTO woRuleReqDTO) {
-        woRuleReqDTO.setRuleCode(CodeUtils.getNextCode(woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage()), 1));
+        String code = woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage());
+        String prefix = "";
+        switch (woRuleReqDTO.getRuleUseage()){
+            case "10":
+                prefix = "G";
+                break;
+            case "20":
+                prefix = "X";
+                break;
+            default:
+                prefix = "J";
+                break;
+        }
+        woRuleReqDTO.setRuleCode(CodeUtils.getNextCode(code == null? prefix+"000":code, 1));
         woRuleReqDTO.setRecId(TokenUtils.getUuId());
         woRuleReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         woRuleReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
@@ -145,8 +159,8 @@ public class WoRuleServiceImpl implements WoRuleService {
     }
 
     @Override
-    public void exportWoRuleDetail(List<String> ids, HttpServletResponse response) throws IOException {
-        List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.exportWoRuleDetail(ids);
+    public void exportWoRuleDetail(WoRuleDetailExportReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<WoRuleResDTO.WoRuleDetail> woRuleDetails = woRuleMapper.exportWoRuleDetail(reqDTO);
         if (StringUtils.isNotEmpty(woRuleDetails)) {
             List<ExcelWoRuleDetailResDTO> list = new ArrayList<>();
             for (WoRuleResDTO.WoRuleDetail resDTO : woRuleDetails) {

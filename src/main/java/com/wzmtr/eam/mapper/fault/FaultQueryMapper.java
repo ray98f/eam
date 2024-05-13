@@ -24,7 +24,20 @@ import java.util.List;
 @Repository
 public interface FaultQueryMapper {
 
-    Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
+    Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req, List<String> majors);
+
+    Page<FaultDetailResDTO> queryByUser(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req, List<String> majors, String userId, String officeAreaId);
+
+    List<FaultDetailResDTO> queryLimit(String userDept, List<String> majors);
+
+    Page<FaultDetailResDTO> statustucQuery(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
+
+    /**
+     * 根据ids获取故障详情列表
+     * @param req 入参
+     * @return 故障详情列表
+     */
+    List<FaultDetailResDTO> getByIds(FaultQueryReqDTO req);
 
     FaultDetailResDTO queryDetail(@Param("req") FaultQueryDetailReqDTO req);
 
@@ -50,7 +63,6 @@ public interface FaultQueryMapper {
 
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
 
-
     List<FaultDetailResDTO> export(FaultExportReqDTO req);
 
     List<FaultRepairDeptResDTO> queryDeptCode(String lineCode, String majorCode, String orgType);
@@ -58,6 +70,5 @@ public interface FaultQueryMapper {
     Page<ConstructionResDTO> construction(Page<ConstructionResDTO> of, @Param("faultWorkNo") String faultWorkNo);
 
     Page<ConstructionResDTO> cancellation(Page<ConstructionResDTO> of, @Param("faultWorkNo") String faultWorkNo);
-
 
 }

@@ -18,6 +18,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ExcelBomTrainReqDTO {
     /**
+     * 设备编号
+     */
+    @ExcelProperty(value = "设备编号")
+    private String equipCode;
+    /**
      * 车号
      */
     @ExcelProperty(value = "车号")

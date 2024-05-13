@@ -13,6 +13,7 @@ import com.wzmtr.eam.dto.res.common.PersonListResDTO;
 import com.wzmtr.eam.dto.result.ResultEntity;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.HttpCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
@@ -64,6 +65,12 @@ public class BpmnServiceImpl implements BpmnService {
         String data = JSON.toJSONString(dto);
         ResultEntity<?> resultEntity = JSON.parseObject(HttpUtils.doPost(FastFlowConstants.LOGIN, data),
                 ResultEntity.class);
+        if(HttpCode.SERVER_ERROR.getCode() == resultEntity.getCode()){
+            dto.setPassword(CommonConstants.DEF_PWD);
+            data = JSON.toJSONString(dto);
+            resultEntity = JSON.parseObject(HttpUtils.doPost(FastFlowConstants.LOGIN, data),
+                    ResultEntity.class);
+        }
         return String.valueOf(resultEntity.getData());
     }
 
@@ -410,7 +417,12 @@ public class BpmnServiceImpl implements BpmnService {
     public String getDefKeyByTaskId(String taskId) {
         log.info("流程引擎调用入参getDefKeyByTaskId:[{}]", taskId);
         String processDefinitionId = JSON.parseObject(HttpUtils.doGet(FastFlowConstants.GET_DEF_KEY + taskId, null)).getString("processDefinitionId");
-        return processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
+        if(!StringUtils.isEmpty(processDefinitionId)){
+            processDefinitionId = processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
+        }else{
+            processDefinitionId = "";
+        }
+        return processDefinitionId;
     }
 
     @Override

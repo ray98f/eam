@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.WorkFlowLogBO;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.detection.DetectionDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.detection.DetectionReqDTO;
+import com.wzmtr.eam.dto.req.detection.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionDetailResDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelDetectionDetailResDTO;
@@ -19,6 +21,8 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.detection.DetectionMapper;
+import com.wzmtr.eam.mapper.detection.SpecialEquipMapper;
+import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.BpmnService;
 import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.detection.DetectionService;
@@ -33,6 +37,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,6 +52,9 @@ public class DetectionServiceImpl implements DetectionService {
     private DetectionMapper detectionMapper;
 
     @Autowired
+    private SpecialEquipMapper specialEquipMapper;
+
+    @Autowired
     private OrganizationMapper organizationMapper;
 
     @Autowired
@@ -57,6 +65,9 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Autowired
     private IWorkFlowLogService workFlowLogService;
+
+    @Autowired
+    private FileMapper fileMapper;
 
     @Override
     public Page<DetectionResDTO> pageDetection(String checkNo, String sendVerifyNo, String editDeptCode, String recStatus, PageReqDTO pageReqDTO) {
@@ -151,7 +162,9 @@ public class DetectionServiceImpl implements DetectionService {
         if (Objects.isNull(res)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        List<DetectionDetailResDTO> result = detectionMapper.listDetectionDetail(res.getRecId());
+        DetectionDetailExportReqDTO detectionDetailExportReqDTO = new DetectionDetailExportReqDTO();
+        detectionDetailExportReqDTO.setTestRecId(res.getRecId());
+        List<DetectionDetailResDTO> result = detectionMapper.listDetectionDetail(detectionDetailExportReqDTO);
         if (StringUtils.isEmpty(result)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "此检测单不存在检测明细，无法提交");
         }
@@ -267,14 +280,30 @@ public class DetectionServiceImpl implements DetectionService {
     }
 
     @Override
-    public Page<DetectionDetailResDTO> pageDetectionDetail(String testRecId, PageReqDTO pageReqDTO) {
+    public Page<DetectionDetailResDTO> pageDetectionDetail(String equipCode, String testRecId, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return detectionMapper.pageDetectionDetail(pageReqDTO.of(), testRecId);
+        Page<DetectionDetailResDTO> page = detectionMapper.pageDetectionDetail(pageReqDTO.of(), equipCode, testRecId);
+        List<DetectionDetailResDTO> list = page.getRecords();
+        if (StringUtils.isNotEmpty(list)) {
+            for (DetectionDetailResDTO res : list) {
+                if (StringUtils.isNotEmpty(res.getVerifyReportAtt())) {
+                    res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(","))));
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public DetectionDetailResDTO getDetectionDetailDetail(String id) {
-        return detectionMapper.getDetectionDetailDetail(id);
+        DetectionDetailResDTO res = detectionMapper.getDetectionDetailDetail(id);
+        if (StringUtils.isNotNull(res)) {
+            if (StringUtils.isNotEmpty(res.getVerifyReportAtt())) {
+                res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(","))));
+            }
+        }
+        return res;
     }
 
     @Override
@@ -299,6 +328,29 @@ public class DetectionServiceImpl implements DetectionService {
         detectionDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         detectionDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         detectionMapper.addDetectionDetail(detectionDetailReqDTO);
+        SpecialEquipReqDTO specialEquipReqDTO = new SpecialEquipReqDTO();
+        specialEquipReqDTO.setEquipCode(detectionDetailReqDTO.getEquipCode());
+        specialEquipReqDTO.setVerifyDate(detectionDetailReqDTO.getVerifyDate());
+        specialEquipReqDTO.setVerifyValidityDate(detectionDetailReqDTO.getVerifyValidityDate());
+        specialEquipMapper.updateEquip(specialEquipReqDTO);
+    }
+
+    @Override
+    public void addNormalDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (sdf.parse(detectionDetailReqDTO.getVerifyValidityDate()).before(sdf.parse(detectionDetailReqDTO.getVerifyDate()))) {
+            return;
+        }
+        detectionDetailReqDTO.setRecId(TokenUtils.getUuId());
+        detectionDetailReqDTO.setArchiveFlag("0");
+        detectionDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        detectionDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+        detectionMapper.addDetectionDetail(detectionDetailReqDTO);
+        SpecialEquipReqDTO specialEquipReqDTO = new SpecialEquipReqDTO();
+        specialEquipReqDTO.setEquipCode(detectionDetailReqDTO.getEquipCode());
+        specialEquipReqDTO.setVerifyDate(detectionDetailReqDTO.getVerifyDate());
+        specialEquipReqDTO.setVerifyValidityDate(detectionDetailReqDTO.getVerifyValidityDate());
+        specialEquipMapper.updateEquip(specialEquipReqDTO);
     }
 
     @Override
@@ -350,8 +402,8 @@ public class DetectionServiceImpl implements DetectionService {
     }
 
     @Override
-    public void exportDetectionDetail(String testRecId, HttpServletResponse response) throws IOException {
-        List<DetectionDetailResDTO> detectionPlanDetailResDTOList = detectionMapper.listDetectionDetail(testRecId);
+    public void exportDetectionDetail(DetectionDetailExportReqDTO detectionDetailExportReqDTO, HttpServletResponse response) throws IOException {
+        List<DetectionDetailResDTO> detectionPlanDetailResDTOList = detectionMapper.listDetectionDetail(detectionDetailExportReqDTO);
         if (StringUtils.isNotEmpty(detectionPlanDetailResDTOList)) {
             List<ExcelDetectionDetailResDTO> list = new ArrayList<>();
             for (DetectionDetailResDTO resDTO : detectionPlanDetailResDTOList) {

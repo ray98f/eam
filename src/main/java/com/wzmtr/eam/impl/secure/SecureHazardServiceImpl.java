@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.secure;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -51,7 +50,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
     @Override
     public Page<SecureHazardResDTO> list(SecureHazardReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<SecureHazardResDTO> query = hazardMapper.query(reqDTO.of(), reqDTO.getRiskId(), reqDTO.getRiskRank(), reqDTO.getInspectDateBegin(), reqDTO.getInspectDateEnd(), reqDTO.getIsRestored(), reqDTO.getRecStatus());
+        Page<SecureHazardResDTO> query = hazardMapper.query(reqDTO.of(), reqDTO);
         List<SecureHazardResDTO> records = query.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();
@@ -98,8 +97,8 @@ public class SecureHazardServiceImpl implements SecureHazardService {
     }
 
     @Override
-    public void export(String riskId, String begin, String end, String riskRank, String restoreDesc, String workFlowInstStatus, HttpServletResponse response) {
-        List<SecureHazardResDTO> resList = hazardMapper.list(riskId, begin, end, riskRank, restoreDesc, workFlowInstStatus);
+    public void export(SecureHazardReqDTO reqDTO, HttpServletResponse response) {
+        List<SecureHazardResDTO> resList = hazardMapper.list(reqDTO);
         if (StringUtils.isEmpty(resList)) {
             return;
         }
@@ -123,7 +122,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             EasyExcelUtils.export(response, "安全隐患整改信息", exportList);
         } catch (Exception e) {
             log.error("导出失败", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
+            throw new CommonException(ErrorCode.EXPORT_ERROR);
         }
     }
 

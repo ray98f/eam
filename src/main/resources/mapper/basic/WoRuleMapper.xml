@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.basic.WoRuleMapper">
+
+    <select id="pageWoRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO">
+        SELECT wr.REC_ID, wr.RULE_CODE, wr.RULE_NAME, wr.RULE_USEAGE,
+        wr.REC_STATUS, wr.REMARK, u1.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, u2.NAME AS REC_REVISOR, wr.REC_REVISE_TIME
+        FROM T_WO_RULE wr
+        LEFT JOIN SYS_USER u1 ON wr.REC_CREATOR=u1.ID
+        LEFT JOIN SYS_USER u2 ON wr.REC_REVISOR=u2.ID
+        where wr.DELETE_FLAG='0'
+        <if test="ruleCode!=null and ruleCode!=''">
+            and wr.RULE_CODE like '%' || #{ruleCode} || '%'
+        </if>
+        <if test="ruleName!=null and ruleName!=''">
+            and wr.RULE_NAME like '%' || #{ruleName} || '%'
+        </if>
+        <if test="ruleUseage!=null and ruleUseage!=''">
+            and wr.RULE_USEAGE=#{ruleUseage}
+        </if>
+        ORDER BY wr.RULE_CODE ASC
+    </select>
+
+    <select id="getWoRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO">
+        SELECT wr.REC_ID, wr.RULE_CODE, wr.RULE_NAME, wr.RULE_USEAGE,
+        wr.REC_STATUS, wr.REMARK, u1.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, u2.NAME AS REC_REVISOR, wr.REC_REVISE_TIME
+        FROM T_WO_RULE wr
+        LEFT JOIN SYS_USER u1 ON wr.REC_CREATOR=u1.ID
+        LEFT JOIN SYS_USER u2 ON wr.REC_REVISOR=u2.ID
+        where wr.REC_ID=#{id}
+    </select>
+
+    <select id="pageWoRuleDetail" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
+        SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
+        wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.EXT2, wd.BEFORE_TIME
+        FROM T_WO_RULE_DETAIL wd
+        LEFT JOIN SYS_USER u ON wd.REC_CREATOR=u.ID
+        where wd.DELETE_FLAG='0'
+        <if test="ruleCode!=null and ruleCode!=''">
+            and wd.RULE_CODE=#{ruleCode}
+        </if>
+        ORDER BY wd.RULE_SORT ASC
+    </select>
+
+    <select id="getWoRuleDetail" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
+        SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
+        wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.EXT2, wd.BEFORE_TIME
+        FROM T_WO_RULE_DETAIL wd
+        LEFT JOIN SYS_USER u ON wd.REC_CREATOR=u.ID
+        where wd.REC_ID=#{id}
+    </select>
+
+    <select id="getMaxCodeByUseage" resultType="java.lang.String">
+        select max(wr.RULE_CODE)
+        from T_WO_RULE wr
+        where wr.RULE_USEAGE=#{ruleUseage}
+    </select>
+
+    <insert id="addWoRule">
+        INSERT INTO T_WO_RULE (REC_ID, RULE_CODE, RULE_NAME, RULE_USEAGE, REC_STATUS,
+        <if test="remark!=null and remark!=''">
+            REMARK,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME)
+        VALUES (#{recId}, #{ruleCode}, #{ruleName}, #{ruleUseage}, #{recStatus},
+        <if test="remark!=null and remark!=''">
+            #{remark},
+        </if>
+        #{recCreator}, #{recCreateTime})
+    </insert>
+
+    <insert id="addWoRuleDetail">
+        INSERT INTO T_WO_RULE_DETAIL (REC_ID, RULE_CODE, RULE_DETAL_NAME, START_DATE, END_DATE, PERIOD, RULE_SORT,
+        <if test="ext1!=null and ext1!=''">
+            EXT1,
+        </if>
+        <if test="ext2!=null and ext2!=''">
+            EXT2,
+        </if>
+        <if test="remark!=null and remark!=''">
+            REMARK,
+        </if>
+        BEFORE_TIME, REC_CREATOR, REC_CREATE_TIME)
+        VALUES (#{recId}, #{ruleCode,jdbcType=VARCHAR}, #{ruleDetalName,jdbcType=VARCHAR},
+        #{startDate,jdbcType=VARCHAR}, #{endDate,jdbcType=VARCHAR},
+        #{period,jdbcType=BIGINT}, #{ruleSort,jdbcType=INTEGER},
+        <if test="ext1!=null and ext1!=''">
+            #{ext1,jdbcType=VARCHAR},
+        </if>
+        <if test="ext2!=null and ext2!=''">
+            #{ext2,jdbcType=VARCHAR},
+        </if>
+        <if test="remark!=null and remark!=''">
+            #{remark,jdbcType=VARCHAR},
+        </if>
+        #{beforeTime,jdbcType=BIGINT}, #{recCreator}, #{recCreateTime})
+    </insert>
+
+    <update id="modifyWoRule">
+        UPDATE T_WO_RULE SET
+        <if test="ruleCode!=null">
+            RULE_CODE=#{ruleCode},
+        </if>
+        <if test="ruleName!=null">
+            RULE_NAME=#{ruleName},
+        </if>
+        <if test="ruleUseage!=null">
+            RULE_USEAGE=#{ruleUseage},
+        </if>
+        <if test="recStatus!=null">
+            REC_STATUS=#{recStatus},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <update id="modifyWoRuleDetailCode">
+        UPDATE T_WO_RULE SET
+        RULE_CODE=#{newCode}
+        WHERE RULE_CODE=#{oldCode}
+    </update>
+
+    <update id="modifyWoRuleDetail">
+        UPDATE T_WO_RULE_DETAIL SET
+        <if test="ruleCode!=null">
+            RULE_CODE=#{ruleCode},
+        </if>
+        <if test="ruleDetalName!=null">
+            RULE_DETAL_NAME=#{ruleDetalName},
+        </if>
+        <if test="startDate!=null">
+            START_DATE=#{startDate},
+        </if>
+        <if test="endDate!=null">
+            END_DATE=#{endDate},
+        </if>
+        <if test="period!=null">
+            PERIOD=#{period},
+        </if>
+        <if test="ruleSort!=null">
+            RULE_SORT=#{ruleSort},
+        </if>
+        <if test="ext1!=null">
+            EXT1=#{ext1},
+        </if>
+        <if test="ext2!=null">
+            EXT2=#{ext2},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        <if test="beforeTime!=null">
+            BEFORE_TIME=#{beforeTime},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId}
+    </update>
+
+    <update id="deleteWoRule">
+        UPDATE T_WO_RULE SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <update id="deleteWoRuleDetail">
+        UPDATE T_WO_RULE_DETAIL SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <update id="deleteWoRuleDetailByCode">
+        UPDATE T_WO_RULE_DETAIL SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE RULE_CODE IN (SELECT RULE_CODE FROM T_WO_RULE WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        ))
+    </update>
+
+    <select id="listWoRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO">
+        SELECT wr.REC_ID, wr.RULE_CODE, wr.RULE_NAME, wr.RULE_USEAGE,
+        wr.REC_STATUS, wr.REMARK, u1.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, u2.NAME AS REC_REVISOR, wr.REC_REVISE_TIME
+        FROM T_WO_RULE wr
+        LEFT JOIN SYS_USER u1 ON wr.REC_CREATOR=u1.ID
+        LEFT JOIN SYS_USER u2 ON wr.REC_REVISOR=u2.ID
+        where wr.DELETE_FLAG='0'
+        <if test="ruleCode!=null and ruleCode!=''">
+            and wr.RULE_CODE like '%' || #{ruleCode} || '%'
+        </if>
+        <if test="ruleName!=null and ruleName!=''">
+            and wr.RULE_NAME like '%' || #{ruleName} || '%'
+        </if>
+        <if test="ruleUseage!=null and ruleUseage!=''">
+            and wr.RULE_USEAGE=#{ruleUseage}
+        </if>
+        ORDER BY wr.RULE_CODE ASC
+    </select>
+
+    <select id="listWoRuleDetail" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
+        SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
+        wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.EXT2, wd.BEFORE_TIME
+        FROM T_WO_RULE_DETAIL wd
+        LEFT JOIN SYS_USER u ON wd.REC_CREATOR=u.ID
+        where wd.DELETE_FLAG='0'
+        <if test="ruleCode!=null and ruleCode!=''">
+            and wd.RULE_CODE=#{ruleCode}
+        </if>
+        <if test="startDate!=null and startDate!=''">
+            and wd.START_DATE <![CDATA[<]]> #{startDate}
+        </if>
+        <if test="endDate!=null and endDate!=''">
+            and wd.END_DATE >= #{endDate}
+        </if>
+        ORDER BY wd.RULE_SORT ASC
+    </select>
+
+    <select id="exportWoRule" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO">
+        SELECT wr.REC_ID, wr.RULE_CODE, wr.RULE_NAME, wr.RULE_USEAGE,
+        wr.REC_STATUS, wr.REMARK, u1.NAME AS REC_CREATOR, wr.REC_CREATE_TIME, u2.NAME AS REC_REVISOR, wr.REC_REVISE_TIME
+        FROM T_WO_RULE wr
+        LEFT JOIN SYS_USER u1 ON wr.REC_CREATOR=u1.ID
+        LEFT JOIN SYS_USER u2 ON wr.REC_REVISOR=u2.ID
+        where wr.DELETE_FLAG='0'
+        AND wr.REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        ORDER BY wr.RULE_CODE ASC
+    </select>
+
+    <select id="exportWoRuleDetail" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
+        SELECT wd.REC_ID, wd.RULE_CODE, wd.RULE_DETAL_NAME, wd.START_DATE, wd.END_DATE, wd.PERIOD, wd.RULE_SORT,
+        wd.REMARK, u.NAME AS REC_CREATOR, wd.REC_CREATE_TIME, wd.EXT1, wd.EXT2, wd.BEFORE_TIME
+        FROM T_WO_RULE_DETAIL wd
+        LEFT JOIN SYS_USER u ON wd.REC_CREATOR=u.ID
+        where wd.DELETE_FLAG='0'
+        <if test="ruleCode!=null and ruleCode!=''">
+            and wd.RULE_CODE like '%' || #{ruleCode} || '%'
+        </if>
+        <if test="ids!=null and ids.size()>0">
+            AND wd.REC_ID IN (
+            <foreach collection="ids" index="index" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+        ORDER BY wd.RULE_SORT ASC
+    </select>
+
+    <select id="queryRuleList" resultType="com.wzmtr.eam.dto.res.basic.WoRuleResDTO$WoRuleDetail">
+        SELECT
+        d.REC_ID as "recId",
+        d.RULE_CODE as "ruleCode",
+        d.RULE_DETAL_NAME as "ruleDetalName",
+        d.START_DATE as "startDate",
+        d.END_DATE as "endDate",
+        d.PERIOD as "period",
+        d.RULE_SORT as "ruleSort",
+        d.BEFORE_TIME as "beforeTime",
+        d.REMARK as "remark",
+        d.REC_CREATOR as "recCreator",
+        d.REC_CREATE_TIME as "recCreateTime",
+        d.REC_REVISOR as "recRevisor",
+        d.REC_REVISE_TIME as "recReviseTime",
+        d.REC_DELETOR as "recDeletor",
+        d.REC_DELETE_TIME as "recDeleteTime",
+        d.DELETE_FLAG as "deleteFlag",
+        d.ARCHIVE_FLAG as "archiveFlag",
+        d.EXT1 as "ext1",
+        d.EXT2 as "ext2",
+        d.EXT3 as "ext3",
+        d.EXT4 as "ext4",
+        d.EXT5 as "ext5"
+        FROM T_WO_RULE_DETAIL d
+        WHERE
+        d.RULE_CODE =
+        (SELECT
+        T_OVERHAUL_PLAN.RULE_CODE
+        FROM
+        T_OVERHAUL_PLAN
+        WHERE
+        T_OVERHAUL_PLAN.PLAN_CODE = #{planCode})
+        AND d.START_DATE <![CDATA[<=]]> #{nowDate}
+        AND d.END_DATE >= #{nowDate}
+    </select>
+
+</mapper>

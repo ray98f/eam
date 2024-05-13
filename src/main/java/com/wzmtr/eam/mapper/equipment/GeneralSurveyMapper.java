@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.equipment.GeneralSurveyExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.GeneralSurveyReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,6 +28,6 @@ public interface GeneralSurveyMapper {
 
     void importGeneralSurvey(List<GeneralSurveyReqDTO> list);
 
-    List<GeneralSurveyResDTO> listGeneralSurvey(String trainNo, String recNotifyNo, String recDetail, String orgType);
+    List<GeneralSurveyResDTO> listGeneralSurvey(GeneralSurveyExportReqDTO generalSurveyExportReqDTO);
 
 }

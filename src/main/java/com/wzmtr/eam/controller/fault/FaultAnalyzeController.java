@@ -10,12 +10,17 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.AnalyzeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 故障管理-故障分析
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/15
+ */
 @RestController
 @RequestMapping("/fault/analyze")
 @Api(tags = "故障管理-故障分析")
@@ -44,15 +49,10 @@ public class FaultAnalyzeController {
         return DataResponse.success();
     }
 
-
-
     @ApiOperation(value = "导出")
-    @GetMapping("/export")
-    public DataResponse<AnalyzeResDTO> export(@RequestParam(required = false) @ApiParam("故障分析编号") String faultAnalysisNo,
-                                              @RequestParam(required = false) @ApiParam("故障编号") String faultNo,
-                                              @RequestParam(required = false) @ApiParam("故障工单编号") String faultWorkNo,
-                                              HttpServletResponse response) {
-        analyzeService.export(faultAnalysisNo, faultNo, faultWorkNo, response);
+    @PostMapping("/export")
+    public DataResponse<AnalyzeResDTO> export(@RequestBody AnalyzeReqDTO reqDTO, HttpServletResponse response) {
+        analyzeService.export(reqDTO, response);
         return DataResponse.success();
     }
 

@@ -10,16 +10,20 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.secure.SecureHazardService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/2 19:47
+ * 安全管理-安全隐患排查记录
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/02
  */
 @RestController
 @RequestMapping("/secure/hazard")
@@ -55,15 +59,9 @@ public class SecureHazardController {
     }
 
     @ApiOperation(value = "安全隐患单export")
-    @GetMapping("/export")
-    public void export(@RequestParam(required = false) @ApiParam("安全隐患排查单号") String riskId,
-                                                   @RequestParam(required = false) @ApiParam("发现日期开始") String inspectDateBegin,
-                                                   @RequestParam(required = false) @ApiParam("发现日期结束") String inspectDateEnd,
-                                                   @RequestParam(required = false) @ApiParam("安全隐患等级") String riskRank,
-                                                   @RequestParam(required = false) @ApiParam("整改情况") String restoreDesc,
-                                                   @RequestParam(required = false) @ApiParam("流程状态") String workFlowInstStatus,
-                                                   HttpServletResponse response) {
-        secureHazardService.export(riskId, inspectDateBegin, inspectDateEnd, riskRank, restoreDesc, workFlowInstStatus, response);
+    @PostMapping("/export")
+    public void export(@RequestBody SecureHazardReqDTO reqDTO, HttpServletResponse response) {
+        secureHazardService.export(reqDTO, response);
     }
 
     @ApiOperation(value = "delete")

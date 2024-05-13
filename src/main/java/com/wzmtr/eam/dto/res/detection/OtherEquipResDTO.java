@@ -29,6 +29,9 @@ public class OtherEquipResDTO {
     @ApiModelProperty(value = "其他设备类别")
     private String otherEquipType;
 
+    @ApiModelProperty(value = "其他设备周期")
+    private String detectionPeriod;
+
     @ApiModelProperty(value = "其他设备代码")
     private String otherEquipCode;
 

@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/9 15:22
@@ -39,4 +41,7 @@ public class TrackQueryReqDTO extends PageReqDTO {
     private String systemCode;
     @ApiModelProperty(value = "设备类别")
     private String equipTypeCode;
+
+    @ApiModelProperty(value = "ids")
+    private List<String> ids;
 }

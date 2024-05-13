@@ -13,21 +13,31 @@ import com.wzmtr.eam.utils.MinioUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.errors.*;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/11 15:38
+ * 公共分类-文件管理
+ * @author Li.Wang
+ * @version 1.0
+ * @date 2023/8/11 11:00
  */
 @Service
 @Slf4j
 public class MinioServiceImpl implements MinioService {
+
+    @Value("${pro.name}")
+    private String proName;
 
     @Autowired
     private MinioUtils minioUtils;
@@ -43,16 +53,16 @@ public class MinioServiceImpl implements MinioService {
 
     @Override
     public File upload(MultipartFile file, String bucket) {
-        if (!minioUtils.bucketExists(bucket)) {
-            minioUtils.makeBucket(bucket);
+        if (!minioUtils.bucketExists(proName)) {
+            minioUtils.makeBucket(proName);
         }
         String oldName = file.getOriginalFilename();
-        String fileName = FileUploadUtils.extractFilename(file);
+        String fileName = FileUploadUtils.extractFilename(file, bucket);
         try {
             @Cleanup
             InputStream inputStream = file.getInputStream();
             PutObjectArgs args = PutObjectArgs.builder()
-                    .bucket(bucket)
+                    .bucket(proName)
                     .object(fileName)
                     .stream(inputStream, file.getSize(), -1)
                     .contentType(file.getContentType())
@@ -61,9 +71,9 @@ public class MinioServiceImpl implements MinioService {
         } catch (Exception e) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "上传失败");
         }
-        String url = minioConfig.getImgPath() + "/" + bucket + "/" + fileName;
+        String url = minioConfig.getImgPath() + "/" + proName + "/" + fileName;
         FileReqDTO build = FileReqDTO.builder()
-                .bucket(bucket)
+                .bucket(proName)
                 .fileName(fileName)
                 .id(TokenUtils.getUuId())
                 .oldName(oldName)
@@ -72,6 +82,15 @@ public class MinioServiceImpl implements MinioService {
                 .recCreator(TokenUtils.getCurrentPersonId())
                 .build();
         fileMapper.insertFile(build);
-        return fileMapper.getFile(url, bucket, oldName);
+        return fileMapper.getFile(url, proName, oldName);
+    }
+
+    @Override
+    public void clear(String bucketCode) throws ServerException, InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        if (minioUtils.bucketExists(bucketCode)) {
+            minioUtils.clearBucket(bucketCode);
+            minioUtils.removeBucket(bucketCode);
+        }
     }
 }

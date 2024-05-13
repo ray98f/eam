@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface SubmissionRecordService {
 
-    Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, PageReqDTO pageReqDTO);
+    Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String recStatus, PageReqDTO pageReqDTO);
 
     SubmissionRecordResDTO getSubmissionRecordDetail(String id);
 
@@ -33,6 +33,8 @@ public interface SubmissionRecordService {
     Page<SubmissionRecordDetailResDTO> pageSubmissionRecordDetail(String testRecId, PageReqDTO pageReqDTO);
 
     SubmissionRecordDetailResDTO getSubmissionRecordDetailDetail(String id);
+
+    Page<SubmissionRecordDetailResDTO> getSubmissionRecordDetailByEquip(String equipCode,PageReqDTO pageReqDTO);
 
     void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO);
 

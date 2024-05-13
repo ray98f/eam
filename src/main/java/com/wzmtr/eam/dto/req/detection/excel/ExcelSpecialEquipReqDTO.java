@@ -30,6 +30,10 @@ public class ExcelSpecialEquipReqDTO {
     private String verifyDate;
     @ExcelProperty(value = "检测有效期")
     private String verifyValidityDate;
+    @ExcelProperty(value = "检测结果")
+    private String verifyResult;
+    @ExcelProperty(value = "检测结果说明")
+    private String verifyConclusion;
     @ExcelProperty(value = "使用登记机构")
     private String regOrg;
     @ExcelProperty(value = "登记证编号")

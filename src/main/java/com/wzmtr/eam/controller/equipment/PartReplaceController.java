@@ -27,6 +27,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 设备管理-车辆维保台账-部件更换台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/28
+ */
 @Slf4j
 @RestController
 @RequestMapping("/train/maintenance/partReplace")
@@ -44,8 +50,9 @@ public class PartReplaceController {
                                                            @RequestParam(required = false) @ApiParam("故障工单编号") String faultWorkNo,
                                                            @RequestParam(required = false) @ApiParam("作业单位") String orgType,
                                                            @RequestParam(required = false) @ApiParam("更换原因") String replaceReason,
+                                                           @RequestParam(required = false) @ApiParam("工单类型") String workOrderType,
                                                            @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(partReplaceService.pagePartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason, pageReqDTO));
+        return PageResponse.of(partReplaceService.pagePartReplace(equipName, replacementName, faultWorkNo, orgType, replaceReason,workOrderType, pageReqDTO));
     }
 
     @GetMapping("/detail")

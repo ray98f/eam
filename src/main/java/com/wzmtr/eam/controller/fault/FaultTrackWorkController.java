@@ -14,7 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
+/**
+ * 故障管理-故障跟踪工单
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/12/06
+ */
 @RestController
 @RequestMapping("/fault/track")
 @Api(tags = "故障管理-故障跟踪工单")
@@ -53,7 +60,6 @@ public class FaultTrackWorkController {
     @ApiOperation(value = "故障跟踪下达")
     @PostMapping("/fault/track/transmit")
     public DataResponse<String> transmit(@RequestBody TrackTransmitReqDTO reqDTO) {
-        // faultWorkNo EAM/service/DMFM0010/transmit
         trackService.transmit(reqDTO);
         return DataResponse.success();
     }
@@ -61,7 +67,6 @@ public class FaultTrackWorkController {
     @ApiOperation(value = "故障跟踪送审")
     @PostMapping("/fault/track/commit")
     public DataResponse<String> commit(@RequestBody FaultExamineReqDTO reqDTO) {
-        // faultWorkNo
         trackService.commit(reqDTO);
         return DataResponse.success();
     }
@@ -77,15 +82,13 @@ public class FaultTrackWorkController {
     @ApiOperation(value = "故障跟踪驳回")
     @PostMapping("/reject")
     public DataResponse<String> cancel(@RequestBody FaultExamineReqDTO reqDTO) {
-        // faultWorkNo
         trackService.returns(reqDTO);
         return DataResponse.success();
     }
 
     @ApiOperation(value = "故障跟踪工单导出")
     @PostMapping("/fault/track/export")
-    public void export(@RequestBody TrackExportReqDTO reqDTO, HttpServletResponse response) {
-        // faultWorkNo
+    public void export(@RequestBody TrackExportReqDTO reqDTO, HttpServletResponse response) throws IOException {
         trackService.export(reqDTO,response);
     }
 }

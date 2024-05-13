@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/15 10:35
@@ -25,6 +27,8 @@ public class FaultSendWorkReqDTO {
     private String repairRespUserId;
     @ApiModelProperty(value = "维修负责人")
     private String repairRespUserName;
+    @ApiModelProperty(value = "维修负责人工班的人员列表")
+    private List<String> workerList;
     @ApiModelProperty(value = "派工时间")
     private String dispatchTime;
     @ApiModelProperty(value = "派工人")
@@ -44,5 +48,5 @@ public class FaultSendWorkReqDTO {
     private String recRevisor;
     private String ext1;
     @ApiModelProperty(value = "故障紧急程度")
-    private String levelFault;
+    private String faultLevel;
 }

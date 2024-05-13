@@ -1,6 +1,7 @@
 package com.wzmtr.eam.controller.mea;
 
 import com.wzmtr.eam.dto.req.mea.MeaListReqDTO;
+import com.wzmtr.eam.dto.req.mea.MeaReqDTO;
 import com.wzmtr.eam.dto.res.mea.MeaResDTO;
 import com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -26,6 +27,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 计量器具管理-计量器具台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/17
+ */
 @Slf4j
 @RestController
 @RequestMapping("/mea")
@@ -52,6 +59,18 @@ public class MeaController {
     @ApiOperation(value = "导入计量器具台账")
     public DataResponse<T> importMea(@RequestParam MultipartFile file) {
         meaService.importMea(file);
+        return DataResponse.success();
+    }
+
+    /**
+     * 新增计量器具台账
+     * @param meaReqDTO 计量器具参数
+     * @return 成功
+     */
+    @PostMapping("/add")
+    @ApiOperation(value = "新增计量器具台账")
+    public DataResponse<T> addMea(@RequestBody MeaReqDTO meaReqDTO) {
+        meaService.addMea(meaReqDTO);
         return DataResponse.success();
     }
 

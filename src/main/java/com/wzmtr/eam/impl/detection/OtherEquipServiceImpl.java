@@ -3,26 +3,29 @@ package com.wzmtr.eam.impl.detection;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.detection.DetectionDetailReqDTO;
 import com.wzmtr.eam.dto.req.detection.OtherEquipReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelOtherEquipReqDTO;
 import com.wzmtr.eam.dto.res.detection.OtherEquipHistoryResDTO;
 import com.wzmtr.eam.dto.res.detection.OtherEquipResDTO;
+import com.wzmtr.eam.dto.res.detection.OtherEquipTypeResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelOtherEquipHistoryResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelOtherEquipResDTO;
-import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.detection.OtherEquipMapper;
-import com.wzmtr.eam.mapper.dict.DictionariesMapper;
+import com.wzmtr.eam.mapper.detection.OtherEquipTypeMapper;
+import com.wzmtr.eam.service.detection.DetectionService;
 import com.wzmtr.eam.service.detection.OtherEquipService;
 import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,10 +53,13 @@ public class OtherEquipServiceImpl implements OtherEquipService {
     private OtherEquipMapper otherEquipMapper;
 
     @Autowired
+    private OtherEquipTypeMapper otherEquipTypeMapper;
+
+    @Autowired
     private OrganizationMapper organizationMapper;
 
     @Autowired
-    private DictionariesMapper dictionariesMapper;
+    private DetectionService detectionService;
 
     @Override
     public Page<OtherEquipResDTO> pageOtherEquip(String equipCode, String equipName, String otherEquipCode, String factNo,
@@ -101,7 +107,8 @@ public class OtherEquipServiceImpl implements OtherEquipService {
     }
 
     @Override
-    public void importOtherEquip(MultipartFile file) {
+    public void importOtherEquip(MultipartFile file) throws ParseException {
+        List<String> otherCode = new ArrayList<>();
         List<ExcelOtherEquipReqDTO> list = EasyExcelUtils.read(file, ExcelOtherEquipReqDTO.class);
         for (ExcelOtherEquipReqDTO reqDTO : list) {
             OtherEquipReqDTO req = new OtherEquipReqDTO();
@@ -112,18 +119,49 @@ public class OtherEquipServiceImpl implements OtherEquipService {
             req.setRecRevisor(TokenUtils.getCurrentPersonId());
             req.setRecReviseTime(DateUtils.getCurrentTime());
             if (StringUtils.isNotEmpty(reqDTO.getOtherEquipType())) {
-                req.setOtherEquipType("电梯".equals(reqDTO.getOtherEquipType()) ? "10" : "起重机".equals(reqDTO.getOtherEquipType()) ? "20" : "场（厂）内专用机动车辆".equals(reqDTO.getOtherEquipType()) ? "30" : "40");
+                OtherEquipTypeResDTO res = otherEquipTypeMapper.getOtherEquipTypeDetailByType(null, reqDTO.getOtherEquipType());
+                if (Objects.isNull(res)) {
+                    otherCode.add(req.getOtherEquipCode());
+                    continue;
+                }
+                req.setOtherEquipType(res.getTypeCode());
             }
             SysOffice manageOrg = organizationMapper.getByNames(reqDTO.getManageOrg());
             SysOffice secOrg = organizationMapper.getByNames(reqDTO.getSecOrg());
             if (Objects.isNull(manageOrg) || Objects.isNull(secOrg)) {
+                otherCode.add(req.getOtherEquipCode());
                 continue;
             }
             req.setManageOrg(manageOrg.getId());
             req.setSecOrg(secOrg.getId());
             otherEquipMapper.updateEquip(req);
-            otherEquipMapper.modifyOtherEquip(req);
+            if (otherEquipMapper.selectOtherEquipIsExist(req) > 0) {
+                otherEquipMapper.modifyOtherEquip(req);
+            } else {
+                req.setRecId(TokenUtils.getUuId());
+                otherEquipMapper.addOtherEquip(req);
+                DetectionDetailReqDTO detectionDetailReqDTO = buildDetectionDetail(req);
+                detectionService.addNormalDetectionDetail(detectionDetailReqDTO);
+            }
         }
+        throw new CommonException(ErrorCode.NORMAL_ERROR, "其他设备编号为" + String.join("、", otherCode) + "的其他设备导入失败，请重试");
+    }
+
+    /**
+     * 检测记录拼装
+     * @param req 特种设备参数
+     * @return 检测记录
+     */
+    @NotNull
+    private static DetectionDetailReqDTO buildDetectionDetail(OtherEquipReqDTO req) {
+        DetectionDetailReqDTO detectionDetailReqDTO = new DetectionDetailReqDTO();
+        detectionDetailReqDTO.setEquipCode(req.getEquipCode());
+        detectionDetailReqDTO.setEquipName(req.getEquipName());
+        detectionDetailReqDTO.setVerifyDate(req.getVerifyDate());
+        detectionDetailReqDTO.setVerifyValidityDate(req.getVerifyValidityDate());
+        detectionDetailReqDTO.setVerifyResult(req.getVerifyResult());
+        detectionDetailReqDTO.setVerifyConclusion(req.getVerifyConclusion());
+        return detectionDetailReqDTO;
     }
 
     @Override
@@ -141,11 +179,9 @@ public class OtherEquipServiceImpl implements OtherEquipService {
             for (OtherEquipResDTO resDTO : otherEquipResDTOList) {
                 ExcelOtherEquipResDTO res = new ExcelOtherEquipResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                List<Dictionaries> dicList = dictionariesMapper.list("dm.otherequiptype", resDTO.getOtherEquipType() == null ? " " : resDTO.getOtherEquipType(), null);
-                if (dicList != null && !dicList.isEmpty()) {
-                    res.setOtherEquipType(dicList.get(0).getItemCname());
-                } else {
-                    res.setOtherEquipType("");
+                OtherEquipTypeResDTO otherEquipType = otherEquipTypeMapper.getOtherEquipTypeDetailByType(resDTO.getOtherEquipType(), null);
+                if (!Objects.isNull(otherEquipType)) {
+                    res.setOtherEquipType(otherEquipType.getTypeName());
                 }
                 res.setUseLineNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getUseLineNo()) ? "S1线" : "S2线");
                 list.add(res);

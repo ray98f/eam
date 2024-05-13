@@ -2,6 +2,7 @@ package com.wzmtr.eam.mapper.secure;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.secure.SecureCheckAddReqDTO;
+import com.wzmtr.eam.dto.req.secure.SecureCheckRecordListReqDTO;
 import com.wzmtr.eam.dto.res.secure.SecureCheckRecordListResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,7 +20,7 @@ public interface SecureCheckMapper {
 
     SecureCheckRecordListResDTO detail(String secRiskId);
 
-    List<SecureCheckRecordListResDTO> list(String secRiskId, String restoreDesc, String inspectDate, String workFlowInstStatus);
+    List<SecureCheckRecordListResDTO> list(SecureCheckRecordListReqDTO reqDTO);
 
     void deleteByIds(@Param("ids") List<String> ids, @Param("userId") String userId, @Param("time") String time);
 
@@ -27,7 +28,7 @@ public interface SecureCheckMapper {
 
     void update(SecureCheckAddReqDTO reqDTO);
 
-    Page<SecureCheckRecordListResDTO> query(Page<Object> of, String secRiskId, String inspectDateStart, String inspectDateEnd, String isRestoredCode, String recStatus);
+    Page<SecureCheckRecordListResDTO> query(Page<Object> of, SecureCheckRecordListReqDTO req);
 
     String getMaxCode();
 }

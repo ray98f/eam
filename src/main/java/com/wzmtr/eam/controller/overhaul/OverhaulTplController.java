@@ -27,8 +27,15 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
+/**
+ * 预防性检修管理-检修模板
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/09
+ */
 @Slf4j
 @RestController
 @RequestMapping("/overhaul/tpl")
@@ -102,13 +109,13 @@ public class OverhaulTplController {
 
     /**
      * 检修模板导入
-     * @param file excel文件
+     * @param file 导入文件
+     * @return 错误的导入数据
      */
     @PostMapping("/import")
     @ApiOperation(value = "导入检修模板")
-    public DataResponse<T> importOverhaulTpl(@RequestParam MultipartFile file) {
-        overhaulTplService.importOverhaulTpl(file);
-        return DataResponse.success();
+    public DataResponse<List<String>> importOverhaulTpl(@RequestParam MultipartFile file) {
+        return DataResponse.of(overhaulTplService.importOverhaulTpl(file));
     }
 
     @PostMapping("/export")

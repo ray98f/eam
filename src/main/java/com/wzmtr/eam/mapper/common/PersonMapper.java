@@ -5,10 +5,14 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface PersonMapper {
 
     Person searchPersonByNo(@Param("no") String no);
+    Person searchLeader(String major,String position,String roleCode);
+    List<Person> listLeader(String major, String position, String roleCode);
 
 }

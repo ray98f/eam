@@ -10,6 +10,7 @@ import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.FaultQueryService;
@@ -23,12 +24,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/18 10:27
+ * 统计分析
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/21
  */
 @Slf4j
 @RestController
@@ -50,13 +54,24 @@ public class StatisticController {
     @ApiOperation(value = "故障统计报表")
     @PostMapping("/fault/list")
     public PageResponse<FaultDetailResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
-        return PageResponse.of(faultQueryService.list(reqDTO));
+        return PageResponse.of(faultQueryService.statustucList(reqDTO));
+    }
+
+    /**
+     * 故障统计报表列表导出
+     * @param reqDTO 入参
+     * @param response response
+     */
+    @ApiOperation(value = "故障统计报表列表导出")
+    @PostMapping("/fault/list/export")
+    public void faultListExport(@RequestBody FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        statisticService.faultListExport(reqDTO, response);
     }
 
     @ApiOperation(value = "故障统计报表导出")
-    @PostMapping("/fault/list/export")
-    public void faultListExport(@RequestBody FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
-        statisticService.faultListExport(reqDTO, response);
+    @PostMapping("/fault/export")
+    public void faultExport(@RequestBody FaultQueryDetailReqDTO reqDTO, HttpServletResponse response) {
+        statisticService.faultExport(reqDTO, response);
     }
 
     @PostMapping("/material/query")
@@ -172,10 +187,10 @@ public class StatisticController {
         return PageResponse.of(statisticService.pageGearboxChangeOil(reqDTO));
     }
 
-    @GetMapping("/one/car/one/gear/job/pageGearboxChangeOilExport")
+    @PostMapping("/one/car/one/gear/job/pageGearboxChangeOilExport")
     @ApiOperation(value = "一车一档齿轮箱换油台账导出")
-    public void pageGearboxChangeOilExport(@RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
-        statisticService.pageGearboxChangeOilExport(equipName, response);
+    public void pageGearboxChangeOilExport(@RequestBody OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        statisticService.pageGearboxChangeOilExport(reqDTO, response);
     }
 
     @PostMapping("/one/car/one/gear/job/pageWheelsetLathing")
@@ -184,10 +199,10 @@ public class StatisticController {
         return PageResponse.of(statisticService.pageWheelsetLathing(reqDTO));
     }
 
-    @GetMapping("/one/car/one/gear/job/pageWheelsetLathingExport")
+    @PostMapping("/one/car/one/gear/job/pageWheelsetLathingExport")
     @ApiOperation(value = "一车一档轮对镟修记录导出")
-    public void pageWheelsetLathingExport(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
-        statisticService.pageWheelsetLathingExport(startTime, endTime, equipName, response);
+    public void pageWheelsetLathingExport(@RequestBody OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        statisticService.pageWheelsetLathingExport(reqDTO, response);
     }
 
     @PostMapping("/one/car/one/gear/job/pageGeneralSurvey")
@@ -196,10 +211,10 @@ public class StatisticController {
         return PageResponse.of(statisticService.pageGeneralSurvey(reqDTO));
     }
 
-    @GetMapping("/one/car/one/gear/job/pageGeneralSurveyExport")
+    @PostMapping("/one/car/one/gear/job/pageGeneralSurveyExport")
     @ApiOperation(value = "一车一档普查与技改导出")
-    public void pageGeneralSurveyExport(@RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
-        statisticService.pageGeneralSurveyExport(equipName, response);
+    public void pageGeneralSurveyExport(@RequestBody OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        statisticService.pageGeneralSurveyExport(reqDTO, response);
     }
 
     @PostMapping("/one/car/one/gear/job/queryER2")
@@ -231,7 +246,7 @@ public class StatisticController {
 
     @GetMapping("/rams/query4AQYYZB")
     @ApiOperation(value = "车辆可靠性表现")
-    public DataResponse<RAMSCarResDTO> query4AQYYZB() {
+    public DataResponse<RamsCarResDTO> query4AQYYZB() {
         return DataResponse.of(statisticService.query4AQYYZB());
     }
 
@@ -243,20 +258,51 @@ public class StatisticController {
 
     @GetMapping("/rams/queryresult2")
     @ApiOperation(value = "故障影响统计")
-    public DataResponse<List<RAMSResult2ResDTO>> queryresult2(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate) {
+    public DataResponse<List<RamsResult2ResDTO>> queryresult2(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate) {
         return DataResponse.of(statisticService.queryresult2(startDate, endDate));
     }
 
     @GetMapping("/rams/querySysPerform")
     @ApiOperation(value = "各系统可靠性统计")
-    public DataResponse<List<RAMSSysPerformResDTO>> querySysPerform() {
+    public DataResponse<List<RamsSysPerformResDTO>> querySysPerform() {
         return DataResponse.of(statisticService.querySysPerform());
     }
 
     @PostMapping("/rams/queryRAMSFaultList")
     @ApiOperation(value = "RAMS故障列表")
-    public PageResponse<FaultRAMSResDTO> queryRAMSFaultList(@RequestBody RAMSTimeReqDTO reqDTO) {
+    public PageResponse<FaultRamsResDTO> queryRAMSFaultList(@RequestBody RamsTimeReqDTO reqDTO) {
         return PageResponse.of(statisticService.queryRAMSFaultList(reqDTO));
+    }
+
+    /**
+     * RAMS-列车可靠性统计
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param trainNo 列车号
+     * @return 列车可靠性统计
+     */
+    @GetMapping("/rams/train/reliability")
+    @ApiOperation(value = "列车可靠性统计")
+    public DataResponse<RamsTrainReliabilityResDTO> trainReliability(@RequestParam String startTime,
+                                                                     @RequestParam String endTime,
+                                                                     @RequestParam String trainNo) {
+        return DataResponse.of(statisticService.trainReliability(startTime, endTime, trainNo));
+    }
+
+    /**
+     * RAMS-列车可靠性统计-故障列表
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param trainNo 列车号
+     * @return 故障列表
+     */
+    @GetMapping("/rams/train/reliability/fault")
+    @ApiOperation(value = "RAMS-列车可靠性统计-故障列表")
+    public PageResponse<FaultRamsResDTO> trainReliabilityFaultList(@RequestParam String startTime,
+                                                                   @RequestParam String endTime,
+                                                                   @RequestParam String trainNo,
+                                                                   @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(statisticService.trainReliabilityFaultList(startTime, endTime, trainNo, pageReqDTO));
     }
 
 }

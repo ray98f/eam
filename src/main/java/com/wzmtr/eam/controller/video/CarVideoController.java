@@ -20,6 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 车载视频调阅管理
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/07
+ */
 @RestController
 @RequestMapping("/car/video")
 @Api(tags = "车载视频调阅管理")

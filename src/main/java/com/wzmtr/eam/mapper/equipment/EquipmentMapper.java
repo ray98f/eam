@@ -39,6 +39,11 @@ public interface EquipmentMapper {
     List<EquipmentCategoryResDTO> listEquipmentCategory(String equipmentCategoryCode, String lineCode, String recId, String regionCode);
 
     Page<EquipmentResDTO> pageEquipment(Page<EquipmentResDTO> page, String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
+                                        String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture,List<String> majors);
+
+    Page<EquipmentResDTO> pageEquipmentByRoom(Page<EquipmentResDTO> page,String roomId, String equipCode, String equipName, String majorCode, String systemCode);
+
+    List<EquipmentResDTO> allList(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture);
 
     EquipmentResDTO getEquipmentDetail(String id);
@@ -59,6 +64,8 @@ public interface EquipmentMapper {
     void insertEquipment(EquipmentReqDTO equipmentReqDTO);
 
     List<EquipmentResDTO> listEquipment(List<String> ids);
+
+    Page<EquipmentResDTO> pageSiftEquipment(Page<EquipmentResDTO> page, EquipmentSiftReqDTO req);
 
     List<EquipmentResDTO> siftEquipment(EquipmentSiftReqDTO equipmentSiftReqDTO);
 
@@ -81,9 +88,9 @@ public interface EquipmentMapper {
     Page<PartReplaceResDTO> listPartReplace(Page<PartReplaceResDTO> page, String equipCode);
 
     /**
-     * 根据设备名称获取设备编号
+     * 根据设备名称获取设备信息
      * @param name 设备名称
-     * @return 设备编号
+     * @return 设备信息
      */
-    String getEquipCodeByName(String name);
+    EquipmentResDTO getEquipByName(String name);
 }

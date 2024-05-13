@@ -29,6 +29,12 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 预防性检修管理-检修工单
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/17
+ */
 @Slf4j
 @RestController
 @RequestMapping("/overhaul/order")
@@ -63,6 +69,23 @@ public class OverhaulOrderController {
         return DataResponse.of(overhaulOrderService.getOverhaulOrderDetail(id));
     }
 
+    /**
+     * 获取工器具分页列表
+     * @param orderCode 检修工单
+     * @param mateCode 物资编码
+     * @param mateName 物资名称
+     * @param pageReqDTO 分页参数
+     * @return 工器具分页列表
+     */
+    @GetMapping("/mate/borrow/page")
+    @ApiOperation(value = "获取工器具列表")
+    public PageResponse<MateBorrowResDTO> pageMateBorrow(@RequestParam @ApiParam("检修工单") String orderCode,
+                                                         @RequestParam(required = false) @ApiParam("物资编码") String mateCode,
+                                                         @RequestParam(required = false) @ApiParam("物资名称") String mateName,
+                                                         @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(overhaulOrderService.pageMateBorrow(orderCode, mateCode, mateName, pageReqDTO));
+    }
+
     @PostMapping("/export")
     @ApiOperation(value = "导出检修工单")
     public void exportOverhaulOrder(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
@@ -95,6 +118,18 @@ public class OverhaulOrderController {
     @ApiOperation(value = "检修工单派工")
     public DataResponse<T> dispatchWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
         overhaulOrderService.dispatchWorkers(overhaulOrderReqDTO);
+        return DataResponse.success();
+    }
+
+    /**
+     * 检修工单完工填报
+     * @param req 排查检修项信息
+     * @return 操作成功/失败
+     */
+    @PostMapping("/finish")
+    @ApiOperation(value = "检修工单完工")
+    public DataResponse<T> finishOrder(@RequestBody OverhaulOrderReqDTO req) {
+        overhaulOrderService.finishOrder(req);
         return DataResponse.success();
     }
 
@@ -163,10 +198,35 @@ public class OverhaulOrderController {
         return PageResponse.of(overhaulOrderService.pageOverhaulObject(orderCode, planCode, planName, objectCode, pageReqDTO));
     }
 
+    /**
+     * 获取检修对象列表-开放接口
+     * @param orderCode 工单编号
+     * @param pageReqDTO 分页参数
+     * @return 检修对象列表
+     */
+    @GetMapping("/object/page/open")
+    @ApiOperation(value = "获取检修对象列表-开放接口")
+    public PageResponse<OverhaulOrderDetailOpenResDTO> openPageOverhaulObject(@RequestParam @ApiParam("工单编号") String orderCode,
+                                                                              @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(overhaulOrderService.openPageOverhaulObject(orderCode, pageReqDTO));
+    }
+
     @GetMapping("/object/detail")
     @ApiOperation(value = "获取检修对象详情")
     public DataResponse<OverhaulOrderDetailResDTO> getOverhaulObjectDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(overhaulOrderService.getOverhaulObjectDetail(id));
+    }
+
+    /**
+     * 编辑检修对象
+     * @param req 检修对象参数
+     * @return 成功
+     */
+    @PostMapping("/object/modify")
+    @ApiOperation(value = "编辑检修对象")
+    public DataResponse<T> modifyOverhaulObject(@RequestBody OverhaulOrderDetailReqDTO req) {
+        overhaulOrderService.modifyOverhaulObject(req);
+        return DataResponse.success();
     }
 
     @GetMapping("/object/export")
@@ -248,14 +308,27 @@ public class OverhaulOrderController {
     }
 
     /**
+     * 判断是否存在未填报的检修项
+     * @param orderCode 工单编号
+     * @param objectCode 对象编号
+     * @return 是否存在未填报的检修项
+     */
+    @GetMapping("/item/troubleshoot/had")
+    @ApiOperation(value = "判断是否存在未填报的检修项")
+    public DataResponse<Integer> selectHadFinishedOverhaulOrder(@RequestParam @ApiParam("工单编号") String orderCode,
+                                                                @RequestParam(required = false) @ApiParam("对象编号") String objectCode) {
+        return DataResponse.of(overhaulOrderService.selectHadFinishedOverhaulOrder(orderCode, objectCode));
+    }
+
+    /**
      * 排查检修项
-     * @param troubleshootReqDTO 排查检修项信息
+     * @param req 排查检修项信息
      * @return 操作成功/失败
      */
     @PostMapping("/item/troubleshoot")
     @ApiOperation(value = "排查检修项")
-    public DataResponse<T> troubleshootOverhaulItem(@RequestBody OverhaulItemTroubleshootReqDTO troubleshootReqDTO) {
-        overhaulOrderService.troubleshootOverhaulItem(troubleshootReqDTO);
+    public DataResponse<T> troubleshootOverhaulItem(@RequestBody OverhaulItemTroubleshootReqDTO req) {
+        overhaulOrderService.troubleshootOverhaulItem(req);
         return DataResponse.success();
     }
 

@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.home;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.home.HomeChartReqDTO;
 import com.wzmtr.eam.dto.res.home.EChartResDTO;
 import com.wzmtr.eam.dto.res.home.HomeCountResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -11,8 +12,6 @@ import com.wzmtr.eam.entity.StatusWorkFlowLog;
  * Date: 2023/9/12 14:23
  */
 public interface HomeService {
-
-    HomeCountResDTO count();
 
     /**
      * 获取首页工作台列表
@@ -34,5 +33,5 @@ public interface HomeService {
      */
     void urgingTodo(String todoId);
 
-    EChartResDTO queryChart();
+    EChartResDTO queryChart(HomeChartReqDTO req);
 }

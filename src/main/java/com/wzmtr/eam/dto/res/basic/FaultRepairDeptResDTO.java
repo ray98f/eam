@@ -8,6 +8,12 @@ import lombok.Data;
  */
 @Data
 public class FaultRepairDeptResDTO {
+    /**
+     * 部门编号
+     */
     private String orgCode;
+    /**
+     * 部门名称
+     */
     private String orgName;
 }

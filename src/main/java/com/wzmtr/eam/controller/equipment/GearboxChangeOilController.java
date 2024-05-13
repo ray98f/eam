@@ -6,7 +6,10 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.GearboxChangeOilService;
+import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,7 +23,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Objects;
 
+/**
+ * 设备管理-车辆维保台账-齿轮箱换油台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/31
+ */
 @Slf4j
 @RestController
 @RequestMapping("/train/maintenance/gearboxChangeOil")
@@ -65,11 +75,13 @@ public class GearboxChangeOilController {
         return DataResponse.success();
     }
 
-    @GetMapping("/export")
+    @PostMapping("/export")
     @ApiOperation(value = "导出齿轮箱换油台账")
-    public void exportGearboxChangeOil(@RequestParam(required = false) @ApiParam("列车号") String trainNo,
-                                       HttpServletResponse response) throws IOException {
-        gearboxChangeOilService.exportGearboxChangeOil(trainNo, response);
+    public void exportGearboxChangeOil(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
+        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+        }
+        gearboxChangeOilService.exportGearboxChangeOil(baseIdsEntity.getIds(), response);
     }
 
 }

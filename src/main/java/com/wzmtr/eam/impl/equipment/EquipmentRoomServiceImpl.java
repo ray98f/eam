@@ -3,14 +3,18 @@ package com.wzmtr.eam.impl.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.equipment.EquipmentRoomRelationReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentRoomReqDTO;
+import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentRoomResDTO;
 import com.wzmtr.eam.dto.res.equipment.excel.ExcelEquipRoomResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentRoomMapper;
+import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.equipment.EquipmentRoomService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,14 +35,27 @@ import java.util.List;
 @Slf4j
 public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
+    @Resource
+    private UserAccountService userAccountService;
+
     @Autowired
     private EquipmentRoomMapper equipmentRoomMapper;
+
+    @Autowired
+    private EquipmentMapper equipmentMapper;
 
     @Override
     public Page<EquipmentRoomResDTO> listEquipmentRoom(String equipRoomCode, String equipRoomName, String lineCode, String position1Code,
                                                        String position1Name, String subjectCode, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return equipmentRoomMapper.pageEquipmentRoom(pageReqDTO.of(), equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode);
+
+        // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        List<String> userMajorList = null;
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(subjectCode)) {
+            userMajorList = userAccountService.listUserMajor();
+        }
+
+        return equipmentRoomMapper.pageEquipmentRoom(pageReqDTO.of(), equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode,userMajorList);
     }
 
     @Override
@@ -47,8 +65,25 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void addEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
+        //轨道专业
+        if(CommonConstants.FOURTEEN_STRING.equals(equipmentRoomReqDTO.getSubjectCode())){
+            if(StringUtils.isEmpty(equipmentRoomReqDTO.getEquipRoomCode())){
+                throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
+            }
+        }else{
+            String equipRoomCode = equipmentRoomMapper.getEquipRoomCodeMaxCode();
+            if(StringUtils.isEmpty(equipRoomCode)){
+                equipRoomCode = CommonConstants.EQUIPMENT_ROOM_CODE_0;
+            }
+            String nextCode = CodeUtils.getNextCode(equipRoomCode,CommonConstants.ONE);
+            equipmentRoomReqDTO.setEquipRoomCode(nextCode);
+        }
+        Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
+        if (result > 0) {
+            throw new CommonException(ErrorCode.DATA_EXIST);
+        }
+
         equipmentRoomReqDTO.setRecId(TokenUtils.getUuId());
-        equipmentRoomReqDTO.setEquipRoomCode(CodeUtils.getNextCode(equipmentRoomMapper.selectMaxEquipmentRoomCode(), 1));
         equipmentRoomReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         equipmentRoomReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentRoomMapper.addEquipmentRoom(equipmentRoomReqDTO);
@@ -56,6 +91,10 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
 
     @Override
     public void modifyEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
+        Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
+        if (result > 0) {
+            throw new CommonException(ErrorCode.DATA_EXIST);
+        }
         equipmentRoomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         equipmentRoomReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         equipmentRoomMapper.modifyEquipmentRoom(equipmentRoomReqDTO);
@@ -83,6 +122,34 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
             }
             EasyExcelUtils.export(response, "设备房信息", list);
         }
+    }
+
+    @Override
+    public void addEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
+
+        if(StringUtils.isNotEmpty(equipmentRoomRelationReqDTO.getRoomId()) && equipmentRoomRelationReqDTO.getIds() != null
+        && equipmentRoomRelationReqDTO.getIds().size()>0){
+            equipmentRoomMapper.insertRelationBatch(equipmentRoomRelationReqDTO);
+        }else{
+            throw new CommonException(ErrorCode.INSERT_ERROR);
+        }
+
+    }
+
+    @Override
+    public void deleteEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
+        if(StringUtils.isNotEmpty(equipmentRoomRelationReqDTO.getRoomId()) && equipmentRoomRelationReqDTO.getIds() != null
+                && equipmentRoomRelationReqDTO.getIds().size()>0){
+            equipmentRoomMapper.deleteRelationBatch(equipmentRoomRelationReqDTO);
+        }else{
+            throw new CommonException(ErrorCode.INSERT_ERROR);
+        }
+    }
+
+    @Override
+    public Page<EquipmentResDTO> pageEquipment(String roomId,String equipCode,String equipName, String majorCode, String systemCode, PageReqDTO pageReqDTO) {
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return equipmentMapper.pageEquipmentByRoom(pageReqDTO.of(),roomId, equipCode, equipName, majorCode, systemCode);
     }
 
 }

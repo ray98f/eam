@@ -6,6 +6,7 @@ import com.wzmtr.eam.dto.res.fault.TrackResDTO;
 import com.wzmtr.eam.entity.SidEntity;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Author: Li.Wang
@@ -26,8 +27,7 @@ public interface TrackService {
 
     void transmit(TrackTransmitReqDTO reqDTO);
 
-
-    void export(TrackExportReqDTO reqDTO, HttpServletResponse response);
+    void export(TrackExportReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
     void pass(FaultExamineReqDTO reqDTO);
 

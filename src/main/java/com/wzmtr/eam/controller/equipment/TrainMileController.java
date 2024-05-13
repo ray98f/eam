@@ -26,8 +26,15 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Objects;
 
+/**
+ * 设备管理-车辆行走里程台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/27
+ */
 @Slf4j
 @RestController
 @RequestMapping("/train")
@@ -174,13 +181,28 @@ public class TrainMileController {
 
     /**
      * 导入每日列车里程及能耗列表
-     * @param file 导入文件
-     * @return 导入成功状态
+     * @param file 文件
+     * @return 导入成功
+     * @throws ParseException 异常
      */
     @PostMapping("/mile/daily/import")
     @ApiOperation(value = "导入每日列车里程及能耗列表")
-    public DataResponse<T> importTrainDailyMile(@RequestParam MultipartFile file) {
+    public DataResponse<T> importTrainDailyMile(@RequestParam MultipartFile file) throws ParseException {
         trainMileService.importTrainDailyMile(file);
+        return DataResponse.success();
+    }
+
+    /**
+     * 初始化每日列车里程及能耗
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 初始话成功
+     */
+    @GetMapping("/mile/daily/init")
+    @ApiOperation(value = "初始化每日列车里程及能耗")
+    public DataResponse<T> initTrainDailyMile(@RequestParam String startTime,
+                                              @RequestParam String endTime) {
+        trainMileService.initTrainDailyMile(startTime, endTime);
         return DataResponse.success();
     }
 

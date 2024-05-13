@@ -23,6 +23,19 @@ public interface SpecialEquipMapper {
 
     void updateEquip(SpecialEquipReqDTO specialEquipReqDTO);
 
+    /**
+     * 判断特种设备台账是否已存在
+     * @param specialEquipReqDTO 特种设备台账信息
+     * @return 是否已存在
+     */
+    Integer selectSpecialEquipIsExist(SpecialEquipReqDTO specialEquipReqDTO);
+
+    /**
+     * 新增特种设备台账
+     * @param specialEquipReqDTO 特种设备台账参数
+     */
+    void addSpecialEquip(SpecialEquipReqDTO specialEquipReqDTO);
+
     void modifySpecialEquip(SpecialEquipReqDTO specialEquipReqDTO);
 
     List<SpecialEquipResDTO> listSpecialEquip(List<String> ids);

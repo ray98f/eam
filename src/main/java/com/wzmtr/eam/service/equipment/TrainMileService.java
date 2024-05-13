@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 public interface TrainMileService {
@@ -76,7 +77,15 @@ public interface TrainMileService {
     /**
      * 导入每日列车里程及能耗列表
      * @param file 文件
+     * @throws ParseException 异常
      */
-    void importTrainDailyMile(MultipartFile file);
+    void importTrainDailyMile(MultipartFile file) throws ParseException;
+
+    /**
+     * 初始化每日列车里程及能耗
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     */
+    void initTrainDailyMile(String startTime, String endTime);
 
 }

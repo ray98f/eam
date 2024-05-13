@@ -1,10 +1,12 @@
 package com.wzmtr.eam.dto.res.detection;
 
+import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author frp
@@ -75,6 +77,9 @@ public class DetectionDetailResDTO {
     
     @ApiModelProperty(value = "检测报告附件")
     private String verifyReportAtt;
+
+    @ApiModelProperty(value = "检测报告附件文件")
+    private List<File> verifyReportAttFile;
     
     @ApiModelProperty(value = "上次检测日期")
     private String lastVerifyDate;

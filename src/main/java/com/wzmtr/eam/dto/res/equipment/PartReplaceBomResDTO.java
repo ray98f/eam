@@ -15,6 +15,9 @@ public class PartReplaceBomResDTO {
     private String recId;
 
     @ApiModelProperty(value = "代码编号")
+    private String bEname;
+
+    @ApiModelProperty(value = "代码编号")
     private String ename;
 
     @ApiModelProperty(value = "代码名称")

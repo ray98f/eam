@@ -16,13 +16,14 @@ import com.wzmtr.eam.mapper.bom.BomMapper;
 import com.wzmtr.eam.service.basic.BomService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author frp
@@ -54,6 +55,9 @@ public class BomServiceImpl implements BomService {
         bomReqDTO.setRecId(TokenUtils.getUuId());
         bomReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         bomReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+        if (Objects.isNull(bomReqDTO.getSortIndex())) {
+            bomReqDTO.setSortIndex(new BigDecimal(0));
+        }
         bomMapper.addBom(bomReqDTO);
     }
 
@@ -65,6 +69,9 @@ public class BomServiceImpl implements BomService {
         }
         bomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         bomReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
+        if (Objects.isNull(bomReqDTO.getSortIndex())) {
+            bomReqDTO.setSortIndex(new BigDecimal(0));
+        }
         bomMapper.modifyBom(bomReqDTO);
     }
 
@@ -146,9 +153,10 @@ public class BomServiceImpl implements BomService {
 
     /**
      * 获取树状code
-     * @param nowCode 当前code
+     *
+     * @param nowCode  当前code
      * @param laseCode 上一层code
-     * @param type 类型
+     * @param type     类型
      * @return code
      */
     private String getTreeCode(String nowCode, String laseCode, int type) {
@@ -179,14 +187,32 @@ public class BomServiceImpl implements BomService {
     public void importBomTrain(MultipartFile file) {
         List<ExcelBomTrainReqDTO> list = EasyExcelUtils.read(file, ExcelBomTrainReqDTO.class);
         List<BomTrainReqDTO> temp = new ArrayList<>();
+        String partCode = bomMapper.getMaxPartCode();
+        if (StringUtils.isEmpty(partCode)) {
+            partCode = "P0000000000";
+        }
         for (ExcelBomTrainReqDTO reqDTO : list) {
-            BomTrainReqDTO req = new BomTrainReqDTO();
-            BeanUtils.copyProperties(reqDTO, req);
-            req.setRecId(TokenUtils.getUuId());
-            temp.add(req);
+            List<BomResDTO> boms = bomMapper.getChildBom(reqDTO.getBomParenName());
+            if (StringUtils.isNotEmpty(boms)) {
+                for (BomResDTO bom : boms) {
+                    BomTrainReqDTO req = new BomTrainReqDTO();
+                    req.setRecId(TokenUtils.getUuId());
+                    req.setBomCode(bom.getEname());
+                    req.setBomName(bom.getCname());
+                    partCode = CodeUtils.getNextCodeByAddNum(partCode, 1, 1);
+                    req.setPartCode(partCode);
+                    req.setEquipCode(reqDTO.getEquipCode());
+                    req.setEquipName(reqDTO.getEquipName());
+                    temp.add(req);
+                }
+            }
         }
         if (!temp.isEmpty()) {
-            bomMapper.importBomTrain(temp);
+            int times = (int) Math.ceil(temp.size() / 1000.0);
+            for (int j = 0; j < times; j++) {
+                bomMapper.importBomTrain(temp.subList(j * 1000, Math.min((j + 1) * 1000, temp.size() - 1)),
+                        TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+            }
         }
     }
 

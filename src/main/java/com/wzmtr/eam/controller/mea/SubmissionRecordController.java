@@ -26,6 +26,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 计量器具管理-检定记录
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/18
+ */
 @Slf4j
 @RestController
 @RequestMapping("/mea/submission/record")
@@ -39,11 +45,9 @@ public class SubmissionRecordController {
     @GetMapping("/page")
     @ApiOperation(value = "获取检定记录列表")
     public PageResponse<SubmissionRecordResDTO> listSubmissionRecord(@RequestParam(required = false) @ApiParam("检测单号") String checkNo,
-                                                                     @RequestParam(required = false) @ApiParam("计量器具检验计划号") String instrmPlanNo,
-                                                                     @RequestParam(required = false) @ApiParam("记录状态") String recStatus,
-                                                                     @RequestParam(required = false) @ApiParam("工作流实例ID") String workFlowInstId,
+                                                                     @RequestParam(required = false) @ApiParam("检定记录状态") String recStatus,
                                                                      @Valid PageReqDTO pageReqDTO) {
-        return PageResponse.of(submissionRecordService.pageSubmissionRecord(checkNo, instrmPlanNo, recStatus, workFlowInstId, pageReqDTO));
+        return PageResponse.of(submissionRecordService.pageSubmissionRecord(checkNo, recStatus, pageReqDTO));
     }
 
     @GetMapping("/detail")
@@ -96,11 +100,18 @@ public class SubmissionRecordController {
         submissionRecordService.exportSubmissionRecord(baseIdsEntity.getIds(), response);
     }
 
-    @GetMapping("/detail/page")
+/*    @GetMapping("/detail/page")
     @ApiOperation(value = "获取检定记录明细列表")
     public PageResponse<SubmissionRecordDetailResDTO> pageSubmissionRecordDetail(@RequestParam(required = false) @ApiParam("检测记录表REC_ID") String testRecId,
                                                                                  @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(submissionRecordService.pageSubmissionRecordDetail(testRecId, pageReqDTO));
+    }*/
+
+    @GetMapping("/detail/page")
+    @ApiOperation(value = "获取检定记录明细详情")
+    public PageResponse<SubmissionRecordDetailResDTO> pageSubmissionRecordDetail(@RequestParam @ApiParam("equipCode") String equipCode,
+                                                                                      @Valid PageReqDTO pageReqDTO) {
+        return PageResponse.of(submissionRecordService.getSubmissionRecordDetailByEquip(equipCode,pageReqDTO));
     }
 
     @GetMapping("/detail/detail")
@@ -108,6 +119,7 @@ public class SubmissionRecordController {
     public DataResponse<SubmissionRecordDetailResDTO> getSubmissionRecordDetailDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(submissionRecordService.getSubmissionRecordDetailDetail(id));
     }
+
 
     @PostMapping("/detail/add")
     @ApiOperation(value = "新增检定记录明细")

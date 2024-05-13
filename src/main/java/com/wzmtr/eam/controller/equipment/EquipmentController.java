@@ -32,6 +32,12 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 设备管理-设备台账
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/24
+ */
 @Slf4j
 @RestController
 @RequestMapping("/equipment")
@@ -80,6 +86,25 @@ public class EquipmentController {
                                                        @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(equipmentService.pageEquipment(equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
                 systemCode, equipTypeCode, brand, startTime, endTime, manufacture, pageReqDTO));
+    }
+
+    @GetMapping("/allList")
+    @ApiOperation(value = "获取设备列表")
+    public DataResponse<List<EquipmentResDTO>> allList(@RequestParam(required = false) @ApiParam("设备编码") String equipCode,
+                                                       @RequestParam(required = false) @ApiParam("设备名称") String equipName,
+                                                       @RequestParam(required = false) @ApiParam("线路编号") String useLineNo,
+                                                       @RequestParam(required = false) @ApiParam("线段编号") String useSegNo,
+                                                       @RequestParam(required = false) @ApiParam("位置一") String position1Code,
+                                                       @RequestParam(required = false) @ApiParam("专业编号") String majorCode,
+                                                       @RequestParam(required = false) @ApiParam("系统编号") String systemCode,
+                                                       @RequestParam(required = false) @ApiParam("设备分类编号") String equipTypeCode,
+                                                       @RequestParam(required = false) @ApiParam("品牌") String brand,
+                                                       @RequestParam(required = false) @ApiParam("出产开始时间") String startTime,
+                                                       @RequestParam(required = false) @ApiParam("出产结束时间") String endTime,
+                                                       @RequestParam(required = false) @ApiParam("生产厂家") String manufacture,
+                                                       @Valid PageReqDTO pageReqDTO) {
+        return DataResponse.of(equipmentService.allList(equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
+                systemCode, equipTypeCode, brand, startTime, endTime, manufacture));
     }
 
     @GetMapping("/detail")

@@ -1,6 +1,5 @@
 package com.wzmtr.eam.impl.fault;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -37,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -96,14 +96,14 @@ public class TrackServiceImpl implements TrackService {
         reqDTO.setTrackCloseTime(DateUtils.getCurrentTime());
         reqDTO.setTrackCloserId(TokenUtils.getCurrentPersonId());
         reqDTO.setRecStatus("40");
-        // /* 136 */       DMUtil.overTODO((String)((Map)dm03List.get(0)).get("recId"), "关闭");
+//        DMUtil.overTODO((String)((Map)dm03List.get(0)).get("recId"), "关闭");
         faultTrackWorkMapper.close(reqDTO);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void repair(TrackRepairReqDTO reqDTO) {
-        // /* 107 */     dmfm22.setWorkerGroupCode(repairDeptCode);
+//        dmfm22.setWorkerGroupCode(repairDeptCode);
         reqDTO.setDispatchUserId(TokenUtils.getCurrentPersonId());
         reqDTO.setDispatchTime(DateUtils.getCurrentTime());
         overTodoService.overTodo(reqDTO.getRecId(), "派工完毕");
@@ -131,20 +131,20 @@ public class TrackServiceImpl implements TrackService {
         bo.setExt1(workFlowInstId);
         // todo 发短信
         // String stepUserGroup = "DM_013";
-        // /*  598 */       EiInfo conditionInfo1 = new EiInfo();
-        // /*  599 */       String content1 = "工班人员跟踪观察，跟踪工单号：" + faultTrackNo + "，请关注。";
-        // /*  600 */       conditionInfo1.set("groupName", stepUserGroup);
-        // /*  601 */       conditionInfo1.set("content", content1);
-        // /*  602 */       conditionInfo1.set("orgCode", dmfm02.getWorkClass());
-        // /*  603 */       conditionInfo1.set("faultWorkNo", faultWorkNo);
-        // /*  604 */       ISendMessage.senMessageByGroupAndOrgCode(conditionInfo1);
+        // EiInfo conditionInfo1 = new EiInfo();
+        // String content1 = "工班人员跟踪观察，跟踪工单号：" + faultTrackNo + "，请关注。";
+        // conditionInfo1.set("groupName", stepUserGroup);
+        // conditionInfo1.set("content", content1);
+        // conditionInfo1.set("orgCode", dmfm02.getWorkClass());
+        // conditionInfo1.set("faultWorkNo", faultWorkNo);
+        // ISendMessage.senMessageByGroupAndOrgCode(conditionInfo1);
         // 更新故障跟踪表
         faultTrackMapper.transmit(bo);
     }
 
     @Override
-    public void export(TrackExportReqDTO reqDTO, HttpServletResponse response) {
-        List<TrackResDTO> resList = faultTrackWorkMapper.query(reqDTO);
+    public void export(TrackExportReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<TrackResDTO> resList = faultTrackWorkMapper.export(reqDTO);
         if (StringUtils.isEmpty(resList)) {
             return;
         }
@@ -155,12 +155,7 @@ public class TrackServiceImpl implements TrackService {
             exportBO.setTrackStatus(dictionaries.getItemCname());
             exportList.add(exportBO);
         });
-        try {
-            EasyExcelUtils.export(response, "跟踪查询信息", exportList);
-        } catch (Exception e) {
-            log.error("导出失败！", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR);
-        }
+        EasyExcelUtils.export(response, "跟踪查询信息", exportList);
     }
 
     @Override

@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/11 16:25
+ * 故障管理-故障跟踪查询
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/11
  */
 @RestController
 @RequestMapping("/fault/track/query")

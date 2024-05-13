@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 public interface SubmissionRecordMapper {
 
-    Page<SubmissionRecordResDTO> pageSubmissionRecord(Page<SubmissionRecordResDTO> page, String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId);
+    Page<SubmissionRecordResDTO> pageSubmissionRecord(Page<SubmissionRecordResDTO> page, String checkNo, String recStatus);
 
     SubmissionRecordResDTO getSubmissionRecordDetail(String id);
 
@@ -31,7 +31,7 @@ public interface SubmissionRecordMapper {
 
     void deleteSubmissionRecordDetail(String id, String testRecId, String userId, String time);
 
-    List<SubmissionRecordResDTO> listSubmissionRecord(String recId, String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId);
+    List<SubmissionRecordResDTO> listSubmissionRecord(String checkNo, String recStatus);
 
     /**
      * 导出检修记录列表
@@ -43,6 +43,8 @@ public interface SubmissionRecordMapper {
     Page<SubmissionRecordDetailResDTO> pageSubmissionRecordDetail(Page<SubmissionRecordDetailResDTO> page, String testRecId);
 
     SubmissionRecordDetailResDTO getSubmissionRecordDetailDetail(String id);
+
+    Page<SubmissionRecordDetailResDTO> getSubmissionRecordDetailByEquip(Page<SubmissionRecordDetailResDTO> page,String equipCode);
 
     void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO);
 

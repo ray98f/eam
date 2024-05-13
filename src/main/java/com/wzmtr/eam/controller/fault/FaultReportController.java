@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/15 17:04
+ * 故障管理-故障提报
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/15
  */
 @RestController
 @RequestMapping("/fault/report")
@@ -65,7 +67,7 @@ public class FaultReportController {
      */
     @ApiOperation(value = "已提报故障-开放接口")
     @PostMapping("/list/open")
-    public PageResponse<FaultReportResDTO> openApiList(@RequestBody FaultReportPageReqDTO reqDTO) {
+    public PageResponse<FaultDetailResDTO> openApiList(@RequestBody FaultReportPageReqDTO reqDTO) {
         return PageResponse.of(reportService.openApiList(reqDTO));
     }
 

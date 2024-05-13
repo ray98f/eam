@@ -73,9 +73,9 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
     private OrganizationMapper organizationMapper;
 
     @Override
-    public Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String instrmPlanNo, String recStatus, String workFlowInstId, PageReqDTO pageReqDTO) {
+    public Page<SubmissionRecordResDTO> pageSubmissionRecord(String checkNo, String recStatus, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        Page<SubmissionRecordResDTO> page = submissionRecordMapper.pageSubmissionRecord(pageReqDTO.of(), checkNo, instrmPlanNo, recStatus, workFlowInstId);
+        Page<SubmissionRecordResDTO> page = submissionRecordMapper.pageSubmissionRecord(pageReqDTO.of(), checkNo, recStatus);
         List<SubmissionRecordResDTO> list = page.getRecords();
         if (!Objects.isNull(list) && !list.isEmpty()) {
             for (SubmissionRecordResDTO res : list) {
@@ -277,25 +277,48 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public SubmissionRecordDetailResDTO getSubmissionRecordDetailDetail(String id) {
-        return submissionRecordMapper.getSubmissionRecordDetailDetail(id);
+        SubmissionRecordDetailResDTO res = submissionRecordMapper.getSubmissionRecordDetailDetail(id);
+        if (StringUtils.isNotNull(res)) {
+            if (StringUtils.isNotEmpty(res.getVerifyReportFileid())) {
+                res.setVerifyReportFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportFileid().split(","))));
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public Page<SubmissionRecordDetailResDTO> getSubmissionRecordDetailByEquip(String equipCode,PageReqDTO pageReqDTO) {
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        Page<SubmissionRecordDetailResDTO> page = submissionRecordMapper.getSubmissionRecordDetailByEquip(pageReqDTO.of(), equipCode);
+        List<SubmissionRecordDetailResDTO> list = page.getRecords();
+        if (StringUtils.isNotEmpty(list)) {
+            for (SubmissionRecordDetailResDTO res : list) {
+                if (StringUtils.isNotEmpty(res.getVerifyReportFileid())) {
+                    res.setVerifyReportFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportFileid().split(","))));
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
     public void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
+//        if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
+//            EquipmentResDTO equipment = equipmentMapper.getEquipByName(submissionRecordDetailReqDTO.getEquipName());
+//            if (StringUtils.isNotNull(equipment)) {
+//                BeanUtils.copyProperties(equipment, submissionRecordDetailReqDTO);
+//            } else {
+//                throw new CommonException(ErrorCode.NORMAL_ERROR, "请填写正确的设备名称，确保设备台账中存在此设备");
+//            }
+//        } else {
+//            throw new CommonException(ErrorCode.NORMAL_ERROR, "设备名称必填");
+//        }
         submissionRecordDetailReqDTO.setRecId(TokenUtils.getUuId());
         submissionRecordDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         submissionRecordDetailReqDTO.setArchiveFlag("0");
-        if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
-            String equipCode = equipmentMapper.getEquipCodeByName(submissionRecordDetailReqDTO.getEquipName());
-            if (StringUtils.isNotEmpty(equipCode)) {
-                submissionRecordDetailReqDTO.setEquipCode(equipCode);
-            } else {
-                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
-            }
-        } else {
-            throw new CommonException(ErrorCode.PARAM_NULL);
-        }
+        submissionRecordDetailReqDTO.setTestRecId(submissionRecordDetailReqDTO.getSendVerifyNo());
         MeaResDTO meaResDTO = new MeaResDTO();
         meaResDTO.setLastVerifyDate(submissionRecordDetailReqDTO.getLastVerifyDate());
         meaResDTO.setNextVerifyDate(submissionRecordDetailReqDTO.getNextVerifyDate());
@@ -315,7 +338,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public void modifySubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
-        List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(submissionRecordDetailReqDTO.getTestRecId(), null, null, null, null);
+        List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(submissionRecordDetailReqDTO.getSendVerifyNo(), null);
         if (!list.isEmpty()) {
             if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                 throw new CommonException(ErrorCode.CREATOR_USER_ERROR);
@@ -324,7 +347,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "修改");
             }
         }
-        submissionRecordDetailReqDTO.setRecRevisor(TokenUtils.getUuId());
+        submissionRecordDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         submissionRecordMapper.modifySubmissionRecordDetail(submissionRecordDetailReqDTO);
     }
@@ -337,7 +360,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 if (Objects.isNull(res)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(res.getTestRecId(), null, null, null, null);
+                List<SubmissionRecordResDTO> list = submissionRecordMapper.listSubmissionRecord(res.getSendVerifyNo(), null);
                 if (!list.isEmpty()) {
                     if (!list.get(0).getRecCreator().equals(TokenUtils.getCurrentPersonId())) {
                         throw new CommonException(ErrorCode.CREATOR_USER_ERROR);

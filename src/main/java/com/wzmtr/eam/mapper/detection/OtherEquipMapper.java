@@ -49,6 +49,20 @@ public interface OtherEquipMapper {
     void updateEquip(OtherEquipReqDTO otherEquipReqDTO);
 
     /**
+     * 判断其他设备台账是否已存在
+     * @param otherEquipReqDTO 其他设备台账信息
+     * @return 是否已存在
+     */
+    Integer selectOtherEquipIsExist(OtherEquipReqDTO otherEquipReqDTO);
+
+    /**
+     * 新增其他设备台账
+     * @param otherEquipReqDTO 其他设备台账参数
+     */
+    void addOtherEquip(OtherEquipReqDTO otherEquipReqDTO);
+
+
+    /**
      * 编辑其他设备台账
      * @param otherEquipReqDTO 其他设备台账信息
      */

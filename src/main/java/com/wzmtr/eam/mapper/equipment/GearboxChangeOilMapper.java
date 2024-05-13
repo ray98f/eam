@@ -29,4 +29,11 @@ public interface GearboxChangeOilMapper {
 
     List<GearboxChangeOilResDTO> listGearboxChangeOil(String trainNo);
 
+    /**
+     * 齿轮箱换油导出
+     * @param ids ids
+     * @return 齿轮箱换油记录
+     */
+    List<GearboxChangeOilResDTO> exportGearboxChangeOil(List<String> ids);
+
 }

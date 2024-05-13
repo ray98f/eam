@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author frp
  */
@@ -70,7 +72,10 @@ public class OverhaulOrderReqDTO {
     
     @ApiModelProperty(value = "派工人工号")
     private String sendPersonId;
-    
+
+    @ApiModelProperty(value = "检修工班人员列表")
+    private List<String> workerList;
+
     @ApiModelProperty(value = "派工人姓名")
     private String sendPersonName;
     
@@ -184,4 +189,29 @@ public class OverhaulOrderReqDTO {
 
     @ApiModelProperty(value = "最后修改人")
     private String lastUpdatePerson;
+
+    /**
+     * 实际开始时间
+     */
+    private String actualStartTime;
+
+    /**
+     * 实际结束时间
+     */
+    private String actualEndTime;
+
+    /**
+     * 开始时公里数
+     */
+    private Double startMile;
+
+    /**
+     * 结束时公里数
+     */
+    private Double endMile;
+
+    /**
+     * 实际完成检修公里数
+     */
+    private Double realMile;
 }

@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/2 9:49
@@ -21,4 +23,7 @@ public class SecureDangerSourceListReqDTO extends PageReqDTO {
     private String discDateStart;
     @ApiModelProperty(value = "发现时间结束")
     private String discDateEnd;
+
+    @ApiModelProperty(value = "ids")
+    private List<String> ids;
 }

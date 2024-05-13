@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public interface OtherEquipService {
      * 导入其他设备台账
      * @param file 文件
      */
-    void importOtherEquip(MultipartFile file);
+    void importOtherEquip(MultipartFile file) throws ParseException;
 
     /**
      * 编辑其他设备台账

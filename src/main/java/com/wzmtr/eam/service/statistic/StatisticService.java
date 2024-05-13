@@ -2,6 +2,7 @@ package com.wzmtr.eam.service.statistic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
@@ -10,6 +11,7 @@ import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
 import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.entity.PageReqDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -77,33 +79,35 @@ public interface StatisticService {
      */
     Page<GearboxChangeOilResDTO> pageGearboxChangeOil(OneCarOneGearQueryReqDTO reqDTO);
 
+    void pageGearboxChangeOilExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException;
+
     Page<WheelsetLathingResDTO> pageWheelsetLathing(OneCarOneGearQueryReqDTO reqDTO);
+
+    void pageWheelsetLathingExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
     Page<GeneralSurveyResDTO> pageGeneralSurvey(OneCarOneGearQueryReqDTO reqDTO);
 
-    void pageGeneralSurveyExport(String equipName, HttpServletResponse response) throws IOException;
+    void pageGeneralSurveyExport(OneCarOneGearQueryReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
     Page<InspectionJobListResDTO> queryER2(OneCarOneGearQueryReqDTO reqDTO);
 
     Page<InspectionJobListResDTO> queryER1(OneCarOneGearQueryReqDTO reqDTO);
 
-    RAMSCarResDTO query4AQYYZB();
+    RamsCarResDTO query4AQYYZB();
 
     List<SystemFaultsResDTO> queryresult3(String startDate, String endDate, String sys);
 
-    List<RAMSResult2ResDTO> queryresult2(String startDate, String endDate);
+    List<RamsResult2ResDTO> queryresult2(String startDate, String endDate);
 
-    List<RAMSSysPerformResDTO> querySysPerform();
+    List<RamsSysPerformResDTO> querySysPerform();
 
     List<FaultConditionResDTO> queryCountFaultType();
 
-    Page<FaultRAMSResDTO> queryRAMSFaultList(RAMSTimeReqDTO reqDTO);
+    Page<FaultRamsResDTO> queryRAMSFaultList(RamsTimeReqDTO reqDTO);
 
     void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
     void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
-
-    void pageGearboxChangeOilExport(String equipName, HttpServletResponse response) throws IOException;
 
     void querydmer3Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
@@ -111,7 +115,37 @@ public interface StatisticService {
 
     void queryER1Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
-    void pageWheelsetLathingExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
+    /**
+     * 故障统计报表列表导出
+     * @param reqDTO 入参
+     * @param response response
+     * @throws IOException 流异常
+     */
+    void faultListExport(FaultQueryReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
-    void faultListExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response);
+    /**
+     * 故障统计报表导出
+     * @param reqDTO 入参
+     * @param response response
+     */
+    void faultExport(FaultQueryDetailReqDTO reqDTO,HttpServletResponse response);
+
+    /**
+     * RAMS-列车可靠性统计
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param trainNo 列车号
+     * @return 列车可靠性统计
+     */
+    RamsTrainReliabilityResDTO trainReliability(String startTime, String endTime, String trainNo);
+
+    /**
+     * RAMS-列车可靠性统计-故障列表
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param trainNo 列车号
+     * @param pageReqDTO 分页参数
+     * @return 故障列表
+     */
+    Page<FaultRamsResDTO> trainReliabilityFaultList(String startTime, String endTime, String trainNo, PageReqDTO pageReqDTO);
 }

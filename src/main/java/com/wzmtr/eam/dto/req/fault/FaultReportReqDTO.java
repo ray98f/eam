@@ -110,7 +110,21 @@ public class FaultReportReqDTO {
     private String partName;
     @ApiModelProperty(value = "故障状态 10 草稿 20 提报")
     private String faultStatus;
+    @ApiModelProperty(value = "是否由phm报出 0是 1否")
+    private String ifPhm;
+    @ApiModelProperty(value = "是否列入列车可靠性统计 0是 1否")
+    private String ifReliability;
+    @ApiModelProperty(value = "是否是外部系统 0否 1是")
+    private String ifOther;
+    @ApiModelProperty(value = "")
+    private String ext5;
 
+    @ApiModelProperty(value = "维修时限")
+    private String repairLimitTime;
+
+
+    @ApiModelProperty(value = "故障工单号:转报时用")
+    private String faultWorkNo;
     /**
      * 数据库非空字段兜底赋值，初始化为空字符串
      */
@@ -142,11 +156,29 @@ public class FaultReportReqDTO {
         return convert;
     }
 
+    public FaultOrderDO toFaultOrderChangeDO(FaultReportReqDTO req) {
+        FaultOrderDO convert = BeanUtils.convert(req, FaultOrderDO.class);
+        if (StringUtils.isNotEmpty(req.getRepairDeptCode())) {
+            convert.setWorkClass(req.getRepairDeptCode());
+        }
+        convert.setDeleteFlag("0");
+        convert.setOrderStatus(OrderStatus.TI_BAO.getCode());
+        return convert;
+    }
+
     public FaultInfoDO toFaultInfoInsertDO(FaultReportReqDTO req) {
         FaultInfoDO convert = BeanUtils.convert(req, FaultInfoDO.class);
         // String Toocc = (String)((Map)faultinfo.get(0)).get("ext4");
         if (!Objects.isNull(req.getMaintenance())) {
             convert.setExt4(req.getMaintenance().toString());
+        }
+        //前端这里 1 是  0 否 我这里统一下把。。
+        String reliability = req.getIfReliability();
+        if (StringUtils.isNotEmpty(reliability) && "1".equals(reliability)) {
+            convert.setIfReliability("0");
+        }
+        if (StringUtils.isNotEmpty(reliability) && "0".equals(reliability)) {
+            convert.setIfReliability("1");
         }
         convert.setTrainTag(req.getTraintag());
         if (StringUtils.isEmpty(req.getFillinDeptCode())) {

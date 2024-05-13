@@ -41,6 +41,12 @@ public interface SpecialEquipTypeMapper {
     void importSpecialEquipType(List<SpecialEquipTypeReqDTO> list);
 
     /**
+     * 获取当前最大的分类编号
+     * @return 最大分类编号
+     */
+    String getMaxTypeCode();
+
+    /**
      * 新增特种设备分类
      * @param specialEquipTypeReqDTO 特种设备分类信息
      */
@@ -51,6 +57,13 @@ public interface SpecialEquipTypeMapper {
      * @param specialEquipTypeReqDTO 特种设备分类信息
      */
     void modifySpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO);
+
+    /**
+     * 修改特种设备检修有效期
+     * @param detectionPeriod 周期
+     * @param typeCode 检修类别编号
+     */
+    void modifySpecialEquipValidityDate(String detectionPeriod, String typeCode);
 
     /**
      * 删除特种设备分类
@@ -74,4 +87,12 @@ public interface SpecialEquipTypeMapper {
      * @return 特种设备分类列表
      */
     List<SpecialEquipTypeResDTO> listSpecialEquipType(String typeCode, String typeName);
+
+    /**
+     * 根据特种设备分类参数获取特种设备分类详情
+     * @param code 编号
+     * @param name 名称
+     * @return 特种设备分类详情
+     */
+    SpecialEquipTypeResDTO getSpecialEquipTypeDetailByType(String code, String name);
 }

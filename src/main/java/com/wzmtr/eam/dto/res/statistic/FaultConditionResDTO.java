@@ -11,6 +11,7 @@ import lombok.Data;
 @ApiModel
 @Data
 public class FaultConditionResDTO {
+
     @ApiModelProperty(value = "正线运营故障")
     private String ZX;
     @ApiModelProperty(value = "出入库非运营故障")
@@ -20,6 +21,7 @@ public class FaultConditionResDTO {
     @ApiModelProperty(value = "故障总数")
     private String ZS;
     private String NOYF;
+    // 模块id
     private String SC;
     @ApiModelProperty(value = "主要子系统")
     private String moduleName;
@@ -29,4 +31,6 @@ public class FaultConditionResDTO {
     private String isDB;
     @ApiModelProperty(value = "实际指数")
     private String ZB;
+
+
 }

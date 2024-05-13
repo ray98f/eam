@@ -66,6 +66,13 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
     @Override
     public void addSpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO) {
         specialEquipTypeReqDTO.setRecId(TokenUtils.getUuId());
+        String code = specialEquipTypeMapper.getMaxTypeCode();
+        if (StringUtils.isEmpty(code)) {
+            code = "0001";
+        } else {
+            code = String.format("%04d", Integer.parseInt(code) + 1);
+        }
+        specialEquipTypeReqDTO.setTypeCode(code);
         specialEquipTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         specialEquipTypeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         specialEquipTypeMapper.addSpecialEquipType(specialEquipTypeReqDTO);
@@ -73,9 +80,13 @@ public class SpecialEquipTypeServiceImpl implements SpecialEquipTypeService {
 
     @Override
     public void modifySpecialEquipType(SpecialEquipTypeReqDTO specialEquipTypeReqDTO) {
+        SpecialEquipTypeResDTO lastRes = specialEquipTypeMapper.getSpecialEquipTypeDetail(specialEquipTypeReqDTO.getRecId());
         specialEquipTypeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         specialEquipTypeReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         specialEquipTypeMapper.modifySpecialEquipType(specialEquipTypeReqDTO);
+        if (!lastRes.getDetectionPeriod().equals(specialEquipTypeReqDTO.getDetectionPeriod())) {
+            specialEquipTypeMapper.modifySpecialEquipValidityDate(specialEquipTypeReqDTO.getDetectionPeriod(), specialEquipTypeReqDTO.getTypeCode());
+        }
     }
 
     @Override

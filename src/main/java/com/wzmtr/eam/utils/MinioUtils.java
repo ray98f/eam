@@ -2,6 +2,7 @@ package com.wzmtr.eam.utils;
 
 import io.minio.*;
 import io.minio.errors.*;
+import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -103,5 +104,34 @@ public class MinioUtils {
         }
     }
 
+    /**
+     * 清空某个bucket
+     * @param bucketName 桶名称
+     */
+    public void clearBucket(String bucketName){
+        boolean flag = bucketExists(bucketName);
+        if (flag) {
+            try {
+                // 递归列举某个bucket下的所有文件，然后循环删除
+                Iterable<Result<Item>> iterable = instance.listObjects(ListObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .recursive(true)
+                        .build());
+                for (Result<Item> itemResult : iterable) {
+                    removeObject(bucketName,itemResult.get().objectName());
+                }
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        }
+    }
+
+    /**
+     * 删除存储桶
+     */
+    public void removeBucket(String bucketName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        instance.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
+    }
 
 }

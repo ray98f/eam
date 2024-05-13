@@ -57,10 +57,12 @@ public class ShiroCasRealm extends CasRealm {
             person.setOfficeId("A02");
             person.setOfficeName("办公室");
             person.setNames("集团本级-办公室");
+            person.setMobile("13758496546");
         } else {
             Person p = personService.searchPersonByNo(name);
             if (p != null) {
-                person.setPersonId(p.getId());
+                person.setPersonId(p.getLoginName());
+                //person.setPersonId(p.getId());//TODO 20240327改成loginName确认人员信息
                 person.setPersonNo(p.getNo());
                 person.setPersonName(p.getName());
                 person.setCompanyId(p.getCompanyId());
@@ -70,6 +72,7 @@ public class ShiroCasRealm extends CasRealm {
                 person.setOfficeName(p.getOfficeName());
                 person.setOfficeAreaId(p.getOfficeAreaId());
                 person.setNames(p.getNames());
+                person.setMobile(p.getMobile());
             } else {
                 throw new CommonException(ErrorCode.USER_NOT_EXIST);
             }

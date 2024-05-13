@@ -16,6 +16,8 @@ import lombok.EqualsAndHashCode;
 public class MaterialQueryReqDTO extends PageReqDTO {
     @ApiModelProperty(value = "列车号")
     private String trainNo;
+    @ApiModelProperty(value = "设备编码")
+    private String equipCode;
     @ApiModelProperty(value = "时间开始")
     private String startTime;
     @ApiModelProperty(value = "时间结束")

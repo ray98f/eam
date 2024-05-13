@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.common.OrganizationMapper">
+
+    <select id="getRoot" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES,(CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where ID='root' and USEABLE=1 and DEL_FLAG=0
+    </select>
+
+    <select id="listExtraRootList" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where PARENT_ID=#{root} and USEABLE=1 and DEL_FLAG=0 and ID not in ('100000048', '100000002')
+        order by ID asc
+    </select>
+
+    <select id="listExtraBodyList" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where PARENT_ID not in (#{root}, '100000002') and USEABLE=1 and DEL_FLAG=0 and ID!=#{root}
+        order by SORT asc
+    </select>
+
+    <select id="listCompanyList" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where PARENT_ID='root' and DEL_FLAG=0 and USEABLE=1 and NAME!='外部单位' and GRADE in (1,2)
+        order by SORT
+    </select>
+
+    <select id="pageMember" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
+        select su.LOGIN_NAME as ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS,
+        so.ID AS PARENT_ID, listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
+        su.EMAIL, su.ROOM from SYS_USER su
+        left join SYS_OFFICE so on su.OFFICE_ID=so.ID and so.DEL_FLAG=0 and so.USEABLE=1
+        left join SYS_ORG_USER sou on sou.USER_ID=su.ID and sou.ACTIVESTATUS=1 AND sou.LEAVEDATE>=SYSDATE
+        where su.EXPIRED=0 and su.DEL_FLAG=0
+        and sou.LEAVEDATE>sysdate
+        and (so.PARENT_IDS || ',' || so.ID) like '%' || #{id} || '%'
+        <if test="name!=null and name!=''">
+            and su.NAME like '%' || #{name} || '%'
+        </if>
+        group by su.ID, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
+        <if test="id=='root'">
+            , su.COMPANY_ID
+        </if>
+        ORDER BY
+        <if test="id=='root'">
+            su.COMPANY_ID ASC,
+        </if>
+        su.ORDER_NUM ASC
+    </select>
+
+    <select id="getIdByAreaId" resultType="java.lang.String">
+        select ID from SYS_OFFICE where AREA_ID=#{id} and DEL_FLAG='0'
+    </select>
+
+    <select id="listMember" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
+        select su.LOGIN_NAME as ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS,
+        so.ID AS PARENT_ID, listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
+        su.EMAIL, su.ROOM from SYS_USER su
+        left join SYS_OFFICE so on su.OFFICE_ID=so.ID and so.DEL_FLAG=0 and so.USEABLE=1
+        left join SYS_ORG_USER sou on sou.USER_ID=su.ID and sou.ACTIVESTATUS=1 AND sou.LEAVEDATE>=SYSDATE
+        where su.EXPIRED=0 and su.DEL_FLAG=0
+        and sou.LEAVEDATE>sysdate
+        and (so.PARENT_IDS || ',' || so.ID) like '%' || #{id} || '%'
+        group by su.ID, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
+        <if test="id=='root'">
+            , su.COMPANY_ID
+        </if>
+        ORDER BY
+        <if test="id=='root'">
+            su.COMPANY_ID ASC,
+        </if>
+        su.ORDER_NUM ASC
+    </select>
+
+    <select id="pageUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
+        select su.LOGIN_NAME as ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
+        from SYS_USER su
+        where su.OFFICE_ID=#{id} and su.EXPIRED=0 and su.DEL_FLAG=0
+        ORDER BY su.ORDER_NUM ASC
+    </select>
+
+    <select id="listUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
+        select su.LOGIN_NAME as ID, su.NAME, su.PHONE, su.MOBILE, su.EMAIL, su.ROOM
+        from SYS_USER su
+        where su.OFFICE_ID=#{id} and su.EXPIRED=0 and su.DEL_FLAG=0
+        ORDER BY su.ORDER_NUM ASC
+    </select>
+
+    <select id="selectOfficeNameById" resultType="java.lang.String">
+        select name from SYS_OFFICE where ID=#{id} and USEABLE=1 and DEL_FLAG=0
+    </select>
+
+    <select id="getOrgNameByOrgCode" resultType="java.lang.String">
+        select name from SYS_OFFICE
+        where (ID=#{id} or AREA_ID=#{id})
+        and USEABLE=1 and DEL_FLAG=0
+    </select>
+
+    <delete id="cleanOrg">
+        delete from SYS_OFFICE where ID not in('W') and PARENT_ID!='W'
+    </delete>
+
+    <delete id="cleanSupplier">
+        delete from SYS_OFFICE where PARENT_IDS like '%,W%' or PARENT_ID='W'
+    </delete>
+
+    <delete id="cleanExtra">
+        delete from SYS_OFFICE where "TYPE"='4'
+    </delete>
+
+    <insert id="createOrg" parameterType="com.wzmtr.eam.entity.SysOffice">
+        INSERT INTO SYS_OFFICE
+        (ID,
+        <if test="parentId!=null and parentId!=''">PARENT_ID,</if>
+        <if test="parentIds!=null and parentIds!=''">PARENT_IDS,</if>
+        <if test="name!=null and name!=''">NAME,</if>
+        <if test="type!=null and type!=''">TYPE,</if>
+        <if test="grade!=null and grade!=''">GRADE,</if>
+        <if test="sort!=null ">SORT,</if>
+        <if test="remarks!=null and remarks!=''">REMARKS,</if>
+        <if test="useable!=null and useable!=''">USEABLE,</if>
+        <if test="areaId!=null and areaId!=''">AREA_ID,</if>
+        <if test="areaId==null or areaId==''">AREA_ID,</if>
+        <if test="createBy!=null and createBy!=''">CREATE_BY,</if>
+        CREATE_DATE,
+        <if test="updateBy!=null and updateBy!=''">UPDATE_BY,</if>
+        UPDATE_DATE,
+        DEL_FLAG)
+        values
+        (#{id},
+        <if test="parentId!=null and parentId!=''">#{parentId},</if>
+        <if test="parentIds!=null and parentIds!=''">#{parentIds},</if>
+        <if test="name!=null and name!=''">#{name},</if>
+        <if test="type!=null and type!=''">#{type},</if>
+        <if test="grade!=null and grade!=''">#{grade},</if>
+        <if test="sort!=null ">#{sort},</if>
+        <if test="remarks!=null and remarks!=''">#{remarks},</if>
+        <if test="useable!=null and useable!=''">#{useable},</if>
+        <if test="areaId!=null and areaId!=''">#{areaId},</if>
+        <if test="areaId==null or areaId==''">#{id},</if>
+        <if test="createBy!=null and createBy!=''">#{createBy},</if>
+        SYSDATE,
+        <if test="updateBy!=null and updateBy!=''">#{updateBy},</if>
+        SYSDATE,
+        0)
+    </insert>
+
+    <select id="searchParent" resultType="com.wzmtr.eam.dto.res.basic.OrgParentResDTO">
+        SELECT DISTINCT ID, PARENT_IDS, replace(NAMES, ',', '-') NAMES
+        from (SELECT ID, PARENT_IDS, NAMES from
+        (SELECT DISTINCT tt.id,
+        TRIM(LEADING ',' FROM SYS_CONNECT_BY_PATH(tt.PARENT_ID, ',')) as PARENT_IDS,
+        TRIM(LEADING ',' FROM SYS_CONNECT_BY_PATH(tt.NAME, ',')) as NAMES
+        from SYS_OFFICE tt
+        START WITH tt.parent_id='root' AND tt.id NOT IN ('W')
+        CONNECT BY PRIOR tt.id=tt.parent_id)) t
+    </select>
+
+    <update id="updateParent">
+        update SYS_OFFICE set
+        PARENT_IDS=#{parentIds},
+        NAMES=#{names}
+        where ID=#{id}
+    </update>
+
+    <select id="downRecursion" resultType="java.lang.String">
+        SELECT AREA_ID FROM SYS_OFFICE
+        START WITH ID=#{id}
+        CONNECT BY PRIOR ID=PARENT_ID
+    </select>
+
+    <select id="selectCompanyIdByOfficeId" resultType="java.lang.String">
+        select PARENT_IDS from SYS_OFFICE where ID=#{officeId}
+    </select>
+
+<!--    <select id="getExtraOrgByAreaId" resultType="java.lang.String">-->
+<!--        select listagg(to_char(NAME), '-') WITHIN GROUP (ORDER BY AREA_ID) NAME-->
+<!--        from SYS_OFFICE WHERE ID!='root'-->
+<!--        start with AREA_ID=#{areaId}-->
+<!--        connect by prior PARENT_ID=ID-->
+<!--    </select>-->
+
+    <select id="getExtraOrgByAreaId" resultType="java.lang.String">
+        select NAMES
+        from SYS_OFFICE WHERE AREA_ID=#{areaId}
+    </select>
+
+    <select id="getOrgById" resultType="java.lang.String">
+        select listagg(to_char(NAME), '-') WITHIN GROUP (ORDER BY ID) NAME
+        from SYS_OFFICE WHERE ID!='root'
+        start with ID=#{id}
+        connect by prior PARENT_ID=ID
+    </select>
+
+    <select id="getByNames" resultType="com.wzmtr.eam.entity.SysOffice">
+        select ID, AREA_ID from SYS_OFFICE where NAMES=#{names}
+    </select>
+
+    <select id="getNamesById" resultType="java.lang.String">
+        select NAMES from SYS_OFFICE where (ID=#{id} or AREA_ID=#{id})
+    </select>
+
+    <select id="getNameById" resultType="java.lang.String">
+        select NAME from SYS_OFFICE where (ID=#{id} or AREA_ID=#{id})
+    </select>
+
+    <select id="getParentCodeByCode" resultType="java.lang.String">
+        SELECT o2.AREA_ID
+        FROM SYS_OFFICE o1
+        left join SYS_OFFICE o2 on o1.PARENT_ID=o2.ID and o2.DEL_FLAG='0'
+        WHERE o1.AREA_ID=#{orgCode} AND o1.DEL_FLAG='0'
+    </select>
+
+    <select id="getChildCodeByCodeAndMajorLineType" resultType="java.lang.String">
+        SELECT tw.AREA_ID
+        FROM SYS_OFFICE tw,SYS_ORG_MAJOR d5,SYS_ORG_LINE d6,SYS_ORG_TYPE d7
+        WHERE d5.ORG_CODE=d6.ORG_CODE
+        AND d6.ORG_CODE=d7.ORG_CODE
+        AND d7.ORG_CODE=tw.AREA_ID
+        AND d5.MAJOR_CODE=#{majorCode} AND d6.LINE_CODE=#{lineCode} AND d7.ORG_TYPE=#{orgType}
+        AND (select o.AREA_ID from SYS_OFFICE o where o.ID=tw.PARENT_ID and o.DEL_FLAG='0')=#{orgCode}
+    </select>
+
+    <select id="getZttRoot" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where PARENT_ID='root' and USEABLE=1 and DEL_FLAG=0 and NAME LIKE '%中铁通%'
+        order by ID asc
+    </select>
+
+    <select id="downRecursionId" resultType="java.lang.String">
+        SELECT ID FROM SYS_OFFICE
+        START WITH ID=#{id}
+        CONNECT BY PRIOR ID=PARENT_ID
+    </select>
+
+    <select id="listZttExtraBodyList" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        ) order by SORT asc
+    </select>
+</mapper>

@@ -18,6 +18,12 @@ public interface FaultReportService {
     String addToFault(FaultReportReqDTO reqDTO);
 
     /**
+     * 转报
+     * @param reqDTO
+     */
+    void changeReport(FaultReportReqDTO reqDTO);
+
+    /**
      * 故障提报（到设备）-开放接口
      * @param reqDTO 入参
      * @return 故障编号
@@ -37,7 +43,7 @@ public interface FaultReportService {
      * @param reqDTO 请求参数
      * @return 已提报故障列表
      */
-    Page<FaultReportResDTO> openApiList(FaultReportPageReqDTO reqDTO);
+    Page<FaultDetailResDTO> openApiList(FaultReportPageReqDTO reqDTO);
     Page<FaultReportResDTO> carReportList(FaultReportPageReqDTO reqDTO);
 
     FaultDetailResDTO detail(FaultDetailReqDTO reqDTO);

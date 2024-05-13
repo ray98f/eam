@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.basic.WoRuleDetailExportReqDTO;
 import com.wzmtr.eam.dto.req.basic.WoRuleReqDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -34,5 +35,5 @@ public interface WoRuleService {
 
     void exportWoRule(List<String> ids, HttpServletResponse response) throws IOException;
 
-    void exportWoRuleDetail(List<String> ids, HttpServletResponse response) throws IOException;
+    void exportWoRuleDetail(WoRuleDetailExportReqDTO reqDTO, HttpServletResponse response) throws IOException;
 }

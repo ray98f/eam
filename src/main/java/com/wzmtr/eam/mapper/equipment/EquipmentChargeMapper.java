@@ -17,7 +17,7 @@ public interface EquipmentChargeMapper {
 
 
     Page<EquipmentChargeResDTO> pageEquipmentCharge(Page<EquipmentChargeResDTO> page, String equipCode, String equipName, String chargeDate,
-                                                    String position1Code, String subjectCode, String systemCode, String equipTypeCode);
+                                                    String position1Code, String subjectCode, String systemCode, String equipTypeCode,List<String> majors);
 
     EquipmentChargeResDTO getEquipmentChargeDetail(String id);
 
