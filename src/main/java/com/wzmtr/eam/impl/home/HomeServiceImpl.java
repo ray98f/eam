@@ -36,8 +36,6 @@ public class HomeServiceImpl implements HomeService {
     @Override
     public Page<StatusWorkFlowLog> todoList(String type, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        //todo 上线后可以删，留个日志方便调试
-        log.info("current userID:{}",TokenUtils.getCurrentPersonId());
         return homeMapper.todoList(pageReqDTO.of(), type, TokenUtils.getCurrentPersonId());
     }
 
