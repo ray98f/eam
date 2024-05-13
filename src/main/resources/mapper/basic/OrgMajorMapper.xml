@@ -207,9 +207,17 @@
     <select id="getOrganByStationAndMajor" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
         SELECT t1.*
         FROM SYS_OFFICE so
-                 LEFT JOIN SYS_ORG_MAJOR t1 on t1.ORG_CODE=so.AREA_ID
-                 LEFT JOIN SYS_ORG_REGION t2 on t2.ORG_CODE=so.AREA_ID
+        LEFT JOIN SYS_ORG_MAJOR t1 on t1.ORG_CODE=so.AREA_ID
+        LEFT JOIN SYS_ORG_REGION t2 on t2.ORG_CODE=so.AREA_ID
         where t1.MAJOR_CODE=#{majorCode}
-          and t2.REGION_CODE=#{station}
+        and t2.REGION_CODE=#{station}
+    </select>
+    <select id="getOrgNamesByStationAndMajor" resultType="java.lang.String">
+        SELECT so.NAMES
+        FROM SYS_OFFICE so
+        LEFT JOIN SYS_ORG_MAJOR t1 on t1.ORG_CODE=so.AREA_ID
+        LEFT JOIN SYS_ORG_REGION t2 on t2.ORG_CODE=so.AREA_ID
+        where t1.MAJOR_CODE=#{majorCode}
+        and t2.REGION_CODE=#{station}
     </select>
 </mapper>

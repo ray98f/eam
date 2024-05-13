@@ -326,4 +326,20 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         LocalDate date2 = LocalDate.parse(endTime, formatter);
         return Duration.between(date1.atStartOfDay(), date2.atStartOfDay()).toDays();
     }
+
+    /**
+     * 判断一个日期是否在两个日期之间（包含开始时间，不包含结束时间）
+     * @param date 检测日期
+     * @param startDate 开始日期
+     * @param endDate 结束日期
+     * @return 是否
+     * @throws ParseException 异常
+     */
+    public static boolean getDateBetweenContainStartExcludeEnd(String date, String startDate, String endDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD);
+        Date start = sdf.parse(startDate);
+        Date end = sdf.parse(endDate);
+        Date dateToCheck = sdf.parse(date);
+        return (dateToCheck.after(start) && dateToCheck.before(end)) || dateToCheck.equals(start);
+    }
 }

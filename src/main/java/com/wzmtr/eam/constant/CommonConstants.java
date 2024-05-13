@@ -52,6 +52,8 @@ public class CommonConstants {
     public static final String DM_048 = "DM_048";//中车-生产调度
     public static final String ZC_SHFW = "ZC_SHFW";//中车-售后服务站
     public static final String ZC_JX = "100000044";//中车-检修班ID
+    public static final String ZC = "温州中车四方轨道车辆有限公司";//中车
+    public static final String ZTT = "中铁通轨道运营有限公司";//中铁通
 
     /**
      * 代办/待阅
@@ -145,6 +147,8 @@ public class CommonConstants {
     public static final String DM_VEHICLE_SPECIALTY_CODE = "dm.vehicleSpecialty";
     public static final String DM_MATCH_CONTROL_CODE = "dm.matchControl";
 
+    public static final String DM_FAULT_FOLLOW_STATUS = "dm.faultFollowStatus";
+
     /**
      * 工单推送内容相关
      */
@@ -157,5 +161,7 @@ public class CommonConstants {
     public static final String ERROR = "异常";
 
     public static final String FAULT_OPEN_APP_KEY = "ubcrjTM9BE1F79Cc";
+
+    public static final String FAULT_FOLLOW_REPORT = "fault_follow_report";
 
 }

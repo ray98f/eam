@@ -555,6 +555,12 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
+    public Page<OverhaulOrderDetailOpenResDTO> openPageOverhaulObject(String orderCode, PageReqDTO pageReqDTO) {
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        return overhaulOrderMapper.openPageOverhaulObject(pageReqDTO.of(), orderCode);
+    }
+
+    @Override
     public OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id) {
         OverhaulOrderDetailResDTO res = overhaulOrderMapper.getOverhaulObjectDetail(id);
         if (!Objects.isNull(res)) {

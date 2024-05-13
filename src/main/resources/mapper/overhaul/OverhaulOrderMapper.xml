@@ -1331,6 +1331,16 @@
         order by REC_ID asc
     </select>
 
+    <select id="openPageOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailOpenResDTO">
+        SELECT
+        PLAN_CODE	as "planCode",  <!-- 计划编号 -->
+        PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        OBJECT_CODE	as "objectCode",  <!-- 对象编码 -->
+        OBJECT_NAME	as "objectName"  <!-- 对象名称 -->
+        FROM T_OVERHAUL_ORDER_DETAIL WHERE ORDER_CODE=#{orderCode}
+        order by REC_ID asc
+    </select>
+
     <select id="getOverhaulObjectDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">
         SELECT
         REC_ID	as "objectId",

@@ -61,4 +61,12 @@ public interface OrgMajorMapper {
      * @return
      */
     OrgMajorResDTO getOrganByStationAndMajor(String station, String majorCode);
+
+    /**
+     * 获取组织机构路径
+     * @param station 车站
+     * @param majorCode 专业编号
+     * @return 组织机构路径
+     */
+    String getOrgNamesByStationAndMajor(String station, String majorCode);
 }

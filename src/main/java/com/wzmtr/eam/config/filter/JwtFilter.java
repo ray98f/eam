@@ -48,7 +48,7 @@ public class JwtFilter implements Filter {
             return;
         }
         if (Arrays.asList(pages).contains(uri) || Arrays.asList(swaggerPages).contains(uri)
-                || uri.contains("mdmSync") || uri.contains("swagger")) {
+                || uri.contains("mdmSync") || uri.contains("swagger") || uri.contains("/open")) {
             chain.doFilter(httpRequest, httpResponse);
         } else {
             String token = httpRequest.getHeader("Authorization");

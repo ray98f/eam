@@ -107,6 +107,7 @@ public class OverhaulTask {
         person.setOfficeId("A02");
         person.setOfficeName("办公室");
         person.setNames("集团本级-办公室");
+        person.setMobile("13758496546");
         return person;
     }
 
