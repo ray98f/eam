@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * 公共分类-文件管理
@@ -38,4 +39,11 @@ public interface MinioService {
      */
     void clear(String bucketCode) throws ServerException, InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
+
+    /**
+     * 根据文件ids获取文件列表
+     * @param ids 文件ids
+     * @return 文件列表
+     */
+    List<File> selectFileInfo(List<String> ids);
 }

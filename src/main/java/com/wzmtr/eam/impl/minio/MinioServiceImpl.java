@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * 公共分类-文件管理
@@ -92,5 +93,10 @@ public class MinioServiceImpl implements MinioService {
             minioUtils.clearBucket(bucketCode);
             minioUtils.removeBucket(bucketCode);
         }
+    }
+
+    @Override
+    public List<File> selectFileInfo(List<String> ids) {
+        return fileMapper.selectFileInfo(ids);
     }
 }
