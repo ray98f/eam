@@ -65,7 +65,6 @@ public class FaultQueryController {
     @ApiOperation(value = "下发")
     @PostMapping("/issue")
     public DataResponse<String> issue(@RequestBody FaultDetailReqDTO reqDTO) {
-        // faultWorkNo
         faultQueryService.issue(reqDTO);
         return DataResponse.success();
     }
@@ -73,7 +72,6 @@ public class FaultQueryController {
     @ApiOperation(value = "派工")
     @PostMapping("/send/work")
     public DataResponse<String> sendWork(@RequestBody FaultSendWorkReqDTO reqDTO) {
-        // faultWorkNo
         faultQueryService.sendWork(reqDTO);
         return DataResponse.success();
     }
@@ -93,7 +91,6 @@ public class FaultQueryController {
     @ApiOperation(value = "设调确认")
     @PostMapping("/eqCheck")
     public DataResponse<String> eqCheck(@RequestBody FaultEqCheckReqDTO reqDTO) throws Exception {
-        // faultWorkNo
         faultQueryService.eqCheck(reqDTO);
         return DataResponse.success();
     }
@@ -101,7 +98,6 @@ public class FaultQueryController {
     @ApiOperation(value = "完工确认")
     @PostMapping("/finishConfirm")
     public DataResponse<String> finishConfirm(@RequestBody FaultNosFaultWorkNosReqDTO reqDTO) {
-        // faultWorkNo
         reqDTO.setType(OrderStatus.WAN_GONG_QUE_REN);
         faultQueryService.updateHandler(reqDTO);
         return DataResponse.success();
@@ -110,7 +106,6 @@ public class FaultQueryController {
     @ApiOperation(value = "作废")
     @PostMapping("/cancel")
     public DataResponse<String> cancel(@RequestBody FaultNosFaultWorkNosReqDTO reqDTO) {
-        // faultWorkNo
         reqDTO.setType(OrderStatus.ZUO_FEI);
         faultQueryService.updateHandler(reqDTO);
         return DataResponse.success();
@@ -127,7 +122,6 @@ public class FaultQueryController {
     @ApiOperation(value = "故障单验收")
     @PostMapping("/fault/check")
     public DataResponse<String> check(@RequestBody FaultNosFaultWorkNosReqDTO reqDTO) {
-        // faultWorkNo
         reqDTO.setType(OrderStatus.YAN_SHOU);
         faultQueryService.updateHandler(reqDTO);
         return DataResponse.success();
@@ -135,9 +129,7 @@ public class FaultQueryController {
 
     @ApiOperation(value = "导出")
     @PostMapping("/export")
-    public void export(@RequestBody FaultExportReqDTO reqDTO,
-                       HttpServletResponse response) {
-        // faultWorkNo
+    public void export(@RequestBody FaultExportReqDTO reqDTO, HttpServletResponse response) {
         faultQueryService.export(reqDTO, response);
     }
 
@@ -145,14 +137,12 @@ public class FaultQueryController {
     @ApiOperation(value = "施工计划")
     @PostMapping("/construction")
     public PageResponse<ConstructionResDTO> construction(@RequestBody FaultQueryReqDTO reqDTO) {
-        // faultWorkNo
         return PageResponse.of(faultQueryService.construction(reqDTO));
     }
 
     @ApiOperation(value = "请销点")
     @PostMapping("/cancellation")
     public PageResponse<ConstructionResDTO> cancellation(@RequestBody FaultQueryReqDTO reqDTO) {
-        // faultWorkNo
         return PageResponse.of(faultQueryService.cancellation(reqDTO));
     }
 
@@ -160,7 +150,6 @@ public class FaultQueryController {
     @ApiOperation(value = "操作前对选中的作前置校验")
     @PostMapping("/fault/track/compareRows")
     public DataResponse<Boolean> compareRows(@RequestBody CompareRowsReqDTO reqDTO) {
-        // faultWorkNo
         return DataResponse.of(faultQueryService.compareRows(reqDTO));
     }
     @ApiOperation(value = "获取维修部门")

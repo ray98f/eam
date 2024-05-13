@@ -120,6 +120,13 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         overhaulOrderListReqDTO.setObjectFlag("1");
+        // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(overhaulOrderListReqDTO.getSubjectCode())) {
+            overhaulOrderListReqDTO.setMajors(userAccountService.listUserMajor());
+        }
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
+            overhaulOrderListReqDTO.setUserId(TokenUtils.getCurrentPersonId());
+        }
         Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         List<OverhaulOrderResDTO> list = page.getRecords();
         // 专业为车辆的检修工单填充字段

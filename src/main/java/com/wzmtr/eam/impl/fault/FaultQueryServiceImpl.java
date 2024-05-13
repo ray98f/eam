@@ -157,7 +157,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public String queryOrderStatus(SidEntity reqDTO) {
-        // faultWorkNo
         List<String> status = faultQueryMapper.queryOrderStatus(reqDTO);
         return StringUtils.isEmpty(status) ? null : status.get(0);
     }
