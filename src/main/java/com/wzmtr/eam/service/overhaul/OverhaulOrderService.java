@@ -63,11 +63,11 @@ public interface OverhaulOrderService {
 
     void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
-    void pageMaterial();
+    void pageMaterial(String orderCode, HttpServletResponse response) throws IOException;
 
     void receiveMaterial(HttpServletResponse response) throws IOException;
 
-    void returnMaterial();
+    void returnMaterial(HttpServletResponse response) throws IOException;
 
     Page<ConstructionResDTO> construction(String orderCode, PageReqDTO pageReqDTO);
 

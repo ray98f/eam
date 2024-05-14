@@ -509,8 +509,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void pageMaterial() {
-        // todo 材料列表
+    public void pageMaterial(String orderCode, HttpServletResponse response) throws IOException {
+        response.sendRedirect(dictionariesMapper.queryOneByItemCodeAndCodesetCode("DM_ER_ADDRESS", "11").getItemCname() + orderCode);
     }
 
     @Override
@@ -519,8 +519,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void returnMaterial() {
-        // todo 退回材料
+    public void returnMaterial(HttpServletResponse response) throws IOException {
+        response.sendRedirect(dictionariesMapper.queryOneByItemCodeAndCodesetCode("DM_ER_ADDRESS", "12").getItemCname());
     }
 
     @Override

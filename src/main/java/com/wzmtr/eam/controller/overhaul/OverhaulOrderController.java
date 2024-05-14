@@ -154,11 +154,17 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 跳转至物资系统领料界面
+     * @param orderCode 工单号
+     * @param response response
+     * @throws IOException 异常
+     */
     @GetMapping("/material/page")
-    @ApiOperation(value = "材料列表")
-    public DataResponse<T> pageMaterial() {
-        overhaulOrderService.pageMaterial();
-        return DataResponse.success();
+    @ApiOperation(value = "跳转至物资系统领料界面")
+    public void pageMaterial(@RequestParam String orderCode,
+                             HttpServletResponse response) throws IOException {
+        overhaulOrderService.pageMaterial(orderCode, response);
     }
 
     @PostMapping("/material/receive")
@@ -169,9 +175,8 @@ public class OverhaulOrderController {
 
     @PostMapping("/material/return")
     @ApiOperation(value = "退回材料")
-    public DataResponse<T> returnMaterial() {
-        overhaulOrderService.returnMaterial();
-        return DataResponse.success();
+    public void returnMaterial(HttpServletResponse response) throws IOException {
+        overhaulOrderService.returnMaterial(response);
     }
 
     @GetMapping("/construction")
