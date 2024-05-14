@@ -13,6 +13,7 @@ import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
+import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.LineCode;
@@ -22,6 +23,7 @@ import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.PersonMapper;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
@@ -52,7 +54,8 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Resource
     private UserAccountService userAccountService;
-
+    @Autowired
+    private UserAccountMapper userAccountMapper;
     @Autowired
     private FaultReportMapper faultReportMapper;
     @Autowired
@@ -264,9 +267,11 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     public Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode()) &&
+                StringUtils.isNotNull(office) && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
             userMajorList = userAccountService.listUserMajor();
         }
         Page<FaultReportResDTO> list;

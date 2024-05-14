@@ -23,11 +23,13 @@ import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
+import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.*;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.PartMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
 import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
@@ -62,6 +64,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Resource
     private UserAccountService userAccountService;
     @Autowired
+    private UserAccountMapper userAccountMapper;
+    @Autowired
     private FaultQueryMapper faultQueryMapper;
     @Autowired
     private FaultReportMapper faultReportMapper;
@@ -89,13 +93,16 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+        SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode()) &&
+        StringUtils.isNotNull(office) && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
             userMajorList = userAccountService.listUserMajor();
         }
         if (StringUtils.isNotEmpty(reqDTO.getOrderStatus()) && reqDTO.getOrderStatus().contains(CommonConstants.COMMA)) {
             reqDTO.setOrderStatusList(Arrays.asList(reqDTO.getOrderStatus().split(CommonConstants.COMMA)));
+            reqDTO.setOrderStatus(null);
         }
         Page<FaultDetailResDTO> page;
         //获取用户当前角色
@@ -109,7 +116,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         } else {
             page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
-
         List<FaultDetailResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
             for (FaultDetailResDTO res : list) {

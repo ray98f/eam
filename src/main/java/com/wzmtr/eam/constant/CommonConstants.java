@@ -166,4 +166,6 @@ public class CommonConstants {
 
     public static final String FAULT_FOLLOW_REPORT = "fault_follow_report";
 
+    public static final String PASSENGER_TRANSPORT_DEPT = "运营分公司-客运部";
+
 }

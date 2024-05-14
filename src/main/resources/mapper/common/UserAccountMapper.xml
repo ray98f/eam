@@ -221,7 +221,7 @@
     <select id="getUserOrg" resultType="com.wzmtr.eam.entity.SysOffice">
         SELECT * FROM SYS_OFFICE o
         LEFT JOIN SYS_USER u ON u.OFFICE_ID=o.ID
-        u.LOGIN_NAME=#{userId}
+        WHERE u.LOGIN_NAME=#{userId}
     </select>
 
 </mapper>
