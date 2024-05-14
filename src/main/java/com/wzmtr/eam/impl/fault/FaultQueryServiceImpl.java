@@ -94,6 +94,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
             userMajorList = userAccountService.listUserMajor();
         }
+        if (StringUtils.isNotEmpty(reqDTO.getOrderStatus()) && reqDTO.getOrderStatus().contains(CommonConstants.COMMA)) {
+            reqDTO.setOrderStatusList(Arrays.asList(reqDTO.getOrderStatus().split(CommonConstants.COMMA)));
+        }
         Page<FaultDetailResDTO> page;
         //获取用户当前角色
         List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());

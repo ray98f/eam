@@ -5,6 +5,7 @@ import com.wzmtr.eam.dto.res.basic.OrgParentResDTO;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.entity.CompanyStructureTree;
 import com.wzmtr.eam.entity.SysOffice;
+import com.wzmtr.eam.entity.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -28,6 +29,14 @@ public interface OrganizationMapper {
     String getIdByAreaId(@Param("id") String id);
 
     List<MemberResDTO> listMember(@Param("id") String id);
+
+    /**
+     * 获取用户列表
+     * @param officeId 部门id
+     * @param roleCode 角色编号
+     * @return 用户列表
+     */
+    List<SysUser> listUser(@Param("officeId") String officeId, @Param("roleCode") String roleCode);
 
     Page<MemberResDTO> pageUserByOffice(Page<MemberResDTO> page, @Param("id") String id);
 

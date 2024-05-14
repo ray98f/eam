@@ -41,7 +41,7 @@
         <if test="name!=null and name!=''">
             and su.NAME like '%' || #{name} || '%'
         </if>
-        group by su.ID, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
+        group by su.LOGIN_NAME, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
         <if test="id=='root'">
             , su.COMPANY_ID
         </if>
@@ -65,7 +65,7 @@
         where su.EXPIRED=0 and su.DEL_FLAG=0
         and sou.LEAVEDATE>sysdate
         and (so.PARENT_IDS || ',' || so.ID) like '%' || #{id} || '%'
-        group by su.ID, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
+        group by su.LOGIN_NAME, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
         <if test="id=='root'">
             , su.COMPANY_ID
         </if>
@@ -74,6 +74,21 @@
             su.COMPANY_ID ASC,
         </if>
         su.ORDER_NUM ASC
+    </select>
+
+    <select id="listUser" resultType="com.wzmtr.eam.entity.SysUser">
+        SELECT u.*
+        FROM SYS_USER u
+        LEFT JOIN SYS_USER_ROLE ur ON u.LOGIN_NAME=ur.USER_ID
+        LEFT JOIN SYS_ROLE r ON r.ID=ur.ROLE_ID AND r.DEL_FLAG='0'
+        WHERE u.EXPIRED='0' and u.DEL_FLAG='0'
+        <if test="roleCode!=null and roleCode!=''">
+            AND r.ROLE_CODE=#{roleCode}
+        </if>
+        <if test="officeId!=null and officeId!=''">
+            AND u.OFFICE_ID=#{officeId}
+        </if>
+        ORDER BY u.ORDER_NUM ASC
     </select>
 
     <select id="pageUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">

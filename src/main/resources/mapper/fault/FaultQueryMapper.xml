@@ -102,6 +102,13 @@
             <if test="req.orderStatus!=null and req.orderStatus!=''">
                 AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
+            <if test="req.orderStatusList!=null and req.orderStatusList.size()>0">
+                AND df.ORDER_STATUS IN (
+                <foreach collection="req.orderStatusList" index="index" item="orderStatus" separator=",">
+                    #{orderStatus}
+                </foreach>
+                )
+            </if>
             <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
                 AND df.ORDER_STATUS='99'
             </if>
@@ -118,7 +125,7 @@
                 AND d.MAJOR_CODE=#{req.majorCode}
             </if>
             <if test="majors!=null and majors.size()>0">
-                and d.MAJOR_CODE IN (
+                AND d.MAJOR_CODE IN (
                 <foreach collection="majors" index="index" item="major" separator=",">
                     #{major}
                 </foreach>
@@ -245,6 +252,13 @@
             </if>
             <if test="req.orderStatus!=null and req.orderStatus!=''">
                 AND df.ORDER_STATUS=#{req.orderStatus}
+            </if>
+            <if test="req.orderStatusList!=null and req.orderStatusList.size()>0">
+                AND df.ORDER_STATUS IN (
+                <foreach collection="req.orderStatusList" index="index" item="orderStatus" separator=",">
+                    #{orderStatus}
+                </foreach>
+                )
             </if>
             <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
                 AND df.ORDER_STATUS='99'

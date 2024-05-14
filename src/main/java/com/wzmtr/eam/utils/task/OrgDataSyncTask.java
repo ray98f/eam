@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +62,7 @@ public class OrgDataSyncTask {
         mdmSyncService.syncPersonPlus();
     }
 
-    @Scheduled(cron = "0 0 1 * * ?")
+//    @Scheduled(cron = "0 0 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncOrg() {
         if (CommonConstants.OFF.equals(dataSync)) {
@@ -74,7 +73,7 @@ public class OrgDataSyncTask {
         mdmSyncService.syncAllOrg();
     }
 
-    @Scheduled(cron = "0 10 1 * * ?")
+//    @Scheduled(cron = "0 10 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncSuppOrg() {
         if (CommonConstants.OFF.equals(dataSync)) {
@@ -85,7 +84,7 @@ public class OrgDataSyncTask {
         mdmSyncService.syncSuppOrg();
     }
 
-    @Scheduled(cron = "0 20 1 * * ?")
+//    @Scheduled(cron = "0 20 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncExtraOrg() {
         if (CommonConstants.OFF.equals(dataSync)) {
@@ -96,7 +95,7 @@ public class OrgDataSyncTask {
         mdmSyncService.syncAllExtraOrg();
     }
 
-    @Scheduled(cron = "0 30 2 * * ?")
+//    @Scheduled(cron = "0 30 2 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncEmpJobInfo() {
         if (CommonConstants.OFF.equals(dataSync)) {
