@@ -3,13 +3,14 @@ package com.wzmtr.eam.controller.fault;
 import com.wzmtr.eam.dto.req.fault.FaultFollowExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultFollowReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultFollowReqDTO;
+import com.wzmtr.eam.dto.res.fault.FaultFollowDispatchUserResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultFollowReportResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultFollowResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.SysUser;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.service.fault.FaultFollowService;
-import com.wzmtr.eam.shiro.model.Person;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.ss.formula.functions.T;
@@ -66,15 +67,13 @@ public class FaultFollowController {
 
     /**
      * 获取工班长列表
-     * @param majorCode 专业code
-     * @param positionCode 位置1
+     * @param faultWorkNo 故障单号
      * @return 工班长列表
      */
     @ApiOperation(value = "获取工班长列表")
     @GetMapping("/leader/list")
-    public DataResponse<List<Person>> listLeader(@RequestParam String majorCode,
-                                                 @RequestParam String positionCode) {
-        return DataResponse.of(faultFollowService.listLeader(majorCode, positionCode));
+    public DataResponse<List<SysUser>> listLeader(@RequestParam String faultWorkNo) {
+        return DataResponse.of(faultFollowService.listLeader(faultWorkNo));
     }
 
     /**
@@ -98,6 +97,29 @@ public class FaultFollowController {
     @PostMapping("/modify")
     public DataResponse<T> modify(@RequestBody FaultFollowReqDTO req) {
         faultFollowService.modify(req);
+        return DataResponse.success();
+    }
+
+    /**
+     * 获取派工人信息
+     * @param followNo 跟踪编号
+     * @return 派工人信息
+     */
+    @ApiOperation(value = "获取派工人信息")
+    @GetMapping("/dispatch/user")
+    public DataResponse<FaultFollowDispatchUserResDTO> listDispatchUser(@RequestParam String followNo) {
+        return DataResponse.of(faultFollowService.listDispatchUser(followNo));
+    }
+
+    /**
+     * 派工故障跟踪工单
+     * @param req 故障跟踪工单参数
+     * @return 成功
+     */
+    @ApiOperation(value = "派工故障跟踪工单")
+    @PostMapping("/dispatch")
+    public DataResponse<T> dispatch(@RequestBody FaultFollowReqDTO req) {
+        faultFollowService.dispatch(req);
         return DataResponse.success();
     }
 

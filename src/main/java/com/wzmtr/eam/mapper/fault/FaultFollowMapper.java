@@ -69,6 +69,12 @@ public interface FaultFollowMapper {
     void modify(FaultFollowReqDTO req);
 
     /**
+     * 派工故障跟踪工单
+     * @param req 故障跟踪工单参数
+     */
+    void dispatch(FaultFollowReqDTO req);
+
+    /**
      * 强制关闭故障跟踪工单
      * @param req 故障跟踪工单参数
      */

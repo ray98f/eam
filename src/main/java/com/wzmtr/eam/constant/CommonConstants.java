@@ -41,6 +41,7 @@ public class CommonConstants {
 
     public static final String SYS_ALL_01 = "SYS_ALL_01";  //查看全专业角色
     public static final String ADMIN = "admin";  //系统管理员
+    public static final String DM_004 = "DM_004";//运维管理部-专业工程师
     public static final String DM_006 = "DM_006";//中铁通-专业工程师
     public static final String DM_007 = "DM_007";//中铁通-生产调度
     public static final String DM_012 = "DM_012";//中车-工班长
@@ -88,6 +89,7 @@ public class CommonConstants {
     public static final String NINE_STRING = "9";
     public static final String TEN_STRING = "10";
     public static final String FOURTEEN_STRING = "14";
+    public static final String FIFTEEN_STRING = "15";
     public static final String TWENTY_STRING = "20";
     public static final String THIRTY_STRING = "30";
     public static final String FORTY_STRING = "40";

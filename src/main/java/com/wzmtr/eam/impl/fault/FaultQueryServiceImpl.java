@@ -103,7 +103,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
-                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))) {
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))) {
             page = faultQueryMapper.query(reqDTO.of(), reqDTO, userMajorList);
         } else {
             page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());

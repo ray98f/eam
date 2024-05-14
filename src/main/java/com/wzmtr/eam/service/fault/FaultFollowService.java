@@ -4,10 +4,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.FaultFollowExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultFollowReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultFollowReqDTO;
+import com.wzmtr.eam.dto.res.fault.FaultFollowDispatchUserResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultFollowReportResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultFollowResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
-import com.wzmtr.eam.shiro.model.Person;
+import com.wzmtr.eam.entity.SysUser;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -41,11 +42,10 @@ public interface FaultFollowService {
 
     /**
      * 获取工班长列表
-     * @param majorCode 专业code
-     * @param positionCode 位置1
+     * @param faultWorkNo 故障单号
      * @return 工班长列表
      */
-    List<Person> listLeader(String majorCode, String positionCode);
+    List<SysUser> listLeader(String faultWorkNo);
 
     /**
      * 新增故障跟踪工单
@@ -58,6 +58,19 @@ public interface FaultFollowService {
      * @param req 故障跟踪工单参数
      */
     void modify(FaultFollowReqDTO req);
+
+    /**
+     * 获取派工人信息
+     * @param followNo 跟踪编号
+     * @return 派工人信息
+     */
+    FaultFollowDispatchUserResDTO listDispatchUser(String followNo);
+
+    /**
+     * 派工故障跟踪工单
+     * @param req 故障跟踪工单参数
+     */
+    void dispatch(FaultFollowReqDTO req);
 
     /**
      * 强制关闭故障跟踪工单
