@@ -1,7 +1,6 @@
 package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
@@ -338,11 +337,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     public Boolean compareRows(CompareRowsReqDTO req) {
         // 只选中一条直接返回T
-        if (req.getFaultNos().size() == 1 || StringUtils.isEmpty(req.getFaultNos())) {
+        if (StringUtils.isEmpty(req.getFaultNos()) || req.getFaultNos().size() == 1) {
             return true;
         }
-        Set<String> faultNos = req.getFaultNos();
-        List<FaultInfoDO> list = faultInfoMapper.selectList(new QueryWrapper<FaultInfoDO>().in("FAULT_NO", faultNos));
+        List<FaultInfoDO> list = faultInfoMapper.list(req.getFaultNos());
         // 不为null且长度大于1。如果满足条件，则返回1，表示为真；否则返回0，表示为假
         if (StringUtils.isNotEmpty(list)) {
             Set<String> majorCodelist = list.stream().map(FaultInfoDO::getMajorCode).collect(Collectors.toSet());
