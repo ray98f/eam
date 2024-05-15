@@ -114,8 +114,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Autowired
     private OrganizationService organizationService;
 
-    private static final List<String> zcList = Arrays.asList("07", "06");
-
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
@@ -387,7 +385,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     private static String nextRole(OverhaulOrderReqDTO overhaulOrderReqDTO,String zcRole,String zttRole) {
         String roleCode = null;
-        if (zcList.contains(overhaulOrderReqDTO.getSubjectCode())) {
+        if (CommonConstants.ZC_LIST.contains(overhaulOrderReqDTO.getSubjectCode())) {
             roleCode = zcRole;
         } else {
             roleCode = zttRole;

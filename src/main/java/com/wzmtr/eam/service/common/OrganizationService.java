@@ -25,4 +25,11 @@ public interface OrganizationService {
      * @return 中铁通组织层级结构
      */
     List<CompanyStructureTree> listZttCompanyStructure();
+
+    /**
+     * 获取派工组织层级结构
+     * @param majorCode 专业code
+     * @return 组织层级结构
+     */
+    List<CompanyStructureTree> listDispatchCompanyStructure(String majorCode);
 }

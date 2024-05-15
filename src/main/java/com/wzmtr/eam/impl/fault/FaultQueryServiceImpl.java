@@ -87,8 +87,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private RoleMapper roleMapper;
     @Autowired
     private OrganizationService organizationService;
-    @Autowired
-    private static final List<String> ZC_LIST = Arrays.asList("06", "07");
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
@@ -704,7 +702,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
      */
     public List<String> getUsersByCompanyAndRole(String majorCode, String zttRole, String zcRole) {
         List<String> userIds = Lists.newArrayList();
-        if (!ZC_LIST.contains(majorCode)) {
+        if (!CommonConstants.ZC_LIST.contains(majorCode)) {
             if (StringUtils.isNotEmpty(zttRole)) {
                 List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, zttRole);
                 userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
@@ -1014,7 +1012,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
                 // 中铁通的发给中铁通生产调度 DM_007
                 // 行车设备类 且不是车辆故障
-                if ("10".equals(faultInfo.getFaultType()) && !ZC_LIST.contains(majorCode)) {
+                if ("10".equals(faultInfo.getFaultType()) && !CommonConstants.ZC_LIST.contains(majorCode)) {
                     List<String> users = getUsersByCompanyAndRole(majorCode, "DM_007", "ZCJD");
                     overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo, CommonConstants.FAULT_FINISHED_CONFIRM_CN, currentPersonId, "?", null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 } else {

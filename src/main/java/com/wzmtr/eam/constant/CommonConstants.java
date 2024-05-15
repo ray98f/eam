@@ -1,5 +1,8 @@
 package com.wzmtr.eam.constant;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class CommonConstants {
 
     /**
@@ -167,5 +170,7 @@ public class CommonConstants {
     public static final String FAULT_FOLLOW_REPORT = "fault_follow_report";
 
     public static final String PASSENGER_TRANSPORT_DEPT = "运营分公司-客运部";
+
+    public static final List<String> ZC_LIST = Arrays.asList("06", "07");
 
 }

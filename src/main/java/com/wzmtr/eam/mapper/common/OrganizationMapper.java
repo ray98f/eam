@@ -112,6 +112,12 @@ public interface OrganizationMapper {
      * @param ids ids
      * @return 中铁通下级组织机构列表
      */
-    List<CompanyStructureTree> listZttExtraBodyList(List<String> ids);
+    List<CompanyStructureTree> listExternalUnitsBodyList(List<String> ids);
+
+    /**
+     * 获取中铁通根目录
+     * @return 中铁通根目录
+     */
+    CompanyStructureTree getZcRoot();
 
 }

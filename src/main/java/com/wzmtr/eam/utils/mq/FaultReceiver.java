@@ -29,8 +29,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -57,11 +55,6 @@ public class FaultReceiver {
     private PersonMapper personMapper;
     @Autowired
     private OrgMajorMapper orgMajorMapper;
-
-    /**
-     * 以下为代码中用到的常量
-     */
-    private static final List<String> ZC_LIST = Arrays.asList("07", "06");
 
     /**
      * 故障队列消费
@@ -116,7 +109,7 @@ public class FaultReceiver {
     }
 
     private void zttSendOverTodo(String majorCode, FaultReportReqDTO req, FaultInfoDO faultInfoDO, FaultOrderDO faultOrderDO, String faultWorkNo) {
-        if (!ZC_LIST.contains(majorCode)) {
+        if (!CommonConstants.ZC_LIST.contains(majorCode)) {
             String positionCode = req.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                 // 专业和位置查维修部门

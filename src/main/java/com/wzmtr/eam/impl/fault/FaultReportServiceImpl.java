@@ -81,8 +81,6 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Autowired
     private HttpServletRequest httpServletRequest;
 
-    private static final List<String> ZC_LIST = Arrays.asList("06", "07");
-
     @Override
     public String addToFault(FaultReportReqDTO reqDTO) {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
@@ -98,7 +96,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         addFaultFlow(nextFaultNo, nextFaultWorkNo);
         String majorCode = reqDTO.getMajorCode();
         // 中铁通 且不是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
-        if (!ZC_LIST.contains(majorCode)) {
+        if (!CommonConstants.ZC_LIST.contains(majorCode)) {
             if (!"10".equals(reqDTO.getFaultType())) {
                 String positionCode = reqDTO.getPositionCode();
                 if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
@@ -180,7 +178,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         //中铁通 且是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         String majorCode = reqDTO.getMajorCode();
-        if (!ZC_LIST.contains(majorCode) && !"10".equals(reqDTO.getFaultType())) {
+        if (!CommonConstants.ZC_LIST.contains(majorCode) && !"10".equals(reqDTO.getFaultType())) {
             String positionCode = reqDTO.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                 // 专业和位置查维修部门
