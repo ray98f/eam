@@ -134,7 +134,6 @@ public class FaultQueryController {
         faultQueryService.export(reqDTO, response);
     }
 
-
     @ApiOperation(value = "施工计划")
     @PostMapping("/construction")
     public PageResponse<ConstructionResDTO> construction(@RequestBody FaultQueryReqDTO reqDTO) {
@@ -147,20 +146,19 @@ public class FaultQueryController {
         return PageResponse.of(faultQueryService.cancellation(reqDTO));
     }
 
-
     @ApiOperation(value = "操作前对选中的作前置校验")
     @PostMapping("/fault/track/compareRows")
     public DataResponse<Boolean> compareRows(@RequestBody CompareRowsReqDTO reqDTO) {
         return DataResponse.of(faultQueryService.compareRows(reqDTO));
     }
     @ApiOperation(value = "获取维修部门")
-    @GetMapping("querydept")
+    @GetMapping("/querydept")
     public DataResponse<List<FaultRepairDeptResDTO>> querydept(@RequestParam String faultNo) {
         return DataResponse.of(faultQueryService.querydept(faultNo));
     }
 
     @ApiOperation(value = "获取维修部门下的人")
-    @GetMapping("queryWorker")
+    @GetMapping("/queryWorker")
     public DataResponse<List<OrganMajorLineType>> queryWorker(@RequestParam String workerGroupCode) {
         return DataResponse.of(faultQueryService.queryWorker(workerGroupCode));
     }

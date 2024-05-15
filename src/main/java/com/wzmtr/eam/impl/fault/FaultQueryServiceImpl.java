@@ -577,10 +577,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String current = DateUtils.getCurrentTime();
         switch (reqDTO.getType()) {
             case YAN_SHOU:
-                check(list, currentUser, current, reqDTO.getStatus(), reqDTO.getRemark());
+                check(list, currentUser, current, reqDTO.getExamineStatus(), reqDTO.getExamineOpinion());
                 break;
             case WAN_GONG_QUE_REN:
-                finishWorkConfirm(list, cos, currentUser, current, reqDTO.getStatus(), reqDTO.getRemark());
+                finishWorkConfirm(list, cos, currentUser, current, reqDTO.getExamineStatus(), reqDTO.getExamineOpinion());
                 break;
             case GUAN_BI:
                 close(list);
@@ -917,27 +917,27 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
     }
 
-    private void finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current, String status, String remark) {
+    private void finishWorkConfirm(List<FaultDetailResDTO> list, List<String> cos, String currentUser, String current, String examineStatus, String examineOpinion) {
         list.forEach(a -> {
             String faultWorkNo = a.getFaultWorkNo();
             FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(a.getFaultNo(), a.getFaultWorkNo());
             FaultOrderDO faultOrder = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
             faultOrder.setConfirmUserId(currentUser);
             faultOrder.setConfirmTime(current);
-            if (CommonConstants.ZERO_STRING.equals(status)) {
+            if (CommonConstants.ZERO_STRING.equals(examineStatus)) {
                 faultOrder.setOrderStatus(OrderStatus.WAN_GONG_QUE_REN.getCode());
             } else {
                 faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
             }
             faultReportMapper.updateFaultOrder(faultOrder);
             // 完工确认消息发送
-            if (CommonConstants.ZERO_STRING.equals(status)) {
+            if (CommonConstants.ZERO_STRING.equals(examineStatus)) {
                 finishWorkConfirmPassSendMessage(faultWorkNo, faultOrder, faultInfo);
             } else {
                 finishWorkConfirmRejectSendMessage(faultOrder);
             }
             // 添加流程记录
-            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo(), remark);
+            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo(), examineOpinion);
         });
     }
 
@@ -981,7 +981,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         });
     }
 
-    private void check(List<FaultDetailResDTO> list, String currentUser, String current, String status, String remark) {
+    private void check(List<FaultDetailResDTO> list, String currentUser, String current, String examineStatus, String examineOpinion) {
         // 判断是否存在验收状态的数据
         Set<String> orderStatus = StreamUtils.mapToSet(list, FaultDetailResDTO::getOrderStatus);
         Assert.isFalse(orderStatus.contains(OrderStatus.YAN_SHOU.getCode()), "当前勾选的数据中存在验收状态的数据，无法进行重复操作!");
@@ -992,7 +992,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             FaultOrderDO faultOrder = faultQueryMapper.queryOneFaultOrder(faultNo, faultWorkNo);
             // 根据状态变更故障数据状态
             String recId = faultOrder.getRecId();
-            if (CommonConstants.ZERO_STRING.equals(status)) {
+            if (CommonConstants.ZERO_STRING.equals(examineStatus)) {
                 faultOrder.setOrderStatus(OrderStatus.YAN_SHOU.getCode());
             } else {
                 faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
@@ -1009,7 +1009,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultReportMapper.updateFaultInfo(faultInfo);
             // 完成待办
             overTodoService.overTodo(recId, "故障验收");
-            if (CommonConstants.ZERO_STRING.equals(status)) {
+            if (CommonConstants.ZERO_STRING.equals(examineStatus)) {
                 String majorCode = faultInfo.getMajorCode();
                 String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
                 // 中铁通的发给中铁通生产调度 DM_007
@@ -1025,7 +1025,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 sendDispatchTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());
             }
             // 添加流程记录
-            addFaultFlow(faultNo, faultWorkNo, remark);
+            addFaultFlow(faultNo, faultWorkNo, examineOpinion);
         });
     }
 
@@ -1046,9 +1046,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
      * 新增工单流程
      * @param faultNo     故障编号
      * @param faultWorkNo 故障工单编号
-     * @param remark      备注
+     * @param examineOpinion      审核意见
      */
-    public void addFaultFlow(String faultNo, String faultWorkNo, String remark) {
+    public void addFaultFlow(String faultNo, String faultWorkNo, String examineOpinion) {
         FaultFlowReqDTO faultFlow = new FaultFlowReqDTO();
         faultFlow.setRecId(TokenUtils.getUuId());
         faultFlow.setFaultNo(faultNo);
@@ -1060,8 +1060,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotNull(faultOrderDO)) {
             faultFlow.setOrderStatus(faultOrderDO.getOrderStatus());
         }
-        if (StringUtils.isNotEmpty(remark)) {
-            faultFlow.setRemark(remark);
+        if (StringUtils.isNotEmpty(examineOpinion)) {
+            faultFlow.setRemark(examineOpinion);
         }
         faultReportMapper.addFaultFlow(faultFlow);
     }

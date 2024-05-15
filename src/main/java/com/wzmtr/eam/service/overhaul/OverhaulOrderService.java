@@ -25,6 +25,11 @@ public interface OverhaulOrderService {
      */
     Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO);
 
+    /**
+     * 获取检修工单详情
+     * @param id id
+     * @return 检修工单详情
+     */
     OverhaulOrderResDTO getOverhaulOrderDetail(String id);
 
     /**

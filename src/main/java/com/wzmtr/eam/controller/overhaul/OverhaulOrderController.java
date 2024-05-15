@@ -63,6 +63,11 @@ public class OverhaulOrderController {
         return PageResponse.of(overhaulOrderService.openApiPageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO));
     }
 
+    /**
+     * 获取检修工单详情
+     * @param id id
+     * @return 检修工单详情
+     */
     @GetMapping("/detail")
     @ApiOperation(value = "获取检修工单详情")
     public DataResponse<OverhaulOrderResDTO> getOverhaulOrderDetail(@RequestParam @ApiParam("id") String id) {
