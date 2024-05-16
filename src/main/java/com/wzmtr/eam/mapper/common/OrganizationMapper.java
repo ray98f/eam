@@ -28,6 +28,13 @@ public interface OrganizationMapper {
 
     String getIdByAreaId(@Param("id") String id);
 
+    /**
+     * 根据ids获取areaIds
+     * @param ids ids
+     * @return areaIds
+     */
+    List<SysOffice> getAreaIdsByIds(List<String> ids);
+
     List<MemberResDTO> listMember(@Param("id") String id);
 
     /**

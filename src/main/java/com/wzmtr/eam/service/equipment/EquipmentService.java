@@ -49,6 +49,12 @@ public interface EquipmentService {
      */
     void modifyEquipment(EquipmentReqDTO equipmentReqDTO);
 
+    /**
+     * 删除设备台账
+     * @param baseIdsEntity ids
+     */
+    void deleteEquipment(BaseIdsEntity baseIdsEntity);
+
     void importEquipment(MultipartFile file);
 
     void exportEquipment(List<String> ids, HttpServletResponse response) throws IOException;

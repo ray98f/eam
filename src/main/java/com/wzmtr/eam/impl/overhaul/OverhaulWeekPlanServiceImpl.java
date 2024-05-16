@@ -299,7 +299,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         } else {
             overhaulWeekPlanReqDTO.setTrialStatus("30");
             // 去除触发操作
-            triggerOne(weekPlanCode);
+//            triggerOne(weekPlanCode);
         }
         overhaulWeekPlanReqDTO.setRecRevisor(currentPersonId);
         overhaulWeekPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());

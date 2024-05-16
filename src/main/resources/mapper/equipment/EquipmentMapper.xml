@@ -738,7 +738,7 @@
         <if test="approvalStatus!=null and approvalStatus!=''">
             #{approvalStatus},
         </if>
-        #{equipment.recCreator}, #{equipment.recCreateTime}, '0')
+        #{recCreator}, #{recCreateTime}, '0')
     </insert>
 
     <update id="modifyEquipment">
@@ -883,6 +883,16 @@
         </if>
         REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
         WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
+    </update>
+
+    <update id="deleteEquipment">
+        UPDATE T_EQUIPMENT SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
     </update>
 
     <insert id="importEquipment" parameterType="com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO">

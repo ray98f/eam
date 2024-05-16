@@ -18,6 +18,8 @@ import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.equipment.EquipmentService;
@@ -144,6 +146,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentReqDTO.setDeptName(user.getOfficeName());
         String unitNo = insertUnitCode(equipmentReqDTO, user);
         equipmentReqDTO.setEquipCode(unitNo);
+        equipmentReqDTO.setSpecialEquipFlag("10");
         equipmentMapper.addEquipment(equipmentReqDTO);
     }
 
@@ -158,7 +161,17 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentReqDTO.setCompanyName(user.getCompanyName());
         equipmentReqDTO.setDeptCode(user.getOfficeAreaId());
         equipmentReqDTO.setDeptName(user.getOfficeName());
+        equipmentReqDTO.setSpecialEquipFlag("10");
         equipmentMapper.modifyEquipment(equipmentReqDTO);
+    }
+
+    @Override
+    public void deleteEquipment(BaseIdsEntity baseIdsEntity) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
+            equipmentMapper.deleteEquipment(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
+        }
     }
 
     @Override

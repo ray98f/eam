@@ -71,6 +71,14 @@ public interface EquipmentMapper {
      */
     void modifyEquipment(EquipmentReqDTO equipmentReqDTO);
 
+    /**
+     * 删除设备台账
+     * @param ids ids
+     * @param userId 用户id
+     * @param time 时间
+     */
+    void deleteEquipment(List<String> ids, String userId, String time);
+
     void importEquipment(List<EquipmentReqDTO> list);
 
     void insertEquipment(EquipmentReqDTO equipmentReqDTO);

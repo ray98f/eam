@@ -9,6 +9,7 @@ import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelOrgMajorResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.FaultMapper;
@@ -103,25 +104,30 @@ public class OrgMajorServiceImpl implements OrgMajorService {
 
     @Override
     public void addOrgMajor(OrgMajorReqDTO orgMajorReqDTO) {
-        Integer result = orgMajorMapper.selectOrgMajorIsExist(orgMajorReqDTO);
-        if (result > 0) {
-            throw new CommonException(ErrorCode.DATA_EXIST);
+        String orgId = organizationMapper.getIdByAreaId(orgMajorReqDTO.getOrgCode());
+        if (StringUtils.isNotEmpty(orgId)) {
+            List<String> ids = organizationMapper.downRecursionId(orgId);
+            if (StringUtils.isNotEmpty(ids)) {
+                List<SysOffice> offices = organizationMapper.getAreaIdsByIds(ids);
+                orgMajorReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+                orgMajorReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+                for (SysOffice office : offices) {
+                    orgMajorReqDTO.setOrgCode(office.getAreaId());
+                    orgMajorReqDTO.setOrgName(office.getName());
+                    Integer result = orgMajorMapper.selectOrgMajorIsExist(orgMajorReqDTO);
+                    if (result > 0) {
+                        continue;
+                    }
+                    orgMajorReqDTO.setRecId(TokenUtils.getUuId());
+                    orgMajorMapper.addOrgMajor(orgMajorReqDTO);
+                }
+            }
         }
-        orgMajorReqDTO.setRecId(TokenUtils.getUuId());
-        orgMajorReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        orgMajorReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        orgMajorMapper.addOrgMajor(orgMajorReqDTO);
     }
 
     @Override
     public void modifyOrgMajor(OrgMajorReqDTO orgMajorReqDTO) {
-        Integer result = orgMajorMapper.selectOrgMajorIsExist(orgMajorReqDTO);
-        if (result > 0) {
-            throw new CommonException(ErrorCode.DATA_EXIST);
-        }
-        orgMajorReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        orgMajorReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        orgMajorMapper.modifyOrgMajor(orgMajorReqDTO);
+        addOrgMajor(orgMajorReqDTO);
     }
 
     @Override

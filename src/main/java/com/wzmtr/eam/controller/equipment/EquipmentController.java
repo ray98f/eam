@@ -139,6 +139,18 @@ public class EquipmentController {
     }
 
     /**
+     * 删除设备台账
+     * @param baseIdsEntity ids
+     * @return 成功
+     */
+    @PostMapping("/delete")
+    @ApiOperation(value = "删除设备台账")
+    public DataResponse<T> deleteEquipment(@RequestBody BaseIdsEntity baseIdsEntity) {
+        equipmentService.deleteEquipment(baseIdsEntity);
+        return DataResponse.success();
+    }
+
+    /**
      * 导入设备台账
      * @param file 文件
      * @return 成功
