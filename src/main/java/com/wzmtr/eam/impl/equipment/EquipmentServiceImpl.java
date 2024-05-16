@@ -8,7 +8,6 @@ import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelEquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
-import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
@@ -128,6 +127,38 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public EquipmentResDTO getEquipmentDetail(String id) {
         return equipmentMapper.getEquipmentDetail(id);
+    }
+
+    @Override
+    public void addEquipment(EquipmentReqDTO equipmentReqDTO) {
+        equipmentReqDTO.setRecId(TokenUtils.getUuId());
+        equipmentReqDTO.setApprovalStatus("30");
+        equipmentReqDTO.setQuantity(new BigDecimal("1"));
+        equipmentReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        equipmentReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+        equipmentReqDTO.setInAccountTime(DateUtils.getCurrentTime());
+        CurrentLoginUser user = TokenUtils.getCurrentPerson();
+        equipmentReqDTO.setCompanyCode(user.getCompanyAreaId());
+        equipmentReqDTO.setCompanyName(user.getCompanyName());
+        equipmentReqDTO.setDeptCode(user.getOfficeAreaId());
+        equipmentReqDTO.setDeptName(user.getOfficeName());
+        String unitNo = insertUnitCode(equipmentReqDTO, user);
+        equipmentReqDTO.setEquipCode(unitNo);
+        equipmentMapper.addEquipment(equipmentReqDTO);
+    }
+
+    @Override
+    public void modifyEquipment(EquipmentReqDTO equipmentReqDTO) {
+        equipmentReqDTO.setApprovalStatus("30");
+        equipmentReqDTO.setQuantity(new BigDecimal("1"));
+        equipmentReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        equipmentReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
+        CurrentLoginUser user = TokenUtils.getCurrentPerson();
+        equipmentReqDTO.setCompanyCode(user.getCompanyAreaId());
+        equipmentReqDTO.setCompanyName(user.getCompanyName());
+        equipmentReqDTO.setDeptCode(user.getOfficeAreaId());
+        equipmentReqDTO.setDeptName(user.getOfficeName());
+        equipmentMapper.modifyEquipment(equipmentReqDTO);
     }
 
     @Override

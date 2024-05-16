@@ -432,6 +432,459 @@
         #{brand,jdbcType=VARCHAR})
     </insert>
 
+    <insert id="addEquipment">
+        INSERT INTO T_EQUIPMENT (
+        REC_ID,
+        <if test="companyCode!=null and companyCode!=''">
+            COMPANY_CODE,
+        </if>
+        <if test="companyName!=null and companyName!=''">
+            COMPANY_NAME,
+        </if>
+        <if test="deptCode!=null and deptCode!=''">
+            DEPT_CODE,
+        </if>
+        <if test="deptName!=null and deptName!=''">
+            DEPT_NAME,
+        </if>
+        <if test="equipCode!=null and equipCode!=''">
+            EQUIP_CODE,
+        </if>
+        <if test="equipName!=null and equipName!=''">
+            EQUIP_NAME,
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            MAJOR_CODE,
+        </if>
+        <if test="majorName!=null and majorName!=''">
+            MAJOR_NAME,
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            SYSTEM_CODE,
+        </if>
+        <if test="systemName!=null and systemName!=''">
+            SYSTEM_NAME,
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            EQUIP_TYPE_CODE,
+        </if>
+        <if test="equipTypeName!=null and equipTypeName!=''">
+            EQUIP_TYPE_NAME,
+        </if>
+        <if test="specialEquipFlag!=null and specialEquipFlag!=''">
+            SPECIAL_EQUIP_FLAG,
+        </if>
+        <if test="sourceKind!=null and sourceKind!=''">
+            SOURCE_KIND,
+        </if>
+        <if test="bomType!=null and bomType!=''">
+            BOM_TYPE,
+        </if>
+        <if test="manufacture!=null and manufacture!=''">
+            MANUFACTURE,
+        </if>
+        <if test="orderNo!=null and orderNo!=''">
+            ORDER_NO,
+        </if>
+        <if test="orderName!=null and orderName!=''">
+            ORDER_NAME,
+        </if>
+        <if test="matSpecifi!=null and matSpecifi!=''">
+            MAT_SPECIFI,
+        </if>
+        <if test="brand!=null and brand!=''">
+            BRAND,
+        </if>
+        <if test="manufactureDate!=null and manufactureDate!=''">
+            MANUFACTURE_DATE,
+        </if>
+        <if test="manufactureNo!=null and manufactureNo!=''">
+            MANUFACTURE_NO,
+        </if>
+        <if test="startUseDate!=null and startUseDate!=''">
+            START_USE_DATE,
+        </if>
+        <if test="quantity!=null">
+            QUANTITY,
+        </if>
+        <if test="inAccountTime!=null and inAccountTime!=''">
+            IN_ACCOUNT_TIME,
+        </if>
+        <if test="pickNo!=null and pickNo!=''">
+            PICK_NO,
+        </if>
+        <if test="pickName!=null and pickName!=''">
+            PICK_NAME,
+        </if>
+        <if test="equipStatus!=null and equipStatus!=''">
+            EQUIP_STATUS,
+        </if>
+        <if test="sourceAppNo!=null and sourceAppNo!=''">
+            SOURCE_APP_NO,
+        </if>
+        <if test="sourceSubNo!=null and sourceSubNo!=''">
+            SOURCE_SUB_NO,
+        </if>
+        <if test="sourceRecId!=null and sourceRecId!=''">
+            SOURCE_REC_ID,
+        </if>
+        <if test="installDealer!=null and installDealer!=''">
+            INSTALL_DEALER,
+        </if>
+        <if test="docId!=null and docId!=''">
+            DOC_ID,
+        </if>
+        <if test="originLineNo!=null and originLineNo!=''">
+            ORIGIN_LINE_NO,
+        </if>
+        <if test="originLineName!=null and originLineName!=''">
+            ORIGIN_LINE_NAME,
+        </if>
+        <if test="originSegNo!=null and originSegNo!=''">
+            ORIGIN_SEG_NO,
+        </if>
+        <if test="originSegName!=null and originSegName!=''">
+            ORIGIN_SEG_NAME,
+        </if>
+        <if test="useLineNo!=null and useLineNo!=''">
+            USE_LINE_NO,
+        </if>
+        <if test="useLineName!=null and useLineName!=''">
+            USE_LINE_NAME,
+        </if>
+        <if test="useSegNo!=null and useSegNo!=''">
+            USE_SEG_NO,
+        </if>
+        <if test="useSegName!=null and useSegName!=''">
+            USE_SEG_NAME,
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            POSITION1_CODE,
+        </if>
+        <if test="position1Name!=null and position1Name!=''">
+            POSITION1_NAME,
+        </if>
+        <if test="position2Code!=null and position2Code!=''">
+            POSITION2_CODE,
+        </if>
+        <if test="position2Name!=null and position2Name!=''">
+            POSITION2_NAME,
+        </if>
+        <if test="position3!=null and position3!=''">
+            POSITION3,
+        </if>
+        <if test="positionRemark!=null and positionRemark!=''">
+            POSITION_REMARK,
+        </if>
+        <if test="totalMiles!=null and totalMiles!=''">
+            TOTAL_MILES,
+        </if>
+        <if test="remark!=null and remark!=''">
+            REMARK,
+        </if>
+        <if test="approvalStatus!=null and approvalStatus!=''">
+            APPROVAL_STATUS,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME, DELETE_FLAG)
+        VALUES (
+        SYS_GUID(),
+        <if test="companyCode!=null and companyCode!=''">
+            #{companyCode},
+        </if>
+        <if test="companyName!=null and companyName!=''">
+            #{companyName},
+        </if>
+        <if test="deptCode!=null and deptCode!=''">
+            #{deptCode},
+        </if>
+        <if test="deptName!=null and deptName!=''">
+            #{deptName},
+        </if>
+        <if test="equipCode!=null and equipCode!=''">
+            #{equipCode},
+        </if>
+        <if test="equipName!=null and equipName!=''">
+            #{equipName},
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            #{majorCode},
+        </if>
+        <if test="majorName!=null and majorName!=''">
+            #{majorName},
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            #{systemCode},
+        </if>
+        <if test="systemName!=null and systemName!=''">
+            #{systemName},
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            #{equipTypeCode},
+        </if>
+        <if test="equipTypeName!=null and equipTypeName!=''">
+            #{equipTypeName},
+        </if>
+        <if test="specialEquipFlag!=null and specialEquipFlag!=''">
+            #{specialEquipFlag},
+        </if>
+        <if test="sourceKind!=null and sourceKind!=''">
+            #{sourceKind},
+        </if>
+        <if test="bomType!=null and bomType!=''">
+            #{bomType},
+        </if>
+        <if test="manufacture!=null and manufacture!=''">
+            #{manufacture},
+        </if>
+        <if test="orderNo!=null and orderNo!=''">
+            #{orderNo},
+        </if>
+        <if test="orderName!=null and orderName!=''">
+            #{orderName},
+        </if>
+        <if test="matSpecifi!=null and matSpecifi!=''">
+            #{matSpecifi},
+        </if>
+        <if test="brand!=null and brand!=''">
+            #{brand},
+        </if>
+        <if test="manufactureDate!=null and manufactureDate!=''">
+            #{manufactureDate},
+        </if>
+        <if test="manufactureNo!=null and manufactureNo!=''">
+            #{manufactureNo},
+        </if>
+        <if test="startUseDate!=null and startUseDate!=''">
+            #{startUseDate},
+        </if>
+        <if test="quantity!=null">
+            #{quantity},
+        </if>
+        <if test="inAccountTime!=null and inAccountTime!=''">
+            #{inAccountTime},
+        </if>
+        <if test="pickNo!=null and pickNo!=''">
+            #{pickNo},
+        </if>
+        <if test="pickName!=null and pickName!=''">
+            #{pickName},
+        </if>
+        <if test="equipStatus!=null and equipStatus!=''">
+            #{equipStatus},
+        </if>
+        <if test="sourceAppNo!=null and sourceAppNo!=''">
+            #{sourceAppNo},
+        </if>
+        <if test="sourceSubNo!=null and sourceSubNo!=''">
+            #{sourceSubNo},
+        </if>
+        <if test="sourceRecId!=null and sourceRecId!=''">
+            #{sourceRecId},
+        </if>
+        <if test="installDealer!=null and installDealer!=''">
+            #{installDealer},
+        </if>
+        <if test="docId!=null and docId!=''">
+            #{docId},
+        </if>
+        <if test="originLineNo!=null and originLineNo!=''">
+            #{originLineNo},
+        </if>
+        <if test="originLineName!=null and originLineName!=''">
+            #{originLineName},
+        </if>
+        <if test="originSegNo!=null and originSegNo!=''">
+            #{originSegNo},
+        </if>
+        <if test="originSegName!=null and originSegName!=''">
+            #{originSegName},
+        </if>
+        <if test="useLineNo!=null and useLineNo!=''">
+            #{useLineNo},
+        </if>
+        <if test="useLineName!=null and useLineName!=''">
+            #{useLineName},
+        </if>
+        <if test="useSegNo!=null and useSegNo!=''">
+            #{useSegNo},
+        </if>
+        <if test="useSegName!=null and useSegName!=''">
+            #{useSegName},
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            #{position1Code},
+        </if>
+        <if test="position1Name!=null and position1Name!=''">
+            #{position1Name},
+        </if>
+        <if test="position2Code!=null and position2Code!=''">
+            #{position2Code},
+        </if>
+        <if test="position2Name!=null and position2Name!=''">
+            #{position2Name},
+        </if>
+        <if test="position3!=null and position3!=''">
+            #{position3},
+        </if>
+        <if test="positionRemark!=null and positionRemark!=''">
+            #{positionRemark},
+        </if>
+        <if test="totalMiles!=null and totalMiles!=''">
+            #{totalMiles},
+        </if>
+        <if test="remark!=null and remark!=''">
+            #{remark},
+        </if>
+        <if test="approvalStatus!=null and approvalStatus!=''">
+            #{approvalStatus},
+        </if>
+        #{equipment.recCreator}, #{equipment.recCreateTime}, '0')
+    </insert>
+
+    <update id="modifyEquipment">
+        UPDATE T_EQUIPMENT SET
+        <if test="companyCode!=null">
+            COMPANY_CODE=#{companyCode},
+        </if>
+        <if test="companyName!=null">
+            COMPANY_NAME=#{companyName},
+        </if>
+        <if test="deptCode!=null">
+            DEPT_CODE=#{deptCode},
+        </if>
+        <if test="deptName!=null">
+            DEPT_NAME=#{deptName},
+        </if>
+        <if test="equipName!=null">
+            EQUIP_NAME=#{equipName},
+        </if>
+        <if test="majorCode!=null">
+            MAJOR_CODE=#{majorCode},
+        </if>
+        <if test="majorName!=null">
+            MAJOR_NAME=#{majorName},
+        </if>
+        <if test="systemCode!=null">
+            SYSTEM_CODE=#{systemCode},
+        </if>
+        <if test="systemName!=null">
+            SYSTEM_NAME=#{systemName},
+        </if>
+        <if test="equipTypeCode!=null">
+            EQUIP_TYPE_CODE=#{equipTypeCode},
+        </if>
+        <if test="equipTypeName!=null">
+            EQUIP_TYPE_NAME=#{equipTypeName},
+        </if>
+        <if test="specialEquipFlag!=null">
+            SPECIAL_EQUIP_FLAG=#{specialEquipFlag},
+        </if>
+        <if test="sourceKind!=null">
+            SOURCE_KIND=#{sourceKind},
+        </if>
+        <if test="bomType!=null">
+            BOM_TYPE=#{bomType},
+        </if>
+        <if test="manufacture!=null">
+            MANUFACTURE=#{manufacture},
+        </if>
+        <if test="orderNo!=null">
+            ORDER_NO=#{orderNo},
+        </if>
+        <if test="orderName!=null">
+            ORDER_NAME=#{orderName},
+        </if>
+        <if test="matSpecifi!=null">
+            MAT_SPECIFI=#{matSpecifi},
+        </if>
+        <if test="brand!=null">
+            BRAND=#{brand},
+        </if>
+        <if test="manufactureDate!=null">
+            MANUFACTURE_DATE=#{manufactureDate},
+        </if>
+        <if test="manufactureNo!=null">
+            MANUFACTURE_NO=#{manufactureNo},
+        </if>
+        <if test="startUseDate!=null">
+            START_USE_DATE=#{startUseDate},
+        </if>
+        <if test="quantity!=null">
+            QUANTITY=#{quantity},
+        </if>
+        <if test="pickNo!=null">
+            PICK_NO=#{pickNo},
+        </if>
+        <if test="pickName!=null">
+            PICK_NAME=#{pickName},
+        </if>
+        <if test="equipStatus!=null">
+            EQUIP_STATUS=#{equipStatus},
+        </if>
+        <if test="sourceAppNo!=null">
+            SOURCE_APP_NO=#{sourceAppNo},
+        </if>
+        <if test="sourceSubNo!=null">
+            SOURCE_SUB_NO=#{sourceSubNo},
+        </if>
+        <if test="sourceRecId!=null">
+            SOURCE_REC_ID=#{sourceRecId},
+        </if>
+        <if test="installDealer!=null">
+            INSTALL_DEALER=#{installDealer},
+        </if>
+        <if test="docId!=null">
+            DOC_ID=#{docId},
+        </if>
+        <if test="originLineNo!=null">
+            ORIGIN_LINE_NO=#{originLineNo},
+        </if>
+        <if test="originLineName!=null">
+            ORIGIN_LINE_NAME=#{originLineName},
+        </if>
+        <if test="originSegNo!=null">
+            ORIGIN_SEG_NO=#{originSegNo},
+        </if>
+        <if test="originSegName!=null">
+            ORIGIN_SEG_NAME=#{originSegName},
+        </if>
+        <if test="useLineNo!=null">
+            USE_LINE_NO=#{useLineNo},
+        </if>
+        <if test="useLineName!=null">
+            USE_LINE_NAME=#{useLineName},
+        </if>
+        <if test="useSegNo!=null">
+            USE_SEG_NO=#{useSegNo},
+        </if>
+        <if test="useSegName!=null">
+            USE_SEG_NAME=#{useSegName},
+        </if>
+        <if test="position1Code!=null">
+            POSITION1_CODE=#{position1Code},
+        </if>
+        <if test="position1Name!=null">
+            POSITION1_NAME=#{position1Name},
+        </if>
+        <if test="position2Code!=null">
+            POSITION2_CODE=#{position2Code},
+        </if>
+        <if test="position2Name!=null">
+            POSITION2_NAME=#{position2Name},
+        </if>
+        <if test="position3!=null">
+            POSITION3=#{position3},
+        </if>
+        <if test="positionRemark!=null">
+            POSITION_REMARK=#{positionRemark},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
+    </update>
+
     <insert id="importEquipment" parameterType="com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO">
         INSERT ALL
         <foreach collection="list" index="index" item="equipment" separator=" ">

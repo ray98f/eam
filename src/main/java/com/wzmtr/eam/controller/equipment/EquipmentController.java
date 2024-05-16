@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.equipment;
 
+import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
@@ -111,6 +112,30 @@ public class EquipmentController {
     @ApiOperation(value = "获取设备台账详情")
     public DataResponse<EquipmentResDTO> getEquipmentDetail(@RequestParam @ApiParam("id") String id) {
         return DataResponse.of(equipmentService.getEquipmentDetail(id));
+    }
+
+    /**
+     * 新增设备台账
+     * @param equipmentReqDTO 设备台账信息
+     * @return 成功
+     */
+    @PostMapping("/add")
+    @ApiOperation(value = "新增设备台账")
+    public DataResponse<T> addEquipment(@RequestBody EquipmentReqDTO equipmentReqDTO) {
+        equipmentService.addEquipment(equipmentReqDTO);
+        return DataResponse.success();
+    }
+
+    /**
+     * 编辑设备台账
+     * @param equipmentReqDTO 设备台账信息
+     * @return 成功
+     */
+    @PostMapping("/modify")
+    @ApiOperation(value = "编辑设备台账")
+    public DataResponse<T> modifyEquipment(@RequestBody EquipmentReqDTO equipmentReqDTO) {
+        equipmentService.modifyEquipment(equipmentReqDTO);
+        return DataResponse.success();
     }
 
     @PostMapping("/import")
