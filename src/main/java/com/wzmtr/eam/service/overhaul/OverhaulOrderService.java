@@ -68,7 +68,7 @@ public interface OverhaulOrderService {
 
     void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
-    void pageMaterial(String orderCode, HttpServletResponse response) throws IOException;
+    String pageMaterial(String orderCode);
 
     void receiveMaterial(HttpServletResponse response) throws IOException;
 

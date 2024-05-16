@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -166,13 +165,10 @@ public class FaultQueryController {
     /**
      * 跳转至物资系统领料界面
      * @param orderCode 工单号
-     * @param response response
-     * @throws IOException 异常
      */
     @GetMapping("/material/page")
     @ApiOperation(value = "跳转至物资系统领料界面")
-    public void pageMaterial(@RequestParam String orderCode,
-                             HttpServletResponse response) throws IOException {
-        faultQueryService.pageMaterial(orderCode, response);
+    public DataResponse<String> pageMaterial(@RequestParam String orderCode) {
+        return DataResponse.of(faultQueryService.pageMaterial(orderCode));
     }
 }

@@ -48,7 +48,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1063,7 +1062,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public void pageMaterial(String orderCode, HttpServletResponse response) throws IOException {
-        response.sendRedirect(dictionariesMapper.queryOneByItemCodeAndCodesetCode("DM_ER_ADDRESS", "11").getItemCname() + orderCode);
+    public String pageMaterial(String orderCode) {
+        return dictionariesMapper.queryOneByItemCodeAndCodesetCode("DM_ER_ADDRESS", "11").getItemCname() + orderCode;
     }
 }

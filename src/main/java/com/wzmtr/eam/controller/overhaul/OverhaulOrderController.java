@@ -162,14 +162,11 @@ public class OverhaulOrderController {
     /**
      * 跳转至物资系统领料界面
      * @param orderCode 工单号
-     * @param response response
-     * @throws IOException 异常
      */
     @GetMapping("/material/page")
     @ApiOperation(value = "跳转至物资系统领料界面")
-    public void pageMaterial(@RequestParam String orderCode,
-                             HttpServletResponse response) throws IOException {
-        overhaulOrderService.pageMaterial(orderCode, response);
+    public DataResponse<String> pageMaterial(@RequestParam String orderCode) {
+        return DataResponse.of(overhaulOrderService.pageMaterial(orderCode));
     }
 
     @PostMapping("/material/receive")

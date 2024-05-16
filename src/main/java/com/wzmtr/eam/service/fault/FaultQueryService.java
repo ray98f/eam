@@ -10,7 +10,6 @@ import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -56,5 +55,5 @@ public interface FaultQueryService {
 
     List<OrganMajorLineType> queryWorker(String workerGroupCode);
 
-    void pageMaterial(String orderCode, HttpServletResponse response) throws IOException;
+    String pageMaterial(String orderCode);
 }

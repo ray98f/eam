@@ -530,8 +530,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void pageMaterial(String orderCode, HttpServletResponse response) throws IOException {
-        response.sendRedirect(dictionariesMapper.queryOneByItemCodeAndCodesetCode("DM_ER_ADDRESS", "11").getItemCname() + orderCode);
+    public String pageMaterial(String orderCode) {
+        return dictionariesMapper.queryOneByItemCodeAndCodesetCode("DM_ER_ADDRESS", "11").getItemCname() + orderCode;
     }
 
     @Override
