@@ -594,6 +594,9 @@
         <if test="trialStatus1!=null and trialStatus1!=''">
             and TRIAL_STATUS=#{trialStatus1}
         </if>
+        <if test="constructionType!=null and constructionType!=''">
+            and CONSTRUCTION_TYPE!=#{constructionType}
+        </if>
         <if test="ids!=null and ids.size()>0">
             and REC_ID in (
             <foreach collection="ids" index="index" item="id" separator=",">
