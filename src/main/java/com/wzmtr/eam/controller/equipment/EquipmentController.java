@@ -138,6 +138,11 @@ public class EquipmentController {
         return DataResponse.success();
     }
 
+    /**
+     * 导入设备台账
+     * @param file 文件
+     * @return 成功
+     */
     @PostMapping("/import")
     @ApiOperation(value = "导入设备台账")
     public DataResponse<T> importEquipment(@RequestParam MultipartFile file) {
