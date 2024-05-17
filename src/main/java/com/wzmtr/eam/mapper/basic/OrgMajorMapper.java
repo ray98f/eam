@@ -55,10 +55,18 @@ public interface OrgMajorMapper {
     List<ZcjxResDTO>  querySHWorker(String officeId,String roleCode);
 
     /**
+     * 根据位置和专业获取部门列表
+     * @param station 位置一code
+     * @param majorCode 专业code
+     * @return 部门列表
+     */
+    List<OrgMajorResDTO> listOrganByStationAndMajor(String station, String majorCode);
+
+    /**
      * 根据位置和专业获取部门
-     * @param station
-     * @param majorCode
-     * @return
+     * @param station 位置一code
+     * @param majorCode 专业code
+     * @return 部门
      */
     OrgMajorResDTO getOrganByStationAndMajor(String station, String majorCode);
 

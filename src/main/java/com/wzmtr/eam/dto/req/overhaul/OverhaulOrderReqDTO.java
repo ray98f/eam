@@ -214,4 +214,13 @@ public class OverhaulOrderReqDTO {
      * 实际完成检修公里数
      */
     private Double realMile;
+
+    /**
+     * 状态 0 通过 1 不通过
+     */
+    private String examineStatus;
+    /**
+     * 审核意见
+     */
+    private String examineOpinion;
 }

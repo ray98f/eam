@@ -206,8 +206,7 @@
         group by c.YEAR_MONTH
         order by c.YEAR_MONTH
     </select>
-    <select id="queryTrainPassengerInformationFault"
-            resultType="com.wzmtr.eam.dto.res.statistic.ReliabilityResDTO">
+    <select id="queryTrainPassengerInformationFault" resultType="com.wzmtr.eam.dto.res.statistic.ReliabilityResDTO">
         select c.YEAR_MONTH as "yearMonth",
                (
                        (1 - (round((sum(
@@ -259,8 +258,7 @@
         group by c.YEAR_MONTH
         order by c.YEAR_MONTH
     </select>
-    <select id="queryStationPassengerInformationFault"
-            resultType="com.wzmtr.eam.dto.res.statistic.ReliabilityResDTO">
+    <select id="queryStationPassengerInformationFault" resultType="com.wzmtr.eam.dto.res.statistic.ReliabilityResDTO">
         select c.YEAR_MONTH as "yearMonth",
                (
                        (1 - (round((sum(
@@ -311,8 +309,7 @@
         group by c.YEAR_MONTH
         order by c.YEAR_MONTH
     </select>
-    <select id="queryFireFightingEquipmentFault"
-            resultType="com.wzmtr.eam.dto.res.statistic.ReliabilityResDTO">
+    <select id="queryFireFightingEquipmentFault" resultType="com.wzmtr.eam.dto.res.statistic.ReliabilityResDTO">
         select c.YEAR_MONTH as "yearMonth",
                (
                        (1 - (round((sum(

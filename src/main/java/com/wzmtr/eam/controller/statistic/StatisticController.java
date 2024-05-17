@@ -19,6 +19,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -86,14 +87,48 @@ public class StatisticController {
         statisticService.materialExport(reqDTO, response);
     }
 
-    @PostMapping("/failure/rate/query")
-    @ApiOperation(value = "故障率")
-    public DataResponse<FailureRateDetailResDTO> query(@RequestBody FailreRateQueryReqDTO reqDTO) {
-        return DataResponse.of(statisticService.query(reqDTO));
+    /**
+     * 新增站台门故障数据
+     * @param req req
+     * @return 成功
+     */
+    @PostMapping("/door/fault/add")
+    @ApiOperation(value = "新增站台门故障数据")
+    public DataResponse<T> addDoorFault(@RequestBody DoorFaultReqDTO req) {
+        statisticService.addDoorFault(req);
+        return DataResponse.success();
     }
 
+    /**
+     * 编辑站台门故障数据
+     * @param req req
+     * @return 成功
+     */
+    @PostMapping("/door/fault/modify")
+    @ApiOperation(value = "编辑站台门故障数据")
+    public DataResponse<T> modifyDoorFault(@RequestBody DoorFaultReqDTO req) {
+        statisticService.modifyDoorFault(req);
+        return DataResponse.success();
+    }
+
+    /**
+     * 故障率指标
+     * @param reqDTO req
+     * @return 故障率指标
+     */
+    @PostMapping("/failure/rate/query")
+    @ApiOperation(value = "故障率指标")
+    public DataResponse<FailureRateDetailResDTO> failureRateQuery(@RequestBody FailreRateQueryReqDTO reqDTO) {
+        return DataResponse.of(statisticService.failureRateQuery(reqDTO));
+    }
+
+    /**
+     * 可靠性指标
+     * @param reqDTO req
+     * @return 可靠性指标
+     */
     @PostMapping("/reliability/query")
-    @ApiOperation(value = "可靠度指标")
+    @ApiOperation(value = "可靠性指标")
     public DataResponse<ReliabilityListResDTO> reliabilityQuery(@RequestBody FailreRateQueryReqDTO reqDTO) {
         return DataResponse.of(statisticService.reliabilityQuery(reqDTO));
     }

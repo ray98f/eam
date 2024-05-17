@@ -114,12 +114,17 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Autowired
     private OrganizationService organizationService;
 
-    private static final List<String> zcList = Arrays.asList("07", "06");
-
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         overhaulOrderListReqDTO.setObjectFlag("1");
+        // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(overhaulOrderListReqDTO.getSubjectCode())) {
+            overhaulOrderListReqDTO.setMajors(userAccountService.listUserMajor());
+        }
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
+            overhaulOrderListReqDTO.setUserId(TokenUtils.getCurrentPersonId());
+        }
         Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         List<OverhaulOrderResDTO> list = page.getRecords();
         // 专业为车辆的检修工单填充字段
@@ -337,7 +342,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         //     throw new CommonException(ErrorCode.NORMAL_ERROR, "只有工单为车辆二级修才能进行该操作。");
         // }
         checkOrderState(overhaulOrderReqDTO, "4", "完工");
-        overhaulOrderReqDTO.setWorkStatus("6");
+        if (CommonConstants.ZERO_STRING.equals(overhaulOrderReqDTO.getExamineStatus())) {
+            overhaulOrderReqDTO.setWorkStatus(CommonConstants.SIX_STRING);
+        } else {
+            overhaulOrderReqDTO.setWorkStatus(CommonConstants.THREE_STRING);
+        }
         overhaulOrderReqDTO.setRecDeleteTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
@@ -347,16 +356,24 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         //完成该业务编号下的所有待办
         overTodoService.overTodo(overhaulOrderReqDTO.getOrderCode());
         // 根据角色获取用户列表
-        String roleCode = nextRole(overhaulOrderReqDTO,"ZCJD","DM_30");
-        List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, roleCode);
-        if (CollectionUtil.isNotEmpty(userList)){
-            for (BpmnExaminePersonRes map2 : userList) {
-                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,overhaulOrderReqDTO.getOrderCode(),"检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
-                        map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId(),BpmnFlowEnum.OVERHAUL_ORDER.value());
+        if (CommonConstants.ZERO_STRING.equals(overhaulOrderReqDTO.getExamineStatus())) {
+            String roleCode = nextRole(overhaulOrderReqDTO,"ZCJD","DM_30");
+            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, roleCode);
+            if (CollectionUtil.isNotEmpty(userList)){
+                for (BpmnExaminePersonRes map2 : userList) {
+                    overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,overhaulOrderReqDTO.getOrderCode(),"检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(),
+                            map2.getUserId(), "检修工单完工确认", "DMER0200", TokenUtils.getCurrentPersonId(),BpmnFlowEnum.OVERHAUL_ORDER.value());
+                }
+            }
+        } else {
+            String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
+            if (StringUtils.isNotEmpty(workerGroupCode)) {
+                // 派工 直接派工至该工班人员
+                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
         }
         // 添加流程记录
-        addOverhaulOrderFlow(overhaulOrderReqDTO.getOrderCode(), null);
+        addOverhaulOrderFlow(overhaulOrderReqDTO.getOrderCode(), overhaulOrderReqDTO.getExamineOpinion());
     }
 
     /**
@@ -368,7 +385,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      */
     private static String nextRole(OverhaulOrderReqDTO overhaulOrderReqDTO,String zcRole,String zttRole) {
         String roleCode = null;
-        if (zcList.contains(overhaulOrderReqDTO.getSubjectCode())) {
+        if (CommonConstants.ZC_LIST.contains(overhaulOrderReqDTO.getSubjectCode())) {
             roleCode = zcRole;
         } else {
             roleCode = zttRole;
@@ -395,7 +412,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (org.apache.commons.lang3.StringUtils.isBlank(overhaulOrderReqDTO.getRealEndTime())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该工单没有实际完成时间，无法完工确认！");
         }
-        overhaulOrderReqDTO.setWorkStatus("5");
+        if (CommonConstants.ZERO_STRING.equals(overhaulOrderReqDTO.getExamineStatus())) {
+            overhaulOrderReqDTO.setWorkStatus(CommonConstants.FIVE_STRING);
+        } else {
+            overhaulOrderReqDTO.setWorkStatus(CommonConstants.THREE_STRING);
+        }
         overhaulOrderReqDTO.setAckPersonId(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setAckPersonName(TokenUtils.getCurrentPerson().getPersonName());
         overhaulOrderReqDTO.setConfirTime(DateUtils.getCurrentTime());
@@ -407,8 +428,15 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         // ServiceDMER0201  confirmWorkers
         //完成待办
         overTodoService.overTodo(overhaulOrderReqDTO.getOrderCode());
+        if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getExamineStatus())) {
+            String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
+            if (StringUtils.isNotEmpty(workerGroupCode)) {
+                // 派工 直接派工至该工班人员
+                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+            }
+        }
         // 添加流程记录
-        addOverhaulOrderFlow(overhaulOrderReqDTO.getOrderCode(), null);
+        addOverhaulOrderFlow(overhaulOrderReqDTO.getOrderCode(), overhaulOrderReqDTO.getExamineOpinion());
     }
 
     /**
@@ -502,8 +530,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void pageMaterial() {
-        // todo 材料列表
+    public String pageMaterial(String orderCode) {
+        return dictionariesMapper.queryOneByItemCodeAndCodesetCode("DM_ER_ADDRESS", "11").getItemCname() + orderCode;
     }
 
     @Override
@@ -512,8 +540,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void returnMaterial() {
-        // todo 退回材料
+    public void returnMaterial(HttpServletResponse response) throws IOException {
+        response.sendRedirect(dictionariesMapper.queryOneByItemCodeAndCodesetCode("DM_ER_ADDRESS", "12").getItemCname());
     }
 
     @Override

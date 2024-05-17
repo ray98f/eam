@@ -3,24 +3,28 @@ package com.wzmtr.eam.impl.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.fault.FaultFollowExportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultFollowReportReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultFollowReqDTO;
 import com.wzmtr.eam.dto.res.fault.ExcelFaultFollowResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultFollowDispatchUserResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultFollowReportResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultFollowResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.SysOffice;
+import com.wzmtr.eam.entity.SysUser;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
-import com.wzmtr.eam.mapper.common.PersonMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultFollowMapper;
+import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.fault.FaultFollowService;
-import com.wzmtr.eam.shiro.model.Person;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -47,15 +51,17 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     @Autowired
     private FaultFollowMapper faultFollowMapper;
     @Autowired
-    private OrgMajorMapper orgMajorMapper;
-    @Autowired
-    private PersonMapper personMapper;
-    @Autowired
     private DictionariesMapper dictMapper;
     @Autowired
     private FileMapper fileMapper;
     @Autowired
     private OverTodoService overTodoService;
+    @Autowired
+    private FaultQueryMapper faultQueryMapper;
+    @Autowired
+    private UserAccountMapper userAccountMapper;
+    @Autowired
+    private OrganizationMapper organizationMapper;
 
     @Override
     public Page<FaultFollowResDTO> page(String followNo, String faultWorkNo,
@@ -87,15 +93,16 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     }
 
     @Override
-    public List<Person> listLeader(String majorCode, String positionCode) {
-        // 专业和位置查维修部门
-        String names = orgMajorMapper.getOrgNamesByStationAndMajor(positionCode, majorCode);
-        if (StringUtils.isNotNull(names)) {
-            return personMapper.listLeader(majorCode, positionCode,
-                    names.startsWith(CommonConstants.ZC) ? CommonConstants.DM_012 : CommonConstants.DM_051);
-        } else {
-            return new ArrayList<>();
+    public List<SysUser> listLeader(String faultWorkNo) {
+        FaultOrderDO faultOrder = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
+        if (StringUtils.isNotNull(faultOrder) && StringUtils.isNotEmpty(faultOrder.getRepairRespUserId())) {
+            SysOffice office = userAccountMapper.getUserOrg(faultOrder.getRepairRespUserId());
+            if (StringUtils.isNotNull(office)) {
+                return organizationMapper.listUser(office.getId(), office.getNames().contains(CommonConstants.ZC) ?
+                        CommonConstants.DM_012 : CommonConstants.DM_051);
+            }
         }
+        return new ArrayList<>();
     }
 
     @Override
@@ -122,7 +129,38 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     }
 
     @Override
+    public FaultFollowDispatchUserResDTO listDispatchUser(String followNo) {
+        FaultFollowResDTO faultFollow = faultFollowMapper.detail(null, followNo);
+        if (StringUtils.isNull(faultFollow)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        SysOffice office = userAccountMapper.getUserOrg(faultFollow.getFollowLeaderId());
+        FaultFollowDispatchUserResDTO res = new FaultFollowDispatchUserResDTO();
+        if (StringUtils.isNotNull(office)) {
+            res.setWorkerOrgId(office.getId());
+            res.setWorkerOrgName(office.getName());
+            res.setWorkerList(organizationMapper.listUser(office.getId(), null));
+        }
+        return res;
+    }
+
+    @Override
+    public void dispatch(FaultFollowReqDTO req) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && !req.getFollowLeaderId().equals(TokenUtils.getCurrentPersonId())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单的跟踪工班长，无法进行派工！");
+        }
+        req.setDispatchTime(DateUtils.getCurrentTime());
+        req.setFollowStatus(CommonConstants.TWENTY_STRING);
+        req.setRecRevisor(TokenUtils.getCurrentPersonId());
+        req.setRecReviseTime(DateUtils.getCurrentTime());
+        faultFollowMapper.dispatch(req);
+    }
+
+    @Override
     public void close(FaultFollowReqDTO req) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && !req.getFollowLeaderId().equals(TokenUtils.getCurrentPersonId())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单的跟踪工班长，无法关闭工单！");
+        }
         req.setFollowCloserId(TokenUtils.getCurrentPersonId());
         req.setFollowCloserName(TokenUtils.getCurrentPerson().getPersonName());
         req.setFollowCloseTime(DateUtils.getCurrentTime());
@@ -177,6 +215,10 @@ public class FaultFollowServiceImpl implements FaultFollowService {
 
     @Override
     public void addReport(FaultFollowReportReqDTO req) throws ParseException {
+        FaultFollowResDTO follow = faultFollowMapper.detail(null, req.getFollowNo());
+        if (StringUtils.isNotNull(follow) && follow.getDispatchUserId().equals(TokenUtils.getCurrentPersonId())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单派发的填写人，无法填写报告！");
+        }
         if (StringUtils.isEmpty(req.getRecId())) {
             // 报告判断
             long step = checkReport(req.getFollowNo());

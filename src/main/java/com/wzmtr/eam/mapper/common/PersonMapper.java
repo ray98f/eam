@@ -12,7 +12,11 @@ import java.util.List;
 public interface PersonMapper {
 
     Person searchPersonByNo(@Param("no") String no);
-    Person searchLeader(String major,String position,String roleCode);
+
+    Person searchLeaderByMajorAndPositionAndRole(String major, String position, String roleCode);
+
+    Person searchLeaderByDeptAndRole(String deptCode, String roleCode);
+
     List<Person> listLeader(String major, String position, String roleCode);
 
 }

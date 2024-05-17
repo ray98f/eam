@@ -54,4 +54,6 @@ public interface FaultQueryService {
     List<FaultRepairDeptResDTO> querydept(String faultNo);
 
     List<OrganMajorLineType> queryWorker(String workerGroupCode);
+
+    String pageMaterial(String orderCode);
 }

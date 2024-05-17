@@ -24,9 +24,9 @@ import java.util.List;
 @Repository
 public interface FaultQueryMapper {
 
-    Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req, List<String> majors);
+    Page<FaultDetailResDTO> query(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors);
 
-    Page<FaultDetailResDTO> queryByUser(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req, List<String> majors, String userId, String officeAreaId);
+    Page<FaultDetailResDTO> queryByUser(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors, String userId, String officeAreaId);
 
     List<FaultDetailResDTO> queryLimit(String userDept, List<String> majors);
 

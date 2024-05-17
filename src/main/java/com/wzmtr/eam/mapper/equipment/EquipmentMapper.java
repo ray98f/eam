@@ -59,6 +59,26 @@ public interface EquipmentMapper {
 
     void insertUnitCode(UnitCodeReqDTO unitCodeReqDTO);
 
+    /**
+     * 新增设备台账
+     * @param equipmentReqDTO 设备台账信息
+     */
+    void addEquipment(EquipmentReqDTO equipmentReqDTO);
+
+    /**
+     * 编辑设备台账
+     * @param equipmentReqDTO 设备台账信息
+     */
+    void modifyEquipment(EquipmentReqDTO equipmentReqDTO);
+
+    /**
+     * 删除设备台账
+     * @param ids ids
+     * @param userId 用户id
+     * @param time 时间
+     */
+    void deleteEquipment(List<String> ids, String userId, String time);
+
     void importEquipment(List<EquipmentReqDTO> list);
 
     void insertEquipment(EquipmentReqDTO equipmentReqDTO);

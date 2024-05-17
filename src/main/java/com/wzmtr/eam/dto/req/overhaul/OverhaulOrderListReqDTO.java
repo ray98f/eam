@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author frp
  */
@@ -74,4 +76,16 @@ public class OverhaulOrderListReqDTO {
      */
     @ApiModelProperty(value = "检修情况")
     private String workDetail;
+
+    /**
+     * 用户专业
+     */
+    @ApiModelProperty(value = "用户专业")
+    private List<String> majors;
+
+    /**
+     * 用户id
+     */
+    @ApiModelProperty(value = "用户id")
+    private String userId;
 }

@@ -270,13 +270,13 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
         List<OverhaulPlanResDTO> list11 = overhaulPlanMapper.queryWeekObj(weekPlanCode);
         if (StringUtils.isNotEmpty(list11)) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选周计划中" + list11.get(0).getPlanCode() + "检修oo ,计划没有检修对象！");
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选周计划中" + list11.get(0).getPlanCode() + "检修计划没有检修对象！");
         }
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setWeekPlanCode(weekPlanCode);
         overhaulPlanListReqDTO.setConstructionType("C2");
         List<OverhaulPlanResDTO> contractQuery = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
-        if (contractQuery != null && !contractQuery.isEmpty()) {
+        if (StringUtils.isNotEmpty(contractQuery)) {
             if (StringUtils.isBlank(TokenUtils.getCurrentPerson().getOfficeId())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您的组织机构为空，请确认。");
             }
@@ -298,7 +298,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             }
         } else {
             overhaulWeekPlanReqDTO.setTrialStatus("30");
-            triggerOne(weekPlanCode);
+            // 去除触发操作
+//            triggerOne(weekPlanCode);
         }
         overhaulWeekPlanReqDTO.setRecRevisor(currentPersonId);
         overhaulWeekPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
@@ -318,7 +319,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 throw new CommonException(ErrorCode.EXAMINE_NOT_DONE);
             }
             overhaulWeekPlanReqDTO.setTrialStatus("30");
-            triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
+            // 去除触发操作
+//            triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
             String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             overTodoService.overTodo(recId,opinion);

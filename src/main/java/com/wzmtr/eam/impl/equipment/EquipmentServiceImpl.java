@@ -8,7 +8,6 @@ import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelEquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
-import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentTreeResDTO;
@@ -19,6 +18,8 @@ import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.equipment.EquipmentService;
@@ -128,6 +129,49 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public EquipmentResDTO getEquipmentDetail(String id) {
         return equipmentMapper.getEquipmentDetail(id);
+    }
+
+    @Override
+    public void addEquipment(EquipmentReqDTO equipmentReqDTO) {
+        equipmentReqDTO.setRecId(TokenUtils.getUuId());
+        equipmentReqDTO.setApprovalStatus("30");
+        equipmentReqDTO.setQuantity(new BigDecimal("1"));
+        equipmentReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+        equipmentReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+        equipmentReqDTO.setInAccountTime(DateUtils.getCurrentTime());
+        CurrentLoginUser user = TokenUtils.getCurrentPerson();
+        equipmentReqDTO.setCompanyCode(user.getCompanyAreaId());
+        equipmentReqDTO.setCompanyName(user.getCompanyName());
+        equipmentReqDTO.setDeptCode(user.getOfficeAreaId());
+        equipmentReqDTO.setDeptName(user.getOfficeName());
+        String unitNo = insertUnitCode(equipmentReqDTO, user);
+        equipmentReqDTO.setEquipCode(unitNo);
+        equipmentReqDTO.setSpecialEquipFlag("10");
+        equipmentMapper.addEquipment(equipmentReqDTO);
+    }
+
+    @Override
+    public void modifyEquipment(EquipmentReqDTO equipmentReqDTO) {
+        equipmentReqDTO.setApprovalStatus("30");
+        equipmentReqDTO.setQuantity(new BigDecimal("1"));
+        equipmentReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        equipmentReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
+        CurrentLoginUser user = TokenUtils.getCurrentPerson();
+        equipmentReqDTO.setCompanyCode(user.getCompanyAreaId());
+        equipmentReqDTO.setCompanyName(user.getCompanyName());
+        equipmentReqDTO.setDeptCode(user.getOfficeAreaId());
+        equipmentReqDTO.setDeptName(user.getOfficeName());
+        equipmentReqDTO.setSpecialEquipFlag("10");
+        equipmentMapper.modifyEquipment(equipmentReqDTO);
+    }
+
+    @Override
+    public void deleteEquipment(BaseIdsEntity baseIdsEntity) {
+        if (StringUtils.isNotEmpty(baseIdsEntity.getIds())) {
+            equipmentMapper.deleteEquipment(baseIdsEntity.getIds(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
+        } else {
+            throw new CommonException(ErrorCode.SELECT_NOTHING);
+        }
     }
 
     @Override

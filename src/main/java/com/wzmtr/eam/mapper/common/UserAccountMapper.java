@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
+import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.entity.SysOrgUser;
 import com.wzmtr.eam.entity.SysUser;
 import com.wzmtr.eam.entity.SysUserAccount;
@@ -70,4 +71,13 @@ public interface UserAccountMapper {
 
     List<String> getMajor(@Param("userId") String userId);
     List<String> getAllMajor();
+
+    /**
+     * 获取用户所在部门信息
+     * @param userId 用户id
+     * @return 部门信息
+     */
+    SysOffice getUserOrg(String userId);
+
+
 }

@@ -218,4 +218,10 @@
         from SYS_ORG_MAJOR t1 order by MAJOR_CODE ASC
     </select>
 
+    <select id="getUserOrg" resultType="com.wzmtr.eam.entity.SysOffice">
+        SELECT * FROM SYS_OFFICE o
+        LEFT JOIN SYS_USER u ON u.OFFICE_ID=o.ID
+        WHERE u.LOGIN_NAME=#{userId}
+    </select>
+
 </mapper>

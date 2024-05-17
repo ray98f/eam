@@ -118,7 +118,7 @@ public class EasyExcelUtils {
     public static <T> List<T> read(MultipartFile file, Class<T> head) {
         checkFileFormat(file);
         try {
-            return checkData(EasyExcel.read(file.getInputStream(), head, null).doReadAllSync());
+            return checkData(EasyExcel.read(file.getInputStream(), head, null).doReadAllSync(), CommonConstants.ONE_STRING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -134,7 +134,7 @@ public class EasyExcelUtils {
     public static <T> List<T> read(MultipartFile file, Class<T> head, Integer sheetNo) {
         checkFileFormat(file);
         try {
-            return checkData(EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync());
+            return checkData(EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync(), CommonConstants.TWO_STRING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -160,19 +160,20 @@ public class EasyExcelUtils {
      * @return 导入数据
      * @param <T> 泛型
      */
-    private static <T> List<T> checkData(List<T> list) {
-        if (StringUtils.isEmpty(list)) {
+    private static <T> List<T> checkData(List<T> list, String type) {
+        if (StringUtils.isEmpty(list) && CommonConstants.ONE_STRING.equals(type)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "导入空模板，请填写数据后导入");
-        }
-        boolean bool = true;
-        for (T t : list) {
-            bool = allFieldsNull(t);
-            if (!bool) {
-                break;
+        } else {
+            boolean bool = true;
+            for (T t : list) {
+                bool = allFieldsNull(t);
+                if (!bool) {
+                    break;
+                }
             }
-        }
-        if (bool) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "导入模板错误，请检查模板");
+            if (bool) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "导入模板错误，请检查模板");
+            }
         }
         return list;
     }

@@ -41,7 +41,7 @@
         <if test="name!=null and name!=''">
             and su.NAME like '%' || #{name} || '%'
         </if>
-        group by su.ID, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
+        group by su.LOGIN_NAME, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
         <if test="id=='root'">
             , su.COMPANY_ID
         </if>
@@ -56,6 +56,15 @@
         select ID from SYS_OFFICE where AREA_ID=#{id} and DEL_FLAG='0'
     </select>
 
+    <select id="getAreaIdsByIds" resultType="com.wzmtr.eam.entity.SysOffice">
+        select NAME, AREA_ID from SYS_OFFICE where DEL_FLAG='0'
+        AND ID in (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            <if test="(index % 999) == 998"> ) OR ID IN( </if> #{id}
+        </foreach>
+        )
+    </select>
+
     <select id="listMember" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
         select su.LOGIN_NAME as ID, su.NAME, su.PHONE, su.MOBILE, (so.PARENT_IDS || ',' || so.ID) as PARENT_IDS,
         so.ID AS PARENT_ID, listagg(to_char(sou.POSTNAME), ',') WITHIN GROUP (ORDER BY sou.POSTNAME) POSTNAME,
@@ -65,7 +74,7 @@
         where su.EXPIRED=0 and su.DEL_FLAG=0
         and sou.LEAVEDATE>sysdate
         and (so.PARENT_IDS || ',' || so.ID) like '%' || #{id} || '%'
-        group by su.ID, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
+        group by su.LOGIN_NAME, su.NAME, su.PHONE, su.MOBILE, so.PARENT_IDS, so.ID, su.EMAIL, su.ROOM, su.ORDER_NUM
         <if test="id=='root'">
             , su.COMPANY_ID
         </if>
@@ -74,6 +83,21 @@
             su.COMPANY_ID ASC,
         </if>
         su.ORDER_NUM ASC
+    </select>
+
+    <select id="listUser" resultType="com.wzmtr.eam.entity.SysUser">
+        SELECT u.*
+        FROM SYS_USER u
+        LEFT JOIN SYS_USER_ROLE ur ON u.LOGIN_NAME=ur.USER_ID
+        LEFT JOIN SYS_ROLE r ON r.ID=ur.ROLE_ID AND r.DEL_FLAG='0'
+        WHERE u.EXPIRED='0' and u.DEL_FLAG='0'
+        <if test="roleCode!=null and roleCode!=''">
+            AND r.ROLE_CODE=#{roleCode}
+        </if>
+        <if test="officeId!=null and officeId!=''">
+            AND u.OFFICE_ID=#{officeId}
+        </if>
+        ORDER BY u.ORDER_NUM ASC
     </select>
 
     <select id="pageUserByOffice" parameterType="string" resultType="com.wzmtr.eam.dto.res.common.MemberResDTO">
@@ -238,13 +262,20 @@
         CONNECT BY PRIOR ID=PARENT_ID
     </select>
 
-    <select id="listZttExtraBodyList" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+    <select id="listExternalUnitsBodyList" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
         select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
         from SYS_OFFICE
         where ID IN (
         <foreach collection="ids" index="index" item="id" separator=",">
-            #{id}
+            <if test="(index % 999) == 998"> ) OR ID IN( </if> #{id}
         </foreach>
         ) order by SORT asc
+    </select>
+
+    <select id="getZcRoot" resultType="com.wzmtr.eam.entity.CompanyStructureTree">
+        select ID, PARENT_ID, PARENT_IDS, NAME, NAMES, (CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END) AREA_ID
+        from SYS_OFFICE
+        where PARENT_ID='root' and USEABLE=1 and DEL_FLAG=0 and NAME LIKE '%温州中车%'
+        order by ID asc
     </select>
 </mapper>

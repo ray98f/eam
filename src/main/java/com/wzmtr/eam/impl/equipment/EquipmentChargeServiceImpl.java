@@ -45,14 +45,11 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
     public Page<EquipmentChargeResDTO> listEquipmentCharge(String equipCode, String equipName, String chargeDate, String position1Code,
                                                            String subjectCode, String systemCode, String equipTypeCode, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-
-
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(subjectCode)) {
             userMajorList = userAccountService.listUserMajor();
         }
-
         return equipmentChargeMapper.pageEquipmentCharge(pageReqDTO.of(), equipCode, equipName, chargeDate, position1Code, subjectCode, systemCode, equipTypeCode,userMajorList);
     }
 

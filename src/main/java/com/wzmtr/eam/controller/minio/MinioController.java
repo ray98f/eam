@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.minio;
 
+import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.File;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.enums.ErrorCode;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * 公共分类-文件管理
@@ -71,5 +73,16 @@ public class MinioController {
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         minioService.clear(bucketCode);
         return DataResponse.success();
+    }
+
+    /**
+     * 根据文件ids获取文件列表
+     * @param baseIdsEntity 文件ids
+     * @return 文件列表
+     */
+    @ApiOperation(value = "根据文件ids获取文件列表")
+    @PostMapping("/get")
+    public DataResponse<List<File>> selectFileInfo(@RequestBody BaseIdsEntity baseIdsEntity) {
+        return DataResponse.of(minioService.selectFileInfo(baseIdsEntity.getIds()));
     }
 }

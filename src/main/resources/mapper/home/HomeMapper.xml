@@ -60,15 +60,15 @@
     </select>
 
     <select id="todoList" resultType="com.wzmtr.eam.entity.StatusWorkFlowLog">
-        select * from
+        SELECT * FROM
         T_FLOW_TASK
-        where USER_ID=#{userId} and TODO_STATUS=#{type}
-        order by KIND_TYPE asc
+        WHERE USER_ID=#{userId} and TODO_STATUS=#{type}
+        ORDER BY KIND_TYPE ASC
         <if test="type=='1'">
-            , TASK_RCV_TIME desc
+            , TASK_RCV_TIME DESC
         </if>
         <if test="type=='2'">
-            , TODO_DATE desc
+            , TODO_DATE DESC
         </if>
     </select>
 

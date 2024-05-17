@@ -23,8 +23,19 @@ import java.util.List;
  */
 public interface StatisticService {
 
+    /**
+     * 新增站台门故障数据
+     * @param req req
+     */
+    void addDoorFault(DoorFaultReqDTO req);
 
-    FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO);
+    /**
+     * 编辑站台门故障数据
+     * @param req req
+     */
+    void modifyDoorFault(DoorFaultReqDTO req);
+
+    FailureRateDetailResDTO failureRateQuery(FailreRateQueryReqDTO reqDTO);
 
     Page<MaterialResDTO> query(MaterialQueryReqDTO reqDTO);
 

@@ -63,6 +63,11 @@ public class OverhaulOrderController {
         return PageResponse.of(overhaulOrderService.openApiPageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO));
     }
 
+    /**
+     * 获取检修工单详情
+     * @param id id
+     * @return 检修工单详情
+     */
     @GetMapping("/detail")
     @ApiOperation(value = "获取检修工单详情")
     public DataResponse<OverhaulOrderResDTO> getOverhaulOrderDetail(@RequestParam @ApiParam("id") String id) {
@@ -154,11 +159,14 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 跳转至物资系统领料界面
+     * @param orderCode 工单号
+     */
     @GetMapping("/material/page")
-    @ApiOperation(value = "材料列表")
-    public DataResponse<T> pageMaterial() {
-        overhaulOrderService.pageMaterial();
-        return DataResponse.success();
+    @ApiOperation(value = "跳转至物资系统领料界面")
+    public DataResponse<String> pageMaterial(@RequestParam String orderCode) {
+        return DataResponse.of(overhaulOrderService.pageMaterial(orderCode));
     }
 
     @PostMapping("/material/receive")
@@ -169,9 +177,8 @@ public class OverhaulOrderController {
 
     @PostMapping("/material/return")
     @ApiOperation(value = "退回材料")
-    public DataResponse<T> returnMaterial() {
-        overhaulOrderService.returnMaterial();
-        return DataResponse.success();
+    public void returnMaterial(HttpServletResponse response) throws IOException {
+        overhaulOrderService.returnMaterial(response);
     }
 
     @GetMapping("/construction")

@@ -25,6 +25,11 @@ public interface OverhaulOrderService {
      */
     Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO);
 
+    /**
+     * 获取检修工单详情
+     * @param id id
+     * @return 检修工单详情
+     */
     OverhaulOrderResDTO getOverhaulOrderDetail(String id);
 
     /**
@@ -63,11 +68,11 @@ public interface OverhaulOrderService {
 
     void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
-    void pageMaterial();
+    String pageMaterial(String orderCode);
 
     void receiveMaterial(HttpServletResponse response) throws IOException;
 
-    void returnMaterial();
+    void returnMaterial(HttpServletResponse response) throws IOException;
 
     Page<ConstructionResDTO> construction(String orderCode, PageReqDTO pageReqDTO);
 

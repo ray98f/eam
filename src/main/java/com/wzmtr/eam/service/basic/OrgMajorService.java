@@ -29,5 +29,12 @@ public interface OrgMajorService {
 
     void exportOrgMajor(List<String> ids, HttpServletResponse response) throws IOException;
 
-    FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode, String majorCode);
+    /**
+     * 获取维修部门和牵头部门
+     * @param lineCode 线路code
+     * @param majorCode 专业code
+     * @param station 位置一code
+     * @return 维修部门和牵头部门
+     */
+    FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode, String majorCode, String station);
 }

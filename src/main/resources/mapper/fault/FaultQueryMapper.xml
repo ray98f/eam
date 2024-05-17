@@ -102,6 +102,13 @@
             <if test="req.orderStatus!=null and req.orderStatus!=''">
                 AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
+            <if test="req.orderStatusList!=null and req.orderStatusList.size()>0">
+                AND df.ORDER_STATUS IN (
+                <foreach collection="req.orderStatusList" index="index" item="status" separator=",">
+                    #{status}
+                </foreach>
+                )
+            </if>
             <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
                 AND df.ORDER_STATUS='99'
             </if>
@@ -118,7 +125,7 @@
                 AND d.MAJOR_CODE=#{req.majorCode}
             </if>
             <if test="majors!=null and majors.size()>0">
-                and d.MAJOR_CODE IN (
+                AND d.MAJOR_CODE IN (
                 <foreach collection="majors" index="index" item="major" separator=",">
                     #{major}
                 </foreach>
@@ -142,8 +149,7 @@
             <if test="req.levelfault!=null and req.levelfault!=''">
                 AND df.EXT1=#{req.levelfault}
             </if>
-            AND d.FAULT_FLAG!='2'
-            AND d.DELETE_FLAG='0'
+            AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -247,6 +253,13 @@
             <if test="req.orderStatus!=null and req.orderStatus!=''">
                 AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
+            <if test="req.orderStatusList!=null and req.orderStatusList.size()>0">
+                AND df.ORDER_STATUS IN (
+                <foreach collection="req.orderStatusList" index="index" item="orderStatus" separator=",">
+                    #{orderStatus}
+                </foreach>
+                )
+            </if>
             <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
                 AND df.ORDER_STATUS='99'
             </if>
@@ -288,14 +301,16 @@
                 AND df.EXT1=#{req.levelfault}
             </if>
             <if test="userId!=null">
-                AND (df.DISPATCH_USER_ID=#{userId} OR df.WORK_CLASS=#{officeAreaId} OR
+                AND (df.DISPATCH_USER_ID=#{userId} OR
+                <if test="officeAreaId!=null and officeAreaId!=''">
+                    df.WORK_CLASS=#{officeAreaId} OR
+                </if>
                 df.REPAIR_RESP_USER_ID=#{userId} OR df.REPORT_USER_ID=#{userId} OR
                 df.REPORT_START_USER_ID=#{userId} OR df.REPORT_FINISH_USER_ID=#{userId} OR
                 df.CHECK_USER_ID=#{userId} OR df.CONFIRM_USER_ID=#{userId} OR df.CLOSE_USER_ID=#{userId} OR
                 df.CANCEL_USER_ID=#{userId} OR df.REC_CREATOR=#{userId})
             </if>
-            AND d.FAULT_FLAG!='2'
-            AND d.DELETE_FLAG='0'
+            AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -320,8 +335,7 @@
                 )
             </if>
             AND SYSDATE >= to_date(df.REPAIR_LIMIT_TIME, 'YYYY-MM-DD HH24:MI:SS')
-            AND d.FAULT_FLAG!='2'
-            AND df.DELETE_FLAG='0'
+            AND d.FAULT_FLAG!='2' AND df.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
         ORDER BY df.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -473,8 +487,7 @@
 <!--                d.ASSIST_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%') or-->
 <!--                d.REPAIR_DEPT_CODE IN (SELECT AREA_ID FROM SYS_OFFICE WHERE NAMES LIKE '%中铁通轨道运营有限公司%'))-->
 <!--            </if>-->
-            AND d.FAULT_FLAG!='2'
-            and d.DELETE_FLAG='0'
+            AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -633,8 +646,7 @@
                 </foreach>
                )
             </if>
-            AND d.FAULT_FLAG!='2'
-            and d.DELETE_FLAG='0'
+            AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
@@ -988,7 +1000,7 @@
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO AND d.FAULT_FLAG!='2'
-        WHERE 1=1 and d.DELETE_FLAG='0'
+        WHERE 1=1 AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         <if test="faultType!=null">
             AND d.FAULT_TYPE=#{faultType}
         </if>
