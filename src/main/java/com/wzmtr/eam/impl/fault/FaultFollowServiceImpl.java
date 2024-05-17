@@ -146,6 +146,9 @@ public class FaultFollowServiceImpl implements FaultFollowService {
 
     @Override
     public void dispatch(FaultFollowReqDTO req) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && !req.getFollowLeaderId().equals(TokenUtils.getCurrentPersonId())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单的跟踪工班长，无法进行派工！");
+        }
         req.setDispatchTime(DateUtils.getCurrentTime());
         req.setFollowStatus(CommonConstants.TWENTY_STRING);
         req.setRecRevisor(TokenUtils.getCurrentPersonId());
@@ -155,6 +158,9 @@ public class FaultFollowServiceImpl implements FaultFollowService {
 
     @Override
     public void close(FaultFollowReqDTO req) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && !req.getFollowLeaderId().equals(TokenUtils.getCurrentPersonId())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单的跟踪工班长，无法关闭工单！");
+        }
         req.setFollowCloserId(TokenUtils.getCurrentPersonId());
         req.setFollowCloserName(TokenUtils.getCurrentPerson().getPersonName());
         req.setFollowCloseTime(DateUtils.getCurrentTime());
@@ -209,6 +215,10 @@ public class FaultFollowServiceImpl implements FaultFollowService {
 
     @Override
     public void addReport(FaultFollowReportReqDTO req) throws ParseException {
+        FaultFollowResDTO follow = faultFollowMapper.detail(null, req.getFollowNo());
+        if (StringUtils.isNotNull(follow) && follow.getDispatchUserId().equals(TokenUtils.getCurrentPersonId())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单派发的填写人，无法填写报告！");
+        }
         if (StringUtils.isEmpty(req.getRecId())) {
             // 报告判断
             long step = checkReport(req.getFollowNo());
