@@ -162,13 +162,12 @@ public class OrgMajorServiceImpl implements OrgMajorService {
     }
 
     @Override
-    public FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode, String majorCode) {
+    public FaultRespAndRepairDeptResDTO queryTypeAndDeptCode(String lineCode, String majorCode, String station) {
         FaultRespAndRepairDeptResDTO faultRespAndRepairDeptResDTO = new FaultRespAndRepairDeptResDTO();
         String organType = "30";
         List<OrgMajorResDTO> respDept = orgMajorMapper.queryTypeAndDeptCode(organType, majorCode, lineCode);
         faultRespAndRepairDeptResDTO.setResp(respDept);
-        organType = "20";
-        List<OrgMajorResDTO> repairDept = orgMajorMapper.queryTypeAndDeptCode(organType, majorCode, lineCode);
+        List<OrgMajorResDTO> repairDept = orgMajorMapper.listOrganByStationAndMajor(station, majorCode);
         faultRespAndRepairDeptResDTO.setRepair(repairDept);
         return faultRespAndRepairDeptResDTO;
     }

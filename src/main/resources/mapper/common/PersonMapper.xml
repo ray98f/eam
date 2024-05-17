@@ -10,17 +10,28 @@
         LEFT JOIN SYS_OFFICE o2 ON o2.ID=u.COMPANY_ID
         WHERE u.LOGIN_NAME=#{no}
     </select>
-    <select id="searchLeader" resultType="com.wzmtr.eam.shiro.model.Person">
+
+    <select id="searchLeaderByMajorAndPositionAndRole" resultType="com.wzmtr.eam.shiro.model.Person">
         SELECT u.*,so.*
         FROM SYS_USER u
-                 LEFT JOIN SYS_OFFICE so on u.OFFICE_ID =so.id
-                 LEFT JOIN SYS_USER_ROLE sur on u.LOGIN_NAME=sur.USER_ID
-                 LEFT JOIN SYS_ROLE sr on sr.id=sur.ROLE_ID
-                 LEFT JOIN SYS_ORG_MAJOR t1 on t1.ORG_CODE=so.AREA_ID
-                 LEFT JOIN SYS_ORG_REGION t2 on t2.ORG_CODE=so.AREA_ID
+        LEFT JOIN SYS_OFFICE so on u.OFFICE_ID =so.id
+        LEFT JOIN SYS_USER_ROLE sur on u.LOGIN_NAME=sur.USER_ID
+        LEFT JOIN SYS_ROLE sr on sr.id=sur.ROLE_ID
+        LEFT JOIN SYS_ORG_MAJOR t1 on t1.ORG_CODE=so.AREA_ID
+        LEFT JOIN SYS_ORG_REGION t2 on t2.ORG_CODE=so.AREA_ID
         where t1.MAJOR_CODE=#{major}
-          and t2.REGION_CODE=#{position}
-          AND sr.ROLE_CODE=#{roleCode} AND rownum=1
+        and t2.REGION_CODE=#{position}
+        AND sr.ROLE_CODE=#{roleCode} AND rownum=1
+    </select>
+
+    <select id="searchLeaderByDeptAndRole" resultType="com.wzmtr.eam.shiro.model.Person">
+        SELECT u.*,so.*
+        FROM SYS_USER u
+        LEFT JOIN SYS_OFFICE so on u.OFFICE_ID=so.id
+        LEFT JOIN SYS_USER_ROLE sur on u.LOGIN_NAME=sur.USER_ID
+        LEFT JOIN SYS_ROLE sr on sr.id=sur.ROLE_ID
+        where so.AREA_ID=#{deptCode}
+        AND sr.ROLE_CODE=#{roleCode} AND rownum=1
     </select>
 
     <select id="listLeader" resultType="com.wzmtr.eam.shiro.model.Person">

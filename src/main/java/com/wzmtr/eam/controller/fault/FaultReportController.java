@@ -100,10 +100,19 @@ public class FaultReportController {
         return DataResponse.of(reportService.detail(reqDTO));
     }
 
+    /**
+     * 获取维修部门和牵头部门
+     * @param lineCode 线路code
+     * @param majorCode 专业code
+     * @param station 位置一code
+     * @return 维修部门和牵头部门
+     */
     @GetMapping("/queryTypeAndDeptCode")
     @ApiOperation(value = "获取维修部门和牵头部门")
-    public DataResponse<FaultRespAndRepairDeptResDTO> queryTypeAndDeptCode(@RequestParam @ApiParam("线路code") String lineCode, @RequestParam @ApiParam("专业code") String majorCode) {
-        return DataResponse.of(orgMajorService.queryTypeAndDeptCode(lineCode, majorCode));
+    public DataResponse<FaultRespAndRepairDeptResDTO> queryTypeAndDeptCode(@RequestParam @ApiParam("线路code") String lineCode,
+                                                                           @RequestParam @ApiParam("专业code") String majorCode,
+                                                                           @RequestParam @ApiParam("位置一code") String station) {
+        return DataResponse.of(orgMajorService.queryTypeAndDeptCode(lineCode, majorCode, station));
     }
 
 }

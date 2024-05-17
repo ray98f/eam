@@ -108,26 +108,39 @@ public class FaultReceiver {
         }
     }
 
-    private void zttSendOverTodo(String majorCode, FaultReportReqDTO req, FaultInfoDO faultInfoDO, FaultOrderDO faultOrderDO, String faultWorkNo) {
+    private void zttSendOverTodo(String majorCode, FaultReportReqDTO req, FaultInfoDO faultInfo, FaultOrderDO faultOrder, String faultWorkNo) {
         if (!CommonConstants.ZC_LIST.contains(majorCode)) {
             String positionCode = req.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
-                // 专业和位置查维修部门
-                OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
-                faultInfoDO.setRepairDeptCode(organ.getOrgCode());
-                // 负责人为中铁通工班长角色
-                Person person = personMapper.searchLeader(majorCode, positionCode, "DM_051");
-                faultOrderDO.setRepairRespUserId(person.getLoginName());
+                if (StringUtils.isEmpty(faultInfo.getRepairDeptCode())) {
+                    // 专业和位置查维修部门
+                    OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
+                    if (StringUtils.isNotNull(organ)) {
+                        faultInfo.setRepairDeptCode(organ.getOrgCode());
+                        // 负责人为中铁通工班长角色
+                        Person person = personMapper.searchLeaderByMajorAndPositionAndRole(majorCode, positionCode, CommonConstants.DM_051);
+                        if (StringUtils.isNotNull(person)) {
+                            faultOrder.setRepairRespUserId(person.getLoginName());
+                        }
+                    }
+                } else {
+                    Person person = personMapper.searchLeaderByDeptAndRole(faultInfo.getRepairDeptCode(), CommonConstants.DM_051);
+                    if (StringUtils.isNotNull(person)) {
+                        faultOrder.setRepairRespUserId(person.getLoginName());
+                    }
+                }
                 // 默认为紧急
-                faultInfoDO.setFaultLevel("01");
-                faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
-                faultInfoDO.setRecRevisor(TokenUtils.getCurrentPersonId());
-                faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
-                faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
-                faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
-                faultReportMapper.updateFaultOrder(faultOrderDO);
-                faultReportMapper.updateFaultInfo(faultInfoDO);
-                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,faultWorkNo,"故障"), faultOrderDO.getRecId(), faultWorkNo, organ.getOrgCode(), "故障派工", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                faultInfo.setFaultLevel("01");
+                faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
+                faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
+                faultOrder.setRecRevisor(TokenUtils.getCurrentPersonId());
+                faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
+                faultReportMapper.updateFaultOrder(faultOrder);
+                faultReportMapper.updateFaultInfo(faultInfo);
+                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,faultWorkNo,"故障"),
+                        faultOrder.getRecId(), faultWorkNo, faultInfo.getRepairDeptCode(), "故障派工", "?",
+                        TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
         }
     }
