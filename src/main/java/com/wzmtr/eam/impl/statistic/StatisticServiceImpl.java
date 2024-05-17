@@ -28,10 +28,7 @@ import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
-import com.wzmtr.eam.utils.DateUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StreamUtils;
-import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
@@ -80,7 +77,32 @@ public class StatisticServiceImpl implements StatisticService {
     private FaultQueryMapper faultQueryMapper;
 
     @Override
-    public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
+    public void addDoorFault(DoorFaultReqDTO req) {
+        if (req.getFaultNum() > req.getActionNum()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "故障次数不能大于动作次数");
+        }
+        Integer result = failureRateMapper.selectDoorFaultIsExist(req);
+        if (result > 0) {
+            throw new CommonException(ErrorCode.DATA_EXIST);
+        }
+        req.setRecId(TokenUtils.getUuId());
+        req.setRecCreator(TokenUtils.getCurrentPersonId());
+        req.setRecCreateTime(DateUtils.getCurrentTime());
+        failureRateMapper.addDoorFault(req);
+    }
+
+    @Override
+    public void modifyDoorFault(DoorFaultReqDTO req) {
+        if (req.getFaultNum() > req.getActionNum()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "故障次数不能大于动作次数");
+        }
+        req.setRecRevisor(TokenUtils.getCurrentPersonId());
+        req.setRecReviseTime(DateUtils.getCurrentTime());
+        failureRateMapper.modifyDoorFault(req);
+    }
+
+    @Override
+    public FailureRateDetailResDTO failureRateQuery(FailreRateQueryReqDTO reqDTO) {
         // todo 结构后期优化
         FailureRateDetailResDTO failureRateDetailResDTO = new FailureRateDetailResDTO();
         if (StringUtils.isEmpty(reqDTO.getIndex())) {
@@ -133,7 +155,7 @@ public class StatisticServiceImpl implements StatisticService {
         }
         //没做 产品没要求 2024 04 01
         if (reqDTO.getIndex().contains(RateIndex.PSD_RATE)) {
-            //<!--屏蔽门故障率-->
+            //<!--站台门-->
             List<FailureRateResDTO> psDrate = failureRateMapper.PSDrate(reqDTO);
             List<String> data = Lists.newArrayList();
             List<String> month = Lists.newArrayList();
