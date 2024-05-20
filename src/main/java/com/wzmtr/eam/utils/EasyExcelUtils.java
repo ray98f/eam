@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -111,7 +110,8 @@ public class EasyExcelUtils {
         for (Field field : fields) {
             if (field.isAnnotationPresent(ExcelProperty.class)) {
                 ExcelProperty fieldAnnotation = field.getAnnotation(ExcelProperty.class);
-                String headName = Arrays.toString(fieldAnnotation.value()).replace("[", "").replace("]", "");
+                // 取第一个字符串
+                String headName = fieldAnnotation.value()[0];
                 List<String> head0 = new ArrayList<>();
                 head0.add(name);
                 head0.add(headName);

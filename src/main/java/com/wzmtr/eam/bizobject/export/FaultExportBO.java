@@ -65,7 +65,7 @@ public class FaultExportBO {
     @ExcelProperty(value = "故障处理人数")
     private String dealerNum;
     @ExcelProperty(value = "故障处理人员")
-    private String dealerUnit;
+    private String repairRespUserName;
     @ExcelProperty(value = "维修部门")
     private String repairDept;
     @ExcelProperty(value = "维修部门")
