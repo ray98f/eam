@@ -269,7 +269,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(resDTO.getFillinDeptCode())) {
             fillinDept = organizationMapper.getNamesById(resDTO.getFillinDeptCode());
         }
-        export.setDealerUnit(dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
+//        export.setReplacementName(dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
         if (StringUtils.isNotEmpty(fillinDept)) {
             export.setFillinDept(Optional.ofNullable(fillinDept).orElse(CommonConstants.EMPTY));
             export.setRepairDept(Optional.ofNullable(repairDept).orElse(CommonConstants.EMPTY));
