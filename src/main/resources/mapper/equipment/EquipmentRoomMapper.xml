@@ -220,7 +220,7 @@
         </if>
         REC_REVISOR	= #{recRevisor},   <!-- 修改者 -->
         REC_REVISE_TIME	= #{recReviseTime}   <!-- 修改时间 -->
-        WHERE REC_ID = #{recId}
+        WHERE REC_ID=#{recId}
     </update>
 
     <update id="deleteEquipmentRoom">
@@ -319,19 +319,16 @@
         )
         ORDER BY EQUIP_ROOM_CODE desc
     </select>
+
     <insert id="insertRelationBatch">
-        INSERT ALL
-        <foreach collection="ids" index="index" item="id" separator=" ">
-            INTO T_EQUIPMENT_ROOM_RELATION( ROOM_ID, EQUIPMENT_ID)
-            VALUES
-            (#{roomId},#{id})
-        </foreach>
-        SELECT * FROM dual
+        INSERT INTO T_EQUIPMENT_ROOM_RELATION(ROOM_ID, EQUIPMENT_ID)
+        select #{roomId}, #{id} FROM dual
+        WHERE NOT EXISTS (SELECT 1 FROM T_EQUIPMENT_ROOM_RELATION WHERE ROOM_ID=#{roomId} AND EQUIPMENT_ID=#{id})
     </insert>
 
     <delete id="deleteRelationBatch">
         DELETE FROM T_EQUIPMENT_ROOM_RELATION
-        WHERE ROOM_ID = #{roomId}
+        WHERE ROOM_ID=#{roomId}
         AND EQUIPMENT_ID IN (
         <foreach collection="ids" index="index" item="id" separator=",">
             #{id}

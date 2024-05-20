@@ -179,7 +179,6 @@
             </foreach>
             )
         </if>
-
         <if test="systemCode!=null and systemCode!=''">
             and SYSTEM_CODE=#{systemCode}
         </if>
