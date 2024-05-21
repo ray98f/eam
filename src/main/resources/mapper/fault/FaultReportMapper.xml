@@ -824,7 +824,7 @@
 
     <select id="queryByEngineer" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         <include refid="list-cols"/>
-        WHERE df.DELETE_FLAG='0'
+        WHERE df.DELETE_FLAG='0' and df.ORDER_STATUS IN ('50', '55', '60', '70')
         ORDER BY d.FAULT_NO desc
     </select>
 
@@ -1106,7 +1106,7 @@
 
     <select id="carFaultByEngineer" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         <include refid="car-list-cols"/>
-        WHERE df.DELETE_FLAG='0'
+        WHERE df.DELETE_FLAG='0' and df.ORDER_STATUS IN ('50', '55', '60', '70')
         ORDER BY d.FAULT_NO desc
     </select>
 

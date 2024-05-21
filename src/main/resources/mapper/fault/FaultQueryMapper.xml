@@ -160,7 +160,7 @@
 
     <select id="queryByEngineer" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         <include refid="query-cols"/>
-        WHERE df.ORDER_STATUS IN ('55', '60', '70')
+        WHERE df.ORDER_STATUS IN ('50', '55', '60', '70')
         <if test="majors!=null and majors.size()>0">
             and d.MAJOR_CODE IN (
             <foreach collection="majors" index="index" item="major" separator=",">
