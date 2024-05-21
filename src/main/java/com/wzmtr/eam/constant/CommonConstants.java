@@ -95,6 +95,7 @@ public class CommonConstants {
     public static final String FIFTEEN_STRING = "15";
     public static final String TWENTY_STRING = "20";
     public static final String THIRTY_STRING = "30";
+    public static final String THIRTY_FIVE_STRING = "35";
     public static final String FORTY_STRING = "40";
     public static final String FIFTY_STRING = "50";
     public static final String NINETY_STRING = "90";

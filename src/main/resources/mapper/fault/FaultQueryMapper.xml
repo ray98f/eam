@@ -109,7 +109,7 @@
                 </foreach>
                 )
             </if>
-            <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
+            <if test="req.invalid!=null and 'true'.toString()==req.invalid.toString()">
                 AND df.ORDER_STATUS='99'
             </if>
             <if test="req.lineCode!=null and req.lineCode!=''">
@@ -260,7 +260,7 @@
                 </foreach>
                 )
             </if>
-            <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
+            <if test="req.invalid!=null and 'true'.toString()==req.invalid.toString()">
                 AND df.ORDER_STATUS='99'
             </if>
             <if test="req.lineCode!=null and req.lineCode!=''">
@@ -442,7 +442,7 @@
             <if test="req.orderStatus!=null and req.orderStatus!=''">
                 AND df.ORDER_STATUS=#{req.orderStatus}
             </if>
-            <if test="req.invalid != null and 'true'.toString() == req.invalid.toString()">
+            <if test="req.invalid!=null and 'true'.toString()==req.invalid.toString()">
                 AND df.ORDER_STATUS='99'
             </if>
             <if test="req.lineCode!=null and req.lineCode!=''">
@@ -594,7 +594,7 @@
             <if test="orderStatus!=null and orderStatus!=''">
                 AND df.ORDER_STATUS=#{orderStatus}
             </if>
-            <if test="invalid != null and 'true'.toString() == invalid.toString()">
+            <if test="invalid!=null and 'true'.toString()==invalid.toString()">
                 AND df.ORDER_STATUS='99'
             </if>
             <if test="lineCode!=null and lineCode!=''">

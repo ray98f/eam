@@ -381,20 +381,41 @@
 
     <update id="examineReport">
         UPDATE T_FAULT_FOLLOW_REPORT SET
-        <if test="examineUserId!=null">
+        <if test="examineUserId!=null and examineUserId!=''">
             EXAMINE_USER_ID=#{examineUserId},
         </if>
-        <if test="examineUserName!=null">
+        <if test="examineUserName!=null and examineUserName!=''">
             EXAMINE_USER_NAME=#{examineUserName},
         </if>
-        <if test="examineTime!=null">
+        <if test="examineTime!=null and examineTime!=''">
             EXAMINE_TIME=#{examineTime},
         </if>
-        <if test="examineOpinion!=null">
+        <if test="examineOpinion!=null and examineOpinion!=''">
             EXAMINE_OPINION=#{examineOpinion},
         </if>
-        <if test="examineStatus!=null">
+        <if test="examineStatus!=null and examineStatus!=''">
             EXAMINE_STATUS=#{examineStatus},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
+    </update>
+
+    <update id="engineerExamineReport">
+        UPDATE T_FAULT_FOLLOW_REPORT SET
+        <if test="followExamineUserId!=null and followExamineUserId!=''">
+            FOLLOW_EXAMINE_USER_ID=#{followExamineUserId},
+        </if>
+        <if test="followExamineUserName!=null and followExamineUserName!=''">
+            FOLLOW_EXAMINE_USER_NAME=#{followExamineUserName},
+        </if>
+        <if test="followExamineTime!=null and followExamineTime!=''">
+            FOLLOW_EXAMINE_TIME=#{followExamineTime},
+        </if>
+        <if test="followExamineOpinion!=null and followExamineOpinion!=''">
+            FOLLOW_EXAMINE_OPINION=#{followExamineOpinion},
+        </if>
+        <if test="followExamineStatus!=null and followExamineStatus!=''">
+            FOLLOW_EXAMINE_STATUS=#{followExamineStatus},
         </if>
         REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
         WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
