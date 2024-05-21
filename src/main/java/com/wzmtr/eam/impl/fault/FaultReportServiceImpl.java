@@ -308,10 +308,21 @@ public class FaultReportServiceImpl implements FaultReportService {
                     reqDTO.getLineCode(), userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
         List<FaultReportResDTO> records = list.getRecords();
-        if (StringUtils.isEmpty(records)) {
-            return new Page<>();
+        if (StringUtils.isNotEmpty(records)) {
+            // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+            if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                    || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+                List<FaultReportResDTO> other = faultReportMapper.queryByEngineer();
+                if (StringUtils.isNotEmpty(other)) {
+                    records.addAll(other);
+                    records = records.stream().distinct()
+                            .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
+                            .collect(Collectors.toList());
+                }
+            }
+            buildRes(records);
         }
-        buildRes(records);
+        list.setRecords(records);
         return list;
     }
 
@@ -343,17 +354,41 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
             userMajorList = userAccountService.listUserMajor();
         }
-
-        Page<FaultReportResDTO> list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(),
-                reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
-                reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
-                reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
-                reqDTO.getFaultAffect(), userMajorList);
-        List<FaultReportResDTO> records = list.getRecords();
-        if (StringUtils.isEmpty(records)) {
-            return new Page<>();
+        Page<FaultReportResDTO> list;
+        //获取用户当前角色
+        List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
+        //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
+        if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))) {
+            list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(),
+                    reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
+                    reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
+                    reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
+                    reqDTO.getFaultAffect(), userMajorList, null, null);
+        } else {
+            list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(),
+                    reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
+                    reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
+                    reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
+                    reqDTO.getFaultAffect(), userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
-        buildRes(records);
+        List<FaultReportResDTO> records = list.getRecords();
+        if (StringUtils.isNotEmpty(records)) {
+            // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+            if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                    || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+                List<FaultReportResDTO> other = faultReportMapper.carFaultByEngineer();
+                if (StringUtils.isNotEmpty(other)) {
+                    records.addAll(other);
+                    records = records.stream().distinct()
+                            .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
+                            .collect(Collectors.toList());
+                }
+            }
+            buildRes(records);
+        }
         return list;
     }
 

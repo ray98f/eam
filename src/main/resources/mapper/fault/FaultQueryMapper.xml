@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.fault.FaultQueryMapper">
 
-    <!--dmfm01.query -->
-    <select id="query" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <sql id="query-cols">
         SELECT
         d.REC_ID AS "faultInfoRecId",
         df.REC_ID AS "faultOrderRecId",
@@ -86,6 +85,11 @@
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
+    </sql>
+
+    <!--dmfm01.query -->
+    <select id="query" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        <include refid="query-cols"/>
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultType!=null and req.faultType!=''">
                 AND d.FAULT_TYPE=#{req.faultType}
@@ -154,89 +158,22 @@
         ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
 
+    <select id="queryByEngineer" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        <include refid="query-cols"/>
+        WHERE df.ORDER_STATUS IN ('55', '60', '70')
+        <if test="majors!=null and majors.size()>0">
+            and d.MAJOR_CODE IN (
+            <foreach collection="majors" index="index" item="major" separator=",">
+                #{major}
+            </foreach>
+            )
+        </if>
+        AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
+        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+    </select>
+
     <select id="queryByUser" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
-        SELECT
-        d.REC_ID AS "faultInfoRecId",
-        df.REC_ID AS "faultOrderRecId",
-        df.WORK_CLASS AS "workClass",
-        d.COMPANY_CODE AS "companyCode",
-        d.COMPANY_NAME AS "companyName",
-        d.FAULT_NO AS "faultNo",
-        d.FAULT_FLAG AS "faultFlag",
-        d.OBJECT_CODE AS "objectCode",
-        d.OBJECT_CODE AS "objectCode_textField",
-        d.OBJECT_NAME AS "objectName",
-        d.TRAIN_TRUNK AS "trainTrunk",
-        (SELECT ec.ITEM_CNAME FROM SYS_DICT ec WHERE ec.ITEM_CODE=d.LINE_CODE AND ec.CODESET_CODE='line') AS "lineName",
-        d.LINE_CODE AS "lineCode",
-        d.POSITION_CODE AS "positionCode",
-        d.POSITION2_CODE AS "position2Code",
-        d.PART_CODE AS "partCode",
-        d.PART_NAME AS "partName",
-        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=d.POSITION_CODE) AS "positionName",
-        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.MAJOR_CODE) AS "majorName",
-        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.SYSTEM_CODE) AS "systemName",
-        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=d.EQUIP_TYPE_CODE) AS "equipTypeName",
-        (SELECT d3.NODE_NAME FROM SYS_REGION d3 WHERE d3.NODE_CODE=d.EXT1) AS "stationCode",
-        d.MAJOR_CODE AS "majorCode",
-        d.SYSTEM_CODE AS "systemCode",
-        d.EQUIP_TYPE_CODE AS "equipTypeCode",
-        d.FAULT_MODULE AS "faultModule",
-        d.FAULT_MODULE_ID AS "faultModuleId",
-        d.FAULT_TYPE AS "faultType",
-        d.SOURCE_CODE AS "sourceCode",
-        d.FAULT_DISPLAY_CODE AS "faultDisplayCode",
-        d.FAULT_DISPLAY_DETAIL AS "faultDisplayDetail",
-        d.FAULT_DETAIL AS "faultDetail",
-        d.DISCOVERER_ID AS "discovererId",
-        d.DISCOVERER_PHONE AS "discovererPhone",
-        d.DISCOVERER_NAME AS "discovererName",
-        d.DISCOVERY_TIME AS "discoveryTime",
-        d.FILLIN_USER_ID AS "fillinUserId",
-        d.FILLIN_DEPT_CODE AS "fillinDeptCode",
-        d.FILLIN_TIME AS "fillinTime",
-        d.RESP_DEPT_CODE AS "respDeptCode",
-        d.ASSIST_DEPT_CODE AS "assistDeptCode",
-        d.REPAIR_DEPT_CODE AS "repairDeptCode",
-        d.PUBLISH_USER_ID AS "publishUserId",
-        d.PUBLISH_TIME AS "publishTime",
-        d.FAULT_LEVEL AS "faultLevel",
-        d.FAULT_STATUS AS "faultStatus",
-        d.WORK_FLOW_INST_ID AS "workFlowInstId",
-        d.WORK_FLOW_INST_STATUS AS "workFlowInstStatus",
-        d.DOC_ID AS "docId",
-        d.REMARK AS "remark",
-        d.REC_CREATOR AS "recCreator",
-        d.REC_CREATE_TIME AS "recCreateTime",
-        d.REC_REVISOR AS "recRevisor",
-        d.REC_REVISE_TIME AS "recReviseTime",
-        d.REC_DELETOR AS "recDeletor",
-        d.REC_DELETE_TIME AS "recDeleteTime",
-        d.DELETE_FLAG AS "deleteFlag",
-        d.ARCHIVE_FLAG AS "archiveFlag",
-        d.REC_STATUS AS "recStatus",
-        d.EXT1 AS "ext1",
-        d.EXT2 AS "ext2",
-        d.EXT3 AS "affect",
-        d.EXT4 AS "ext4",
-        d.EXT5 AS "ext5",
-        d.TRAIN_TAG AS "traintag",
-        (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) AS "fillinUserName",
-        df.CLOSE_TIME AS "closeTime",
-        (SELECT u1.NAME FROM SYS_USER u1 WHERE u1.LOGIN_NAME=df.CLOSE_USER_ID) AS "closeUserName",
-        df.DEALER_UNIT AS "dealerUnit",
-        df.FAULT_PROCESS_RESULT AS "faultProcessResult",
-        df.DEALER_NUM AS "dealerNum",
-        df.FAULT_WORK_NO AS "faultWorkNo",
-        df.REC_ID AS "orderRecId",
-        df.ORDER_STATUS AS "orderStatus",
-        d.IF_PHM AS "ifPhm",
-        d.IF_RELIABILITY AS "ifReliability",
-        d.IF_OTHER AS "ifOther",
-        df.EXT1 AS "levelfault"
-        FROM T_FAULT_INFO d
-        LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
-        LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
+        <include refid="query-cols"/>
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultType!=null and req.faultType!=''">
                 AND d.FAULT_TYPE=#{req.faultType}
