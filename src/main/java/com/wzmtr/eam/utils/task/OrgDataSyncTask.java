@@ -30,39 +30,6 @@ public class OrgDataSyncTask {
     @Value("${local.data-sync}")
     private String dataSync;
 
-    @Scheduled(cron = "0 30 1 * * ?")
-    @Transactional(rollbackFor = Exception.class)
-    public void syncPerson() {
-        if (CommonConstants.OFF.equals(dataSync)) {
-            return;
-        }
-        String syncPersonUrl = "/mdmSync/syncAllPerson";
-        log.info("人员信息同步：" + localUrl + syncPersonUrl);
-        mdmSyncService.syncAllPerson();
-    }
-
-    @Scheduled(cron = "0 50 1 * * ?")
-    @Transactional(rollbackFor = Exception.class)
-    public void syncAllSuppContact() {
-        if (CommonConstants.OFF.equals(dataSync)) {
-            return;
-        }
-        String syncSuppContactUrl = "/mdmSync/syncAllSuppContact";
-        log.info("人员信息同步：" + localUrl + syncSuppContactUrl);
-        mdmSyncService.syncAllSuppContact();
-    }
-
-    @Scheduled(cron = "0 0 2 * * ?")
-    @Transactional(rollbackFor = Exception.class)
-    public void syncPersonPlus() {
-        if (CommonConstants.OFF.equals(dataSync)) {
-            return;
-        }
-        String syncPersonPlusUrl = "/mdmSync/syncPersonPlus";
-        log.info("人员附加信息同步：" + localUrl + syncPersonPlusUrl);
-        mdmSyncService.syncPersonPlus();
-    }
-
     @Scheduled(cron = "0 0 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncOrg() {
@@ -94,6 +61,39 @@ public class OrgDataSyncTask {
         String syncExtraOrgUrl = "/mdmSync/syncAllExtraOrg";
         log.info("外部部门信息同步：" + localUrl + syncExtraOrgUrl);
         mdmSyncService.syncAllExtraOrg();
+    }
+
+    @Scheduled(cron = "0 30 1 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void syncPerson() {
+        if (CommonConstants.OFF.equals(dataSync)) {
+            return;
+        }
+        String syncPersonUrl = "/mdmSync/syncAllPerson";
+        log.info("人员信息同步：" + localUrl + syncPersonUrl);
+        mdmSyncService.syncAllPerson();
+    }
+
+    @Scheduled(cron = "0 50 1 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void syncAllSuppContact() {
+        if (CommonConstants.OFF.equals(dataSync)) {
+            return;
+        }
+        String syncSuppContactUrl = "/mdmSync/syncAllSuppContact";
+        log.info("人员信息同步：" + localUrl + syncSuppContactUrl);
+        mdmSyncService.syncAllSuppContact();
+    }
+
+    @Scheduled(cron = "0 0 2 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void syncPersonPlus() {
+        if (CommonConstants.OFF.equals(dataSync)) {
+            return;
+        }
+        String syncPersonPlusUrl = "/mdmSync/syncPersonPlus";
+        log.info("人员附加信息同步：" + localUrl + syncPersonPlusUrl);
+        mdmSyncService.syncPersonPlus();
     }
 
     @Scheduled(cron = "0 30 2 * * ?")

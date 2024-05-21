@@ -216,7 +216,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     @Override
     public void addReport(FaultFollowReportReqDTO req) throws ParseException {
         FaultFollowResDTO follow = faultFollowMapper.detail(null, req.getFollowNo());
-        if (StringUtils.isNotNull(follow) && follow.getDispatchUserId().equals(TokenUtils.getCurrentPersonId())) {
+        if (StringUtils.isNotNull(follow) && !follow.getDispatchUserId().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单派发的填写人，无法填写报告！");
         }
         if (StringUtils.isEmpty(req.getRecId())) {

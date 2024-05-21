@@ -346,7 +346,7 @@
         a.POSITION2_CODE	as "position2Code",  <!-- 位置二 -->
         a.POSITION2_NAME	as "position2Name",  <!-- 位置二名称 -->
         a.POSITION3	as "position3",  <!-- 位置三 -->
-        a.POSITION_REMARK	as "positionRemark",  <!-- 位置补充说明 -->
+        (select NAME from SYS_OFFICE where a.POSITION_REMARK=AREA_ID AND DEL_FLAG='0')	as "positionRemark",  <!--位置补充说明-->
         a.FAULT_NO	as "faultNo",  <!-- 故障编号 -->
         a.VERIFY_NOTE	as "verifyNote",  <!-- 备注 -->
         a.COMPANY_CODE	as "companyCode",  <!-- 公司代码 -->
@@ -370,21 +370,16 @@
         a.VERIFY_VALIDITY_DATE as "verifyValidityDate",
         se31.EQUIP_INNER_NO as "equipInnerNo",
         a.DOC_ID as "docId"
-        <!--d.PLAN_STATUS as "planStatus"-->
         FROM T_DETECTION_DETAIL a
         LEFT JOIN T_DETECTION b ON a.TEST_REC_ID=b.REC_ID
         LEFT JOIN T_SPECIAL_EQUIP_EXT se31 ON se31.EQUIP_CODE=a.EQUIP_CODE
-        WHERE 1=1
+        WHERE a.DELETE_FLAG='0'
         <if test="equipCode!=null and equipCode!=''">
             and a.EQUIP_CODE=#{equipCode}
         </if>
         <if test="testRecId!=null and testRecId!=''">
             and a.TEST_REC_ID=#{testRecId}
         </if>
-        and a.DELETE_FLAG='0'
-        <!--<isNotEmpty prepend=" AND " property="testRecId">-->
-        <!--a.TEST_REC_ID=#{testRecId#-->
-        <!--</isNotEmpty>-->
         order by a.EQUIP_CODE asc
     </select>
 
