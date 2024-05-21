@@ -308,20 +308,18 @@ public class FaultReportServiceImpl implements FaultReportService {
                     reqDTO.getLineCode(), userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
         List<FaultReportResDTO> records = list.getRecords();
-        if (StringUtils.isNotEmpty(records)) {
-            // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
-            if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
-                    || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
-                List<FaultReportResDTO> other = faultReportMapper.queryByEngineer();
-                if (StringUtils.isNotEmpty(other)) {
-                    records.addAll(other);
-                    records = records.stream().distinct()
-                            .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
-                            .collect(Collectors.toList());
-                }
+        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+            List<FaultReportResDTO> other = faultReportMapper.queryByEngineer();
+            if (StringUtils.isNotEmpty(other)) {
+                records.addAll(other);
+                records = records.stream().distinct()
+                        .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
+                        .collect(Collectors.toList());
             }
-            buildRes(records);
         }
+        buildRes(records);
         list.setRecords(records);
         return list;
     }
@@ -375,20 +373,18 @@ public class FaultReportServiceImpl implements FaultReportService {
                     reqDTO.getFaultAffect(), userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
         List<FaultReportResDTO> records = list.getRecords();
-        if (StringUtils.isNotEmpty(records)) {
-            // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
-            if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
-                    || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
-                List<FaultReportResDTO> other = faultReportMapper.carFaultByEngineer();
-                if (StringUtils.isNotEmpty(other)) {
-                    records.addAll(other);
-                    records = records.stream().distinct()
-                            .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
-                            .collect(Collectors.toList());
-                }
+        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+            List<FaultReportResDTO> other = faultReportMapper.carFaultByEngineer();
+            if (StringUtils.isNotEmpty(other)) {
+                records.addAll(other);
+                records = records.stream().distinct()
+                        .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
+                        .collect(Collectors.toList());
             }
-            buildRes(records);
         }
+        buildRes(records);
         return list;
     }
 

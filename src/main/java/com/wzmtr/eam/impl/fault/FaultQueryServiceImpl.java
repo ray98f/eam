@@ -113,22 +113,20 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
         List<FaultDetailResDTO> list = page.getRecords();
-        if (StringUtils.isNotEmpty(list)) {
-            // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
-            if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
-                    || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
-                List<FaultDetailResDTO> other = faultQueryMapper.queryByEngineer(userMajorList);
-                if (StringUtils.isNotEmpty(other)) {
-                    list.addAll(other);
-                    list = list.stream().distinct()
-                            .sorted(Comparator.comparing(FaultDetailResDTO::getFaultNo).reversed()
-                                    .thenComparing(FaultDetailResDTO::getFaultWorkNo).reversed())
-                            .collect(Collectors.toList());
-                }
+        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+            List<FaultDetailResDTO> other = faultQueryMapper.queryByEngineer(userMajorList);
+            if (StringUtils.isNotEmpty(other)) {
+                list.addAll(other);
+                list = list.stream().distinct()
+                        .sorted(Comparator.comparing(FaultDetailResDTO::getFaultNo).reversed()
+                                .thenComparing(FaultDetailResDTO::getFaultWorkNo).reversed())
+                        .collect(Collectors.toList());
             }
-            for (FaultDetailResDTO res : list) {
-                buildRes(res);
-            }
+        }
+        for (FaultDetailResDTO res : list) {
+            buildRes(res);
         }
         page.setRecords(list);
         return page;
