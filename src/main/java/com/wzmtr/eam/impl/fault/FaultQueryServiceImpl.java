@@ -118,7 +118,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
             List<FaultDetailResDTO> other = faultQueryMapper.queryByEngineer(userMajorList);
             if (StringUtils.isNotEmpty(other)) {
-                list.addAll(other);
+                if (StringUtils.isNotEmpty(list)) {
+                    list.addAll(other);
+                } else {
+                    list = other;
+                }
                 list = list.stream().distinct()
                         .sorted(Comparator.comparing(FaultDetailResDTO::getFaultNo).reversed()
                                 .thenComparing(FaultDetailResDTO::getFaultWorkNo).reversed())

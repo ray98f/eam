@@ -313,6 +313,11 @@ public class FaultReportServiceImpl implements FaultReportService {
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
             List<FaultReportResDTO> other = faultReportMapper.queryByEngineer();
             if (StringUtils.isNotEmpty(other)) {
+                if (StringUtils.isNotEmpty(records)) {
+                    records.addAll(other);
+                } else {
+                    records = other;
+                }
                 records.addAll(other);
                 records = records.stream().distinct()
                         .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
@@ -378,6 +383,11 @@ public class FaultReportServiceImpl implements FaultReportService {
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
             List<FaultReportResDTO> other = faultReportMapper.carFaultByEngineer();
             if (StringUtils.isNotEmpty(other)) {
+                if (StringUtils.isNotEmpty(records)) {
+                    records.addAll(other);
+                } else {
+                    records = other;
+                }
                 records.addAll(other);
                 records = records.stream().distinct()
                         .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
