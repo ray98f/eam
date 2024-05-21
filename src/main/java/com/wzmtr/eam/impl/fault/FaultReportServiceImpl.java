@@ -318,7 +318,6 @@ public class FaultReportServiceImpl implements FaultReportService {
                 } else {
                     records = other;
                 }
-                records.addAll(other);
                 records = records.stream().distinct()
                         .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
                         .collect(Collectors.toList());
@@ -388,7 +387,6 @@ public class FaultReportServiceImpl implements FaultReportService {
                 } else {
                     records = other;
                 }
-                records.addAll(other);
                 records = records.stream().distinct()
                         .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
                         .collect(Collectors.toList());
