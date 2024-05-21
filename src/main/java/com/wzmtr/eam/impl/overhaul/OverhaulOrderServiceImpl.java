@@ -750,8 +750,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 boolean bool1 = CommonConstants.TEN_STRING.equals(res.getItemType()) && CommonConstants.ERROR.equals(res.getWorkResult());
                 // 数字超过上下限
                 boolean bool2 = CommonConstants.TWENTY_STRING.equals(res.getItemType()) &&
-                                ((StringUtils.isNotBlank(res.getMinValue()) && Integer.parseInt(res.getMinValue()) > Integer.parseInt(res.getWorkResult())) ||
-                                        (StringUtils.isNotBlank(res.getMaxValue()) && Integer.parseInt(res.getMaxValue()) < Integer.parseInt(res.getWorkResult())));
+                                ((StringUtils.isNotBlank(res.getMinValue()) && Double.parseDouble(res.getMinValue()) > Double.parseDouble(res.getWorkResult())) ||
+                                        (StringUtils.isNotBlank(res.getMaxValue()) && Double.parseDouble(res.getMaxValue()) < Double.parseDouble(res.getWorkResult())));
                 // 文本内容包含异常
                 boolean bool3 = CommonConstants.THIRTY_STRING.equals(res.getItemType()) && res.getWorkResult().contains(CommonConstants.ERROR);
                 // 异常时添加异常数据
