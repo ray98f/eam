@@ -24,6 +24,7 @@ import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulStateResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
+import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -31,6 +32,7 @@ import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
@@ -68,49 +70,36 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Resource
     private UserAccountService userAccountService;
-
+    @Autowired
+    private UserAccountMapper userAccountMapper;
     @Autowired
     private OverhaulOrderMapper overhaulOrderMapper;
-
     @Autowired
     private EquipmentCategoryMapper equipmentCategoryMapper;
-
     @Autowired
     private OverhaulWorkRecordService overhaulWorkRecordService;
-
     @Autowired
     private OverhaulPlanMapper overhaulPlanMapper;
-
     @Autowired
     private WoRuleMapper woRuleMapper;
-
     @Autowired
     private OverhaulItemMapper overhaulItemMapper;
-
     @Autowired
     private OverhaulStateMapper overhaulStateMapper;
-
     @Autowired
     private FaultReportMapper faultReportMapper;
-
     @Autowired
     private OverTodoService overTodoService;
-
     @Autowired
     private DictionariesMapper dictionariesMapper;
-
     @Autowired
     private FaultQueryMapper faultQueryMapper;
-
     @Autowired
     private FileMapper fileMapper;
-
     @Autowired
     private RoleMapper roleMapper;
-
     @Autowired
     private OrganizationMapper organizationMapper;
-
     @Autowired
     private OrganizationService organizationService;
 
@@ -118,11 +107,18 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         overhaulOrderListReqDTO.setObjectFlag("1");
+        SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(overhaulOrderListReqDTO.getSubjectCode())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(overhaulOrderListReqDTO.getSubjectCode()) &&
+                StringUtils.isNotNull(office) && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
             overhaulOrderListReqDTO.setMajors(userAccountService.listUserMajor());
         }
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
+        //获取用户当前角色
+        List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
+                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
+                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))) {
             overhaulOrderListReqDTO.setUserId(TokenUtils.getCurrentPersonId());
         }
         Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);

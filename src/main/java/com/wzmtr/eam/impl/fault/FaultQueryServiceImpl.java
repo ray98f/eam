@@ -93,7 +93,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode()) &&
-        StringUtils.isNotNull(office) && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
+                StringUtils.isNotNull(office) && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
             userMajorList = userAccountService.listUserMajor();
         }
         if (StringUtils.isNotEmpty(reqDTO.getOrderStatus()) && reqDTO.getOrderStatus().contains(CommonConstants.COMMA)) {
