@@ -479,33 +479,30 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         String orderCode = orderCodes[0];
         OverhaulPlanListReqDTO selectMap = new OverhaulPlanListReqDTO();
         selectMap.setPlanCode(planCode);
-        OverhaulOrderReqDTO insertMap = new OverhaulOrderReqDTO();
-        insertMap.setOrderCode(orderCode);
-
-        insertMap.setWorkStatus("1");
-
+        OverhaulOrderReqDTO overhaulOrder = new OverhaulOrderReqDTO();
+        overhaulOrder.setOrderCode(orderCode);
+        overhaulOrder.setWorkStatus(CommonConstants.ONE_STRING);
         String trigerTime = "";
-        OverhaulPlanListReqDTO queryMap1 = new OverhaulPlanListReqDTO();
-        queryMap1.setPlanCode(planCode);
-        List<OverhaulPlanResDTO> list11 = overhaulPlanMapper.listOverhaulPlan(queryMap1);
+        OverhaulPlanListReqDTO overhaulPlanListReq = new OverhaulPlanListReqDTO();
+        overhaulPlanListReq.setPlanCode(planCode);
+        List<OverhaulPlanResDTO> list11 = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReq);
         if (StringUtils.isNotEmpty(list11) && !list11.get(0).getWorkerGroupCode().trim().isEmpty()) {
             trigerTime = list11.get(0).getTrigerTime();
-            insertMap.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
-            insertMap.setWorkerCode(TokenUtils.getCurrentPersonId());
-            insertMap.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
+            overhaulOrder.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
+            overhaulOrder.setWorkerCode(TokenUtils.getCurrentPersonId());
+            overhaulOrder.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
             OverhaulOrderReqDTO dmer21 = buildOverhaulOrder(planCode, orderCode, list11);
-
             try {
                 overhaulWorkRecordService.insertRepair(dmer21);
             } catch (Exception e) {
                 log.error("exception message", e);
             }
         }
-        insertMap.setRealStartTime(" ");
-        insertMap.setRealEndTime(" ");
-        insertMap.setExt1(" ");
-        buildOverhaulOrderPlanStartTime(planCode, orderCodes, insertMap, trigerTime);
-        addOverhaulOrder(queryMap1, insertMap);
+        overhaulOrder.setRealStartTime(" ");
+        overhaulOrder.setRealEndTime(" ");
+        overhaulOrder.setExt1(" ");
+        buildOverhaulOrderPlanStartTime(planCode, orderCodes, overhaulOrder, trigerTime);
+        addOverhaulOrder(overhaulPlanListReq, overhaulOrder);
     }
 
     /**
@@ -524,7 +521,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         dmer21.setWorkerCode(TokenUtils.getCurrentPersonId());
         dmer21.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
         dmer21.setRecId(dmer21.getOrderCode());
-        dmer21.setWorkStatus("1");
+        dmer21.setWorkStatus(CommonConstants.ONE_STRING);
         dmer21.setSubjectCode(list11.get(0).getSubjectCode());
         dmer21.setLineNo(list11.get(0).getLineNo());
         return dmer21;

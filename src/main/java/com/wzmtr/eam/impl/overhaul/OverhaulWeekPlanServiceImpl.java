@@ -458,7 +458,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 OverhaulOrderReqDTO reqDTO = new OverhaulOrderReqDTO();
                 BeanUtils.copyProperties(res, reqDTO);
                 reqDTO.setOrderCode(orderCode);
-                reqDTO.setWorkStatus("2");
+                reqDTO.setWorkStatus(CommonConstants.TWO_STRING);
                 reqDTO.setWorkerGroupCode(orgCode);
                 reqDTO.setWorkerCode(userCode);
                 reqDTO.setWorkerName(userName);

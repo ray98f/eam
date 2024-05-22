@@ -274,18 +274,17 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             }
         }
         try {
-            checkOrderState(overhaulOrderReqDTO, "1,2", "请求、已下达");
+            checkOrderState(overhaulOrderReqDTO, "1,2", "请求、下发");
             // 直接派工至工班长，工班人员可看到该工单，注释掉已下达，直接设置为已分配
 //            overhaulOrderReqDTO.setWorkStatus("2");
 //            overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
 //        } else {
-            // 这句有点奇怪，为什么设置删除者这个字段?TODO 后续需要排查
             overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
 
             overhaulOrderReqDTO.setSendPersonId(TokenUtils.getCurrentPersonId());
             overhaulOrderReqDTO.setSendPersonName(TokenUtils.getCurrentPerson().getPersonName());
             overhaulOrderReqDTO.setSendTime(DateUtils.getCurrentTime());
-            overhaulOrderReqDTO.setWorkStatus("3");
+            overhaulOrderReqDTO.setWorkStatus(CommonConstants.THREE_STRING);
             String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
             if (StringUtils.isNotEmpty(workerGroupCode)) {
                 // 派工 直接派工至该工班人员
@@ -500,7 +499,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
-        overhaulOrderReqDTO.setWorkStatus("8");
+        overhaulOrderReqDTO.setWorkStatus(CommonConstants.EIGHT_STRING);
         overhaulOrderReqDTO.setCancelPersonId(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setCancelPersonName(TokenUtils.getCurrentPerson().getPersonName());
         overhaulOrderReqDTO.setCancelTime(DateUtils.getCurrentTime());
