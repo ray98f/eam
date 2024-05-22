@@ -135,7 +135,7 @@
 
     <select id="pageEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30'
+        FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30' AND DELETE_FLAG='0'
         <if test="equipCode!=null and equipCode!=''">
             and EQUIP_CODE like '%' || #{equipCode} || '%'
         </if>
@@ -213,7 +213,7 @@
 
     <select id="allList" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30'
+        FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30' AND DELETE_FLAG='0'
         <if test="equipCode!=null and equipCode!=''">
             and EQUIP_CODE like '%' || #{equipCode} || '%'
         </if>
@@ -339,97 +339,13 @@
 
     <select id="getEquipmentDetailByCode" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE EQUIP_CODE=#{code}
+        FROM T_EQUIPMENT WHERE EQUIP_CODE=#{code} AND DELETE_FLAG='0'
     </select>
 
     <select id="getMaxCode" resultType="java.lang.String">
-        SELECT
-        <if test="type==1">
-            max(UNIT_NO)
-        </if>
-        <if test="type==2">
-            max(BATCH_NO)
-        </if>
-        <if test="type==3">
-            max(ASSET_NO)
-        </if>
-        <if test="type==4">
-            max(DEV_NO)
-        </if>
-        FROM T_BS_UNITCODE
+        SELECT max(EQUIP_CODE)
+        FROM T_EQUIPMENT
     </select>
-
-    <insert id="insertUnitCode">
-        INSERT INTO T_BS_UNITCODE (REC_ID,  <!-- 统一编号 -->
-        UNIT_NO,  <!-- 合一码,共计11位，以9开头 -->
-        BATCH_NO,  <!-- 物资编码(内),共计11位，以1开头 -->
-        ASSET_NO,  <!-- 资产编码(内),共计11位，以2开头 -->
-        DEV_NO,  <!-- 设备编码(内),共计11位，以8开头 -->
-        BATCH_STATUS,  <!-- 添加时为1，更新时为2资产或设备码,3同时有资产时和设备码时1 -->
-        ASSET_STATUS,  <!-- 添加时为1，更新时为2物资或设备码,3同时有物资时和设备码时2 -->
-        DEV_STATUS,  <!-- 添加时为1，更新时为2资产或物资码,3同时有资产时和物资码时3 -->
-        UNITNO_STATUS,  <!-- 记录已有物资，资产及设备状态数量,1有一个有码，2-有二个有码，3-全有码 -->
-        STATUS,  <!-- 缺省值为1,21设备被替换，22-资产被替换 23物资被替换 -->
-        REP_UNIT_NO,  <!-- 当STATUS=21,22,23时必须有值 -->
-        REMARK,  <!-- 备注 -->
-        EXT1,  <!-- 扩展字段1 -->
-        EXT2,  <!-- 扩展字段2 -->
-        EXT3,  <!-- 扩展字段3 -->
-        EXT4,  <!-- 扩展字段4 -->
-        EXT5,  <!-- 扩展字段5 -->
-        REC_CREATOR,  <!-- 记录创建者 -->
-        REC_CREATE_TIME,  <!-- 记录创建时间 -->
-        REC_REVISOR,  <!-- 记录修改者 -->
-        REC_REVISE_TIME,  <!-- 记录修改时间 -->
-        REC_DELETOR,  <!-- 记录删除者 -->
-        REC_DELETE_TIME,  <!-- 记录删除时间 -->
-        DELETE_FLAG,  <!-- 删除标记（0：正常（默认） 1：删除） -->
-        ARCHIVE_FLAG,  <!-- 归档标记（0：未归档（默认） 1：归档） -->
-        COM_STATUS,  <!-- 是否组合(0:否) -->
-        PRO_CODE,
-        PRO_NAME,
-        ORDER_NO,
-        ORDER_NAME,
-        SUPPLIER_ID,
-        SUPPLIER_NAME,
-        MAT_SPECIFI,
-        BRAND)
-        VALUES (
-        #{recId,jdbcType=VARCHAR},
-        #{unitNo,jdbcType=VARCHAR},
-        #{batchNo,jdbcType=VARCHAR},
-        #{assetNo,jdbcType=VARCHAR},
-        #{devNo,jdbcType=VARCHAR},
-        #{batchStatus,jdbcType=NUMERIC},
-        #{assetStatus,jdbcType=NUMERIC},
-        #{devStatus,jdbcType=NUMERIC},
-        #{unitnoStatus,jdbcType=NUMERIC},
-        #{status,jdbcType=NUMERIC},
-        #{repUnitNo,jdbcType=VARCHAR},
-        #{remark,jdbcType=VARCHAR},
-        #{ext1,jdbcType=VARCHAR},
-        #{ext2,jdbcType=VARCHAR},
-        #{ext3,jdbcType=VARCHAR},
-        #{ext4,jdbcType=VARCHAR},
-        #{ext5,jdbcType=VARCHAR},
-        #{recCreator,jdbcType=VARCHAR},
-        #{recCreateTime,jdbcType=VARCHAR},
-        #{recRevisor,jdbcType=VARCHAR},
-        #{recReviseTime,jdbcType=VARCHAR},
-        #{recDeletor,jdbcType=VARCHAR},
-        #{recDeleteTime,jdbcType=VARCHAR},
-        '0',
-        #{archiveFlag,jdbcType=VARCHAR},
-        #{comStatus,jdbcType=NUMERIC},
-        #{proCode,jdbcType=VARCHAR},
-        #{proName,jdbcType=VARCHAR},
-        #{orderNo,jdbcType=VARCHAR},
-        #{orderName,jdbcType=VARCHAR},
-        #{supplierId,jdbcType=VARCHAR},
-        #{supplierName,jdbcType=VARCHAR},
-        #{matSpecifi,jdbcType=VARCHAR},
-        #{brand,jdbcType=VARCHAR})
-    </insert>
 
     <insert id="addEquipment">
         INSERT INTO T_EQUIPMENT (
@@ -1169,18 +1085,17 @@
     <select id="listEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE
-<!--        USE_LINE_NO='02' and MAJOR_CODE='07'-->
         REC_ID IN (
         <foreach collection="ids" index="index" item="id" separator=",">
             #{id}
         </foreach>
-        )
+        ) AND DELETE_FLAG='0'
         ORDER BY EQUIP_NAME ASC
     </select>
 
     <select id="pageSiftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1
+        FROM T_EQUIPMENT WHERE 1=1 AND DELETE_FLAG='0'
         <if test="req.bomType!=null and req.bomType!=''">
             and TRIM(BOM_TYPE) IS NOT NULL AND MAJOR_CODE ='07'
         </if>
@@ -1243,7 +1158,7 @@
 
     <select id="siftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1
+        FROM T_EQUIPMENT WHERE 1=1 AND DELETE_FLAG='0'
         <if test="bomType!=null and bomType!=''">
             and TRIM(BOM_TYPE) IS NOT NULL AND MAJOR_CODE ='07'
         </if>
@@ -1306,7 +1221,7 @@
 
     <select id="getSplitTransferDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1 and REC_ID=#{id}
+        FROM T_EQUIPMENT WHERE 1=1 AND REC_ID=#{id} AND DELETE_FLAG='0'
         ORDER BY EQUIP_NAME ASC
     </select>
 

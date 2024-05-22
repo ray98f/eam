@@ -3,7 +3,6 @@ package com.wzmtr.eam.mapper.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
-import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.basic.LineResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
@@ -55,9 +54,11 @@ public interface EquipmentMapper {
      */
     EquipmentResDTO getEquipmentDetailByCode(String code);
 
-    String getMaxCode(Integer type);
-
-    void insertUnitCode(UnitCodeReqDTO unitCodeReqDTO);
+    /**
+     * 获取当前最大的设备编号
+     * @return 设备编号
+     */
+    String getMaxCode();
 
     /**
      * 新增设备台账

@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
-import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelEquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
@@ -100,18 +99,15 @@ public class EquipmentServiceImpl implements EquipmentService {
     public Page<EquipmentResDTO> pageEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                                String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-
         //  专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(majorCode)) {
             userMajorList = userAccountService.listUserMajor();
         }
-
         if (StringUtils.isNotEmpty(position1Code) && position1Code.contains(ES)) {
             majorCode = "07";
             position1Code = null;
         }
-
         return equipmentMapper.pageEquipment(pageReqDTO.of(), equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
                 systemCode, equipTypeCode, brand, startTime, endTime, manufacture,userMajorList);
     }
@@ -140,12 +136,11 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentReqDTO.setInAccountTime(DateUtils.getCurrentTime());
         CurrentLoginUser user = TokenUtils.getCurrentPerson();
-        equipmentReqDTO.setCompanyCode(user.getCompanyAreaId());
-        equipmentReqDTO.setCompanyName(user.getCompanyName());
-        equipmentReqDTO.setDeptCode(user.getOfficeAreaId());
-        equipmentReqDTO.setDeptName(user.getOfficeName());
-        String unitNo = insertUnitCode(equipmentReqDTO, user);
-        equipmentReqDTO.setEquipCode(unitNo);
+        equipmentReqDTO.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : " ");
+        equipmentReqDTO.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : " ");
+        equipmentReqDTO.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : " ");
+        equipmentReqDTO.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
+        equipmentReqDTO.setEquipCode(getEquipCode());
         equipmentReqDTO.setSpecialEquipFlag("10");
         equipmentMapper.addEquipment(equipmentReqDTO);
     }
@@ -194,8 +189,7 @@ public class EquipmentServiceImpl implements EquipmentService {
             req.setCompanyName(user.getCompanyName());
             req.setDeptCode(user.getOfficeAreaId());
             req.setDeptName(user.getOfficeName());
-            String unitNo = insertUnitCode(req, user);
-            req.setEquipCode(unitNo);
+            req.setEquipCode(getEquipCode());
             temp.add(req);
         }
         if (!temp.isEmpty()) {
@@ -262,27 +256,19 @@ public class EquipmentServiceImpl implements EquipmentService {
         return equipmentMapper.listPartReplace(pageReqDTO.of(), equipCode);
     }
 
-    private String insertUnitCode(EquipmentReqDTO req, CurrentLoginUser user) {
-        String unitNo = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(1)) + 1);
-        String equipCode = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(4)) + 1);
-        UnitCodeReqDTO unitCodeReqDTO = new UnitCodeReqDTO();
-        unitCodeReqDTO.setRecId(TokenUtils.getUuId());
-        unitCodeReqDTO.setUnitNo(unitNo);
-        unitCodeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        unitCodeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        unitCodeReqDTO.setDevNo(equipCode);
-        unitCodeReqDTO.setBatchNo("");
-        unitCodeReqDTO.setAssetNo("");
-        unitCodeReqDTO.setProCode("");
-        unitCodeReqDTO.setProName("");
-        unitCodeReqDTO.setOrderNo(req.getOrderNo());
-        unitCodeReqDTO.setOrderName(req.getOrderName());
-        unitCodeReqDTO.setSupplierId(user.getOfficeAreaId());
-        unitCodeReqDTO.setSupplierName(user.getNames());
-        unitCodeReqDTO.setMatSpecifi(req.getMatSpecifi());
-        unitCodeReqDTO.setBrand(req.getBrand());
-        equipmentMapper.insertUnitCode(unitCodeReqDTO);
-        return unitNo;
+    /**
+     * 获取设备编号
+     * @return 设备编号
+     */
+    private String getEquipCode() {
+        String maxCode = equipmentMapper.getMaxCode();
+        String equipCode;
+        if (StringUtils.isNotEmpty(maxCode)) {
+            equipCode = CodeUtils.getNextCode(maxCode, 2);
+        } else {
+            equipCode = CommonConstants.INIT_EQUIPMENT_CODE;
+        }
+        return equipCode;
     }
 
 }

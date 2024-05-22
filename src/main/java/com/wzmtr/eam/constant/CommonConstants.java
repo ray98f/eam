@@ -153,7 +153,6 @@ public class CommonConstants {
      */
     public static final String DM_VEHICLE_SPECIALTY_CODE = "dm.vehicleSpecialty";
     public static final String DM_MATCH_CONTROL_CODE = "dm.matchControl";
-
     public static final String DM_FAULT_FOLLOW_STATUS = "dm.faultFollowStatus";
 
     /**
@@ -164,15 +163,11 @@ public class CommonConstants {
     public static final String FAULT_FINISHED_CONFIRM_CN = "故障完工确认";
     public static final String FAULT_FINISHED_CONFIRM_AND_DISPATCH_CN = "工单完工确认并故障再派工";
     public static final String FAULT_TUNING_CONFIRM_CN = "故障设调确认";
-
     public static final String ERROR = "异常";
-
     public static final String FAULT_OPEN_APP_KEY = "ubcrjTM9BE1F79Cc";
-
     public static final String FAULT_FOLLOW_REPORT = "fault_follow_report";
-
     public static final String PASSENGER_TRANSPORT_DEPT = "运营分公司-客运部";
-
     public static final List<String> ZC_LIST = Arrays.asList("06", "07");
+    public static final String INIT_EQUIPMENT_CODE = "920000000001";
 
 }
