@@ -16,7 +16,6 @@ import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.utils.DateUtils;
-import com.wzmtr.eam.utils.EipMsgPushUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -54,10 +53,10 @@ public class OverTodoServiceImpl implements OverTodoService {
             List<QueryNotWorkFlowResDTO> list = overTodoMapper.queryNotWorkFlow(businessRecId);
             if (CollectionUtil.isNotEmpty(list)) {
                 for (QueryNotWorkFlowResDTO l : list) {
-                    EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
-                    BeanUtils.copyProperties(l, eipMsgPushReq);
-                    eipMsgPushReq.update();
-                    eipMsgPushReq.setTodoId(businessRecId);
+//                    EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
+//                    BeanUtils.copyProperties(l, eipMsgPushReq);
+//                    eipMsgPushReq.update();
+//                    eipMsgPushReq.setTodoId(businessRecId);
                     StatusWorkFlowLog sLog = new StatusWorkFlowLog();
                     sLog.setUserId(l.getUserId());
                     sLog.setTodoId(businessRecId);
@@ -171,8 +170,8 @@ public class OverTodoServiceImpl implements OverTodoService {
 
 
     @Override
-    public void insertTodoWithUserOrgan(String taskTitle, String businessRecId, String businessNo, String organ,
-                                        String stepName, String taskUrl, String lastStepUserId,String flowId) {
+    public void insertTodoWithUserOrgSameTodoId(String taskTitle, String businessRecId, String businessNo, String organ,
+                                                String stepName, String taskUrl, String lastStepUserId,String flowId) {
         // 根据部门获取用户列表
         String newId = organizationMapper.getIdByAreaId(organ);
         List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId,null);
@@ -184,6 +183,19 @@ public class OverTodoServiceImpl implements OverTodoService {
         }
     }
 
+    @Override
+    public void insertTodoWithUserOrgDiffTodoId(String taskTitle, String businessRecId, String organ, String stepName,
+                                                String taskUrl, String lastStepUserId,String flowId) {
+        // 根据部门获取用户列表
+        String newId = organizationMapper.getIdByAreaId(organ);
+        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId,null);
+        List<String> userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        if (StringUtils.isNotEmpty(userIds)) {
+            for (String userId : userIds) {
+                insertTodo(taskTitle, TokenUtils.getUuId(), businessRecId, userId, stepName, taskUrl, lastStepUserId, flowId);
+            }
+        }
+    }
 
     @Override
     public void insertTodoWithUserRoleAndOrg(String taskTitle, String businessRecId, String businessNo, String roleId,

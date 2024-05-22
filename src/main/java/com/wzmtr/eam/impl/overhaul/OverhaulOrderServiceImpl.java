@@ -293,7 +293,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
             if (StringUtils.isNotEmpty(workerGroupCode)) {
                 // 派工 直接派工至该工班人员
-                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+                overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
             overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
             overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
@@ -369,7 +369,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
             if (StringUtils.isNotEmpty(workerGroupCode)) {
                 // 派工 直接派工至该工班人员
-                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+                overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
         }
         // 添加流程记录
@@ -432,7 +432,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
             if (StringUtils.isNotEmpty(workerGroupCode)) {
                 // 派工 直接派工至该工班人员
-                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+                overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
         }
         // 添加流程记录

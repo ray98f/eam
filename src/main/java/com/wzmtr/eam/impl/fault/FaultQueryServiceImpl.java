@@ -1028,7 +1028,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                     overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo, CommonConstants.FAULT_FINISHED_CONFIRM_CN, currentPersonId, "?", null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 } else {
                     //其他的发给工班
-                    overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfo.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfo.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 }
             } else {
                 sendDispatchTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());
