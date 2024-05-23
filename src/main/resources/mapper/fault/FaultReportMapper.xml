@@ -811,7 +811,7 @@
         <if test="userId!=null">
             AND (df.DISPATCH_USER_ID=#{userId} OR
             <if test="officeAreaId!=null and officeAreaId!=''">
-                df.REPAIR_DEPT_CODE=#{officeAreaId} OR
+                d.REPAIR_DEPT_CODE=#{officeAreaId} OR
             </if>
             df.REPAIR_RESP_USER_ID=#{userId} OR df.REPORT_USER_ID=#{userId} OR
             df.REPORT_START_USER_ID=#{userId} OR df.REPORT_FINISH_USER_ID=#{userId} OR
@@ -1093,7 +1093,7 @@
         <if test="userId!=null">
             AND (df.DISPATCH_USER_ID=#{userId} OR
             <if test="officeAreaId!=null and officeAreaId!=''">
-                df.REPAIR_DEPT_CODE=#{officeAreaId} OR
+                d.REPAIR_DEPT_CODE=#{officeAreaId} OR
             </if>
             df.REPAIR_RESP_USER_ID=#{userId} OR df.REPORT_USER_ID=#{userId} OR
             df.REPORT_START_USER_ID=#{userId} OR df.REPORT_FINISH_USER_ID=#{userId} OR
