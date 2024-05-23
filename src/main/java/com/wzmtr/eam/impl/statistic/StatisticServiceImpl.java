@@ -860,76 +860,73 @@ public class StatisticServiceImpl implements StatisticService {
         List<RamsResDTO> totalMilesList = ramsMapper.querytotalMiles();
         RamsResDTO totalMiles = totalMilesList.get(0);
         Map<String, RamsSysPerformResDTO> map = Maps.newHashMap();
-        Set<String> names = Sets.newHashSet();
         mapInitSysPerform(map);
         for (RamsSysPerformResDTO a : ramsResDTOS) {
             if (StringUtils.isEmpty(a.getModuleName())) {
                 continue;
             }
             switch (substringFirstThree(a.getModuleName())) {
-                // 气动装置和空气分配系统1'
                 case "B09":
-                    // 气动装置和空气分配系统2'
                 case "B10":
-                    rebuildBlock4SP(a, names, "气动装置和空气分配系统", "10000", "7000");
+                    rebuildBlock4SP(a, "气动装置和空气分配系统", "10000", "7000");
                     break;
                 case "B15":
                 case "B16":
                 case "B17":
                 case "B27":
-                    rebuildBlock4SP(a, names, "门窗系统", "10000", "7000");
+                    rebuildBlock4SP(a, "门窗系统", "10000", "7000");
                     break;
                 case "B08":
-                    rebuildBlock4SP(a, names, "制动系统", "49500", "49500");
+                    rebuildBlock4SP(a, "制动系统", "49500", "49500");
                     break;
                 case "B19":
                 case "B20":
-                    rebuildBlock4SP(a, names, "空调及通风系统", "210000", "46000");
+                    rebuildBlock4SP(a, "空调及通风系统", "210000", "46000");
                     break;
                 case "B11":
                 case "B14":
                 case "B13":
-                    rebuildBlock4SP(a, names, "辅助供电设备系统", "647749", "323825");
+                    rebuildBlock4SP(a, "辅助供电设备系统", "647749", "323825");
                     break;
                 case "B03":
-                    rebuildBlock4SP(a, names, "转向架", "409500", "409500");
+                    rebuildBlock4SP(a, "转向架", "409500", "409500");
                     break;
                 case "B25":
-                    rebuildBlock4SP(a, names, "雷达辅助系统", "647749", "323825");
+                    rebuildBlock4SP(a, "雷达辅助系统", "647749", "323825");
                     break;
                 case "B01":
                 case "B02":
                 case "B12":
                 case "B18":
                 case "B21":
-                    rebuildBlock4SP(a, names, "车体结构及内装", "204800", "204800");
+                    rebuildBlock4SP(a, "车体结构及内装", "204800", "204800");
                     break;
                 case "B06":
                 case "B07":
-                    rebuildBlock4SP(a, names, "牵引及高压系统", "36588", "11000");
+                    rebuildBlock4SP(a, "牵引及高压系统", "36588", "11000");
                     break;
                 case "B04":
                 case "B05":
-                    rebuildBlock4SP(a, names, "贯通道和车钩", "409500", "204800");
+                    rebuildBlock4SP(a, "贯通道和车钩", "409500", "204800");
                     break;
                 case "B22":
-                    rebuildBlock4SP(a, names, "列车管理及列车控制系统", "191000", "91000");
+                    rebuildBlock4SP(a, "列车管理及列车控制系统", "191000", "91000");
                     break;
                 case "B23":
                 case "B24":
-                    rebuildBlock4SP(a, names, "旅客信息系统", "191000", "91000");
+                    rebuildBlock4SP(a, "旅客信息系统", "191000", "91000");
                     break;
                 case "B30":
-                    rebuildBlock4SP(a, names, "运行性能检测系统", "36588", "11000");
+                    rebuildBlock4SP(a, "运行性能检测系统", "36588", "11000");
                     break;
                 case "B26":
-                    rebuildBlock4SP(a, names, "走行部监测系统", "36588", "11000");
+                    rebuildBlock4SP(a, "走行部监测系统", "36588", "11000");
                     break;
                 case "B29":
-                    rebuildBlock4SP(a, names, "轨道检测系统", "36588", "11000");
+                    rebuildBlock4SP(a, "轨道检测系统", "36588", "11000");
                     break;
                 case "B28":
-                    rebuildBlock4SP(a, names, "弓网检测系统", "36588", "11000");
+                    rebuildBlock4SP(a, "弓网检测系统", "36588", "11000");
                     break;
                 default:
                     break;
@@ -1232,20 +1229,10 @@ public class StatisticServiceImpl implements StatisticService {
         }
     }
 
-    public void rebuildBlock4SP(RamsSysPerformResDTO map, Set<String> module, String moduleName, String contractZB_LATE, String contractZB_NOS) {
-        DecimalFormat df = new DecimalFormat("#0");
-        String NUM_LATE = map.getNumLate();
-        String NUM_NOS = map.getNumNos();
+    public void rebuildBlock4SP(RamsSysPerformResDTO map, String moduleName, String contractZB_LATE, String contractZB_NOS) {
         map.setModuleName(moduleName);
         map.setContractZBLATE(contractZB_LATE);
         map.setContractZBNOS(contractZB_NOS);
-        // if (module.contains(moduleName)) {
-        //     map.setNumLate(df.format(Double.parseDouble(NUM_LATE) + NUM_LATE));
-        //     map.setNumNos(df.format(Double.parseDouble(NUM_NOS) + NUM_NOS));
-        // } else {
-        //     map.setNumLate(NUM_LATE);
-        //     map.setNumNos(NUM_NOS);
-        // }
     }
 
     public void rebuildBlock(FaultConditionResDTO res, Set<String> module, String moduleName, String contractZB) {

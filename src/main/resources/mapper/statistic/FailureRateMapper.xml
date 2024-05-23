@@ -121,7 +121,7 @@
         order by c.YEAR_MONTH
     </select>
     <select id="PSDrate" resultType="com.wzmtr.eam.dto.res.statistic.FailureRateResDTO">
-        SELECT a.month,nvl(b.num,0) AS num
+        SELECT a.month,nvl(b.num,0) as "precent"
         FROM (
             select to_char(add_months(to_date(#{startTime}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') as month
             from dual
