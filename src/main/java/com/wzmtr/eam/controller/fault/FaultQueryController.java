@@ -77,11 +77,11 @@ public class FaultQueryController {
     }
 
     /**
-     * 完工
+     * 完工报告
      * @param reqDTO 完工返回数据
      * @return 成功状态
      */
-    @ApiOperation(value = "完工")
+    @ApiOperation(value = "完工报告")
     @PostMapping("/finish/work")
     public DataResponse<T> finishWork(@RequestBody FaultFinishWorkReqDTO reqDTO) {
         faultQueryService.finishWork(reqDTO);

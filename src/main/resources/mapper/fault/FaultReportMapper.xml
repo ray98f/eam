@@ -1118,15 +1118,20 @@
         FAULT_NO	as "faultNo",  <!-- 故障编号 -->
         FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单号 -->
         DISPATCH_USER_ID	as "dispatchUserId",  <!-- 派工人工号 -->
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(DISPATCH_USER_ID)) as "dispatchUserName",
         DISPATCH_TIME	as "dispatchTime",  <!-- 派工时间 -->
         REPAIR_RESP_USER_ID	as "repairRespUserId",  <!-- 维修负责人工号 -->
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPAIR_RESP_USER_ID)) as "repairRespUserName",
+        (select u.MOBILE from SYS_USER u where u.LOGIN_NAME=trim(REPAIR_RESP_USER_ID)) as "repairRespUserMobile",
         WORK_AREA	as "workArea",  <!-- 工作区域 -->
         ORDER_STATUS	as "orderStatus",  <!-- 工单状态 -->
         REPAIR_DISPATCH_NO	as "repairDispatchNo",  <!-- 维调号 -->
         REPORT_USER_ID	as "reportUserId",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPORT_USER_ID)) as "reportUserName",
         REPORT_TIME	as "reportTime",
         WORK_CLASS as "workClass",
         CHECK_USER_ID as "checkUserId",
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(CHECK_USER_ID)) as "checkUserName",
         CHECK_TIME as "checkTime",
         RUSH_REPAIR_NO	as "rushRepairNo",  <!-- 抢修号 -->
         ARRIVAL_TIME	as "arrivalTime",  <!-- 到达现场时间 -->
@@ -1140,23 +1145,20 @@
         FAULT_ACTION_DETAIL	as "faultActionDetail",  <!-- 故障处理详情 -->
         FAULT_PROCESS_RESULT	as "faultProcessResult",  <!-- 故障处理结果（10-已处理；20-未处理） -->
         REPORT_START_USER_ID	as "reportStartUserId",  <!-- 开工人工号 -->
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPORT_START_USER_ID)) as "reportStartUserName",
         REPORT_START_TIME	as "reportStartTime",  <!-- 开工时间 -->
         REPORT_FINISH_USER_ID	as "reportFinishUserId",  <!-- 完工人工号 -->
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPORT_FINISH_USER_ID)) as "reportFinishUserName",
         REPORT_FINISH_TIME	as "reportFinishTime",  <!-- 完工时间 -->
         CONFIRM_USER_ID	as "confirmUserId",  <!-- 完工确认人工号 -->
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(CONFIRM_USER_ID)) as "confirmUserName",
         CONFIRM_TIME	as "confirmTime",  <!-- 完工确认时间 -->
         CLOSE_USER_ID	as "closeUserId",  <!-- 关闭人工号 -->
+        (select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(CLOSE_USER_ID)) as "closeUserName",
         CLOSE_TIME	as "closeTime",  <!-- 关闭时间 -->
         WORK_FLOW_INST_ID	as "workFlowInstId",  <!-- 工作流实例ID -->
         WORK_FLOW_INST_STATUS	as "workFlowInstStatus",  <!-- 工作流实例状态 -->
         PLAN_RECOVERY_TIME as "planRecoveryTime",
-        (Select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(DISPATCH_USER_ID)) as "dispatchUserName",
-        (Select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPAIR_RESP_USER_ID)) as "repairRespUserName",
-        (Select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(CHECK_USER_ID)) as "checkUserName",
-        (Select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(CLOSE_USER_ID)) as "closeUserName",
-        (Select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPORT_FINISH_USER_ID)) as "reportFinishUserName",
-        (Select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(CONFIRM_USER_ID)) as "confirmUserName",
-        (Select u.NAME from SYS_USER u where u.LOGIN_NAME=trim(REPORT_USER_ID)) as "reportUserName",
         FAULT_AFFECT as "faultAffect",
         IS_DETAINING_REPAIR as "isDetainingRepair",
         DOC_ID	as "docId",  <!-- 附件编号 -->

@@ -447,8 +447,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(reqDTO.getOrderStatus())) {
             FaultOrderDO faultOrder = BeanUtils.convert(reqDTO, FaultOrderDO.class);
             faultOrder.setReportFinishUserId(TokenUtils.getCurrentPersonId());
-            faultOrder.setReportFinishUserName(TokenUtils.getCurrentPerson().getPersonName());
             faultOrder.setReportFinishTime(DateUtils.getCurrentTime());
+            faultOrder.setReportUserId(TokenUtils.getCurrentPersonId());
+            faultOrder.setReportTime(DateUtils.getCurrentTime());
             faultOrder.setRecRevisor(TokenUtils.getCurrentPersonId());
             faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
             faultOrder.setOrderStatus(OrderStatus.WAN_GONG.getCode());
