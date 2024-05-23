@@ -304,16 +304,6 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
 
     @Override
     public void addSubmissionRecordDetail(SubmissionRecordDetailReqDTO submissionRecordDetailReqDTO) {
-//        if (StringUtils.isNotEmpty(submissionRecordDetailReqDTO.getEquipName())) {
-//            EquipmentResDTO equipment = equipmentMapper.getEquipByName(submissionRecordDetailReqDTO.getEquipName());
-//            if (StringUtils.isNotNull(equipment)) {
-//                BeanUtils.copyProperties(equipment, submissionRecordDetailReqDTO);
-//            } else {
-//                throw new CommonException(ErrorCode.NORMAL_ERROR, "请填写正确的设备名称，确保设备台账中存在此设备");
-//            }
-//        } else {
-//            throw new CommonException(ErrorCode.NORMAL_ERROR, "设备名称必填");
-//        }
         submissionRecordDetailReqDTO.setRecId(TokenUtils.getUuId());
         submissionRecordDetailReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
@@ -321,7 +311,12 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         submissionRecordDetailReqDTO.setTestRecId(submissionRecordDetailReqDTO.getSendVerifyNo());
         MeaResDTO meaResDTO = new MeaResDTO();
         meaResDTO.setLastVerifyDate(submissionRecordDetailReqDTO.getLastVerifyDate());
-        meaResDTO.setNextVerifyDate(submissionRecordDetailReqDTO.getNextVerifyDate());
+        MeaResDTO mea = meaMapper.getMeaDetail(null, submissionRecordDetailReqDTO.getEquipCode());
+        if (StringUtils.isNotNull(mea) &&
+                (StringUtils.isEmpty(mea.getNextVerifyDate()) ||
+                        mea.getNextVerifyDate().compareTo(submissionRecordDetailReqDTO.getNextVerifyDate()) > 0)) {
+            meaResDTO.setNextVerifyDate(submissionRecordDetailReqDTO.getNextVerifyDate());
+        }
         meaResDTO.setEquipName(submissionRecordDetailReqDTO.getEquipName());
         meaResDTO.setCertificateNo(submissionRecordDetailReqDTO.getVerificationNo());
         meaResDTO.setMeasureBarcode(submissionRecordDetailReqDTO.getMeasureBarcode());
@@ -349,6 +344,25 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         }
         submissionRecordDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         submissionRecordDetailReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
+        MeaResDTO meaResDTO = new MeaResDTO();
+        meaResDTO.setLastVerifyDate(submissionRecordDetailReqDTO.getLastVerifyDate());
+        MeaResDTO mea = meaMapper.getMeaDetail(null, submissionRecordDetailReqDTO.getEquipCode());
+        if (StringUtils.isNotNull(mea) &&
+                (StringUtils.isEmpty(mea.getNextVerifyDate()) ||
+                        mea.getNextVerifyDate().compareTo(submissionRecordDetailReqDTO.getNextVerifyDate()) > 0)) {
+            meaResDTO.setNextVerifyDate(submissionRecordDetailReqDTO.getNextVerifyDate());
+        }
+        meaResDTO.setEquipName(submissionRecordDetailReqDTO.getEquipName());
+        meaResDTO.setCertificateNo(submissionRecordDetailReqDTO.getVerificationNo());
+        meaResDTO.setMeasureBarcode(submissionRecordDetailReqDTO.getMeasureBarcode());
+        if (submissionRecordDetailReqDTO.getVerifyPeriod() != null) {
+            meaResDTO.setVerifyPeriod(Integer.valueOf(submissionRecordDetailReqDTO.getVerifyPeriod()));
+        }
+        meaResDTO.setVerifyDept(submissionRecordDetailReqDTO.getVerifyDept());
+        meaResDTO.setEquipCode(submissionRecordDetailReqDTO.getEquipCode());
+        meaResDTO.setRecCreateTime(submissionRecordDetailReqDTO.getRecCreateTime());
+        meaResDTO.setRecCreator(submissionRecordDetailReqDTO.getRecCreator());
+        meaMapper.updateone(meaResDTO);
         submissionRecordMapper.modifySubmissionRecordDetail(submissionRecordDetailReqDTO);
     }
 

@@ -306,6 +306,7 @@
     <select id="getSubmissionRecordDetailByEquip" resultType="com.wzmtr.eam.dto.res.mea.SubmissionRecordDetailResDTO">
         <include refid="submission-record-detail-cols"/>
         WHERE a.EQUIP_CODE=#{equipCode}
+        order by a.LAST_VERIFY_DATE desc
     </select>
 
     <insert id="addSubmissionRecordDetail">

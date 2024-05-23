@@ -141,7 +141,13 @@
         on a.EQUIP_CODE=b.EQUIP_CODE
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
-        where 1=1 and b.REC_ID=#{id}
+        where 1=1
+        <if test="id!=null and id!=''">
+            and b.REC_ID=#{id}
+        </if>
+        <if test="equipCode!=null and equipCode!=''">
+            and b.EQUIP_CODE=#{equipCode}
+        </if>
         and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
     </select>
 
