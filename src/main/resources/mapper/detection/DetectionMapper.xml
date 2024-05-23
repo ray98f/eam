@@ -380,7 +380,7 @@
         <if test="testRecId!=null and testRecId!=''">
             and a.TEST_REC_ID=#{testRecId}
         </if>
-        order by a.EQUIP_CODE asc
+        order by a.VERIFY_DATE desc
     </select>
 
     <select id="getDetectionDetailDetail" resultType="com.wzmtr.eam.dto.res.detection.DetectionDetailResDTO">

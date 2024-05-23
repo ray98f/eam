@@ -303,6 +303,16 @@ public class StatisticController {
         return DataResponse.of(statisticService.querySysPerform());
     }
 
+    /**
+     * 各系统可靠性统计-导出
+     * @param response response
+     */
+    @PostMapping("/rams/exportSysPerform")
+    @ApiOperation(value = "各系统可靠性统计-导出")
+    public void exportSysPerform(HttpServletResponse response) throws IOException {
+        statisticService.exportSysPerform(response);
+    }
+
     @PostMapping("/rams/queryRAMSFaultList")
     @ApiOperation(value = "RAMS故障列表")
     public PageResponse<FaultRamsResDTO> queryRAMSFaultList(@RequestBody RamsTimeReqDTO reqDTO) {

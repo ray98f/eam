@@ -534,7 +534,7 @@
         FROM T_SUBMISSION_RECORD_DETAIL a
         LEFT JOIN T_MEA_SUBMISSION_RECORD b ON a.TEST_REC_ID=b.REC_ID
         WHERE 1=1 AND a.EQUIP_CODE=#{equipCode}
-        order by a.REC_CREATE_TIME desc
+        order by a.LAST_VERIFY_DATE desc
     </select>
 
 </mapper>

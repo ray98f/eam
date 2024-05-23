@@ -932,14 +932,14 @@ public class StatisticServiceImpl implements StatisticService {
                     break;
             }
             DecimalFormat df = new DecimalFormat("#0");
-            Double MTBF_LATE;
+            double MTBF_LATE;
             if (Double.parseDouble(a.getNumLate()) == ZERO) {
                 MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
             } else {
                 MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumLate());
             }
             a.setMTBF_LATE(df.format(MTBF_LATE));
-            Double MTBF_NOS;
+            double MTBF_NOS;
             if (Double.parseDouble(a.getNumNos()) == ZERO) {
                 MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
             } else {
@@ -956,9 +956,10 @@ public class StatisticServiceImpl implements StatisticService {
         buildSysPerformIsCompliance(map);
         return new ArrayList<>(map.values());
     }
-    private void mapInitSysPerform(Map<String, RamsSysPerformResDTO> map ,String name ){
+
+    private void mapInitSysPerform(Map<String, RamsSysPerformResDTO> map ,String name){
         RamsSysPerformResDTO a = new RamsSysPerformResDTO();
-        a.setModuleName(CommonConstants.ZERO_STRING);
+        a.setModuleName(name);
         a.setNumLate(CommonConstants.ZERO_STRING);
         a.setNumNos(CommonConstants.ZERO_STRING);
         a.setContractZBLATE(CommonConstants.ZERO_STRING);
@@ -993,6 +994,7 @@ public class StatisticServiceImpl implements StatisticService {
      * @param map 集合
      */
     private void buildSysPerformIsCompliance(Map<String, RamsSysPerformResDTO> map) {
+        List<FaultConditionResDTO> list = queryCountFaultType();
         map.values().forEach(a -> {
             if (Double.parseDouble(a.getMTBF_LATE()) >= Double.parseDouble(a.getContractZBLATE())) {
                 a.setIsDB_LATE("达标");
@@ -1004,7 +1006,24 @@ public class StatisticServiceImpl implements StatisticService {
             } else {
                 a.setIsDB_NOS("未达标");
             }
+            // 添加各系统平均无故障时间实际指标
+            a.setZB(list.stream().filter(b -> b.getModuleName().equals(a.getModuleName())).collect(toList()).get(0).getZB());
         });
+    }
+
+    @Override
+    public void exportSysPerform(HttpServletResponse response) throws IOException {
+        List<RamsSysPerformResDTO> list = querySysPerform();
+        if (StringUtils.isNotEmpty(list)) {
+            List<ExcelRamsSysPerformResDTO> resList = new ArrayList<>();
+            for (RamsSysPerformResDTO resDTO : list) {
+                ExcelRamsSysPerformResDTO res = new ExcelRamsSysPerformResDTO();
+                res.setModuleName(resDTO.getModuleName());
+                res.setZb(resDTO.getZB());
+                resList.add(res);
+            }
+            EasyExcelUtils.export(response, "列车子系统的可靠性目标", resList);
+        }
     }
 
     /**
@@ -1014,7 +1033,6 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public List<FaultConditionResDTO> queryCountFaultType() {
         List<FaultConditionResDTO> list = ramsMapper.queryCountFaut();
-
         List<RamsResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
         RamsResDTO ramsResDTO = ramsResDTOS.get(0);
         Set<String> names = Sets.newHashSet();
@@ -1026,9 +1044,7 @@ public class StatisticServiceImpl implements StatisticService {
                 continue;
             }
             switch (substringFirstThree(a.getSC())) {
-                    //气动装置和空气分配系统1'
                 case "B09":
-                    //气动装置和空气分配系统2'
                 case "B10":
                     rebuildBlock(a, names, "气动装置和空气分配系统", "9000");
                     break;
@@ -1093,8 +1109,6 @@ public class StatisticServiceImpl implements StatisticService {
                 default:
                     break;
             }
-
-
             String moduleName = a.getModuleName();
             FaultConditionResDTO last = map.get(moduleName);
             if (map.containsKey(moduleName)) {
@@ -1106,9 +1120,7 @@ public class StatisticServiceImpl implements StatisticService {
                 last.setModuleName(moduleName);
             }
         }
-
         buildFaultTypeIsCompliance(map, ramsResDTO);
-
         return new ArrayList<>(map.values());
     }
 
@@ -1131,7 +1143,7 @@ public class StatisticServiceImpl implements StatisticService {
         mapInit(map,"弓网检测系统");
     }
 
-    public void mapInit(Map<String, FaultConditionResDTO> map,String name) {
+    public void mapInit(Map<String, FaultConditionResDTO> map, String name) {
         FaultConditionResDTO a = new FaultConditionResDTO();
         a.setCRK(CommonConstants.ZERO_STRING);
         a.setZX(CommonConstants.ZERO_STRING);

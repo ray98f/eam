@@ -112,6 +112,12 @@ public interface StatisticService {
 
     List<RamsSysPerformResDTO> querySysPerform();
 
+    /**
+     * 各系统可靠性统计-导出
+     * @param response response
+     */
+    void exportSysPerform(HttpServletResponse response) throws IOException;
+
     List<FaultConditionResDTO> queryCountFaultType();
 
     Page<FaultRamsResDTO> queryRAMSFaultList(RamsTimeReqDTO reqDTO);
