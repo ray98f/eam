@@ -55,6 +55,9 @@
         <if test="type=='2'.toString()">
             AND EXAMINE_STATUS='0' AND rownum=1
         </if>
+        <if test="type=='3'.toString()">
+            AND FOLLOW_EXAMINE_STATUS='0' AND rownum=1
+        </if>
         ORDER BY REPORT_TIME DESC
     </select>
 
