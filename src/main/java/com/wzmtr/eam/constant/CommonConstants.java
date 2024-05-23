@@ -45,6 +45,7 @@ public class CommonConstants {
     public static final String SYS_ALL_01 = "SYS_ALL_01";  //查看全专业角色
     public static final String ADMIN = "admin";  //系统管理员
     public static final String DM_004 = "DM_004";//运维管理部-专业工程师
+    public static final String DM_005 = "DM_005";//车辆部-专业工程师
     public static final String DM_006 = "DM_006";//中铁通-专业工程师
     public static final String DM_032 = "DM_032";//中车-专业工程师
     public static final String DM_007 = "DM_007";//中铁通-生产调度

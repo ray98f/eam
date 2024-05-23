@@ -107,7 +107,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
-                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))) {
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
             page = faultQueryMapper.query(reqDTO.of(), reqDTO, userMajorList);
         } else {
             page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
