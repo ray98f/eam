@@ -106,4 +106,9 @@
         THEN UPDATE SET t1.ORG_NAME=t2.NAME
     </update>
 
+    <delete id="deleteNoneOrgCode">
+        DELETE FROM SYS_ORG_TYPE
+        WHERE ORG_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE DELETE_FLAG='0')
+    </delete>
+
 </mapper>

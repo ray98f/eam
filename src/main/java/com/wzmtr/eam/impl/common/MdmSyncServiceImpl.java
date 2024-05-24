@@ -293,9 +293,13 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     @Transactional(rollbackFor = Exception.class)
     public void syncSysOrgName() {
         orgLineMapper.syncSysOrgName();
+        orgLineMapper.deleteNoneOrgCode();
         orgMajorMapper.syncSysOrgName();
+        orgMajorMapper.deleteNoneOrgCode();
         orgRegionMapper.syncSysOrgName();
+        orgRegionMapper.deleteNoneOrgCode();
         orgTypeMapper.syncSysOrgName();
+        orgTypeMapper.deleteNoneOrgCode();
     }
 
     @Override

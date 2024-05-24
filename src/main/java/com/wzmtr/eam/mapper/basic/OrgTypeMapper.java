@@ -75,5 +75,10 @@ public interface OrgTypeMapper {
      */
     void syncSysOrgName();
 
+    /**
+     * 删除无效数据
+     */
+    void deleteNoneOrgCode();
+
 
 }

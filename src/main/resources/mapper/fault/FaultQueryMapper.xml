@@ -1279,13 +1279,13 @@
         ORDER BY df.ORDER_STATUS asc, d.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
     <select id="queryDeptCode" resultType="com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO">
-        SELECT T05.ORG_CODE as "orgCode",
+        SELECT DISTINCT T05.ORG_CODE as "orgCode",
         o.NAME as "orgName"
         FROM SYS_ORG_MAJOR T05
         LEFT JOIN SYS_ORG_LINE T06 ON T05.ORG_CODE=T06.ORG_CODE
         LEFT JOIN SYS_ORG_TYPE T07 ON T05.ORG_CODE=T07.ORG_CODE
         LEFT JOIN SYS_OFFICE o ON o.AREA_ID=T05.ORG_CODE AND o.DEL_FLAG='0'
-        where T05.DELETE_FLAG = '0'
+        WHERE T05.DELETE_FLAG = '0' AND o.NAME IS NOT NULL
         <if test="majorCode!=null and majorCode!=''">
             AND T05.MAJOR_CODE=#{majorCode}
         </if>
@@ -1295,5 +1295,6 @@
         <if test="orgType!=null and orgType!=''">
             AND T07.ORG_TYPE=#{orgType}
         </if>
+        ORDER BY T05.ORG_CODE asc
     </select>
 </mapper>

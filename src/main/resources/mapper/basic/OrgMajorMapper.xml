@@ -137,7 +137,7 @@
         LEFT JOIN SYS_ORG_LINE T06 ON T05.ORG_CODE=T06.ORG_CODE
         LEFT JOIN SYS_ORG_TYPE T07 ON T05.ORG_CODE=T07.ORG_CODE
         LEFT JOIN SYS_OFFICE o ON o.AREA_ID=T05.ORG_CODE AND o.DEL_FLAG='0'
-        WHERE 1=1
+        WHERE T05.DELETE_FLAG='0' AND o.NAME IS NOT NULL
         <if test="subjectCode != null and subjectCode != ''">
             AND T05.MAJOR_CODE=#{subjectCode}
         </if>
@@ -147,6 +147,7 @@
         <if test="orgType != null and orgType != ''">
             AND T07.ORG_TYPE=#{orgType}
         </if>
+        ORDER BY T05.ORG_CODE asc
     </select>
 
     <select id="getDepartmentUserByGroupName" resultType="com.wzmtr.eam.entity.OrganMajorLineType">
@@ -171,7 +172,7 @@
         LEFT JOIN SYS_ORG_LINE d6 ON d5.ORG_CODE=d6.ORG_CODE AND d6.DELETE_FLAG='0'
         LEFT JOIN SYS_ORG_TYPE d7 ON d6.ORG_CODE=d7.ORG_CODE AND d7.DELETE_FLAG='0'
         LEFT JOIN SYS_OFFICE o ON o.AREA_ID=d5.ORG_CODE AND o.DEL_FLAG='0'
-        where d5.DELETE_FLAG='0'
+        WHERE d5.DELETE_FLAG='0' AND o.NAME IS NOT NULL
         AND d5.MAJOR_CODE=#{majorCode}
         AND d6.LINE_CODE=#{lineCode}
         AND d7.ORG_TYPE=#{organType}
@@ -237,4 +238,9 @@
         WHEN MATCHED
         THEN UPDATE SET t1.ORG_NAME=t2.NAME
     </update>
+
+    <delete id="deleteNoneOrgCode">
+        DELETE FROM SYS_ORG_MAJOR
+        WHERE ORG_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE DELETE_FLAG='0')
+    </delete>
 </mapper>
