@@ -1305,11 +1305,11 @@
         <if test="subjectCode!=null and subjectCode!=''">
             AND MAJOR_CODE=#{subjectCode}
         </if>
-        <if test="startDate!=null and startDate!=''">
-            AND to_date(DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')>=to_date(#{startDate},'YYYY-MM-DD HH24:MI:SS')
+        <if test="startTime!=null and startTime!=''">
+            AND to_date(DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')>=to_date(#{startTime},'YYYY-MM-DD HH24:MI:SS')
         </if>
-        <if test="endDate!=null and endDate!=''">
-            AND to_date(#{endDate},'YYYY-MM-DD HH24:MI:SS')>=to_date(DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')
+        <if test="endTime!=null and endTime!=''">
+            AND to_date(#{endTime},'YYYY-MM-DD HH24:MI:SS')>=to_date(DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')
         </if>
     </select>
 </mapper>
