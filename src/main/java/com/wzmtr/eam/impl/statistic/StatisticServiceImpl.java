@@ -1352,6 +1352,7 @@ public class StatisticServiceImpl implements StatisticService {
                 res.setSubjectName(category.getNodeName());
                 Long num = faultQueryMapper.getSubjectFaultNum(category.getNodeCode(), startTime, endTime);
                 res.setFaultNum(StringUtils.isNull(num) ? 0L : num);
+                list.add(res);
             }
         }
         return list;
