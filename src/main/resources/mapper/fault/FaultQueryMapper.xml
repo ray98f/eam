@@ -1280,10 +1280,11 @@
     </select>
     <select id="queryDeptCode" resultType="com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO">
         SELECT T05.ORG_CODE as "orgCode",
-        T05.ORG_NAME as "orgName"
+        o.NAME as "orgName"
         FROM SYS_ORG_MAJOR T05
         LEFT JOIN SYS_ORG_LINE T06 ON T05.ORG_CODE=T06.ORG_CODE
         LEFT JOIN SYS_ORG_TYPE T07 ON T05.ORG_CODE=T07.ORG_CODE
+        LEFT JOIN SYS_OFFICE o ON o.AREA_ID=T05.ORG_CODE AND o.DEL_FLAG='0'
         where T05.DELETE_FLAG = '0'
         <if test="majorCode!=null and majorCode!=''">
             AND T05.MAJOR_CODE=#{majorCode}
