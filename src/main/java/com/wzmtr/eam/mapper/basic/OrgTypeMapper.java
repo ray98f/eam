@@ -70,5 +70,10 @@ public interface OrgTypeMapper {
      */
     List<OrgTypeResDTO> listOrgType(List<String> ids);
 
+    /**
+     * 基础数据部门名称同步
+     */
+    void syncSysOrgName();
+
 
 }

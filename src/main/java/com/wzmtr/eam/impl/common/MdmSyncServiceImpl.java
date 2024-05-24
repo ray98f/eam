@@ -6,13 +6,16 @@ import com.wzmtr.eam.dto.res.basic.OrgParentResDTO;
 import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.entity.SysOrgUser;
 import com.wzmtr.eam.entity.SysUser;
+import com.wzmtr.eam.mapper.basic.OrgLineMapper;
+import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
+import com.wzmtr.eam.mapper.basic.OrgRegionMapper;
+import com.wzmtr.eam.mapper.basic.OrgTypeMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.service.common.MdmSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,14 +33,17 @@ public class MdmSyncServiceImpl implements MdmSyncService {
     public static final String EXTRA = "extra";
 
     @Autowired
-    private SqlSessionFactory sqlSessionFactory;
-
-    @Autowired
     private UserAccountMapper userAccountMapper;
-
     @Autowired
     private OrganizationMapper organizationMapper;
-
+    @Autowired
+    private OrgLineMapper orgLineMapper;
+    @Autowired
+    private OrgMajorMapper orgMajorMapper;
+    @Autowired
+    private OrgRegionMapper orgRegionMapper;
+    @Autowired
+    private OrgTypeMapper orgTypeMapper;
     @Autowired
     private PersonDefaultConfig personDefaultConfig;
 
@@ -281,6 +287,15 @@ public class MdmSyncServiceImpl implements MdmSyncService {
         if (!orgList.isEmpty()) {
             doOrgInsertBatch(orgList, "extra");
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void syncSysOrgName() {
+        orgLineMapper.syncSysOrgName();
+        orgMajorMapper.syncSysOrgName();
+        orgRegionMapper.syncSysOrgName();
+        orgTypeMapper.syncSysOrgName();
     }
 
     @Override

@@ -229,4 +229,12 @@
         where t1.MAJOR_CODE=#{majorCode}
         and t2.REGION_CODE=#{station} and rownum=1
     </select>
+
+    <update id="syncSysOrgName">
+        MERGE INTO SYS_ORG_MAJOR t1
+        USING SYS_OFFICE t2
+        ON (t1.ORG_CODE=t2.AREA_ID AND t2.DEL_FLAG='0')
+        WHEN MATCHED
+        THEN UPDATE SET t1.ORG_NAME=t2.NAME
+    </update>
 </mapper>

@@ -77,4 +77,9 @@ public interface OrgMajorMapper {
      * @return 组织机构路径
      */
     String getOrgNamesByStationAndMajor(String station, String majorCode);
+
+    /**
+     * 基础数据部门名称同步
+     */
+    void syncSysOrgName();
 }

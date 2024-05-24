@@ -74,4 +74,9 @@ public interface OrgRegionMapper {
      * @return 组织机构位置列表
      */
     List<OrgRegionResDTO> listOrgRegion(List<String> ids);
+
+    /**
+     * 基础数据部门名称同步
+     */
+    void syncSysOrgName();
 }

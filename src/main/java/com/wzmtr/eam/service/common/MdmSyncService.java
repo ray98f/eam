@@ -14,6 +14,11 @@ public interface MdmSyncService {
 
     void syncAllExtraOrg();
 
+    /**
+     * 基础数据部门名称同步
+     */
+    void syncSysOrgName();
+
     void syncAllEmpJob();
 
 }
