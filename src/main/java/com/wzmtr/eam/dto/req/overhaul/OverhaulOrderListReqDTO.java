@@ -88,4 +88,9 @@ public class OverhaulOrderListReqDTO {
      */
     @ApiModelProperty(value = "用户id")
     private String userId;
+    /**
+     * 用户组织机构id
+     */
+    @ApiModelProperty(value = "用户组织机构id")
+    private String officeAreaId;
 }

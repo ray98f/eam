@@ -121,6 +121,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))
                 && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
             overhaulOrderListReqDTO.setUserId(TokenUtils.getCurrentPersonId());
+            overhaulOrderListReqDTO.setUserId(TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
         Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         List<OverhaulOrderResDTO> list = page.getRecords();
