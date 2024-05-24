@@ -73,4 +73,13 @@ public interface FaultQueryMapper {
 
     Page<ConstructionResDTO> cancellation(Page<ConstructionResDTO> of, @Param("faultWorkNo") String faultWorkNo);
 
+    /**
+     * 获取时间范围内系统编号故障数量
+     * @param subjectCode 系统编号
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 故障数量
+     */
+    Long getSubjectFaultNum(String subjectCode, String startTime, String endTime);
+
 }

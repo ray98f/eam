@@ -1297,4 +1297,19 @@
         </if>
         ORDER BY T05.ORG_CODE asc
     </select>
+
+    <select id="getSubjectFaultNum" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM
+        T_FAULT_INFO
+        WHERE DELETE_FLAG='0'
+        <if test="subjectCode!=null and subjectCode!=''">
+            AND MAJOR_CODE=#{subjectCode}
+        </if>
+        <if test="startDate!=null and startDate!=''">
+            AND to_date(DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')>=to_date(#{startDate},'YYYY-MM-DD HH24:MI:SS')
+        </if>
+        <if test="endDate!=null and endDate!=''">
+            AND to_date(#{endDate},'YYYY-MM-DD HH24:MI:SS')>=to_date(DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')
+        </if>
+    </select>
 </mapper>

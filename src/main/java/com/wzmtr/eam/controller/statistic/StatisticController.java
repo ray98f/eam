@@ -350,4 +350,17 @@ public class StatisticController {
         return PageResponse.of(statisticService.trainReliabilityFaultList(startTime, endTime, trainNo, pageReqDTO));
     }
 
+    /**
+     * 各系统指定时间范围内故障数量统计-开放接口
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 故障数量统计
+     */
+    @GetMapping("/subject/fault/open")
+    @ApiOperation(value = "各系统指定时间范围内故障数量统计-开放接口")
+    public DataResponse<List<SubjectFaultResDTO>> getSubjectFaultOpen(@RequestParam String startTime,
+                                                                      @RequestParam String endTime) {
+        return DataResponse.of(statisticService.getSubjectFaultOpen(startTime, endTime));
+    }
+
 }

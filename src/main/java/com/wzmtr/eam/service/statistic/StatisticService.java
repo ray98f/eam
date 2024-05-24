@@ -165,4 +165,12 @@ public interface StatisticService {
      * @return 故障列表
      */
     Page<FaultRamsResDTO> trainReliabilityFaultList(String startTime, String endTime, String trainNo, PageReqDTO pageReqDTO);
+
+    /**
+     * 各系统指定时间范围内故障数量统计
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 故障数量统计
+     */
+    List<SubjectFaultResDTO> getSubjectFaultOpen(String startTime, String endTime);
 }

@@ -9,6 +9,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
@@ -23,6 +24,7 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
@@ -75,6 +77,8 @@ public class StatisticServiceImpl implements StatisticService {
     private DictionariesMapper dictionariesMapper;
     @Autowired
     private FaultQueryMapper faultQueryMapper;
+    @Autowired
+    private EquipmentCategoryMapper equipmentCategoryMapper;
 
     @Override
     public void addDoorFault(DoorFaultReqDTO req) {
@@ -692,27 +696,29 @@ public class StatisticServiceImpl implements StatisticService {
         DecimalFormat df = new DecimalFormat("#0.00");
         RamsCarResDTO ramsCarResDTO = records.get(0);
         String millionMiles = ramsCarResDTO.getMillionMiles();
-        //晚点故障数
-        String affect11 = ramsCarResDTO.getAffect11();
-        //不适合继续服务
-        String affect21 = ramsCarResDTO.getAffect21();
-        String faultNum = ramsCarResDTO.getFaultNum();
-        //晚点
-        String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles));
-        String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles));
-        if (Double.parseDouble(affect12) > ONE_POINT_FIVE) {
-            ramsCarResDTO.setAffect13("未达标");
-        } else {
-            ramsCarResDTO.setAffect13("达标");
+        if (StringUtils.isNotEmpty(millionMiles) && Double.parseDouble(millionMiles) != 0.0) {
+            //晚点故障数
+            String affect11 = ramsCarResDTO.getAffect11();
+            //不适合继续服务
+            String affect21 = ramsCarResDTO.getAffect21();
+            String faultNum = ramsCarResDTO.getFaultNum();
+            //晚点
+            String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles));
+            String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles));
+            if (Double.parseDouble(affect12) > ONE_POINT_FIVE) {
+                ramsCarResDTO.setAffect13("未达标");
+            } else {
+                ramsCarResDTO.setAffect13("达标");
+            }
+            if (Double.parseDouble(affect22) > FOUR_POINT_FIVE) {
+                ramsCarResDTO.setAffect23("未达标");
+            } else {
+                ramsCarResDTO.setAffect23("达标");
+            }
+            ramsCarResDTO.setAffect12(affect12);
+            ramsCarResDTO.setAffect22(affect22);
+            ramsCarResDTO.setFaultNum(faultNum);
         }
-        if (Double.parseDouble(affect22) > FOUR_POINT_FIVE) {
-            ramsCarResDTO.setAffect23("未达标");
-        } else {
-            ramsCarResDTO.setAffect23("达标");
-        }
-        ramsCarResDTO.setAffect12(affect12);
-        ramsCarResDTO.setAffect22(affect22);
-        ramsCarResDTO.setFaultNum(faultNum);
         return ramsCarResDTO;
     }
 
@@ -1332,6 +1338,22 @@ public class StatisticServiceImpl implements StatisticService {
                 a.setOperateCostTime(operateCostTime == null ? CommonConstants.EMPTY : operateCostTime);
             }
         });
+        return list;
+    }
+
+    @Override
+    public List<SubjectFaultResDTO> getSubjectFaultOpen(String startTime, String endTime) {
+        List<SubjectFaultResDTO> list = new ArrayList<>();
+        List<EquipmentCategoryResDTO> categoryList = equipmentCategoryMapper.getFirstEquipmentCategory(null);
+        if (StringUtils.isNotEmpty(categoryList)) {
+            for (EquipmentCategoryResDTO category : categoryList) {
+                SubjectFaultResDTO res = new SubjectFaultResDTO();
+                res.setSubjectCode(category.getNodeCode());
+                res.setSubjectName(category.getNodeName());
+                Long num = faultQueryMapper.getSubjectFaultNum(category.getNodeCode(), startTime, endTime);
+                res.setFaultNum(StringUtils.isNull(num) ? 0L : num);
+            }
+        }
         return list;
     }
 }
