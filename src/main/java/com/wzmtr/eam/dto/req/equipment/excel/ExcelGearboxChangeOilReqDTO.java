@@ -20,6 +20,8 @@ public class ExcelGearboxChangeOilReqDTO {
 
     @ExcelProperty(value = "列车号")
     private String trainNo;
+    @ExcelProperty(value = "列车公里数")
+    private String totalMiles;
     @ExcelProperty(value = "完成日期")
     private String completeDate;
     @ExcelProperty(value = "作业单位")

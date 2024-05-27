@@ -5,7 +5,7 @@
         SELECT DISTINCT sp.ID, sp.NAME, sp.URL, sp.ICON, scf.SORT
         FROM SYS_COMMON_FUNC scf
         LEFT JOIN SYS_PERMISSION sp on sp.ID=scf.PERMISSION_ID AND sp.DEL_FLAG='0'
-        WHERE scf.USER_ID=#{personId}
+        WHERE scf.USER_ID=#{userId}
         ORDER BY scf.SORT ASC
     </select>
 
