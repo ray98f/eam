@@ -290,6 +290,12 @@ public class FaultReportServiceImpl implements FaultReportService {
         Page<FaultReportResDTO> list;
         //获取用户当前角色
         List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
+        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+        String type = null;
+        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+            type = CommonConstants.ONE_STRING;
+        }
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
@@ -300,30 +306,16 @@ public class FaultReportServiceImpl implements FaultReportService {
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                     reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(), reqDTO.getFaultWorkNo(),
-                    reqDTO.getLineCode(), userMajorList, null, null);
+                    reqDTO.getLineCode(), userMajorList, null, null, null);
         } else {
             list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(),
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
-                    reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(), reqDTO.getFaultWorkNo(),
-                    reqDTO.getLineCode(), userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
+                    reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
+                    reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), userMajorList, TokenUtils.getCurrentPersonId(),
+                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type);
         }
         List<FaultReportResDTO> records = list.getRecords();
-        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
-        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
-                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
-            List<FaultReportResDTO> other = faultReportMapper.queryByEngineer();
-            if (StringUtils.isNotEmpty(other)) {
-                if (StringUtils.isNotEmpty(records)) {
-                    records.addAll(other);
-                } else {
-                    records = other;
-                }
-                records = records.stream().distinct()
-                        .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
-                        .collect(Collectors.toList());
-            }
-        }
         buildRes(records);
         list.setRecords(records);
         return list;
@@ -360,6 +352,12 @@ public class FaultReportServiceImpl implements FaultReportService {
         Page<FaultReportResDTO> list;
         //获取用户当前角色
         List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
+        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+        String type = null;
+        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+            type = CommonConstants.ONE_STRING;
+        }
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
@@ -370,30 +368,16 @@ public class FaultReportServiceImpl implements FaultReportService {
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                     reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
-                    reqDTO.getFaultAffect(), userMajorList, null, null);
+                    reqDTO.getFaultAffect(), userMajorList, null, null, null);
         } else {
             list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(),
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                     reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
-                    reqDTO.getFaultAffect(), userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
+                    reqDTO.getFaultAffect(), userMajorList, TokenUtils.getCurrentPersonId(),
+                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type);
         }
         List<FaultReportResDTO> records = list.getRecords();
-        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
-        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
-                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
-            List<FaultReportResDTO> other = faultReportMapper.carFaultByEngineer();
-            if (StringUtils.isNotEmpty(other)) {
-                if (StringUtils.isNotEmpty(records)) {
-                    records.addAll(other);
-                } else {
-                    records = other;
-                }
-                records = records.stream().distinct()
-                        .sorted(Comparator.comparing(FaultReportResDTO::getFaultNo).reversed())
-                        .collect(Collectors.toList());
-            }
-        }
         buildRes(records);
         return list;
     }

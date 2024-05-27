@@ -28,7 +28,8 @@ public interface FaultQueryMapper {
 
     List<FaultDetailResDTO> queryByEngineer(List<String> majors);
 
-    Page<FaultDetailResDTO> queryByUser(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors, String userId, String officeAreaId);
+    Page<FaultDetailResDTO> queryByUser(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors,
+                                        String userId, String officeAreaId, String type);
 
     List<FaultDetailResDTO> queryLimit(String userDept, List<String> majors);
 

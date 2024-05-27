@@ -103,6 +103,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         Page<FaultDetailResDTO> page;
         //获取用户当前角色
         List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
+        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+        String type = null;
+        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+            type = CommonConstants.ONE_STRING;
+        }
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
@@ -111,25 +117,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
             page = faultQueryMapper.query(reqDTO.of(), reqDTO, userMajorList);
         } else {
-            page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
+            page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList,
+                    TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId(), type);
         }
         List<FaultDetailResDTO> list = page.getRecords();
-        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
-        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
-                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
-            List<FaultDetailResDTO> other = faultQueryMapper.queryByEngineer(userMajorList);
-            if (StringUtils.isNotEmpty(other)) {
-                if (StringUtils.isNotEmpty(list)) {
-                    list.addAll(other);
-                } else {
-                    list = other;
-                }
-                list = list.stream().distinct()
-                        .sorted(Comparator.comparing(FaultDetailResDTO::getFaultNo).reversed()
-                                .thenComparing(FaultDetailResDTO::getFaultWorkNo).reversed())
-                        .collect(Collectors.toList());
-            }
-        }
         for (FaultDetailResDTO res : list) {
             buildRes(res);
         }

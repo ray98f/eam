@@ -115,6 +115,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         }
         //获取用户当前角色
         List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
+        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+            overhaulOrderListReqDTO.setType(CommonConstants.ONE_STRING);
+        }
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
                 && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
@@ -145,6 +150,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                     }
                 }
             }
+
         }
         page.setRecords(list);
         return page;

@@ -26,10 +26,10 @@ public interface FaultReportMapper {
     /**
      * queryNoCar 已提报故障不包含车辆专业
      */
-    Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName,
-                                 String faultModuleId, String majorCode, String systemCode, String equipTypeCode,
-                                 String fillinTimeStart, String fillinTimeEnd, String positionCode, String orderStatus,
-                                 String faultWorkNo, String lineCode, List<String> majors, String userId, String officeAreaId);
+    Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId,
+                                 String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart,
+                                 String fillinTimeEnd, String positionCode, String orderStatus, String faultWorkNo, String lineCode,
+                                 List<String> majors, String userId, String officeAreaId, String type);
 
     /**
      * 获取专业工程师查看的已提报故障
@@ -69,7 +69,7 @@ public interface FaultReportMapper {
                                                String faultModuleId, String majorCode, String systemCode,
                                                String equipTypeCode, String fillinTimeStart, String fillinTimeEnd,
                                                String positionCode, String orderStatus, String faultAffect,
-                                               List<String> majors, String userId, String officeAreaId);
+                                               List<String> majors, String userId, String officeAreaId, String type);
 
     /**
      * 获取专业工程师查看的已提报车辆故障
