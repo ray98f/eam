@@ -2,8 +2,6 @@ package com.wzmtr.eam.utils;
 
 import com.wzmtr.eam.constant.CommonConstants;
 
-import java.text.SimpleDateFormat;
-
 public class CodeUtils {
 
     /**

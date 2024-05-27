@@ -24,6 +24,7 @@ import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulStateResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.Role;
+import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -31,6 +32,7 @@ import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
@@ -68,49 +70,36 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Resource
     private UserAccountService userAccountService;
-
+    @Autowired
+    private UserAccountMapper userAccountMapper;
     @Autowired
     private OverhaulOrderMapper overhaulOrderMapper;
-
     @Autowired
     private EquipmentCategoryMapper equipmentCategoryMapper;
-
     @Autowired
     private OverhaulWorkRecordService overhaulWorkRecordService;
-
     @Autowired
     private OverhaulPlanMapper overhaulPlanMapper;
-
     @Autowired
     private WoRuleMapper woRuleMapper;
-
     @Autowired
     private OverhaulItemMapper overhaulItemMapper;
-
     @Autowired
     private OverhaulStateMapper overhaulStateMapper;
-
     @Autowired
     private FaultReportMapper faultReportMapper;
-
     @Autowired
     private OverTodoService overTodoService;
-
     @Autowired
     private DictionariesMapper dictionariesMapper;
-
     @Autowired
     private FaultQueryMapper faultQueryMapper;
-
     @Autowired
     private FileMapper fileMapper;
-
     @Autowired
     private RoleMapper roleMapper;
-
     @Autowired
     private OrganizationMapper organizationMapper;
-
     @Autowired
     private OrganizationService organizationService;
 
@@ -118,12 +107,21 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         overhaulOrderListReqDTO.setObjectFlag("1");
+        SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(overhaulOrderListReqDTO.getSubjectCode())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(overhaulOrderListReqDTO.getSubjectCode()) &&
+                StringUtils.isNotNull(office) && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
             overhaulOrderListReqDTO.setMajors(userAccountService.listUserMajor());
         }
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
+        //获取用户当前角色
+        List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
+                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
+                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))
+                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
             overhaulOrderListReqDTO.setUserId(TokenUtils.getCurrentPersonId());
+            overhaulOrderListReqDTO.setOfficeAreaId(TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
         Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         List<OverhaulOrderResDTO> list = page.getRecords();
@@ -278,22 +276,21 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             }
         }
         try {
-            checkOrderState(overhaulOrderReqDTO, "1,2", "请求、已下达");
+            checkOrderState(overhaulOrderReqDTO, "1,2", "请求、下发");
             // 直接派工至工班长，工班人员可看到该工单，注释掉已下达，直接设置为已分配
 //            overhaulOrderReqDTO.setWorkStatus("2");
 //            overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
 //        } else {
-            // 这句有点奇怪，为什么设置删除者这个字段?TODO 后续需要排查
             overhaulOrderReqDTO.setRecDeletor(TokenUtils.getCurrentPerson().getPersonName() + "-" + DateUtils.getCurrentTime());
 
             overhaulOrderReqDTO.setSendPersonId(TokenUtils.getCurrentPersonId());
             overhaulOrderReqDTO.setSendPersonName(TokenUtils.getCurrentPerson().getPersonName());
             overhaulOrderReqDTO.setSendTime(DateUtils.getCurrentTime());
-            overhaulOrderReqDTO.setWorkStatus("3");
+            overhaulOrderReqDTO.setWorkStatus(CommonConstants.THREE_STRING);
             String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
             if (StringUtils.isNotEmpty(workerGroupCode)) {
                 // 派工 直接派工至该工班人员
-                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+                overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
             overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
             overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
@@ -369,7 +366,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
             if (StringUtils.isNotEmpty(workerGroupCode)) {
                 // 派工 直接派工至该工班人员
-                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+                overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
         }
         // 添加流程记录
@@ -432,7 +429,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             String workerGroupCode = overhaulOrderReqDTO.getWorkerGroupCode();
             if (StringUtils.isNotEmpty(workerGroupCode)) {
                 // 派工 直接派工至该工班人员
-                overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+                overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerGroupCode, "检修工单派工", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
             }
         }
         // 添加流程记录
@@ -504,7 +501,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
-        overhaulOrderReqDTO.setWorkStatus("8");
+        overhaulOrderReqDTO.setWorkStatus(CommonConstants.EIGHT_STRING);
         overhaulOrderReqDTO.setCancelPersonId(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setCancelPersonName(TokenUtils.getCurrentPerson().getPersonName());
         overhaulOrderReqDTO.setCancelTime(DateUtils.getCurrentTime());
@@ -750,8 +747,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 boolean bool1 = CommonConstants.TEN_STRING.equals(res.getItemType()) && CommonConstants.ERROR.equals(res.getWorkResult());
                 // 数字超过上下限
                 boolean bool2 = CommonConstants.TWENTY_STRING.equals(res.getItemType()) &&
-                                ((StringUtils.isNotBlank(res.getMinValue()) && Integer.parseInt(res.getMinValue()) > Integer.parseInt(res.getWorkResult())) ||
-                                        (StringUtils.isNotBlank(res.getMaxValue()) && Integer.parseInt(res.getMaxValue()) < Integer.parseInt(res.getWorkResult())));
+                                ((StringUtils.isNotBlank(res.getMinValue()) && Double.parseDouble(res.getMinValue()) > Double.parseDouble(res.getWorkResult())) ||
+                                        (StringUtils.isNotBlank(res.getMaxValue()) && Double.parseDouble(res.getMaxValue()) < Double.parseDouble(res.getWorkResult())));
                 // 文本内容包含异常
                 boolean bool3 = CommonConstants.THIRTY_STRING.equals(res.getItemType()) && res.getWorkResult().contains(CommonConstants.ERROR);
                 // 异常时添加异常数据

@@ -10,6 +10,7 @@ import com.wzmtr.eam.mapper.overhaul.OverhaulWorkRecordMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
 import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,40 +39,27 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
         // ExamineRepairOrder insertRepair DMUtil.overTODO
         overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "");
         String workCode = overhaulOrderReqDTO.getWorkerCode();
-        String workName = overhaulOrderReqDTO.getWorkerName();
         overhaulWorkRecordMapper.deleteByOrderCode(overhaulOrderReqDTO);
-        if (workCode.length() > CommonConstants.TWO) {
+        if (StringUtils.isNotEmpty(workCode)) {
             String[] workerCodes = workCode.split(",");
-            //String[] workerNames = workName.split(",");
-            if (workerCodes.length > 0) {
-                for (int i = 0; i < workerCodes.length; i++) {
-                    OverhaulWorkRecordReqDTO workRecord = new OverhaulWorkRecordReqDTO();
-                    workRecord.setRecId(TokenUtils.getUuId());
-                    workRecord.setOrderCode(overhaulOrderReqDTO.getOrderCode());
-                    workRecord.setPlanCode(overhaulOrderReqDTO.getPlanCode());
-                    workRecord.setWorkerGroupCode(overhaulOrderReqDTO.getWorkerGroupCode());
-                    workRecord.setWorkerCode(workerCodes[i]);
-                    workRecord.setUploadTime(DateUtils.getCurrentTime());
-                    workRecord.setDownloadTime(overhaulOrderReqDTO.getSendPersonId());
-                    workRecord.setExt5(overhaulOrderReqDTO.getSendTime());
-
-                    //TODO 20240331 先注释这段 EXT1字段的含义未知
-                    /*String[] workerMsg = workerNames[i].split("-");
-                    workRecord.setWorkerName(workerMsg[0]);
-                    if (workerMsg.length > 1) {
-                        workRecord.setExt1(workerMsg[1]);
-                    }*/
-                    overhaulWorkRecordMapper.insert(workRecord);
+            if (StringUtils.isNotEmpty(workerCodes)) {
+                for (String workerCode : workerCodes) {
+                    // 新增工作记录
+                    insertWorkRecord(overhaulOrderReqDTO, workerCode);
                     // 流程流转
                     try {
                         if (CommonConstants.TWO_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
-                            overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,overhaulOrderReqDTO.getOrderCode(),"检修"), overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workRecord.getWorkerCode(), "检修工单分配", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
+                            overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"),
+                                    overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), workerCode,
+                                    "检修工单分配", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
                         } else if (CommonConstants.ONE_STRING.equals(overhaulOrderReqDTO.getWorkStatus())) {
                             // 根据角色获取用户列表
-                            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(), overhaulOrderReqDTO.getLineNo(), CommonConstants.DM_007);
+                            List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(overhaulOrderReqDTO.getSubjectCode(),
+                                    overhaulOrderReqDTO.getLineNo(), CommonConstants.DM_007);
                             for (BpmnExaminePersonRes map : userList) {
-                                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,overhaulOrderReqDTO.getOrderCode(),"检修"), overhaulOrderReqDTO.getRecId(),
-                                        overhaulOrderReqDTO.getOrderCode(), map.getUserId(), "检修工单下达", "DMER0200", TokenUtils.getCurrentPersonId(),BpmnFlowEnum.OVERHAUL_ORDER.value());
+                                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, overhaulOrderReqDTO.getOrderCode(), "检修"),
+                                        overhaulOrderReqDTO.getRecId(), overhaulOrderReqDTO.getOrderCode(), map.getUserId(),
+                                        "检修工单下达", "DMER0200", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.OVERHAUL_ORDER.value());
                             }
                         }
                     } catch (Exception e) {
@@ -80,6 +68,30 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
                 }
             }
         }
+    }
+
+    /**
+     * 新增工作记录
+     * @param overhaulOrderReqDTO 工单参数
+     * @param workerCode 作业人员
+     */
+    public void insertWorkRecord(OverhaulOrderReqDTO overhaulOrderReqDTO, String workerCode) {
+        OverhaulWorkRecordReqDTO workRecord = new OverhaulWorkRecordReqDTO();
+        workRecord.setRecId(TokenUtils.getUuId());
+        workRecord.setOrderCode(overhaulOrderReqDTO.getOrderCode());
+        workRecord.setPlanCode(overhaulOrderReqDTO.getPlanCode());
+        workRecord.setWorkerGroupCode(overhaulOrderReqDTO.getWorkerGroupCode());
+        workRecord.setWorkerCode(workerCode);
+        workRecord.setUploadTime(DateUtils.getCurrentTime());
+        workRecord.setDownloadTime(overhaulOrderReqDTO.getSendPersonId());
+        workRecord.setExt5(overhaulOrderReqDTO.getSendTime());
+        //TODO 20240331 先注释这段 EXT1字段的含义未知
+        /*String[] workerMsg = workerNames[i].split("-");
+        workRecord.setWorkerName(workerMsg[0]);
+        if (workerMsg.length > 1) {
+            workRecord.setExt1(workerMsg[1]);
+        }*/
+        overhaulWorkRecordMapper.insert(workRecord);
     }
 
 }

@@ -130,13 +130,14 @@
 
     <select id="getWorkerGroupBySubjectAndLine" resultType="com.wzmtr.eam.entity.OrganMajorLineType">
         SELECT T05.ORG_CODE AS orgCode,
-        T05.ORG_NAME AS orgName,
+        o.NAME AS orgName,
         T05.MAJOR_CODE AS majorCode,
         T06.LINE_CODE AS lineCode
         FROM SYS_ORG_MAJOR T05
         LEFT JOIN SYS_ORG_LINE T06 ON T05.ORG_CODE=T06.ORG_CODE
         LEFT JOIN SYS_ORG_TYPE T07 ON T05.ORG_CODE=T07.ORG_CODE
-        WHERE 1=1
+        LEFT JOIN SYS_OFFICE o ON o.AREA_ID=T05.ORG_CODE AND o.DEL_FLAG='0'
+        WHERE T05.DELETE_FLAG='0' AND o.NAME IS NOT NULL
         <if test="subjectCode != null and subjectCode != ''">
             AND T05.MAJOR_CODE=#{subjectCode}
         </if>
@@ -146,6 +147,7 @@
         <if test="orgType != null and orgType != ''">
             AND T07.ORG_TYPE=#{orgType}
         </if>
+        ORDER BY T05.ORG_CODE asc
     </select>
 
     <select id="getDepartmentUserByGroupName" resultType="com.wzmtr.eam.entity.OrganMajorLineType">
@@ -165,15 +167,15 @@
     </select>
 
     <select id="queryTypeAndDeptCode" resultType="com.wzmtr.eam.dto.res.basic.OrgMajorResDTO">
-        SELECT Distinct d5.ORG_CODE, d5.ORG_NAME
-        FROM SYS_ORG_MAJOR d5,
-             SYS_ORG_LINE d6,
-             SYS_ORG_TYPE d7
-        where d5.DELETE_FLAG='0' AND d6.DELETE_FLAG='0' AND d7.DELETE_FLAG='0' AND d5.ORG_CODE=d6.ORG_CODE
-          AND d6.ORG_CODE=d7.ORG_CODE
-          AND d5.MAJOR_CODE=#{majorCode}
-          AND d6.LINE_CODE=#{lineCode}
-          AND d7.ORG_TYPE=#{organType}
+        SELECT distinct d5.ORG_CODE, o.NAME as ORG_NAME
+        FROM SYS_ORG_MAJOR d5
+        LEFT JOIN SYS_ORG_LINE d6 ON d5.ORG_CODE=d6.ORG_CODE AND d6.DELETE_FLAG='0'
+        LEFT JOIN SYS_ORG_TYPE d7 ON d6.ORG_CODE=d7.ORG_CODE AND d7.DELETE_FLAG='0'
+        LEFT JOIN SYS_OFFICE o ON o.AREA_ID=d5.ORG_CODE AND o.DEL_FLAG='0'
+        WHERE d5.DELETE_FLAG='0' AND o.NAME IS NOT NULL
+        AND d5.MAJOR_CODE=#{majorCode}
+        AND d6.LINE_CODE=#{lineCode}
+        AND d7.ORG_TYPE=#{organType}
         order by d5.ORG_CODE asc
     </select>
     <select id="queryDispatch" resultType="com.wzmtr.eam.dto.res.common.DispatchResDTO">
@@ -228,4 +230,17 @@
         where t1.MAJOR_CODE=#{majorCode}
         and t2.REGION_CODE=#{station} and rownum=1
     </select>
+
+    <update id="syncSysOrgName">
+        MERGE INTO SYS_ORG_MAJOR t1
+        USING SYS_OFFICE t2
+        ON (t1.ORG_CODE=t2.AREA_ID AND t2.DEL_FLAG='0')
+        WHEN MATCHED
+        THEN UPDATE SET t1.ORG_NAME=t2.NAME
+    </update>
+
+    <delete id="deleteNoneOrgCode">
+        DELETE FROM SYS_ORG_MAJOR
+        WHERE ORG_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE DELETE_FLAG='0')
+    </delete>
 </mapper>

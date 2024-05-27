@@ -55,7 +55,7 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
             userMajorList = userAccountService.listUserMajor();
         }
 
-        return equipmentRoomMapper.pageEquipmentRoom(pageReqDTO.of(), equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode,userMajorList);
+        return equipmentRoomMapper.pageEquipmentRoom(pageReqDTO.of(), equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode, userMajorList);
     }
 
     @Override
@@ -66,16 +66,16 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
     @Override
     public void addEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
         //轨道专业
-        if(CommonConstants.FOURTEEN_STRING.equals(equipmentRoomReqDTO.getSubjectCode())){
-            if(StringUtils.isEmpty(equipmentRoomReqDTO.getEquipRoomCode())){
+        if (CommonConstants.FOURTEEN_STRING.equals(equipmentRoomReqDTO.getSubjectCode())) {
+            if (StringUtils.isEmpty(equipmentRoomReqDTO.getEquipRoomCode())) {
                 throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
             }
-        }else{
+        } else {
             String equipRoomCode = equipmentRoomMapper.getEquipRoomCodeMaxCode();
-            if(StringUtils.isEmpty(equipRoomCode)){
+            if (StringUtils.isEmpty(equipRoomCode)) {
                 equipRoomCode = CommonConstants.EQUIPMENT_ROOM_CODE_0;
             }
-            String nextCode = CodeUtils.getNextCode(equipRoomCode,CommonConstants.ONE);
+            String nextCode = CodeUtils.getNextCode(equipRoomCode, CommonConstants.ONE);
             equipmentRoomReqDTO.setEquipRoomCode(nextCode);
         }
         Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
@@ -125,31 +125,30 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
     }
 
     @Override
-    public void addEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
-
-        if(StringUtils.isNotEmpty(equipmentRoomRelationReqDTO.getRoomId()) && equipmentRoomRelationReqDTO.getIds() != null
-        && equipmentRoomRelationReqDTO.getIds().size()>0){
-            equipmentRoomMapper.insertRelationBatch(equipmentRoomRelationReqDTO);
-        }else{
+    public void addEquipment(EquipmentRoomRelationReqDTO req) {
+        if (StringUtils.isNotEmpty(req.getRoomId()) && StringUtils.isNotEmpty(req.getIds())) {
+            for (String id : req.getIds()) {
+                equipmentRoomMapper.insertRelationBatch(req.getRoomId(), id);
+            }
+        } else {
             throw new CommonException(ErrorCode.INSERT_ERROR);
         }
 
     }
 
     @Override
-    public void deleteEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
-        if(StringUtils.isNotEmpty(equipmentRoomRelationReqDTO.getRoomId()) && equipmentRoomRelationReqDTO.getIds() != null
-                && equipmentRoomRelationReqDTO.getIds().size()>0){
-            equipmentRoomMapper.deleteRelationBatch(equipmentRoomRelationReqDTO);
-        }else{
+    public void deleteEquipment(EquipmentRoomRelationReqDTO req) {
+        if (StringUtils.isNotEmpty(req.getRoomId()) && StringUtils.isNotEmpty(req.getIds())) {
+            equipmentRoomMapper.deleteRelationBatch(req);
+        } else {
             throw new CommonException(ErrorCode.INSERT_ERROR);
         }
     }
 
     @Override
-    public Page<EquipmentResDTO> pageEquipment(String roomId,String equipCode,String equipName, String majorCode, String systemCode, PageReqDTO pageReqDTO) {
+    public Page<EquipmentResDTO> pageEquipment(String roomId, String equipCode, String equipName, String majorCode, String systemCode, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return equipmentMapper.pageEquipmentByRoom(pageReqDTO.of(),roomId, equipCode, equipName, majorCode, systemCode);
+        return equipmentMapper.pageEquipmentByRoom(pageReqDTO.of(), roomId, equipCode, equipName, majorCode, systemCode);
     }
 
 }

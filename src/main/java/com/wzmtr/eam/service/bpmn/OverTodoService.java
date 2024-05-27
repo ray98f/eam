@@ -28,12 +28,37 @@ public interface OverTodoService {
      * @param stepName 阶段名称
      * @param taskUrl url
      * @param lastStepUserId 上一步用户id
+     * @param flowId 流程id
      */
     void insertTodoWithUserGroup(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
                                  String stepName, String taskUrl, String lastStepUserId,String flowId);
 
-    void insertTodoWithUserOrgan(String taskTitle, String businessRecId, String businessNo, String organ,
-                                 String stepName, String taskUrl, String lastStepUserId, String flowId);
+    /**
+     * 根据部门推送消息（相同todoId）
+     * @param taskTitle 标题
+     * @param businessRecId recId
+     * @param businessNo 编号
+     * @param organ 部门
+     * @param stepName 阶段名称
+     * @param taskUrl url
+     * @param lastStepUserId 上一步用户id
+     * @param flowId 流程id
+     */
+    void insertTodoWithUserOrgSameTodoId(String taskTitle, String businessRecId, String businessNo, String organ,
+                                         String stepName, String taskUrl, String lastStepUserId, String flowId);
+
+    /**
+     * 根据部门推送消息（不同todoId）
+     * @param taskTitle 标题
+     * @param businessRecId recId
+     * @param organ 部门
+     * @param stepName 阶段名称
+     * @param taskUrl url
+     * @param lastStepUserId 上一步用户id
+     * @param flowId 流程id
+     */
+    void insertTodoWithUserOrgDiffTodoId(String taskTitle, String businessRecId, String organ, String stepName,
+                                         String taskUrl, String lastStepUserId, String flowId);
 
     void insertTodoWithUserRoleAndOrg(String taskTitle, String businessRecId, String businessNo, String roleId,
                                       String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content, String flowId);

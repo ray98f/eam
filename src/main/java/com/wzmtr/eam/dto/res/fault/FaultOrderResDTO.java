@@ -119,6 +119,10 @@ public class FaultOrderResDTO {
      */
     private String reportStartUserId;
     /**
+     * 开工人
+     */
+    private String reportStartUserName;
+    /**
      * 开工时间
      */
     private String reportStartTime;
@@ -170,6 +174,10 @@ public class FaultOrderResDTO {
      * 维修负责人
      */
     private String repairRespUserName;
+    /**
+     * 维修负责人手机号
+     */
+    private String repairRespUserMobile;
     /**
      * 验收人
      */

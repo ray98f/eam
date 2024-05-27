@@ -10,6 +10,7 @@ import com.wzmtr.eam.dto.req.detection.DetectionReqDTO;
 import com.wzmtr.eam.dto.req.detection.SpecialEquipReqDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionDetailResDTO;
 import com.wzmtr.eam.dto.res.detection.DetectionResDTO;
+import com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelDetectionDetailResDTO;
 import com.wzmtr.eam.dto.res.detection.excel.ExcelDetectionResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -331,7 +332,12 @@ public class DetectionServiceImpl implements DetectionService {
         SpecialEquipReqDTO specialEquipReqDTO = new SpecialEquipReqDTO();
         specialEquipReqDTO.setEquipCode(detectionDetailReqDTO.getEquipCode());
         specialEquipReqDTO.setVerifyDate(detectionDetailReqDTO.getVerifyDate());
-        specialEquipReqDTO.setVerifyValidityDate(detectionDetailReqDTO.getVerifyValidityDate());
+        SpecialEquipResDTO equip = specialEquipMapper.getSpecialEquipDetail(null, detectionDetailReqDTO.getEquipCode());
+        if (StringUtils.isNotNull(equip) &&
+                (StringUtils.isEmpty(equip.getVerifyValidityDate()) ||
+                        equip.getVerifyValidityDate().compareTo(detectionDetailReqDTO.getVerifyValidityDate()) > 0)) {
+            specialEquipReqDTO.setVerifyValidityDate(detectionDetailReqDTO.getVerifyValidityDate());
+        }
         specialEquipMapper.updateEquip(specialEquipReqDTO);
     }
 
@@ -349,7 +355,12 @@ public class DetectionServiceImpl implements DetectionService {
         SpecialEquipReqDTO specialEquipReqDTO = new SpecialEquipReqDTO();
         specialEquipReqDTO.setEquipCode(detectionDetailReqDTO.getEquipCode());
         specialEquipReqDTO.setVerifyDate(detectionDetailReqDTO.getVerifyDate());
-        specialEquipReqDTO.setVerifyValidityDate(detectionDetailReqDTO.getVerifyValidityDate());
+        SpecialEquipResDTO equip = specialEquipMapper.getSpecialEquipDetail(null, detectionDetailReqDTO.getEquipCode());
+        if (StringUtils.isNotNull(equip) &&
+                (StringUtils.isEmpty(equip.getVerifyValidityDate()) ||
+                        equip.getVerifyValidityDate().compareTo(detectionDetailReqDTO.getVerifyValidityDate()) > 0)) {
+            specialEquipReqDTO.setVerifyValidityDate(detectionDetailReqDTO.getVerifyValidityDate());
+        }
         specialEquipMapper.updateEquip(specialEquipReqDTO);
     }
 
@@ -373,6 +384,16 @@ public class DetectionServiceImpl implements DetectionService {
         detectionDetailReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         detectionDetailReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         detectionMapper.modifyDetectionDetail(detectionDetailReqDTO);
+        SpecialEquipReqDTO specialEquipReqDTO = new SpecialEquipReqDTO();
+        specialEquipReqDTO.setEquipCode(detectionDetailReqDTO.getEquipCode());
+        specialEquipReqDTO.setVerifyDate(detectionDetailReqDTO.getVerifyDate());
+        SpecialEquipResDTO equip = specialEquipMapper.getSpecialEquipDetail(null, detectionDetailReqDTO.getEquipCode());
+        if (StringUtils.isNotNull(equip) &&
+                (StringUtils.isEmpty(equip.getVerifyValidityDate()) ||
+                        equip.getVerifyValidityDate().compareTo(detectionDetailReqDTO.getVerifyValidityDate()) > 0)) {
+            specialEquipReqDTO.setVerifyValidityDate(detectionDetailReqDTO.getVerifyValidityDate());
+        }
+        specialEquipMapper.updateEquip(specialEquipReqDTO);
     }
 
     @Override

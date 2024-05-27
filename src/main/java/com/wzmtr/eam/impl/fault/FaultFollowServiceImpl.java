@@ -216,7 +216,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     @Override
     public void addReport(FaultFollowReportReqDTO req) throws ParseException {
         FaultFollowResDTO follow = faultFollowMapper.detail(null, req.getFollowNo());
-        if (StringUtils.isNotNull(follow) && follow.getDispatchUserId().equals(TokenUtils.getCurrentPersonId())) {
+        if (StringUtils.isNotNull(follow) && !follow.getDispatchUserId().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单派发的填写人，无法填写报告！");
         }
         if (StringUtils.isEmpty(req.getRecId())) {
@@ -245,7 +245,8 @@ public class FaultFollowServiceImpl implements FaultFollowService {
         FaultFollowResDTO followRes = faultFollowMapper.detail(null, req.getFollowNo());
         if (StringUtils.isNotNull(followRes)) {
             overTodoService.insertTodo("跟踪工单报告待审核", req.getRecId(), req.getFollowNo(), followRes.getFollowLeaderId(),
-                    "跟踪工单报告审核", "followReportExamine", TokenUtils.getCurrentPersonId(), CommonConstants.FAULT_FOLLOW_REPORT);
+                    "跟踪工单报告工班长审核", "followReportExamine", TokenUtils.getCurrentPersonId(),
+                    CommonConstants.FAULT_FOLLOW_REPORT);
         }
     }
 
@@ -308,6 +309,10 @@ public class FaultFollowServiceImpl implements FaultFollowService {
 
     @Override
     public void examineReport(FaultFollowReportReqDTO req) throws ParseException {
+        FaultFollowResDTO follow = faultFollowMapper.detail(null, req.getFollowNo());
+        if (StringUtils.isNotNull(follow) && !follow.getFollowLeaderId().equals(TokenUtils.getCurrentPersonId())) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单的跟踪工班长，无法审核该数据！");
+        }
         req.setExamineUserId(TokenUtils.getCurrentPersonId());
         req.setExamineUserName(TokenUtils.getCurrentPerson().getPersonName());
         req.setExamineTime(DateUtils.getCurrentTime());
@@ -319,7 +324,50 @@ public class FaultFollowServiceImpl implements FaultFollowService {
         if (CommonConstants.TWO_STRING.equals(req.getExamineStatus())) {
             faultFollow.setFollowStatus(CommonConstants.FORTY_STRING);
             // 相关待办修改为已办
-            overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "报告驳回：" + req.getExamineOpinion());
+            overTodoService.overTodo(req.getRecId(),
+                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "报告工班长驳回：" + req.getExamineOpinion());
+            // 驳回时新增待办
+            overTodoService.insertTodo("跟踪工单报告被驳回，需重新提交", req.getRecId(), req.getFollowNo(), req.getReportUserId(),
+                    "跟踪工单报告提交", "followReportSubmit", TokenUtils.getCurrentPersonId(), CommonConstants.FAULT_FOLLOW_REPORT);
+        } else {
+            faultFollow.setFollowStatus(CommonConstants.THIRTY_FIVE_STRING);
+            // 相关待办修改为已办
+            overTodoService.overTodo(req.getRecId(),
+                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告工班长通过：" + req.getExamineOpinion());
+            // 新增专业工程师待办
+            overTodoService.insertTodo("跟踪工单报告待审核", req.getRecId(), req.getFollowNo(), follow.getFollowUserId(),
+                    "跟踪工单报告专业工程师审核", "followReportEngineerExamine", TokenUtils.getCurrentPersonId(),
+                    CommonConstants.FAULT_FOLLOW_REPORT);
+        }
+        faultFollow.setRecRevisor(TokenUtils.getCurrentPersonId());
+        faultFollow.setRecReviseTime(DateUtils.getCurrentTime());
+        faultFollowMapper.modify(faultFollow);
+    }
+
+    @Override
+    public void engineerExamineReport(FaultFollowReportReqDTO req) throws ParseException {
+        FaultFollowResDTO follow = faultFollowMapper.detail(null, req.getFollowNo());
+        if (StringUtils.isNotNull(follow)) {
+            if (!CommonConstants.THIRTY_FIVE_STRING.equals(follow.getFollowStatus())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "故障跟踪工单未处于专业工程师审核阶段，无法审核！");
+            }
+            if (!follow.getFollowUserId().equals(TokenUtils.getCurrentPersonId())) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是发起这条故障跟踪工单的专业工程师，无法审核该数据！");
+            }
+        }
+        req.setFollowExamineUserId(TokenUtils.getCurrentPersonId());
+        req.setFollowExamineUserName(TokenUtils.getCurrentPerson().getPersonName());
+        req.setFollowExamineTime(DateUtils.getCurrentTime());
+        req.setRecRevisor(TokenUtils.getCurrentPersonId());
+        req.setRecReviseTime(DateUtils.getCurrentTime());
+        faultFollowMapper.engineerExamineReport(req);
+        FaultFollowReqDTO faultFollow = new FaultFollowReqDTO();
+        faultFollow.setFollowNo(req.getFollowNo());
+        if (CommonConstants.TWO_STRING.equals(req.getFollowExamineStatus())) {
+            faultFollow.setFollowStatus(CommonConstants.FORTY_STRING);
+            // 相关待办修改为已办
+            overTodoService.overTodo(req.getRecId(),
+                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "报告专业工程师驳回：" + req.getExamineOpinion());
             // 驳回时新增待办
             overTodoService.insertTodo("跟踪工单报告被驳回，需重新提交", req.getRecId(), req.getFollowNo(), req.getReportUserId(),
                     "跟踪工单报告提交", "followReportSubmit", TokenUtils.getCurrentPersonId(), CommonConstants.FAULT_FOLLOW_REPORT);
@@ -333,7 +381,8 @@ public class FaultFollowServiceImpl implements FaultFollowService {
                 faultFollow.setFollowStatus(CommonConstants.TWENTY_STRING);
             }
             // 相关待办修改为已办
-            overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告通过：" + req.getExamineOpinion());
+            overTodoService.overTodo(req.getRecId(),
+                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告专业工程师通过：" + req.getExamineOpinion());
         }
         faultFollow.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultFollow.setRecReviseTime(DateUtils.getCurrentTime());

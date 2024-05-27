@@ -111,10 +111,12 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     @Override
     public List<EquipmentCategoryResDTO> getFirstEquipmentCategory() {
         String type = null;
-        if (TokenUtils.getCurrentPerson().getNames().contains(CommonConstants.ZTT)) {
-            type = CommonConstants.ONE_STRING;
-        } else if (TokenUtils.getCurrentPerson().getNames().contains(CommonConstants.ZC)) {
-            type = CommonConstants.TWO_STRING;
+        if (StringUtils.isNotEmpty(TokenUtils.getCurrentPerson().getNames())) {
+            if (TokenUtils.getCurrentPerson().getNames().contains(CommonConstants.ZTT)) {
+                type = CommonConstants.ONE_STRING;
+            } else if (TokenUtils.getCurrentPerson().getNames().contains(CommonConstants.ZC)) {
+                type = CommonConstants.TWO_STRING;
+            }
         }
         return equipmentCategoryMapper.getFirstEquipmentCategory(type);
     }

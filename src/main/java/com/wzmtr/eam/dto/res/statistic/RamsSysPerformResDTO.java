@@ -31,4 +31,6 @@ public class RamsSysPerformResDTO {
     private String isDB_NOS;
     @ApiModelProperty(value = "不适合继续服务MTBF")
     private String MTBF_NOS;
+    @ApiModelProperty(value = "实际指数")
+    private String ZB;
 }

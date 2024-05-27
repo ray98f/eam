@@ -64,6 +64,9 @@ public class FaultDetailResDTO {
     private String faultProcessResult;
     @ApiModelProperty(value = "开工人工号")
     private String reportStartUserId;
+
+    @ApiModelProperty(value = "开工人")
+    private String reportStartUserName;
     @ApiModelProperty(value = "开工时间")
     private String reportStartTime;
     @ApiModelProperty(value = "完工人工号")

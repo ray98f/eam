@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzmtr.eam.mapper.home.CommonFuncMapper">
+    <select id="listUse" resultType="com.wzmtr.eam.dto.res.home.CommonFuncResDTO">
+        SELECT DISTINCT sp.ID, sp.NAME, sp.URL, sp.ICON, scf.SORT
+        FROM SYS_COMMON_FUNC scf
+        LEFT JOIN SYS_PERMISSION sp on sp.ID=scf.PERMISSION_ID AND sp.DEL_FLAG='0'
+        WHERE scf.USER_ID=#{personId}
+        ORDER BY scf.SORT ASC
+    </select>
+
+    <select id="listAll" resultType="com.wzmtr.eam.dto.res.home.CommonFuncResDTO">
+        SELECT DISTINCT sp1.ID, sp1.NAME, sp1.URL, sp1.ICON, sp1.SORT, sp2.SORT AS PARENT_SORT
+        FROM SYS_USER_ROLE sur left join SYS_ROLE_PERMISSION srp on srp.ROLE_ID=sur.ROLE_ID
+        LEFT JOIN SYS_PERMISSION sp1 on sp1.ID=srp.PERMISSION_ID and sp1.DEL_FLAG='0'
+        LEFT JOIN SYS_PERMISSION sp2 on sp1.PARENT_ID=sp2.ID AND sp2.DEL_FLAG='0'
+        WHERE sp1.TYPE='2' AND sp1.IS_SHOW='1' AND sp1.STATUS='0' AND sp1.DEL_FLAG='0'
+        AND sp1.PARENT_ID IS NOT NULL and sur.USER_ID=#{userId}
+<!--        AND sp1.ID NOT IN (SELECT PERMISSION_ID FROM SYS_COMMON_FUNC WHERE USER_ID=#{userId})-->
+        ORDER BY sp2.SORT ASC, sp1.SORT ASC
+    </select>
+
+    <delete id="removeAll">
+        DELETE FROM SYS_COMMON_FUNC WHERE USER_ID=#{userId}
+    </delete>
+
+    <insert id="insert">
+        insert ALL
+        <foreach collection="userCommonFuncList" index="index" item="userCommonFunc" separator=" ">
+            INTO SYS_COMMON_FUNC (ID, USER_ID, PERMISSION_ID, SORT)
+            VALUES (SYS_GUID(), #{userId}, #{userCommonFunc.permissionId}, #{userCommonFunc.sort})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+</mapper>

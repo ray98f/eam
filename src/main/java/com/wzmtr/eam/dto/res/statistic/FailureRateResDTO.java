@@ -12,5 +12,5 @@ public class FailureRateResDTO {
     @ApiModelProperty(value = "年月")
     private String yearMonth;
     @ApiModelProperty(value = "百分比")
-    private String precent ;
+    private String precent;
 }

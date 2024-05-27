@@ -303,6 +303,16 @@ public class StatisticController {
         return DataResponse.of(statisticService.querySysPerform());
     }
 
+    /**
+     * 各系统可靠性统计-导出
+     * @param response response
+     */
+    @PostMapping("/rams/exportSysPerform")
+    @ApiOperation(value = "各系统可靠性统计-导出")
+    public void exportSysPerform(HttpServletResponse response) throws IOException {
+        statisticService.exportSysPerform(response);
+    }
+
     @PostMapping("/rams/queryRAMSFaultList")
     @ApiOperation(value = "RAMS故障列表")
     public PageResponse<FaultRamsResDTO> queryRAMSFaultList(@RequestBody RamsTimeReqDTO reqDTO) {
@@ -338,6 +348,19 @@ public class StatisticController {
                                                                    @RequestParam String trainNo,
                                                                    @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(statisticService.trainReliabilityFaultList(startTime, endTime, trainNo, pageReqDTO));
+    }
+
+    /**
+     * 各系统指定时间范围内故障数量统计-开放接口
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 故障数量统计
+     */
+    @GetMapping("/subject/fault/open")
+    @ApiOperation(value = "各系统指定时间范围内故障数量统计-开放接口")
+    public DataResponse<List<SubjectFaultResDTO>> getSubjectFaultOpen(@RequestParam String startTime,
+                                                                      @RequestParam String endTime) {
+        return DataResponse.of(statisticService.getSubjectFaultOpen(startTime, endTime));
     }
 
 }

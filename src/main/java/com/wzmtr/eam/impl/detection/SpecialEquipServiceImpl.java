@@ -90,7 +90,7 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
 
     @Override
     public SpecialEquipResDTO getSpecialEquipDetail(String id) {
-        SpecialEquipResDTO resDTO = specialEquipMapper.getSpecialEquipDetail(id);
+        SpecialEquipResDTO resDTO = specialEquipMapper.getSpecialEquipDetail(id, null);
         if (Objects.isNull(resDTO)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }

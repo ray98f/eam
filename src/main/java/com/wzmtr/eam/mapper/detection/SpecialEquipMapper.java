@@ -19,7 +19,7 @@ public interface SpecialEquipMapper {
     Page<SpecialEquipResDTO> pageSpecialEquip(Page<SpecialEquipResDTO> page, String equipCode, String equipName, String specialEquipCode, String factNo,
                                               String useLineNo, String position1Code, String specialEquipType, String equipStatus);
 
-    SpecialEquipResDTO getSpecialEquipDetail(String id);
+    SpecialEquipResDTO getSpecialEquipDetail(String id, String equipCode);
 
     void updateEquip(SpecialEquipReqDTO specialEquipReqDTO);
 

@@ -459,7 +459,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
      * @param reqDTO 检修项参数
      */
     private void checkOverhaulTplDetail(OverhaulTplDetailReqDTO reqDTO) {
-        Pattern pattern = RegularUtils.getNumberPattern();
+        Pattern pattern = RegularUtils.getDecimalPattern();
         if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
         }
@@ -479,7 +479,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "上限必须填数字！");
         }
         bool = StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue()) &&
-                CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) && Integer.parseInt(reqDTO.getMaxValue()) <= Integer.parseInt(reqDTO.getMinValue());
+                CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) &&
+                Double.parseDouble(reqDTO.getMaxValue()) <= Double.parseDouble(reqDTO.getMinValue());
         if (bool) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "下限不能大于等于上限！");
         }
@@ -491,7 +492,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
      * @return 是否校验通过
      */
     private boolean checkImportOverhaulTplDetail(ExcelOverhaulTplDetailReqDTO reqDTO) {
-        Pattern pattern = RegularUtils.getNumberPattern();
+        Pattern pattern = RegularUtils.getDecimalPattern();
         if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
             return true;
         }
@@ -507,7 +508,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             return true;
         }
         if (StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue())) {
-            return CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) && Integer.parseInt(reqDTO.getMaxValue()) <= Integer.parseInt(reqDTO.getMinValue());
+            return CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) &&
+                    Double.parseDouble(reqDTO.getMaxValue()) <= Double.parseDouble(reqDTO.getMinValue());
         }
         return false;
     }

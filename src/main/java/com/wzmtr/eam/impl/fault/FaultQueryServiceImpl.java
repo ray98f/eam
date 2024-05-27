@@ -93,7 +93,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode()) &&
-        StringUtils.isNotNull(office) && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
+                StringUtils.isNotNull(office) && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
             userMajorList = userAccountService.listUserMajor();
         }
         if (StringUtils.isNotEmpty(reqDTO.getOrderStatus()) && reqDTO.getOrderStatus().contains(CommonConstants.COMMA)) {
@@ -107,16 +107,31 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
-                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))) {
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
             page = faultQueryMapper.query(reqDTO.of(), reqDTO, userMajorList);
         } else {
             page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList, TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId());
         }
         List<FaultDetailResDTO> list = page.getRecords();
-        if (StringUtils.isNotEmpty(list)) {
-            for (FaultDetailResDTO res : list) {
-                buildRes(res);
+        // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
+        if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
+            List<FaultDetailResDTO> other = faultQueryMapper.queryByEngineer(userMajorList);
+            if (StringUtils.isNotEmpty(other)) {
+                if (StringUtils.isNotEmpty(list)) {
+                    list.addAll(other);
+                } else {
+                    list = other;
+                }
+                list = list.stream().distinct()
+                        .sorted(Comparator.comparing(FaultDetailResDTO::getFaultNo).reversed()
+                                .thenComparing(FaultDetailResDTO::getFaultWorkNo).reversed())
+                        .collect(Collectors.toList());
             }
+        }
+        for (FaultDetailResDTO res : list) {
+            buildRes(res);
         }
         page.setRecords(list);
         return page;
@@ -269,7 +284,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(resDTO.getFillinDeptCode())) {
             fillinDept = organizationMapper.getNamesById(resDTO.getFillinDeptCode());
         }
-        export.setDealerUnit(dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
+//        export.setReplacementName(dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
         if (StringUtils.isNotEmpty(fillinDept)) {
             export.setFillinDept(Optional.ofNullable(fillinDept).orElse(CommonConstants.EMPTY));
             export.setRepairDept(Optional.ofNullable(repairDept).orElse(CommonConstants.EMPTY));
@@ -433,8 +448,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(reqDTO.getOrderStatus())) {
             FaultOrderDO faultOrder = BeanUtils.convert(reqDTO, FaultOrderDO.class);
             faultOrder.setReportFinishUserId(TokenUtils.getCurrentPersonId());
-            faultOrder.setReportFinishUserName(TokenUtils.getCurrentPerson().getPersonName());
             faultOrder.setReportFinishTime(DateUtils.getCurrentTime());
+            faultOrder.setReportUserId(TokenUtils.getCurrentPersonId());
+            faultOrder.setReportTime(DateUtils.getCurrentTime());
             faultOrder.setRecRevisor(TokenUtils.getCurrentPersonId());
             faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
             faultOrder.setOrderStatus(OrderStatus.WAN_GONG.getCode());
@@ -1014,7 +1030,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                     overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo, CommonConstants.FAULT_FINISHED_CONFIRM_CN, currentPersonId, "?", null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 } else {
                     //其他的发给工班
-                    overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfo.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfo.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 }
             } else {
                 sendDispatchTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());

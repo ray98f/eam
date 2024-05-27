@@ -880,9 +880,12 @@
             )
         </if>
         <if test="req.userId!=null">
-            AND (WORKER_CODE=#{req.userId} OR SEND_PERSON_ID=#{req.userId} OR ACK_PERSON_ID=#{req.userId} OR
-            CANCEL_PERSON_ID=#{req.userId} OR LAST_UPDATE_PERSON=#{req.userId} OR
-            REC_REVISOR=#{req.userId} OR REC_CREATOR=#{req.userId})
+            AND (WORKER_CODE=#{req.userId} OR SEND_PERSON_ID=#{req.userId} OR
+            <if test="req.officeAreaId!=null and req.officeAreaId!=''">
+                WORKER_GROUP_CODE=#{req.officeAreaId} OR
+            </if>
+            ACK_PERSON_ID=#{req.userId} OR CANCEL_PERSON_ID=#{req.userId} OR
+            LAST_UPDATE_PERSON=#{req.userId} OR REC_REVISOR=#{req.userId} OR REC_CREATOR=#{req.userId})
         </if>
         ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
     </select>

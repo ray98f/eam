@@ -49,7 +49,7 @@ public class MeaServiceImpl implements MeaService {
 
     @Override
     public MeaResDTO getMeaDetail(String id) {
-        return meaMapper.getMeaDetail(id);
+        return meaMapper.getMeaDetail(id, null);
     }
 
     @Override
