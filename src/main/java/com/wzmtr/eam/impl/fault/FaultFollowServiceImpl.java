@@ -70,13 +70,31 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     @Override
     public Page<FaultFollowResDTO> page(String followNo, String faultWorkNo,
                                         String followStatus, PageReqDTO pageReqDTO) {
+        //获取用户当前角色
+        List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
+        Page<FaultFollowResDTO> page;
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
-            return faultFollowMapper.page(pageReqDTO.of(), followNo, faultWorkNo, followStatus, null, null);
+            page = faultFollowMapper.page(pageReqDTO.of(), followNo, faultWorkNo, followStatus, null, null);
         } else {
-            return faultFollowMapper.page(pageReqDTO.of(), followNo, faultWorkNo, followStatus,
+            page = faultFollowMapper.page(pageReqDTO.of(), followNo, faultWorkNo, followStatus,
                     TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeId());
         }
+        List<FaultFollowResDTO> list = page.getRecords();
+        if (StringUtils.isNotEmpty(list)) {
+            for (FaultFollowResDTO res : list) {
+                // admin 运维管理部 车辆部显示强制关闭按钮
+                if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+                        || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))
+                        || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
+                    res.setIfShowClose(CommonConstants.ONE_STRING);
+                } else {
+                    res.setIfShowClose(CommonConstants.ZERO_STRING);
+                }
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     @Override
@@ -94,7 +112,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             res.setReportList(reportList);
             //获取用户当前角色
             List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
-            //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
+            // admin 运维管理部 车辆部显示强制关闭按钮
             if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                     || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))
                     || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
