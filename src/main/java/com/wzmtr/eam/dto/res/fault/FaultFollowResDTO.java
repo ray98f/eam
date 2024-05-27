@@ -170,4 +170,9 @@ public class FaultFollowResDTO {
      */
     @ApiModelProperty(value = "报告列表")
     private List<FaultFollowReportResDTO> reportList;
+    /**
+     * 是否显示强制关闭按钮 0 否 1 是
+     */
+    @ApiModelProperty(value = "是否显示强制关闭按钮 0 否 1 是")
+    private String ifShowClose;
 }
