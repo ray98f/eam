@@ -518,8 +518,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
     }
 
     @Override
-    public void exportOverhaulTplDetail(String templateId, HttpServletResponse response) throws IOException {
-        List<OverhaulTplDetailResDTO> overhaulTplDetailResDTOList = overhaulTplMapper.listOverhaulTplDetail(templateId);
+    public void exportOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO, HttpServletResponse response) throws IOException {
+        List<OverhaulTplDetailResDTO> overhaulTplDetailResDTOList = overhaulTplMapper.exportOverhaulTplDetail(overhaulTplDetailReqDTO);
         if (overhaulTplDetailResDTOList != null && !overhaulTplDetailResDTOList.isEmpty()) {
             List<ExcelOverhaulTplDetailResDTO> list = new ArrayList<>();
             for (OverhaulTplDetailResDTO resDTO : overhaulTplDetailResDTOList) {
