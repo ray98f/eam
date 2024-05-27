@@ -20,16 +20,14 @@ public class ExcelSubmissionRecordDetailResDTO {
 
     @ExcelProperty(value = "记录编号")
     private String recId;
-    @ExcelProperty(value = "设备编码")
+    @ExcelProperty(value = "计量器具编码")
     private String equipCode;
-    @ExcelProperty(value = "设备名称")
+    @ExcelProperty(value = "计量器具名称")
     private String equipName;
     @ExcelProperty(value = "型号规格")
     private String matSpecifi;
     @ExcelProperty(value = "出厂编号")
-    private String manufacture;
-    @ExcelProperty(value = "公司编号")
-    private String companyCode;
+    private String manufactureNo;
     @ExcelProperty(value = "检定校准单位")
     private String verifyDept;
     @ExcelProperty(value = "证书编号")
