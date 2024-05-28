@@ -872,7 +872,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
             // ServiceDMER0205 insertUpFaultMessage
             overTodoService.insertTodoWithUserRoleAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
-                    dmfm02.getRecId(), faultWorkNo, "DM_013", list.get(0).getWorkerGroupCode(), "故障维修", "DMFM0001", currentUser, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    dmfm02.getRecId(), faultWorkNo, CommonConstants.DM_013, list.get(0).getWorkerGroupCode(), "故障维修",
+                    "RepairUpState", currentUser, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         }catch (Exception e){
             log.error(e.getMessage());
         }

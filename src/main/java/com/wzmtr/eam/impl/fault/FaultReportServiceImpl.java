@@ -10,6 +10,7 @@ import com.wzmtr.eam.dto.req.basic.query.RegionQuery;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
@@ -23,6 +24,7 @@ import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
 import com.wzmtr.eam.mapper.basic.RegionMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.PersonMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
@@ -77,6 +79,8 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Autowired
     private PersonMapper personMapper;
     @Autowired
+    private RoleMapper roleMapper;
+    @Autowired
     private FaultQueryServiceImpl faultQueryServiceImpl;
     @Autowired
     private HttpServletRequest httpServletRequest;
@@ -126,9 +130,16 @@ public class FaultReportServiceImpl implements FaultReportService {
                     faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
                     faultReportMapper.updateFaultOrder(faultOrder);
                     faultReportMapper.updateFaultInfo(faultInfo);
-                    overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,
-                            nextFaultWorkNo, "故障"), faultOrder.getRecId(), nextFaultWorkNo, faultInfo.getRepairDeptCode(),
-                            "故障派工", " ? ", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    // 故障维修待办推送
+                    String newId = organizationMapper.getIdByAreaId(faultInfo.getRepairDeptCode());
+                    List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, null);
+                    if (CollectionUtil.isNotEmpty(userList)) {
+                        for (BpmnExaminePersonRes map2 : userList) {
+                            overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, nextFaultWorkNo, "故障"),
+                                    faultOrder.getRecId(), nextFaultWorkNo, map2.getUserId(), "故障维修", "RepairFaultAdd",
+                                    TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                        }
+                    }
                 }
             } else {
                 // 行车调度的故障类型 且中铁通的给生产调度发待办
@@ -167,52 +178,64 @@ public class FaultReportServiceImpl implements FaultReportService {
     public void changeReport(FaultReportReqDTO reqDTO) {
         // 获取AOP代理对象
         FaultInfoDO faultInfo = reqDTO.toFaultInfoInsertDO(reqDTO);
-
         //更新故障信息
         modifyToFaultInfo(faultInfo);
         FaultOrderDO faultOrder = reqDTO.toFaultOrderChangeDO(reqDTO);
         faultOrder.setRecRevisor(TokenUtils.getCurrentPerson().getPersonId());
         faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
         faultReportMapper.updateFaultOrder(faultOrder);
-
         // 添加流程记录
-        //中铁通 且是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
+        // 中铁通 且是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         String majorCode = reqDTO.getMajorCode();
-        if (!CommonConstants.ZC_LIST.contains(majorCode) && !CommonConstants.TEN_STRING.equals(reqDTO.getFaultType())) {
-            String positionCode = reqDTO.getPositionCode();
-            if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
-                if (StringUtils.isEmpty(faultInfo.getRepairDeptCode())) {
-                    // 专业和位置查维修部门
-                    OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
-                    if (StringUtils.isNotNull(organ)) {
-                        faultInfo.setRepairDeptCode(organ.getOrgCode());
-                        // 负责人为中铁通工班长角色
-                        Person person = personMapper.searchLeaderByMajorAndPositionAndRole(majorCode, positionCode, CommonConstants.DM_051);
+        if (!CommonConstants.ZC_LIST.contains(majorCode)) {
+            if (!"10".equals(reqDTO.getFaultType())) {
+                String positionCode = reqDTO.getPositionCode();
+                if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
+                    if (StringUtils.isEmpty(faultInfo.getRepairDeptCode())) {
+                        // 专业和位置查维修部门
+                        OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
+                        if (StringUtils.isNotNull(organ)) {
+                            faultInfo.setRepairDeptCode(organ.getOrgCode());
+                            // 负责人为中铁通工班长角色
+                            Person person = personMapper.searchLeaderByMajorAndPositionAndRole(majorCode, positionCode, CommonConstants.DM_051);
+                            if (StringUtils.isNotNull(person)) {
+                                faultOrder.setRepairRespUserId(person.getLoginName());
+                            }
+                        }
+                    } else {
+                        Person person = personMapper.searchLeaderByDeptAndRole(faultInfo.getRepairDeptCode(), CommonConstants.DM_051);
                         if (StringUtils.isNotNull(person)) {
                             faultOrder.setRepairRespUserId(person.getLoginName());
                         }
                     }
-                } else {
-                    Person person = personMapper.searchLeaderByDeptAndRole(faultInfo.getRepairDeptCode(), CommonConstants.DM_051);
-                    if (StringUtils.isNotNull(person)) {
-                        faultOrder.setRepairRespUserId(person.getLoginName());
+                    // 默认为紧急
+                    faultInfo.setExt1("01");
+                    faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                    faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
+                    faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
+                    faultOrder.setRecRevisor(TokenUtils.getCurrentPersonId());
+                    faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
+                    faultReportMapper.updateFaultOrder(faultOrder);
+                    faultReportMapper.updateFaultInfo(faultInfo);
+                    // 故障维修待办推送
+                    String newId = organizationMapper.getIdByAreaId(faultInfo.getRepairDeptCode());
+                    List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, null);
+                    if (CollectionUtil.isNotEmpty(userList)) {
+                        for (BpmnExaminePersonRes map2 : userList) {
+                            overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, reqDTO.getFaultWorkNo(), "故障"),
+                                    faultOrder.getRecId(), reqDTO.getFaultWorkNo(), map2.getUserId(), "故障维修",
+                                    "RepairFaultChange", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                        }
                     }
                 }
-                // 默认为紧急
-                faultInfo.setExt1("01");
-                faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
-                faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
-                faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
-                faultOrder.setRecRevisor(TokenUtils.getCurrentPersonId());
-                faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
-                faultReportMapper.updateFaultOrder(faultOrder);
-                faultReportMapper.updateFaultInfo(faultInfo);
-                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,
-                        reqDTO.getFaultWorkNo(), "故障"), faultOrder.getRecId(), reqDTO.getFaultWorkNo(),
-                        faultInfo.getRepairDeptCode(), "故障派工", " ? ", TokenUtils.getCurrentPersonId(),
-                        BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            } else {
+                // 行车调度的故障类型 且中铁通的给生产调度发待办
+                toZttTrainDispatch(reqDTO, faultOrder, reqDTO.getFaultWorkNo());
             }
+        } else {
+            // 中车给中车检调
+            toZcProsecute(reqDTO, faultOrder, reqDTO.getFaultWorkNo());
         }
     }
 

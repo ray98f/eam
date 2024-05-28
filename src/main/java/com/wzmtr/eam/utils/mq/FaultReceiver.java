@@ -1,5 +1,6 @@
 package com.wzmtr.eam.utils.mq;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.wzmtr.eam.config.RabbitMqConfig;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -10,11 +11,14 @@ import com.wzmtr.eam.dto.req.fault.FaultFlowReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportOpenReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.PersonMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
@@ -29,6 +33,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -55,6 +60,10 @@ public class FaultReceiver {
     private PersonMapper personMapper;
     @Autowired
     private OrgMajorMapper orgMajorMapper;
+    @Autowired
+    private OrganizationMapper organizationMapper;
+    @Autowired
+    private RoleMapper roleMapper;
 
     /**
      * 故障队列消费
@@ -138,9 +147,16 @@ public class FaultReceiver {
                 faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
                 faultReportMapper.updateFaultOrder(faultOrder);
                 faultReportMapper.updateFaultInfo(faultInfo);
-                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,faultWorkNo,"故障"),
-                        faultOrder.getRecId(), faultWorkNo, faultInfo.getRepairDeptCode(), "故障派工", "?",
-                        TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                // 故障维修待办推送
+                String newId = organizationMapper.getIdByAreaId(faultInfo.getRepairDeptCode());
+                List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, null);
+                if (CollectionUtil.isNotEmpty(userList)) {
+                    for (BpmnExaminePersonRes map2 : userList) {
+                        overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"),
+                                faultOrder.getRecId(), faultWorkNo, map2.getUserId(), "故障维修", "RepairFaultReceiver",
+                                TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    }
+                }
             }
         }
     }

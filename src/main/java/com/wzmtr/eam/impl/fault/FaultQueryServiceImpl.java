@@ -177,38 +177,11 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void issue(FaultDetailReqDTO reqDTO) {
-        String status = queryOrderStatus(SidEntity.builder().id(reqDTO.getFaultWorkNo()).build());
         FaultOrderDO faultOrder = BeanUtils.convert(reqDTO, FaultOrderDO.class);
-        switch (status) {
-            case "40":
-                faultOrder.setReportStartUserId(TokenUtils.getCurrentPersonId());
-                faultOrder.setReportStartTime(DateUtils.getCurrentTime());
-                break;
-            // 完工
-            case "50":
-                faultOrder.setReportFinishUserId(TokenUtils.getCurrentPersonId());
-                faultOrder.setReportFinishTime(DateUtils.getCurrentTime());
-                break;
-            // 完工确认
-            case "60":
-                faultOrder.setConfirmUserId(TokenUtils.getCurrentPersonId());
-                faultOrder.setConfirmTime(DateUtils.getCurrentTime());
-                break;
-            // 验收
-            case "55":
-                faultOrder.setCheckUserId(TokenUtils.getCurrentPersonId());
-                faultOrder.setCheckTime(DateUtils.getCurrentTime());
-                break;
-            default:
-                break;
-        }
         faultOrder.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
         faultOrder.setOrderStatus(OrderStatus.XIA_FA.getCode());
-
-        //TODO 只更新下发状态?
         faultReportMapper.updateFaultOrder(faultOrder);
-
         FaultInfoDO faultInfoUpdate = BeanUtils.convert(reqDTO, FaultInfoDO.class);
         faultInfoUpdate.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultInfoUpdate.setRecReviseTime(DateUtils.getCurrentTime());
@@ -219,23 +192,18 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(faultOrderList)) {
             BeanUtils.copy(faultOrderList.get(0), faultOrder);
         }
-
-        //TODO 工班长接收待办信息
-        overTodoService.overTodo(faultOrder.getRecId(), "提报成功，准备下发");
-        String content = "【市铁投集团】" + TokenUtils.getCurrentPerson().getOfficeName() + "的" + TokenUtils.getCurrentPerson().getPersonName() +
-                "下发一条" + faultInfo.getMajorName() + "故障，工单号：" + reqDTO.getFaultWorkNo() + "，尽快派工。";
-        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
-        String codeName = dictionaries.getItemEname();
-        List<String> cos = Arrays.asList(codeName.split(","));
-        if (cos.contains(faultInfo.getMajorCode())) {
-            dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "04");
-        } else {
-            dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
-        }
-        String zcStepOrg = dictionaries.getItemEname();
-        overTodoService.insertTodoWithUserGroupAndAllOrg("【" + faultInfo.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultOrder.getRecId(),
-                reqDTO.getFaultWorkNo(), CommonConstants.DM_007, zcStepOrg, "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(),
-                faultInfo.getMajorCode(), faultInfo.getLineCode(), "20", content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+        // 已办
+        overTodoService.overTodo(faultOrder.getRecId(), "下发成功");
+//        // 故障派工待办推送
+//        String newId = organizationMapper.getIdByAreaId(faultInfo.getRepairDeptCode());
+//        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, null);
+//        if (CollectionUtil.isNotEmpty(userList)) {
+//            for (BpmnExaminePersonRes map2 : userList) {
+//                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, reqDTO.getFaultWorkNo(), "故障"),
+//                        faultOrder.getRecId(), reqDTO.getFaultWorkNo(), map2.getUserId(), "故障派工", "?",
+//                        TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+//            }
+//        }
         // 添加流程记录
         addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), null);
     }
@@ -393,7 +361,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
                 faultInfo.setFaultNo(faultOrder.getFaultNo());
                 faultReportMapper.updateFaultInfo(faultInfo);
-                sendDispatchTodoMessage(faultOrder, workerGroupCode, null);
+                // 故障维修待办推送
+                sendRepairTodoMessage(faultOrder, workerGroupCode, null);
 
                 Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "01");
                 String zcStepOrg = dictionaries.getItemEname();
@@ -408,12 +377,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     /**
-     * 故障派工待办推送
+     * 故障维修待办推送
      * @param faultOrder 故障工单信息
      * @param workerGroupCode 作业工班编号
      * @param userId 人员id
      */
-    private void sendDispatchTodoMessage(FaultOrderDO faultOrder, String workerGroupCode, String userId) {
+    private void sendRepairTodoMessage(FaultOrderDO faultOrder, String workerGroupCode, String userId) {
         List<BpmnExaminePersonRes> userList = new ArrayList<>();
         if (StringUtils.isNotEmpty(userId)) {
             BpmnExaminePersonRes res = new BpmnExaminePersonRes();
@@ -427,7 +396,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         overTodoService.overTodo(faultWorkNo);
         if (CollectionUtil.isNotEmpty(userList)) {
             for (BpmnExaminePersonRes map2 : userList) {
-                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), faultOrder.getRecId(), faultWorkNo, map2.getUserId(), "故障派工", "DMFM0001", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"),
+                        faultOrder.getRecId(), faultWorkNo, map2.getUserId(), "故障维修", "RepairFaultQuery",
+                        TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
             }
         }
     }
@@ -963,7 +934,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
      */
     private void finishWorkConfirmRejectSendMessage(FaultOrderDO faultOrder) {
         overTodoService.overTodo(faultOrder.getFaultWorkNo());
-        sendDispatchTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());
+        sendRepairTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());
     }
 
     private void close(List<FaultDetailResDTO> list) {
@@ -1024,7 +995,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                     overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfo.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 }
             } else {
-                sendDispatchTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());
+                sendRepairTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());
             }
             // 添加流程记录
             addFaultFlow(faultNo, faultWorkNo, examineOpinion);
