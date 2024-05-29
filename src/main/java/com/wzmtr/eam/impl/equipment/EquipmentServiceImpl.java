@@ -183,8 +183,8 @@ public class EquipmentServiceImpl implements EquipmentService {
                             "二期".equals(reqDTO.getUseSegName()) ? "二期" : "三期");
             req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" :
                     "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
-            req.setOtherEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" :
-                    "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
+            req.setOtherEquipFlag(Objects.isNull(reqDTO.getOtherEquipFlag()) ? "" :
+                    "否".equals(reqDTO.getOtherEquipFlag()) ? "10" : "20");
             req.setRecId(TokenUtils.getUuId());
             req.setApprovalStatus("30");
             req.setQuantity(new BigDecimal("1"));
