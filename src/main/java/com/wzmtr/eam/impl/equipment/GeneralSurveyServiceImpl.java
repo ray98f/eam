@@ -82,7 +82,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
             res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
         }
         // 待阅（实际为代办）更新为已办
-        overTodoService.overTodo(id, "已查看");
+        overTodoService.overTodo(id, "已查看", CommonConstants.TWO_STRING);
         return res;
     }
 

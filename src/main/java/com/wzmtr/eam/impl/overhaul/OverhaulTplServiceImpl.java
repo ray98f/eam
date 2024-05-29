@@ -247,7 +247,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             String taskId = bpmnService.queryTaskIdByProcId(processId);
 //            bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulTplReqDTO.getTemplateId() + "\"}", null);
             //审核完流程就结束了 完成待办
-            overTodoService.overTodo(recId,opinion);
+            overTodoService.overTodo(recId, opinion, CommonConstants.ONE_STRING);
             overhaulTplReqDTO.setWorkFlowInstStatus("已完成");
             overhaulTplReqDTO.setTrialStatus("30");
             // 记录日志

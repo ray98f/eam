@@ -189,7 +189,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
         req.setRecReviseTime(DateUtils.getCurrentTime());
         faultFollowMapper.dispatch(req);
         // 相关待办修改为已办
-        overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单已派工");
+        overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单已派工", CommonConstants.ONE_STRING);
         overTodoService.insertTodo("跟踪工单待填写报告", req.getRecId(), req.getFollowNo(), req.getFollowLeaderId(),
                 "跟踪工单填写报告", "followAddReport", TokenUtils.getCurrentPersonId(),
                 CommonConstants.FAULT_FOLLOW_REPORT);
@@ -266,10 +266,10 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             req.setReportUserName(TokenUtils.getCurrentPerson().getPersonName());
             req.setReportTime(DateUtils.getCurrentTime());
             // 相关待办修改为已办
-            overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单报告已填写");
+            overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单报告已填写", CommonConstants.ONE_STRING);
         } else {
             // 相关待办修改为已办
-            overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告已重新提交");
+            overTodoService.overTodo(req.getRecId(), req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告已重新提交", CommonConstants.ONE_STRING);
         }
         req.setRecId(TokenUtils.getUuId());
         req.setExamineStatus(CommonConstants.ZERO_STRING);
@@ -366,7 +366,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             faultFollow.setFollowStatus(CommonConstants.FORTY_STRING);
             // 相关待办修改为已办
             overTodoService.overTodo(req.getRecId(),
-                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "报告工班长驳回：" + req.getExamineOpinion());
+                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "报告工班长驳回：" + req.getExamineOpinion(), CommonConstants.ONE_STRING);
             // 驳回时新增待办
             overTodoService.insertTodo("跟踪工单报告被驳回，需重新提交", req.getRecId(), req.getFollowNo(), req.getReportUserId(),
                     "跟踪工单报告提交", "followReportSubmit", TokenUtils.getCurrentPersonId(), CommonConstants.FAULT_FOLLOW_REPORT);
@@ -374,7 +374,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             faultFollow.setFollowStatus(CommonConstants.THIRTY_FIVE_STRING);
             // 相关待办修改为已办
             overTodoService.overTodo(req.getRecId(),
-                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告工班长通过：" + req.getExamineOpinion());
+                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告工班长通过：" + req.getExamineOpinion(), CommonConstants.ONE_STRING);
             // 新增专业工程师待办
             overTodoService.insertTodo("跟踪工单报告待审核", req.getRecId(), req.getFollowNo(), follow.getFollowUserId(),
                     "跟踪工单报告专业工程师审核", "followReportEngineerExamine", TokenUtils.getCurrentPersonId(),
@@ -408,7 +408,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             faultFollow.setFollowStatus(CommonConstants.FORTY_STRING);
             // 相关待办修改为已办
             overTodoService.overTodo(req.getRecId(),
-                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "报告专业工程师驳回：" + req.getExamineOpinion());
+                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "报告专业工程师驳回：" + req.getExamineOpinion(), CommonConstants.ONE_STRING);
             // 驳回时新增待办
             overTodoService.insertTodo("跟踪工单报告被驳回，需重新提交", req.getRecId(), req.getFollowNo(), req.getReportUserId(),
                     "跟踪工单报告提交", "followReportSubmit", TokenUtils.getCurrentPersonId(), CommonConstants.FAULT_FOLLOW_REPORT);
@@ -423,7 +423,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
             }
             // 相关待办修改为已办
             overTodoService.overTodo(req.getRecId(),
-                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告专业工程师通过：" + req.getExamineOpinion());
+                    req.getFollowNo() + "的跟踪工单" + req.getStep() + "阶段报告专业工程师通过：" + req.getExamineOpinion(), CommonConstants.ONE_STRING);
         }
         faultFollow.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultFollow.setRecReviseTime(DateUtils.getCurrentTime());

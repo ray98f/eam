@@ -193,7 +193,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             BeanUtils.copy(faultOrderList.get(0), faultOrder);
         }
         // 已办
-        overTodoService.overTodo(faultOrder.getRecId(), "下发成功");
+        overTodoService.overTodo(faultOrder.getRecId(), "下发成功", CommonConstants.ONE_STRING);
 //        // 故障派工待办推送
 //        String newId = organizationMapper.getIdByAreaId(faultInfo.getRepairDeptCode());
 //        List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, null);
@@ -439,18 +439,18 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String fillinUserId = faultInfoDO.getFillinUserId();
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
         String workClass = faultOrderDO.getWorkClass();
-        overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN);
+        overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN, CommonConstants.ONE_STRING);
         Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
         String itemEname = dictionaries.getItemEname();
         String[] cos01 = itemEname.split(",");
         List<String> cos = Arrays.asList(cos01);
         if (CommonConstants.DM_013.equals(ext2)) {
-            overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN);
+            overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN, CommonConstants.ONE_STRING);
             // String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已设调确认，请及时在EAM系统关闭工单！";
             overTodoService.insertTodoWithUserRoleAndOrg("【" + majorName + CommonConstants.FAULT_CONTENT_END, faultOrderDO.getRecId(), faultWorkNo, "DM_013", workClass, "故障关闭", "DMFM0001", currentUser, null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         }
         // else if (ext2.equals(CommonConstants.DM_006)) {
-        //     overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN);
+        //     overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN, CommonConstants.ONE_STRING);
         //     if (cos.contains(majorCode)) {
         //         if (majorCode.equals("07")) {
         //             content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
@@ -470,7 +470,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //  _close
         // }
         // else if (ext2.equals("DM_031")) {
-        //     overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN);
+        //     overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN, CommonConstants.ONE_STRING);
         //     String faultProcessResult = dmfm02.getFaultProcessResult();
         //     content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
         //     if (CommonConstants.LINE_CODE_ONE.equals(faultProcessResult) || CommonConstants.LINE_CODE_TWO.equals(faultProcessResult)) {
@@ -490,7 +490,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //     }
         // }
         // else if (ext2.equals("DM_020") || ext2.equals("DM_044") || ext2.equals("DM_030")) {
-        //     overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN);
+        //     overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN, CommonConstants.ONE_STRING);
         //     status = DMUtil.insertTODOWithUserGroup("【" + majorName + CommonConstants.FAULT_CONTENT_END, dmfm02.getRecId(), faultWorkNo, ext2, "故障关闭", "DMFM0001", currentUser);
         //     // EiInfo eiInfo = new EiInfo();
         //     // eiInfo.set("group", ext2);
@@ -981,7 +981,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             faultInfo.setRecRevisor(currentUser);
             faultReportMapper.updateFaultInfo(faultInfo);
             // 完成待办
-            overTodoService.overTodo(recId, "故障验收");
+            overTodoService.overTodo(recId, "故障验收", CommonConstants.ONE_STRING);
             if (CommonConstants.ZERO_STRING.equals(examineStatus)) {
                 String majorCode = faultInfo.getMajorCode();
                 String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";

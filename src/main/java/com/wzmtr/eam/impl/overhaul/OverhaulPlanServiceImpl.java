@@ -295,7 +295,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
             //bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulPlanReqDTO.getPlanCode() + "\"}", null);
             overhaulPlanReqDTO.setWorkFlowInstStatus("已完成");
             overhaulPlanReqDTO.setTrialStatus("30");
-            overTodoService.overTodo(recId,opinion);
+            overTodoService.overTodo(recId, opinion, CommonConstants.ONE_STRING);
             // 记录日志
             workFlowLogService.add(WorkFlowLogBO.builder()
                     .status(BpmnStatus.PASS.getDesc())

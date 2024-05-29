@@ -4,7 +4,13 @@ import java.util.List;
 
 public interface OverTodoService {
 
-    void overTodo(String businessRecId, String auditOpinion);
+    /**
+     * 完成待办
+     * @param businessRecId 业务id
+     * @param auditOpinion 意见
+     * @param type 搜索id类型 1 todoId 2 relateId
+     */
+    void overTodo(String businessRecId, String auditOpinion, String type);
 
     /**
      * @param taskTitle  待办标题
