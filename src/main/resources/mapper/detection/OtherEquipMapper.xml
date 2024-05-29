@@ -43,7 +43,7 @@
         b.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
         b.POSITION1_CODE	as "position1Code",
         b.EQUIP_STATUS	as "equipStatus",
-        b.SPECIAL_EQUIP_FLAG,
+        b.OTHER_EQUIP_FLAG,
         b.APPROVAL_STATUS,
         b.POSITION1_NAME as "position1Name",
         b.VERIFY_DATE	as "verifyDate",  <!-- 其他设备检测日期 -->
@@ -55,7 +55,7 @@
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
         where 1=1
-        and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
+        and b.OTHER_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
         <if test="equipCode!=null and equipCode!=''">
             and b.EQUIP_CODE like '%' || #{equipCode} || '%'
         </if>
@@ -130,7 +130,7 @@
         b.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
         b.POSITION1_CODE	as "position1Code",
         b.EQUIP_STATUS	as "equipStatus",
-        b.SPECIAL_EQUIP_FLAG,
+        b.OTHER_EQUIP_FLAG,
         b.APPROVAL_STATUS,
         b.POSITION1_NAME as "position1Name",
         b.VERIFY_DATE	as "verifyDate",  <!-- 其他设备检测日期 -->
@@ -142,7 +142,7 @@
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
         where 1=1 and a.REC_ID=#{id}
-        and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
+        and b.OTHER_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
     </select>
 
     <update id="updateEquip">
@@ -191,8 +191,8 @@
         #{regOrg,jdbcType=VARCHAR},
         #{regNo,jdbcType=VARCHAR},
         #{equipCode,jdbcType=VARCHAR},
-        #{specialEquipType,jdbcType=VARCHAR},
-        #{specialEquipCode,jdbcType=VARCHAR},
+        #{otherEquipType,jdbcType=VARCHAR},
+        #{otherEquipCode,jdbcType=VARCHAR},
         #{factNo,jdbcType=VARCHAR},
         #{equipInnerNo,jdbcType=VARCHAR},
         #{equipPosition,jdbcType=VARCHAR},
@@ -341,7 +341,7 @@
         b.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
         b.POSITION1_CODE	as "position1Code",
         b.EQUIP_STATUS	as "equipStatus",
-        b.SPECIAL_EQUIP_FLAG,
+        b.OTHER_EQUIP_FLAG,
         b.APPROVAL_STATUS,
         b.POSITION1_NAME as "position1Name",
         b.VERIFY_DATE	as "verifyDate",  <!-- 其他设备检测日期 -->
@@ -353,7 +353,7 @@
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
         where 1=1
-        and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
+        and b.OTHER_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
         AND a.REC_ID IN (
         <foreach collection="ids" index="index" item="id" separator=",">
             #{id}

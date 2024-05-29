@@ -107,6 +107,13 @@ public class OtherEquipServiceImpl implements OtherEquipService {
     }
 
     @Override
+    public void modifyOtherEquip(OtherEquipReqDTO otherEquipReqDTO) {
+        otherEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        otherEquipReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
+        otherEquipMapper.modifyOtherEquip(otherEquipReqDTO);
+    }
+
+    @Override
     public void importOtherEquip(MultipartFile file) throws ParseException {
         List<String> otherCode = new ArrayList<>();
         List<ExcelOtherEquipReqDTO> list = EasyExcelUtils.read(file, ExcelOtherEquipReqDTO.class);
@@ -162,13 +169,6 @@ public class OtherEquipServiceImpl implements OtherEquipService {
         detectionDetailReqDTO.setVerifyResult(req.getVerifyResult());
         detectionDetailReqDTO.setVerifyConclusion(req.getVerifyConclusion());
         return detectionDetailReqDTO;
-    }
-
-    @Override
-    public void modifyOtherEquip(OtherEquipReqDTO otherEquipReqDTO) {
-        otherEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        otherEquipReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        otherEquipMapper.modifyOtherEquip(otherEquipReqDTO);
     }
 
     @Override

@@ -141,6 +141,7 @@
         dd1.EQUIP_TYPE_CODE AS "equipTypeCode",  <!-- 设备分类代码 -->
         dd1.EQUIP_TYPE_NAME AS "equipTypeName",  <!-- 设备分类名称 -->
         dd1.SPECIAL_EQUIP_FLAG AS "specialEquipFlag",  <!-- 10:否;20:是 -->
+        dd1.OTHER_EQUIP_FLAG AS "otherEquipFlag",  <!-- 10:否;20:是 -->
         dd1.SOURCE_KIND AS "sourceKind",  <!-- 资产来源（标段、运营、筹备） -->
         dd1.MANUFACTURE AS "manufacture",  <!-- 生产厂家 -->
         dd1.ORDER_NO AS "orderNo",  <!-- 合同号 -->
@@ -223,6 +224,7 @@
         dd1.EQUIP_TYPE_CODE AS "equipTypeCode",  <!-- 设备分类代码 -->
         dd1.EQUIP_TYPE_NAME AS "equipTypeName",  <!-- 设备分类名称 -->
         dd1.SPECIAL_EQUIP_FLAG AS "specialEquipFlag",  <!-- 10:否;20:是 -->
+        dd1.OTHER_EQUIP_FLAG AS "otherEquipFlag",  <!-- 10:否;20:是 -->
         dd1.SOURCE_KIND AS "sourceKind",  <!-- 资产来源（标段、运营、筹备） -->
         dd1.MANUFACTURE AS "manufacture",  <!-- 生产厂家 -->
         dd1.ORDER_NO AS "orderNo",  <!-- 合同号 -->
@@ -328,6 +330,7 @@
         dd1.EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
         dd1.EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
         dd1.SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 10:否;20:是 -->
+        dd1.OTHER_EQUIP_FLAG AS "otherEquipFlag",  <!-- 10:否;20:是 -->
         dd1.SOURCE_KIND	as "sourceKind",  <!-- 资产来源（标段、运营、筹备） -->
         dd1.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
         dd1.ORDER_NO	as "orderNo",  <!-- 合同号 -->
@@ -426,6 +429,7 @@
         dd1.EQUIP_TYPE_CODE as "equipTypeCode",  <!-- 设备分类代码 -->
         dd1.EQUIP_TYPE_NAME as "equipTypeName",  <!-- 设备分类名称 -->
         dd1.SPECIAL_EQUIP_FLAG as "specialEquipFlag",  <!-- 10:否;20:是 -->
+        dd1.OTHER_EQUIP_FLAG AS "otherEquipFlag",  <!-- 10:否;20:是 -->
         dd1.SOURCE_KIND as "sourceKind",  <!-- 资产来源（标段、运营、筹备） -->
         dd1.MANUFACTURE as "manufacture",  <!-- 生产厂家 -->
         dd1.ORDER_NO as "orderNo",  <!-- 合同号 -->

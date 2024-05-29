@@ -44,16 +44,17 @@ public interface OtherEquipService {
     OtherEquipResDTO getOtherEquipDetail(String id);
 
     /**
-     * 导入其他设备台账
-     * @param file 文件
-     */
-    void importOtherEquip(MultipartFile file) throws ParseException;
-
-    /**
      * 编辑其他设备台账
      * @param otherEquipReqDTO 其他设备台账信息
      */
     void modifyOtherEquip(OtherEquipReqDTO otherEquipReqDTO);
+
+    /**
+     * 导入其他设备台账
+     * @param file 文件
+     * @throws ParseException 异常
+     */
+    void importOtherEquip(MultipartFile file) throws ParseException;
 
     /**
      * 导出其他设备台账
