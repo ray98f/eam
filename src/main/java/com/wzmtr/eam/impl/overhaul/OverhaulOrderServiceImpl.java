@@ -415,7 +415,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      * @return
      */
     private static String nextRole(OverhaulOrderReqDTO overhaulOrderReqDTO,String zcRole,String zttRole) {
-        String roleCode = null;
+        String roleCode;
         if (CommonConstants.ZC_LIST.contains(overhaulOrderReqDTO.getSubjectCode())) {
             roleCode = zcRole;
         } else {

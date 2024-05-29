@@ -108,6 +108,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
             type = CommonConstants.ONE_STRING;
+        } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
+            type = CommonConstants.TWO_STRING;
         }
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())

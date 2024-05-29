@@ -22,6 +22,7 @@ public enum BpmnFlowEnum {
     OVERHAUL_WEEK_PLAN_SUBMIT("overhaul_week_plan_submit", "检修周计划流程"),
     SUBMISSION_SUBMIT("submission_submit", "计量器具检测单流程"),
     FAULT_REPORT_QUERY("fault_report_query", "故障提报查询流程"),
+    FAULT_READ_QUERY("fault_read_query", "故障查询流程"),
     FAULT_REPORT_QUERY_ZTT("fault_report_query_ztt", "故障提报查询流程ZTT"),
     OVERHAUL_ORDER("overhaul_order", "检修工单审批流程"),
     GENERAL_SURVEY("general_survey", "普查与技改查看流程");

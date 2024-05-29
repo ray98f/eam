@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.req.fault;
 
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
@@ -170,16 +171,16 @@ public class FaultReportReqDTO {
 
     public FaultInfoDO toFaultInfoInsertDO(FaultReportReqDTO req) {
         FaultInfoDO convert = BeanUtils.convert(req, FaultInfoDO.class);
-        // String Toocc = (String)((Map)faultinfo.get(0)).get("ext4");
+        // 是否知会OCC调度
         if (!Objects.isNull(req.getMaintenance())) {
             convert.setExt4(req.getMaintenance().toString());
         }
         //前端这里 1 是  0 否 我这里统一下把。。
         String reliability = req.getIfReliability();
-        if (StringUtils.isNotEmpty(reliability) && "1".equals(reliability)) {
+        if (StringUtils.isNotEmpty(reliability) && CommonConstants.ONE_STRING.equals(reliability)) {
             convert.setIfReliability("0");
         }
-        if (StringUtils.isNotEmpty(reliability) && "0".equals(reliability)) {
+        if (StringUtils.isNotEmpty(reliability) && CommonConstants.ZERO_STRING.equals(reliability)) {
             convert.setIfReliability("1");
         }
         convert.setTrainTag(req.getTraintag());

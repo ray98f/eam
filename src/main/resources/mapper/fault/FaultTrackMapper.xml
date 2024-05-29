@@ -444,7 +444,7 @@
     </select>
     <select id="faultOrderDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
-        REC_ID	as "recId",
+        REC_ID	as "faultOrderRecId",
         COMPANY_CODE	as "companyCode",
         COMPANY_NAME	as "companyName",
         FAULT_NO	as "faultNo",

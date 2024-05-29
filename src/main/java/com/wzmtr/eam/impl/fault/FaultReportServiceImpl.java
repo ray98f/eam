@@ -150,6 +150,17 @@ public class FaultReportServiceImpl implements FaultReportService {
             // 中车给中车检调
             toZcProsecute(reqDTO, faultOrder, nextFaultWorkNo);
         }
+        // 知会OCC调度
+        if (StringUtils.isNotNull(reqDTO.getMaintenance()) && reqDTO.getMaintenance()) {
+            List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(null, CommonConstants.DM_052);
+            for (BpmnExaminePersonRes map2 : userList) {
+                if (CollectionUtil.isNotEmpty(userList)) {
+                    overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_OCC, nextFaultWorkNo, "知会OCC调度的故障"),
+                            TokenUtils.getUuId(), faultOrder.getRecId(), map2.getUserId(), "知会OCC调度", "OCC",
+                            TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_READ_QUERY.value());
+                }
+            }
+        }
         return nextFaultNo;
     }
 
@@ -239,6 +250,17 @@ public class FaultReportServiceImpl implements FaultReportService {
             // 中车给中车检调
             toZcProsecute(reqDTO, faultOrder, reqDTO.getFaultWorkNo());
         }
+        // 知会OCC调度
+        if (StringUtils.isNotNull(reqDTO.getMaintenance()) && reqDTO.getMaintenance()) {
+            List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(null, CommonConstants.DM_052);
+            for (BpmnExaminePersonRes map2 : userList) {
+                if (CollectionUtil.isNotEmpty(userList)) {
+                    overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_OCC, reqDTO.getFaultWorkNo(), "知会OCC调度的故障"),
+                            TokenUtils.getUuId(), faultOrder.getRecId(), map2.getUserId(), "知会OCC调度", "OCC",
+                            TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_READ_QUERY.value());
+                }
+            }
+        }
     }
 
     @Override
@@ -320,6 +342,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
             type = CommonConstants.ONE_STRING;
+        } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
+            type = CommonConstants.TWO_STRING;
         }
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
@@ -382,6 +406,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_032))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_006))) {
             type = CommonConstants.ONE_STRING;
+        } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
+            type = CommonConstants.TWO_STRING;
         }
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())

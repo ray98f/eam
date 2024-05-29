@@ -54,6 +54,7 @@ public class CommonConstants {
     public static final String DM_051 = "DM_051";//中铁通-工班长
     public static final String DM_037 = "DM_037";//设备工程师
     public static final String DM_045 = "DM_045";//工程车工程师
+    public static final String DM_052 = "DM_052";//OCC调度
     public static final String ZCJD = "ZCJD";//中车-检调
     public static final String DM_048 = "DM_048";//中车-生产调度
     public static final String ZC_SHFW = "ZC_SHFW";//中车-售后服务站
@@ -66,7 +67,7 @@ public class CommonConstants {
      */
     public static final String TODO_GENERAL_SURVEY =  "收到列车号为:%s、完成时间为:%s的普车技改台账，请及时查看";
     public static final String TODO_GD_TPL =  "收到工单编号为:%s的%s工单，请及时办理";
-
+    public static final String TODO_GD_OCC =  "收到工单编号为:%s的%s工单，请及时查看";
 
     public static final String EQUIPMENT_ROOM_CODE_0 = "R100000";
 

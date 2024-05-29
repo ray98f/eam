@@ -249,6 +249,9 @@
                 <if test="type!=null and type=='1'.toString()">
                     OR df.ORDER_STATUS IN ('50', '55', '60', '70')
                 </if>
+                <if test="type!=null and type=='2'.toString()">
+                    OR d.EXT4='true'
+                </if>
                 )
             </if>
             AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
