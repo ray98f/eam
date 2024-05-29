@@ -106,8 +106,10 @@
 
     <update id="updateEquip">
         UPDATE T_EQUIPMENT SET
-        VERIFY_DATE=#{verifyDate},
-        VERIFY_VALIDITY_DATE=#{verifyValidityDate}
+        <if test="verifyValidityDate!=null and verifyValidityDate!=''">
+            VERIFY_VALIDITY_DATE=#{verifyValidityDate},
+        </if>
+        VERIFY_DATE=#{verifyDate}
         WHERE EQUIP_CODE=#{equipCode}
     </update>
 
