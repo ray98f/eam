@@ -5,18 +5,32 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.google.common.base.Joiner;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
-import com.wzmtr.eam.dto.req.fault.FaultInfoReqDTO;
-import com.wzmtr.eam.dto.req.fault.FaultOrderReqDTO;
-import com.wzmtr.eam.dto.req.overhaul.*;
+import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulItemTroubleshootReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderDetailReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderFlowReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulPlanListReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulPlanReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulStateReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.basic.WoRuleResDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
-import com.wzmtr.eam.dto.res.overhaul.*;
+import com.wzmtr.eam.dto.res.overhaul.MateBorrowResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulItemTreeResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailOpenResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulStateOrderResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulStateResDTO;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulObjectResDTO;
 import com.wzmtr.eam.dto.res.overhaul.excel.ExcelOverhaulOrderResDTO;
@@ -44,9 +58,13 @@ import com.wzmtr.eam.mapper.overhaul.OverhaulStateMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.OrganizationService;
 import com.wzmtr.eam.service.common.UserAccountService;
+import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.overhaul.OverhaulOrderService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +76,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -102,6 +128,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     private OrganizationMapper organizationMapper;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private FaultReportService faultReportService;
 
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
@@ -835,106 +863,13 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void upState(OverhaulUpStateReqDTO overhaulUpStateReqDTO) {
-        String currentUser = TokenUtils.getCurrentPerson().getPersonName();
-        String orderCode = overhaulUpStateReqDTO.getOrderCode();
-        String objectCode = overhaulUpStateReqDTO.getObjectCode();
-        OverhaulOrderListReqDTO overhaulOrderListReqDTO = new OverhaulOrderListReqDTO();
-        overhaulOrderListReqDTO.setOrderCode(orderCode);
-        List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOrder(overhaulOrderListReqDTO);
-        if (Objects.isNull(list) || list.isEmpty()) {
+    public void upState(FaultReportReqDTO reqDTO) {
+        String faultNo = faultReportService.addToFault(reqDTO);
+        FaultOrderDO faultOrder = faultQueryMapper.queryOneFaultOrder(faultNo, null);
+        if (StringUtils.isNull(faultOrder)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-
-        try{
-            List<OverhaulOrderDetailResDTO> list2 = overhaulOrderMapper.listOverhaulObject(orderCode, list.get(0).getPlanCode(), null, objectCode);
-            FaultInfoReqDTO dmfm01 = new FaultInfoReqDTO();
-            org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm01);
-            String fillinUserId = overhaulUpStateReqDTO.getResDTO().getFillinUserId();
-            buildFaultInfo(dmfm01, fillinUserId, objectCode, list2, list);
-            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-            String faultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-            String faultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
-            dmfm01.setFaultNo(faultNo);
-            FaultOrderReqDTO dmfm02 = new FaultOrderReqDTO();
-            org.springframework.beans.BeanUtils.copyProperties(overhaulUpStateReqDTO.getResDTO(), dmfm02);
-            dmfm02.setRecId(TokenUtils.getUuId());
-            dmfm02.setFaultWorkNo(faultWorkNo);
-            dmfm02.setFaultNo(faultNo);
-            dmfm02.setOrderStatus("30");
-            dmfm02.setWorkClass(list.get(0).getWorkerGroupCode());
-            FaultInfoDO f1 = BeanUtils.convert(dmfm01, FaultInfoDO.class);
-            faultReportMapper.addToFaultInfo(f1);
-            FaultOrderDO f2 = BeanUtils.convert(dmfm02, FaultOrderDO.class);
-            faultReportMapper.addToFaultOrder(f2);
-            overhaulOrderMapper.updateone(faultWorkNo, "30", overhaulUpStateReqDTO.getRecId());
-            String content = "【市铁投集团】检修升级故障，请及时处理并在EAM系统填写维修报告，工单号：" + faultWorkNo + "，请知晓。";
-            // ServiceDMER0205 insertUpFaultMessage
-            overTodoService.insertTodoWithUserRoleAndOrg("【" + equipmentCategoryMapper.listEquipmentCategory(null, list.get(0).getSubjectCode(), null).get(0).getNodeName() + CommonConstants.FAULT_CONTENT_END,
-                    dmfm02.getRecId(), faultWorkNo, CommonConstants.DM_013, list.get(0).getWorkerGroupCode(), "故障维修",
-                    "RepairUpState", currentUser, content, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
-        }catch (Exception e){
-            log.error(e.getMessage());
-        }
-
-    }
-
-    /**
-     * 故障信息拼装
-     * @param faultInfo 故障信息
-     * @param fillinUserId 提报人
-     * @param objectCode 对象编号
-     * @param overhaulOrderDetailList 检修对象列表
-     * @param overhaulOrderList 检修工单列表
-     */
-    public void buildFaultInfo(FaultInfoReqDTO faultInfo, String fillinUserId, String objectCode,
-                               List<OverhaulOrderDetailResDTO> overhaulOrderDetailList, List<OverhaulOrderResDTO> overhaulOrderList) {
-        faultInfo.setExt2(queryNowUser(fillinUserId));
-        faultInfo.setRecId(UUID.randomUUID().toString());
-        if (StringUtils.isNotEmpty(objectCode) && objectCode.startsWith(CommonConstants.NINE_STRING)) {
-            faultInfo.setObjectName(overhaulOrderDetailList.get(0).getObjectName());
-            faultInfo.setObjectCode(overhaulOrderDetailList.get(0).getObjectCode());
-        }
-        faultInfo.setFaultType("30");
-        faultInfo.setMajorCode(overhaulOrderList.get(0).getSubjectCode());
-        faultInfo.setMajorName(overhaulOrderList.get(0).getSubjectName());
-        faultInfo.setSystemCode(overhaulOrderList.get(0).getSystemCode());
-        faultInfo.setSystemName(overhaulOrderList.get(0).getSystemName());
-        faultInfo.setEquipTypeCode(overhaulOrderList.get(0).getEquipTypeCode());
-        faultInfo.setEquipTypeName(overhaulOrderList.get(0).getEquipTypeName());
-        faultInfo.setPositionName(overhaulOrderList.get(0).getPosition1Name());
-        faultInfo.setPositionCode(overhaulOrderList.get(0).getPosition1Code());
-        faultInfo.setRecCreator(TokenUtils.getCurrentPerson().getPersonName());
-        faultInfo.setRecCreateTime(DateUtils.getCurrentTime());
-        faultInfo.setDiscoveryTime(DateUtils.getCurrentTime());
-        faultInfo.setFillinTime(DateUtils.getCurrentTime());
-    }
-
-    public String queryNowUser(String userCode) {
-//        EiInfo eiInfo1 = new EiInfo();
-//        eiInfo1.set(EiConstant.serviceId, "S_XS_14");
-//        eiInfo1.set("loginName", userCode);
-//        eiInfo1.set("groupType", "NORMAL");
-//        EiInfo outInfo = XServiceManager.call(eiInfo1);
-//        List<Map<String, String>> prolist = (List<Map<String, String>>)outInfo.get("result");
-//        String groupEname;
-//        List<String> groups = new ArrayList<>();
-//        for (Map<String, String> stringStringMap : prolist) {
-//            groupEname = (String) ((Map) stringStringMap).get("groupEname");
-//            groups.add(groupEname);
-//        }
-        String ext2 = "";
-//        if (groups.contains("DM_012") || groups.contains("DM_013")) {
-//            ext2 = "DM_013";
-//        } else if (groups.contains(CommonConstants.DM_007)) {
-//            ext2 = CommonConstants.DM_007;
-//        } else if (groups.contains(CommonConstants.DM_006)) {
-//            ext2 = CommonConstants.DM_006;
-//        } else {
-//            ext2 = "";
-//        }
-        return ext2;
+        overhaulOrderMapper.updateone(faultNo, faultOrder.getOrderStatus(), reqDTO.getRecId());
     }
 
     /**

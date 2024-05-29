@@ -20,6 +20,8 @@ import java.util.Objects;
 @Data
 @ApiModel
 public class FaultReportReqDTO {
+    @ApiModelProperty(value = "id")
+    private String recId;
     @ApiModelProperty(value = "故障编号")
     private String faultNo;
     @ApiModelProperty(value = "对象编码")

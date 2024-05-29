@@ -86,6 +86,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     private HttpServletRequest httpServletRequest;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String addToFault(FaultReportReqDTO reqDTO) {
         String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
         String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
@@ -175,6 +176,7 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void changeReport(FaultReportReqDTO reqDTO) {
         // 获取AOP代理对象
         FaultInfoDO faultInfo = reqDTO.toFaultInfoInsertDO(reqDTO);
