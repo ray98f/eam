@@ -17,22 +17,26 @@
             AND TODO_ID=#{todoId}
         </if>
         <if test="relateId!=null and relateId!=''">
-            AND RELATE_ID=#{relateId}
+            AND RELATE_ID=#{relateId} AND USER_ID=#{userId}
         </if>
         ORDER BY TODO_ID DESC
     </select>
 
     <update id="updateStatus">
         UPDATE T_FLOW_TASK SET
-        <trim suffixOverrides=",">
-            TODO_DATE=#{todoDate},
-            PROCESS_USER_ID= #{processUserId},
-            TODO_STATUS=#{todoStatus},
-            <if test="auditOpinion!=null and auditOpinion!=''">
-                AUDIT_OPINION= #{auditOpinion}
-            </if>
-        </trim>
-        WHERE TODO_ID=#{todoId} AND USER_ID=#{userId}
+        <if test="auditOpinion!=null and auditOpinion!=''">
+            AUDIT_OPINION=#{auditOpinion}
+        </if>
+        TODO_DATE=#{todoDate},
+        PROCESS_USER_ID= #{processUserId},
+        TODO_STATUS=#{todoStatus}
+        WHERE USER_ID=#{userId}
+        <if test="todoId!=null and todoId!=''">
+            AND TODO_ID=#{todoId}
+        </if>
+        <if test="relateId!=null and relateId!=''">
+            AND RELATE_ID=#{relateId}
+        </if>
     </update>
 
     <update id="updateStatusByBizId">

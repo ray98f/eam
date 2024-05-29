@@ -53,20 +53,24 @@ public class OverTodoServiceImpl implements OverTodoService {
         try {
             List<QueryNotWorkFlowResDTO> list;
             if (CommonConstants.ONE_STRING.equals(type)) {
-                list = overTodoMapper.queryNotWorkFlow(businessRecId, null);
+                list = overTodoMapper.queryNotWorkFlow(businessRecId, null, TokenUtils.getCurrentPersonId());
             } else {
-                list = overTodoMapper.queryNotWorkFlow(null, businessRecId);
+                list = overTodoMapper.queryNotWorkFlow(null, businessRecId, TokenUtils.getCurrentPersonId());
             }
             if (CollectionUtil.isNotEmpty(list)) {
                 for (QueryNotWorkFlowResDTO l : list) {
-                    StatusWorkFlowLog sLog = new StatusWorkFlowLog();
-                    sLog.setUserId(l.getUserId());
-                    sLog.setTodoId(businessRecId);
-                    sLog.setAuditOpinion(auditOpinion);
-                    sLog.setTodoStatus("2");
-                    sLog.setProcessUserId(TokenUtils.getCurrentPersonId());
-                    sLog.setTodoDate(DateUtils.getCurrentTime());
-                    overTodoMapper.updateStatus(sLog);
+                    StatusWorkFlowLog workFlowLog = new StatusWorkFlowLog();
+                    workFlowLog.setUserId(l.getUserId());
+                    if (CommonConstants.ONE_STRING.equals(type)) {
+                        workFlowLog.setTodoId(businessRecId);
+                    } else {
+                        workFlowLog.setRelateId(businessRecId);
+                    }
+                    workFlowLog.setAuditOpinion(auditOpinion);
+                    workFlowLog.setTodoStatus("2");
+                    workFlowLog.setProcessUserId(TokenUtils.getCurrentPersonId());
+                    workFlowLog.setTodoDate(DateUtils.getCurrentTime());
+                    overTodoMapper.updateStatus(workFlowLog);
                 }
             }
         } catch (Exception e) {
@@ -170,9 +174,9 @@ public class OverTodoServiceImpl implements OverTodoService {
 
     @Override
     public void cancelTodo(String businessRecId) {
-        List<QueryNotWorkFlowResDTO> queryNotWorkFlowRes = overTodoMapper.queryNotWorkFlow(businessRecId, null);
-        if (CollectionUtil.isNotEmpty(queryNotWorkFlowRes)){
-            for (QueryNotWorkFlowResDTO l : queryNotWorkFlowRes) {
+        List<QueryNotWorkFlowResDTO> res = overTodoMapper.queryNotWorkFlow(businessRecId, null, TokenUtils.getCurrentPersonId());
+        if (CollectionUtil.isNotEmpty(res)){
+            for (QueryNotWorkFlowResDTO l : res) {
                 QueryNotWorkFlowBO queryNotWorkFlowBO = new QueryNotWorkFlowBO();
                 queryNotWorkFlowBO.setUserId(l.getUserId());
                 queryNotWorkFlowBO.setTodoId(businessRecId);
