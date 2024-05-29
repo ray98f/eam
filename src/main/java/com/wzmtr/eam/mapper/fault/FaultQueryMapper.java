@@ -60,8 +60,20 @@ public interface FaultQueryMapper {
      */
     List<FaultDetailResDTO> listZtt(@Param("req") FaultQueryDetailReqDTO req);
 
+    /**
+     * 根据故障编号和工单编号获取故障信息
+     * @param faultNo 故障编号
+     * @param faultWorkNo 工单编号
+     * @return 故障信息
+     */
     FaultInfoDO queryOneFaultInfo(String faultNo, String faultWorkNo);
 
+    /**
+     * 根据故障编号和工单编号获取工单信息
+     * @param faultNo 故障编号
+     * @param faultWorkNo 工单编号
+     * @return 工单信息
+     */
     FaultOrderDO queryOneFaultOrder(String faultNo, String faultWorkNo);
 
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
