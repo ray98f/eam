@@ -895,6 +895,7 @@
             (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{equipment.equipTypeName} and NODE_LEVEL=3),
             #{equipment.equipTypeName},
             #{equipment.specialEquipFlag},
+            #{equipment.otherEquipFlag},
             ' ',
             #{equipment.manufacture},
             #{equipment.matSpecifi},
