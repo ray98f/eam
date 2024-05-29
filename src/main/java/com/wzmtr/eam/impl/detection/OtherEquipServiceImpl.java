@@ -151,7 +151,9 @@ public class OtherEquipServiceImpl implements OtherEquipService {
                 detectionService.addNormalDetectionDetail(detectionDetailReqDTO);
             }
         }
-        throw new CommonException(ErrorCode.NORMAL_ERROR, "其他设备编号为" + String.join("、", otherCode) + "的其他设备导入失败，请重试");
+        if (StringUtils.isNotEmpty(otherCode)) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "其他设备编号为" + String.join("、", otherCode) + "的其他设备导入失败，请重试");
+        }
     }
 
     /**
