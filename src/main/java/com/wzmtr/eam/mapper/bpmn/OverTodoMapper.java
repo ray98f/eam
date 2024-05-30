@@ -12,9 +12,20 @@ import java.util.List;
 @Repository
 public interface OverTodoMapper {
 
-    List<QueryNotWorkFlowResDTO> queryNotWorkFlow(String todoId);
+    /**
+     * 查询待办信息
+     * @param todoId 待办id
+     * @param relateId 业务id
+     * @param userId 用户id
+     * @return 待办信息
+     */
+    List<QueryNotWorkFlowResDTO> queryNotWorkFlow(String todoId, String relateId, String userId);
 
-    void updateStatus(StatusWorkFlowLog sLog);
+    /**
+     * 修改待办状态
+     * @param workFlowLog 待办信息
+     */
+    void updateStatus(StatusWorkFlowLog workFlowLog);
     void updateStatusByBizId(StatusWorkFlowLog sLog);
 
     void insert(StatusWorkFlowLog sLog);

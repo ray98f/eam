@@ -197,7 +197,7 @@ public class TransferServiceImpl implements TransferService {
                     equipmentReqDTO.setApprovalStatus("10");
                     List<EquipmentResDTO> queryState = equipmentMapper.siftEquipment(equipmentReqDTO);
                     if (StringUtils.isEmpty(queryState)) {
-                        overTodoService.overTodo(sourceRecId, "");
+                        overTodoService.overTodo(sourceRecId, "", CommonConstants.ONE_STRING);
                     }
                     resDTO.setApprovalStatus("30");
                     buildPart(resDTO);
@@ -308,6 +308,7 @@ public class TransferServiceImpl implements TransferService {
         equipmentReqDTO.setEquipName(transferResDTO.getItemName());
         equipmentReqDTO.setApprovalStatus("10");
         equipmentReqDTO.setSpecialEquipFlag("10");
+        equipmentReqDTO.setOtherEquipFlag("10");
         equipmentReqDTO.setSourceAppNo(transferResDTO.getTransferNo());
         equipmentReqDTO.setSourceSubNo(transferResDTO.getItemCode());
         equipmentReqDTO.setSourceRecId(transferResDTO.getRecId());

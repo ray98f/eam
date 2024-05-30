@@ -93,4 +93,9 @@ public class OverhaulOrderListReqDTO {
      */
     @ApiModelProperty(value = "用户组织机构id")
     private String officeAreaId;
+    /**
+     * 类型
+     */
+    @ApiModelProperty(value = "类型")
+    private String type;
 }

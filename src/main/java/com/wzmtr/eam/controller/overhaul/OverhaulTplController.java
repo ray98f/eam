@@ -161,11 +161,11 @@ public class OverhaulTplController {
         return DataResponse.success();
     }
 
-    @GetMapping("/detail/export")
+    @PostMapping("/detail/export")
     @ApiOperation(value = "导出检修项")
-    public void exportOverhaulTplDetail(@RequestParam(required = false) @ApiParam("模版编码") String templateId,
+    public void exportOverhaulTplDetail(@RequestBody OverhaulTplDetailReqDTO overhaulTplDetailReqDTO,
                                         HttpServletResponse response) throws IOException {
-        overhaulTplService.exportOverhaulTplDetail(templateId, response);
+        overhaulTplService.exportOverhaulTplDetail(overhaulTplDetailReqDTO, response);
     }
 
     @GetMapping("/material/page")

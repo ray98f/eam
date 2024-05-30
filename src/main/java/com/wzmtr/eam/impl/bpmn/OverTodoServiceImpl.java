@@ -3,6 +3,7 @@ package com.wzmtr.eam.impl.bpmn;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.wzmtr.eam.bizobject.QueryNotWorkFlowBO;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.common.EipMsgPushReq;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.overTodo.QueryNotWorkFlowResDTO;
@@ -45,28 +46,31 @@ public class OverTodoServiceImpl implements OverTodoService {
     private OrganizationMapper organizationMapper;
 
     @Override
-    public void overTodo(String businessRecId, String auditOpinion) {
+    public void overTodo(String businessRecId, String auditOpinion, String type) {
         if (StringUtils.isEmpty(businessRecId)) {
             throw new CommonException(ErrorCode.PARAM_NULL);
         }
         try {
-            List<QueryNotWorkFlowResDTO> list = overTodoMapper.queryNotWorkFlow(businessRecId);
+            List<QueryNotWorkFlowResDTO> list;
+            if (CommonConstants.ONE_STRING.equals(type)) {
+                list = overTodoMapper.queryNotWorkFlow(businessRecId, null, TokenUtils.getCurrentPersonId());
+            } else {
+                list = overTodoMapper.queryNotWorkFlow(null, businessRecId, TokenUtils.getCurrentPersonId());
+            }
             if (CollectionUtil.isNotEmpty(list)) {
                 for (QueryNotWorkFlowResDTO l : list) {
-//                    EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
-//                    BeanUtils.copyProperties(l, eipMsgPushReq);
-//                    eipMsgPushReq.update();
-//                    eipMsgPushReq.setTodoId(businessRecId);
-                    StatusWorkFlowLog sLog = new StatusWorkFlowLog();
-                    sLog.setUserId(l.getUserId());
-                    sLog.setTodoId(businessRecId);
-                    sLog.setAuditOpinion(auditOpinion);
-                    sLog.setTodoStatus("2");
-                    sLog.setProcessUserId(TokenUtils.getCurrentPersonId());
-                    sLog.setTodoDate(DateUtils.getCurrentTime());
-                    overTodoMapper.updateStatus(sLog);
-                    // 暂时没有eip
-                    // EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
+                    StatusWorkFlowLog workFlowLog = new StatusWorkFlowLog();
+                    workFlowLog.setUserId(l.getUserId());
+                    if (CommonConstants.ONE_STRING.equals(type)) {
+                        workFlowLog.setTodoId(businessRecId);
+                    } else {
+                        workFlowLog.setRelateId(businessRecId);
+                    }
+                    workFlowLog.setAuditOpinion(auditOpinion);
+                    workFlowLog.setTodoStatus("2");
+                    workFlowLog.setProcessUserId(TokenUtils.getCurrentPersonId());
+                    workFlowLog.setTodoDate(DateUtils.getCurrentTime());
+                    overTodoMapper.updateStatus(workFlowLog);
                 }
             }
         } catch (Exception e) {
@@ -97,64 +101,17 @@ public class OverTodoServiceImpl implements OverTodoService {
             StatusWorkFlowLog sLog = new StatusWorkFlowLog();
             BeanUtils.copyProperties(eipMsgPushReq, sLog);
             sLog.setStepName(stepName);
-            sLog.setSyscode("DM");
+            sLog.setSyscode(CommonConstants.DM);
             sLog.setLastStepUserId(TokenUtils.getCurrentPersonId());
             sLog.setTaskRcvTime(DateUtils.getCurrentTime());
             sLog.setRelateId(businessNo);
             sLog.setFlowId(flowId);
             overTodoMapper.insert(sLog);
-            // EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
         } catch (Exception e) {
             log.error("待办发送失败", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "待办发送失败");
         }
     }
-
-    // @Override
-    // public void insertTodo(String taskTitle, String businessRecId, String businessNo, String stepUserId, String stepName, String taskUrl, String lastStepUserId) {
-    //     if (StringUtils.isBlank(taskTitle) || StringUtils.isBlank(businessNo) || StringUtils.isBlank(stepUserId) || StringUtils.isBlank(stepName)) {
-    //         throw new CommonException(ErrorCode.PARAM_NULL);
-    //     }
-    //     try {
-    //         Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.contextPath", "01");
-    //         if (Objects.isNull(dictionaries)) {
-    //             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
-    //         }
-    //         String contextPath = dictionaries.getItemEname();
-    //         String fullPath = contextPath + taskUrl + "?workFlowInstId" + businessRecId;
-    //         EipMsgPushReq eipMsgPushReq = new EipMsgPushReq();
-    //         eipMsgPushReq.add();
-    //         eipMsgPushReq.setUserId(stepUserId);
-    //         eipMsgPushReq.setTodoId(businessRecId);
-    //         eipMsgPushReq.setTitle(taskTitle);
-    //         eipMsgPushReq.setEipUrl(fullPath);
-    //         eipMsgPushReq.setPhoneUrl(fullPath);
-    //         StatusWorkFlowLog sLog = new StatusWorkFlowLog();
-    //         BeanUtils.copyProperties(eipMsgPushReq, sLog);
-    //         sLog.setStepName(stepName);
-    //         sLog.setSyscode("DM");
-    //         sLog.setLastStepUserId(TokenUtils.getCurrentPersonId());
-    //         sLog.setTaskRcvTime(DateUtils.getCurrentTime());
-    //         overTodoMapper.insert(sLog);
-    //         // EipMsgPushUtils.invokeTodoList(eipMsgPushReq);
-    //     } catch (Exception e) {
-    //         log.error("exception message", e);
-    //         throw new CommonException(ErrorCode.NORMAL_ERROR, "新增失败");
-    //     }
-    // }
-
-    // @Override
-    // public void insertTodoWithUserGroup(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
-    //                               String stepName, String taskUrl, String lastStepUserId) {
-    //     // 根据角色获取用户列表
-    //     List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(null, stepUserGroup);
-    //     List<String> userIds = userList.stream().map(BpmnExaminePersonRes::getUserId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
-    //     if (StringUtils.isNotEmpty(userIds)) {
-    //         for (String userId : userIds) {
-    //             insertTodo(taskTitle, businessRecId, businessNo, userId, stepName, taskUrl, lastStepUserId);
-    //         }
-    //     }
-    // }
     @Override
     public void insertTodoWithUserGroup(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
                                         String stepName, String taskUrl, String lastStepUserId,String flowId) {
@@ -217,9 +174,9 @@ public class OverTodoServiceImpl implements OverTodoService {
 
     @Override
     public void cancelTodo(String businessRecId) {
-        List<QueryNotWorkFlowResDTO> queryNotWorkFlowRes = overTodoMapper.queryNotWorkFlow(businessRecId);
-        if (CollectionUtil.isNotEmpty(queryNotWorkFlowRes)){
-            for (QueryNotWorkFlowResDTO l : queryNotWorkFlowRes) {
+        List<QueryNotWorkFlowResDTO> res = overTodoMapper.queryNotWorkFlow(businessRecId, null, TokenUtils.getCurrentPersonId());
+        if (CollectionUtil.isNotEmpty(res)){
+            for (QueryNotWorkFlowResDTO l : res) {
                 QueryNotWorkFlowBO queryNotWorkFlowBO = new QueryNotWorkFlowBO();
                 queryNotWorkFlowBO.setUserId(l.getUserId());
                 queryNotWorkFlowBO.setTodoId(businessRecId);

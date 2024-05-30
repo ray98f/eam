@@ -82,19 +82,19 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
         FaultInfoDO faultInfo = faultTrackMapper.faultDetail(reqDTO);
         FaultDetailResDTO faultOrder = faultTrackMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
-        if (Objects.isNull(faultInfo)) {
-            return faultOrder;
-        }
         FaultDetailResDTO faultDetail = assemblyResDTO(faultInfo, faultOrder);
         List<FaultFlowResDTO> faultFlows = faultTrackMapper.faultFlowDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (StringUtils.isNotEmpty(faultFlows)) {
             faultDetail.setFlows(faultFlows);
         }
+        // 待阅（实际为代办）更新为已办
+        overTodoService.overTodo(faultOrder.getFaultOrderRecId(), "已查看", CommonConstants.TWO_STRING);
         return faultDetail;
     }
 
     private FaultDetailResDTO assemblyResDTO(FaultInfoDO faultInfo, FaultDetailResDTO faultOrder) {
         FaultDetailResDTO res = BeanUtils.copy(faultInfo, faultOrder);
+        res.setFaultInfoRecId(faultInfo.getRecId());
         if (StringUtils.isNotEmpty(res.getLineCode())) {
             LineCode name = LineCode.getByCode(res.getLineCode());
             if (null != name) {

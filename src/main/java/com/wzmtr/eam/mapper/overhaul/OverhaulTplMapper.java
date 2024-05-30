@@ -53,6 +53,8 @@ public interface OverhaulTplMapper {
 
     List<OverhaulTplDetailResDTO> listOverhaulTplDetail(String templateId);
 
+    List<OverhaulTplDetailResDTO> exportOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO);
+
     List<OverhaulTplResDTO> listOverhaulTpl(String templateId, String templateName, String lineNo, String position1Code,
                                             String majorCode, String systemCode, String equipTypeCode, String trialStatus);
 

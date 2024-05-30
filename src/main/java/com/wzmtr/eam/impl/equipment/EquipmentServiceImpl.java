@@ -176,19 +176,25 @@ public class EquipmentServiceImpl implements EquipmentService {
         for (ExcelEquipmentReqDTO reqDTO : list) {
             EquipmentReqDTO req = new EquipmentReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
-            req.setUseLineNo(Objects.isNull(reqDTO.getUseLineName()) ? "" : "S1线".equals(reqDTO.getUseLineName()) ? "01" : "02");
-            req.setUseSegNo(Objects.isNull(reqDTO.getUseSegName()) ? "" : "一期".equals(reqDTO.getUseSegName()) ? "01" : "二期".equals(reqDTO.getUseSegName()) ? "二期" : "三期");
-            req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" : "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
+            req.setUseLineNo(Objects.isNull(reqDTO.getUseLineName()) ? "" :
+                    "S1线".equals(reqDTO.getUseLineName()) ? "01" : "02");
+            req.setUseSegNo(Objects.isNull(reqDTO.getUseSegName()) ? "" :
+                    "一期".equals(reqDTO.getUseSegName()) ? "01" :
+                            "二期".equals(reqDTO.getUseSegName()) ? "二期" : "三期");
+            req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" :
+                    "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
+            req.setOtherEquipFlag(Objects.isNull(reqDTO.getOtherEquipFlag()) ? "" :
+                    "否".equals(reqDTO.getOtherEquipFlag()) ? "10" : "20");
             req.setRecId(TokenUtils.getUuId());
             req.setApprovalStatus("30");
             req.setQuantity(new BigDecimal("1"));
             req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(DateUtils.getCurrentTime());
             CurrentLoginUser user = TokenUtils.getCurrentPerson();
-            req.setCompanyCode(user.getCompanyAreaId());
-            req.setCompanyName(user.getCompanyName());
-            req.setDeptCode(user.getOfficeAreaId());
-            req.setDeptName(user.getOfficeName());
+            req.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : " ");
+            req.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : " ");
+            req.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : " ");
+            req.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
             req.setEquipCode(getEquipCode());
             temp.add(req);
         }

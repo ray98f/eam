@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
@@ -153,5 +154,9 @@ public interface OverhaulOrderService {
 
     OverhaulStateOrderResDTO queryOrderInfo(String orderCode);
 
-    void upState(OverhaulUpStateReqDTO overhaulUpStateReqDTO);
+    /**
+     * 检修异常升级故障
+     * @param reqDTO 传参
+     */
+    void upState(FaultReportReqDTO reqDTO);
 }

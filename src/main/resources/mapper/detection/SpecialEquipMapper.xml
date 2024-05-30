@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.detection.SpecialEquipMapper">
 
-    <select id="pageSpecialEquip" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
+    <sql id="special-equip-col">
         SELECT
         b.REC_ID	as "recId",  <!-- 统一编号 -->
         a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
@@ -56,6 +56,10 @@
         left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
         left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
         where b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
+    </sql>
+
+    <select id="pageSpecialEquip" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
+        <include refid="special-equip-col"/>
         <if test="equipCode!=null and equipCode!=''">
             and b.EQUIP_CODE like '%' || #{equipCode} || '%'
         </if>
@@ -91,70 +95,21 @@
     </select>
 
     <select id="getSpecialEquipDetail" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
-        SELECT
-        a.REC_ID	as "recId",  <!-- 统一编号 -->
-        a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
-        a.REG_NO	as "regNo",  <!-- 登记证编号 -->
-        b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        a.SPECIAL_EQUIP_TYPE	as "specialEquipType",  <!-- 特种设备类别 -->
-        a.SPECIAL_EQUIP_CODE	as "specialEquipCode",  <!-- 设备代码 -->
-        a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
-        a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
-        a.EQUIP_POSITION	as "equipPosition",  <!-- 设备所在地点 -->
-        a.EQUIP_DETAILED_POSITION	as "equipDetailedPosition",  <!-- 设备详细地址 -->
-        a.EQUIP_PARAMETER	as "equipParameter",  <!-- 设备主要参数 -->
-        a.MANAGE_ORG	as "manageOrg",  <!-- 管理部门 -->
-        a.SEC_ORG	as "secOrg",  <!-- 维管部门 -->
-        a.SEC_STAFF_NAME	as "secStaffName",  <!-- 安管人员 -->
-        a.SEC_STAFF_PHONE	as "secStaffPhone",  <!-- 安管人员电话 -->
-        a.SEC_STAFF_MOBILE	as "secStaffMobile",  <!-- 安管人员手机 -->
-        a.LINKMAN_NAME	as "linkmanName",  <!-- 联系人 -->
-        a.LINKMAN_PHONE	as "linkmanPhone",  <!-- 联系人电话 -->
-        a.LINKMAN_MOBILE	as "linkmanMobile",  <!-- 联系人手机 -->
-        a.REMARK	as "remark",  <!-- 备注 -->
-        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
-        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
-        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
-        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
-        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
-        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
-        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
-        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
-        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
-        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
-        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
-        a.EXT5	as "ext5", <!-- 扩展字段5 -->
-        b.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
-        b.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
-        b.POSITION1_CODE	as "position1Code",
-        b.EQUIP_STATUS	as "equipStatus",
-        b.SPECIAL_EQUIP_FLAG,
-        b.APPROVAL_STATUS,
-        b.POSITION1_NAME as "position1Name",
-        b.VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
-        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
-        c.NAME as "manageOrgName",
-        d.NAME as "secOrgName"
-        FROM T_EQUIPMENT b right join T_SPECIAL_EQUIP_EXT a
-        on a.EQUIP_CODE=b.EQUIP_CODE
-        left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
-        left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
-        where 1=1
+        <include refid="special-equip-col"/>
         <if test="id!=null and id!=''">
             and b.REC_ID=#{id}
         </if>
         <if test="equipCode!=null and equipCode!=''">
             and b.EQUIP_CODE=#{equipCode}
         </if>
-        and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
     </select>
 
     <update id="updateEquip">
         UPDATE T_EQUIPMENT SET
-        VERIFY_DATE=#{verifyDate},
-        VERIFY_VALIDITY_DATE=#{verifyValidityDate}
+        <if test="verifyValidityDate!=null and verifyValidityDate!=''">
+            VERIFY_VALIDITY_DATE=#{verifyValidityDate},
+        </if>
+        VERIFY_DATE=#{verifyDate}
         WHERE EQUIP_CODE=#{equipCode}
     </update>
 
@@ -308,58 +263,7 @@
     </update>
 
     <select id="listSpecialEquip" resultType="com.wzmtr.eam.dto.res.detection.SpecialEquipResDTO">
-        SELECT
-        a.REC_ID	as "recId",  <!-- 统一编号 -->
-        a.REG_ORG	as "regOrg",  <!-- 使用登记机构 -->
-        a.REG_NO	as "regNo",  <!-- 登记证编号 -->
-        b.EQUIP_CODE	as "equipCode",  <!-- 设备编码 -->
-        a.SPECIAL_EQUIP_TYPE	as "specialEquipType",  <!-- 特种设备类别 -->
-        a.SPECIAL_EQUIP_CODE	as "specialEquipCode",  <!-- 设备代码 -->
-        a.FACT_NO	as "factNo",  <!-- 出厂编号 -->
-        a.EQUIP_INNER_NO	as "equipInnerNo",  <!-- 设备内部编号 -->
-        a.EQUIP_POSITION	as "equipPosition",  <!-- 设备所在地点 -->
-        a.EQUIP_DETAILED_POSITION	as "equipDetailedPosition",  <!-- 设备详细地址 -->
-        a.EQUIP_PARAMETER	as "equipParameter",  <!-- 设备主要参数 -->
-        a.MANAGE_ORG	as "manageOrg",  <!-- 管理部门 -->
-        a.SEC_ORG	as "secOrg",  <!-- 维管部门 -->
-        a.SEC_STAFF_NAME	as "secStaffName",  <!-- 安管人员 -->
-        a.SEC_STAFF_PHONE	as "secStaffPhone",  <!-- 安管人员电话 -->
-        a.SEC_STAFF_MOBILE	as "secStaffMobile",  <!-- 安管人员手机 -->
-        a.LINKMAN_NAME	as "linkmanName",  <!-- 联系人 -->
-        a.LINKMAN_PHONE	as "linkmanPhone",  <!-- 联系人电话 -->
-        a.LINKMAN_MOBILE	as "linkmanMobile",  <!-- 联系人手机 -->
-        a.REMARK	as "remark",  <!-- 备注 -->
-        a.REC_CREATOR	as "recCreator",  <!-- 创建者 -->
-        a.REC_CREATE_TIME	as "recCreateTime",  <!-- 创建时间 -->
-        a.REC_REVISOR	as "recRevisor",  <!-- 修改者 -->
-        a.REC_REVISE_TIME	as "recReviseTime",  <!-- 修改时间 -->
-        a.REC_DELETOR	as "recDeletor",  <!-- 删除者 -->
-        a.REC_DELETE_TIME	as "recDeleteTime",  <!-- 删除时间 -->
-        a.DELETE_FLAG	as "deleteFlag",  <!-- 删除标志 -->
-        a.ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
-        a.REC_STATUS	as "recStatus",  <!-- 记录状态 -->
-        a.EXT1	as "ext1",  <!-- 扩展字段1 -->
-        a.EXT2	as "ext2",  <!-- 扩展字段2 -->
-        a.EXT3	as "ext3",  <!-- 扩展字段3 -->
-        a.EXT4	as "ext4",  <!-- 扩展字段4 -->
-        a.EXT5	as "ext5", <!-- 扩展字段5 -->
-        b.EQUIP_NAME	as "equipName",  <!-- 设备名称 -->
-        b.USE_LINE_NO	as "useLineNo",  <!-- 应用线别代码 -->
-        b.POSITION1_CODE	as "position1Code",
-        b.EQUIP_STATUS	as "equipStatus",
-        b.SPECIAL_EQUIP_FLAG,
-        b.APPROVAL_STATUS,
-        b.POSITION1_NAME as "position1Name",
-        b.VERIFY_DATE	as "verifyDate",  <!-- 特种设备检测日期 -->
-        b.VERIFY_VALIDITY_DATE	as "verifyValidityDate",  <!-- 特种设备检测有效期 -->
-        c.NAME as "manageOrgName",
-        d.NAME as "secOrgName"
-        FROM T_EQUIPMENT b right join T_SPECIAL_EQUIP_EXT a
-        on a.EQUIP_CODE=b.EQUIP_CODE
-        left join SYS_OFFICE c on c.ID=a.MANAGE_ORG
-        left join SYS_OFFICE d on d.AREA_ID=a.SEC_ORG
-        where 1=1
-        and b.SPECIAL_EQUIP_FLAG=to_char(20) and b.APPROVAL_STATUS=to_char(30)
+        <include refid="special-equip-col"/>
         AND a.REC_ID IN (
         <foreach collection="ids" index="index" item="id" separator=",">
             #{id}

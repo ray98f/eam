@@ -817,7 +817,8 @@
         ) as sort,
         ACTUAL_END_TIME as REAL_DAY,
         END_MILE as REAL_MILE
-        FROM T_OVERHAUL_ORDER WHERE DELETE_FLAG='0'
+        FROM T_OVERHAUL_ORDER
+        WHERE DELETE_FLAG='0'
         <if test="req.orderCode!=null and req.orderCode!=''">
             and ORDER_CODE like '%' || #{req.orderCode} || '%'
         </if>
@@ -885,9 +886,13 @@
                 WORKER_GROUP_CODE=#{req.officeAreaId} OR
             </if>
             ACK_PERSON_ID=#{req.userId} OR CANCEL_PERSON_ID=#{req.userId} OR
-            LAST_UPDATE_PERSON=#{req.userId} OR REC_REVISOR=#{req.userId} OR REC_CREATOR=#{req.userId})
+            LAST_UPDATE_PERSON=#{req.userId} OR REC_REVISOR=#{req.userId} OR REC_CREATOR=#{req.userId}
+            <if test="req.type!=null and req.type=='1'.toString()">
+                OR WORK_STATUS IN ('4', '5', '6')
+            </if>
+            )
         </if>
-        ORDER BY sort,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
+        ORDER BY SORT,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
     </select>
 
     <select id="getCarOrderExt" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">

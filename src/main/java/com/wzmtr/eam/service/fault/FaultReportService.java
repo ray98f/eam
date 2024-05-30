@@ -12,8 +12,9 @@ import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 public interface FaultReportService {
 
     /**
-     * 提报
-     * @param reqDTO
+     * 故障提报
+     * @param reqDTO 传参
+     * @return 故障单号
      */
     String addToFault(FaultReportReqDTO reqDTO);
 

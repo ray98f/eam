@@ -53,7 +53,7 @@ public interface OverhaulTplService {
 
     void deleteOverhaulTplDetail(BaseIdsEntity baseIdsEntity);
 
-    void exportOverhaulTplDetail(String templateId, HttpServletResponse response) throws IOException;
+    void exportOverhaulTplDetail(OverhaulTplDetailReqDTO overhaulTplDetailReqDTO, HttpServletResponse response) throws IOException;
 
     Page<OverhaulMaterialResDTO> pageOverhaulMaterial(String templateId, PageReqDTO pageReqDTO);
 

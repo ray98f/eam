@@ -73,6 +73,7 @@
         EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
         EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
         SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 特种设备标识 -->
+        OTHER_EQUIP_FLAG	as "otherEquipFlag",  <!-- 其他设备标识 -->
         SOURCE_KIND	as "sourceKind",  <!-- 设备来源 -->
         BOM_TYPE	as "bomType",  <!-- BOM类型 -->
         MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
@@ -273,6 +274,7 @@
         t1.EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
         t1.EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
         t1.SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 特种设备标识 -->
+        t1.OTHER_EQUIP_FLAG	as "otherEquipFlag",  <!-- 其他设备标识 -->
         t1.SOURCE_KIND	as "sourceKind",  <!-- 设备来源 -->
         t1.BOM_TYPE	as "bomType",  <!-- BOM类型 -->
         t1.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
@@ -388,6 +390,9 @@
         </if>
         <if test="specialEquipFlag!=null and specialEquipFlag!=''">
             SPECIAL_EQUIP_FLAG,
+        </if>
+        <if test="otherEquipFlag!=null and otherEquipFlag!=''">
+            OTHER_EQUIP_FLAG,
         </if>
         <if test="sourceKind!=null and sourceKind!=''">
             SOURCE_KIND,
@@ -694,6 +699,9 @@
         <if test="specialEquipFlag!=null">
             SPECIAL_EQUIP_FLAG=#{specialEquipFlag},
         </if>
+        <if test="otherEquipFlag!=null">
+            OTHER_EQUIP_FLAG=#{otherEquipFlag},
+        </if>
         <if test="sourceKind!=null">
             SOURCE_KIND=#{sourceKind},
         </if>
@@ -828,6 +836,7 @@
             EQUIP_TYPE_CODE,  <!-- 设备分类代码 -->
             EQUIP_TYPE_NAME,  <!-- 设备分类名称 -->
             SPECIAL_EQUIP_FLAG,  <!-- 特种设备标识 -->
+            OTHER_EQUIP_FLAG,  <!-- 其他设备标识 -->
             SOURCE_KIND,  <!-- 设备来源 -->
             MANUFACTURE,  <!-- 生产厂家 -->
             MAT_SPECIFI,  <!-- 型号规格 -->
@@ -886,6 +895,7 @@
             (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{equipment.equipTypeName} and NODE_LEVEL=3),
             #{equipment.equipTypeName},
             #{equipment.specialEquipFlag},
+            #{equipment.otherEquipFlag},
             ' ',
             #{equipment.manufacture},
             #{equipment.matSpecifi},
@@ -949,6 +959,7 @@
         EQUIP_TYPE_CODE,  <!-- 设备分类代码 -->
         EQUIP_TYPE_NAME,  <!-- 设备分类名称 -->
         SPECIAL_EQUIP_FLAG,  <!-- 特种设备标识 -->
+        OTHER_EQUIP_FLAG,  <!-- 其他设备标识 -->
         SOURCE_KIND,  <!-- 设备来源 -->
         BOM_TYPE,  <!-- BOM类型 -->
         MANUFACTURE,  <!-- 生产厂家 -->
@@ -1022,6 +1033,7 @@
         #{equipTypeCode,jdbcType=VARCHAR},
         #{equipTypeName,jdbcType=VARCHAR},
         #{specialEquipFlag,jdbcType=VARCHAR},
+        #{otherEquipFlag,jdbcType=VARCHAR},
         #{sourceKind,jdbcType=VARCHAR},
         #{bomType,jdbcType=VARCHAR},
         #{manufacture,jdbcType=VARCHAR},
@@ -1123,6 +1135,9 @@
         <if test="req.specialEquipFlag!=null and req.specialEquipFlag!=''">
             and SPECIAL_EQUIP_FLAG=#{req.specialEquipFlag}
         </if>
+        <if test="req.otherEquipFlag!=null and req.otherEquipFlag!=''">
+            and OTHER_EQUIP_FLAG=#{req.otherEquipFlag}
+        </if>
         <if test="req.brand!=null and req.brand!=''">
             and BRAND=#{req.brand}
         </if>
@@ -1185,6 +1200,9 @@
         </if>
         <if test="specialEquipFlag!=null and specialEquipFlag!=''">
             and SPECIAL_EQUIP_FLAG=#{specialEquipFlag}
+        </if>
+        <if test="otherEquipFlag!=null and otherEquipFlag!=''">
+            and OTHER_EQUIP_FLAG=#{otherEquipFlag}
         </if>
         <if test="brand!=null and brand!=''">
             and BRAND=#{brand}
@@ -1286,6 +1304,9 @@
         </if>
         <if test="specialEquipFlag!=null">
             SPECIAL_EQUIP_FLAG=#{specialEquipFlag},   <!-- 特种设备标识 -->
+        </if>
+        <if test="otherEquipFlag!=null">
+            OTHER_EQUIP_FLAG=#{otherEquipFlag},   <!-- 其他设备标识 -->
         </if>
         <if test="sourceKind!=null">
             SOURCE_KIND=#{sourceKind},   <!-- 设备来源 -->

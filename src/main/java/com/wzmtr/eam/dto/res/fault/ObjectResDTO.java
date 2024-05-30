@@ -35,6 +35,9 @@ public class ObjectResDTO {
     private String equipTypeName;
     @ApiModelProperty(value = "特殊设备标志（10:否;20:是）")
     private String specialEquipFlag;
+
+    @ApiModelProperty(value = "其他设备标志（10:否;20:是）")
+    private String otherEquipFlag;
     @ApiModelProperty(value = "资产来源（标段、运营、筹备）")
     private String sourceKind;
     @ApiModelProperty(value = "生产厂家")

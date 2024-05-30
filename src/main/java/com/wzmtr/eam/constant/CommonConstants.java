@@ -38,35 +38,53 @@ public class CommonConstants {
      */
     public static final String OFF = "off";
     public static final String DEF_PWD = "wzmtr@123456";
-    /**
-     * 权限
-     */
 
-    public static final String SYS_ALL_01 = "SYS_ALL_01";  //查看全专业角色
-    public static final String ADMIN = "admin";  //系统管理员
-    public static final String DM_004 = "DM_004";//运维管理部-专业工程师
-    public static final String DM_005 = "DM_005";//车辆部-专业工程师
-    public static final String DM_006 = "DM_006";//中铁通-专业工程师
-    public static final String DM_032 = "DM_032";//中车-专业工程师
-    public static final String DM_007 = "DM_007";//中铁通-生产调度
-    public static final String DM_012 = "DM_012";//中车-工班长
+    // ---------------------- 权限相关 ----------------------
+    // 查看全专业角色
+    public static final String SYS_ALL_01 = "SYS_ALL_01";
+    // 系统管理员
+    public static final String ADMIN = "admin";
+    public static final String DM = "DM";
+    //运维管理部-专业工程师
+    public static final String DM_004 = "DM_004";
+    //车辆部-专业工程师
+    public static final String DM_005 = "DM_005";
+    //中铁通-专业工程师
+    public static final String DM_006 = "DM_006";
+    //中铁通-生产调度
+    public static final String DM_007 = "DM_007";
+    //中车-工班长
+    public static final String DM_012 = "DM_012";
     public static final String DM_013 = "DM_013";
-    public static final String DM_051 = "DM_051";//中铁通-工班长
-    public static final String DM_037 = "DM_037";//设备工程师
-    public static final String DM_045 = "DM_045";//工程车工程师
-    public static final String ZCJD = "ZCJD";//中车-检调
-    public static final String DM_048 = "DM_048";//中车-生产调度
-    public static final String ZC_SHFW = "ZC_SHFW";//中车-售后服务站
-    public static final String ZC_JX = "100000044";//中车-检修班ID
-    public static final String ZC = "温州中车四方轨道车辆有限公司";//中车
-    public static final String ZTT = "中铁通轨道运营有限公司";//中铁通
+    //中车-专业工程师
+    public static final String DM_032 = "DM_032";
+    //设备工程师
+    public static final String DM_037 = "DM_037";
+    //工程车工程师
+    public static final String DM_045 = "DM_045";
+    //中车-生产调度
+    public static final String DM_048 = "DM_048";
+    //中铁通-工班长
+    public static final String DM_051 = "DM_051";
+    //OCC调度
+    public static final String DM_052 = "DM_052";
+    //中车-检调
+    public static final String ZCJD = "ZCJD";
+    //中车-售后服务站
+    public static final String ZC_SHFW = "ZC_SHFW";
+    //中车-检修班ID
+    public static final String ZC_JX = "100000044";
+    //中车
+    public static final String ZC = "温州中车四方轨道车辆有限公司";
+    //中铁通
+    public static final String ZTT = "中铁通轨道运营有限公司";
 
     /**
      * 代办/待阅
      */
     public static final String TODO_GENERAL_SURVEY =  "收到列车号为:%s、完成时间为:%s的普车技改台账，请及时查看";
     public static final String TODO_GD_TPL =  "收到工单编号为:%s的%s工单，请及时办理";
-
+    public static final String TODO_GD_OCC =  "收到工单编号为:%s的%s工单，请及时查看";
 
     public static final String EQUIPMENT_ROOM_CODE_0 = "R100000";
 

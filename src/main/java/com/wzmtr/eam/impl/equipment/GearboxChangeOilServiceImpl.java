@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -85,6 +86,7 @@ public class GearboxChangeOilServiceImpl implements GearboxChangeOilService {
                 req.setDeleteFlag("0");
                 req.setRecCreator(TokenUtils.getCurrentPersonId());
                 req.setRecCreateTime(DateUtils.getCurrentTime());
+                req.setTotalMiles(new BigDecimal(reqDTO.getTotalMiles()));
                 temp.add(req);
             }
         }

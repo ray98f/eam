@@ -86,6 +86,11 @@ public class EquipmentReqDTO {
     @ApiModelProperty(value = "是否为特殊设备 10 20")
     private String specialEquipFlag;
     /**
+     * 是否为其他设备 10 20
+     */
+    @ApiModelProperty(value = "是否为其他设备 10 20")
+    private String otherEquipFlag;
+    /**
      * 设备来源
      */
     @ApiModelProperty(value = "设备来源")

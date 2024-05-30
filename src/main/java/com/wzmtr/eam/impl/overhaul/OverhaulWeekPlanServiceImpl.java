@@ -286,7 +286,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "送审失败！流程提交失败。");
             } else {
-                overTodoService.insertTodoWithUserList(userIds, "收到一条检修周计划编号为：" + weekPlanCode + "的审批流程", overhaulWeekPlanReqDTO.getRecId(), weekPlanCode, "检修周计划审核", "?", currentPersonId, null, BpmnFlowEnum.ORDER_PLAN_SUBMIT.value());
+                overTodoService.insertTodoWithUserList(userIds, "收到一条检修周计划编号为：" + weekPlanCode + "的审批流程",
+                        overhaulWeekPlanReqDTO.getRecId(), weekPlanCode, "检修周计划审核", "overhaulWeekPlan",
+                        currentPersonId, null, BpmnFlowEnum.OVERHAUL_WEEK_PLAN_SUBMIT.value());
                 overhaulWeekPlanReqDTO.setWorkFlowInstId(processId);
                 overhaulWeekPlanReqDTO.setTrialStatus("20");
                 // 记录日志
@@ -323,7 +325,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 //            triggerOne(overhaulWeekPlanReqDTO.getWeekPlanCode());
             String processId = overhaulWeekPlanReqDTO.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
-            overTodoService.overTodo(recId,opinion);
+            overTodoService.overTodo(recId, opinion, CommonConstants.ONE_STRING);
 
             //TODO
             //bpmnService.agree(taskId, opinion, null, "{\"id\":\"" + overhaulWeekPlanReqDTO.getWeekPlanCode() + "\"}", null);

@@ -136,6 +136,12 @@ public class DetectionController {
         return DataResponse.success();
     }
 
+    /**
+     * 导出检测记录明细
+     * @param detectionDetailExportReqDTO 传参
+     * @param response response
+     * @throws IOException 异常
+     */
     @PostMapping("/detail/export")
     @ApiOperation(value = "导出检测记录明细")
     public void exportDetectionDetail(@RequestBody DetectionDetailExportReqDTO detectionDetailExportReqDTO,
