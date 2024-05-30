@@ -24,9 +24,12 @@ import java.util.List;
 @Repository
 public interface FaultQueryMapper {
 
-    Page<FaultDetailResDTO> query(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req, List<String> majors);
+    Page<FaultDetailResDTO> query(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors);
 
-    Page<FaultDetailResDTO> queryByUser(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req, List<String> majors, String userId, String officeAreaId);
+    List<FaultDetailResDTO> queryByEngineer(List<String> majors);
+
+    Page<FaultDetailResDTO> queryByUser(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors,
+                                        String userId, String officeAreaId, String type);
 
     List<FaultDetailResDTO> queryLimit(String userDept, List<String> majors);
 
@@ -57,8 +60,20 @@ public interface FaultQueryMapper {
      */
     List<FaultDetailResDTO> listZtt(@Param("req") FaultQueryDetailReqDTO req);
 
+    /**
+     * 根据故障编号和工单编号获取故障信息
+     * @param faultNo 故障编号
+     * @param faultWorkNo 工单编号
+     * @return 故障信息
+     */
     FaultInfoDO queryOneFaultInfo(String faultNo, String faultWorkNo);
 
+    /**
+     * 根据故障编号和工单编号获取工单信息
+     * @param faultNo 故障编号
+     * @param faultWorkNo 工单编号
+     * @return 工单信息
+     */
     FaultOrderDO queryOneFaultOrder(String faultNo, String faultWorkNo);
 
     List<String> queryOrderStatus(@Param("reqDTO") SidEntity reqDTO);
@@ -70,5 +85,14 @@ public interface FaultQueryMapper {
     Page<ConstructionResDTO> construction(Page<ConstructionResDTO> of, @Param("faultWorkNo") String faultWorkNo);
 
     Page<ConstructionResDTO> cancellation(Page<ConstructionResDTO> of, @Param("faultWorkNo") String faultWorkNo);
+
+    /**
+     * 获取时间范围内系统编号故障数量
+     * @param subjectCode 系统编号
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 故障数量
+     */
+    Long getSubjectFaultNum(String subjectCode, String startTime, String endTime);
 
 }

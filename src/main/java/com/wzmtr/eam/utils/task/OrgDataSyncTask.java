@@ -30,39 +30,9 @@ public class OrgDataSyncTask {
     @Value("${local.data-sync}")
     private String dataSync;
 
-    //@Scheduled(cron = "0 30 1 * * ?")
-    @Transactional(rollbackFor = Exception.class)
-    public void syncPerson() {
-        if (CommonConstants.OFF.equals(dataSync)) {
-            return;
-        }
-        String syncPersonUrl = "/mdmSync/syncAllPerson";
-        log.info("人员信息同步：" + localUrl + syncPersonUrl);
-        mdmSyncService.syncAllPerson();
-    }
-
-   // @Scheduled(cron = "0 50 1 * * ?")
-    @Transactional(rollbackFor = Exception.class)
-    public void syncAllSuppContact() {
-        if (CommonConstants.OFF.equals(dataSync)) {
-            return;
-        }
-        String syncSuppContactUrl = "/mdmSync/syncAllSuppContact";
-        log.info("人员信息同步：" + localUrl + syncSuppContactUrl);
-        mdmSyncService.syncAllSuppContact();
-    }
-
-    //@Scheduled(cron = "0 0 2 * * ?")
-    @Transactional(rollbackFor = Exception.class)
-    public void syncPersonPlus() {
-        if (CommonConstants.OFF.equals(dataSync)) {
-            return;
-        }
-        String syncPersonPlusUrl = "/mdmSync/syncPersonPlus";
-        log.info("人员附加信息同步：" + localUrl + syncPersonPlusUrl);
-        mdmSyncService.syncPersonPlus();
-    }
-
+    /**
+     * 部门信息同步
+     */
     @Scheduled(cron = "0 0 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncOrg() {
@@ -74,6 +44,9 @@ public class OrgDataSyncTask {
         mdmSyncService.syncAllOrg();
     }
 
+    /**
+     * 供应商信息同步
+     */
     @Scheduled(cron = "0 10 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncSuppOrg() {
@@ -85,6 +58,9 @@ public class OrgDataSyncTask {
         mdmSyncService.syncSuppOrg();
     }
 
+    /**
+     * 外部部门信息同步
+     */
     @Scheduled(cron = "0 20 1 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncExtraOrg() {
@@ -96,14 +72,71 @@ public class OrgDataSyncTask {
         mdmSyncService.syncAllExtraOrg();
     }
 
-    @Scheduled(cron = "0 30 2 * * ?")
+    /**
+     * 基础数据部门名称同步
+     */
+    @Scheduled(cron = "0 30 1 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void syncSysOrgName() {
+        if (CommonConstants.OFF.equals(dataSync)) {
+            return;
+        }
+        mdmSyncService.syncSysOrgName();
+    }
+
+    /**
+     * 人员信息同步
+     */
+    @Scheduled(cron = "0 40 1 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void syncPerson() {
+        if (CommonConstants.OFF.equals(dataSync)) {
+            return;
+        }
+        String syncPersonUrl = "/mdmSync/syncAllPerson";
+        log.info("人员信息同步：" + localUrl + syncPersonUrl);
+        mdmSyncService.syncAllPerson();
+    }
+
+    /**
+     * 外部单位人员信息同步
+     */
+    @Scheduled(cron = "0 0 2 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void syncAllSuppContact() {
+        if (CommonConstants.OFF.equals(dataSync)) {
+            return;
+        }
+        String syncSuppContactUrl = "/mdmSync/syncAllSuppContact";
+        log.info("外部单位人员信息同步：" + localUrl + syncSuppContactUrl);
+        mdmSyncService.syncAllSuppContact();
+    }
+
+    /**
+     * 人员附加信息同步
+     */
+    @Scheduled(cron = "0 10 2 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void syncPersonPlus() {
+        if (CommonConstants.OFF.equals(dataSync)) {
+            return;
+        }
+        String syncPersonPlusUrl = "/mdmSync/syncPersonPlus";
+        log.info("人员附加信息同步：" + localUrl + syncPersonPlusUrl);
+        mdmSyncService.syncPersonPlus();
+    }
+
+    /**
+     * 岗位信息同步
+     */
+    @Scheduled(cron = "0 20 2 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void syncEmpJobInfo() {
         if (CommonConstants.OFF.equals(dataSync)) {
             return;
         }
         String syncEmpJobUrl = "/mdmSync/syncAllEmpJob";
-        log.info("人员岗位信息同步：" + localUrl + syncEmpJobUrl);
+        log.info("岗位信息同步：" + localUrl + syncEmpJobUrl);
         mdmSyncService.syncAllEmpJob();
     }
 

@@ -17,7 +17,12 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -83,18 +88,6 @@ public class OtherEquipController {
     }
 
     /**
-     * 导入其他设备台账
-     * @param file 文件
-     * @return 成功状态
-     */
-    @PostMapping("/import")
-    @ApiOperation(value = "导入其他设备台账")
-    public DataResponse<T> importOtherEquip(@RequestParam MultipartFile file) throws ParseException {
-        otherEquipService.importOtherEquip(file);
-        return DataResponse.success();
-    }
-
-    /**
      * 编辑其他设备台账
      * @param otherEquipReqDTO 其他设备台账信息
      * @return 成功状态
@@ -103,6 +96,19 @@ public class OtherEquipController {
     @ApiOperation(value = "编辑其他设备台账")
     public DataResponse<T> modifyOtherEquip(@RequestBody OtherEquipReqDTO otherEquipReqDTO) {
         otherEquipService.modifyOtherEquip(otherEquipReqDTO);
+        return DataResponse.success();
+    }
+
+    /**
+     * 导入其他设备台账
+     * @param file 文件
+     * @return 成功
+     * @throws ParseException 异常
+     */
+    @PostMapping("/import")
+    @ApiOperation(value = "导入其他设备台账")
+    public DataResponse<T> importOtherEquip(@RequestParam MultipartFile file) throws ParseException {
+        otherEquipService.importOtherEquip(file);
         return DataResponse.success();
     }
 

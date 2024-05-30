@@ -1,6 +1,7 @@
 package com.wzmtr.eam.utils;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
@@ -20,6 +21,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +32,11 @@ import java.util.Objects;
  * @date 2023/12/06
  */
 public class EasyExcelUtils {
+
+    /**
+     * 这两条用来校验表头信息
+     */
+    private List<String> headList = new ArrayList();
 
     /**
      * 设置excel样式
@@ -91,6 +98,30 @@ public class EasyExcelUtils {
     }
 
     /**
+     * 表头添加标题
+     * @param name 名称
+     * @param headClass 对象类型
+     * @return 表头
+     */
+    public static List<List<String>> getItemHead(String name, Class<?> headClass) {
+        // 反射获取@ExcelProperty注解字段
+        List<List<String>> head = new ArrayList<>();
+        Field[] fields = headClass.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(ExcelProperty.class)) {
+                ExcelProperty fieldAnnotation = field.getAnnotation(ExcelProperty.class);
+                // 取第一个字符串
+                String headName = fieldAnnotation.value()[0];
+                List<String> head0 = new ArrayList<>();
+                head0.add(name);
+                head0.add(headName);
+                head.add(head0);
+            }
+        }
+        return head;
+    }
+
+    /**
      * 普通导出
      * @param response 响应
      * @param name     名称
@@ -101,8 +132,9 @@ public class EasyExcelUtils {
         if (!list.isEmpty()) {
             setResponse(response, name);
             OutputStream outputStream = response.getOutputStream();
-            EasyExcel.write(outputStream, list.get(0).getClass())
-                    .sheet(name)
+            Class<?> objectClass = list.get(0).getClass();
+            EasyExcel.write(outputStream, objectClass)
+                    .sheet(name).head(getItemHead(name, objectClass))
                     .registerWriteHandler(new CustomCellWriteWidthConfig())
                     .registerWriteHandler(EasyExcelUtils.getStyleStrategy())
                     .doWrite(list);
@@ -118,7 +150,7 @@ public class EasyExcelUtils {
     public static <T> List<T> read(MultipartFile file, Class<T> head) {
         checkFileFormat(file);
         try {
-            return checkData(EasyExcel.read(file.getInputStream(), head, null).doReadAllSync());
+            return checkData(EasyExcel.read(file.getInputStream(), head, null).doReadAllSync(), CommonConstants.ONE_STRING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -134,7 +166,7 @@ public class EasyExcelUtils {
     public static <T> List<T> read(MultipartFile file, Class<T> head, Integer sheetNo) {
         checkFileFormat(file);
         try {
-            return checkData(EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync());
+            return checkData(EasyExcel.read(file.getInputStream(), head, null).sheet(sheetNo).doReadSync(), CommonConstants.TWO_STRING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -160,19 +192,20 @@ public class EasyExcelUtils {
      * @return 导入数据
      * @param <T> 泛型
      */
-    private static <T> List<T> checkData(List<T> list) {
-        if (StringUtils.isEmpty(list)) {
+    private static <T> List<T> checkData(List<T> list, String type) {
+        if (StringUtils.isEmpty(list) && CommonConstants.ONE_STRING.equals(type)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "导入空模板，请填写数据后导入");
-        }
-        boolean bool = true;
-        for (T t : list) {
-            bool = allFieldsNull(t);
-            if (!bool) {
-                break;
+        } else {
+            boolean bool = true;
+            for (T t : list) {
+                bool = allFieldsNull(t);
+                if (!bool) {
+                    break;
+                }
             }
-        }
-        if (bool) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "导入模板错误，请检查模板");
+            if (bool) {
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "导入模板错误，请检查模板");
+            }
         }
         return list;
     }

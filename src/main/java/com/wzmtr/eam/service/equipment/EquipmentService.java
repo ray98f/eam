@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
@@ -35,6 +36,24 @@ public interface EquipmentService {
             String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture);
 
     EquipmentResDTO getEquipmentDetail(String id);
+
+    /**
+     * 新增设备台账
+     * @param equipmentReqDTO 设备台账信息
+     */
+    void addEquipment(EquipmentReqDTO equipmentReqDTO);
+
+    /**
+     * 编辑设备台账
+     * @param equipmentReqDTO 设备台账信息
+     */
+    void modifyEquipment(EquipmentReqDTO equipmentReqDTO);
+
+    /**
+     * 删除设备台账
+     * @param baseIdsEntity ids
+     */
+    void deleteEquipment(BaseIdsEntity baseIdsEntity);
 
     void importEquipment(MultipartFile file);
 

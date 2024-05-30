@@ -2,11 +2,24 @@ package com.wzmtr.eam.service.bpmn;
 
 import java.util.List;
 
+/**
+ * 待办
+ * @author  Ray
+ * @version 1.0
+ * @date 2024/03/30
+ */
 public interface OverTodoService {
 
-    void overTodo(String businessRecId, String auditOpinion);
+    /**
+     * 完成待办
+     * @param businessRecId 业务id
+     * @param auditOpinion 意见
+     * @param type 搜索id类型 1 todoId 2 relateId
+     */
+    void overTodo(String businessRecId, String auditOpinion, String type);
 
     /**
+     * 推送消息
      * @param taskTitle  待办标题
      * @param businessRecId 业务表主键
      * @param businessNo 业务编号
@@ -17,7 +30,8 @@ public interface OverTodoService {
      * @param flowId 流程Key 用于前端识别
      */
 
-    void insertTodo(String taskTitle, String businessRecId, String businessNo, String stepUserId, String stepName, String taskUrl, String lastStepUserId,String flowId);
+    void insertTodo(String taskTitle, String businessRecId, String businessNo, String stepUserId,
+                    String stepName, String taskUrl, String lastStepUserId,String flowId);
 
     /**
      * 根据用户权限推送消息
@@ -28,15 +42,54 @@ public interface OverTodoService {
      * @param stepName 阶段名称
      * @param taskUrl url
      * @param lastStepUserId 上一步用户id
+     * @param flowId 流程id
      */
     void insertTodoWithUserGroup(String taskTitle, String businessRecId, String businessNo, String stepUserGroup,
                                  String stepName, String taskUrl, String lastStepUserId,String flowId);
 
-    void insertTodoWithUserOrgan(String taskTitle, String businessRecId, String businessNo, String organ,
-                                 String stepName, String taskUrl, String lastStepUserId, String flowId);
+    /**
+     * 根据部门推送消息（相同todoId）
+     * @param taskTitle 标题
+     * @param businessRecId recId
+     * @param businessNo 编号
+     * @param organ 部门
+     * @param stepName 阶段名称
+     * @param taskUrl url
+     * @param lastStepUserId 上一步用户id
+     * @param flowId 流程id
+     */
+    void insertTodoWithUserOrgSameTodoId(String taskTitle, String businessRecId, String businessNo, String organ,
+                                         String stepName, String taskUrl, String lastStepUserId, String flowId);
 
-    void insertTodoWithUserRoleAndOrg(String taskTitle, String businessRecId, String businessNo, String roleId,
-                                      String stepOrg, String stepName, String taskUrl, String lastStepUserId, String content, String flowId);
+    /**
+     * 根据部门推送消息（不同todoId）
+     * @param taskTitle 标题
+     * @param businessRecId recId
+     * @param organ 部门
+     * @param stepName 阶段名称
+     * @param taskUrl url
+     * @param lastStepUserId 上一步用户id
+     * @param flowId 流程id
+     */
+    void insertTodoWithUserOrgDiffTodoId(String taskTitle, String businessRecId, String organ, String stepName,
+                                         String taskUrl, String lastStepUserId, String flowId);
+
+    /**
+     * 根据用户权限和组织结构推送消息
+     * @param taskTitle 标题
+     * @param businessRecId recId
+     * @param businessNo 编号
+     * @param roleId 权限id
+     * @param stepOrg 组织机构
+     * @param stepName 阶段名称
+     * @param taskUrl url
+     * @param lastStepUserId 上一步用户id
+     * @param content 内容
+     * @param flowId 流程id
+     */
+    void insertTodoWithUserRoleAndOrg(String taskTitle, String businessRecId, String businessNo,
+                                      String roleId, String stepOrg, String stepName, String taskUrl,
+                                      String lastStepUserId, String content, String flowId);
 
     /**
      * 根据用户权限推和阶段组织结构推送消息
@@ -52,31 +105,37 @@ public interface OverTodoService {
      * @param lineCode 线路编号
      * @param orgType 组织机构类别
      * @param content 内容
+     * @param flowId 流程id
      */
     void insertTodoWithUserGroupAndAllOrg(String taskTitle, String businessRecId, String businessNo,
                                           String stepUserGroup, String stepOrg, String stepName,
-                                          String taskUrl, String lastStepUserId, String majorCode, String lineCode, String orgType, String content,String flowId);
+                                          String taskUrl, String lastStepUserId, String majorCode,
+                                          String lineCode, String orgType, String content, String flowId);
 
+    /**
+     * 取消代办
+     * @param businessRecId recId
+     */
     void cancelTodo(String businessRecId);
 
     /**
-     *
-     * @param userIds
-     * @param taskTitle
-     * @param businessRecId
-     * @param businessNo
-     * @param stepName
-     * @param taskUrl
-     * @param lastStepUserId
-     * @param content
-     * @param flowId
+     * 根据用户列表推送消息
+     * @param userIds 用户列表
+     * @param taskTitle 标题
+     * @param businessRecId recId
+     * @param businessNo 编号
+     * @param stepName 阶段名称
+     * @param taskUrl url
+     * @param lastStepUserId 上一步用户id
+     * @param content 内容
+     * @param flowId 流程id
      */
     void insertTodoWithUserList(List<String> userIds, String taskTitle, String businessRecId, String businessNo,
-                                String stepName, String taskUrl, String lastStepUserId, String content,String flowId);
+                                String stepName, String taskUrl, String lastStepUserId, String content, String flowId);
 
     /**
      * 完成该业务编号下的所有待办 更新状态为已办
-     * @param bizNo
+     * @param bizNo 编号
      */
     void overTodo(String bizNo);
 }

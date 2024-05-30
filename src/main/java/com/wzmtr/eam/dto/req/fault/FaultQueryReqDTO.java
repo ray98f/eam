@@ -53,6 +53,8 @@ public class FaultQueryReqDTO extends PageReqDTO {
     private String recStatus;
     @ApiModelProperty(value = "故障状态")
     private String orderStatus;
+    @ApiModelProperty(value = "故障状态列表")
+    private List<String> orderStatusList;
     @ApiModelProperty(value = "分类-dm.DispatcherType")
     private String typeCode;
     @ApiModelProperty(value = "故障紧急程度")

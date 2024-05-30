@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.res.basic.OrgTypeResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelOrgTypeResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.OrgTypeMapper;
@@ -66,25 +67,30 @@ public class OrgTypeServiceImpl implements OrgTypeService {
 
     @Override
     public void addOrgType(OrgTypeReqDTO orgTypeReqDTO) {
-        Integer result = orgTypeMapper.selectOrgTypeIsExist(orgTypeReqDTO);
-        if (result > 0) {
-            throw new CommonException(ErrorCode.DATA_EXIST);
+        String orgId = organizationMapper.getIdByAreaId(orgTypeReqDTO.getOrgCode());
+        if (StringUtils.isNotEmpty(orgId)) {
+            List<String> ids = organizationMapper.downRecursionId(orgId);
+            if (StringUtils.isNotEmpty(ids)) {
+                List<SysOffice> offices = organizationMapper.getAreaIdsByIds(ids);
+                orgTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+                orgTypeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+                for (SysOffice office : offices) {
+                    orgTypeReqDTO.setOrgCode(office.getAreaId());
+                    orgTypeReqDTO.setOrgName(office.getName());
+                    Integer result = orgTypeMapper.selectOrgTypeIsExist(orgTypeReqDTO);
+                    if (result > 0) {
+                        continue;
+                    }
+                    orgTypeReqDTO.setRecId(TokenUtils.getUuId());
+                    orgTypeMapper.addOrgType(orgTypeReqDTO);
+                }
+            }
         }
-        orgTypeReqDTO.setRecId(TokenUtils.getUuId());
-        orgTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        orgTypeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        orgTypeMapper.addOrgType(orgTypeReqDTO);
     }
 
     @Override
     public void modifyOrgType(OrgTypeReqDTO orgTypeReqDTO) {
-        Integer result = orgTypeMapper.selectOrgTypeIsExist(orgTypeReqDTO);
-        if (result > 0) {
-            throw new CommonException(ErrorCode.DATA_EXIST);
-        }
-        orgTypeReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        orgTypeReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        orgTypeMapper.modifyOrgType(orgTypeReqDTO);
+        addOrgType(orgTypeReqDTO);
     }
 
     @Override

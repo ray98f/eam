@@ -38,6 +38,9 @@ public class EquipmentSiftReqDTO {
     @ApiModelProperty(value = "是否为特殊设备 10 20")
     private String specialEquipFlag;
 
+    @ApiModelProperty(value = "是否为其他设备 10 20")
+    private String otherEquipFlag;
+
     @ApiModelProperty(value = "品牌")
     private String brand;
 

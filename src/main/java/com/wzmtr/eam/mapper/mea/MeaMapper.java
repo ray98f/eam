@@ -19,7 +19,7 @@ public interface MeaMapper {
 
     Page<MeaResDTO> pageMea(Page<MeaResDTO> page, MeaListReqDTO req);
 
-    MeaResDTO getMeaDetail(String id);
+    MeaResDTO getMeaDetail(String id, String equipCode);
 
     void importMea(List<MeaReqDTO> list);
 

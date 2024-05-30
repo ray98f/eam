@@ -119,8 +119,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public List<OrganMajorLineType> getWorkerGroupBySubjectAndLine(String equipName) {
         List<EquipmentResDTO> equipmentRes = equipmentMapper.queryMajor(equipName);
-        EquipmentResDTO equipmentResDTO = equipmentRes.get(0);
-        return orgMajorMapper.getWorkerGroupBySubjectAndLine(equipmentResDTO.getMajorCode(),equipmentResDTO.getUseLineNo(),"10");
+        if (StringUtils.isNotEmpty(equipmentRes)) {
+            EquipmentResDTO equipmentResDTO = equipmentRes.get(0);
+            return orgMajorMapper.getWorkerGroupBySubjectAndLine(equipmentResDTO.getMajorCode(),
+                    equipmentResDTO.getUseLineNo(),"10");
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -133,9 +138,28 @@ public class OrganizationServiceImpl implements OrganizationService {
         extraRootList.add(companyStructureTree);
         List<String> ids = organizationMapper.downRecursionId(companyStructureTree.getId());
         ids.remove(companyStructureTree.getId());
-        List<CompanyStructureTree> extraBodyList = organizationMapper.listZttExtraBodyList(ids);
+        List<CompanyStructureTree> extraBodyList = organizationMapper.listExternalUnitsBodyList(ids);
         CompanyTreeUtils extraTree = new CompanyTreeUtils(extraRootList, extraBodyList);
         return extraTree.getTree();
+    }
+
+    @Override
+    public List<CompanyStructureTree> listDispatchCompanyStructure(String majorCode) {
+        if (!CommonConstants.ZC_LIST.contains(majorCode)) {
+            return listZttCompanyStructure();
+        } else {
+            CompanyStructureTree companyStructureTree = organizationMapper.getZcRoot();
+            if (Objects.isNull(companyStructureTree)) {
+                throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+            }
+            List<CompanyStructureTree> extraRootList = new ArrayList<>();
+            extraRootList.add(companyStructureTree);
+            List<String> ids = organizationMapper.downRecursionId(companyStructureTree.getId());
+            ids.remove(companyStructureTree.getId());
+            List<CompanyStructureTree> extraBodyList = organizationMapper.listExternalUnitsBodyList(ids);
+            CompanyTreeUtils extraTree = new CompanyTreeUtils(extraRootList, extraBodyList);
+            return extraTree.getTree();
+        }
     }
 
 }

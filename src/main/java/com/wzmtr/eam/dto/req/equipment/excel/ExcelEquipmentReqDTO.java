@@ -34,6 +34,8 @@ public class ExcelEquipmentReqDTO {
     private String equipTypeName;
     @ExcelProperty(value = "是否特种设备")
     private String specialEquipFlag;
+    @ExcelProperty(value = "是否其他设备")
+    private String otherEquipFlag;
     @ExcelProperty(value = "生产厂家")
     private String manufacture;
     @ExcelProperty(value = "型号规格")

@@ -106,4 +106,29 @@ public class FaultFollowReportReqDTO {
      */
     @ApiModelProperty(value = "修改时间")
     private String recReviseTime;
+    /**
+     * 专业工程师报告审核人工号
+     */
+    @ApiModelProperty(value = "报告审核人工号")
+    private String followExamineUserId;
+    /**
+     * 专业工程师报告审核人
+     */
+    @ApiModelProperty(value = "报告审核人")
+    private String followExamineUserName;
+    /**
+     * 专业工程师审核时间
+     */
+    @ApiModelProperty(value = "审核时间")
+    private String followExamineTime;
+    /**
+     * 专业工程师审核意见
+     */
+    @ApiModelProperty(value = "审核意见")
+    private String followExamineOpinion;
+    /**
+     * 专业工程师审核状态 0待审核 1通过 2驳回
+     */
+    @ApiModelProperty(value = "审核状态 0待审核 1通过 2驳回")
+    private String followExamineStatus;
 }

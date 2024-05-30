@@ -339,11 +339,13 @@
             #{tpl.lineName,jdbcType=VARCHAR},
             ' ',
             ' ',
-            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{tpl.subjectName} and NODE_LEVEL=1),
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.subjectName} AND NODE_LEVEL=1),
             #{tpl.subjectName,jdbcType=VARCHAR},
-            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{tpl.systemName} and NODE_LEVEL=2),
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.systemName} AND NODE_LEVEL=2 AND
+            PARENT_NODE_REC_ID=(SELECT REC_ID FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.subjectName} AND NODE_LEVEL=1)),
             #{tpl.systemName,jdbcType=VARCHAR},
-            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{tpl.equipTypeName} and NODE_LEVEL=3),
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.equipTypeName} AND NODE_LEVEL=3 AND
+            PARENT_NODE_REC_ID=(SELECT REC_ID FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{tpl.systemName} AND NODE_LEVEL=2)),
             #{tpl.equipTypeName,jdbcType=VARCHAR},
             #{tpl.trialStatus,jdbcType=VARCHAR},
             #{tpl.workFlowInstId,jdbcType=VARCHAR},
@@ -415,6 +417,57 @@
         EXT5	as "ext5" <!-- 扩展字段5 -->
         FROM T_OVERHAUL_TPL_DETAIL
         WHERE 1=1 AND TEMPLATE_ID=#{templateId} and DELETE_FLAG='0'
+        order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
+    </select>
+
+    <select id="exportOverhaulTplDetail" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulTplDetailResDTO">
+        SELECT
+        REC_ID	as "recId",  <!-- 记录ID -->
+        TEMPLATE_ID	as "templateId",  <!-- 模板编号 -->
+        TEMPLATE_NAME	as "templateName",  <!-- 模板名称 -->
+        MODEL_SEQUENCE	as "modelSequence",  <!-- 模块顺序 -->
+        MODEL_NAME	as "modelName",  <!-- 模块名称 -->
+        TRAIN_NUMBER	as "trainNumber",  <!-- 车组号 -->
+        ITEM_NAME	as "itemName",  <!-- 检修项 -->
+        ITEM_TYPE	as "itemType",  <!-- 项目类型 -->
+        INSPECT_ITEM_VALUE	as "inspectItemValue",  <!-- 项目值 -->
+        MAX_VALUE	as "maxValue",  <!-- 最大参考值 -->
+        MIN_VALUE	as "minValue",  <!-- 最小参考值 -->
+        ITEM_UNIT	as "itemUnit",  <!-- 参考值单位 -->
+        DEFAULT_VALUE	as "defaultValue",  <!-- 默认值 -->
+        ITEM_STATE	as "itemState",  <!-- 启用状态 -->
+        DEFAULT_FLAG	as "defaultFlag",  <!-- 默认标识 -->
+        SEQUENCE_ID	as "sequenceId",  <!-- 顺序号 -->
+        REPAIR_TYPE	as "repairType",  <!-- 修程 -->
+        TIME_PERIOD	as "timePeriod",  <!-- 时间周期 -->
+        MILEAGE_PERIOD	as "mileagePeriod",  <!-- 里程周期 -->
+        REC_CREATOR	as "recCreator",  <!-- 记录创建者 -->
+        REC_CREATE_TIME	as "recCreateTime",  <!-- 记录创建时间 -->
+        REC_REVISOR	as "recRevisor",  <!-- 记录修改者 -->
+        REC_REVISE_TIME	as "recReviseTime",  <!-- 记录修改时间 -->
+        REC_DELETOR	as "recDeletor",  <!-- 记录删除者 -->
+        REC_DELETE_TIME	as "recDeleteTime",  <!-- 记录删除时间 -->
+        DELETE_FLAG	as "deleteFlag",  <!-- 删除标记 -->
+        ARCHIVE_FLAG	as "archiveFlag",  <!-- 归档标记 -->
+        REMARK	as "remark",  <!-- 说明 -->
+        EXT1	as "ext1",  <!-- 扩展字段1 -->
+        EXT2	as "ext2",  <!-- 扩展字段2 -->
+        EXT3	as "ext3",  <!-- 扩展字段3 -->
+        EXT4	as "ext4",  <!-- 扩展字段4 -->
+        EXT5	as "ext5" <!-- 扩展字段5 -->
+        FROM T_OVERHAUL_TPL_DETAIL
+        WHERE 1=1
+        <if test="templateId!=null and templateId!=''">
+            AND TEMPLATE_ID=#{templateId}
+        </if>
+        <if test="ids!=null and ids.size()>0">
+            AND REC_ID IN (
+            <foreach collection="ids" index="index" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+        and DELETE_FLAG='0'
         order by TO_NUMBER(NVL(TRIM(MODEL_SEQUENCE),0)),TO_NUMBER(NVL(TRIM(SEQUENCE_ID),0)),MODEL_NAME,ITEM_NAME asc
     </select>
 

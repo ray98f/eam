@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.overhaul;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.req.overhaul.*;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
@@ -25,6 +26,11 @@ public interface OverhaulOrderService {
      */
     Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO);
 
+    /**
+     * 获取检修工单详情
+     * @param id id
+     * @return 检修工单详情
+     */
     OverhaulOrderResDTO getOverhaulOrderDetail(String id);
 
     /**
@@ -63,11 +69,11 @@ public interface OverhaulOrderService {
 
     void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
-    void pageMaterial();
+    String pageMaterial(String orderCode);
 
     void receiveMaterial(HttpServletResponse response) throws IOException;
 
-    void returnMaterial();
+    void returnMaterial(HttpServletResponse response) throws IOException;
 
     Page<ConstructionResDTO> construction(String orderCode, PageReqDTO pageReqDTO);
 
@@ -148,5 +154,9 @@ public interface OverhaulOrderService {
 
     OverhaulStateOrderResDTO queryOrderInfo(String orderCode);
 
-    void upState(OverhaulUpStateReqDTO overhaulUpStateReqDTO);
+    /**
+     * 检修异常升级故障
+     * @param reqDTO 传参
+     */
+    void upState(FaultReportReqDTO reqDTO);
 }

@@ -73,6 +73,7 @@
         EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
         EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
         SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 特种设备标识 -->
+        OTHER_EQUIP_FLAG	as "otherEquipFlag",  <!-- 其他设备标识 -->
         SOURCE_KIND	as "sourceKind",  <!-- 设备来源 -->
         BOM_TYPE	as "bomType",  <!-- BOM类型 -->
         MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
@@ -135,7 +136,7 @@
 
     <select id="pageEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30'
+        FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30' AND DELETE_FLAG='0'
         <if test="equipCode!=null and equipCode!=''">
             and EQUIP_CODE like '%' || #{equipCode} || '%'
         </if>
@@ -179,7 +180,6 @@
             </foreach>
             )
         </if>
-
         <if test="systemCode!=null and systemCode!=''">
             and SYSTEM_CODE=#{systemCode}
         </if>
@@ -214,7 +214,7 @@
 
     <select id="allList" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30'
+        FROM T_EQUIPMENT WHERE 1=1 AND APPROVAL_STATUS='30' AND DELETE_FLAG='0'
         <if test="equipCode!=null and equipCode!=''">
             and EQUIP_CODE like '%' || #{equipCode} || '%'
         </if>
@@ -274,6 +274,7 @@
         t1.EQUIP_TYPE_CODE	as "equipTypeCode",  <!-- 设备分类代码 -->
         t1.EQUIP_TYPE_NAME	as "equipTypeName",  <!-- 设备分类名称 -->
         t1.SPECIAL_EQUIP_FLAG	as "specialEquipFlag",  <!-- 特种设备标识 -->
+        t1.OTHER_EQUIP_FLAG	as "otherEquipFlag",  <!-- 其他设备标识 -->
         t1.SOURCE_KIND	as "sourceKind",  <!-- 设备来源 -->
         t1.BOM_TYPE	as "bomType",  <!-- BOM类型 -->
         t1.MANUFACTURE	as "manufacture",  <!-- 生产厂家 -->
@@ -340,97 +341,482 @@
 
     <select id="getEquipmentDetailByCode" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE EQUIP_CODE=#{code}
+        FROM T_EQUIPMENT WHERE EQUIP_CODE=#{code} AND DELETE_FLAG='0'
     </select>
 
     <select id="getMaxCode" resultType="java.lang.String">
-        SELECT
-        <if test="type==1">
-            max(UNIT_NO)
-        </if>
-        <if test="type==2">
-            max(BATCH_NO)
-        </if>
-        <if test="type==3">
-            max(ASSET_NO)
-        </if>
-        <if test="type==4">
-            max(DEV_NO)
-        </if>
-        FROM T_BS_UNITCODE
+        SELECT max(EQUIP_CODE)
+        FROM T_EQUIPMENT
     </select>
 
-    <insert id="insertUnitCode">
-        INSERT INTO T_BS_UNITCODE (REC_ID,  <!-- 统一编号 -->
-        UNIT_NO,  <!-- 合一码,共计11位，以9开头 -->
-        BATCH_NO,  <!-- 物资编码(内),共计11位，以1开头 -->
-        ASSET_NO,  <!-- 资产编码(内),共计11位，以2开头 -->
-        DEV_NO,  <!-- 设备编码(内),共计11位，以8开头 -->
-        BATCH_STATUS,  <!-- 添加时为1，更新时为2资产或设备码,3同时有资产时和设备码时1 -->
-        ASSET_STATUS,  <!-- 添加时为1，更新时为2物资或设备码,3同时有物资时和设备码时2 -->
-        DEV_STATUS,  <!-- 添加时为1，更新时为2资产或物资码,3同时有资产时和物资码时3 -->
-        UNITNO_STATUS,  <!-- 记录已有物资，资产及设备状态数量,1有一个有码，2-有二个有码，3-全有码 -->
-        STATUS,  <!-- 缺省值为1,21设备被替换，22-资产被替换 23物资被替换 -->
-        REP_UNIT_NO,  <!-- 当STATUS=21,22,23时必须有值 -->
-        REMARK,  <!-- 备注 -->
-        EXT1,  <!-- 扩展字段1 -->
-        EXT2,  <!-- 扩展字段2 -->
-        EXT3,  <!-- 扩展字段3 -->
-        EXT4,  <!-- 扩展字段4 -->
-        EXT5,  <!-- 扩展字段5 -->
-        REC_CREATOR,  <!-- 记录创建者 -->
-        REC_CREATE_TIME,  <!-- 记录创建时间 -->
-        REC_REVISOR,  <!-- 记录修改者 -->
-        REC_REVISE_TIME,  <!-- 记录修改时间 -->
-        REC_DELETOR,  <!-- 记录删除者 -->
-        REC_DELETE_TIME,  <!-- 记录删除时间 -->
-        DELETE_FLAG,  <!-- 删除标记（0：正常（默认） 1：删除） -->
-        ARCHIVE_FLAG,  <!-- 归档标记（0：未归档（默认） 1：归档） -->
-        COM_STATUS,  <!-- 是否组合(0:否) -->
-        PRO_CODE,
-        PRO_NAME,
-        ORDER_NO,
-        ORDER_NAME,
-        SUPPLIER_ID,
-        SUPPLIER_NAME,
-        MAT_SPECIFI,
-        BRAND)
+    <insert id="addEquipment">
+        INSERT INTO T_EQUIPMENT (
+        REC_ID,
+        <if test="companyCode!=null and companyCode!=''">
+            COMPANY_CODE,
+        </if>
+        <if test="companyName!=null and companyName!=''">
+            COMPANY_NAME,
+        </if>
+        <if test="deptCode!=null and deptCode!=''">
+            DEPT_CODE,
+        </if>
+        <if test="deptName!=null and deptName!=''">
+            DEPT_NAME,
+        </if>
+        <if test="equipCode!=null and equipCode!=''">
+            EQUIP_CODE,
+        </if>
+        <if test="equipName!=null and equipName!=''">
+            EQUIP_NAME,
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            MAJOR_CODE,
+        </if>
+        <if test="majorName!=null and majorName!=''">
+            MAJOR_NAME,
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            SYSTEM_CODE,
+        </if>
+        <if test="systemName!=null and systemName!=''">
+            SYSTEM_NAME,
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            EQUIP_TYPE_CODE,
+        </if>
+        <if test="equipTypeName!=null and equipTypeName!=''">
+            EQUIP_TYPE_NAME,
+        </if>
+        <if test="specialEquipFlag!=null and specialEquipFlag!=''">
+            SPECIAL_EQUIP_FLAG,
+        </if>
+        <if test="otherEquipFlag!=null and otherEquipFlag!=''">
+            OTHER_EQUIP_FLAG,
+        </if>
+        <if test="sourceKind!=null and sourceKind!=''">
+            SOURCE_KIND,
+        </if>
+        <if test="bomType!=null and bomType!=''">
+            BOM_TYPE,
+        </if>
+        <if test="manufacture!=null and manufacture!=''">
+            MANUFACTURE,
+        </if>
+        <if test="orderNo!=null and orderNo!=''">
+            ORDER_NO,
+        </if>
+        <if test="orderName!=null and orderName!=''">
+            ORDER_NAME,
+        </if>
+        <if test="matSpecifi!=null and matSpecifi!=''">
+            MAT_SPECIFI,
+        </if>
+        <if test="brand!=null and brand!=''">
+            BRAND,
+        </if>
+        <if test="manufactureDate!=null and manufactureDate!=''">
+            MANUFACTURE_DATE,
+        </if>
+        <if test="manufactureNo!=null and manufactureNo!=''">
+            MANUFACTURE_NO,
+        </if>
+        <if test="startUseDate!=null and startUseDate!=''">
+            START_USE_DATE,
+        </if>
+        <if test="quantity!=null">
+            QUANTITY,
+        </if>
+        <if test="inAccountTime!=null and inAccountTime!=''">
+            IN_ACCOUNT_TIME,
+        </if>
+        <if test="pickNo!=null and pickNo!=''">
+            PICK_NO,
+        </if>
+        <if test="pickName!=null and pickName!=''">
+            PICK_NAME,
+        </if>
+        <if test="equipStatus!=null and equipStatus!=''">
+            EQUIP_STATUS,
+        </if>
+        <if test="sourceAppNo!=null and sourceAppNo!=''">
+            SOURCE_APP_NO,
+        </if>
+        <if test="sourceSubNo!=null and sourceSubNo!=''">
+            SOURCE_SUB_NO,
+        </if>
+        <if test="sourceRecId!=null and sourceRecId!=''">
+            SOURCE_REC_ID,
+        </if>
+        <if test="installDealer!=null and installDealer!=''">
+            INSTALL_DEALER,
+        </if>
+        <if test="docId!=null and docId!=''">
+            DOC_ID,
+        </if>
+        <if test="originLineNo!=null and originLineNo!=''">
+            ORIGIN_LINE_NO,
+        </if>
+        <if test="originLineName!=null and originLineName!=''">
+            ORIGIN_LINE_NAME,
+        </if>
+        <if test="originSegNo!=null and originSegNo!=''">
+            ORIGIN_SEG_NO,
+        </if>
+        <if test="originSegName!=null and originSegName!=''">
+            ORIGIN_SEG_NAME,
+        </if>
+        <if test="useLineNo!=null and useLineNo!=''">
+            USE_LINE_NO,
+        </if>
+        <if test="useLineName!=null and useLineName!=''">
+            USE_LINE_NAME,
+        </if>
+        <if test="useSegNo!=null and useSegNo!=''">
+            USE_SEG_NO,
+        </if>
+        <if test="useSegName!=null and useSegName!=''">
+            USE_SEG_NAME,
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            POSITION1_CODE,
+        </if>
+        <if test="position1Name!=null and position1Name!=''">
+            POSITION1_NAME,
+        </if>
+        <if test="position2Code!=null and position2Code!=''">
+            POSITION2_CODE,
+        </if>
+        <if test="position2Name!=null and position2Name!=''">
+            POSITION2_NAME,
+        </if>
+        <if test="position3!=null and position3!=''">
+            POSITION3,
+        </if>
+        <if test="positionRemark!=null and positionRemark!=''">
+            POSITION_REMARK,
+        </if>
+        <if test="totalMiles!=null and totalMiles!=''">
+            TOTAL_MILES,
+        </if>
+        <if test="remark!=null and remark!=''">
+            REMARK,
+        </if>
+        <if test="approvalStatus!=null and approvalStatus!=''">
+            APPROVAL_STATUS,
+        </if>
+        REC_CREATOR, REC_CREATE_TIME, DELETE_FLAG)
         VALUES (
-        #{recId,jdbcType=VARCHAR},
-        #{unitNo,jdbcType=VARCHAR},
-        #{batchNo,jdbcType=VARCHAR},
-        #{assetNo,jdbcType=VARCHAR},
-        #{devNo,jdbcType=VARCHAR},
-        #{batchStatus,jdbcType=NUMERIC},
-        #{assetStatus,jdbcType=NUMERIC},
-        #{devStatus,jdbcType=NUMERIC},
-        #{unitnoStatus,jdbcType=NUMERIC},
-        #{status,jdbcType=NUMERIC},
-        #{repUnitNo,jdbcType=VARCHAR},
-        #{remark,jdbcType=VARCHAR},
-        #{ext1,jdbcType=VARCHAR},
-        #{ext2,jdbcType=VARCHAR},
-        #{ext3,jdbcType=VARCHAR},
-        #{ext4,jdbcType=VARCHAR},
-        #{ext5,jdbcType=VARCHAR},
-        #{recCreator,jdbcType=VARCHAR},
-        #{recCreateTime,jdbcType=VARCHAR},
-        #{recRevisor,jdbcType=VARCHAR},
-        #{recReviseTime,jdbcType=VARCHAR},
-        #{recDeletor,jdbcType=VARCHAR},
-        #{recDeleteTime,jdbcType=VARCHAR},
-        '0',
-        #{archiveFlag,jdbcType=VARCHAR},
-        #{comStatus,jdbcType=NUMERIC},
-        #{proCode,jdbcType=VARCHAR},
-        #{proName,jdbcType=VARCHAR},
-        #{orderNo,jdbcType=VARCHAR},
-        #{orderName,jdbcType=VARCHAR},
-        #{supplierId,jdbcType=VARCHAR},
-        #{supplierName,jdbcType=VARCHAR},
-        #{matSpecifi,jdbcType=VARCHAR},
-        #{brand,jdbcType=VARCHAR})
+        SYS_GUID(),
+        <if test="companyCode!=null and companyCode!=''">
+            #{companyCode},
+        </if>
+        <if test="companyName!=null and companyName!=''">
+            #{companyName},
+        </if>
+        <if test="deptCode!=null and deptCode!=''">
+            #{deptCode},
+        </if>
+        <if test="deptName!=null and deptName!=''">
+            #{deptName},
+        </if>
+        <if test="equipCode!=null and equipCode!=''">
+            #{equipCode},
+        </if>
+        <if test="equipName!=null and equipName!=''">
+            #{equipName},
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            #{majorCode},
+        </if>
+        <if test="majorName!=null and majorName!=''">
+            #{majorName},
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            #{systemCode},
+        </if>
+        <if test="systemName!=null and systemName!=''">
+            #{systemName},
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            #{equipTypeCode},
+        </if>
+        <if test="equipTypeName!=null and equipTypeName!=''">
+            #{equipTypeName},
+        </if>
+        <if test="specialEquipFlag!=null and specialEquipFlag!=''">
+            #{specialEquipFlag},
+        </if>
+        <if test="sourceKind!=null and sourceKind!=''">
+            #{sourceKind},
+        </if>
+        <if test="bomType!=null and bomType!=''">
+            #{bomType},
+        </if>
+        <if test="manufacture!=null and manufacture!=''">
+            #{manufacture},
+        </if>
+        <if test="orderNo!=null and orderNo!=''">
+            #{orderNo},
+        </if>
+        <if test="orderName!=null and orderName!=''">
+            #{orderName},
+        </if>
+        <if test="matSpecifi!=null and matSpecifi!=''">
+            #{matSpecifi},
+        </if>
+        <if test="brand!=null and brand!=''">
+            #{brand},
+        </if>
+        <if test="manufactureDate!=null and manufactureDate!=''">
+            #{manufactureDate},
+        </if>
+        <if test="manufactureNo!=null and manufactureNo!=''">
+            #{manufactureNo},
+        </if>
+        <if test="startUseDate!=null and startUseDate!=''">
+            #{startUseDate},
+        </if>
+        <if test="quantity!=null">
+            #{quantity},
+        </if>
+        <if test="inAccountTime!=null and inAccountTime!=''">
+            #{inAccountTime},
+        </if>
+        <if test="pickNo!=null and pickNo!=''">
+            #{pickNo},
+        </if>
+        <if test="pickName!=null and pickName!=''">
+            #{pickName},
+        </if>
+        <if test="equipStatus!=null and equipStatus!=''">
+            #{equipStatus},
+        </if>
+        <if test="sourceAppNo!=null and sourceAppNo!=''">
+            #{sourceAppNo},
+        </if>
+        <if test="sourceSubNo!=null and sourceSubNo!=''">
+            #{sourceSubNo},
+        </if>
+        <if test="sourceRecId!=null and sourceRecId!=''">
+            #{sourceRecId},
+        </if>
+        <if test="installDealer!=null and installDealer!=''">
+            #{installDealer},
+        </if>
+        <if test="docId!=null and docId!=''">
+            #{docId},
+        </if>
+        <if test="originLineNo!=null and originLineNo!=''">
+            #{originLineNo},
+        </if>
+        <if test="originLineName!=null and originLineName!=''">
+            #{originLineName},
+        </if>
+        <if test="originSegNo!=null and originSegNo!=''">
+            #{originSegNo},
+        </if>
+        <if test="originSegName!=null and originSegName!=''">
+            #{originSegName},
+        </if>
+        <if test="useLineNo!=null and useLineNo!=''">
+            #{useLineNo},
+        </if>
+        <if test="useLineName!=null and useLineName!=''">
+            #{useLineName},
+        </if>
+        <if test="useSegNo!=null and useSegNo!=''">
+            #{useSegNo},
+        </if>
+        <if test="useSegName!=null and useSegName!=''">
+            #{useSegName},
+        </if>
+        <if test="position1Code!=null and position1Code!=''">
+            #{position1Code},
+        </if>
+        <if test="position1Name!=null and position1Name!=''">
+            #{position1Name},
+        </if>
+        <if test="position2Code!=null and position2Code!=''">
+            #{position2Code},
+        </if>
+        <if test="position2Name!=null and position2Name!=''">
+            #{position2Name},
+        </if>
+        <if test="position3!=null and position3!=''">
+            #{position3},
+        </if>
+        <if test="positionRemark!=null and positionRemark!=''">
+            #{positionRemark},
+        </if>
+        <if test="totalMiles!=null and totalMiles!=''">
+            #{totalMiles},
+        </if>
+        <if test="remark!=null and remark!=''">
+            #{remark},
+        </if>
+        <if test="approvalStatus!=null and approvalStatus!=''">
+            #{approvalStatus},
+        </if>
+        #{recCreator}, #{recCreateTime}, '0')
     </insert>
+
+    <update id="modifyEquipment">
+        UPDATE T_EQUIPMENT SET
+        <if test="companyCode!=null">
+            COMPANY_CODE=#{companyCode},
+        </if>
+        <if test="companyName!=null">
+            COMPANY_NAME=#{companyName},
+        </if>
+        <if test="deptCode!=null">
+            DEPT_CODE=#{deptCode},
+        </if>
+        <if test="deptName!=null">
+            DEPT_NAME=#{deptName},
+        </if>
+        <if test="equipName!=null">
+            EQUIP_NAME=#{equipName},
+        </if>
+        <if test="majorCode!=null">
+            MAJOR_CODE=#{majorCode},
+        </if>
+        <if test="majorName!=null">
+            MAJOR_NAME=#{majorName},
+        </if>
+        <if test="systemCode!=null">
+            SYSTEM_CODE=#{systemCode},
+        </if>
+        <if test="systemName!=null">
+            SYSTEM_NAME=#{systemName},
+        </if>
+        <if test="equipTypeCode!=null">
+            EQUIP_TYPE_CODE=#{equipTypeCode},
+        </if>
+        <if test="equipTypeName!=null">
+            EQUIP_TYPE_NAME=#{equipTypeName},
+        </if>
+        <if test="specialEquipFlag!=null">
+            SPECIAL_EQUIP_FLAG=#{specialEquipFlag},
+        </if>
+        <if test="otherEquipFlag!=null">
+            OTHER_EQUIP_FLAG=#{otherEquipFlag},
+        </if>
+        <if test="sourceKind!=null">
+            SOURCE_KIND=#{sourceKind},
+        </if>
+        <if test="bomType!=null">
+            BOM_TYPE=#{bomType},
+        </if>
+        <if test="manufacture!=null">
+            MANUFACTURE=#{manufacture},
+        </if>
+        <if test="orderNo!=null">
+            ORDER_NO=#{orderNo},
+        </if>
+        <if test="orderName!=null">
+            ORDER_NAME=#{orderName},
+        </if>
+        <if test="matSpecifi!=null">
+            MAT_SPECIFI=#{matSpecifi},
+        </if>
+        <if test="brand!=null">
+            BRAND=#{brand},
+        </if>
+        <if test="manufactureDate!=null">
+            MANUFACTURE_DATE=#{manufactureDate},
+        </if>
+        <if test="manufactureNo!=null">
+            MANUFACTURE_NO=#{manufactureNo},
+        </if>
+        <if test="startUseDate!=null">
+            START_USE_DATE=#{startUseDate},
+        </if>
+        <if test="quantity!=null">
+            QUANTITY=#{quantity},
+        </if>
+        <if test="pickNo!=null">
+            PICK_NO=#{pickNo},
+        </if>
+        <if test="pickName!=null">
+            PICK_NAME=#{pickName},
+        </if>
+        <if test="equipStatus!=null">
+            EQUIP_STATUS=#{equipStatus},
+        </if>
+        <if test="sourceAppNo!=null">
+            SOURCE_APP_NO=#{sourceAppNo},
+        </if>
+        <if test="sourceSubNo!=null">
+            SOURCE_SUB_NO=#{sourceSubNo},
+        </if>
+        <if test="sourceRecId!=null">
+            SOURCE_REC_ID=#{sourceRecId},
+        </if>
+        <if test="installDealer!=null">
+            INSTALL_DEALER=#{installDealer},
+        </if>
+        <if test="docId!=null">
+            DOC_ID=#{docId},
+        </if>
+        <if test="originLineNo!=null">
+            ORIGIN_LINE_NO=#{originLineNo},
+        </if>
+        <if test="originLineName!=null">
+            ORIGIN_LINE_NAME=#{originLineName},
+        </if>
+        <if test="originSegNo!=null">
+            ORIGIN_SEG_NO=#{originSegNo},
+        </if>
+        <if test="originSegName!=null">
+            ORIGIN_SEG_NAME=#{originSegName},
+        </if>
+        <if test="useLineNo!=null">
+            USE_LINE_NO=#{useLineNo},
+        </if>
+        <if test="useLineName!=null">
+            USE_LINE_NAME=#{useLineName},
+        </if>
+        <if test="useSegNo!=null">
+            USE_SEG_NO=#{useSegNo},
+        </if>
+        <if test="useSegName!=null">
+            USE_SEG_NAME=#{useSegName},
+        </if>
+        <if test="position1Code!=null">
+            POSITION1_CODE=#{position1Code},
+        </if>
+        <if test="position1Name!=null">
+            POSITION1_NAME=#{position1Name},
+        </if>
+        <if test="position2Code!=null">
+            POSITION2_CODE=#{position2Code},
+        </if>
+        <if test="position2Name!=null">
+            POSITION2_NAME=#{position2Name},
+        </if>
+        <if test="position3!=null">
+            POSITION3=#{position3},
+        </if>
+        <if test="positionRemark!=null">
+            POSITION_REMARK=#{positionRemark},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
+    </update>
+
+    <update id="deleteEquipment">
+        UPDATE T_EQUIPMENT SET
+        DELETE_FLAG='1', REC_DELETOR=#{userId}, REC_DELETE_TIME=#{time}
+        WHERE REC_ID IN (
+        <foreach collection="ids" index="index" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
 
     <insert id="importEquipment" parameterType="com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO">
         INSERT ALL
@@ -450,6 +836,7 @@
             EQUIP_TYPE_CODE,  <!-- 设备分类代码 -->
             EQUIP_TYPE_NAME,  <!-- 设备分类名称 -->
             SPECIAL_EQUIP_FLAG,  <!-- 特种设备标识 -->
+            OTHER_EQUIP_FLAG,  <!-- 其他设备标识 -->
             SOURCE_KIND,  <!-- 设备来源 -->
             MANUFACTURE,  <!-- 生产厂家 -->
             MAT_SPECIFI,  <!-- 型号规格 -->
@@ -508,6 +895,7 @@
             (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{equipment.equipTypeName} and NODE_LEVEL=3),
             #{equipment.equipTypeName},
             #{equipment.specialEquipFlag},
+            #{equipment.otherEquipFlag},
             ' ',
             #{equipment.manufacture},
             #{equipment.matSpecifi},
@@ -571,6 +959,7 @@
         EQUIP_TYPE_CODE,  <!-- 设备分类代码 -->
         EQUIP_TYPE_NAME,  <!-- 设备分类名称 -->
         SPECIAL_EQUIP_FLAG,  <!-- 特种设备标识 -->
+        OTHER_EQUIP_FLAG,  <!-- 其他设备标识 -->
         SOURCE_KIND,  <!-- 设备来源 -->
         BOM_TYPE,  <!-- BOM类型 -->
         MANUFACTURE,  <!-- 生产厂家 -->
@@ -644,6 +1033,7 @@
         #{equipTypeCode,jdbcType=VARCHAR},
         #{equipTypeName,jdbcType=VARCHAR},
         #{specialEquipFlag,jdbcType=VARCHAR},
+        #{otherEquipFlag,jdbcType=VARCHAR},
         #{sourceKind,jdbcType=VARCHAR},
         #{bomType,jdbcType=VARCHAR},
         #{manufacture,jdbcType=VARCHAR},
@@ -707,18 +1097,17 @@
     <select id="listEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE
-<!--        USE_LINE_NO='02' and MAJOR_CODE='07'-->
         REC_ID IN (
         <foreach collection="ids" index="index" item="id" separator=",">
             #{id}
         </foreach>
-        )
+        ) AND DELETE_FLAG='0'
         ORDER BY EQUIP_NAME ASC
     </select>
 
     <select id="pageSiftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1
+        FROM T_EQUIPMENT WHERE 1=1 AND DELETE_FLAG='0'
         <if test="req.bomType!=null and req.bomType!=''">
             and TRIM(BOM_TYPE) IS NOT NULL AND MAJOR_CODE ='07'
         </if>
@@ -745,6 +1134,9 @@
         </if>
         <if test="req.specialEquipFlag!=null and req.specialEquipFlag!=''">
             and SPECIAL_EQUIP_FLAG=#{req.specialEquipFlag}
+        </if>
+        <if test="req.otherEquipFlag!=null and req.otherEquipFlag!=''">
+            and OTHER_EQUIP_FLAG=#{req.otherEquipFlag}
         </if>
         <if test="req.brand!=null and req.brand!=''">
             and BRAND=#{req.brand}
@@ -781,7 +1173,7 @@
 
     <select id="siftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1
+        FROM T_EQUIPMENT WHERE 1=1 AND DELETE_FLAG='0'
         <if test="bomType!=null and bomType!=''">
             and TRIM(BOM_TYPE) IS NOT NULL AND MAJOR_CODE ='07'
         </if>
@@ -808,6 +1200,9 @@
         </if>
         <if test="specialEquipFlag!=null and specialEquipFlag!=''">
             and SPECIAL_EQUIP_FLAG=#{specialEquipFlag}
+        </if>
+        <if test="otherEquipFlag!=null and otherEquipFlag!=''">
+            and OTHER_EQUIP_FLAG=#{otherEquipFlag}
         </if>
         <if test="brand!=null and brand!=''">
             and BRAND=#{brand}
@@ -844,7 +1239,7 @@
 
     <select id="getSplitTransferDetail" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE 1=1 and REC_ID=#{id}
+        FROM T_EQUIPMENT WHERE 1=1 AND REC_ID=#{id} AND DELETE_FLAG='0'
         ORDER BY EQUIP_NAME ASC
     </select>
 
@@ -909,6 +1304,9 @@
         </if>
         <if test="specialEquipFlag!=null">
             SPECIAL_EQUIP_FLAG=#{specialEquipFlag},   <!-- 特种设备标识 -->
+        </if>
+        <if test="otherEquipFlag!=null">
+            OTHER_EQUIP_FLAG=#{otherEquipFlag},   <!-- 其他设备标识 -->
         </if>
         <if test="sourceKind!=null">
             SOURCE_KIND=#{sourceKind},   <!-- 设备来源 -->

@@ -132,26 +132,14 @@ public class TransferServiceImpl implements TransferService {
                 }
                 CurrentLoginUser user = TokenUtils.getCurrentPerson();
                 for (int i = 0; i < transferResDTO.getQuantity(); i++) {
-                    String unitNo = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(1)) + 1);
-                    String equipCode = String.valueOf(Long.parseLong(equipmentMapper.getMaxCode(4)) + 1);
-                    UnitCodeReqDTO unitCodeReqDTO = new UnitCodeReqDTO();
-                    unitCodeReqDTO.setRecId(TokenUtils.getUuId());
-                    unitCodeReqDTO.setUnitNo(unitNo);
-                    unitCodeReqDTO.setRecCreator(user.getPersonId());
-                    unitCodeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-                    unitCodeReqDTO.setDevNo(equipCode);
-                    unitCodeReqDTO.setBatchNo(" ");
-                    unitCodeReqDTO.setAssetNo(" ");
-                    unitCodeReqDTO.setSupplierId(user.getOfficeAreaId());
-                    unitCodeReqDTO.setSupplierName(user.getNames());
-                    unitCodeReqDTO.setOrderNo(transferResDTO.getOrderNo());
-                    unitCodeReqDTO.setOrderName(transferResDTO.getOrderName());
-                    unitCodeReqDTO.setProCode(" ");
-                    unitCodeReqDTO.setProName(" ");
-                    unitCodeReqDTO.setMatSpecifi(transferResDTO.getMatSpecifi());
-                    unitCodeReqDTO.setBrand(transferResDTO.getBrand());
-                    equipmentMapper.insertUnitCode(unitCodeReqDTO);
-                    insertEquipment(transferResDTO, unitNo, user);
+                    String maxCode = equipmentMapper.getMaxCode();
+                    String equipCode;
+                    if (StringUtils.isNotEmpty(maxCode)) {
+                        equipCode = CodeUtils.getNextCode(maxCode, 2);
+                    } else {
+                        equipCode = CommonConstants.INIT_EQUIPMENT_CODE;
+                    }
+                    insertEquipment(transferResDTO, equipCode, user);
                     transferResDTO.setEamProcessStatus("20");
                     transferMapper.updateTransfer(transferResDTO);
                 }
@@ -209,7 +197,7 @@ public class TransferServiceImpl implements TransferService {
                     equipmentReqDTO.setApprovalStatus("10");
                     List<EquipmentResDTO> queryState = equipmentMapper.siftEquipment(equipmentReqDTO);
                     if (StringUtils.isEmpty(queryState)) {
-                        overTodoService.overTodo(sourceRecId, "");
+                        overTodoService.overTodo(sourceRecId, "", CommonConstants.ONE_STRING);
                     }
                     resDTO.setApprovalStatus("30");
                     buildPart(resDTO);
@@ -291,10 +279,10 @@ public class TransferServiceImpl implements TransferService {
     /**
      * 新增设备台账
      * @param transferResDTO 设备移交类对象
-     * @param unitNo 合一码
+     * @param equipCode 合一码
      * @param user token解析用户
      */
-    public void insertEquipment(TransferResDTO transferResDTO, String unitNo, CurrentLoginUser user) {
+    public void insertEquipment(TransferResDTO transferResDTO, String equipCode, CurrentLoginUser user) {
         EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
         BeanUtils.copyProperties(transferResDTO, equipmentReqDTO);
         equipmentReqDTO.setSystemCode(" ");
@@ -305,7 +293,7 @@ public class TransferServiceImpl implements TransferService {
         equipmentReqDTO.setUseLineName(transferResDTO.getLineName());
         equipmentReqDTO.setUseSegNo(transferResDTO.getLineSubNo());
         equipmentReqDTO.setUseSegName(transferResDTO.getLineSubName());
-        equipmentReqDTO.setEquipCode(unitNo);
+        equipmentReqDTO.setEquipCode(equipCode);
         List<EquipmentCategoryResDTO> listSys = equipmentCategoryMapper.getChildEquipmentCategory(transferResDTO.getMajorCode());
         if (listSys != null && listSys.size() == 1) {
             equipmentReqDTO.setSystemCode(listSys.get(0).getNodeCode());
@@ -320,6 +308,7 @@ public class TransferServiceImpl implements TransferService {
         equipmentReqDTO.setEquipName(transferResDTO.getItemName());
         equipmentReqDTO.setApprovalStatus("10");
         equipmentReqDTO.setSpecialEquipFlag("10");
+        equipmentReqDTO.setOtherEquipFlag("10");
         equipmentReqDTO.setSourceAppNo(transferResDTO.getTransferNo());
         equipmentReqDTO.setSourceSubNo(transferResDTO.getItemCode());
         equipmentReqDTO.setSourceRecId(transferResDTO.getRecId());

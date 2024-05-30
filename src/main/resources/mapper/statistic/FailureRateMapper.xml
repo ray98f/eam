@@ -2,6 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.statistic.FailureRateMapper">
 
+    <select id="selectDoorFaultIsExist" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM T_DOOR_FAULT WHERE "MONTH"=#{month} AND DELETE_FLAG='0' AND rownum=1
+    </select>
+
+    <insert id="addDoorFault">
+        INSERT INTO T_DOOR_FAULT (
+        REC_ID,
+        "MONTH",
+        FAULT_NUM,
+        ACTION_NUM,
+        REC_CREATOR,
+        REC_CREATE_TIME)
+        VALUES (
+        #{recId},
+        #{month},
+        #{faultNum},
+        #{actionNum},
+        #{recCreator},
+        #{recCreateTime})
+    </insert>
+
+    <update id="modifyDoorFault">
+        UPDATE T_DOOR_FAULT SET
+        FAULT_NUM=#{faultNum},
+        ACTION_NUM=#{actionNum},
+        REC_REVISOR=#{recRevisor},
+        REC_REVISE_TIME=#{recReviseTime}
+        WHERE "MONTH"=#{month} AND DELETE_FLAG='0'
+    </update>
 
     <select id="exitingRate" resultType="com.wzmtr.eam.dto.res.statistic.FailureRateResDTO">
         select c.YEAR_MONTH as "yearMonth",
@@ -92,23 +121,20 @@
         order by c.YEAR_MONTH
     </select>
     <select id="PSDrate" resultType="com.wzmtr.eam.dto.res.statistic.FailureRateResDTO">
-        select c.YEAR_MONTH as "yearMonth",
-               round(
-                           (select count(1)
-                            from T_FAULT_INFO a
-                            where a.MAJOR_CODE = '01'
-                              and a.EQUIP_TYPE_CODE in ('010101', '010102', '010104')
-                              and substr(a.DISCOVERY_TIME, 1, 7) = c.YEAR_MONTH
-                              and rtrim(a.FAULT_FLAG) is null
-                              and exists(select 1
-                                         from T_FAULT_ORDER b
-                                         where b.FAULT_NO = a.FAULT_NO and b.ORDER_STATUS<![CDATA[ <>]]> '99')) /
-                           (to_char(last_day(to_date(c.YEAR_MONTH, 'YYYY-MM')), 'dd') * 1464 * 15)
-                   , 2)     as "precent"
-        from (select to_char(add_months(to_date(#{startTime}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') as YEAR_MONTH
-              from dual
-                  connect by rownum <![CDATA[ <=]]> months_between(to_date(#{endTime}, 'YYYY-MM'), to_date(#{startTime}, 'YYYY-MM')) + 1) c
-        order by c.YEAR_MONTH
+        SELECT a.month,nvl(b.num,0) as "precent"
+        FROM (
+            select to_char(add_months(to_date(#{startTime}, 'YYYY-MM'), rownum - 1), 'YYYY-MM') as month
+            from dual
+            connect by rownum<![CDATA[ <=]]>months_between(to_date(#{endTime}, 'YYYY-MM'), to_date(#{startTime}, 'YYYY-MM')) + 1
+        ) a
+        LEFT JOIN (
+            SELECT "MONTH" AS DATETIME, count(*) AS num
+            FROM T_DOOR_FAULT
+            WHERE to_date("MONTH", 'YYYY-MM')>=to_date(#{startTime}, 'YYYY-MM')
+            AND to_date(#{endTime}, 'YYYY-MM')>=to_date("MONTH", 'YYYY-MM')
+            GROUP BY "MONTH"
+        ) b
+        ON a.month = b.datetime  order by month desc
     </select>
 
 </mapper>

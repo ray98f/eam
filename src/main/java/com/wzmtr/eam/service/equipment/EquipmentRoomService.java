@@ -27,9 +27,9 @@ public interface EquipmentRoomService {
 
     void exportEquipmentRoom(List<String> ids, HttpServletResponse response) throws IOException;
 
-    void addEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO);
+    void addEquipment(EquipmentRoomRelationReqDTO req);
 
-    void deleteEquipment(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO);
+    void deleteEquipment(EquipmentRoomRelationReqDTO req);
 
     Page<EquipmentResDTO> pageEquipment(String roomId,String equipCode,String equipName, String majorCode, String systemCode, PageReqDTO pageReqDTO);
 }

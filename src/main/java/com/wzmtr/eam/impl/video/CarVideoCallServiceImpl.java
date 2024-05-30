@@ -160,7 +160,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "非下达状态下不可派工");
             }
             Assert.isTrue(StringUtils.isNotEmpty(reqDTO.getWorkerId()) && StringUtils.isNotEmpty(reqDTO.getWorkClass()), ErrorCode.NORMAL_ERROR, "派工人信息不能为空");
-            overTodoService.overTodo(reqDTO.getRecId(), "");
+            overTodoService.overTodo(reqDTO.getRecId(), "", CommonConstants.ONE_STRING);
             String[] split = reqDTO.getWorkerId().split(",");
             for (String s : split) {
                 overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), s, "视频调阅派工", "DMBR0022", TokenUtils.getCurrentPersonId(),null);
@@ -175,7 +175,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             if (!CommonConstants.THIRTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "失败,非派工状态下不可完工");
             }
-            overTodoService.overTodo(reqDTO.getRecId(), "");
+            overTodoService.overTodo(reqDTO.getRecId(), "", CommonConstants.ONE_STRING);
             overTodoService.insertTodo("视频调阅流转", detail.getRecId(), detail.getRecId(), reqDTO.getDispatchUserId(), "视频调阅完工", "DMBR0022", TokenUtils.getCurrentPersonId(),null);
             // TODO: 2023/9/14 发短信
             // Map<Object, Object> User = new HashMap<>();
@@ -197,7 +197,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             if (!CommonConstants.FORTY_STRING.equals(detail.getRecStatus())) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "非完工状态下不可关闭");
             }
-            overTodoService.overTodo(reqDTO.getRecId(), "");
+            overTodoService.overTodo(reqDTO.getRecId(), "", CommonConstants.ONE_STRING);
             carVideoDO.setRecStatus(reqDTO.getRecStatus());
             carVideoDO.setCloseTime(DateUtils.getCurrentTime());
             carVideoDO.setCloserId(TokenUtils.getCurrentPersonId());

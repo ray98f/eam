@@ -44,7 +44,7 @@ public interface EquipmentRoomMapper {
      */
     List<EquipmentRoomResDTO> exportEquipmentRoom(List<String> ids);
 
-    void insertRelationBatch(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO);
+    void insertRelationBatch(String roomId, String id);
 
     void deleteRelationBatch(EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO);
 

@@ -91,6 +91,21 @@ public class FaultFollowResDTO {
     @ApiModelProperty(value = "跟踪截止时间")
     private String followEndDate;
     /**
+     * 跟踪派工人工号
+     */
+    @ApiModelProperty(value = "跟踪派工人工号")
+    private String dispatchUserId;
+    /**
+     * 跟踪派工人
+     */
+    @ApiModelProperty(value = "跟踪派工人")
+    private String dispatchUserName;
+    /**
+     * 跟踪派工时间
+     */
+    @ApiModelProperty(value = "跟踪派工时间")
+    private String dispatchTime;
+    /**
      * 跟踪关闭人工号
      */
     @ApiModelProperty(value = "跟踪关闭人工号")
@@ -155,4 +170,9 @@ public class FaultFollowResDTO {
      */
     @ApiModelProperty(value = "报告列表")
     private List<FaultFollowReportResDTO> reportList;
+    /**
+     * 是否显示强制关闭按钮 0 否 1 是
+     */
+    @ApiModelProperty(value = "是否显示强制关闭按钮 0 否 1 是")
+    private String ifShowClose;
 }

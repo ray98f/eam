@@ -12,9 +12,14 @@ import java.util.List;
 @Data
 @ApiModel
 public class DetectionDetailExportReqDTO {
+    /**
+     * 检测记录表REC_ID
+     */
     @ApiModelProperty(value = "检测记录表REC_ID")
     private String testRecId;
-    
+    /**
+     * 设备代码
+     */
     @ApiModelProperty(value = "设备代码")
     private String equipCode;
 

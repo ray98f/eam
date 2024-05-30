@@ -1,9 +1,21 @@
 package com.wzmtr.eam.controller.overhaul;
 
-import com.wzmtr.eam.dto.req.overhaul.*;
+import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulItemListReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulItemTroubleshootReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderDetailReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderListReqDTO;
+import com.wzmtr.eam.dto.req.overhaul.OverhaulOrderReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
-import com.wzmtr.eam.dto.res.overhaul.*;
+import com.wzmtr.eam.dto.res.overhaul.MateBorrowResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulItemTreeResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailOpenResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulStateOrderResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulStateResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -19,7 +31,12 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -63,6 +80,11 @@ public class OverhaulOrderController {
         return PageResponse.of(overhaulOrderService.openApiPageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO));
     }
 
+    /**
+     * 获取检修工单详情
+     * @param id id
+     * @return 检修工单详情
+     */
     @GetMapping("/detail")
     @ApiOperation(value = "获取检修工单详情")
     public DataResponse<OverhaulOrderResDTO> getOverhaulOrderDetail(@RequestParam @ApiParam("id") String id) {
@@ -154,11 +176,14 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 跳转至物资系统领料界面
+     * @param orderCode 工单号
+     */
     @GetMapping("/material/page")
-    @ApiOperation(value = "材料列表")
-    public DataResponse<T> pageMaterial() {
-        overhaulOrderService.pageMaterial();
-        return DataResponse.success();
+    @ApiOperation(value = "跳转至物资系统领料界面")
+    public DataResponse<String> pageMaterial(@RequestParam String orderCode) {
+        return DataResponse.of(overhaulOrderService.pageMaterial(orderCode));
     }
 
     @PostMapping("/material/receive")
@@ -169,9 +194,8 @@ public class OverhaulOrderController {
 
     @PostMapping("/material/return")
     @ApiOperation(value = "退回材料")
-    public DataResponse<T> returnMaterial() {
-        overhaulOrderService.returnMaterial();
-        return DataResponse.success();
+    public void returnMaterial(HttpServletResponse response) throws IOException {
+        overhaulOrderService.returnMaterial(response);
     }
 
     @GetMapping("/construction")
@@ -364,10 +388,15 @@ public class OverhaulOrderController {
         return DataResponse.of(overhaulOrderService.queryOrderInfo(orderCode));
     }
 
+    /**
+     * 检修异常升级故障
+     * @param reqDTO 传参
+     * @return 成功
+     */
     @PostMapping("/state/up")
     @ApiOperation(value = "检修异常升级故障")
-    public DataResponse<T> upState(@RequestBody OverhaulUpStateReqDTO overhaulUpStateReqDTO) {
-        overhaulOrderService.upState(overhaulUpStateReqDTO);
+    public DataResponse<T> upState(@RequestBody FaultReportReqDTO reqDTO) {
+        overhaulOrderService.upState(reqDTO);
         return DataResponse.success();
     }
 }

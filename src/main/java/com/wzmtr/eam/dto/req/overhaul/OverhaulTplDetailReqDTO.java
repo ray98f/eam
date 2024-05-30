@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author frp
  */
@@ -112,4 +114,7 @@ public class OverhaulTplDetailReqDTO {
 
     @ApiModelProperty(value = "扩展字段5")
     private String ext5;
+
+    @ApiModelProperty(value = "ids")
+    private List<String> ids;
 }

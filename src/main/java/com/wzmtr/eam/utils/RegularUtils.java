@@ -10,12 +10,22 @@ public class RegularUtils {
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("[0-9]*");
 
+    private static final Pattern DECIMAL_PATTERN = Pattern.compile("[0-9]*\\.?[0-9]+");
+
     /**
      * 数字判断
      * @return Pattern
      */
     public static Pattern getNumberPattern() {
         return NUMBER_PATTERN;
+    }
+
+    /**
+     * 小数判断
+     * @return Pattern
+     */
+    public static Pattern getDecimalPattern() {
+        return DECIMAL_PATTERN;
     }
 
 }

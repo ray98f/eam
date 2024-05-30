@@ -107,6 +107,13 @@ public class OtherEquipServiceImpl implements OtherEquipService {
     }
 
     @Override
+    public void modifyOtherEquip(OtherEquipReqDTO otherEquipReqDTO) {
+        otherEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        otherEquipReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
+        otherEquipMapper.modifyOtherEquip(otherEquipReqDTO);
+    }
+
+    @Override
     public void importOtherEquip(MultipartFile file) throws ParseException {
         List<String> otherCode = new ArrayList<>();
         List<ExcelOtherEquipReqDTO> list = EasyExcelUtils.read(file, ExcelOtherEquipReqDTO.class);
@@ -144,7 +151,9 @@ public class OtherEquipServiceImpl implements OtherEquipService {
                 detectionService.addNormalDetectionDetail(detectionDetailReqDTO);
             }
         }
-        throw new CommonException(ErrorCode.NORMAL_ERROR, "其他设备编号为" + String.join("、", otherCode) + "的其他设备导入失败，请重试");
+        if (StringUtils.isNotEmpty(otherCode)) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "其他设备编号为" + String.join("、", otherCode) + "的其他设备导入失败，请重试");
+        }
     }
 
     /**
@@ -162,13 +171,6 @@ public class OtherEquipServiceImpl implements OtherEquipService {
         detectionDetailReqDTO.setVerifyResult(req.getVerifyResult());
         detectionDetailReqDTO.setVerifyConclusion(req.getVerifyConclusion());
         return detectionDetailReqDTO;
-    }
-
-    @Override
-    public void modifyOtherEquip(OtherEquipReqDTO otherEquipReqDTO) {
-        otherEquipReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        otherEquipReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        otherEquipMapper.modifyOtherEquip(otherEquipReqDTO);
     }
 
     @Override

@@ -98,21 +98,20 @@ public interface EquipmentCategoryMapper {
 
     /**
      * 获取设备分类一级分类
-     *
-     * @return
+     * @param type 类型 1中铁通 2中车
+     * @return 设备分类一级分类
      */
-    List<EquipmentCategoryResDTO> getFirstEquipmentCategory();
+    List<EquipmentCategoryResDTO> getFirstEquipmentCategory(String type);
 
     /**
      * 获取设备分类子级分类
-     *
-     * @return
+     * @param code 父级设备分类编号
+     * @return 设备分类子级分类
      */
     List<EquipmentCategoryResDTO> getChildEquipmentCategory(String code);
 
     /**
      * 根据元素获取元素
-     *
      * @param nodeCode
      * @param nodeName
      * @param nodeLevel

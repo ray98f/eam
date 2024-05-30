@@ -165,9 +165,10 @@ public class ZttOverhaulWeekPlanController {
         return DataResponse.success();
     }
 
-    @GetMapping("/plan/export")
+    @PostMapping("/plan/export")
     @ApiOperation(value = "导出检修计划（中铁通）")
-    public void exportOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, HttpServletResponse response) throws IOException {
+    public void exportOverhaulPlan(@RequestBody OverhaulPlanListReqDTO overhaulPlanListReqDTO,
+                                   HttpServletResponse response) throws IOException {
         overhaulWeekPlanService.exportOverhaulPlan(overhaulPlanListReqDTO, response);
     }
 

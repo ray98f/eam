@@ -109,7 +109,6 @@ public class FaultOrderDO {
     private String reportUserName;
     @TableField(exist = false)
     private String dispatchUserName;
-    @TableField(exist = false)
     private String repairRespUserName;
     @TableField(exist = false)
     private String checkUserName;

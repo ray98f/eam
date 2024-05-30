@@ -594,6 +594,9 @@
         <if test="trialStatus1!=null and trialStatus1!=''">
             and TRIAL_STATUS=#{trialStatus1}
         </if>
+        <if test="constructionType!=null and constructionType!=''">
+            and CONSTRUCTION_TYPE!=#{constructionType}
+        </if>
         <if test="ids!=null and ids.size()>0">
             and REC_ID in (
             <foreach collection="ids" index="index" item="id" separator=",">
@@ -902,8 +905,10 @@
             FROM T_OVERHAUL_PLAN op
             LEFT JOIN T_WO_RULE_DETAIL rd ON rd.RULE_CODE=op.RULE_CODE AND rd.DELETE_FLAG='0'
             WHERE op.RULE_CODE IS NOT NULL AND #{nowDay}>=rd.START_DATE AND rd.END_DATE>=#{nowDay}
-            AND op.PLAN_NAME NOT LIKE '%一级修%' AND op.PLAN_NAME NOT LIKE '%二级修%' AND op.DELETE_FLAG='0'
-            AND to_date(op.BEFORE_TRIGGER_TIME,'YYYY-MM-DD HH24:MI:SS')>sysdate-((rd.PERIOD+rd.BEFORE_TIME)/24)
+<!--            AND op.PLAN_NAME NOT LIKE '%一级修%' AND op.PLAN_NAME NOT LIKE '%二级修%'-->
+            AND op.DELETE_FLAG='0'
+            AND ((op.BEFORE_TRIGGER_TIME IS NOT NULL AND sysdate-((rd.PERIOD+rd.BEFORE_TIME)/24)>=to_date(op.BEFORE_TRIGGER_TIME,'YYYY-MM-DD HH24:MI:SS'))
+            OR (op.BEFORE_TRIGGER_TIME IS NULL AND sysdate>=to_date(op.FIRST_BEGIN_TIME,'YYYY-MM-DD')))
         UNION ALL
             SELECT op.PLAN_CODE, op.SUBJECT_CODE, op.TRIAL_STATUS
             FROM T_OVERHAUL_PLAN op
@@ -919,7 +924,7 @@
             FROM T_OVERHAUL_ORDER_SCHEDULING oos
             LEFT JOIN T_OVERHAUL_PLAN op ON op.PLAN_CODE=oos.PLAN_CODE AND op.DELETE_FLAG='0'
             WHERE oos.DELETE_FLAG='0' AND oos.IS_TRIGGER='0' AND TO_CHAR(SYSDATE, 'YYYY-MM-DD')=oos."DAY"
-        ) a
+        ) a WHERE a.TRIAL_STATUS='30'
     </select>
 
 </mapper>

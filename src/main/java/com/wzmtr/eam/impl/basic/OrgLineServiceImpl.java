@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.res.basic.OrgLineResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelOrgLineResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.OrgLineMapper;
@@ -65,25 +66,30 @@ public class OrgLineServiceImpl implements OrgLineService {
 
     @Override
     public void addOrgLine(OrgLineReqDTO orgLineReqDTO) {
-        Integer result = orgLineMapper.selectOrgLineIsExist(orgLineReqDTO);
-        if (result > 0) {
-            throw new CommonException(ErrorCode.DATA_EXIST);
+        String orgId = organizationMapper.getIdByAreaId(orgLineReqDTO.getOrgCode());
+        if (StringUtils.isNotEmpty(orgId)) {
+            List<String> ids = organizationMapper.downRecursionId(orgId);
+            if (StringUtils.isNotEmpty(ids)) {
+                List<SysOffice> offices = organizationMapper.getAreaIdsByIds(ids);
+                orgLineReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
+                orgLineReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
+                for (SysOffice office : offices) {
+                    orgLineReqDTO.setOrgCode(office.getAreaId());
+                    orgLineReqDTO.setOrgName(office.getName());
+                    Integer result = orgLineMapper.selectOrgLineIsExist(orgLineReqDTO);
+                    if (result > 0) {
+                        continue;
+                    }
+                    orgLineReqDTO.setRecId(TokenUtils.getUuId());
+                    orgLineMapper.addOrgLine(orgLineReqDTO);
+                }
+            }
         }
-        orgLineReqDTO.setRecId(TokenUtils.getUuId());
-        orgLineReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
-        orgLineReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        orgLineMapper.addOrgLine(orgLineReqDTO);
     }
 
     @Override
     public void modifyOrgLine(OrgLineReqDTO orgLineReqDTO) {
-        Integer result = orgLineMapper.selectOrgLineIsExist(orgLineReqDTO);
-        if (result > 0) {
-            throw new CommonException(ErrorCode.DATA_EXIST);
-        }
-        orgLineReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-        orgLineReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        orgLineMapper.modifyOrgLine(orgLineReqDTO);
+        addOrgLine(orgLineReqDTO);
     }
 
     @Override

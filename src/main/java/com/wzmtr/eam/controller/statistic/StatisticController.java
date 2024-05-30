@@ -19,6 +19,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -86,14 +87,48 @@ public class StatisticController {
         statisticService.materialExport(reqDTO, response);
     }
 
-    @PostMapping("/failure/rate/query")
-    @ApiOperation(value = "故障率")
-    public DataResponse<FailureRateDetailResDTO> query(@RequestBody FailreRateQueryReqDTO reqDTO) {
-        return DataResponse.of(statisticService.query(reqDTO));
+    /**
+     * 新增站台门故障数据
+     * @param req req
+     * @return 成功
+     */
+    @PostMapping("/door/fault/add")
+    @ApiOperation(value = "新增站台门故障数据")
+    public DataResponse<T> addDoorFault(@RequestBody DoorFaultReqDTO req) {
+        statisticService.addDoorFault(req);
+        return DataResponse.success();
     }
 
+    /**
+     * 编辑站台门故障数据
+     * @param req req
+     * @return 成功
+     */
+    @PostMapping("/door/fault/modify")
+    @ApiOperation(value = "编辑站台门故障数据")
+    public DataResponse<T> modifyDoorFault(@RequestBody DoorFaultReqDTO req) {
+        statisticService.modifyDoorFault(req);
+        return DataResponse.success();
+    }
+
+    /**
+     * 故障率指标
+     * @param reqDTO req
+     * @return 故障率指标
+     */
+    @PostMapping("/failure/rate/query")
+    @ApiOperation(value = "故障率指标")
+    public DataResponse<FailureRateDetailResDTO> failureRateQuery(@RequestBody FailreRateQueryReqDTO reqDTO) {
+        return DataResponse.of(statisticService.failureRateQuery(reqDTO));
+    }
+
+    /**
+     * 可靠性指标
+     * @param reqDTO req
+     * @return 可靠性指标
+     */
     @PostMapping("/reliability/query")
-    @ApiOperation(value = "可靠度指标")
+    @ApiOperation(value = "可靠性指标")
     public DataResponse<ReliabilityListResDTO> reliabilityQuery(@RequestBody FailreRateQueryReqDTO reqDTO) {
         return DataResponse.of(statisticService.reliabilityQuery(reqDTO));
     }
@@ -268,6 +303,16 @@ public class StatisticController {
         return DataResponse.of(statisticService.querySysPerform());
     }
 
+    /**
+     * 各系统可靠性统计-导出
+     * @param response response
+     */
+    @PostMapping("/rams/exportSysPerform")
+    @ApiOperation(value = "各系统可靠性统计-导出")
+    public void exportSysPerform(HttpServletResponse response) throws IOException {
+        statisticService.exportSysPerform(response);
+    }
+
     @PostMapping("/rams/queryRAMSFaultList")
     @ApiOperation(value = "RAMS故障列表")
     public PageResponse<FaultRamsResDTO> queryRAMSFaultList(@RequestBody RamsTimeReqDTO reqDTO) {
@@ -303,6 +348,19 @@ public class StatisticController {
                                                                    @RequestParam String trainNo,
                                                                    @Valid PageReqDTO pageReqDTO) {
         return PageResponse.of(statisticService.trainReliabilityFaultList(startTime, endTime, trainNo, pageReqDTO));
+    }
+
+    /**
+     * 各系统指定时间范围内故障数量统计-开放接口
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 故障数量统计
+     */
+    @GetMapping("/subject/fault/open")
+    @ApiOperation(value = "各系统指定时间范围内故障数量统计-开放接口")
+    public DataResponse<List<SubjectFaultResDTO>> getSubjectFaultOpen(@RequestParam String startTime,
+                                                                      @RequestParam String endTime) {
+        return DataResponse.of(statisticService.getSubjectFaultOpen(startTime, endTime));
     }
 
 }

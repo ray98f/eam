@@ -102,15 +102,15 @@ public class EquipmentRoomController {
     }
     @PostMapping("/deleteEquipment")
     @ApiOperation(value = "取消关联设备")
-    public DataResponse<T> deleteEquipment(@RequestBody EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
-        equipmentRoomService.deleteEquipment(equipmentRoomRelationReqDTO);
+    public DataResponse<T> deleteEquipment(@RequestBody EquipmentRoomRelationReqDTO req) {
+        equipmentRoomService.deleteEquipment(req);
         return DataResponse.success();
     }
 
     @PostMapping("/addEquipment")
     @ApiOperation(value = "关联设备")
-    public DataResponse<T> addEquipment(@RequestBody EquipmentRoomRelationReqDTO equipmentRoomRelationReqDTO) {
-        equipmentRoomService.addEquipment(equipmentRoomRelationReqDTO);
+    public DataResponse<T> addEquipment(@RequestBody EquipmentRoomRelationReqDTO req) {
+        equipmentRoomService.addEquipment(req);
         return DataResponse.success();
     }
 }

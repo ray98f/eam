@@ -62,7 +62,6 @@ public class ShiroCasRealm extends CasRealm {
             Person p = personService.searchPersonByNo(name);
             if (p != null) {
                 person.setPersonId(p.getLoginName());
-                //person.setPersonId(p.getId());//TODO 20240327改成loginName确认人员信息
                 person.setPersonNo(p.getNo());
                 person.setPersonName(p.getName());
                 person.setCompanyId(p.getCompanyId());

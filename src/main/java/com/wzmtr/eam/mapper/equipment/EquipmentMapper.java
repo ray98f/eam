@@ -3,7 +3,6 @@ package com.wzmtr.eam.mapper.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
-import com.wzmtr.eam.dto.req.equipment.UnitCodeReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.basic.LineResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
@@ -55,9 +54,31 @@ public interface EquipmentMapper {
      */
     EquipmentResDTO getEquipmentDetailByCode(String code);
 
-    String getMaxCode(Integer type);
+    /**
+     * 获取当前最大的设备编号
+     * @return 设备编号
+     */
+    String getMaxCode();
 
-    void insertUnitCode(UnitCodeReqDTO unitCodeReqDTO);
+    /**
+     * 新增设备台账
+     * @param equipmentReqDTO 设备台账信息
+     */
+    void addEquipment(EquipmentReqDTO equipmentReqDTO);
+
+    /**
+     * 编辑设备台账
+     * @param equipmentReqDTO 设备台账信息
+     */
+    void modifyEquipment(EquipmentReqDTO equipmentReqDTO);
+
+    /**
+     * 删除设备台账
+     * @param ids ids
+     * @param userId 用户id
+     * @param time 时间
+     */
+    void deleteEquipment(List<String> ids, String userId, String time);
 
     void importEquipment(List<EquipmentReqDTO> list);
 

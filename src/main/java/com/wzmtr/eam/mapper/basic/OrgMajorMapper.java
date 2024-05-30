@@ -55,10 +55,18 @@ public interface OrgMajorMapper {
     List<ZcjxResDTO>  querySHWorker(String officeId,String roleCode);
 
     /**
+     * 根据位置和专业获取部门列表
+     * @param station 位置一code
+     * @param majorCode 专业code
+     * @return 部门列表
+     */
+    List<OrgMajorResDTO> listOrganByStationAndMajor(String station, String majorCode);
+
+    /**
      * 根据位置和专业获取部门
-     * @param station
-     * @param majorCode
-     * @return
+     * @param station 位置一code
+     * @param majorCode 专业code
+     * @return 部门
      */
     OrgMajorResDTO getOrganByStationAndMajor(String station, String majorCode);
 
@@ -69,4 +77,14 @@ public interface OrgMajorMapper {
      * @return 组织机构路径
      */
     String getOrgNamesByStationAndMajor(String station, String majorCode);
+
+    /**
+     * 基础数据部门名称同步
+     */
+    void syncSysOrgName();
+
+    /**
+     * 删除无效数据
+     */
+    void deleteNoneOrgCode();
 }

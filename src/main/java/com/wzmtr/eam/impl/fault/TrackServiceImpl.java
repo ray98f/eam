@@ -106,7 +106,7 @@ public class TrackServiceImpl implements TrackService {
 //        dmfm22.setWorkerGroupCode(repairDeptCode);
         reqDTO.setDispatchUserId(TokenUtils.getCurrentPersonId());
         reqDTO.setDispatchTime(DateUtils.getCurrentTime());
-        overTodoService.overTodo(reqDTO.getRecId(), "派工完毕");
+        overTodoService.overTodo(reqDTO.getRecId(), "派工完毕", CommonConstants.ONE_STRING);
         reqDTO.setRecStatus("20");
         faultTrackWorkMapper.repair(reqDTO);
     }
@@ -124,7 +124,7 @@ public class TrackServiceImpl implements TrackService {
         } else {
             workFlowInstId = res.getRecId() + "_" + res.getFaultWorkNo();
         }
-        overTodoService.overTodo(workFlowInstId, "跟踪工单");
+        overTodoService.overTodo(workFlowInstId, "跟踪工单", CommonConstants.ONE_STRING);
         FaultTrackDO bo = BeanUtils.convert(res, FaultTrackDO.class);
         bo.setFaultTrackNo(reqDTO.getFaultTrackNo());
         bo.setRecStatus("20");
@@ -201,7 +201,7 @@ public class TrackServiceImpl implements TrackService {
                         .ifPresent(faultTrackDO::setTrackReportTime);
                 faultTrackDO.setExt5(reqDTO.getLine());
                 // 待办发送
-                overTodoService.overTodo(processId, "故障跟踪");
+                overTodoService.overTodo(processId, "故障跟踪", CommonConstants.ONE_STRING);
                 faultTrackDO.setRecStatus("40");
             } catch (Exception e) {
                 log.error("送审失败！", e);

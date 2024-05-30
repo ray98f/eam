@@ -20,6 +20,12 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * 基础管理-组织机构管理
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/17
+ */
 @Slf4j
 @RestController
 @RequestMapping("/iam/org")
@@ -64,6 +70,17 @@ public class OrganizationController {
     @ApiOperation(value = "获取中铁通组织层级结构")
     public DataResponse<List<CompanyStructureTree>> listZttCompanyStructure() {
         return DataResponse.of(organizationService.listZttCompanyStructure());
+    }
+
+    /**
+     * 获取派工组织层级结构
+     * @param majorCode 专业code
+     * @return 组织层级结构
+     */
+    @GetMapping("/dispatch/listTree")
+    @ApiOperation(value = "获取派工组织层级结构")
+    public DataResponse<List<CompanyStructureTree>> listDispatchCompanyStructure(@RequestParam String majorCode) {
+        return DataResponse.of(organizationService.listDispatchCompanyStructure(majorCode));
     }
 
 }

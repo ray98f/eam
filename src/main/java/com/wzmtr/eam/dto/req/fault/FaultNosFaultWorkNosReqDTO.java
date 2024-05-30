@@ -30,9 +30,9 @@ public class FaultNosFaultWorkNosReqDTO {
     /**
      * 状态 0 通过 1 不通过
      */
-    private String status;
+    private String examineStatus;
     /**
-     * 备注理由
+     * 审核意见
      */
-    private String remark;
+    private String examineOpinion;
 }

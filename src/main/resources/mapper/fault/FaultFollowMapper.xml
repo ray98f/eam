@@ -2,9 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wzmtr.eam.mapper.fault.FaultFollowMapper">
     <select id="page" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowResDTO">
-        SELECT ff.REC_ID, ff.FOLLOW_NO, ff.FAULT_NO, ff.FAULT_WORK_NO, ff.MAJOR_CODE, ff.POSITION_CODE, ff.FOLLOW_USER_ID,
-        ff.FOLLOW_USER_NAME, ff.FOLLOW_TIME, ff.FOLLOW_START_DATE, ff.FOLLOW_END_DATE, ff.FOLLOW_CYCLE, ff.FOLLOW_STATUS,
-        ff.FOLLOW_LEADER_ID, ff.FOLLOW_LEADER_NAME, ff.FOLLOW_REASON, ff.REMARK, ff.FOLLOW_CLOSER_ID, ff.FOLLOW_CLOSER_NAME,
+        SELECT ff.REC_ID, ff.FOLLOW_NO, ff.FAULT_NO, ff.FAULT_WORK_NO, ff.MAJOR_CODE, ff.POSITION_CODE,
+        ff.FOLLOW_USER_ID, ff.FOLLOW_USER_NAME, ff.FOLLOW_TIME, ff.FOLLOW_START_DATE, ff.FOLLOW_END_DATE,
+        ff.FOLLOW_CYCLE, ff.FOLLOW_STATUS, ff.FOLLOW_LEADER_ID, ff.FOLLOW_LEADER_NAME, ff.FOLLOW_REASON, ff.REMARK,
+        ff.FOLLOW_CLOSER_ID, ff.FOLLOW_CLOSER_NAME, ff.DISPATCH_USER_ID, ff.DISPATCH_USER_NAME, ff.DISPATCH_TIME,
         ff.FOLLOW_CLOSE_TIME, ff.REC_CREATOR, ff.REC_CREATE_TIME, ff.REC_DELETOR, ff.REC_DELETE_TIME, ff.DELETE_FLAG
         FROM T_FAULT_FOLLOW ff
         LEFT JOIN SYS_USER u ON u.LOGIN_NAME=ff.FOLLOW_LEADER_ID AND u.DEL_FLAG='0'
@@ -19,7 +20,8 @@
             AND ff.FOLLOW_STATUS=#{followStatus}
         </if>
         <if test="userId!=null and userId!=''">
-            AND (ff.FOLLOW_USER_ID=#{userId} OR ff.FOLLOW_LEADER_ID=#{userId} OR ff.FOLLOW_CLOSER_ID=#{userId}
+            AND (ff.FOLLOW_USER_ID=#{userId} OR ff.FOLLOW_LEADER_ID=#{userId}
+            OR ff.FOLLOW_CLOSER_ID=#{userId} OR ff.DISPATCH_USER_ID=#{userId}
             <if test="officeId!=null and officeId!=''">
                 OR u.OFFICE_ID=#{officeId}
             </if>
@@ -29,10 +31,11 @@
     </select>
 
     <select id="detail" resultType="com.wzmtr.eam.dto.res.fault.FaultFollowResDTO">
-        SELECT REC_ID, FOLLOW_NO, FAULT_NO, FAULT_WORK_NO, MAJOR_CODE, POSITION_CODE, FOLLOW_USER_ID, FOLLOW_USER_NAME,
-        FOLLOW_TIME, FOLLOW_START_DATE, FOLLOW_END_DATE, FOLLOW_CYCLE, FOLLOW_STATUS, FOLLOW_LEADER_ID,
-        FOLLOW_LEADER_NAME, FOLLOW_REASON, REMARK, FOLLOW_CLOSER_ID, FOLLOW_CLOSER_NAME, FOLLOW_CLOSE_TIME,
-        REC_CREATOR, REC_CREATE_TIME, REC_DELETOR, REC_DELETE_TIME, DELETE_FLAG
+        SELECT REC_ID, FOLLOW_NO, FAULT_NO, FAULT_WORK_NO, MAJOR_CODE, POSITION_CODE, FOLLOW_USER_ID,
+        FOLLOW_USER_NAME, FOLLOW_TIME, FOLLOW_START_DATE, FOLLOW_END_DATE, FOLLOW_CYCLE, FOLLOW_STATUS,
+        FOLLOW_LEADER_ID, FOLLOW_LEADER_NAME, FOLLOW_REASON, DISPATCH_USER_ID, DISPATCH_USER_NAME, DISPATCH_TIME,
+        REMARK, FOLLOW_CLOSER_ID, FOLLOW_CLOSER_NAME, FOLLOW_CLOSE_TIME, REC_CREATOR, REC_CREATE_TIME, REC_DELETOR,
+        REC_DELETE_TIME, DELETE_FLAG
         FROM T_FAULT_FOLLOW
         WHERE DELETE_FLAG='0'
         <if test="id!=null and id!=''">
@@ -51,6 +54,9 @@
         WHERE DELETE_FLAG='0' AND FOLLOW_NO=#{followNo}
         <if test="type=='2'.toString()">
             AND EXAMINE_STATUS='0' AND rownum=1
+        </if>
+        <if test="type=='3'.toString()">
+            AND FOLLOW_EXAMINE_STATUS='0' AND rownum=1
         </if>
         ORDER BY REPORT_TIME DESC
     </select>
@@ -225,6 +231,17 @@
         </if>
     </update>
 
+    <update id="dispatch">
+        UPDATE T_FAULT_FOLLOW SET
+        DISPATCH_USER_ID=#{dispatchUserId,jdbcType=VARCHAR},
+        DISPATCH_USER_NAME=#{dispatchUserName,jdbcType=VARCHAR},
+        DISPATCH_TIME=#{dispatchTime,jdbcType=VARCHAR},
+        FOLLOW_STATUS=#{followStatus},
+        REC_REVISOR=#{recRevisor},
+        REC_REVISE_TIME=#{recReviseTime}
+        WHERE FOLLOW_NO=#{followNo} AND DELETE_FLAG='0'
+    </update>
+
     <update id="close">
         UPDATE T_FAULT_FOLLOW SET
         FOLLOW_CLOSER_ID=#{followCloserId,jdbcType=VARCHAR},
@@ -367,20 +384,41 @@
 
     <update id="examineReport">
         UPDATE T_FAULT_FOLLOW_REPORT SET
-        <if test="examineUserId!=null">
+        <if test="examineUserId!=null and examineUserId!=''">
             EXAMINE_USER_ID=#{examineUserId},
         </if>
-        <if test="examineUserName!=null">
+        <if test="examineUserName!=null and examineUserName!=''">
             EXAMINE_USER_NAME=#{examineUserName},
         </if>
-        <if test="examineTime!=null">
+        <if test="examineTime!=null and examineTime!=''">
             EXAMINE_TIME=#{examineTime},
         </if>
-        <if test="examineOpinion!=null">
+        <if test="examineOpinion!=null and examineOpinion!=''">
             EXAMINE_OPINION=#{examineOpinion},
         </if>
-        <if test="examineStatus!=null">
+        <if test="examineStatus!=null and examineStatus!=''">
             EXAMINE_STATUS=#{examineStatus},
+        </if>
+        REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId} AND DELETE_FLAG='0'
+    </update>
+
+    <update id="engineerExamineReport">
+        UPDATE T_FAULT_FOLLOW_REPORT SET
+        <if test="followExamineUserId!=null and followExamineUserId!=''">
+            FOLLOW_EXAMINE_USER_ID=#{followExamineUserId},
+        </if>
+        <if test="followExamineUserName!=null and followExamineUserName!=''">
+            FOLLOW_EXAMINE_USER_NAME=#{followExamineUserName},
+        </if>
+        <if test="followExamineTime!=null and followExamineTime!=''">
+            FOLLOW_EXAMINE_TIME=#{followExamineTime},
+        </if>
+        <if test="followExamineOpinion!=null and followExamineOpinion!=''">
+            FOLLOW_EXAMINE_OPINION=#{followExamineOpinion},
+        </if>
+        <if test="followExamineStatus!=null and followExamineStatus!=''">
+            FOLLOW_EXAMINE_STATUS=#{followExamineStatus},
         </if>
         REC_REVISOR=#{recRevisor}, REC_REVISE_TIME=#{recReviseTime}
         WHERE REC_ID=#{recId} AND DELETE_FLAG='0'

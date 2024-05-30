@@ -9,6 +9,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.req.statistic.*;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
@@ -23,15 +24,13 @@ import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.exception.CommonException;
+import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
 import com.wzmtr.eam.mapper.statistic.*;
 import com.wzmtr.eam.service.statistic.StatisticService;
-import com.wzmtr.eam.utils.DateUtils;
-import com.wzmtr.eam.utils.EasyExcelUtils;
-import com.wzmtr.eam.utils.StreamUtils;
-import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
@@ -78,9 +77,36 @@ public class StatisticServiceImpl implements StatisticService {
     private DictionariesMapper dictionariesMapper;
     @Autowired
     private FaultQueryMapper faultQueryMapper;
+    @Autowired
+    private EquipmentCategoryMapper equipmentCategoryMapper;
 
     @Override
-    public FailureRateDetailResDTO query(FailreRateQueryReqDTO reqDTO) {
+    public void addDoorFault(DoorFaultReqDTO req) {
+        if (req.getFaultNum() > req.getActionNum()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "故障次数不能大于动作次数");
+        }
+        Integer result = failureRateMapper.selectDoorFaultIsExist(req);
+        if (result > 0) {
+            throw new CommonException(ErrorCode.DATA_EXIST);
+        }
+        req.setRecId(TokenUtils.getUuId());
+        req.setRecCreator(TokenUtils.getCurrentPersonId());
+        req.setRecCreateTime(DateUtils.getCurrentTime());
+        failureRateMapper.addDoorFault(req);
+    }
+
+    @Override
+    public void modifyDoorFault(DoorFaultReqDTO req) {
+        if (req.getFaultNum() > req.getActionNum()) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "故障次数不能大于动作次数");
+        }
+        req.setRecRevisor(TokenUtils.getCurrentPersonId());
+        req.setRecReviseTime(DateUtils.getCurrentTime());
+        failureRateMapper.modifyDoorFault(req);
+    }
+
+    @Override
+    public FailureRateDetailResDTO failureRateQuery(FailreRateQueryReqDTO reqDTO) {
         // todo 结构后期优化
         FailureRateDetailResDTO failureRateDetailResDTO = new FailureRateDetailResDTO();
         if (StringUtils.isEmpty(reqDTO.getIndex())) {
@@ -133,7 +159,7 @@ public class StatisticServiceImpl implements StatisticService {
         }
         //没做 产品没要求 2024 04 01
         if (reqDTO.getIndex().contains(RateIndex.PSD_RATE)) {
-            //<!--屏蔽门故障率-->
+            //<!--站台门-->
             List<FailureRateResDTO> psDrate = failureRateMapper.PSDrate(reqDTO);
             List<String> data = Lists.newArrayList();
             List<String> month = Lists.newArrayList();
@@ -670,27 +696,29 @@ public class StatisticServiceImpl implements StatisticService {
         DecimalFormat df = new DecimalFormat("#0.00");
         RamsCarResDTO ramsCarResDTO = records.get(0);
         String millionMiles = ramsCarResDTO.getMillionMiles();
-        //晚点故障数
-        String affect11 = ramsCarResDTO.getAffect11();
-        //不适合继续服务
-        String affect21 = ramsCarResDTO.getAffect21();
-        String faultNum = ramsCarResDTO.getFaultNum();
-        //晚点
-        String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles));
-        String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles));
-        if (Double.parseDouble(affect12) > ONE_POINT_FIVE) {
-            ramsCarResDTO.setAffect13("未达标");
-        } else {
-            ramsCarResDTO.setAffect13("达标");
+        if (StringUtils.isNotEmpty(millionMiles) && Double.parseDouble(millionMiles) != 0.0) {
+            //晚点故障数
+            String affect11 = ramsCarResDTO.getAffect11();
+            //不适合继续服务
+            String affect21 = ramsCarResDTO.getAffect21();
+            String faultNum = ramsCarResDTO.getFaultNum();
+            //晚点
+            String affect12 = df.format(Double.parseDouble(affect11) / Double.parseDouble(millionMiles));
+            String affect22 = df.format(Double.parseDouble(affect21) / Double.parseDouble(millionMiles));
+            if (Double.parseDouble(affect12) > ONE_POINT_FIVE) {
+                ramsCarResDTO.setAffect13("未达标");
+            } else {
+                ramsCarResDTO.setAffect13("达标");
+            }
+            if (Double.parseDouble(affect22) > FOUR_POINT_FIVE) {
+                ramsCarResDTO.setAffect23("未达标");
+            } else {
+                ramsCarResDTO.setAffect23("达标");
+            }
+            ramsCarResDTO.setAffect12(affect12);
+            ramsCarResDTO.setAffect22(affect22);
+            ramsCarResDTO.setFaultNum(faultNum);
         }
-        if (Double.parseDouble(affect22) > FOUR_POINT_FIVE) {
-            ramsCarResDTO.setAffect23("未达标");
-        } else {
-            ramsCarResDTO.setAffect23("达标");
-        }
-        ramsCarResDTO.setAffect12(affect12);
-        ramsCarResDTO.setAffect22(affect22);
-        ramsCarResDTO.setFaultNum(faultNum);
         return ramsCarResDTO;
     }
 
@@ -838,89 +866,86 @@ public class StatisticServiceImpl implements StatisticService {
         List<RamsResDTO> totalMilesList = ramsMapper.querytotalMiles();
         RamsResDTO totalMiles = totalMilesList.get(0);
         Map<String, RamsSysPerformResDTO> map = Maps.newHashMap();
-        Set<String> names = Sets.newHashSet();
         mapInitSysPerform(map);
         for (RamsSysPerformResDTO a : ramsResDTOS) {
             if (StringUtils.isEmpty(a.getModuleName())) {
                 continue;
             }
             switch (substringFirstThree(a.getModuleName())) {
-                // 气动装置和空气分配系统1'
                 case "B09":
-                    // 气动装置和空气分配系统2'
                 case "B10":
-                    rebuildBlock4SP(a, names, "气动装置和空气分配系统", "10000", "7000");
+                    rebuildBlock4SP(a, "气动装置和空气分配系统", "10000", "7000");
                     break;
                 case "B15":
                 case "B16":
                 case "B17":
                 case "B27":
-                    rebuildBlock4SP(a, names, "门窗系统", "10000", "7000");
+                    rebuildBlock4SP(a, "门窗系统", "10000", "7000");
                     break;
                 case "B08":
-                    rebuildBlock4SP(a, names, "制动系统", "49500", "49500");
+                    rebuildBlock4SP(a, "制动系统", "49500", "49500");
                     break;
                 case "B19":
                 case "B20":
-                    rebuildBlock4SP(a, names, "空调及通风系统", "210000", "46000");
+                    rebuildBlock4SP(a, "空调及通风系统", "210000", "46000");
                     break;
                 case "B11":
                 case "B14":
                 case "B13":
-                    rebuildBlock4SP(a, names, "辅助供电设备系统", "647749", "323825");
+                    rebuildBlock4SP(a, "辅助供电设备系统", "647749", "323825");
                     break;
                 case "B03":
-                    rebuildBlock4SP(a, names, "转向架", "409500", "409500");
+                    rebuildBlock4SP(a, "转向架", "409500", "409500");
                     break;
                 case "B25":
-                    rebuildBlock4SP(a, names, "雷达辅助系统", "647749", "323825");
+                    rebuildBlock4SP(a, "雷达辅助系统", "647749", "323825");
                     break;
                 case "B01":
                 case "B02":
                 case "B12":
                 case "B18":
                 case "B21":
-                    rebuildBlock4SP(a, names, "车体结构及内装", "204800", "204800");
+                    rebuildBlock4SP(a, "车体结构及内装", "204800", "204800");
                     break;
                 case "B06":
                 case "B07":
-                    rebuildBlock4SP(a, names, "牵引及高压系统", "36588", "11000");
+                    rebuildBlock4SP(a, "牵引及高压系统", "36588", "11000");
                     break;
                 case "B04":
                 case "B05":
-                    rebuildBlock4SP(a, names, "贯通道和车钩", "409500", "204800");
+                    rebuildBlock4SP(a, "贯通道和车钩", "409500", "204800");
                     break;
                 case "B22":
-                    rebuildBlock4SP(a, names, "列车管理及列车控制系统", "191000", "91000");
+                    rebuildBlock4SP(a, "列车管理及列车控制系统", "191000", "91000");
                     break;
                 case "B23":
                 case "B24":
-                    rebuildBlock4SP(a, names, "旅客信息系统", "191000", "91000");
+                    rebuildBlock4SP(a, "旅客信息系统", "191000", "91000");
                     break;
                 case "B30":
-                    rebuildBlock4SP(a, names, "运行性能检测系统", "36588", "11000");
+                    rebuildBlock4SP(a, "运行性能检测系统", "36588", "11000");
                     break;
                 case "B26":
-                    rebuildBlock4SP(a, names, "走行部监测系统", "36588", "11000");
+                    rebuildBlock4SP(a, "走行部监测系统", "36588", "11000");
                     break;
                 case "B29":
-                    rebuildBlock4SP(a, names, "轨道检测系统", "36588", "11000");
+                    rebuildBlock4SP(a, "轨道检测系统", "36588", "11000");
                     break;
                 case "B28":
-                    rebuildBlock4SP(a, names, "弓网检测系统", "36588", "11000");
+                    rebuildBlock4SP(a, "弓网检测系统", "36588", "11000");
                     break;
                 default:
                     break;
             }
             DecimalFormat df = new DecimalFormat("#0");
-            Double MTBF_LATE;
+            double MTBF_LATE;
             if (Double.parseDouble(a.getNumLate()) == ZERO) {
                 MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
             } else {
                 MTBF_LATE = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D / Double.parseDouble(a.getNumLate());
             }
             a.setMTBF_LATE(df.format(MTBF_LATE));
-            Double MTBF_NOS;
+            double MTBF_NOS;
             if (Double.parseDouble(a.getNumNos()) == ZERO) {
                 MTBF_NOS = Double.parseDouble(totalMiles.getTotalMiles()) * 4.0D / 55.0D;
             } else {
@@ -937,9 +962,10 @@ public class StatisticServiceImpl implements StatisticService {
         buildSysPerformIsCompliance(map);
         return new ArrayList<>(map.values());
     }
-    private void mapInitSysPerform(Map<String, RamsSysPerformResDTO> map ,String name ){
+
+    private void mapInitSysPerform(Map<String, RamsSysPerformResDTO> map ,String name){
         RamsSysPerformResDTO a = new RamsSysPerformResDTO();
-        a.setModuleName(CommonConstants.ZERO_STRING);
+        a.setModuleName(name);
         a.setNumLate(CommonConstants.ZERO_STRING);
         a.setNumNos(CommonConstants.ZERO_STRING);
         a.setContractZBLATE(CommonConstants.ZERO_STRING);
@@ -974,6 +1000,7 @@ public class StatisticServiceImpl implements StatisticService {
      * @param map 集合
      */
     private void buildSysPerformIsCompliance(Map<String, RamsSysPerformResDTO> map) {
+        List<FaultConditionResDTO> list = queryCountFaultType();
         map.values().forEach(a -> {
             if (Double.parseDouble(a.getMTBF_LATE()) >= Double.parseDouble(a.getContractZBLATE())) {
                 a.setIsDB_LATE("达标");
@@ -985,7 +1012,24 @@ public class StatisticServiceImpl implements StatisticService {
             } else {
                 a.setIsDB_NOS("未达标");
             }
+            // 添加各系统平均无故障时间实际指标
+            a.setZB(list.stream().filter(b -> b.getModuleName().equals(a.getModuleName())).collect(toList()).get(0).getZB());
         });
+    }
+
+    @Override
+    public void exportSysPerform(HttpServletResponse response) throws IOException {
+        List<RamsSysPerformResDTO> list = querySysPerform();
+        if (StringUtils.isNotEmpty(list)) {
+            List<ExcelRamsSysPerformResDTO> resList = new ArrayList<>();
+            for (RamsSysPerformResDTO resDTO : list) {
+                ExcelRamsSysPerformResDTO res = new ExcelRamsSysPerformResDTO();
+                res.setModuleName(resDTO.getModuleName());
+                res.setZb(resDTO.getZB());
+                resList.add(res);
+            }
+            EasyExcelUtils.export(response, "列车子系统的可靠性目标", resList);
+        }
     }
 
     /**
@@ -995,7 +1039,6 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public List<FaultConditionResDTO> queryCountFaultType() {
         List<FaultConditionResDTO> list = ramsMapper.queryCountFaut();
-
         List<RamsResDTO> ramsResDTOS = ramsMapper.querytotalMiles();
         RamsResDTO ramsResDTO = ramsResDTOS.get(0);
         Set<String> names = Sets.newHashSet();
@@ -1007,9 +1050,7 @@ public class StatisticServiceImpl implements StatisticService {
                 continue;
             }
             switch (substringFirstThree(a.getSC())) {
-                    //气动装置和空气分配系统1'
                 case "B09":
-                    //气动装置和空气分配系统2'
                 case "B10":
                     rebuildBlock(a, names, "气动装置和空气分配系统", "9000");
                     break;
@@ -1074,8 +1115,6 @@ public class StatisticServiceImpl implements StatisticService {
                 default:
                     break;
             }
-
-
             String moduleName = a.getModuleName();
             FaultConditionResDTO last = map.get(moduleName);
             if (map.containsKey(moduleName)) {
@@ -1087,9 +1126,7 @@ public class StatisticServiceImpl implements StatisticService {
                 last.setModuleName(moduleName);
             }
         }
-
         buildFaultTypeIsCompliance(map, ramsResDTO);
-
         return new ArrayList<>(map.values());
     }
 
@@ -1112,7 +1149,7 @@ public class StatisticServiceImpl implements StatisticService {
         mapInit(map,"弓网检测系统");
     }
 
-    public void mapInit(Map<String, FaultConditionResDTO> map,String name) {
+    public void mapInit(Map<String, FaultConditionResDTO> map, String name) {
         FaultConditionResDTO a = new FaultConditionResDTO();
         a.setCRK(CommonConstants.ZERO_STRING);
         a.setZX(CommonConstants.ZERO_STRING);
@@ -1210,20 +1247,10 @@ public class StatisticServiceImpl implements StatisticService {
         }
     }
 
-    public void rebuildBlock4SP(RamsSysPerformResDTO map, Set<String> module, String moduleName, String contractZB_LATE, String contractZB_NOS) {
-        DecimalFormat df = new DecimalFormat("#0");
-        String NUM_LATE = map.getNumLate();
-        String NUM_NOS = map.getNumNos();
+    public void rebuildBlock4SP(RamsSysPerformResDTO map, String moduleName, String contractZB_LATE, String contractZB_NOS) {
         map.setModuleName(moduleName);
         map.setContractZBLATE(contractZB_LATE);
         map.setContractZBNOS(contractZB_NOS);
-        // if (module.contains(moduleName)) {
-        //     map.setNumLate(df.format(Double.parseDouble(NUM_LATE) + NUM_LATE));
-        //     map.setNumNos(df.format(Double.parseDouble(NUM_NOS) + NUM_NOS));
-        // } else {
-        //     map.setNumLate(NUM_LATE);
-        //     map.setNumNos(NUM_NOS);
-        // }
     }
 
     public void rebuildBlock(FaultConditionResDTO res, Set<String> module, String moduleName, String contractZB) {
@@ -1311,6 +1338,23 @@ public class StatisticServiceImpl implements StatisticService {
                 a.setOperateCostTime(operateCostTime == null ? CommonConstants.EMPTY : operateCostTime);
             }
         });
+        return list;
+    }
+
+    @Override
+    public List<SubjectFaultResDTO> getSubjectFaultOpen(String startTime, String endTime) {
+        List<SubjectFaultResDTO> list = new ArrayList<>();
+        List<EquipmentCategoryResDTO> categoryList = equipmentCategoryMapper.getFirstEquipmentCategory(null);
+        if (StringUtils.isNotEmpty(categoryList)) {
+            for (EquipmentCategoryResDTO category : categoryList) {
+                SubjectFaultResDTO res = new SubjectFaultResDTO();
+                res.setSubjectCode(category.getNodeCode());
+                res.setSubjectName(category.getNodeName());
+                Long num = faultQueryMapper.getSubjectFaultNum(category.getNodeCode(), startTime, endTime);
+                res.setFaultNum(StringUtils.isNull(num) ? 0L : num);
+                list.add(res);
+            }
+        }
         return list;
     }
 }

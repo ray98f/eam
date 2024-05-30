@@ -98,4 +98,17 @@
         ORDER BY ot.REC_CREATE_TIME ASC
     </select>
 
+    <update id="syncSysOrgName">
+        MERGE INTO SYS_ORG_TYPE t1
+        USING SYS_OFFICE t2
+        ON (t1.ORG_CODE=t2.AREA_ID AND t2.DEL_FLAG='0')
+        WHEN MATCHED
+        THEN UPDATE SET t1.ORG_NAME=t2.NAME
+    </update>
+
+    <delete id="deleteNoneOrgCode">
+        DELETE FROM SYS_ORG_TYPE
+        WHERE ORG_CODE NOT IN (SELECT AREA_ID FROM SYS_OFFICE WHERE DELETE_FLAG='0')
+    </delete>
+
 </mapper>

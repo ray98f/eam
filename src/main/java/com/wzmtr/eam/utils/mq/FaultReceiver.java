@@ -1,5 +1,6 @@
 package com.wzmtr.eam.utils.mq;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.wzmtr.eam.config.RabbitMqConfig;
 import com.wzmtr.eam.constant.CommonConstants;
@@ -10,11 +11,14 @@ import com.wzmtr.eam.dto.req.fault.FaultFlowReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportOpenReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
+import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.mapper.basic.OrgMajorMapper;
+import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.PersonMapper;
+import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
@@ -29,7 +33,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,11 +60,10 @@ public class FaultReceiver {
     private PersonMapper personMapper;
     @Autowired
     private OrgMajorMapper orgMajorMapper;
-
-    /**
-     * 以下为代码中用到的常量
-     */
-    private static final List<String> ZC_LIST = Arrays.asList("07", "06");
+    @Autowired
+    private OrganizationMapper organizationMapper;
+    @Autowired
+    private RoleMapper roleMapper;
 
     /**
      * 故障队列消费
@@ -115,26 +117,46 @@ public class FaultReceiver {
         }
     }
 
-    private void zttSendOverTodo(String majorCode, FaultReportReqDTO req, FaultInfoDO faultInfoDO, FaultOrderDO faultOrderDO, String faultWorkNo) {
-        if (!ZC_LIST.contains(majorCode)) {
+    private void zttSendOverTodo(String majorCode, FaultReportReqDTO req, FaultInfoDO faultInfo, FaultOrderDO faultOrder, String faultWorkNo) {
+        if (!CommonConstants.ZC_LIST.contains(majorCode)) {
             String positionCode = req.getPositionCode();
             if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
-                // 专业和位置查维修部门
-                OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
-                faultInfoDO.setRepairDeptCode(organ.getOrgCode());
-                // 负责人为中铁通工班长角色
-                Person person = personMapper.searchLeader(majorCode, positionCode, "DM_051");
-                faultOrderDO.setRepairRespUserId(person.getLoginName());
+                if (StringUtils.isEmpty(faultInfo.getRepairDeptCode())) {
+                    // 专业和位置查维修部门
+                    OrgMajorResDTO organ = orgMajorMapper.getOrganByStationAndMajor(positionCode, majorCode);
+                    if (StringUtils.isNotNull(organ)) {
+                        faultInfo.setRepairDeptCode(organ.getOrgCode());
+                        // 负责人为中铁通工班长角色
+                        Person person = personMapper.searchLeaderByMajorAndPositionAndRole(majorCode, positionCode, CommonConstants.DM_051);
+                        if (StringUtils.isNotNull(person)) {
+                            faultOrder.setRepairRespUserId(person.getLoginName());
+                        }
+                    }
+                } else {
+                    Person person = personMapper.searchLeaderByDeptAndRole(faultInfo.getRepairDeptCode(), CommonConstants.DM_051);
+                    if (StringUtils.isNotNull(person)) {
+                        faultOrder.setRepairRespUserId(person.getLoginName());
+                    }
+                }
                 // 默认为紧急
-                faultInfoDO.setFaultLevel("01");
-                faultOrderDO.setOrderStatus(OrderStatus.PAI_GONG.getCode());
-                faultInfoDO.setRecRevisor(TokenUtils.getCurrentPersonId());
-                faultInfoDO.setRecReviseTime(DateUtils.getCurrentTime());
-                faultOrderDO.setRecRevisor(TokenUtils.getCurrentPersonId());
-                faultOrderDO.setRecReviseTime(DateUtils.getCurrentTime());
-                faultReportMapper.updateFaultOrder(faultOrderDO);
-                faultReportMapper.updateFaultInfo(faultInfoDO);
-                overTodoService.insertTodoWithUserGroup(String.format(CommonConstants.TODO_GD_TPL,faultWorkNo,"故障"), faultOrderDO.getRecId(), faultWorkNo, organ.getOrgCode(), "故障派工", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                faultInfo.setFaultLevel("01");
+                faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+                faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
+                faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
+                faultOrder.setRecRevisor(TokenUtils.getCurrentPersonId());
+                faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
+                faultReportMapper.updateFaultOrder(faultOrder);
+                faultReportMapper.updateFaultInfo(faultInfo);
+                // 故障维修待办推送
+                String newId = organizationMapper.getIdByAreaId(faultInfo.getRepairDeptCode());
+                List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(newId, null);
+                if (CollectionUtil.isNotEmpty(userList)) {
+                    for (BpmnExaminePersonRes map2 : userList) {
+                        overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"),
+                                faultOrder.getRecId(), faultWorkNo, map2.getUserId(), "故障维修", "RepairFaultReceiver",
+                                TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    }
+                }
             }
         }
     }

@@ -82,7 +82,7 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
             res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
         }
         // 待阅（实际为代办）更新为已办
-        overTodoService.overTodo(id, "");
+        overTodoService.overTodo(id, "已查看", CommonConstants.TWO_STRING);
         return res;
     }
 
@@ -95,9 +95,10 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         // 向工班中的所有人发送待阅（实际发送的是代办）
         String workerGroupCode = generalSurveyReqDTO.getOrgType();
         if (StringUtils.isNotEmpty(workerGroupCode)) {
-            overTodoService.insertTodoWithUserOrgan(String.format(CommonConstants.TODO_GENERAL_SURVEY, generalSurveyReqDTO.getTrainNo(),
-                            generalSurveyReqDTO.getCompleteDate()), generalSurveyReqDTO.getRecId(), generalSurveyReqDTO.getTrainNo(), workerGroupCode,
-                    "普查与技改", "？", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.GENERAL_SURVEY.value());
+            overTodoService.insertTodoWithUserOrgDiffTodoId(
+                    String.format(CommonConstants.TODO_GENERAL_SURVEY, generalSurveyReqDTO.getTrainNo(), generalSurveyReqDTO.getCompleteDate()),
+                    generalSurveyReqDTO.getRecId(), workerGroupCode, "普查与技改", "？",
+                    TokenUtils.getCurrentPersonId(), BpmnFlowEnum.GENERAL_SURVEY.value());
         }
     }
 

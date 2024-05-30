@@ -178,14 +178,20 @@
         SELECT dc.REC_ID, dc.PARENT_NODE_REC_ID, dc.NODE_NAME, dc.NODE_CODE, dc.REC_STATUS, dc.REMARK, u.NAME AS REC_CREATOR, dc.REC_CREATE_TIME
         FROM T_EQUIPMENT_CATEGORY dc
         LEFT JOIN SYS_USER u ON dc.REC_CREATOR=u.ID
-        where dc.DELETE_FLAG='0' and dc.PARENT_NODE_REC_ID='0'
+        WHERE dc.DELETE_FLAG='0' and dc.PARENT_NODE_REC_ID='0'
+        <if test="type!=null and type=='1'.toString()">
+            AND NODE_CODE NOT IN ('06', '07')
+        </if>
+        <if test="type!=null and type=='2'.toString()">
+            AND NODE_CODE IN ('06', '07')
+        </if>
         ORDER BY dc.NODE_CODE ASC
     </select>
 
     <select id="getChildEquipmentCategory" resultType="com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO">
         SELECT dc.REC_ID, dc.PARENT_NODE_REC_ID, dc.NODE_NAME, dc.NODE_CODE, dc.REC_STATUS, dc.REMARK
         FROM T_EQUIPMENT_CATEGORY dc
-        where dc.DELETE_FLAG='0' and dc.PARENT_NODE_REC_ID in (SELECT dc2.REC_ID from T_EQUIPMENT_CATEGORY dc2 where dc2.NODE_CODE=#{code})
+        WHERE dc.DELETE_FLAG='0' and dc.PARENT_NODE_REC_ID in (SELECT dc2.REC_ID from T_EQUIPMENT_CATEGORY dc2 where dc2.NODE_CODE=#{code})
         ORDER BY dc.NODE_CODE ASC
     </select>
 

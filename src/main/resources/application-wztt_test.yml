@@ -36,7 +36,7 @@ spring:
 
 excluded:
   swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
-  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout,/eam/overhaul/order/page/open,/eam/fault/report/list/open,/eam/fault/report/insert/equip/open,/eam/overhaul/order/object/page/open
+  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout,/eam/overhaul/order/page/open,/eam/fault/report/list/open,/eam/fault/report/insert/equip/open,/eam/overhaul/order/object/page/open,/eam/statistic/subject/fault/open
 
 sso:
   url: http://10.11.82.82:8083/cas
@@ -101,7 +101,7 @@ mdm:
 
 local:
   base-url: http://10.11.82.29:8002/eam
-  data-sync: off
+  data-sync: on
 
 minio:
   url: http://10.11.82.46:9000
