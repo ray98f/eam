@@ -211,7 +211,9 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         List<String> userIds = overhaulTplReqDTO.getExamineReqDTO().getUserIds();
         String templateId = overhaulTplReqDTO.getTemplateId();
         // 待办
-        overTodoService.insertTodoWithUserList(userIds, "收到一条检修模板编号为：" + templateId + "的审批流程", recId, templateId, "检修模板审核", "?", currentPersonId, null, BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value());
+        overTodoService.insertTodoWithUserList(userIds, "收到一条检修模板编号为：" + templateId + "的审批流程",
+                recId, templateId, "检修模板审核", "overhaulTpl",
+                currentPersonId, null, BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value());
         // 流程引擎提交
         String processId = bpmnService.commit(templateId, BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(), null, null, userIds, null);
         overhaulTplReqDTO.setWorkFlowInstStatus(roleMapper.getSubmitNodeId(BpmnFlowEnum.OVERHAUL_TPL_SUBMIT.value(),null));

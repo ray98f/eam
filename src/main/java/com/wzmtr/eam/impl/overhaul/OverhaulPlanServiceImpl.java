@@ -686,7 +686,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanReqDTO.setExt1(" ");
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
         // 添加待办
-        overTodoService.insertTodoWithUserList(userIds, "收到一条检修计划编号为：" + planCode + "的审批流程", recId, planCode, "检修计划审核", "?", currentPersonId, null, BpmnFlowEnum.ORDER_PLAN_SUBMIT.value());
+        overTodoService.insertTodoWithUserList(userIds, "收到一条检修计划编号为：" + planCode + "的审批流程",
+                recId, planCode, "检修计划审核", "overhaulPlan",
+                currentPersonId, null, BpmnFlowEnum.ORDER_PLAN_SUBMIT.value());
         // 记录日志
         workFlowLogService.add(WorkFlowLogBO.builder().status(BpmnStatus.SUBMIT.getDesc()).userIds(userIds).workFlowInstId(processId).build());
     }

@@ -171,7 +171,9 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultReportMapper.updateFaultOrder(faultOrder);
         List<String> users = faultQueryServiceImpl.getUsersByCompanyAndRole(reqDTO.getMajorCode(), null, "ZCJD");
         if (CollectionUtil.isNotEmpty(users)) {
-            overTodoService.insertTodoWithUserList(users, String.format(CommonConstants.TODO_GD_TPL, nextFaultWorkNo, "故障"), faultOrder.getRecId(), nextFaultWorkNo, "故障已下发", "?", TokenUtils.getCurrentPersonId(), null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            overTodoService.insertTodoWithUserList(users, String.format(CommonConstants.TODO_GD_TPL, nextFaultWorkNo, "故障"),
+                    faultOrder.getRecId(), nextFaultWorkNo, "故障已下发", "faultSendZc",
+                    TokenUtils.getCurrentPersonId(), null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         }
     }
 
@@ -182,7 +184,9 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultReportMapper.updateFaultOrder(faultOrder);
         List<String> users = faultQueryServiceImpl.getUsersByCompanyAndRole(reqDTO.getMajorCode(), "DM_007", null);
         if (CollectionUtil.isNotEmpty(users)) {
-            overTodoService.insertTodoWithUserList(users, String.format(CommonConstants.TODO_GD_TPL, nextFaultWorkNo, "故障"), faultOrder.getRecId(), nextFaultWorkNo, "故障已下发", "?", TokenUtils.getCurrentPersonId(), null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+            overTodoService.insertTodoWithUserList(users, String.format(CommonConstants.TODO_GD_TPL, nextFaultWorkNo, "故障"),
+                    faultOrder.getRecId(), nextFaultWorkNo, "故障已下发", "faultSendZtt",
+                    TokenUtils.getCurrentPersonId(), null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
         }
     }
 

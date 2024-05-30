@@ -499,7 +499,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //     // eiInfo.set("content", content);
         //     // ISendMessage.sendMoblieMessageByGroup(eiInfo);
         // } else {
-        overTodoService.insertTodo("【" + majorName + CommonConstants.FAULT_CONTENT_END, faultOrderDO.getRecId(), faultWorkNo, fillinUserId, "故障关闭", "?", currentUser, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+        overTodoService.insertTodo("【" + majorName + CommonConstants.FAULT_CONTENT_END,
+                faultOrderDO.getRecId(), faultWorkNo, fillinUserId, "故障关闭",
+                "faultClose", currentUser, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
     }
 
     public void sendContractFault(FaultOrderDO dmfm02) {
@@ -926,8 +928,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已完工确认，请及时在EAM系统关闭工单！";
         overTodoService.overTodo(faultOrder.getFaultWorkNo());
         // 谁提报的谁关闭
-        overTodoService.insertTodo(content, faultOrder.getRecId(), faultWorkNo, faultInfo.getFillinUserId(),
-                CommonConstants.FAULT_FINISHED_CONFIRM_CN, "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+        overTodoService.insertTodo(content, faultOrder.getRecId(), faultWorkNo,
+                faultInfo.getFillinUserId(), CommonConstants.FAULT_FINISHED_CONFIRM_CN,
+                "faultFinishWorkConfirm", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
     }
 
     /**
@@ -960,7 +963,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         // 判断是否存在验收状态的数据
         Set<String> orderStatus = StreamUtils.mapToSet(list, FaultDetailResDTO::getOrderStatus);
         Assert.isFalse(orderStatus.contains(OrderStatus.YAN_SHOU.getCode()), "当前勾选的数据中存在验收状态的数据，无法进行重复操作!");
-        String currentPersonId = TokenUtils.getCurrentPersonId();
         list.forEach(a -> {
             String faultNo = a.getFaultNo();
             String faultWorkNo = a.getFaultWorkNo();
@@ -991,10 +993,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 // 行车设备类 且不是车辆故障
                 if ("10".equals(faultInfo.getFaultType()) && !CommonConstants.ZC_LIST.contains(majorCode)) {
                     List<String> users = getUsersByCompanyAndRole(majorCode, "DM_007", "ZCJD");
-                    overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo, CommonConstants.FAULT_FINISHED_CONFIRM_CN, currentPersonId, "?", null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo,
+                            CommonConstants.FAULT_FINISHED_CONFIRM_CN, "faultCheck",
+                            TokenUtils.getCurrentPersonId(), null, BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 } else {
                     //其他的发给工班
-                    overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"), recId, faultWorkNo, faultInfo.getRepairDeptCode(), "故障工单完工验收", "?", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
+                    overTodoService.insertTodoWithUserOrgSameTodoId(String.format(CommonConstants.TODO_GD_TPL, faultWorkNo, "故障"),
+                            recId, faultWorkNo, faultInfo.getRepairDeptCode(), "故障工单完工验收",
+                            "faultFinishWorkConfirm", TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
                 }
             } else {
                 sendRepairTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());
