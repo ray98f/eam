@@ -666,10 +666,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         String userId = TokenUtils.getCurrentPersonId();
         String userOfficeName = TokenUtils.getCurrentPerson().getOfficeName();
         String userName = TokenUtils.getCurrentPerson().getPersonName();
-        String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userOfficeName + "的" + userName + "已验收，请及时在EAM" + "系统完工确认！";
+        String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userOfficeName + "的" + userName + "已验收，请及时在EAM系统完工确认！";
         // 中铁通发给中铁通专业工程师  中车发给中车专业工程师
         // 专业工程师(中铁通) DM_006 专业工程师（中车）DM_032
-        List<String> users = getUsersByCompanyAndRole(reqDTO.getMajorCode(), "DM_006", "DM_032");
+        List<String> users = getUsersByCompanyAndRole(reqDTO.getMajorCode(), CommonConstants.DM_006, CommonConstants.DM_032);
         overTodoService.insertTodoWithUserList(users, content, order.getRecId()
                 , faultWorkNo, "故障完工确认", "DMFM0001", userId, TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_REPORT_QUERY.value());
     }

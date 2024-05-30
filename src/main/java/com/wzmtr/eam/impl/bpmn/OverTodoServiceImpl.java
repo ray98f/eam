@@ -101,7 +101,7 @@ public class OverTodoServiceImpl implements OverTodoService {
             StatusWorkFlowLog sLog = new StatusWorkFlowLog();
             BeanUtils.copyProperties(eipMsgPushReq, sLog);
             sLog.setStepName(stepName);
-            sLog.setSyscode("DM");
+            sLog.setSyscode(CommonConstants.DM);
             sLog.setLastStepUserId(TokenUtils.getCurrentPersonId());
             sLog.setTaskRcvTime(DateUtils.getCurrentTime());
             sLog.setRelateId(businessNo);
