@@ -101,11 +101,11 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     public FaultFollowResDTO detail(String id) {
         FaultFollowResDTO res = faultFollowMapper.detail(id, null);
         if (StringUtils.isNotNull(res)) {
-            List<FaultFollowReportResDTO> reportList = faultFollowMapper.getReport(res.getFollowNo(), "1");
+            List<FaultFollowReportResDTO> reportList = faultFollowMapper.getReport(res.getFollowNo(), CommonConstants.ONE_STRING);
             if (StringUtils.isNotEmpty(reportList)) {
                 for (FaultFollowReportResDTO report : reportList) {
                     if (StringUtils.isNotEmpty(report.getDocId())) {
-                        report.setDocFile(fileMapper.selectFileInfo(Arrays.asList(report.getDocId().split(","))));
+                        report.setDocFile(fileMapper.selectFileInfo(Arrays.asList(report.getDocId().split(CommonConstants.COMMA))));
                     }
                 }
             }
@@ -236,7 +236,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
         if (StringUtils.isNotEmpty(list)) {
             for (FaultFollowReportResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getDocId())) {
-                    res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+                    res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(CommonConstants.COMMA))));
                 }
             }
         }
@@ -247,7 +247,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
     public FaultFollowReportResDTO getReportDetail(String id) {
         FaultFollowReportResDTO res = faultFollowMapper.getReportDetail(id);
         if (StringUtils.isNotNull(res) && StringUtils.isNotEmpty(res.getDocId())) {
-            res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+            res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(CommonConstants.COMMA))));
         }
         return res;
     }
@@ -307,11 +307,11 @@ public class FaultFollowServiceImpl implements FaultFollowService {
         }
         // 获取当前日期在跟踪工单第几跟踪周期
         step = getFollowDays(followNo, CommonConstants.ONE_STRING);
-        if (step == 0) {
+        if (step == CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当前时间不在此故障跟踪工单的起止时间范围内，无法填写跟踪报告！");
         } else {
             Integer result = faultFollowMapper.checkReportStep(followNo, step);
-            if (result != 0) {
+            if (result != CommonConstants.ZERO) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "本周期的跟踪报告已提交，无法再次提交！");
             }
         }
