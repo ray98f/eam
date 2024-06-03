@@ -991,7 +991,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
                 // 中铁通的发给中铁通生产调度 DM_007
                 // 行车设备类 且不是车辆故障
-                if ("10".equals(faultInfo.getFaultType()) && !CommonConstants.ZC_LIST.contains(majorCode)) {
+                if (CommonConstants.TEN_STRING.equals(faultInfo.getFaultType()) && !CommonConstants.ZC_LIST.contains(majorCode)) {
                     List<String> users = getUsersByCompanyAndRole(majorCode, "DM_007", "ZCJD");
                     overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo,
                             CommonConstants.FAULT_FINISHED_CONFIRM_CN, "faultCheck",

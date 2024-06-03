@@ -131,7 +131,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void addOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws ParseException {
-        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getFirstBeginTime())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
@@ -249,13 +250,13 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Override
     public void submitOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception {
-        _check(overhaulPlanReqDTO);
+        checkOverhaulPlan(overhaulPlanReqDTO);
         //为啥要设置删除时间？？
         overhaulPlanReqDTO.setRecDeleteTime(overhaulPlanReqDTO.getOpinion());
         submitOrderPlan(overhaulPlanReqDTO);
     }
 
-    private void _check(OverhaulPlanReqDTO overhaulPlanReqDTO) {
+    private void checkOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
             if (Objects.isNull(overhaulPlanReqDTO.getSubjectCode())) {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
@@ -265,14 +266,16 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus()) && !CommonConstants.NINETY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
+        if (!CommonConstants.TEN_STRING.equals(overhaulPlanReqDTO.getTrialStatus())
+                && !CommonConstants.NINETY_STRING.equals(overhaulPlanReqDTO.getTrialStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有编辑和驳回状态的数据才能够进行送审！");
         }
         if (org.apache.commons.lang3.StringUtils.isBlank(overhaulPlanReqDTO.getRuleCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
-        List<OverhaulObjectResDTO> list12 = overhaulPlanMapper.listOverhaulObject(overhaulPlanReqDTO.getPlanCode(), null, null, null, null, "flag");
-        if (list12 == null || list12.size() <= 0) {
+        List<OverhaulObjectResDTO> list12 = overhaulPlanMapper.listOverhaulObject(overhaulPlanReqDTO.getPlanCode(),
+                null, null, null, null, "flag");
+        if (StringUtils.isEmpty(list12)) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中没有检修对象和检修模板！");
         }
     }
@@ -410,7 +413,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 ExcelOverhaulPlanResDTO res = new ExcelOverhaulPlanResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setLineNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getLineNo()) ? "S1线" : "S2线");
-                res.setTrialStatus(CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
+                res.setTrialStatus(CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) ? "编辑"
+                        : CommonConstants.TWENTY_STRING.equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
                 res.setWorkerGroupCode(organizationMapper.getNamesById(resDTO.getWorkerGroupCode()));
                 res.setPlanStatus(CommonConstants.TEN_STRING.equals(resDTO.getPlanStatus()) ? "启用" : "禁用");
                 list.add(res);
@@ -594,7 +598,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     }
 
     public void insertInspectObject(String planCode, String orderCode) {
-        List<OverhaulObjectResDTO> objects = overhaulPlanMapper.listOverhaulObject(planCode, null, null, null, null, null);
+        List<OverhaulObjectResDTO> objects = overhaulPlanMapper.listOverhaulObject(planCode,
+                null, null, null, null, null);
         for (OverhaulObjectResDTO object : objects) {
             String dmer22uuid = TokenUtils.getUuId();
             List<OverhaulTplDetailResDTO> objectIsValid = overhaulTplMapper.listOverhaulTplDetail(object.getTemplateId());

@@ -328,7 +328,6 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 DetectionPlanDetailDO detectionPlanDetailDO = new DetectionPlanDetailDO();
                 detectionPlanDetailDO.setRecId(id).setDeleteFlag(CommonConstants.ONE_STRING).setRecDeletor(TokenUtils.getCurrentPersonId()).setRecDeleteTime(DateUtils.getCurrentTime());
                 detectionPlanDetailMapper.updateById(detectionPlanDetailDO);
-                // detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

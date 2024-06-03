@@ -102,7 +102,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         String majorCode = reqDTO.getMajorCode();
         // 中铁通 且不是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         if (!CommonConstants.ZC_LIST.contains(majorCode)) {
-            if (!"10".equals(reqDTO.getFaultType())) {
+            if (!CommonConstants.TEN_STRING.equals(reqDTO.getFaultType())) {
                 String positionCode = reqDTO.getPositionCode();
                 if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                     if (StringUtils.isEmpty(faultInfo.getRepairDeptCode())) {
@@ -206,7 +206,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         String majorCode = reqDTO.getMajorCode();
         if (!CommonConstants.ZC_LIST.contains(majorCode)) {
-            if (!"10".equals(reqDTO.getFaultType())) {
+            if (!CommonConstants.TEN_STRING.equals(reqDTO.getFaultType())) {
                 String positionCode = reqDTO.getPositionCode();
                 if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                     if (StringUtils.isEmpty(faultInfo.getRepairDeptCode())) {

@@ -1,6 +1,5 @@
 package com.wzmtr.eam.utils;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
@@ -241,10 +240,14 @@ public class ExcelTemplateUtils {
         try {
             OutputStream outputStream = response.getOutputStream();
             response.setHeader("Content-disposition", "attachment; filename=" + filename);
-            response.setContentType("application/vnd.ms-excel");// 设置类型
-            response.setHeader("Pragma", "No-cache");// 设置头
-            response.setHeader("Cache-Control", "no-cache");// 设置头
-            response.setDateHeader("Expires", 0);// 设置日期头
+            // 设置类型
+            response.setContentType("application/vnd.ms-excel");
+            // 设置头
+            response.setHeader("Pragma", "No-cache");
+            // 设置头
+            response.setHeader("Cache-Control", "no-cache");
+            // 设置日期头
+            response.setDateHeader("Expires", 0);
             excelWriter = EasyExcel.write(outputStream).withTemplate(inputStream).build();
             for (Map.Entry<String, List<?>> entry : sheetAndDataMap.entrySet()) {
                 List<?> value = entry.getValue();

@@ -1163,8 +1163,9 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     public static String substringFirstThree(String str) {
-        if (str == null || str.length() < 3) {
-            return str; // 如果字符串为空或者长度小于3，直接返回原字符串
+        // 如果字符串为空或者长度小于3，直接返回原字符串
+        if (str == null || str.length() < CommonConstants.THREE) {
+            return str;
         }
         return str.substring(0, 3);
     }

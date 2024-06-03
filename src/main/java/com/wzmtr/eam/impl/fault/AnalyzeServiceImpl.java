@@ -233,7 +233,6 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         FaultAnalyzeDO dmfm03 = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq("FAULT_NO", faultNo).eq("FAULT_WORK_NO", faultWorkNo).eq("FAULT_ANALYSIS_NO", checkFaultAnalysisNo));
         String processId = dmfm03.getWorkFlowInstId();
         workFlowLogService.ifReviewer(processId);
-        // String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(processId, backOpinion);
         dmfm03.setRecStatus("10");
         dmfm03.setWorkFlowInstStatus(" ");

@@ -25,5 +25,5 @@ public class WriteSlaveReqDTO extends SlaveReqDTO {
     /**
      * 写多个数值
      */
-    private int[] values;
+    private Integer[] values;
 }
