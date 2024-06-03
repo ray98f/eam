@@ -173,6 +173,11 @@ public class TransferServiceImpl implements TransferService {
         if (!CommonConstants.TEN_STRING.equals(equipmentResDTO.getApprovalStatus())) {
             throw new CommonException(ErrorCode.TRANSFER_SPLIT_ERROR);
         }
+        if (equipmentResDTO.getUseLineName().contains(CommonConstants.S1)) {
+            equipmentResDTO.setUseLineNo(CommonConstants.LINE_CODE_ONE);
+        } else {
+            equipmentResDTO.setUseLineNo(CommonConstants.LINE_CODE_TWO);
+        }
         updateTransfer(equipmentResDTO);
     }
 

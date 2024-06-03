@@ -142,6 +142,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentReqDTO.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
         equipmentReqDTO.setEquipCode(getEquipCode());
         equipmentReqDTO.setSpecialEquipFlag("10");
+        equipmentReqDTO.setOtherEquipFlag("10");
         equipmentMapper.addEquipment(equipmentReqDTO);
     }
 
@@ -157,6 +158,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentReqDTO.setDeptCode(user.getOfficeAreaId());
         equipmentReqDTO.setDeptName(user.getOfficeName());
         equipmentReqDTO.setSpecialEquipFlag("10");
+        equipmentReqDTO.setOtherEquipFlag("10");
         equipmentMapper.modifyEquipment(equipmentReqDTO);
     }
 

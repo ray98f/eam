@@ -3,7 +3,17 @@ package com.wzmtr.eam.constant;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 基础常量
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/11/31
+ */
 public class CommonConstants {
+
+    public static final String S1 = "S1";
+
+    public static final String S2 = "S2";
 
     /**
      * id
