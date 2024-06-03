@@ -1,4 +1,4 @@
-package com.wzmtr.eam.soft.csm.planWork.vo;
+package com.wzmtr.eam.soft.csm.planwork.vo;
  
 import javax.xml.ws.WebFault;
 

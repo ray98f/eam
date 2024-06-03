@@ -34,7 +34,7 @@ import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.overhaul.OverhaulWeekPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
-import com.wzmtr.eam.soft.csm.planWork.vo.Message;
+import com.wzmtr.eam.soft.csm.planwork.vo.Message;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -533,13 +533,13 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         String url = dictionaries.getItemEname();
-        com.wzmtr.eam.soft.csm.planWork.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.csm.planWork.vo.RequestMessage();
+        com.wzmtr.eam.soft.csm.planwork.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.csm.planwork.vo.RequestMessage();
         requestMessage.setMessage(json);
         requestMessage.setVerb("Get");
         requestMessage.setNoun("faultInfo");
         URL wsdlLocation = new URL(url);
-        com.wzmtr.eam.soft.csm.planWork.service.impl.ISetEamplanwork serverData = (new com.wzmtr.eam.soft.csm.planWork.vo.SetEamplanworkImplService(wsdlLocation)).getSetEamplanworkImplPort();
-        com.wzmtr.eam.soft.csm.planWork.vo.ResponseMessage responseMessage = serverData.setEamplanwork(requestMessage);
+        com.wzmtr.eam.soft.csm.planwork.service.impl.ISetEamplanwork serverData = (new com.wzmtr.eam.soft.csm.planwork.vo.SetEamplanworkImplService(wsdlLocation)).getSetEamplanworkImplPort();
+        com.wzmtr.eam.soft.csm.planwork.vo.ResponseMessage responseMessage = serverData.setEamplanwork(requestMessage);
         return JSON.toJSONString(responseMessage);
     }
 

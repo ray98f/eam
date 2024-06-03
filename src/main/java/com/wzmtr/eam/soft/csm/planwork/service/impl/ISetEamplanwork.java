@@ -1,9 +1,9 @@
-package com.wzmtr.eam.soft.csm.planWork.service.impl;
+package com.wzmtr.eam.soft.csm.planwork.service.impl;
 
-import com.wzmtr.eam.soft.csm.planWork.vo.ObjectFactory;
-import com.wzmtr.eam.soft.csm.planWork.vo.RequestMessage;
-import com.wzmtr.eam.soft.csm.planWork.vo.ResponseMessage;
-import com.wzmtr.eam.soft.csm.planWork.vo.ServiceException_Exception;
+import com.wzmtr.eam.soft.csm.planwork.vo.ObjectFactory;
+import com.wzmtr.eam.soft.csm.planwork.vo.RequestMessage;
+import com.wzmtr.eam.soft.csm.planwork.vo.ResponseMessage;
+import com.wzmtr.eam.soft.csm.planwork.vo.ServiceException_Exception;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;

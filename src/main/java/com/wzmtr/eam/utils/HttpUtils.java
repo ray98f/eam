@@ -28,7 +28,7 @@ public class HttpUtils {
         StringBuilder result = new StringBuilder();
         data = data == null ? "{}" : data;
         try {
-            HttpURLConnection conn = getHttpURLConnection(pathUrl, "POST");
+            HttpURLConnection conn = getHttpUrlConnection(pathUrl, "POST");
 
             // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
@@ -81,7 +81,7 @@ public class HttpUtils {
     }
 
     @NotNull
-    private static HttpURLConnection getHttpURLConnection(String pathUrl, String POST) throws IOException {
+    private static HttpURLConnection getHttpUrlConnection(String pathUrl, String requestType) throws IOException {
         URL url = new URL(pathUrl);
 
         //打开和url之间的连接
@@ -89,7 +89,7 @@ public class HttpUtils {
 
         //设定请求的方法为"POST"，默认是GET
         //post与get的不同之处在于post的参数不是放在URL字串里面，而是放在http请求的正文内。
-        conn.setRequestMethod(POST);
+        conn.setRequestMethod(requestType);
 
         //设置30秒连接超时
         conn.setConnectTimeout(30000);
@@ -118,7 +118,7 @@ public class HttpUtils {
         BufferedReader br = null;
         StringBuilder result = new StringBuilder();
         try {
-            HttpURLConnection conn = getHttpURLConnection(pathUrl, "GET");
+            HttpURLConnection conn = getHttpUrlConnection(pathUrl, "GET");
 
             //设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");

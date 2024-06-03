@@ -17,10 +17,10 @@ public class RedisService {
     @Value("${spring.redis.key-prefix}")
     public String keyPrefix;
 
-    public String KEY_PREFIX_VALUE = "nature:value:";
-    public String KEY_PREFIX_SET = "nature:set:";
-    public String KEY_PREFIX_LIST = "nature:list:";
-    public String KEY_PREFIX_MAP = "nature:map:";
+    public static final String KEY_PREFIX_VALUE = "nature:value:";
+    public static final String KEY_PREFIX_SET = "nature:set:";
+    public static final String KEY_PREFIX_LIST = "nature:list:";
+    public static final String KEY_PREFIX_MAP = "nature:map:";
 
     public RedisTemplate<String, String> redisTemplate;
 

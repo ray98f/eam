@@ -27,6 +27,6 @@ public interface UserGroupMemberService {
 
     List<DispatchResDTO> queryDispatch();
 
-    List<ZcjxResDTO> queryJXWorker(String officeId);
+    List<ZcjxResDTO> queryJxWorker(String officeId);
 
 }

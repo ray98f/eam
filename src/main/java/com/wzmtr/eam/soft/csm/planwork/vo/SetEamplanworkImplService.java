@@ -1,6 +1,6 @@
-package com.wzmtr.eam.soft.csm.planWork.vo;
+package com.wzmtr.eam.soft.csm.planwork.vo;
 
-import com.wzmtr.eam.soft.csm.planWork.service.impl.ISetEamplanwork;
+import com.wzmtr.eam.soft.csm.planwork.service.impl.ISetEamplanwork;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.*;
