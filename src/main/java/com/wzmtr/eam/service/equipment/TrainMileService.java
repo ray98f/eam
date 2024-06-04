@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.List;
 
@@ -87,5 +88,12 @@ public interface TrainMileService {
      * @param endTime 结束时间
      */
     void initTrainDailyMile(String startTime, String endTime);
+
+    /**
+     * 根据日期获取当天所有列车的总里程（含非运营）总数
+     * @param day 日期
+     * @return 总数
+     */
+    BigDecimal getSumDailyMileByDay(String day);
 
 }

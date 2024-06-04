@@ -304,4 +304,9 @@ public class TrainMileServiceImpl implements TrainMileService {
         }
     }
 
+    @Override
+    public BigDecimal getSumDailyMileByDay(String day) {
+        return trainMileMapper.getSumDailyMileByDay(day);
+    }
+
 }

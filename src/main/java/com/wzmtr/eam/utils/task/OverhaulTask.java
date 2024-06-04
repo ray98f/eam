@@ -73,7 +73,7 @@ public class OverhaulTask {
         // 获取默认系统管理员token
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("application/json;UTF-8"));
-        headers.add("Authorization", TokenUtils.createSimpleToken(buildAdmin()));
+        headers.add(CommonConstants.AUTHORIZATION, TokenUtils.createSimpleToken(buildAdmin()));
         if (StringUtils.isNotEmpty(plans)) {
             for (OverhaulPlanResDTO plan : plans) {
                 OverhaulPlanReqDTO req = new OverhaulPlanReqDTO();

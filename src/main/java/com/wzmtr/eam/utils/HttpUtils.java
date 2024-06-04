@@ -36,7 +36,7 @@ public class HttpUtils {
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
             if (!StringUtils.isEmpty(authorization)) {
-                conn.setRequestProperty("Authorization", authorization);
+                conn.setRequestProperty(CommonConstants.AUTHORIZATION, authorization);
             }
 
             //连接，从上述url.openConnection()至此的配置必须要在connect之前完成，
@@ -126,7 +126,7 @@ public class HttpUtils {
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
             if (StringUtils.isNotEmpty(authorization)) {
-                conn.setRequestProperty("Authorization", authorization);
+                conn.setRequestProperty(CommonConstants.AUTHORIZATION, authorization);
             }
 
             //连接，从上述url.openConnection()至此的配置必须要在connect之前完成，
@@ -135,7 +135,7 @@ public class HttpUtils {
             //获取URLConnection对象对应的输入流
             InputStream is = conn.getInputStream();
             //构造一个字符流缓存
-            br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             String str = "";
             while ((str = br.readLine()) != null) {
                 result.append(str);

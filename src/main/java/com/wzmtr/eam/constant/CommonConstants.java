@@ -11,6 +11,17 @@ import java.util.List;
  */
 public class CommonConstants {
 
+    /**
+     * Jwt相关
+     */
+    public static final String OPEN_URL = "/open";
+    public static final String SWAGGER_URL = "swagger";
+    public static final String MDM_SYNC_URL = "mdmSync";
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String JSESSIONID_FIX = ";jsessionid";
+    public static final String FILTER_ERROR= "filter.error";
+    public static final String ERROR_EXTHROW = "/error/exthrow";
+
     public static final String S1 = "S1";
 
     public static final String S2 = "S2";
@@ -25,6 +36,7 @@ public class CommonConstants {
     public static final String EMPTY = "";
     public static final String BLANK = " ";
     public static final String COMMA = ",";
+    public static final String SEMICOLON = ";";
     public static final String UNDERLINE = "_";
     public static final String SINGLE_QUOTATION_MARK = "'";
     public static final String DOUBLE_QUOTATION_MARKS = "\"";

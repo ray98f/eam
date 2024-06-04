@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Objects;
 
@@ -206,4 +207,14 @@ public class TrainMileController {
         return DataResponse.success();
     }
 
+    /**
+     * 根据日期获取当天所有列车的总里程（含非运营）总数-开放接口
+     * @param day 日期
+     * @return 总数
+     */
+    @GetMapping("/mile/daily/sum/open")
+    @ApiOperation(value = "根据日期获取当天所有列车的总里程（含非运营）总数-开放接口")
+    public DataResponse<BigDecimal> getSumDailyMileByDay(@RequestParam String day) {
+        return DataResponse.of(trainMileService.getSumDailyMileByDay(day));
+    }
 }

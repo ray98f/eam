@@ -1,6 +1,7 @@
 package com.wzmtr.eam.config;
 
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
+import com.wzmtr.eam.constant.CommonConstants;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +26,6 @@ import java.util.List;
 @EnableKnife4j
 @ConditionalOnProperty(name = "swagger.enable", havingValue = "true")
 public class SwaggerConfig {
-
-    private static final String AUTHORIZATION = "Authorization";
     @Bean
     public Docket uapApi() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -41,7 +40,7 @@ public class SwaggerConfig {
 
     private List<ApiKey> securitySchemes() {
         List<ApiKey> apiKeyList = new ArrayList<>();
-        apiKeyList.add(new ApiKey(AUTHORIZATION, AUTHORIZATION, "header"));
+        apiKeyList.add(new ApiKey(CommonConstants.AUTHORIZATION, CommonConstants.AUTHORIZATION, "header"));
         return apiKeyList;
     }
 
@@ -60,7 +59,7 @@ public class SwaggerConfig {
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
         List<SecurityReference> securityReferences = new ArrayList<>();
-        securityReferences.add(new SecurityReference(AUTHORIZATION, authorizationScopes));
+        securityReferences.add(new SecurityReference(CommonConstants.AUTHORIZATION, authorizationScopes));
         return securityReferences;
     }
 

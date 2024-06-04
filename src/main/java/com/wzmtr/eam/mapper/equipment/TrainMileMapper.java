@@ -11,6 +11,7 @@ import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -114,5 +115,12 @@ public interface TrainMileMapper {
      * @param trains 列车信息
      */
     void initTrainDailyMile(List<String> dateDays, List<RegionResDTO> trains);
+
+    /**
+     * 根据日期获取当天所有列车的总里程（含非运营）总数
+     * @param day 日期
+     * @return 总数
+     */
+    BigDecimal getSumDailyMileByDay(String day);
 
 }
