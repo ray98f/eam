@@ -14,11 +14,6 @@ import lombok.Data;
 @ApiModel
 public class SubjectFaultResDTO {
     /**
-     * 系统编号
-     */
-    @ApiModelProperty(value = "系统编号")
-    private String subjectCode;
-    /**
      * 系统名称
      */
     @ApiModelProperty(value = "系统名称")

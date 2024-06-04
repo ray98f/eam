@@ -1309,8 +1309,26 @@
         SELECT COUNT(*) FROM
         T_FAULT_INFO
         WHERE DELETE_FLAG='0'
-        <if test="subjectCode!=null and subjectCode!=''">
-            AND MAJOR_CODE=#{subjectCode}
+        <if test="req.majorCodes!=null and req.majorCodes.size()>0">
+            AND MAJOR_CODE IN (
+            <foreach collection="req.majorCodes" index="index" item="majorCode" separator=",">
+                #{majorCode}
+            </foreach>
+            )
+        </if>
+        <if test="req.systemCodes!=null and req.systemCodes.size()>0">
+            AND SYSTEM_CODE IN (
+            <foreach collection="req.systemCodes" index="index" item="systemCode" separator=",">
+                #{systemCode}
+            </foreach>
+            )
+        </if>
+        <if test="req.equipTypeCodes!=null and req.equipTypeCodes.size()>0">
+            AND EQUIP_TYPE_CODE IN (
+            <foreach collection="req.equipTypeCodes" index="index" item="equipTypeCode" separator=",">
+                #{equipTypeCode}
+            </foreach>
+            )
         </if>
         <if test="startTime!=null and startTime!=''">
             AND to_date(DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')>=to_date(#{startTime},'YYYY-MM-DD HH24:MI:SS')
