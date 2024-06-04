@@ -233,7 +233,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         OrderStatus orderStatus = OrderStatus.getByCode(resDTO.getOrderStatus());
         FaultAffect faultAffect = FaultAffect.getByCode(resDTO.getFaultAffect());
         FaultLevel faultLevel = FaultLevel.getByCode(resDTO.getOrderStatus());
-        DealerUnit dealerUnit = DealerUnit.getByCode(resDTO.getDealerUnit());
         LineCode lineCode = LineCode.getByCode(resDTO.getLineCode());
         FaultType faultType = FaultType.getByCode(resDTO.getFaultType());
         Dictionaries position2 = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.station2", Objects.isNull(resDTO.getPosition2Code()) ? "" : resDTO.getPosition2Code());
@@ -245,7 +244,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(resDTO.getFillinDeptCode())) {
             fillinDept = organizationMapper.getNamesById(resDTO.getFillinDeptCode());
         }
-//        export.setReplacementName(dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
         if (StringUtils.isNotEmpty(fillinDept)) {
             export.setFillinDept(Optional.ofNullable(fillinDept).orElse(CommonConstants.EMPTY));
             export.setRepairDept(Optional.ofNullable(repairDept).orElse(CommonConstants.EMPTY));

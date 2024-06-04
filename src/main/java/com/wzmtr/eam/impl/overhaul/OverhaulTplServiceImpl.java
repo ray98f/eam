@@ -205,7 +205,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         }
         List<OverhaulTplDetailResDTO> list = overhaulTplMapper.listOverhaulTplDetail(overhaulTplReqDTO.getTemplateId());
         if (StringUtils.isEmpty(list)) {
-            throw new CommonException(ErrorCode.NO_DETAIL, "勾选模板中没有检修项！");
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选模板中没有检修项！");
         }
         // 下一步的人
         List<String> userIds = overhaulTplReqDTO.getExamineReqDTO().getUserIds();
