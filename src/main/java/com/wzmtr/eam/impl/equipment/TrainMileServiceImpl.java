@@ -8,6 +8,7 @@ import com.wzmtr.eam.dto.req.equipment.TrainMileageReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelTrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
+import com.wzmtr.eam.dto.res.equipment.SumDailyMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
@@ -305,7 +306,7 @@ public class TrainMileServiceImpl implements TrainMileService {
     }
 
     @Override
-    public BigDecimal getSumDailyMileByDay(String day) {
+    public SumDailyMileResDTO getSumDailyMileByDay(String day) {
         return trainMileMapper.getSumDailyMileByDay(day);
     }
 

@@ -2,6 +2,7 @@ package com.wzmtr.eam.controller.equipment;
 
 import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
+import com.wzmtr.eam.dto.res.equipment.SumDailyMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
@@ -19,14 +20,18 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Objects;
 
@@ -214,7 +219,7 @@ public class TrainMileController {
      */
     @GetMapping("/mile/daily/sum/open")
     @ApiOperation(value = "根据日期获取当天所有列车的总里程（含非运营）总数-开放接口")
-    public DataResponse<BigDecimal> getSumDailyMileByDay(@RequestParam String day) {
+    public DataResponse<SumDailyMileResDTO> getSumDailyMileByDay(@RequestParam String day) {
         return DataResponse.of(trainMileService.getSumDailyMileByDay(day));
     }
 }
