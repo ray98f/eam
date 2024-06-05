@@ -561,9 +561,9 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public Page<TrackQueryResDTO> queryDMFM21(OneCarOneGearQueryReqDTO reqDTO) {
+    public Page<TrackQueryResDTO> queryFaultFollow(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return oneCarOneGearMapper.queryDMFM21(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
+        return oneCarOneGearMapper.queryFaultFollow(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
     /**
@@ -1247,7 +1247,7 @@ public class StatisticServiceImpl implements StatisticService {
      * RAMS 故障列表
      */
     @Override
-    public Page<FaultRamsResDTO> queryRAMSFaultList(RamsTimeReqDTO reqDTO) {
+    public Page<FaultRamsResDTO> queryRamsFaultList(RamsTimeReqDTO reqDTO) {
         Page<FaultRamsResDTO> list = ramsMapper.queryRamsFaultList(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime(),null);
         if (StringUtils.isEmpty(list.getRecords())) {
             return new Page<>();
@@ -1285,11 +1285,11 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
-        List<TrackQueryResDTO> trackQueryResDTOS = oneCarOneGearMapper.queryDMFM21(startTime, endTime, equipName);
-        if (trackQueryResDTOS != null && !trackQueryResDTOS.isEmpty()) {
+    public void queryFaultFollowExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
+        List<TrackQueryResDTO> trackQueryList = oneCarOneGearMapper.queryFaultFollow(startTime, endTime, equipName);
+        if (trackQueryList != null && !trackQueryList.isEmpty()) {
             List<ExcelTrackQueryResDTO> list = new ArrayList<>();
-            for (TrackQueryResDTO resDTO : trackQueryResDTOS) {
+            for (TrackQueryResDTO resDTO : trackQueryList) {
                 ExcelTrackQueryResDTO res = new ExcelTrackQueryResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setTrackCycle(String.valueOf(resDTO.getTrackCycle()));
