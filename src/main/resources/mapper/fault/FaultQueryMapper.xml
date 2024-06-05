@@ -1331,10 +1331,10 @@
             )
         </if>
         <if test="startTime!=null and startTime!=''">
-            AND to_date(DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')>=to_date(#{startTime},'YYYY-MM-DD HH24:MI:SS')
+            AND DISCOVERY_TIME>=#{startTime}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND to_date(#{endTime},'YYYY-MM-DD HH24:MI:SS')>=to_date(DISCOVERY_TIME,'YYYY-MM-DD HH24:MI:SS')
+            AND #{endTime}>=DISCOVERY_TIME
         </if>
     </select>
 </mapper>

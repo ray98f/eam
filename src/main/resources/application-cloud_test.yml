@@ -1,4 +1,4 @@
-# 中兴测试环境
+# 云服务器测试环境
 spring:
   datasource:
     url: jdbc:oracle:thin:@192.168.0.3:1523/xe
