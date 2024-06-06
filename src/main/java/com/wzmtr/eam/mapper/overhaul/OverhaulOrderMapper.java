@@ -90,10 +90,16 @@ public interface OverhaulOrderMapper {
     OverhaulOrderDetailResDTO getOverhaulObjectDetail(String id);
 
     /**
-     * 编辑检修对象
+     * 根据检修工单编号编辑所有检修对象
      * @param req 检修对象参数
      */
-    void modifyOverhaulObject(OverhaulOrderDetailReqDTO req);
+    void modifyOverhaulObjectByCode(OverhaulOrderDetailReqDTO req);
+
+    /**
+     * 根据id编辑检修对象
+     * @param req 检修对象参数
+     */
+    void modifyOverhaulObjectById(OverhaulOrderDetailReqDTO req);
 
     List<OverhaulOrderDetailResDTO> listOverhaulObject(String orderCode, String planCode, String planName, String objectCode);
 

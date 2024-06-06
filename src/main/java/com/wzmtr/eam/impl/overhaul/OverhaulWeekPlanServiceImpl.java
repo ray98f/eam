@@ -139,9 +139,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void addOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
@@ -155,7 +157,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
         SimpleDateFormat month = new SimpleDateFormat("yyMM");
         String weekPlanCode = overhaulWeekPlanMapper.getMaxCode();
-        if (StringUtils.isEmpty(weekPlanCode) || !weekPlanCode.substring(CommonConstants.THREE, CommonConstants.SEVEN).equals(month.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(weekPlanCode) ||
+                !weekPlanCode.substring(CommonConstants.THREE, CommonConstants.SEVEN).equals(month.format(System.currentTimeMillis()))) {
             weekPlanCode = "ZJH" + month.format(System.currentTimeMillis()) + "0001";
         } else {
             weekPlanCode = CodeUtils.getNextCode(weekPlanCode, 7);
@@ -173,9 +176,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void modifyOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
@@ -247,9 +252,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     public void submitOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
         // ServiceDMER0111
         String currentPersonId = TokenUtils.getCurrentPersonId();
-        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写！");
         }
         if (!CommonConstants.ADMIN.equals(currentPersonId)) {

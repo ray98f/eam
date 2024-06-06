@@ -1423,8 +1423,8 @@
         FROM T_OVERHAUL_ORDER_DETAIL WHERE REC_ID=#{id}
     </select>
 
-    <update id="modifyOverhaulObject">
-        update T_OVERHAUL_ORDER_DETAIL set
+    <update id="modifyOverhaulObjectByCode">
+        UPDATE T_OVERHAUL_ORDER_DETAIL SET
         <if test="repairStatus!=null">
             REPAIR_STATUS=#{repairStatus},
         </if>
@@ -1441,7 +1441,28 @@
             REMARK=#{remark},
         </if>
         REPAIR_PERSON=#{repairPerson}
-        where REC_ID=#{recId}
+        WHERE ORDER_CODE=#{orderCode}
+    </update>
+
+    <update id="modifyOverhaulObjectById">
+        UPDATE T_OVERHAUL_ORDER_DETAIL SET
+        <if test="repairStatus!=null">
+            REPAIR_STATUS=#{repairStatus},
+        </if>
+        <if test="repairDetail!=null">
+            REPAIR_DETAIL=#{repairDetail},
+        </if>
+        <if test="startTime!=null">
+            START_TIME=#{startTime},
+        </if>
+        <if test="compliteTime!=null">
+            COMPLITE_TIME=#{compliteTime},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REPAIR_PERSON=#{repairPerson}
+        WHERE REC_ID=#{recId}
     </update>
 
     <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">

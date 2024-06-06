@@ -256,10 +256,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (StringUtils.isNotEmpty(roleList)) {
             List<String> roles = roleList.stream().map(Role::getRoleCode).collect(Collectors.toList());
             if (CommonConstants.ONE_STRING.equals(order.getWorkStatus())) {
-                if (!roles.contains(CommonConstants.DM_007) && !CommonConstants.ADMIN.equals(userId) && !roles.contains(CommonConstants.DM_048)) {
+                if (!roles.contains(CommonConstants.DM_007)
+                        && !CommonConstants.ADMIN.equals(userId)
+                        && !roles.contains(CommonConstants.DM_048)) {
                     throw new CommonException(ErrorCode.NORMAL_ERROR, "首次派工必须是调度派工给工班长！");
                 }
-            } else if (!roles.contains(CommonConstants.DM_012) && !roles.contains(CommonConstants.DM_051) && !CommonConstants.ADMIN.equals(userId)) {
+            } else if (!roles.contains(CommonConstants.DM_012)
+                    && !roles.contains(CommonConstants.DM_051)
+                    && !CommonConstants.ADMIN.equals(userId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "已下达、已分配状态必须由工班长派工！");
             }
         }
@@ -286,7 +290,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 List<UserRoleResDTO>  userRoles = userAccountService.getUserRolesById(member.getId());
                 for(UserRoleResDTO r:userRoles){
                     //是工班长:DM_012是中车工班长 DM051是中铁通工班长
-                    if(CommonConstants.DM_012.equals(r.getRoleCode())|| CommonConstants.DM_051.equals(r.getRoleCode())){
+                    if(CommonConstants.DM_012.equals(r.getRoleCode())
+                            || CommonConstants.DM_051.equals(r.getRoleCode())){
                         res.setIsDM012(CommonConstants.ONE_STRING);
                     }
                 }
@@ -360,6 +365,24 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         }
         // 添加流程记录
         addOverhaulOrderFlow(req.getOrderCode(), null);
+        // 编辑工单对象
+        modifyOverhaulObject(req);
+    }
+
+    /**
+     * 编辑工单对象
+     * @param req 传参
+     */
+    private void modifyOverhaulObject(OverhaulOrderReqDTO req) {
+        OverhaulOrderDetailReqDTO orderDetail = new OverhaulOrderDetailReqDTO();
+        orderDetail.setRepairPerson(TokenUtils.getCurrentPersonId());
+        orderDetail.setRepairStatus(req.getRepairStatus());
+        orderDetail.setRepairDetail(req.getRepairDetail());
+        orderDetail.setStartTime(req.getActualStartTime());
+        orderDetail.setCompliteTime(req.getActualEndTime());
+        orderDetail.setRemark(req.getRemark());
+        orderDetail.setObjectCode(req.getOrderCode());
+        overhaulOrderMapper.modifyOverhaulObjectByCode(orderDetail);
     }
 
     @Override
@@ -373,9 +396,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        // if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderReqDTO.getSubjectCode()) && !overhaulOrderReqDTO.getPlanName().contains(CommonConstants.SECOND_REPAIR_SHIFT)) {
-        //     throw new CommonException(ErrorCode.NORMAL_ERROR, "只有工单为车辆二级修才能进行该操作。");
-        // }
         checkOrderState(overhaulOrderReqDTO, "4", "完工");
         if (CommonConstants.ZERO_STRING.equals(overhaulOrderReqDTO.getExamineStatus())) {
             overhaulOrderReqDTO.setWorkStatus(CommonConstants.SIX_STRING);
@@ -482,7 +502,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     /**
      * 根据检修工单修改检修计划（中车）
      * @param overhaulOrderReqDTO 检修工单信息
-     * @throws ParseException
+     * @throws ParseException 异常
      */
     private void modifyOverhaulPlanByOrder(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {
         OverhaulOrderListReqDTO listReqDTO = new OverhaulOrderListReqDTO();
@@ -652,7 +672,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public void modifyOverhaulObject(OverhaulOrderDetailReqDTO req) {
         req.setRepairPerson(TokenUtils.getCurrentPersonId());
-        overhaulOrderMapper.modifyOverhaulObject(req);
+        overhaulOrderMapper.modifyOverhaulObjectById(req);
     }
 
     @Override
@@ -677,7 +697,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         if (StringUtils.isNotEmpty(list)) {
             String planName = list.get(0).getPlanName();
             String orderStatus = list.get(0).getWorkStatus();
-            if (StringUtils.isNotEmpty(planName) && planName.contains(CommonConstants.SECOND_REPAIR_SHIFT) && CommonConstants.FOUR_STRING.equals(orderStatus)) {
+            if (StringUtils.isNotEmpty(planName)
+                    && planName.contains(CommonConstants.SECOND_REPAIR_SHIFT)
+                    && CommonConstants.FOUR_STRING.equals(orderStatus)) {
                 return;
             }
             throw new CommonException(ErrorCode.NORMAL_ERROR, "只有二级修工单可以进行模块验收！");

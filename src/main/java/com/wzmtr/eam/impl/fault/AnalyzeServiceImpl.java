@@ -71,10 +71,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
             userMajorList = userAccountService.listUserMajor();
         }
-
         Page<AnalyzeResDTO> query = faultAnalyzeMapper.query(reqDTO.of(), reqDTO,userMajorList);
-
-
         List<AnalyzeResDTO> records = query.getRecords();
         if (StringUtils.isEmpty(records)) {
             return new Page<>();
