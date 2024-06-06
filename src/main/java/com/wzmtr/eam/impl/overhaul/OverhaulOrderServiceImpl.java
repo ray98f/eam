@@ -351,7 +351,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulItemMapper.finishedOverhaulOrder(req.getOrderCode());
         // 根据专业判断 车辆的是中车-》中车专业工程师 其他是中铁通 -》中铁通专业工程师
         // DM_032 专业工程师（中车)  DM_006   专业工程师(中铁通)
-        String nextRole = nextRole(req, "DM_006", "DM_032");
+        String nextRole = nextRole(req, CommonConstants.DM_006, CommonConstants.DM_032);
         List<BpmnExaminePersonRes> userList = roleMapper.getUserBySubjectAndLineAndRole(null, null, nextRole);
         for (BpmnExaminePersonRes map2 : userList) {
             overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_TPL,req.getOrderCode(),"检修"),
@@ -415,8 +415,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     /**
-     *
-     * @param overhaulOrderReqDTO
+     * 根据专业判断
+     * @param overhaulOrderReqDTO 传参
      * @param zcRole 中车角色
      * @param zttRole 中铁通角色
      * @return

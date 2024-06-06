@@ -78,7 +78,7 @@ public class OrgTypeServiceImpl implements OrgTypeService {
                     orgTypeReqDTO.setOrgCode(office.getAreaId());
                     orgTypeReqDTO.setOrgName(office.getName());
                     Integer result = orgTypeMapper.selectOrgTypeIsExist(orgTypeReqDTO);
-                    if (result > 0) {
+                    if (result > CommonConstants.ONE) {
                         continue;
                     }
                     orgTypeReqDTO.setRecId(TokenUtils.getUuId());

@@ -79,7 +79,7 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
             equipmentRoomReqDTO.setEquipRoomCode(nextCode);
         }
         Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ONE) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
 
@@ -92,7 +92,7 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
     @Override
     public void modifyEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
         Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ONE) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         equipmentRoomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
