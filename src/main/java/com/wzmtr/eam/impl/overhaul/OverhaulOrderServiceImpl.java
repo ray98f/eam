@@ -42,14 +42,12 @@ import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
-import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
-import com.wzmtr.eam.mapper.fault.FaultReportMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulItemMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
@@ -101,8 +99,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Autowired
     private OverhaulOrderMapper overhaulOrderMapper;
     @Autowired
-    private EquipmentCategoryMapper equipmentCategoryMapper;
-    @Autowired
     private OverhaulWorkRecordService overhaulWorkRecordService;
     @Autowired
     private OverhaulPlanMapper overhaulPlanMapper;
@@ -112,8 +108,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     private OverhaulItemMapper overhaulItemMapper;
     @Autowired
     private OverhaulStateMapper overhaulStateMapper;
-    @Autowired
-    private FaultReportMapper faultReportMapper;
     @Autowired
     private OverTodoService overTodoService;
     @Autowired
@@ -137,8 +131,10 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderListReqDTO.setObjectFlag("1");
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(overhaulOrderListReqDTO.getSubjectCode()) &&
-                StringUtils.isNotNull(office) && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+                && StringUtils.isEmpty(overhaulOrderListReqDTO.getSubjectCode())
+                && StringUtils.isNotNull(office)
+                && !office.getNames().contains(CommonConstants.PASSENGER_TRANSPORT_DEPT)) {
             overhaulOrderListReqDTO.setMajors(userAccountService.listUserMajor());
         }
         //获取用户当前角色

@@ -107,7 +107,8 @@ public class DetectionServiceImpl implements DetectionService {
         detectionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         detectionReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String checkNo = detectionMapper.getMaxCode();
-        if (StringUtils.isEmpty(checkNo) || !(CommonConstants.TWENTY_STRING + checkNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+        if (StringUtils.isEmpty(checkNo)
+                || !(CommonConstants.TWENTY_STRING + checkNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
             checkNo = "TJ" + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             checkNo = CodeUtils.getNextCode(checkNo, 8);
@@ -179,7 +180,8 @@ public class DetectionServiceImpl implements DetectionService {
         if (!CommonConstants.TEN_STRING.equals(res.getRecStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态不可提交");
         } else {
-            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(), null, null, detectionReqDTO.getExamineReqDTO().getUserIds(), null);
+            String processId = bpmnService.commit(res.getCheckNo(), BpmnFlowEnum.DETECTION_SUBMIT.value(),
+                    null, null, detectionReqDTO.getExamineReqDTO().getUserIds(), null);
             if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
@@ -216,11 +218,14 @@ public class DetectionServiceImpl implements DetectionService {
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.DETECTION_SUBMIT.value()).contains(reqDTO.getWorkFlowInstStatus())) {
-                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(), String.join(",", detectionReqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + res.getCheckNo() + "\"}", null);
+                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(),
+                        String.join(",", detectionReqDTO.getExamineReqDTO().getUserIds()),
+                        "{\"id\":\"" + res.getCheckNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.DETECTION_SUBMIT.value(), reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setRecStatus("20");
             } else {
-                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getCheckNo() + "\"}", null);
+                bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(), null,
+                        "{\"id\":\"" + res.getCheckNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setRecStatus("30");
                 List<DetectionDetailResDTO> list = detectionMapper.queryMsg(reqDTO.getRecId());
@@ -267,11 +272,14 @@ public class DetectionServiceImpl implements DetectionService {
             for (DetectionResDTO resDTO : detectionResDTOList) {
                 ExcelDetectionResDTO res = ExcelDetectionResDTO.builder()
                         .checkNo(resDTO.getCheckNo())
-                        .assetKindCode(CommonConstants.TEN_STRING.equals(resDTO.getAssetKindCode()) ? "电梯" : CommonConstants.TWENTY_STRING.equals(resDTO.getAssetKindCode()) ? "起重机" : CommonConstants.THIRTY_STRING.equals(resDTO.getAssetKindCode()) ? "场（厂）内专用机动车辆" : "压力容器")
+                        .assetKindCode(CommonConstants.TEN_STRING.equals(resDTO.getAssetKindCode()) ? "电梯"
+                                : CommonConstants.TWENTY_STRING.equals(resDTO.getAssetKindCode()) ? "起重机"
+                                : CommonConstants.THIRTY_STRING.equals(resDTO.getAssetKindCode()) ? "场（厂）内专用机动车辆" : "压力容器")
                         .manageOrg(organizationMapper.getOrgById(resDTO.getManageOrg()))
                         .secOrg(organizationMapper.getExtraOrgByAreaId(resDTO.getSecOrg()))
                         .editDeptCode(organizationMapper.getExtraOrgByAreaId(resDTO.getEditDeptCode()))
-                        .recStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getRecStatus()) ? "审核中" : "审核通过")
+                        .recStatus(CommonConstants.TEN_STRING.equals(resDTO.getRecStatus()) ? "编辑"
+                                : CommonConstants.TWENTY_STRING.equals(resDTO.getRecStatus()) ? "审核中" : "审核通过")
                         .verifyNote(resDTO.getVerifyNote())
                         .build();
                 list.add(res);
@@ -309,7 +317,8 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Override
     public void addDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException {
-        List<DetectionResDTO> list = detectionMapper.listDetection(detectionDetailReqDTO.getTestRecId(), null, null, null, null);
+        List<DetectionResDTO> list = detectionMapper.listDetection(detectionDetailReqDTO.getTestRecId(),
+                null, null, null, null);
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -366,7 +375,8 @@ public class DetectionServiceImpl implements DetectionService {
 
     @Override
     public void modifyDetectionDetail(DetectionDetailReqDTO detectionDetailReqDTO) throws ParseException {
-        List<DetectionResDTO> list = detectionMapper.listDetection(detectionDetailReqDTO.getTestRecId(), null, null, null, null);
+        List<DetectionResDTO> list = detectionMapper.listDetection(detectionDetailReqDTO.getTestRecId(),
+                null, null, null, null);
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -404,7 +414,8 @@ public class DetectionServiceImpl implements DetectionService {
                 if (Objects.isNull(detailResDTO)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                List<DetectionResDTO> list = detectionMapper.listDetection(detailResDTO.getTestRecId(), null, null, null, null);
+                List<DetectionResDTO> list = detectionMapper.listDetection(detailResDTO.getTestRecId(),
+                        null, null, null, null);
                 if (Objects.isNull(list) || list.isEmpty()) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }

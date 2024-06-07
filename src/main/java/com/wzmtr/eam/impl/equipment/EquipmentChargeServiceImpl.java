@@ -50,7 +50,8 @@ public class EquipmentChargeServiceImpl implements EquipmentChargeService {
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(subjectCode)) {
             userMajorList = userAccountService.listUserMajor();
         }
-        return equipmentChargeMapper.pageEquipmentCharge(pageReqDTO.of(), equipCode, equipName, chargeDate, position1Code, subjectCode, systemCode, equipTypeCode,userMajorList);
+        return equipmentChargeMapper.pageEquipmentCharge(pageReqDTO.of(), equipCode, equipName, chargeDate,
+                position1Code, subjectCode, systemCode, equipTypeCode,userMajorList);
     }
 
     @Override

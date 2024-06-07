@@ -65,7 +65,8 @@ public class TransferServiceImpl implements TransferService {
     private OverTodoService overTodoService;
 
     @Override
-    public Page<TransferResDTO> pageTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
+    public Page<TransferResDTO> pageTransfer(String transferNo, String itemCode, String itemName,
+                                             String position1Code, String eamProcessStatus,
                                              String majorCode, String orderNo, String orderName, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         String eamProcessStatus1 = null;
@@ -78,8 +79,8 @@ public class TransferServiceImpl implements TransferService {
                 eamProcessStatus2 = "30";
             }
         }
-        return transferMapper.pageTransfer(pageReqDTO.of(), transferNo, itemCode, itemName, position1Code, eamProcessStatus,
-                eamProcessStatus1, eamProcessStatus2, majorCode, orderNo, orderName);
+        return transferMapper.pageTransfer(pageReqDTO.of(), transferNo, itemCode, itemName, position1Code,
+                eamProcessStatus, eamProcessStatus1, eamProcessStatus2, majorCode, orderNo, orderName);
     }
 
     @Override
@@ -186,7 +187,9 @@ public class TransferServiceImpl implements TransferService {
         // ServiceDMDM0103 submit
         if (transferSplitReqDTO.getEquipmentList() != null && !transferSplitReqDTO.getEquipmentList().isEmpty()) {
             for (EquipmentResDTO resDTO : transferSplitReqDTO.getEquipmentList()) {
-                if (org.apache.commons.lang3.StringUtils.isBlank(resDTO.getStartUseDate()) || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getSystemCode()) || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getEquipTypeCode())) {
+                if (org.apache.commons.lang3.StringUtils.isBlank(resDTO.getStartUseDate())
+                        || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getSystemCode())
+                        || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getEquipTypeCode())) {
                     throw new CommonException(ErrorCode.REQUIRED_NULL, "设备" + resDTO.getEquipCode());
                 }
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getApprovalStatus())) {
@@ -343,7 +346,9 @@ public class TransferServiceImpl implements TransferService {
     }
 
     public void updateTransfer(EquipmentResDTO resDTO) {
-        if (StringUtils.isEmpty(resDTO.getMajorCode()) || StringUtils.isEmpty(resDTO.getSystemCode()) || StringUtils.isEmpty(resDTO.getEquipTypeCode())) {
+        if (StringUtils.isEmpty(resDTO.getMajorCode())
+                || StringUtils.isEmpty(resDTO.getSystemCode())
+                || StringUtils.isEmpty(resDTO.getEquipTypeCode())) {
             throw new CommonException(ErrorCode.REQUIRED_NULL, "设备拆分" + resDTO.getEquipCode());
         }
         resDTO.setSpecialEquipFlag("10");
