@@ -545,13 +545,15 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         requestMessage.setVerb("Get");
         requestMessage.setNoun("faultInfo");
         URL wsdlLocation = new URL(url);
-        com.wzmtr.eam.soft.csm.planwork.service.impl.ISetEamplanwork serverData = (new com.wzmtr.eam.soft.csm.planwork.vo.SetEamplanworkImplService(wsdlLocation)).getSetEamplanworkImplPort();
+        com.wzmtr.eam.soft.csm.planwork.service.impl.ISetEamplanwork serverData =
+                (new com.wzmtr.eam.soft.csm.planwork.vo.SetEamplanworkImplService(wsdlLocation)).getSetEamplanworkImplPort();
         com.wzmtr.eam.soft.csm.planwork.vo.ResponseMessage responseMessage = serverData.setEamplanwork(requestMessage);
         return JSON.toJSONString(responseMessage);
     }
 
     public void insertInspectObject(String planCode, String orderCode) {
-        List<OverhaulObjectResDTO> objects = overhaulPlanMapper.listOverhaulObject(planCode, null, null, null, null, null);
+        List<OverhaulObjectResDTO> objects = overhaulPlanMapper.listOverhaulObject(planCode, null,
+                null, null, null, null);
         for (OverhaulObjectResDTO object : objects) {
             String dmer22uuid = TokenUtils.getUuId();
             List<OverhaulTplDetailResDTO> objectIsValid = overhaulTplMapper.listOverhaulTplDetail(object.getTemplateId());
@@ -561,7 +563,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 String templateId = object.getTemplateId();
                 insertInspectObjectItem(orderCode, objectCode, objectName, templateId, dmer22uuid);
                 try {
-                    List<OverhaulObjectResDTO> list = overhaulPlanMapper.listOverhaulObject(planCode, object.getRecId(), null, objectCode, null, null);
+                    List<OverhaulObjectResDTO> list = overhaulPlanMapper.listOverhaulObject(planCode, object.getRecId(),
+                            null, objectCode, null, null);
                     if (StringUtils.isNotEmpty(list)) {
                         for (OverhaulObjectResDTO resDTO : list) {
                             resDTO.setRecCreator(TokenUtils.getCurrentPersonId());
@@ -769,7 +772,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     }
 
     @Override
-    public Page<OverhaulObjectResDTO> pageOverhaulObject(String planCode, String planName, String objectCode, String objectName, PageReqDTO pageReqDTO) {
+    public Page<OverhaulObjectResDTO> pageOverhaulObject(String planCode, String planName, String objectCode,
+                                                         String objectName, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulPlanMapper.pageOverhaulObject(pageReqDTO.of(), planCode, null, planName, objectCode, objectName, null);
     }
@@ -828,7 +832,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void exportOverhaulObject(String planCode, String planName, String objectCode, String objectName, HttpServletResponse response) throws IOException {
-        List<OverhaulObjectResDTO> overhaulObjectResDTOList = overhaulPlanMapper.listOverhaulObject(planCode, null, planName, objectCode, objectName, null);
+        List<OverhaulObjectResDTO> overhaulObjectResDTOList = overhaulPlanMapper.listOverhaulObject(planCode,
+                null, planName, objectCode, objectName, null);
         if (overhaulObjectResDTOList != null && !overhaulObjectResDTOList.isEmpty()) {
             List<ExcelOverhaulPlanObjectResDTO> list = new ArrayList<>();
             for (OverhaulObjectResDTO resDTO : overhaulObjectResDTOList) {
@@ -851,7 +856,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             return null;
         }
         if (CommonConstants.CAR_SUBJECT_CODE.equals(planList.get(0).getSubjectCode())) {
-            List<OverhaulObjectResDTO> objectList = overhaulPlanMapper.listOverhaulObject(overhaulObjectReqDTO.getPlanCode(), null, null, null, null, null);
+            List<OverhaulObjectResDTO> objectList = overhaulPlanMapper.listOverhaulObject(overhaulObjectReqDTO.getPlanCode(),
+                    null, null, null, null, null);
             if (StringUtils.isNotEmpty(objectList)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "车辆专业的计划只能有一条设备对象！");
             }
@@ -867,7 +873,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
         String objectName = getEquipNameByCodeAndSubjects(overhaulObjectReqDTO.getObjectCode(), subjectCode, systemCode, equipTypeCode);
         if (org.apache.commons.lang3.StringUtils.isBlank(objectName)) {
-            List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(), null, null, null, null, null);
+            List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(),
+                    null, null, null, null, null);
             if (StringUtils.isNotEmpty(equipmentRoomList)) {
                 objectName = equipmentRoomList.get(0).getEquipRoomName();
             }
