@@ -535,7 +535,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     public String sendContractOrder(Message json) throws Exception {
         // IorderRecordCreator sendContractOrder
-        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.contextPath", "01");
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                CommonConstants.DM_CONTEXT_PATH, CommonConstants.ZERO_ONE_STRING);
         if (Objects.isNull(dictionaries)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }

@@ -145,7 +145,9 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 // 2 技术主管流程
                 String flag = FaultAnalizeFlow.FAULT_ANALIZE_TECHNICAL_LEAD.getCode().equals(submitNodeId)
                         ? CommonConstants.TWO_STRING : CommonConstants.ONE_STRING;
-                processId = bpmnService.commit(faultAnalysisNo, bpmnFlow, "{\"id\":\"" + faultAnalysisNo + "\",\"flag\":\"" + flag + "\"}", null, examineReqDTO.getUserIds(), submitNodeId);
+                processId = bpmnService.commit(faultAnalysisNo, bpmnFlow,
+                        "{\"id\":\"" + faultAnalysisNo + "\",\"flag\":\"" + flag + "\"}",
+                        null, examineReqDTO.getUserIds(), submitNodeId);
                 dmfm03.setWorkFlowInstStatus(submitNodeId);
                 dmfm03.setWorkFlowInstId(processId);
                 dmfm03.setExt5(reqDTO.getLine());
@@ -167,7 +169,9 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Override
     public void pass(FaultExamineReqDTO reqDTO) {
         String faultAnalysisNo = Assert.notNull(reqDTO.getFaultAnalysisNo(), "faultAnalysisNo can not be null!");
-        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(ColsConstants.FAULT_ANALYSIS_NO, faultAnalysisNo));
+        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(
+                new QueryWrapper<FaultAnalyzeDO>()
+                        .eq(ColsConstants.FAULT_ANALYSIS_NO, faultAnalysisNo));
         workFlowLogService.ifReviewer(faultAnalyzeDO.getWorkFlowInstId());
         String taskId = bpmnService.queryTaskIdByProcId(faultAnalyzeDO.getWorkFlowInstId());
         AnalyzeServiceImpl aop = (AnalyzeServiceImpl) AopContext.currentProxy();
@@ -200,13 +204,17 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                     }
                 }
                 // 当前审核完需要获取下一步
-                FlowRoleResDTO nextNode = bpmnService.getNextNode(BpmnFlowEnum.FAULT_ANALIZE.value(), faultAnalyzeDO.getWorkFlowInstStatus(), faultAnalyzeDO.getExt5());
+                FlowRoleResDTO nextNode = bpmnService.getNextNode(BpmnFlowEnum.FAULT_ANALIZE.value(),
+                        faultAnalyzeDO.getWorkFlowInstStatus(), faultAnalyzeDO.getExt5());
                 String nextNodeId = nextNode.getNodeId();
                 // 下一步为结束节点时，变更状态
                 if (nextNodeId.equals(FaultAnalizeFlow.FAULT_ANALIZE_END_NODE.getCode())) {
                     faultAnalyzeDO.setRecStatus("30");
                 }
-                bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(), String.join(",", reqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\",\"review\":\"" + flag + "\"}", reviewOrNot);
+                bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(),
+                        String.join(",", reqDTO.getExamineReqDTO().getUserIds()),
+                        "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\",\"review\":\"" + flag + "\"}",
+                        reviewOrNot);
                 faultAnalyzeDO.setWorkFlowInstStatus(nextNodeId);
                 // 保存当前属于哪条流程线
                 faultAnalyzeDO.setExt5(nextNode.getLine());
@@ -227,7 +235,11 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         String faultWorkNo = reqDTO.getFaultWorkNo();
         String checkFaultAnalysisNo = reqDTO.getFaultAnalysisNo();
         String backOpinion = reqDTO.getExamineReqDTO().getOpinion();
-        FaultAnalyzeDO dmfm03 = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq("FAULT_NO", faultNo).eq("FAULT_WORK_NO", faultWorkNo).eq("FAULT_ANALYSIS_NO", checkFaultAnalysisNo));
+        FaultAnalyzeDO dmfm03 = faultAnalyzeMapper.selectOne(
+                new QueryWrapper<FaultAnalyzeDO>()
+                        .eq("FAULT_NO", faultNo)
+                        .eq("FAULT_WORK_NO", faultWorkNo)
+                        .eq("FAULT_ANALYSIS_NO", checkFaultAnalysisNo));
         String processId = dmfm03.getWorkFlowInstId();
         workFlowLogService.ifReviewer(processId);
         bpmnService.reject(processId, backOpinion);
@@ -245,7 +257,9 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     @Override
     public void upload(FaultAnalyzeUploadReqDTO reqDTO) {
         Assert.notNull(reqDTO.getFaultAnalysisNo(),ErrorCode.PARAM_ERROR);
-        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(new QueryWrapper<FaultAnalyzeDO>().eq(ColsConstants.FAULT_ANALYSIS_NO, reqDTO.getFaultAnalysisNo()));
+        FaultAnalyzeDO faultAnalyzeDO = faultAnalyzeMapper.selectOne(
+                new QueryWrapper<FaultAnalyzeDO>()
+                        .eq(ColsConstants.FAULT_ANALYSIS_NO, reqDTO.getFaultAnalysisNo()));
         faultAnalyzeDO.setDocId(reqDTO.getDocId());
         faultAnalyzeDO.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultAnalyzeDO.setRecReviseTime(DateUtils.getCurrentTime());
