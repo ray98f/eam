@@ -39,7 +39,7 @@ excluded:
   pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout
 
 sso:
-  url: http://zxgd.softether.net:4443/cas
+  url: http://192.168.30.140:8084/cas
   home: http://192.168.30.140:8002/eam/
 
 cas:
