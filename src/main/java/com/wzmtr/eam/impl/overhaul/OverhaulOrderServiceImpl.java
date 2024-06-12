@@ -377,7 +377,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         orderDetail.setStartTime(req.getActualStartTime());
         orderDetail.setCompliteTime(req.getActualEndTime());
         orderDetail.setRemark(req.getRemark());
-        orderDetail.setObjectCode(req.getOrderCode());
+        orderDetail.setOrderCode(req.getOrderCode());
         overhaulOrderMapper.modifyOverhaulObjectByCode(orderDetail);
     }
 
