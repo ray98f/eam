@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * 字典管理-字典值管理
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/07/27
+ */
 @RestController
 @RequestMapping("/dict")
 @Api(tags = "字典管理-字典值管理")
@@ -68,4 +74,15 @@ public class DictionariesController {
         dictionariesService.delete(baseIdsEntity.getIds());
         return DataResponse.success();
     }
+
+    /**
+     * 根据code获取导入模板链接
+     * @param code code
+     * @return 导入模板链接
+     */
+    @GetMapping("/import/template")
+    public DataResponse<String> getImportTemplate(@RequestParam String code) {
+        return DataResponse.of(dictionariesService.getImportTemplate(code));
+    }
+
 }

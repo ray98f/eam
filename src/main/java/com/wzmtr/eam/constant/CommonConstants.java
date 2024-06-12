@@ -205,6 +205,7 @@ public class CommonConstants {
     public static final String DM_FAULT_FOLLOW_STATUS = "dm.faultFollowStatus";
     public static final String DM_STATION2 = "dm.station2";
     public static final String DM_CONTEXT_PATH = "dm.contextPath";
+    public static final String DM_IMPORT_TEMPLATE = "dm.import.template";
 
     /**
      * 工单推送内容相关
