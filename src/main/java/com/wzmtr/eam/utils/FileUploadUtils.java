@@ -6,6 +6,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * 文件上传工具类
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/06/12
+ */
 public class FileUploadUtils {
 
     /**

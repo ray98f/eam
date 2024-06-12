@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.beans.BeanMap;
 
 /**
- * @ClassName: BeanUtils
- * @Description: cglib bean工具类
+ * bean工具类
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/06/12
  */
 @Slf4j
 public class BeanUtils {

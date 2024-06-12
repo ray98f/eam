@@ -27,8 +27,9 @@ import java.util.Map;
 
 /**
  * 模板导出工具类，占位符使用形如{{time}}、{{x.time}}的格式
- * Author: Li.Wang
- * Date: 2023/9/25 11:30
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/06/12
  */
 @Slf4j
 public class ExcelTemplateUtils {

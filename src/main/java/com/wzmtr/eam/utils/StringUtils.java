@@ -1,6 +1,5 @@
 package com.wzmtr.eam.utils;
 
-
 import com.wzmtr.eam.constant.CommonConstants;
 import org.springframework.util.AntPathMatcher;
 
@@ -12,10 +11,9 @@ import java.util.stream.Stream;
 
 /**
  * 字符串工具类
- *
- * @author zhangxin
+ * @author  Ray
  * @version 1.0
- * @date 2021/7/5 9:24
+ * @date 2024/06/12
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /** 空字符串 */

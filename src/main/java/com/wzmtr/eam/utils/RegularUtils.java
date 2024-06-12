@@ -3,8 +3,10 @@ package com.wzmtr.eam.utils;
 import java.util.regex.Pattern;
 
 /**
- * @author Ray
  * 正则方法类
+ * @author  Ray
+ * @version 1.0
+ * @date 2024/06/12
  */
 public class RegularUtils {
 
