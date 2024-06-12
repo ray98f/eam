@@ -73,7 +73,7 @@ public class DictionariesServiceImpl implements IDictionariesService {
         if (StringUtils.isNull(dictionaries)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
-        return minioConfig.getImgPath() + "/" + dictionaries.getItemEname();
+        return minioConfig.getImgPath() + dictionaries.getItemEname();
     }
 
 }
