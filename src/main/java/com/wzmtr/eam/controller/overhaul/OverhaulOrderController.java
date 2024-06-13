@@ -162,6 +162,12 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单完工确认
+     * @param overhaulOrderReqDTO 传参
+     * @return 成功
+     * @throws ParseException 异常
+     */
     @PostMapping("/confirmWorkers")
     @ApiOperation(value = "检修工单完工确认")
     public DataResponse<T> confirmWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {

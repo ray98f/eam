@@ -64,7 +64,6 @@ import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -478,7 +477,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setExt1(" ");
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
-        modifyOverhaulPlanByOrder(overhaulOrderReqDTO);
+        modifyOverhaulPlanWhenConfirmWorkers(overhaulOrderReqDTO);
         // ServiceDMER0201  confirmWorkers
         //完成待办
         overTodoService.overTodo(overhaulOrderReqDTO.getOrderCode());
@@ -500,7 +499,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      * @param overhaulOrderReqDTO 检修工单信息
      * @throws ParseException 异常
      */
-    private void modifyOverhaulPlanByOrder(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {
+    private void modifyOverhaulPlanWhenConfirmWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {
         OverhaulOrderListReqDTO listReqDTO = new OverhaulOrderListReqDTO();
         listReqDTO.setPlanCode(overhaulOrderReqDTO.getPlanCode());
         List<OverhaulOrderResDTO> list = overhaulOrderMapper.listOverhaulOrder(listReqDTO);
@@ -526,13 +525,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                     }
                     Date realEndTime = getRealEndTime(overhaulOrderReqDTO, rules);
                     String realEndTimeStr = dateTimeFormat1.format(realEndTime);
-                    OverhaulPlanReqDTO overhaulPlanReqDTO = new OverhaulPlanReqDTO();
-                    overhaulPlanReqDTO.setRecId(plans.get(0).getRecId());
-                    overhaulPlanReqDTO.setTrigerTime(realEndTimeStr);
-                    overhaulPlanReqDTO.setLastActionTime(String.valueOf(trigerMiles));
-                    overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
-                    overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-                    overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
+                    modifyOverhaulPlanWhenConfirmWorkers(plans, realEndTimeStr, trigerMiles);
                 }
             }
         }
@@ -545,8 +538,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      * @return 结束时间
      * @throws ParseException 异常
      */
-    @NotNull
-    private static Date getRealEndTime(OverhaulOrderReqDTO overhaulOrderReqDTO, List<WoRuleResDTO.WoRuleDetail> rules) throws ParseException {
+    private Date getRealEndTime(OverhaulOrderReqDTO overhaulOrderReqDTO, List<WoRuleResDTO.WoRuleDetail> rules) throws ParseException {
         long period = rules.get(0).getPeriod();
         long beforeTime = rules.get(0).getBeforeTime();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
@@ -556,6 +548,24 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         calendar.add(Calendar.HOUR_OF_DAY, Math.toIntExact(period));
         calendar.add(Calendar.DAY_OF_YEAR, Math.toIntExact(-beforeTime));
         return calendar.getTime();
+    }
+
+    /**
+     * 触发时修改检修计划
+     * @param plans 检修计划列表
+     * @param realEndTimeStr 实际结束时间
+     * @param trigerMiles 触发公路数
+     */
+    private void modifyOverhaulPlanWhenConfirmWorkers(List<OverhaulPlanResDTO> plans,
+                                                      String realEndTimeStr,
+                                                      int trigerMiles) {
+        OverhaulPlanReqDTO overhaulPlanReqDTO = new OverhaulPlanReqDTO();
+        overhaulPlanReqDTO.setRecId(plans.get(0).getRecId());
+        overhaulPlanReqDTO.setTrigerTime(realEndTimeStr);
+        overhaulPlanReqDTO.setLastActionTime(String.valueOf(trigerMiles));
+        overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
+        overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
+        overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
     }
 
     @Override

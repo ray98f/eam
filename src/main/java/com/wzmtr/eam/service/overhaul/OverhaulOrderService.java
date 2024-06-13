@@ -65,6 +65,11 @@ public interface OverhaulOrderService {
 
     void auditWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
+    /**
+     * 检修工单完工确认
+     * @param overhaulOrderReqDTO 传参
+     * @throws ParseException 异常
+     */
     void confirmWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException;
 
     void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
