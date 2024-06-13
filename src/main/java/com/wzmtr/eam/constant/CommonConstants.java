@@ -38,6 +38,7 @@ public class CommonConstants {
     public static final String COMMA = ",";
     public static final String SEMICOLON = ";";
     public static final String UNDERLINE = "_";
+    public static final String SHORT_BAR = "-";
     public static final String SINGLE_QUOTATION_MARK = "'";
     public static final String DOUBLE_QUOTATION_MARKS = "\"";
 

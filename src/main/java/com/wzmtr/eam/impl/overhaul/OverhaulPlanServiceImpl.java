@@ -491,15 +491,19 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         String trigerTime = "";
         OverhaulPlanListReqDTO overhaulPlanListReq = new OverhaulPlanListReqDTO();
         overhaulPlanListReq.setPlanCode(planCode);
-        List<OverhaulPlanResDTO> list11 = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReq);
-        if (StringUtils.isNotEmpty(list11) && !list11.get(0).getWorkerGroupCode().trim().isEmpty()) {
-            trigerTime = list11.get(0).getTrigerTime();
-            overhaulOrder.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
-            overhaulOrder.setWorkerCode(TokenUtils.getCurrentPersonId());
-            overhaulOrder.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
-            OverhaulOrderReqDTO dmer21 = buildOverhaulOrder(planCode, orderCode, list11);
+        List<OverhaulPlanResDTO> plans = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReq);
+        if (StringUtils.isNotEmpty(plans)) {
+            if (!plans.get(0).getTrigerTime().trim().isEmpty()) {
+                trigerTime = plans.get(0).getTrigerTime();
+            }
+            if (!plans.get(0).getWorkerGroupCode().trim().isEmpty()) {
+                overhaulOrder.setWorkerGroupCode(plans.get(0).getWorkerGroupCode());
+                overhaulOrder.setWorkerCode(TokenUtils.getCurrentPersonId());
+                overhaulOrder.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
+            }
+            OverhaulOrderReqDTO order = buildOverhaulOrder(planCode, orderCode, plans);
             try {
-                overhaulWorkRecordService.insertRepair(dmer21);
+                overhaulWorkRecordService.insertRepair(order);
             } catch (Exception e) {
                 log.error("exception message", e);
             }
@@ -542,31 +546,41 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
      * @throws ParseException 异常
      */
     private void buildOverhaulOrderPlanStartTime(String planCode, String[] orderCodes, OverhaulOrderReqDTO insertMap, String trigerTime) throws ParseException {
+        String orderDate = orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN);
+        SimpleDateFormat dateTimeFormat1 = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat dateTimeFormat2 = new SimpleDateFormat("yyyy-MM-dd");
         if (orderCodes.length > 1) {
             if (CommonConstants.ONE_STRING.equals(orderCodes[1])) {
                 insertMap.setPlanStartTime(orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN));
             } else {
-                SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd");
-                String nowDate = dateTimeFormat.format(new Date());
-                List<WoRuleResDTO.WoRuleDetail> ruleList = woRuleMapper.queryRuleList(planCode, nowDate.substring(nowDate.length() - 4));
+                String nowDate = dateTimeFormat1.format(new Date());
+                List<WoRuleResDTO.WoRuleDetail> ruleList = woRuleMapper.queryRuleList(planCode,
+                        nowDate.substring(nowDate.length() - CommonConstants.FOUR));
                 if (StringUtils.isNotEmpty(ruleList) && StringUtils.isNotNull(ruleList.get(0).getBeforeTime())) {
                     long beforeDay = ruleList.get(0).getBeforeTime();
                     if (StringUtils.isEmpty(trigerTime) || CommonConstants.ZERO_STRING.equals(trigerTime)) {
-                        trigerTime = orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN);
+                        trigerTime = orderDate;
                     } else {
-                        trigerTime = trigerTime.substring(0, 8);
+                        trigerTime = trigerTime.substring(CommonConstants.ZERO, CommonConstants.TEN);
                     }
-                    Date date = dateTimeFormat.parse(trigerTime);
+                    Date date;
+                    if (trigerTime.contains(CommonConstants.SHORT_BAR) && trigerTime.length() > CommonConstants.EIGHT) {
+                        date = dateTimeFormat2.parse(trigerTime);
+                    } else if (trigerTime.length() == CommonConstants.EIGHT) {
+                        date = dateTimeFormat2.parse(dateTimeFormat2.format(dateTimeFormat1.parse(trigerTime)));
+                    } else {
+                        date = dateTimeFormat2.parse(dateTimeFormat2.format(new Date()));
+                    }
                     Calendar ca = Calendar.getInstance();
                     ca.setTime(date);
-                    ca.add(Calendar.DAY_OF_YEAR, Math.toIntExact(beforeDay));
-                    insertMap.setPlanStartTime(dateTimeFormat.format(ca.getTime()));
+                    ca.add(Calendar.DAY_OF_YEAR, Math.toIntExact(beforeDay / 24));
+                    insertMap.setPlanStartTime(dateTimeFormat2.format(ca.getTime()));
                 } else {
-                    insertMap.setPlanStartTime(orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN));
+                    insertMap.setPlanStartTime(dateTimeFormat2.format(dateTimeFormat1.parse(orderDate)));
                 }
             }
         } else {
-            insertMap.setPlanStartTime(orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN));
+            insertMap.setPlanStartTime(dateTimeFormat2.format(dateTimeFormat1.parse(orderDate)));
         }
     }
 
