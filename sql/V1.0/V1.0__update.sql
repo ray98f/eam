@@ -526,3 +526,5 @@ INSERT INTO EAM.SYS_DICT
 REC_REVISOR, REC_REVISE_TIME, ARCHIVE_FLAG, PROJECT_NAME, SUB_CODESET_CODE)
 VALUES('dm.import.template', 'bomTrain', '车辆与Bom关联导入模板', '/eam/importTemplate/车辆与Bom关联关系.xls',
 ' ', ' ', ' ', '1', 'admin', '20240510144600', ' ', ' ', ' ', 'WZPLAT', ' ');
+
+ALTER TABLE EAM.T_OVERHAUL_ITEM MODIFY DOC_ID NVARCHAR2(1000);

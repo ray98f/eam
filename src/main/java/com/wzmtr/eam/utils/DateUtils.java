@@ -3,10 +3,13 @@ package com.wzmtr.eam.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -111,6 +114,30 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
             return parseDate(str.toString(), PARSE_PATTERNS);
         } catch (ParseException e) {
             return null;
+        }
+    }
+
+    /**
+     * 校验日期是否是符合指定格式的合法日期
+     * @param date 日期
+     * @param length 日期的长度
+     * @param format 日期的格式
+     * @return 是否符合
+     */
+    public static boolean isLegalDate(String date, int length, String format) {
+        if (date == null || date.length() != length) {
+            return false;
+        }
+        try {
+            DateFormat formatter = new SimpleDateFormat(format);
+            // 设置lenient为false
+            formatter.setLenient(false);
+            Date date1 = formatter.parse(date);
+            log.info("入参：" + date + ";转换后日期：" + formatter.format(date1));
+            return date.equals(formatter.format(date1));
+        } catch (Exception e) {
+            log.info(e.getMessage(), e);
+            return false;
         }
     }
 
@@ -344,4 +371,47 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         Date dateToCheck = sdf.parse(date);
         return (dateToCheck.after(start) && dateToCheck.before(end)) || dateToCheck.equals(start);
     }
+
+    /**
+     * 获取入参所在季度的第一天
+     * @param date 日期
+     * @return 季度第一天
+     */
+    public static Date getQuarterStart(Date date) {
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(date);
+        startCalendar.set(Calendar.MONTH, ((startCalendar.get(Calendar.MONTH)) / 3) * 3);
+        startCalendar.set(Calendar.DAY_OF_MONTH, 1);
+        return startCalendar.getTime();
+    }
+
+    /**
+     * 获取入参所在季度的最后一天
+     * @param date 日期
+     * @return 季度最后一天
+     */
+    public static Date getQuarterEnd(Date date) {
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(date);
+        endCalendar.set(Calendar.MONTH, ((endCalendar.get(Calendar.MONTH)) / 3) * 3 + 2);
+        endCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return endCalendar.getTime();
+    }
+
+    /**
+     * 	获取当日最小时间（0时0分0秒）
+     * 	@return 当日最小时间
+     */
+    public static LocalDateTime getCurrentDayStart() {
+        return LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+    }
+
+    /**
+     * 	获取当日最大时间（23时59分59秒）
+     * 	@return 当日最大时间
+     */
+    public static LocalDateTime getCurrentDayEnd() {
+        return LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    }
+
 }
