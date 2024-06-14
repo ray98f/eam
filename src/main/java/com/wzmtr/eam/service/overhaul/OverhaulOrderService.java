@@ -63,6 +63,10 @@ public interface OverhaulOrderService {
      */
     void finishOrder(OverhaulOrderReqDTO req);
 
+    /**
+     * 检修工单完工验收
+     * @param overhaulOrderReqDTO 传参
+     */
     void auditWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
     /**
@@ -72,7 +76,11 @@ public interface OverhaulOrderService {
      */
     void confirmWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException;
 
-    void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
+    /**
+     * 检修工单作废
+     * @param overhaulOrderReqDTO 传参
+     */
+    void cancelWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO);
 
     String pageMaterial(String orderCode);
 

@@ -569,7 +569,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public void cancellWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
+    public void cancelWorkers(OverhaulOrderReqDTO overhaulOrderReqDTO) {
         overhaulOrderReqDTO.setWorkStatus(CommonConstants.EIGHT_STRING);
         overhaulOrderReqDTO.setCancelPersonId(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setCancelPersonName(TokenUtils.getCurrentPerson().getPersonName());

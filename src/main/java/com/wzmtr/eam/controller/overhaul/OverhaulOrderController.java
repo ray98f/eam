@@ -155,6 +155,11 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单完工验收
+     * @param overhaulOrderReqDTO 传参
+     * @return 成功
+     */
     @PostMapping("/auditWorkers")
     @ApiOperation(value = "检修工单完工验收")
     public DataResponse<T> auditWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
@@ -175,10 +180,15 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单作废
+     * @param overhaulOrderReqDTO 传参
+     * @return 成功
+     */
     @PostMapping("/cancellWorkers")
     @ApiOperation(value = "检修工单作废")
-    public DataResponse<T> cancellWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
-        overhaulOrderService.cancellWorkers(overhaulOrderReqDTO);
+    public DataResponse<T> cancelWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
+        overhaulOrderService.cancelWorkers(overhaulOrderReqDTO);
         return DataResponse.success();
     }
 
