@@ -172,6 +172,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                         res.setNowDay(DateUtils.addDateHour(ext.getLastDay(), rule.getProvideTime()));
                     }
                 }
+                if (StringUtils.isNotEmpty(res.getRecRevisor())) {
+                    res.setRecRevisor(userAccountMapper.getUserNameById(res.getRecRevisor()));
+                }
             }
 
         }

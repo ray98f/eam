@@ -23,6 +23,7 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.WoRuleMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
+import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.overhaul.*;
 import com.wzmtr.eam.service.bpmn.BpmnService;
@@ -53,42 +54,32 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     @Autowired
     private OverhaulPlanMapper overhaulPlanMapper;
-
     @Autowired
     private OverhaulOrderMapper overhaulOrderMapper;
-
     @Autowired
     private WoRuleMapper woRuleMapper;
-
     @Autowired
     private OverhaulWorkRecordService overhaulWorkRecordService;
-
     @Autowired
     private OverhaulWorkRecordMapper overhaulWorkRecordMapper;
-
     @Autowired
     private OverhaulTplMapper overhaulTplMapper;
-
     @Autowired
     private OverhaulItemMapper overhaulItemMapper;
-
     @Autowired
     private RoleMapper roleMapper;
-
     @Autowired
     private BpmnService bpmnService;
-
     @Autowired
     private OrganizationMapper organizationMapper;
-
     @Autowired
     private FaultQueryMapper faultQueryMapper;
-
     @Autowired
     private IWorkFlowLogService workFlowLogService;
-
     @Autowired
     private OverTodoService overTodoService;
+    @Autowired
+    private UserAccountMapper userAccountMapper;
 
     @Override
     public Page<OverhaulPlanResDTO> pageOverhaulPlan(OverhaulPlanListReqDTO overhaulPlanListReqDTO, PageReqDTO pageReqDTO) {
@@ -493,10 +484,10 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulPlanListReq.setPlanCode(planCode);
         List<OverhaulPlanResDTO> plans = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReq);
         if (StringUtils.isNotEmpty(plans)) {
-            if (!plans.get(0).getTrigerTime().trim().isEmpty()) {
+            if (StringUtils.isNotEmpty(plans.get(0).getTrigerTime().trim())) {
                 trigerTime = plans.get(0).getTrigerTime();
             }
-            if (!plans.get(0).getWorkerGroupCode().trim().isEmpty()) {
+            if (StringUtils.isNotEmpty(plans.get(0).getWorkerGroupCode().trim())) {
                 overhaulOrder.setWorkerGroupCode(plans.get(0).getWorkerGroupCode());
                 overhaulOrder.setWorkerCode(TokenUtils.getCurrentPersonId());
                 overhaulOrder.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
@@ -519,68 +510,69 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
      * 组装检修工单信息
      * @param planCode 检修计划号
      * @param orderCode 检修工单号
-     * @param list11 检修计划信息
+     * @param plans 检修计划信息
      * @return 检修工单信息
      */
     @NotNull
-    private OverhaulOrderReqDTO buildOverhaulOrder(String planCode, String orderCode, List<OverhaulPlanResDTO> list11) {
-        OverhaulOrderReqDTO dmer21 = new OverhaulOrderReqDTO();
-        dmer21.setOrderCode(orderCode);
-        dmer21.setPlanCode(planCode);
-        dmer21.setWorkerGroupCode(list11.get(0).getWorkerGroupCode());
-        dmer21.setWorkerCode(TokenUtils.getCurrentPersonId());
-        dmer21.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
-        dmer21.setRecId(dmer21.getOrderCode());
-        dmer21.setWorkStatus(CommonConstants.ONE_STRING);
-        dmer21.setSubjectCode(list11.get(0).getSubjectCode());
-        dmer21.setLineNo(list11.get(0).getLineNo());
-        return dmer21;
+    private OverhaulOrderReqDTO buildOverhaulOrder(String planCode, String orderCode, List<OverhaulPlanResDTO> plans) {
+        OverhaulOrderReqDTO overhaulOrder = new OverhaulOrderReqDTO();
+        overhaulOrder.setOrderCode(orderCode);
+        overhaulOrder.setPlanCode(planCode);
+        overhaulOrder.setWorkerGroupCode(plans.get(0).getWorkerGroupCode());
+        overhaulOrder.setWorkerCode(TokenUtils.getCurrentPersonId());
+        overhaulOrder.setWorkerName(TokenUtils.getCurrentPerson().getPersonName());
+        overhaulOrder.setRecId(overhaulOrder.getOrderCode());
+        overhaulOrder.setWorkStatus(CommonConstants.ONE_STRING);
+        overhaulOrder.setSubjectCode(plans.get(0).getSubjectCode());
+        overhaulOrder.setLineNo(plans.get(0).getLineNo());
+        return overhaulOrder;
     }
 
     /**
      * 组装检修工单计划开始时间
      * @param planCode 检修计划号
      * @param orderCodes 检修工单号数组
-     * @param insertMap 检修工单信息
-     * @param trigerTime 触发时间
+     * @param overhaulOrder 检修工单信息
+     * @param triggerTime 触发时间
      * @throws ParseException 异常
      */
-    private void buildOverhaulOrderPlanStartTime(String planCode, String[] orderCodes, OverhaulOrderReqDTO insertMap, String trigerTime) throws ParseException {
+    private void buildOverhaulOrderPlanStartTime(String planCode, String[] orderCodes,
+                                                 OverhaulOrderReqDTO overhaulOrder, String triggerTime) throws ParseException {
         String orderDate = orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN);
         SimpleDateFormat dateTimeFormat1 = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat dateTimeFormat2 = new SimpleDateFormat("yyyy-MM-dd");
         if (orderCodes.length > 1) {
             if (CommonConstants.ONE_STRING.equals(orderCodes[1])) {
-                insertMap.setPlanStartTime(orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN));
+                overhaulOrder.setPlanStartTime(orderCodes[0].substring(CommonConstants.TWO, CommonConstants.TEN));
             } else {
                 String nowDate = dateTimeFormat1.format(new Date());
                 List<WoRuleResDTO.WoRuleDetail> ruleList = woRuleMapper.queryRuleList(planCode,
                         nowDate.substring(nowDate.length() - CommonConstants.FOUR));
                 if (StringUtils.isNotEmpty(ruleList) && StringUtils.isNotNull(ruleList.get(0).getBeforeTime())) {
-                    long beforeDay = ruleList.get(0).getBeforeTime();
-                    if (StringUtils.isEmpty(trigerTime) || CommonConstants.ZERO_STRING.equals(trigerTime)) {
-                        trigerTime = orderDate;
+                    long beforeTime = ruleList.get(0).getBeforeTime();
+                    if (StringUtils.isEmpty(triggerTime) || CommonConstants.ZERO_STRING.equals(triggerTime)) {
+                        triggerTime = orderDate;
                     } else {
-                        trigerTime = trigerTime.substring(CommonConstants.ZERO, CommonConstants.TEN);
+                        triggerTime = triggerTime.substring(CommonConstants.ZERO, CommonConstants.TEN);
                     }
                     Date date;
-                    if (trigerTime.contains(CommonConstants.SHORT_BAR) && trigerTime.length() > CommonConstants.EIGHT) {
-                        date = dateTimeFormat2.parse(trigerTime);
-                    } else if (trigerTime.length() == CommonConstants.EIGHT) {
-                        date = dateTimeFormat2.parse(dateTimeFormat2.format(dateTimeFormat1.parse(trigerTime)));
+                    if (triggerTime.contains(CommonConstants.SHORT_BAR) && triggerTime.length() > CommonConstants.EIGHT) {
+                        date = dateTimeFormat2.parse(triggerTime);
+                    } else if (triggerTime.length() == CommonConstants.EIGHT) {
+                        date = dateTimeFormat2.parse(dateTimeFormat2.format(dateTimeFormat1.parse(triggerTime)));
                     } else {
                         date = dateTimeFormat2.parse(dateTimeFormat2.format(new Date()));
                     }
                     Calendar ca = Calendar.getInstance();
                     ca.setTime(date);
-                    ca.add(Calendar.DAY_OF_YEAR, Math.toIntExact(beforeDay / 24));
-                    insertMap.setPlanStartTime(dateTimeFormat2.format(ca.getTime()));
+                    ca.add(Calendar.DAY_OF_YEAR, Math.toIntExact(beforeTime / 24));
+                    overhaulOrder.setPlanStartTime(dateTimeFormat2.format(ca.getTime()));
                 } else {
-                    insertMap.setPlanStartTime(dateTimeFormat2.format(dateTimeFormat1.parse(orderDate)));
+                    overhaulOrder.setPlanStartTime(dateTimeFormat2.format(dateTimeFormat1.parse(orderDate)));
                 }
             }
         } else {
-            insertMap.setPlanStartTime(dateTimeFormat2.format(dateTimeFormat1.parse(orderDate)));
+            overhaulOrder.setPlanStartTime(dateTimeFormat2.format(dateTimeFormat1.parse(orderDate)));
         }
     }
 
@@ -629,13 +621,13 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                     object.setRecCreateTime(DateUtils.getCurrentTime());
                     object.setRecRevisor("");
                     object.setRecReviseTime("");
-                    OverhaulOrderDetailReqDTO reqDTO = new OverhaulOrderDetailReqDTO();
-                    BeanUtils.copyProperties(object, reqDTO);
-                    reqDTO.setOrderCode(orderCode);
-                    reqDTO.setRecId(dmer22uuid);
-                    reqDTO.setStartTime(" ");
-                    reqDTO.setCompliteTime(" ");
-                    overhaulOrderMapper.addOverhaulOrderDetail(reqDTO);
+                    OverhaulOrderDetailReqDTO orderDetail = new OverhaulOrderDetailReqDTO();
+                    BeanUtils.copyProperties(object, orderDetail);
+                    orderDetail.setOrderCode(orderCode);
+                    orderDetail.setRecId(dmer22uuid);
+                    orderDetail.setStartTime(" ");
+                    orderDetail.setCompliteTime(" ");
+                    overhaulOrderMapper.addOverhaulOrderDetail(orderDetail);
                 } catch (Exception e) {
                     log.error("exception message", e);
                 }
@@ -666,21 +658,22 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
     }
 
     public void insertWorker(String planCode, String orderCode) {
-        OverhaulWorkRecordReqDTO dmer24 = new OverhaulWorkRecordReqDTO();
+        OverhaulWorkRecordReqDTO workRecord = new OverhaulWorkRecordReqDTO();
         OverhaulPlanListReqDTO overhaulPlanListReqDTO = new OverhaulPlanListReqDTO();
         overhaulPlanListReqDTO.setPlanCode(planCode);
         List<OverhaulPlanResDTO> list = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReqDTO);
         String workCode = list.get(0).getWorkerCode();
-        dmer24.setPlanCode(planCode);
-        dmer24.setOrderCode(orderCode);
-        dmer24.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
+        workRecord.setPlanCode(planCode);
+        workRecord.setOrderCode(orderCode);
+        workRecord.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
         if (StringUtils.isNotEmpty(workCode) && workCode.length() > CommonConstants.TWO) {
-            String[] workerCodes = workCode.split(",");
+            String[] workerCodes = workCode.split(CommonConstants.COMMA);
             for (String workerCode : workerCodes) {
-                dmer24.setRecId(TokenUtils.getUuId());
-                dmer24.setWorkerCode(workerCode);
+                workRecord.setRecId(TokenUtils.getUuId());
+                workRecord.setWorkerCode(workerCode);
+                workRecord.setWorkerName(userAccountMapper.getUserNameById(workerCode));
                 try {
-                    overhaulWorkRecordMapper.insert(dmer24);
+                    overhaulWorkRecordMapper.insert(workRecord);
                 } catch (Exception e) {
                     log.error("exception message", e);
                 }
