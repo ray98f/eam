@@ -223,4 +223,19 @@ public class OverhaulOrderReqDTO {
      * 审核意见
      */
     private String examineOpinion;
+    /**
+     * 工单对象ID
+     */
+    @ApiModelProperty(value = "工单对象ID")
+    private String objectRecId;
+    /**
+     * 检修情况
+     */
+    @ApiModelProperty(value = "检修情况")
+    private String repairStatus;
+    /**
+     * 检修情况说明
+     */
+    @ApiModelProperty(value = "检修情况说明")
+    private String repairDetail;
 }

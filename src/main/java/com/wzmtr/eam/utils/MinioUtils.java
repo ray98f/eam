@@ -13,10 +13,9 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * MINIO工具类
- *
- * @author zhangxin
+ * @author  zhangxin
  * @version 1.0
- * @date 2021/7/5 9:24
+ * @date 2023/06/12
  */
 @Slf4j
 @Component

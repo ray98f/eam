@@ -62,8 +62,9 @@ public class OtherEquipServiceImpl implements OtherEquipService {
     private DetectionService detectionService;
 
     @Override
-    public Page<OtherEquipResDTO> pageOtherEquip(String equipCode, String equipName, String otherEquipCode, String factNo,
-                                                     String useLineNo, String position1Code, String otherEquipType, String equipStatus, PageReqDTO pageReqDTO) {
+    public Page<OtherEquipResDTO> pageOtherEquip(String equipCode, String equipName, String otherEquipCode,
+                                                 String factNo, String useLineNo, String position1Code,
+                                                 String otherEquipType, String equipStatus, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OtherEquipResDTO> page =  otherEquipMapper.pageOtherEquip(pageReqDTO.of(), equipCode, equipName, otherEquipCode, factNo, useLineNo,
                 position1Code, otherEquipType, equipStatus);

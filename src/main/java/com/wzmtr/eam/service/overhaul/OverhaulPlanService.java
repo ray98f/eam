@@ -31,6 +31,10 @@ public interface OverhaulPlanService {
 
     void deleteOverhaulPlan(BaseIdsEntity baseIdsEntity);
 
+    /**
+     * 触发检修计划（中车）
+     * @param overhaulPlanReqDTO 传参
+     */
     void triggerOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO);
 
     void submitOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws Exception;

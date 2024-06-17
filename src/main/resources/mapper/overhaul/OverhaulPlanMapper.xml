@@ -54,7 +54,7 @@
         <if test="req.objectFlag!=null and req.objectFlag!=''">
             <!-- RELATION_CODE	as "relationCode",  关联编码 -->
             (CASE WHEN TRIM(RELATION_CODE) IS NULL THEN '不关联' ELSE '关联' END) as "deleteFlag",  <!-- 关联编码 -->
-            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE = T_OVERHAUL_PLAN.PLAN_CODE and a.DELETE_FLAG ='0') as "ext1", <!-- 设备对象拼接 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE= T_OVERHAUL_PLAN.PLAN_CODE and a.DELETE_FLAG='0') as "ext1", <!-- 设备对象拼接 -->
         </if>
         <if test="req.objectFlag==null or req.objectFlag==''">
             DELETE_FLAG	as "deleteFlag",
@@ -152,7 +152,7 @@
         <if test="objectFlag!=null and objectFlag!=''">
             <!-- RELATION_CODE	as "relationCode",  关联编码 -->
             (CASE WHEN TRIM(RELATION_CODE) IS NULL THEN '不关联' ELSE '关联' END) as "deleteFlag",  <!-- 关联编码 -->
-            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE = T_OVERHAUL_PLAN.PLAN_CODE and a.DELETE_FLAG ='0') as "ext1", <!-- 设备对象拼接 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE= T_OVERHAUL_PLAN.PLAN_CODE and a.DELETE_FLAG='0') as "ext1", <!-- 设备对象拼接 -->
         </if>
         <if test="objectFlag==null or objectFlag==''">
             DELETE_FLAG	as "deleteFlag",
@@ -174,8 +174,8 @@
         SELECT NODE_CODE as "nodeCode"
         FROM T_EQUIPMENT_CATEGORY where 1=1 AND NODE_CODE IN (
         SELECT MAJOR_CODE as "majorCode"
-        FROM SYS_ORG_MAJOR where 1=1 AND REC_STATUS = '10' AND
-        ORG_CODE = (SELECT CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END
+        FROM SYS_ORG_MAJOR where 1=1 AND REC_STATUS= '10' AND
+        ORG_CODE= (SELECT CASE WHEN AREA_ID IS NULL THEN ID ELSE AREA_ID END
         FROM SYS_OFFICE WHERE ID=(SELECT OFFICE_ID from SYS_USER where LOGIN_NAME=#{userId} AND ROWNUM=1)
         AND ROWNUM=1))
     </select>
@@ -322,155 +322,155 @@
     <update id="modifyOverhaulPlan">
         UPDATE T_OVERHAUL_PLAN SET
         <if test="planCode!=null">
-            PLAN_CODE =#{planCode},
+            PLAN_CODE=#{planCode},
         </if>
         <if test="planName!=null">
-            PLAN_NAME =#{planName},
+            PLAN_NAME=#{planName},
         </if>
         <if test="lineNo!=null">
-            LINE_NO =#{lineNo},
+            LINE_NO=#{lineNo},
         </if>
         <if test="lineName!=null">
-            LINE_NAME =#{lineName},
+            LINE_NAME=#{lineName},
         </if>
         <if test="position1Name!=null">
-            POSITION1_NAME =#{position1Name},
+            POSITION1_NAME=#{position1Name},
         </if>
         <if test="position1Code!=null">
-            POSITION1_CODE =#{position1Code},
+            POSITION1_CODE=#{position1Code},
         </if>
         <if test="subjectCode!=null and subjectCode!=''">
-            SUBJECT_CODE =#{subjectCode},
+            SUBJECT_CODE=#{subjectCode},
         </if>
         <if test="subjectName!=null and subjectName!=''">
-            SUBJECT_NAME =#{subjectName},
+            SUBJECT_NAME=#{subjectName},
         </if>
         <if test="systemCode!=null and systemCode!=''">
-            SYSTEM_CODE =#{systemCode},
+            SYSTEM_CODE=#{systemCode},
         </if>
         <if test="systemName!=null and systemName!=''">
-            SYSTEM_NAME =#{systemName},
+            SYSTEM_NAME=#{systemName},
         </if>
         <if test="equipTypeCode!=null and equipTypeCode!=''">
-            EQUIP_TYPE_CODE =#{equipTypeCode},
+            EQUIP_TYPE_CODE=#{equipTypeCode},
         </if>
         <if test="equipTypeName!=null and equipTypeName!=''">
-            EQUIP_TYPE_NAME =#{equipTypeName},
+            EQUIP_TYPE_NAME=#{equipTypeName},
         </if>
         <if test="workerGroupCode!=null">
-            WORKER_GROUP_CODE =#{workerGroupCode},
+            WORKER_GROUP_CODE=#{workerGroupCode},
         </if>
         <if test="workGroupName!=null">
-            WORK_GROUP_NAME =#{workGroupName},
+            WORK_GROUP_NAME=#{workGroupName},
         </if>
         <if test="workerName!=null">
-            WORKER_NAME =#{workerName},
+            WORKER_NAME=#{workerName},
         </if>
         <if test="workerCode!=null">
-            WORKER_CODE =#{workerCode},
+            WORKER_CODE=#{workerCode},
         </if>
         <if test="ruleCode!=null">
-            RULE_CODE =#{ruleCode},
+            RULE_CODE=#{ruleCode},
         </if>
         <if test="ruleName!=null">
-            RULE_NAME =#{ruleName},
+            RULE_NAME=#{ruleName},
         </if>
         <if test="firstBeginTime!=null">
-            FIRST_BEGIN_TIME =#{firstBeginTime},
+            FIRST_BEGIN_TIME=#{firstBeginTime},
         </if>
         <if test="planFinishTime!=null">
-            PLAN_FINISH_TIME =#{planFinishTime},
+            PLAN_FINISH_TIME=#{planFinishTime},
         </if>
         <if test="lastActionTime!=null">
-            LAST_ACTION_TIME =#{lastActionTime},
+            LAST_ACTION_TIME=#{lastActionTime},
         </if>
         <if test="trigerTime!=null">
-            TRIGER_TIME =#{trigerTime},
+            TRIGER_TIME=#{trigerTime},
         </if>
         <if test="planStatus!=null">
-            PLAN_STATUS =#{planStatus},
+            PLAN_STATUS=#{planStatus},
         </if>
         <if test="planEditor!=null">
-            PLAN_EDITOR =#{planEditor},
+            PLAN_EDITOR=#{planEditor},
         </if>
         <if test="planEditorTime!=null">
-            PLAN_EDITOR_TIME =#{planEditorTime},
+            PLAN_EDITOR_TIME=#{planEditorTime},
         </if>
         <if test="allowDelayTime!=null">
-            ALLOW_DELAY_TIME =#{allowDelayTime},
+            ALLOW_DELAY_TIME=#{allowDelayTime},
         </if>
         <if test="taskFixedTime!=null">
-            TASK_FIXED_TIME =#{taskFixedTime},
+            TASK_FIXED_TIME=#{taskFixedTime},
         </if>
         <if test="taskFixedTimeUnit!=null">
-            TASK_FIXED_TIME_UNIT =#{taskFixedTimeUnit},
+            TASK_FIXED_TIME_UNIT=#{taskFixedTimeUnit},
         </if>
         <if test="beforeTriggerTime!=null">
-            BEFORE_TRIGGER_TIME =#{beforeTriggerTime},
+            BEFORE_TRIGGER_TIME=#{beforeTriggerTime},
         </if>
         <if test="trialStatus!=null">
-            TRIAL_STATUS =#{trialStatus},
+            TRIAL_STATUS=#{trialStatus},
         </if>
         <if test="workFlowInstId!=null">
-            WORK_FLOW_INST_ID =#{workFlowInstId},
+            WORK_FLOW_INST_ID=#{workFlowInstId},
         </if>
         <if test="workFlowInstStatus!=null">
-            WORK_FLOW_INST_STATUS =#{workFlowInstStatus},
+            WORK_FLOW_INST_STATUS=#{workFlowInstStatus},
         </if>
         <if test="parentNodeRecId!=null">
-            PARENT_NODE_REC_ID =#{parentNodeRecId},
+            PARENT_NODE_REC_ID=#{parentNodeRecId},
         </if>
         <if test="nodeLevel!=null">
-            NODE_LEVEL =#{nodeLevel},
+            NODE_LEVEL=#{nodeLevel},
         </if>
         <if test="relationCode!=null">
-            RELATION_CODE =#{relationCode},
+            RELATION_CODE=#{relationCode},
         </if>
         <if test="countFlag!=null">
-            COUNT_FLAG =#{countFlag},
+            COUNT_FLAG=#{countFlag},
         </if>
         <if test="count!=null">
-            COUNT =#{count},
+            COUNT=#{count},
         </if>
         <if test="companyCode!=null">
-            COMPANY_CODE =#{companyCode},
+            COMPANY_CODE=#{companyCode},
         </if>
         <if test="companyName!=null">
-            COMPANY_NAME =#{companyName},
+            COMPANY_NAME=#{companyName},
         </if>
         <if test="archiveFlag!=null">
-            ARCHIVE_FLAG =#{archiveFlag},
+            ARCHIVE_FLAG=#{archiveFlag},
         </if>
         <if test="remark!=null">
-            REMARK =#{remark},
+            REMARK=#{remark},
         </if>
         <if test="ext1!=null">
-            EXT1 =#{ext1},
+            EXT1=#{ext1},
         </if>
         <if test="ext2!=null">
-            EXT2 =#{ext2},
+            EXT2=#{ext2},
         </if>
         <if test="ext3!=null">
-            EXT3 =#{ext3},
+            EXT3=#{ext3},
         </if>
         <if test="ext4!=null">
-            EXT4 =#{ext4},
+            EXT4=#{ext4},
         </if>
         <if test="ext5!=null">
-            EXT5 =#{ext5},
+            EXT5=#{ext5},
         </if>
         <if test="weekPlanCode!=null">
-            WEEK_PLAN_CODE =#{weekPlanCode},
+            WEEK_PLAN_CODE=#{weekPlanCode},
         </if>
         <if test="kilometerScale!=null">
-            KILOMETER_SCALE =#{kilometerScale},
+            KILOMETER_SCALE=#{kilometerScale},
         </if>
         <if test="constructionType!=null">
-            CONSTRUCTION_TYPE =#{constructionType},
+            CONSTRUCTION_TYPE=#{constructionType},
         </if>
-        REC_REVISOR =#{recRevisor},
-        REC_REVISE_TIME =#{recReviseTime}
-        WHERE REC_ID =#{recId}
+        REC_REVISOR=#{recRevisor},
+        REC_REVISE_TIME=#{recReviseTime}
+        WHERE REC_ID=#{recId}
     </update>
 
     <update id="deleteOverhaulPlanDetail">
@@ -542,7 +542,7 @@
         <if test="objectFlag!=null and objectFlag!=''">
             <!-- RELATION_CODE	as "relationCode",  关联编码 -->
             (CASE WHEN TRIM(RELATION_CODE) IS NULL THEN '不关联' ELSE '关联' END) as "deleteFlag",  <!-- 关联编码 -->
-            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE = T_OVERHAUL_PLAN.PLAN_CODE and a.DELETE_FLAG ='0') as "ext1", <!-- 设备对象拼接 -->
+            (SELECT LISTAGG(TO_CHAR(a.OBJECT_NAME),',') within GROUP (order by a.OBJECT_NAME) FROM T_OVERHAUL_OBJECT a WHERE a.PLAN_CODE= T_OVERHAUL_PLAN.PLAN_CODE and a.DELETE_FLAG='0') as "ext1", <!-- 设备对象拼接 -->
         </if>
         <if test="objectFlag==null or objectFlag==''">
             DELETE_FLAG	as "deleteFlag",
@@ -611,7 +611,7 @@
         select PLAN_CODE	as "planCode"  <!-- 计划编号 -->
         from T_OVERHAUL_PLAN t
         where not exists(select 1 from T_OVERHAUL_OBJECT a where a.PLAN_CODE=t.PLAN_CODE)
-        AND t.WEEK_PLAN_CODE = #{weekPlanCode} and t.DELETE_FLAG ='0'
+        AND t.WEEK_PLAN_CODE= #{weekPlanCode} and t.DELETE_FLAG='0'
     </select>
 
     <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulObjectResDTO">
@@ -668,12 +668,12 @@
         WITHIN GROUP (
         ORDER BY a.OBJECT_NAME)
         FROM T_OVERHAUL_OBJECT a
-        WHERE a.PLAN_CODE = #{planCode}) as objectName,
+        WHERE a.PLAN_CODE= #{planCode}) as objectName,
         (SELECT LISTAGG(TO_CHAR(a.OBJECT_CODE), ',')
         WITHIN GROUP (
         ORDER BY a.OBJECT_CODE)
         FROM T_OVERHAUL_OBJECT a
-        WHERE a.PLAN_CODE = #{planCode}) as objectCode
+        WHERE a.PLAN_CODE= #{planCode}) as objectCode
         FROM DUAL
     </select>
 
@@ -689,7 +689,7 @@
         T2.PERIOD as "period"
         FROM T_OVERHAUL_PLAN T1
         LEFT JOIN T_WO_RULE_DETAIL T2
-        ON T1.RULE_CODE = T2.RULE_CODE
+        ON T1.RULE_CODE= T2.RULE_CODE
         WHERE PLAN_CODE IN (${planCodeAndIn})
         ORDER BY T2.PERIOD DESC
     </select>
@@ -889,7 +889,7 @@
         </if>
         REC_REVISOR=#{recRevisor},   <!-- 记录修改者 -->
         REC_REVISE_TIME=#{recReviseTime}   <!-- 记录修改时间 -->
-        WHERE REC_ID =#{recId}
+        WHERE REC_ID=#{recId}
     </update>
 
     <update id="deleteOverhaulObject">

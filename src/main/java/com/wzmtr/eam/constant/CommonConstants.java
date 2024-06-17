@@ -38,6 +38,7 @@ public class CommonConstants {
     public static final String COMMA = ",";
     public static final String SEMICOLON = ";";
     public static final String UNDERLINE = "_";
+    public static final String SHORT_BAR = "-";
     public static final String SINGLE_QUOTATION_MARK = "'";
     public static final String DOUBLE_QUOTATION_MARKS = "\"";
 
@@ -120,6 +121,14 @@ public class CommonConstants {
     public static final String FAULT_TRACK_REVIEW_NODE = "UserTask_1ftz952";
 
     /**
+     * 编号数字
+     */
+    public static final String ZERO_ONE_STRING = "01";
+    public static final String ZERO_TWO_STRING = "02";
+    public static final String ZERO_THREE_STRING = "03";
+    public static final String ZERO_FOUR_STRING = "04";
+
+    /**
      * 字符串数字
      */
     public static final String ZERO_STRING = "0";
@@ -195,6 +204,9 @@ public class CommonConstants {
     public static final String DM_VEHICLE_SPECIALTY_CODE = "dm.vehicleSpecialty";
     public static final String DM_MATCH_CONTROL_CODE = "dm.matchControl";
     public static final String DM_FAULT_FOLLOW_STATUS = "dm.faultFollowStatus";
+    public static final String DM_STATION2 = "dm.station2";
+    public static final String DM_CONTEXT_PATH = "dm.contextPath";
+    public static final String DM_IMPORT_TEMPLATE = "dm.import.template";
 
     /**
      * 工单推送内容相关

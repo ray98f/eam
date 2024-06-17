@@ -58,7 +58,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     @Override
     public void addEquipmentCategory(EquipmentCategoryReqDTO equipmentCategoryReqDTO) {
         Integer result = equipmentCategoryMapper.selectEquipmentCategoryIsExist(equipmentCategoryReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ONE) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         equipmentCategoryReqDTO.setRecId(TokenUtils.getUuId());
@@ -70,7 +70,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     @Override
     public void modifyEquipmentCategory(EquipmentCategoryReqDTO equipmentCategoryReqDTO) {
         Integer result = equipmentCategoryMapper.selectEquipmentCategoryIsExist(equipmentCategoryReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ONE) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         equipmentCategoryReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());

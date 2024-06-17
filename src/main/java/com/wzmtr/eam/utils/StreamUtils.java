@@ -1,9 +1,12 @@
 package com.wzmtr.eam.utils;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -12,8 +15,10 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.groupingBy;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/4 10:12
+ * stream工具类
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/06/12
  */
 public class StreamUtils {
     /**

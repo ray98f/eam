@@ -1,6 +1,5 @@
 package com.wzmtr.eam.utils;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 

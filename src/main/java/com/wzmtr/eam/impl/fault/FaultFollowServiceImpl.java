@@ -180,7 +180,8 @@ public class FaultFollowServiceImpl implements FaultFollowService {
 
     @Override
     public void dispatch(FaultFollowReqDTO req) {
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && !req.getFollowLeaderId().equals(TokenUtils.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+                && !req.getFollowLeaderId().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单的跟踪工班长，无法进行派工！");
         }
         req.setDispatchTime(DateUtils.getCurrentTime());
@@ -197,7 +198,8 @@ public class FaultFollowServiceImpl implements FaultFollowService {
 
     @Override
     public void close(FaultFollowReqDTO req) {
-        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && !req.getFollowLeaderId().equals(TokenUtils.getCurrentPersonId())) {
+        if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
+                && !req.getFollowLeaderId().equals(TokenUtils.getCurrentPersonId())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "你不是这条故障跟踪工单的跟踪工班长，无法关闭工单！");
         }
         req.setFollowCloserId(TokenUtils.getCurrentPersonId());

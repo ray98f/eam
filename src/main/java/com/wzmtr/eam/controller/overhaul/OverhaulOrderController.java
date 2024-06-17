@@ -155,6 +155,11 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单完工验收
+     * @param overhaulOrderReqDTO 传参
+     * @return 成功
+     */
     @PostMapping("/auditWorkers")
     @ApiOperation(value = "检修工单完工验收")
     public DataResponse<T> auditWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
@@ -162,6 +167,12 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单完工确认
+     * @param overhaulOrderReqDTO 传参
+     * @return 成功
+     * @throws ParseException 异常
+     */
     @PostMapping("/confirmWorkers")
     @ApiOperation(value = "检修工单完工确认")
     public DataResponse<T> confirmWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {
@@ -169,10 +180,15 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单作废
+     * @param overhaulOrderReqDTO 传参
+     * @return 成功
+     */
     @PostMapping("/cancellWorkers")
     @ApiOperation(value = "检修工单作废")
-    public DataResponse<T> cancellWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
-        overhaulOrderService.cancellWorkers(overhaulOrderReqDTO);
+    public DataResponse<T> cancelWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
+        overhaulOrderService.cancelWorkers(overhaulOrderReqDTO);
         return DataResponse.success();
     }
 

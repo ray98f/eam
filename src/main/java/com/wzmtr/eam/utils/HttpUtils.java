@@ -10,6 +10,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * http工具类
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/06/12
+ */
 @Slf4j
 public class HttpUtils {
 

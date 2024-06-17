@@ -2,6 +2,12 @@ package com.wzmtr.eam.utils;
 
 import com.wzmtr.eam.constant.CommonConstants;
 
+/**
+ * 编号生成工具类
+ * @author  Ray
+ * @version 1.0
+ * @date 2024/06/12
+ */
 public class CodeUtils {
 
     /**

@@ -157,6 +157,12 @@ public interface WoRuleMapper {
      */
     List<WoRuleResDTO.WoRuleDetail> exportWoRuleDetail(WoRuleDetailExportReqDTO reqDTO);
 
+    /**
+     * 获取检修规则列表
+     * @param planCode 检修计划
+     * @param nowDate 今天日期
+     * @return 规则列表
+     */
     List<WoRuleResDTO.WoRuleDetail> queryRuleList(String planCode, String nowDate);
 
 
