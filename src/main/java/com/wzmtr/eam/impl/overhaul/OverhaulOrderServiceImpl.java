@@ -154,29 +154,30 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         List<OverhaulOrderResDTO> list = page.getRecords();
         // 专业为车辆的检修工单填充字段
-        if (StringUtils.isNotEmpty(list) && CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderListReqDTO.getSubjectCode())) {
+        if (StringUtils.isNotEmpty(list)) {
             for (OverhaulOrderResDTO res : list) {
-                OverhaulOrderResDTO ext = overhaulOrderMapper.getCarOrderExt(res.getOrderCode(), res.getPlanCode());
-                OverhaulOrderResDTO rule = overhaulOrderMapper.getCarOrderRuleExt(res.getOrderCode(), res.getPlanCode());
-                if (!Objects.isNull(ext)) {
-                    res.setLastMile(ext.getLastMile());
-                    res.setLastDay(ext.getLastDay());
-                }
-                if (!Objects.isNull(rule)) {
-                    res.setProvideMile(rule.getProvideMile());
-                    res.setProvideTime(rule.getProvideTime());
-                }
-                if (!Objects.isNull(ext) && !Objects.isNull(rule)) {
-                    res.setNowMile(ext.getLastMile() + rule.getProvideMile());
-                    if (ext.getLastDay() != null && rule.getProvideTime() != null) {
-                        res.setNowDay(DateUtils.addDateHour(ext.getLastDay(), rule.getProvideTime()));
+                if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderListReqDTO.getSubjectCode())) {
+                    OverhaulOrderResDTO ext = overhaulOrderMapper.getCarOrderExt(res.getOrderCode(), res.getPlanCode());
+                    OverhaulOrderResDTO rule = overhaulOrderMapper.getCarOrderRuleExt(res.getOrderCode(), res.getPlanCode());
+                    if (!Objects.isNull(ext)) {
+                        res.setLastMile(ext.getLastMile());
+                        res.setLastDay(ext.getLastDay());
+                    }
+                    if (!Objects.isNull(rule)) {
+                        res.setProvideMile(rule.getProvideMile());
+                        res.setProvideTime(rule.getProvideTime());
+                    }
+                    if (!Objects.isNull(ext) && !Objects.isNull(rule)) {
+                        res.setNowMile(ext.getLastMile() + rule.getProvideMile());
+                        if (ext.getLastDay() != null && rule.getProvideTime() != null) {
+                            res.setNowDay(DateUtils.addDateHour(ext.getLastDay(), rule.getProvideTime()));
+                        }
                     }
                 }
                 if (StringUtils.isNotEmpty(res.getRecRevisor())) {
                     res.setRecRevisor(userAccountMapper.getUserNameById(res.getRecRevisor()));
                 }
             }
-
         }
         page.setRecords(list);
         return page;
@@ -516,19 +517,19 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 String nowDate = dateTimeFormat.format(new Date());
                 String substring = nowDate.substring(nowDate.length() - 4);
                 List<WoRuleResDTO.WoRuleDetail> rules = woRuleMapper.listWoRuleDetail(plans.get(0).getRuleCode(), substring, substring);
-                int trigerMiles = 0;
+                int triggerMiles = 0;
                 if (StringUtils.isNotEmpty(rules)) {
                     if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderReqDTO.getSubjectCode())) {
                         List<String> queryObjMiles = overhaulOrderMapper.queryObjMiles(plans.get(0).getPlanCode());
                         if (StringUtils.isNotEmpty(queryObjMiles)) {
                             int mileage = Integer.parseInt(rules.get(0).getExt1());
                             int totalMiles = Integer.parseInt(queryObjMiles.get(0));
-                            trigerMiles = mileage + totalMiles;
+                            triggerMiles = mileage + totalMiles;
                         }
                     }
                     Date realEndTime = getRealEndTime(overhaulOrderReqDTO, rules);
                     String realEndTimeStr = dateTimeFormat1.format(realEndTime);
-                    modifyOverhaulPlanWhenConfirmWorkers(plans, realEndTimeStr, trigerMiles);
+                    modifyOverhaulPlanWhenConfirmWorkers(plans, realEndTimeStr, triggerMiles);
                 }
             }
         }
@@ -557,15 +558,15 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
      * 触发时修改检修计划
      * @param plans 检修计划列表
      * @param realEndTimeStr 实际结束时间
-     * @param trigerMiles 触发公路数
+     * @param triggerMiles 触发公路数
      */
     private void modifyOverhaulPlanWhenConfirmWorkers(List<OverhaulPlanResDTO> plans,
                                                       String realEndTimeStr,
-                                                      int trigerMiles) {
+                                                      int triggerMiles) {
         OverhaulPlanReqDTO overhaulPlanReqDTO = new OverhaulPlanReqDTO();
         overhaulPlanReqDTO.setRecId(plans.get(0).getRecId());
         overhaulPlanReqDTO.setTrigerTime(realEndTimeStr);
-        overhaulPlanReqDTO.setLastActionTime(String.valueOf(trigerMiles));
+        overhaulPlanReqDTO.setLastActionTime(String.valueOf(triggerMiles));
         overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
