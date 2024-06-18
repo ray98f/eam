@@ -32,6 +32,12 @@ public interface OverhaulOrderMapper {
 
     void addOverhaulOrderDetail(OverhaulOrderDetailReqDTO overhaulOrderDetailReqDTO);
 
+    /**
+     * 获取检修工单列表
+     * @param page 分页参数
+     * @param req 传参
+     * @return 检修工单列表
+     */
     Page<OverhaulOrderResDTO> pageOrder(Page<OverhaulOrderResDTO> page, OverhaulOrderListReqDTO req);
 
     /**

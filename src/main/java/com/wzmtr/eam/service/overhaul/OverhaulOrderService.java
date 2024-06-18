@@ -16,15 +16,25 @@ import java.util.List;
 
 public interface OverhaulOrderService {
 
-    Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO);
+    /**
+     * 获取检修工单列表
+     * @param pageReqDTO 分页参数
+     * @param overhaulOrderListReqDTO 传参
+     * @return 检修工单列表
+     * @throws ParseException 异常
+     */
+    Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+                                                PageReqDTO pageReqDTO) throws ParseException;
 
     /**
      * 获取检修工单列表-开放接口
      * @param overhaulOrderListReqDTO 检修工单返回信息
      * @param pageReqDTO 分页参数
      * @return 检修工单列表
+     * @throws ParseException 异常
      */
-    Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO);
+    Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+                                                       PageReqDTO pageReqDTO) throws ParseException;
 
     /**
      * 获取检修工单详情

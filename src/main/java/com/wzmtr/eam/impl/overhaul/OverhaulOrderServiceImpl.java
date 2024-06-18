@@ -125,7 +125,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     private FaultReportService faultReportService;
 
     @Override
-    public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
+    public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+                                                       PageReqDTO pageReqDTO) throws ParseException {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         overhaulOrderListReqDTO.setObjectFlag("1");
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
@@ -150,6 +151,13 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
             overhaulOrderListReqDTO.setUserId(TokenUtils.getCurrentPersonId());
             overhaulOrderListReqDTO.setOfficeAreaId(TokenUtils.getCurrentPerson().getOfficeAreaId());
+        }
+        if (StringUtils.isNotEmpty(overhaulOrderListReqDTO.getStartTime())
+                && StringUtils.isNotEmpty(overhaulOrderListReqDTO.getEndTime())) {
+            SimpleDateFormat sdf1 = new SimpleDateFormat(DateUtils.YYYYMMDD);
+            SimpleDateFormat sdf2 = new SimpleDateFormat(DateUtils.YYYY_MM_DD);
+            overhaulOrderListReqDTO.setStartTime(sdf2.format(sdf1.parse(overhaulOrderListReqDTO.getStartTime())));
+            overhaulOrderListReqDTO.setEndTime(sdf2.format(sdf1.parse(overhaulOrderListReqDTO.getEndTime())));
         }
         Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         List<OverhaulOrderResDTO> list = page.getRecords();
@@ -184,7 +192,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, PageReqDTO pageReqDTO) {
+    public Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+                                                              PageReqDTO pageReqDTO) throws ParseException {
         return pageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO);
     }
 
