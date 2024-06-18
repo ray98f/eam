@@ -21,7 +21,7 @@ import java.io.FileOutputStream;
  * @date 2024/06/17
  */
 @Slf4j
-public class Htm2WordUtils {
+public class Html2WordUtils {
 
     /**
      * html 转 word
