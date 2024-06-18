@@ -1,29 +1,16 @@
 package com.wzmtr.eam.dto.res.fault;
 
-import com.wzmtr.eam.entity.File;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
-
 /**
- * 故障工单详情结果类
- * @author  Li.Wang
+ * 故障工单详情开放结果类
+ * @author  Ray
  * @version 1.0
- * @date 2023/08/15
+ * @date 2024/06/18
  */
 @Data
-public class FaultDetailResDTO {
-    /**
-     * FaultInfo表recId
-     */
-    @ApiModelProperty(value = "FaultInfo表recId")
-    private String faultInfoRecId;
-    /**
-     * FaultOrder表recId
-     */
-    @ApiModelProperty(value = "FaultOrder表recId")
-    private String faultOrderRecId;
+public class FaultDetailOpenResDTO {
     /**
      * 故障编号
      */
@@ -75,9 +62,9 @@ public class FaultDetailResDTO {
     @ApiModelProperty(value = "工作区域")
     private String workArea;
     /**
-     * 工单状态
+     * 工单状态 0草稿;10提报;20下发;30派工;50完工;55验收;60完工确认;70关闭;99作废
      */
-    @ApiModelProperty(value = "工单状态")
+    @ApiModelProperty(value = "工单状态 0草稿;10提报;20下发;30派工;50完工;55验收;60完工确认;70关闭;99作废")
     private String orderStatus;
     /**
      * 维调号
@@ -500,16 +487,6 @@ public class FaultDetailResDTO {
     @ApiModelProperty(value = "故障状态")
     private String faultStatus;
     /**
-     * 工作流实例ID
-     */
-    @ApiModelProperty(value = "工作流实例ID")
-    private String workFlowInstId;
-    /**
-     * 工作流实例状态
-     */
-    @ApiModelProperty(value = "工作流实例状态")
-    private String workFlowInstStatus;
-    /**
      * 附件编号
      */
     @ApiModelProperty(value = "附件编号")
@@ -519,37 +496,6 @@ public class FaultDetailResDTO {
      */
     @ApiModelProperty(value = "备注")
     private String remark;
-    @ApiModelProperty(value = "创建者")
-    private String recCreator;
-    @ApiModelProperty(value = "创建时间")
-    private String recCreateTime;
-    @ApiModelProperty(value = "修改者")
-    private String recRevisor;
-    @ApiModelProperty(value = "修改时间")
-    private String recReviseTime;
-    @ApiModelProperty(value = "删除者")
-    private String recDeletor;
-    @ApiModelProperty(value = "删除时间")
-    private String recDeleteTime;
-    @ApiModelProperty(value = "删除标志")
-    private String deleteFlag;
-    @ApiModelProperty(value = "归档标记")
-    private String archiveFlag;
-    /**
-     *
-     */
-    @ApiModelProperty(value = "状态")
-    private String recStatus;
-    @ApiModelProperty(value = "扩展字段1")
-    private String ext1;
-    @ApiModelProperty(value = "扩展字段2")
-    private String ext2;
-    @ApiModelProperty(value = "扩展字段3")
-    private String ext3;
-    @ApiModelProperty(value = "扩展字段4")
-    private String ext4;
-    @ApiModelProperty(value = "扩展字段5")
-    private String ext5;
     /**
      * 是否知会OCC
      */
@@ -560,14 +506,6 @@ public class FaultDetailResDTO {
      */
     @ApiModelProperty(value = "跟踪状态")
     private String trackState;
-    @ApiModelProperty(value = "附件文件")
-    private List<File> docFile;
-    /**
-     * 故障流程数据
-     */
-    @ApiModelProperty(value = "故障流程数据")
-    private List<FaultFlowResDTO> flows;
-    private String repairLimitTime;
     /**
      * 是否由phm报出 0是 1否
      */
