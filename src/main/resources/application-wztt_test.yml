@@ -2,8 +2,8 @@
 spring:
   datasource:
     url: jdbc:oracle:thin:@10.11.82.46:1521/xe
-    username: eam
-    password: eam@123
+    username: S1_EAM
+    password: S1_EAM@123
     driver-class-name: oracle.jdbc.OracleDriver
     hikari:
       read-only: false
