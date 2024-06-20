@@ -1152,6 +1152,7 @@
             AND FAULT_NO=#{faultNo}
         </if>
         order by FAULT_WORK_NO DESC
+        FETCH FIRST 1 ROWS ONLY
     </select>
     <select id="queryDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
