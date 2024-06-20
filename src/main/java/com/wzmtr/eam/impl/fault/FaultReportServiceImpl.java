@@ -38,6 +38,7 @@ import com.wzmtr.eam.utils.*;
 import com.wzmtr.eam.utils.mq.FaultSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +85,8 @@ public class FaultReportServiceImpl implements FaultReportService {
     private FaultQueryServiceImpl faultQueryServiceImpl;
     @Autowired
     private HttpServletRequest httpServletRequest;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -273,6 +276,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (!CommonConstants.FAULT_OPEN_APP_KEY.equals(authorization)) {
             throw new CommonException(ErrorCode.FAULT_OPEN_TOKEN_ERROR);
         }
+        // todo 使用redis生成FaultNo、FaultWorkNo
         String nextFaultNo;
         try {
             String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();

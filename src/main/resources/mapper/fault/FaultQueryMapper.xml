@@ -1076,6 +1076,7 @@
         </trim>
     </select>
     <select id="queryOneFaultOrder" resultType="com.wzmtr.eam.dataobject.FaultOrderDO">
+        SELECT * FROM (
         SELECT
         REC_ID as "recId",
         COMPANY_CODE as "companyCode",
@@ -1151,8 +1152,8 @@
         <if test="faultNo!=null and faultNo!=''">
             AND FAULT_NO=#{faultNo}
         </if>
-        order by FAULT_WORK_NO DESC
-        FETCH FIRST 1 ROWS ONLY
+        ORDER BY FAULT_WORK_NO DESC)
+        WHERE rownum=1
     </select>
     <select id="queryDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
