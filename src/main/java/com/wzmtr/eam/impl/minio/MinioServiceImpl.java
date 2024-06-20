@@ -37,8 +37,8 @@ import java.util.List;
 @Slf4j
 public class MinioServiceImpl implements MinioService {
 
-    @Value("${pro.name}")
-    private String proName;
+    @Value("${pro.bucket-base}")
+    private String bucketBase;
 
     @Autowired
     private MinioUtils minioUtils;
@@ -54,8 +54,8 @@ public class MinioServiceImpl implements MinioService {
 
     @Override
     public File upload(MultipartFile file, String bucket) {
-        if (!minioUtils.bucketExists(proName)) {
-            minioUtils.makeBucket(proName);
+        if (!minioUtils.bucketExists(bucketBase)) {
+            minioUtils.makeBucket(bucketBase);
         }
         String oldName = file.getOriginalFilename();
         String fileName = FileUploadUtils.extractFilename(file, bucket);
@@ -63,7 +63,7 @@ public class MinioServiceImpl implements MinioService {
             @Cleanup
             InputStream inputStream = file.getInputStream();
             PutObjectArgs args = PutObjectArgs.builder()
-                    .bucket(proName)
+                    .bucket(bucketBase)
                     .object(fileName)
                     .stream(inputStream, file.getSize(), -1)
                     .contentType(file.getContentType())
@@ -72,9 +72,9 @@ public class MinioServiceImpl implements MinioService {
         } catch (Exception e) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "上传失败");
         }
-        String url = minioConfig.getImgPath() + "/" + proName + "/" + fileName;
+        String url = minioConfig.getImgPath() + "/" + bucketBase + "/" + fileName;
         FileReqDTO build = FileReqDTO.builder()
-                .bucket(proName)
+                .bucket(bucketBase)
                 .fileName(fileName)
                 .id(TokenUtils.getUuId())
                 .oldName(oldName)
@@ -83,7 +83,7 @@ public class MinioServiceImpl implements MinioService {
                 .recCreator(TokenUtils.getCurrentPersonId())
                 .build();
         fileMapper.insertFile(build);
-        return fileMapper.getFile(url, proName, oldName);
+        return fileMapper.getFile(url, bucketBase, oldName);
     }
 
     @Override

@@ -21,7 +21,7 @@ spring:
     port: 5672
     username: admin
     password: uME*MZOOwu
-    virtual-host: /eam
+    virtual-host: /eam-s2
 
   redis:
     host: 192.168.0.3
@@ -33,7 +33,7 @@ spring:
         min-idle: 0
         max-idle: 50
         max-wait: -1
-    key-prefix: dev-
+    key-prefix: eam-dev-s2-
 
 excluded:
   swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
@@ -112,6 +112,7 @@ minio:
 
 pro:
   name: eam
+  bucket-base: eam-s2
 
 eip:
   url: "http://esb.wzmtr.com:7003/iplwebservice/ps/CREATEtodoList?wsdl"
