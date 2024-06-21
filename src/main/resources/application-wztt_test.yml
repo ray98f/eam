@@ -2,8 +2,8 @@
 spring:
   datasource:
     url: jdbc:oracle:thin:@10.11.82.46:1521/xe
-    username: eam
-    password: eam@123
+    username: S1_EAM
+    password: S1_EAM@123
     driver-class-name: oracle.jdbc.OracleDriver
     hikari:
       read-only: false
@@ -20,7 +20,7 @@ spring:
     port: 5672
     username: admin
     password: 123456
-    virtual-host: /eam
+    virtual-host: /eam-s1
 
   redis:
     host: 10.11.82.46
@@ -32,7 +32,7 @@ spring:
         min-idle: 0
         max-idle: 50
         max-wait: -1
-    key-prefix: dev-
+    key-prefix: eam-dev-s1-
 
 excluded:
   swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
@@ -40,11 +40,11 @@ excluded:
 
 sso:
   url: http://10.11.82.82:8083/cas
-  home: http://10.11.82.29:8002/eam/
+  home: http://10.11.82.29:8003/eam/
 
 cas:
   serverUrlPrefix: "${sso.url}"
-  serviceUrlPrefix: "http://10.11.82.29:8002/eam"
+  serviceUrlPrefix: "http://10.11.82.29:8003/eam"
   casFilterUrlPattern: "/cas"
   loginUrlPattern: "/login"
   logoutUrlPattern: "/logout"
@@ -100,7 +100,7 @@ mdm:
     address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
 
 local:
-  base-url: http://10.11.82.29:8002/eam
+  base-url: http://10.11.82.29:8003/eam
   data-sync: on
 
 minio:
@@ -111,6 +111,7 @@ minio:
 
 pro:
   name: eam
+  bucket-base: eam-s1
 
 eip:
   url: "http://esb.wzmtr.com:7003/iplwebservice/ps/CREATEtodoList?wsdl"

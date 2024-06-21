@@ -44,7 +44,7 @@ public class FaultReportController {
      */
     @ApiOperation(value = "故障提报（到设备）-开放接口")
     @PostMapping("/insert/equip/open")
-    public DataResponse<String> addToEquipOpen(@RequestBody @Valid FaultReportOpenReqDTO reqDTO) {
+    public DataResponse<String> addToEquipOpen(@RequestBody FaultReportOpenReqDTO reqDTO) {
         return DataResponse.of(reportService.addToFaultOpen(reqDTO));
     }
 

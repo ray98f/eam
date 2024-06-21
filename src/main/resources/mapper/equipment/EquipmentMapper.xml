@@ -147,7 +147,7 @@
             and USE_LINE_NO=#{useLineNo}
         </if>
         <if test="useLineNo==null or useLineNo==''">
-            and USE_LINE_NO='02'
+            and USE_LINE_NO='01'
         </if>
         <if test="useSegNo!=null and useSegNo!=''">
             and USE_SEG_NO=#{useSegNo}

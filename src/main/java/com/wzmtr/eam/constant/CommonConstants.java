@@ -157,7 +157,9 @@ public class CommonConstants {
     public static final int ZERO = 0;
     public static final long ZERO_LONG = 0L;
     public static final int ONE = 1;
+    public static final int NEGATIVE_ONE = -1;
     public static final int TWO = 2;
+    public static final int NEGATIVE_TWO = -2;
     public static final int THREE = 3;
     public static final int FOUR = 4;
     public static final int FIVE = 5;
@@ -238,5 +240,9 @@ public class CommonConstants {
      */
     public final static String DEFAULT_FOLDER_TMP = PROJECT_ROOT_DIRECTORY + "/tmp";
     public final static String DEFAULT_FOLDER_TMP_GENERATE = PROJECT_ROOT_DIRECTORY + "/tmp-generate";
+    public static final String FAULT_NO_PREFIX = "GZ";
+    public static final String FAULT_WORK_NO_PREFIX = "GD";
+    public static final String FAULT_NO = "fault_no";
+    public static final String FAULT_WORK_NO = "fault_work_no";
 
 }
