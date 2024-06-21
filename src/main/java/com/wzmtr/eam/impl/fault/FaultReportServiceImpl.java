@@ -91,14 +91,16 @@ public class FaultReportServiceImpl implements FaultReportService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String addToFault(FaultReportReqDTO reqDTO) {
-        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+//        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
+//        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         // 获取AOP代理对象
         FaultInfoDO faultInfo = reqDTO.toFaultInfoInsertDO(reqDTO);
-        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+//        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+        String nextFaultNo = CodeUtils.generateFaultNo();
         insertToFaultInfo(faultInfo, nextFaultNo);
         FaultOrderDO faultOrder = reqDTO.toFaultOrderInsertDO(reqDTO);
-        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+//        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+        String nextFaultWorkNo = CodeUtils.generateFaultWorkNo();
         insertToFaultOrder(faultOrder, nextFaultNo, nextFaultWorkNo);
         // 添加流程记录
         addFaultFlow(nextFaultNo, nextFaultWorkNo);
@@ -279,10 +281,12 @@ public class FaultReportServiceImpl implements FaultReportService {
         // todo 使用redis生成FaultNo、FaultWorkNo
         String nextFaultNo;
         try {
-            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-            nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-            String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+//            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
+//            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+//            nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+//            String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+            nextFaultNo = CodeUtils.generateFaultNo();
+            String nextFaultWorkNo = CodeUtils.generateFaultWorkNo();
             reqDTO.setFaultNo(nextFaultNo);
             reqDTO.setFaultWorkNo(nextFaultWorkNo);
         } catch (Exception e) {
