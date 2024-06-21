@@ -1086,7 +1086,6 @@
         DISPATCH_USER_ID as "dispatchUserId",
         DISPATCH_TIME as "dispatchTime",
         REPAIR_RESP_USER_ID as "repairRespUserId",
-        (SELECT NAME FROM SYS_USER WHERE LOGIN_NAME=REPAIR_RESP_USER_ID) as "repairRespUserName",
         WORK_AREA as "workArea",
         ORDER_STATUS as "orderStatus",
         REPAIR_DISPATCH_NO as "repairDispatchNo",
@@ -1118,12 +1117,10 @@
         WORK_FLOW_INST_STATUS as "workFlowInstStatus",
         PLAN_RECOVERY_TIME as "planRecoveryTime",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(DISPATCH_USER_ID)) as "dispatchUserName",
-        (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPAIR_RESP_USER_ID)) as
-        "repairRespUserName",
+        (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPAIR_RESP_USER_ID)) as "repairRespUserName",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(CHECK_USER_ID)) as "checkUserName",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(CLOSE_USER_ID)) as "closeUserName",
-        (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_FINISH_USER_ID)) as
-        "reportFinishUserName",
+        (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_FINISH_USER_ID)) as "reportFinishUserName",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(CONFIRM_USER_ID)) as "confirmUserName",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_USER_ID)) as "reportUserName",
         FAULT_AFFECT as "faultAffect",
