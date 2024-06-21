@@ -5,6 +5,7 @@ import com.digitalpetri.modbus.master.ModbusTcpMaster;
 import com.digitalpetri.modbus.master.ModbusTcpMasterConfig;
 import com.digitalpetri.modbus.requests.*;
 import com.digitalpetri.modbus.responses.*;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.constant.ModbusClientConstants;
 import com.wzmtr.eam.dto.req.modbus.ModbusNetworkAddressReqDTO;
 import io.netty.buffer.ByteBuf;
@@ -74,9 +75,9 @@ public class ModbusMasterUtils {
      * @param values 传入的int[]数组
      * @return 返回 byte[]类型的数组
      */
-    public static byte[] intToByte(int[] values) {
+    public static byte[] intToByte(Integer[] values) {
         byte[] bytes = new byte[values.length * 2];
-        for (int i = 0; i < bytes.length; i += 2) {
+        for (int i = 0; i < bytes.length; i += CommonConstants.TWO) {
             bytes[i] = (byte) (values[i / 2] >> 8 & 0xFF);
             bytes[i + 1] = (byte) (values[i / 2] & 0xFF);
         }
@@ -142,7 +143,7 @@ public class ModbusMasterUtils {
                 ByteBuf byteBuf = response.getCoilStatus();
                 int[] values = new int[quantity];
                 int minimum = Math.min(quantity, byteBuf.capacity() * 8);
-                for (int i = 0; i < minimum; i += 8) {
+                for (int i = 0; i < minimum; i += CommonConstants.EIGHT) {
                     setBooleanArray(byteBuf.readUnsignedByte(), values, i, Math.min(minimum - i, 8));
                 }
                 ReferenceCountUtil.release(response);
@@ -169,7 +170,7 @@ public class ModbusMasterUtils {
                 ByteBuf byteBuf = response.getInputStatus();
                 int[] values = new int[quantity];
                 int minimum = Math.min(quantity, byteBuf.capacity() * 8);
-                for (int i = 0; i < minimum; i += 8) {
+                for (int i = 0; i < minimum; i += CommonConstants.EIGHT) {
                     setBooleanArray(byteBuf.readUnsignedByte(), values, i, Math.min(minimum - i, 8));
                 }
                 ReferenceCountUtil.release(response);
@@ -195,7 +196,7 @@ public class ModbusMasterUtils {
             } else {
                 ByteBuf byteBuf = response.getRegisters();
                 int[] values = new int[quantity];
-                for (int i = 0; i < byteBuf.capacity() / 2; i++) {
+                for (int i = 0; i < byteBuf.capacity() / CommonConstants.TWO; i++) {
                     values[i] = byteBuf.readUnsignedShort();
                 }
                 ReferenceCountUtil.release(response);
@@ -221,7 +222,7 @@ public class ModbusMasterUtils {
             } else {
                 ByteBuf byteBuf = response.getRegisters();
                 int[] values = new int[quantity];
-                for (int i = 0; i < byteBuf.capacity() / 2; i++) {
+                for (int i = 0; i < byteBuf.capacity() / CommonConstants.TWO; i++) {
                     values[i] = byteBuf.readUnsignedShort();
                 }
                 ReferenceCountUtil.release(response);
@@ -304,7 +305,7 @@ public class ModbusMasterUtils {
      * @param quantity 要写入的寄存器个数
      * @param values   要写入的int[]
      */
-    public void writeMultipleRegisters(int slaveId, int address, int quantity, int[] values) {
+    public void writeMultipleRegisters(int slaveId, int address, int quantity, Integer[] values) {
         byte[] bytes = intToByte(values);
         CompletableFuture<WriteMultipleRegistersResponse> futureResponse = modbusMaster.sendRequest(
                 new WriteMultipleRegistersRequest(address, quantity, bytes), slaveId);

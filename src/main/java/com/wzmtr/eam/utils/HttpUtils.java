@@ -10,6 +10,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * http工具类
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/06/12
+ */
 @Slf4j
 public class HttpUtils {
 
@@ -28,7 +34,7 @@ public class HttpUtils {
         StringBuilder result = new StringBuilder();
         data = data == null ? "{}" : data;
         try {
-            HttpURLConnection conn = getHttpURLConnection(pathUrl, "POST");
+            HttpURLConnection conn = getHttpUrlConnection(pathUrl, "POST");
 
             // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
@@ -36,7 +42,7 @@ public class HttpUtils {
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
             if (!StringUtils.isEmpty(authorization)) {
-                conn.setRequestProperty("Authorization", authorization);
+                conn.setRequestProperty(CommonConstants.AUTHORIZATION, authorization);
             }
 
             //连接，从上述url.openConnection()至此的配置必须要在connect之前完成，
@@ -81,7 +87,7 @@ public class HttpUtils {
     }
 
     @NotNull
-    private static HttpURLConnection getHttpURLConnection(String pathUrl, String POST) throws IOException {
+    private static HttpURLConnection getHttpUrlConnection(String pathUrl, String requestType) throws IOException {
         URL url = new URL(pathUrl);
 
         //打开和url之间的连接
@@ -89,7 +95,7 @@ public class HttpUtils {
 
         //设定请求的方法为"POST"，默认是GET
         //post与get的不同之处在于post的参数不是放在URL字串里面，而是放在http请求的正文内。
-        conn.setRequestMethod(POST);
+        conn.setRequestMethod(requestType);
 
         //设置30秒连接超时
         conn.setConnectTimeout(30000);
@@ -118,7 +124,7 @@ public class HttpUtils {
         BufferedReader br = null;
         StringBuilder result = new StringBuilder();
         try {
-            HttpURLConnection conn = getHttpURLConnection(pathUrl, "GET");
+            HttpURLConnection conn = getHttpUrlConnection(pathUrl, "GET");
 
             //设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
@@ -126,7 +132,7 @@ public class HttpUtils {
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
             if (StringUtils.isNotEmpty(authorization)) {
-                conn.setRequestProperty("Authorization", authorization);
+                conn.setRequestProperty(CommonConstants.AUTHORIZATION, authorization);
             }
 
             //连接，从上述url.openConnection()至此的配置必须要在connect之前完成，
@@ -135,7 +141,7 @@ public class HttpUtils {
             //获取URLConnection对象对应的输入流
             InputStream is = conn.getInputStream();
             //构造一个字符流缓存
-            br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             String str = "";
             while ((str = br.readLine()) != null) {
                 result.append(str);

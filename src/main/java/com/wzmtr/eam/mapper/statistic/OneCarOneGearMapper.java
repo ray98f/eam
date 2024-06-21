@@ -62,13 +62,23 @@ public interface OneCarOneGearMapper {
     List<FaultDetailResDTO> queryFMHistory(String equipName, String startTime, String endTime);
 
     /**
-     * 故障跟踪记录
-     *
-     * @return
+     * 分页查询一车一档故障跟踪列表
+     * @param of 分页参数
+     * @param equipName 设备名称
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 故障跟踪列表
      */
-    Page<TrackQueryResDTO> queryDMFM21(Page<Object> of, String equipName, String startTime, String endTime);
+    Page<TrackQueryResDTO> queryFaultFollow(Page<Object> of, String equipName, String startTime, String endTime);
 
-    List<TrackQueryResDTO> queryDMFM21(String equipName, String startTime, String endTime);
+    /**
+     * 查询一车一档故障跟踪列表
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param equipName 设备名称
+     * @return 故障跟踪列表
+     */
+    List<TrackQueryResDTO> queryFaultFollow(String equipName, String startTime, String endTime);
 
     /**
      * 部件更换列表

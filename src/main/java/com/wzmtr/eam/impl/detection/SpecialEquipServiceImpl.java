@@ -59,8 +59,9 @@ public class SpecialEquipServiceImpl implements SpecialEquipService {
     private DetectionService detectionService;
 
     @Override
-    public Page<SpecialEquipResDTO> pageSpecialEquip(String equipCode, String equipName, String specialEquipCode, String factNo,
-                                                     String useLineNo, String position1Code, String specialEquipType, String equipStatus, PageReqDTO pageReqDTO) {
+    public Page<SpecialEquipResDTO> pageSpecialEquip(String equipCode, String equipName, String specialEquipCode,
+                                                     String factNo, String useLineNo, String position1Code,
+                                                     String specialEquipType, String equipStatus, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<SpecialEquipResDTO> page =  specialEquipMapper.pageSpecialEquip(pageReqDTO.of(), equipCode, equipName, specialEquipCode, factNo, useLineNo,
                 position1Code, specialEquipType, equipStatus);

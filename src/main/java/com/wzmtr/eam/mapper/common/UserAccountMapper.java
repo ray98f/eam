@@ -79,5 +79,12 @@ public interface UserAccountMapper {
      */
     SysOffice getUserOrg(String userId);
 
+    /**
+     * 根据用户id获取用户名
+     * @param userId 用户id
+     * @return 用户名
+     */
+    String getUserNameById(String userId);
+
 
 }

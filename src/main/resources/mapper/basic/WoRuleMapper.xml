@@ -221,7 +221,7 @@
             and wd.START_DATE <![CDATA[<]]> #{startDate}
         </if>
         <if test="endDate!=null and endDate!=''">
-            and wd.END_DATE >= #{endDate}
+            and wd.END_DATE>=#{endDate}
         </if>
         ORDER BY wd.RULE_SORT ASC
     </select>
@@ -285,16 +285,10 @@
         d.EXT4 as "ext4",
         d.EXT5 as "ext5"
         FROM T_WO_RULE_DETAIL d
-        WHERE
-        d.RULE_CODE =
-        (SELECT
-        T_OVERHAUL_PLAN.RULE_CODE
-        FROM
-        T_OVERHAUL_PLAN
-        WHERE
-        T_OVERHAUL_PLAN.PLAN_CODE = #{planCode})
-        AND d.START_DATE <![CDATA[<=]]> #{nowDate}
-        AND d.END_DATE >= #{nowDate}
+        LEFT JOIN T_OVERHAUL_PLAN op ON d.RULE_CODE=op.RULE_CODE and op.DELETE_FLAG='0'
+        WHERE op.PLAN_CODE=#{planCode} AND d.DELETE_FLAG='0'
+        AND #{nowDate}>=d.START_DATE
+        AND d.END_DATE>=#{nowDate}
     </select>
 
 </mapper>

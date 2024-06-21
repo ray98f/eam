@@ -8,19 +8,52 @@ import com.google.common.collect.Sets;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
-import com.wzmtr.eam.dto.req.statistic.*;
-import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
+import com.wzmtr.eam.dto.req.statistic.CarFaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.DoorFaultReqDTO;
+import com.wzmtr.eam.dto.req.statistic.FailreRateQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.MaterialListReqDTO;
+import com.wzmtr.eam.dto.req.statistic.MaterialQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.OneCarOneGearQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.OneCarOneGearReqDTO;
+import com.wzmtr.eam.dto.req.statistic.RamsTimeReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
-import com.wzmtr.eam.dto.res.statistic.*;
-import com.wzmtr.eam.dto.res.statistic.excel.*;
+import com.wzmtr.eam.dto.res.statistic.CarFaultQueryResDTO;
+import com.wzmtr.eam.dto.res.statistic.FailureRateDetailResDTO;
+import com.wzmtr.eam.dto.res.statistic.FailureRateResDTO;
+import com.wzmtr.eam.dto.res.statistic.FaultConditionResDTO;
+import com.wzmtr.eam.dto.res.statistic.FaultRamsResDTO;
+import com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO;
+import com.wzmtr.eam.dto.res.statistic.MaterialResDTO;
+import com.wzmtr.eam.dto.res.statistic.OneCarOneGearResDTO;
+import com.wzmtr.eam.dto.res.statistic.RamsCarResDTO;
+import com.wzmtr.eam.dto.res.statistic.RamsResDTO;
+import com.wzmtr.eam.dto.res.statistic.RamsResult2ResDTO;
+import com.wzmtr.eam.dto.res.statistic.RamsSysPerformResDTO;
+import com.wzmtr.eam.dto.res.statistic.RamsTrainReliabilityResDTO;
+import com.wzmtr.eam.dto.res.statistic.ReliabilityDetailResDTO;
+import com.wzmtr.eam.dto.res.statistic.ReliabilityListResDTO;
+import com.wzmtr.eam.dto.res.statistic.ReliabilityResDTO;
+import com.wzmtr.eam.dto.res.statistic.SubjectFaultResDTO;
+import com.wzmtr.eam.dto.res.statistic.SystemFaultsResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelFaultDetailResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelFmFaultDetailResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelInspectionJobListResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelMaterialResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelRamsSysPerformResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelStatisticGearboxChangeOilResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelStatisticGeneralSurveyResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelStatisticPartReplaceResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelStatisticWheelsetLathingResDTO;
+import com.wzmtr.eam.dto.res.statistic.excel.ExcelTrackQueryResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.OperateDailySystem;
 import com.wzmtr.eam.enums.RateIndex;
 import com.wzmtr.eam.enums.SystemType;
 import com.wzmtr.eam.exception.CommonException;
@@ -28,9 +61,18 @@ import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.overhaul.OverhaulOrderMapper;
-import com.wzmtr.eam.mapper.statistic.*;
+import com.wzmtr.eam.mapper.statistic.CarFaultMapper;
+import com.wzmtr.eam.mapper.statistic.FailureRateMapper;
+import com.wzmtr.eam.mapper.statistic.MaterialMapper;
+import com.wzmtr.eam.mapper.statistic.OneCarOneGearMapper;
+import com.wzmtr.eam.mapper.statistic.RamsMapper;
+import com.wzmtr.eam.mapper.statistic.ReliabilityMapper;
 import com.wzmtr.eam.service.statistic.StatisticService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StreamUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
@@ -42,7 +84,16 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -86,7 +137,7 @@ public class StatisticServiceImpl implements StatisticService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "故障次数不能大于动作次数");
         }
         Integer result = failureRateMapper.selectDoorFaultIsExist(req);
-        if (result > 0) {
+        if (result > CommonConstants.ONE) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         req.setRecId(TokenUtils.getUuId());
@@ -510,9 +561,9 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public Page<TrackQueryResDTO> queryDMFM21(OneCarOneGearQueryReqDTO reqDTO) {
+    public Page<TrackQueryResDTO> queryFaultFollow(OneCarOneGearQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        return oneCarOneGearMapper.queryDMFM21(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
+        return oneCarOneGearMapper.queryFaultFollow(reqDTO.of(), reqDTO.getEquipName(), reqDTO.getStartTime(), reqDTO.getEndTime());
     }
 
     /**
@@ -1163,8 +1214,9 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     public static String substringFirstThree(String str) {
-        if (str == null || str.length() < 3) {
-            return str; // 如果字符串为空或者长度小于3，直接返回原字符串
+        // 如果字符串为空或者长度小于3，直接返回原字符串
+        if (str == null || str.length() < CommonConstants.THREE) {
+            return str;
         }
         return str.substring(0, 3);
     }
@@ -1195,7 +1247,7 @@ public class StatisticServiceImpl implements StatisticService {
      * RAMS 故障列表
      */
     @Override
-    public Page<FaultRamsResDTO> queryRAMSFaultList(RamsTimeReqDTO reqDTO) {
+    public Page<FaultRamsResDTO> queryRamsFaultList(RamsTimeReqDTO reqDTO) {
         Page<FaultRamsResDTO> list = ramsMapper.queryRamsFaultList(reqDTO.of(), reqDTO.getStartTime(), reqDTO.getEndTime(),null);
         if (StringUtils.isEmpty(list.getRecords())) {
             return new Page<>();
@@ -1233,11 +1285,11 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
-        List<TrackQueryResDTO> trackQueryResDTOS = oneCarOneGearMapper.queryDMFM21(startTime, endTime, equipName);
-        if (trackQueryResDTOS != null && !trackQueryResDTOS.isEmpty()) {
+    public void queryFaultFollowExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException {
+        List<TrackQueryResDTO> trackQueryList = oneCarOneGearMapper.queryFaultFollow(startTime, endTime, equipName);
+        if (trackQueryList != null && !trackQueryList.isEmpty()) {
             List<ExcelTrackQueryResDTO> list = new ArrayList<>();
-            for (TrackQueryResDTO resDTO : trackQueryResDTOS) {
+            for (TrackQueryResDTO resDTO : trackQueryList) {
                 ExcelTrackQueryResDTO res = new ExcelTrackQueryResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setTrackCycle(String.valueOf(resDTO.getTrackCycle()));
@@ -1344,16 +1396,12 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public List<SubjectFaultResDTO> getSubjectFaultOpen(String startTime, String endTime) {
         List<SubjectFaultResDTO> list = new ArrayList<>();
-        List<EquipmentCategoryResDTO> categoryList = equipmentCategoryMapper.getFirstEquipmentCategory(null);
-        if (StringUtils.isNotEmpty(categoryList)) {
-            for (EquipmentCategoryResDTO category : categoryList) {
-                SubjectFaultResDTO res = new SubjectFaultResDTO();
-                res.setSubjectCode(category.getNodeCode());
-                res.setSubjectName(category.getNodeName());
-                Long num = faultQueryMapper.getSubjectFaultNum(category.getNodeCode(), startTime, endTime);
-                res.setFaultNum(StringUtils.isNull(num) ? 0L : num);
-                list.add(res);
-            }
+        for (OperateDailySystem system : OperateDailySystem.values()) {
+            SubjectFaultResDTO res = new SubjectFaultResDTO();
+            res.setSubjectName(system.getName());
+            Long num = faultQueryMapper.getSubjectFaultNum(system.getEquipmentCategory(), startTime, endTime);
+            res.setFaultNum(StringUtils.isNull(num) ? 0L : num);
+            list.add(res);
         }
         return list;
     }

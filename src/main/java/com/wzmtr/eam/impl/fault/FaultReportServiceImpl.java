@@ -38,6 +38,7 @@ import com.wzmtr.eam.utils.*;
 import com.wzmtr.eam.utils.mq.FaultSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,25 +85,29 @@ public class FaultReportServiceImpl implements FaultReportService {
     private FaultQueryServiceImpl faultQueryServiceImpl;
     @Autowired
     private HttpServletRequest httpServletRequest;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String addToFault(FaultReportReqDTO reqDTO) {
-        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+//        String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
+//        String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
         // 获取AOP代理对象
         FaultInfoDO faultInfo = reqDTO.toFaultInfoInsertDO(reqDTO);
-        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+//        String nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+        String nextFaultNo = CodeUtils.generateFaultNo();
         insertToFaultInfo(faultInfo, nextFaultNo);
         FaultOrderDO faultOrder = reqDTO.toFaultOrderInsertDO(reqDTO);
-        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+//        String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+        String nextFaultWorkNo = CodeUtils.generateFaultWorkNo();
         insertToFaultOrder(faultOrder, nextFaultNo, nextFaultWorkNo);
         // 添加流程记录
         addFaultFlow(nextFaultNo, nextFaultWorkNo);
         String majorCode = reqDTO.getMajorCode();
         // 中铁通 且不是行车调度的故障类型 直接变更为已派工状态 并给该工班下的人发待办
         if (!CommonConstants.ZC_LIST.contains(majorCode)) {
-            if (!"10".equals(reqDTO.getFaultType())) {
+            if (!CommonConstants.TEN_STRING.equals(reqDTO.getFaultType())) {
                 String positionCode = reqDTO.getPositionCode();
                 if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                     if (StringUtils.isEmpty(faultInfo.getRepairDeptCode())) {
@@ -206,7 +211,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         addFaultFlow(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         String majorCode = reqDTO.getMajorCode();
         if (!CommonConstants.ZC_LIST.contains(majorCode)) {
-            if (!"10".equals(reqDTO.getFaultType())) {
+            if (!CommonConstants.TEN_STRING.equals(reqDTO.getFaultType())) {
                 String positionCode = reqDTO.getPositionCode();
                 if (StringUtils.isNotEmpty(positionCode) && StringUtils.isNotEmpty(majorCode)) {
                     if (StringUtils.isEmpty(faultInfo.getRepairDeptCode())) {
@@ -273,12 +278,15 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (!CommonConstants.FAULT_OPEN_APP_KEY.equals(authorization)) {
             throw new CommonException(ErrorCode.FAULT_OPEN_TOKEN_ERROR);
         }
+        // todo 使用redis生成FaultNo、FaultWorkNo
         String nextFaultNo;
         try {
-            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-            nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-            String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+//            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
+//            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
+//            nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
+//            String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
+            nextFaultNo = CodeUtils.generateFaultNo();
+            String nextFaultWorkNo = CodeUtils.generateFaultWorkNo();
             reqDTO.setFaultNo(nextFaultNo);
             reqDTO.setFaultWorkNo(nextFaultWorkNo);
         } catch (Exception e) {

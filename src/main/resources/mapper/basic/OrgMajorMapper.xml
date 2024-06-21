@@ -191,13 +191,13 @@
         (SELECT t6.ID FROM SYS_OFFICE t6 WHERE t6.AREA_ID like '01036%'))
         ORDER BY t3.ORDER_NUM ASC
     </select>
-    <select id="queryJXWorker" resultType="com.wzmtr.eam.dto.res.common.ZcjxResDTO">
+    <select id="queryJxWorker" resultType="com.wzmtr.eam.dto.res.common.ZcjxResDTO">
         SELECT t1.OFFICE_ID AS "officeId",t1.NAME AS "userName", t1.LOGIN_NAME AS "loginName"
         FROM SYS_USER t1
         WHERE 1=1
         AND t1.OFFICE_ID = #{officeId}
     </select>
-    <select id="querySHWorker" resultType="com.wzmtr.eam.dto.res.common.ZcjxResDTO">
+    <select id="queryShWorker" resultType="com.wzmtr.eam.dto.res.common.ZcjxResDTO">
         SELECT t3.OFFICE_ID AS "officeId",t3.NAME AS "userName", t3.LOGIN_NAME AS "loginName"
         FROM SYS_USER_ROLE t1
         LEFT JOIN SYS_ROLE t2 ON t1.ROLE_ID=t2.ID

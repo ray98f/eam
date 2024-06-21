@@ -51,8 +51,8 @@ public interface OrgMajorMapper {
 
 
     List<DispatchResDTO> queryDispatch();
-    List<ZcjxResDTO>  queryJXWorker(String officeId);
-    List<ZcjxResDTO>  querySHWorker(String officeId,String roleCode);
+    List<ZcjxResDTO> queryJxWorker(String officeId);
+    List<ZcjxResDTO> queryShWorker(String officeId,String roleCode);
 
     /**
      * 根据位置和专业获取部门列表

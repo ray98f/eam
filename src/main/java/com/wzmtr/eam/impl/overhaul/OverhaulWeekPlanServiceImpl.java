@@ -34,7 +34,7 @@ import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.overhaul.OverhaulWeekPlanService;
 import com.wzmtr.eam.service.overhaul.OverhaulWorkRecordService;
-import com.wzmtr.eam.soft.csm.planWork.vo.Message;
+import com.wzmtr.eam.soft.csm.planwork.vo.Message;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -139,9 +139,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void addOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
@@ -155,7 +157,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
         SimpleDateFormat month = new SimpleDateFormat("yyMM");
         String weekPlanCode = overhaulWeekPlanMapper.getMaxCode();
-        if (StringUtils.isEmpty(weekPlanCode) || !weekPlanCode.substring(CommonConstants.THREE, CommonConstants.SEVEN).equals(month.format(System.currentTimeMillis()))) {
+        if (StringUtils.isEmpty(weekPlanCode) ||
+                !weekPlanCode.substring(CommonConstants.THREE, CommonConstants.SEVEN).equals(month.format(System.currentTimeMillis()))) {
             weekPlanCode = "ZJH" + month.format(System.currentTimeMillis()) + "0001";
         } else {
             weekPlanCode = CodeUtils.getNextCode(weekPlanCode, 7);
@@ -173,9 +176,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void modifyOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写");
         }
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())) {
@@ -247,9 +252,11 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     public void submitOverhaulWeekPlan(OverhaulWeekPlanReqDTO overhaulWeekPlanReqDTO) throws Exception {
         // ServiceDMER0111
         String currentPersonId = TokenUtils.getCurrentPersonId();
-        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode()) || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getPlanName())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getFirstBeginTime())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getSubjectCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerGroupCode())
+                || org.apache.commons.lang3.StringUtils.isBlank(overhaulWeekPlanReqDTO.getWorkerCode())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选计划中有标红必填项未填写！");
         }
         if (!CommonConstants.ADMIN.equals(currentPersonId)) {
@@ -528,23 +535,26 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     public String sendContractOrder(Message json) throws Exception {
         // IorderRecordCreator sendContractOrder
-        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.contextPath", "01");
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                CommonConstants.DM_CONTEXT_PATH, CommonConstants.ZERO_ONE_STRING);
         if (Objects.isNull(dictionaries)) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         String url = dictionaries.getItemEname();
-        com.wzmtr.eam.soft.csm.planWork.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.csm.planWork.vo.RequestMessage();
+        com.wzmtr.eam.soft.csm.planwork.vo.RequestMessage requestMessage = new com.wzmtr.eam.soft.csm.planwork.vo.RequestMessage();
         requestMessage.setMessage(json);
         requestMessage.setVerb("Get");
         requestMessage.setNoun("faultInfo");
         URL wsdlLocation = new URL(url);
-        com.wzmtr.eam.soft.csm.planWork.service.impl.ISetEamplanwork serverData = (new com.wzmtr.eam.soft.csm.planWork.vo.SetEamplanworkImplService(wsdlLocation)).getSetEamplanworkImplPort();
-        com.wzmtr.eam.soft.csm.planWork.vo.ResponseMessage responseMessage = serverData.setEamplanwork(requestMessage);
+        com.wzmtr.eam.soft.csm.planwork.service.impl.ISetEamplanwork serverData =
+                (new com.wzmtr.eam.soft.csm.planwork.vo.SetEamplanworkImplService(wsdlLocation)).getSetEamplanworkImplPort();
+        com.wzmtr.eam.soft.csm.planwork.vo.ResponseMessage responseMessage = serverData.setEamplanwork(requestMessage);
         return JSON.toJSONString(responseMessage);
     }
 
     public void insertInspectObject(String planCode, String orderCode) {
-        List<OverhaulObjectResDTO> objects = overhaulPlanMapper.listOverhaulObject(planCode, null, null, null, null, null);
+        List<OverhaulObjectResDTO> objects = overhaulPlanMapper.listOverhaulObject(planCode, null,
+                null, null, null, null);
         for (OverhaulObjectResDTO object : objects) {
             String dmer22uuid = TokenUtils.getUuId();
             List<OverhaulTplDetailResDTO> objectIsValid = overhaulTplMapper.listOverhaulTplDetail(object.getTemplateId());
@@ -554,7 +564,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 String templateId = object.getTemplateId();
                 insertInspectObjectItem(orderCode, objectCode, objectName, templateId, dmer22uuid);
                 try {
-                    List<OverhaulObjectResDTO> list = overhaulPlanMapper.listOverhaulObject(planCode, object.getRecId(), null, objectCode, null, null);
+                    List<OverhaulObjectResDTO> list = overhaulPlanMapper.listOverhaulObject(planCode, object.getRecId(),
+                            null, objectCode, null, null);
                     if (StringUtils.isNotEmpty(list)) {
                         for (OverhaulObjectResDTO resDTO : list) {
                             resDTO.setRecCreator(TokenUtils.getCurrentPersonId());
@@ -762,7 +773,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     }
 
     @Override
-    public Page<OverhaulObjectResDTO> pageOverhaulObject(String planCode, String planName, String objectCode, String objectName, PageReqDTO pageReqDTO) {
+    public Page<OverhaulObjectResDTO> pageOverhaulObject(String planCode, String planName, String objectCode,
+                                                         String objectName, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return overhaulPlanMapper.pageOverhaulObject(pageReqDTO.of(), planCode, null, planName, objectCode, objectName, null);
     }
@@ -821,7 +833,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
 
     @Override
     public void exportOverhaulObject(String planCode, String planName, String objectCode, String objectName, HttpServletResponse response) throws IOException {
-        List<OverhaulObjectResDTO> overhaulObjectResDTOList = overhaulPlanMapper.listOverhaulObject(planCode, null, planName, objectCode, objectName, null);
+        List<OverhaulObjectResDTO> overhaulObjectResDTOList = overhaulPlanMapper.listOverhaulObject(planCode,
+                null, planName, objectCode, objectName, null);
         if (overhaulObjectResDTOList != null && !overhaulObjectResDTOList.isEmpty()) {
             List<ExcelOverhaulPlanObjectResDTO> list = new ArrayList<>();
             for (OverhaulObjectResDTO resDTO : overhaulObjectResDTOList) {
@@ -844,7 +857,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             return null;
         }
         if (CommonConstants.CAR_SUBJECT_CODE.equals(planList.get(0).getSubjectCode())) {
-            List<OverhaulObjectResDTO> objectList = overhaulPlanMapper.listOverhaulObject(overhaulObjectReqDTO.getPlanCode(), null, null, null, null, null);
+            List<OverhaulObjectResDTO> objectList = overhaulPlanMapper.listOverhaulObject(overhaulObjectReqDTO.getPlanCode(),
+                    null, null, null, null, null);
             if (StringUtils.isNotEmpty(objectList)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "车辆专业的计划只能有一条设备对象！");
             }
@@ -860,7 +874,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         }
         String objectName = getEquipNameByCodeAndSubjects(overhaulObjectReqDTO.getObjectCode(), subjectCode, systemCode, equipTypeCode);
         if (org.apache.commons.lang3.StringUtils.isBlank(objectName)) {
-            List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(), null, null, null, null, null);
+            List<EquipmentRoomResDTO> equipmentRoomList = equipmentRoomMapper.listEquipmentRoom(overhaulObjectReqDTO.getObjectCode(),
+                    null, null, null, null, null);
             if (StringUtils.isNotEmpty(equipmentRoomList)) {
                 objectName = equipmentRoomList.get(0).getEquipRoomName();
             }

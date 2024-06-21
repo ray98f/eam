@@ -149,7 +149,10 @@ public class StatisticController {
 
     @GetMapping("/one/car/one/gear/job/querydmer3Export")
     @ApiOperation(value = "一车一档检修作业列表查询(2级修90天包)导出")
-    public void querydmer3Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
+    public void querydmer3Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime,
+                                 @RequestParam(required = false) @ApiParam("时间结束") String endTime,
+                                 @RequestParam(required = false) @ApiParam("列车号") String equipName,
+                                 HttpServletResponse response) throws IOException {
         statisticService.querydmer3Export(startTime, endTime, equipName, response);
     }
 
@@ -161,7 +164,10 @@ public class StatisticController {
 
     @GetMapping("/one/car/one/gear/job/queryER4Export")
     @ApiOperation(value = "一车一档检修作业列表查询(二级修(180天)导出")
-    public void queryER4Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
+    public void queryER4Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime,
+                               @RequestParam(required = false) @ApiParam("时间结束") String endTime,
+                               @RequestParam(required = false) @ApiParam("列车号") String equipName,
+                               HttpServletResponse response) throws IOException {
         statisticService.queryER4Export(startTime, endTime, equipName, response);
     }
 
@@ -174,22 +180,39 @@ public class StatisticController {
 
     @GetMapping("/one/car/one/gear/job/queryER5Export")
     @ApiOperation(value = "一车一档检修作业列表查询(二级修(360天)导出")
-    public DataResponse<String> queryER5Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
+    public void queryER5Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime,
+                                               @RequestParam(required = false) @ApiParam("时间结束") String endTime,
+                                               @RequestParam(required = false) @ApiParam("列车号") String equipName,
+                                               HttpServletResponse response) throws IOException {
         statisticService.queryER5Export(startTime, endTime, equipName, response);
-        return DataResponse.success();
     }
 
+    /**
+     * 一车一档故障跟踪列表导出
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param equipName 设备名称
+     * @param response response
+     * @throws IOException 异常
+     */
     @GetMapping("/one/car/one/gear/job/queryDMFM21Export")
     @ApiOperation(value = "一车一档故障跟踪列表导出")
-    public DataResponse<String> queryDMFM21Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
-        statisticService.queryDMFM21Export(startTime, endTime, equipName, response);
-        return DataResponse.success();
+    public void queryFaultFollowExport(@RequestParam(required = false) @ApiParam("时间开始") String startTime,
+                                                       @RequestParam(required = false) @ApiParam("时间结束") String endTime,
+                                                       @RequestParam(required = false) @ApiParam("列车号") String equipName,
+                                                       HttpServletResponse response) throws IOException {
+        statisticService.queryFaultFollowExport(startTime, endTime, equipName, response);
     }
 
+    /**
+     * 分页查询一车一档故障跟踪列表
+     * @param reqDTO 传参
+     * @return 故障跟踪列表
+     */
     @PostMapping("/one/car/one/gear/job/queryDMFM21")
     @ApiOperation(value = "一车一档故障跟踪列表")
-    public PageResponse<TrackQueryResDTO> queryDMFM21(@RequestBody OneCarOneGearQueryReqDTO reqDTO) {
-        return PageResponse.of(statisticService.queryDMFM21(reqDTO));
+    public PageResponse<TrackQueryResDTO> queryFaultFollow(@RequestBody OneCarOneGearQueryReqDTO reqDTO) {
+        return PageResponse.of(statisticService.queryFaultFollow(reqDTO));
     }
 
     @PostMapping("/one/car/one/gear/job/querydmdm20")
@@ -200,7 +223,10 @@ public class StatisticController {
 
     @GetMapping("/one/car/one/gear/job/querydmdm20Export")
     @ApiOperation(value = "一车一档部件更换记录导出")
-    public void querydmdm20Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
+    public void querydmdm20Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime,
+                                  @RequestParam(required = false) @ApiParam("时间结束") String endTime,
+                                  @RequestParam(required = false) @ApiParam("列车号") String equipName,
+                                  HttpServletResponse response) throws IOException {
         statisticService.querydmdm20Export(equipName, startTime, endTime, response);
     }
 
@@ -212,7 +238,10 @@ public class StatisticController {
 
     @GetMapping("/one/car/one/gear/job/queryFMHistoryExport")
     @ApiOperation(value = "一车一档故障列表导出")
-    public void queryFMHistoryExport(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
+    public void queryFMHistoryExport(@RequestParam(required = false) @ApiParam("时间开始") String startTime,
+                                     @RequestParam(required = false) @ApiParam("时间结束") String endTime,
+                                     @RequestParam(required = false) @ApiParam("列车号") String equipName,
+                                     HttpServletResponse response) throws IOException {
         statisticService.queryFMHistoryExport(startTime, endTime, equipName, response);
     }
 
@@ -267,7 +296,10 @@ public class StatisticController {
 
     @GetMapping("/one/car/one/gear/job/queryER1Export")
     @ApiOperation(value = "一车一档(1级修)导出")
-    public void queryER1Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime, @RequestParam(required = false) @ApiParam("时间结束") String endTime, @RequestParam(required = false) @ApiParam("列车号") String equipName, HttpServletResponse response) throws IOException {
+    public void queryER1Export(@RequestParam(required = false) @ApiParam("时间开始") String startTime,
+                               @RequestParam(required = false) @ApiParam("时间结束") String endTime,
+                               @RequestParam(required = false) @ApiParam("列车号") String equipName,
+                               HttpServletResponse response) throws IOException {
         statisticService.queryER1Export(startTime, endTime, equipName, response);
     }
 
@@ -287,13 +319,16 @@ public class StatisticController {
 
     @GetMapping("/rams/queryresult3")
     @ApiOperation(value = "系统故障统计趋势")
-    public DataResponse<List<SystemFaultsResDTO>> queryresult3(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate, @RequestParam(required = false) @ApiParam("系统分类") String sys) {
+    public DataResponse<List<SystemFaultsResDTO>> queryresult3(@RequestParam(required = false) @ApiParam("开始时间") String startDate,
+                                                               @RequestParam(required = false) @ApiParam("结束") String endDate,
+                                                               @RequestParam(required = false) @ApiParam("系统分类") String sys) {
         return DataResponse.of(statisticService.queryresult3(startDate, endDate, sys));
     }
 
     @GetMapping("/rams/queryresult2")
     @ApiOperation(value = "故障影响统计")
-    public DataResponse<List<RamsResult2ResDTO>> queryresult2(@RequestParam(required = false) @ApiParam("开始时间") String startDate, @RequestParam(required = false) @ApiParam("结束") String endDate) {
+    public DataResponse<List<RamsResult2ResDTO>> queryresult2(@RequestParam(required = false) @ApiParam("开始时间") String startDate,
+                                                              @RequestParam(required = false) @ApiParam("结束") String endDate) {
         return DataResponse.of(statisticService.queryresult2(startDate, endDate));
     }
 
@@ -315,8 +350,8 @@ public class StatisticController {
 
     @PostMapping("/rams/queryRAMSFaultList")
     @ApiOperation(value = "RAMS故障列表")
-    public PageResponse<FaultRamsResDTO> queryRAMSFaultList(@RequestBody RamsTimeReqDTO reqDTO) {
-        return PageResponse.of(statisticService.queryRAMSFaultList(reqDTO));
+    public PageResponse<FaultRamsResDTO> queryRamsFaultList(@RequestBody RamsTimeReqDTO reqDTO) {
+        return PageResponse.of(statisticService.queryRamsFaultList(reqDTO));
     }
 
     /**

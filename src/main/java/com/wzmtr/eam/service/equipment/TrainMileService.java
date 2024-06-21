@@ -3,6 +3,7 @@ package com.wzmtr.eam.service.equipment;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.req.equipment.TrainMileReqDTO;
+import com.wzmtr.eam.dto.res.equipment.SumDailyMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileDailyResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileResDTO;
 import com.wzmtr.eam.dto.res.equipment.TrainMileageResDTO;
@@ -87,5 +88,12 @@ public interface TrainMileService {
      * @param endTime 结束时间
      */
     void initTrainDailyMile(String startTime, String endTime);
+
+    /**
+     * 根据日期获取当天所有列车的总里程（含非运营）总数
+     * @param day 日期
+     * @return 总数
+     */
+    SumDailyMileResDTO getSumDailyMileByDay(String day);
 
 }

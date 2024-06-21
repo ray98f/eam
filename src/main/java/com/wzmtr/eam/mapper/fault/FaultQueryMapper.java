@@ -9,6 +9,7 @@ import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.entity.EquipmentCategory;
 import com.wzmtr.eam.entity.SidEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -88,11 +89,11 @@ public interface FaultQueryMapper {
 
     /**
      * 获取时间范围内系统编号故障数量
-     * @param subjectCode 系统编号
+     * @param req 设备分类信息
      * @param startTime 开始时间
      * @param endTime 结束时间
      * @return 故障数量
      */
-    Long getSubjectFaultNum(String subjectCode, String startTime, String endTime);
+    Long getSubjectFaultNum(EquipmentCategory req, String startTime, String endTime);
 
 }

@@ -29,7 +29,12 @@ import com.wzmtr.eam.service.bpmn.IWorkFlowLogService;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.overhaul.OverhaulTplService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.CodeUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.RegularUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +48,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
  * @author frp
@@ -100,7 +104,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
         }
         Integer result = overhaulTplMapper.selectOverhaulTplIsExist(overhaulTplReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ONE) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "已有模板名为：" + overhaulTplReqDTO.getTemplateName() + "的检修模板存在，无法新建重名检修模板");
         }
         overhaulTplReqDTO.setRecId(TokenUtils.getUuId());
@@ -128,7 +132,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
         }
         Integer result = overhaulTplMapper.selectOverhaulTplIsExist(overhaulTplReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ONE) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "已有模板名为：" + overhaulTplReqDTO.getTemplateName() + "的检修模板存在，无法新建重名检修模板");
         }
         OverhaulTplResDTO resDTO = overhaulTplMapper.getOverhaulTplDetail(overhaulTplReqDTO.getRecId());
@@ -205,7 +209,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
         }
         List<OverhaulTplDetailResDTO> list = overhaulTplMapper.listOverhaulTplDetail(overhaulTplReqDTO.getTemplateId());
         if (StringUtils.isEmpty(list)) {
-            throw new CommonException(ErrorCode.NO_DETAIL, "勾选模板中没有检修项！");
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "勾选模板中没有检修项！");
         }
         // 下一步的人
         List<String> userIds = overhaulTplReqDTO.getExamineReqDTO().getUserIds();
@@ -314,7 +318,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 OverhaulTplReqDTO req = new OverhaulTplReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
                 Integer result = overhaulTplMapper.selectOverhaulTplIsExist(req);
-                if (result > 0) {
+                if (result > CommonConstants.ONE) {
                     error.add("模板名称为：" + req.getTemplateName() + "的数据已存在，无法导入");
                     continue;
                 }
@@ -400,7 +404,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             for (OverhaulTplResDTO resDTO : overhaulTplResDTOList) {
                 ExcelOverhaulTplResDTO res = new ExcelOverhaulTplResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                res.setTrialStatus(CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) ? "编辑" : CommonConstants.TWENTY_STRING.equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
+                res.setTrialStatus(CommonConstants.TEN_STRING.equals(resDTO.getTrialStatus()) ? "编辑"
+                        : CommonConstants.TWENTY_STRING.equals(resDTO.getTrialStatus()) ? "审核中" : "审核通过");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "检修模板信息", list);
@@ -447,23 +452,23 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
      * @param reqDTO 检修项参数
      */
     private void checkOverhaulTplDetail(OverhaulTplDetailReqDTO reqDTO) {
-        Pattern pattern = RegularUtils.getDecimalPattern();
         if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为列表时，可选值为必填项！");
         }
         boolean bool = CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) &&
-                (org.apache.commons.lang3.StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches());
+                (org.apache.commons.lang3.StringUtils.isBlank(reqDTO.getDefaultValue()) || !RegularUtils.isValidDecimal(reqDTO.getDefaultValue()));
         if (bool) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "当类型为数字时，默认值必须填数字！");
         }
-        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(reqDTO.getTemplateId(), null, null, null, null, null, null, "10");
+        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(reqDTO.getTemplateId(), null,
+                null, null, null, null, null, "10");
         if (StringUtils.isEmpty(list)) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }
-        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && !pattern.matcher(reqDTO.getMinValue()).matches()) {
+        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && !RegularUtils.isValidDecimal(reqDTO.getMinValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "下限必须填数字！");
         }
-        if (StringUtils.isNotBlank(reqDTO.getMaxValue()) && !pattern.matcher(reqDTO.getMaxValue()).matches()) {
+        if (StringUtils.isNotBlank(reqDTO.getMaxValue()) && !RegularUtils.isValidDecimal(reqDTO.getMaxValue())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "上限必须填数字！");
         }
         bool = StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue()) &&
@@ -480,19 +485,18 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
      * @return 是否校验通过
      */
     private boolean checkImportOverhaulTplDetail(ExcelOverhaulTplDetailReqDTO reqDTO) {
-        Pattern pattern = RegularUtils.getDecimalPattern();
         if (CommonConstants.TEN_STRING.equals(reqDTO.getItemType()) && Objects.isNull(reqDTO.getInspectItemValue())) {
             return true;
         }
         boolean bool = CommonConstants.TWENTY_STRING.equals(reqDTO.getItemType()) &&
-                (org.apache.commons.lang3.StringUtils.isBlank(reqDTO.getDefaultValue()) || !pattern.matcher(reqDTO.getDefaultValue()).matches());
+                (org.apache.commons.lang3.StringUtils.isBlank(reqDTO.getDefaultValue()) || !RegularUtils.isValidDecimal(reqDTO.getDefaultValue()));
         if (bool) {
             return true;
         }
-        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && !pattern.matcher(reqDTO.getMinValue()).matches()) {
+        if (StringUtils.isNotBlank(reqDTO.getMinValue()) && !RegularUtils.isValidDecimal(reqDTO.getMinValue())) {
             return true;
         }
-        if (StringUtils.isNotBlank(reqDTO.getMaxValue()) && !pattern.matcher(reqDTO.getMaxValue()).matches()) {
+        if (StringUtils.isNotBlank(reqDTO.getMaxValue()) && !RegularUtils.isValidDecimal(reqDTO.getMaxValue())) {
             return true;
         }
         if (StringUtils.isNotBlank(reqDTO.getMinValue()) && StringUtils.isNotBlank(reqDTO.getMaxValue())) {
@@ -510,7 +514,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 if (Objects.isNull(resDTO)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(resDTO.getTemplateId(), null, null, null, null, null, null, "10");
+                List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(resDTO.getTemplateId(), null,
+                        null, null, null, null, null, "10");
                 if (Objects.isNull(list) || list.isEmpty()) {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
                 }
@@ -528,7 +533,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 ExcelOverhaulTplDetailResDTO res = new ExcelOverhaulTplDetailResDTO();
                 BeanUtils.copyProperties(resDTO, res);
                 res.setTrainNumber(StringUtils.isNotEmpty(resDTO.getTrainNumber()) ? resDTO.getTrainNumber() + "车" : "");
-                res.setItemType(CommonConstants.TEN_STRING.equals(resDTO.getItemType()) ? "列表" : CommonConstants.TWENTY_STRING.equals(resDTO.getItemType()) ? "数值" : "文本");
+                res.setItemType(CommonConstants.TEN_STRING.equals(resDTO.getItemType()) ? "列表"
+                        : CommonConstants.TWENTY_STRING.equals(resDTO.getItemType()) ? "数值" : "文本");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "检修项信息", list);
@@ -548,7 +554,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
 
     @Override
     public void addOverhaulMaterial(OverhaulMaterialReqDTO overhaulMaterialReqDTO) {
-        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulMaterialReqDTO.getTemplateId(), null, null, null, null, null, null, "10");
+        List<OverhaulTplResDTO> list = overhaulTplMapper.listOverhaulTpl(overhaulMaterialReqDTO.getTemplateId(), null,
+                null, null, null, null, null, "10");
         if (StringUtils.isEmpty(list)) {
             throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "操作");
         }

@@ -77,7 +77,7 @@ public class OrgLineServiceImpl implements OrgLineService {
                     orgLineReqDTO.setOrgCode(office.getAreaId());
                     orgLineReqDTO.setOrgName(office.getName());
                     Integer result = orgLineMapper.selectOrgLineIsExist(orgLineReqDTO);
-                    if (result > 0) {
+                    if (result > CommonConstants.ONE) {
                         continue;
                     }
                     orgLineReqDTO.setRecId(TokenUtils.getUuId());

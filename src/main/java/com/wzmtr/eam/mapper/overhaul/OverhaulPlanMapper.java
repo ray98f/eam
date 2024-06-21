@@ -44,7 +44,8 @@ public interface OverhaulPlanMapper {
 
     List<OverhaulPlanResDTO> queryWeekObj(String weekPlanCode);
 
-    List<OverhaulObjectResDTO> listOverhaulObject(String planCode, String recId, String planName, String objectCode, String objectName, String templateId1);
+    List<OverhaulObjectResDTO> listOverhaulObject(String planCode, String recId, String planName,
+                                                  String objectCode, String objectName, String templateId1);
 
     List<OverhaulObjectResDTO> queryObject(String planCode);
 
@@ -52,7 +53,8 @@ public interface OverhaulPlanMapper {
 
     List<WoRuleResDTO.WoRuleDetail> queryAllRule(String planCodeAndIn);
 
-    Page<OverhaulObjectResDTO> pageOverhaulObject(Page<OverhaulObjectResDTO> page, String planCode, String recId, String planName, String objectCode, String objectName, String templateId1);
+    Page<OverhaulObjectResDTO> pageOverhaulObject(Page<OverhaulObjectResDTO> page, String planCode, String recId,
+                                                  String planName, String objectCode, String objectName, String templateId1);
 
     OverhaulObjectResDTO getOverhaulObjectDetail(String id);
 

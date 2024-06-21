@@ -233,10 +233,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         OrderStatus orderStatus = OrderStatus.getByCode(resDTO.getOrderStatus());
         FaultAffect faultAffect = FaultAffect.getByCode(resDTO.getFaultAffect());
         FaultLevel faultLevel = FaultLevel.getByCode(resDTO.getOrderStatus());
-        DealerUnit dealerUnit = DealerUnit.getByCode(resDTO.getDealerUnit());
         LineCode lineCode = LineCode.getByCode(resDTO.getLineCode());
         FaultType faultType = FaultType.getByCode(resDTO.getFaultType());
-        Dictionaries position2 = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.station2", Objects.isNull(resDTO.getPosition2Code()) ? "" : resDTO.getPosition2Code());
+        Dictionaries position2 = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_STATION2,
+                Objects.isNull(resDTO.getPosition2Code()) ? "" : resDTO.getPosition2Code());
         String repairDept = null;
         String fillinDept = null;
         if (StringUtils.isNotEmpty(resDTO.getRepairDeptCode())) {
@@ -245,7 +245,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(resDTO.getFillinDeptCode())) {
             fillinDept = organizationMapper.getNamesById(resDTO.getFillinDeptCode());
         }
-//        export.setReplacementName(dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
         if (StringUtils.isNotEmpty(fillinDept)) {
             export.setFillinDept(Optional.ofNullable(fillinDept).orElse(CommonConstants.EMPTY));
             export.setRepairDept(Optional.ofNullable(repairDept).orElse(CommonConstants.EMPTY));
@@ -365,8 +364,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 faultReportMapper.updateFaultInfo(faultInfo);
                 // 故障维修待办推送
                 sendRepairTodoMessage(faultOrder, workerGroupCode, null);
-
-                Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "01");
+                Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                        CommonConstants.DM_MATCH_CONTROL_CODE, CommonConstants.ZERO_ONE_STRING);
                 String zcStepOrg = dictionaries.getItemEname();
                 if (StringUtils.isNotEmpty(faultOrder.getWorkClass()) && !faultOrder.getWorkClass().contains(zcStepOrg)) {
                     // todo 调用施工调度接口
@@ -442,7 +441,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
         String workClass = faultOrderDO.getWorkClass();
         overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN, CommonConstants.ONE_STRING);
-        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
         String itemEname = dictionaries.getItemEname();
         String[] cos01 = itemEname.split(",");
         List<String> cos = Arrays.asList(cos01);
@@ -547,7 +547,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             log.error("未查询到数据，丢弃修改!");
             return;
         }
-        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
         String itemEname = dictionaries.getItemEname();
         List<String> cos = Arrays.asList(itemEname.split(","));
         String currentUser = TokenUtils.getCurrentPersonId();
@@ -633,8 +634,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private void finishWorkSendMessage(FaultFinishWorkReqDTO reqDTO) {
         String faultNo = reqDTO.getFaultNo();
         String faultWorkNo = reqDTO.getFaultWorkNo();
-        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
-        List<String> cos = Arrays.asList(dictionaries.getItemEname().split(","));
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
+        List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
         List<FaultOrderResDTO> listOrder = faultReportMapper.listOrderByNoAndWorkNo(faultNo, faultWorkNo);
         if (StringUtils.isNotEmpty(listOrder)) {
             FaultOrderResDTO order = listOrder.get(0);
@@ -861,7 +863,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             String stepOrg;
             switch (reqDTO.getMajorCode()) {
                 case "07":
-                    Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "01");
+                    Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                            CommonConstants.DM_MATCH_CONTROL_CODE, CommonConstants.ZERO_ONE_STRING);
                     stepOrg = dictionaries.getItemEname();
                     overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(),
                             faultWorkNo, CommonConstants.DM_007, stepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001",
@@ -991,7 +994,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
                 // 中铁通的发给中铁通生产调度 DM_007
                 // 行车设备类 且不是车辆故障
-                if ("10".equals(faultInfo.getFaultType()) && !CommonConstants.ZC_LIST.contains(majorCode)) {
+                if (CommonConstants.TEN_STRING.equals(faultInfo.getFaultType()) && !CommonConstants.ZC_LIST.contains(majorCode)) {
                     List<String> users = getUsersByCompanyAndRole(majorCode, "DM_007", "ZCJD");
                     overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo,
                             CommonConstants.FAULT_FINISHED_CONFIRM_CN, "faultCheck",

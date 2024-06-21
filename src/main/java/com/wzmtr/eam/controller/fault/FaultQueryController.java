@@ -1,8 +1,17 @@
 package com.wzmtr.eam.controller.fault;
 
-import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.req.fault.CompareRowsReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultEqCheckReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultFinishWorkReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultNosFaultWorkNosReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultSendWorkReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
@@ -11,11 +20,18 @@ import com.wzmtr.eam.entity.response.PageResponse;
 import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.fault.FaultReportService;
+import com.wzmtr.eam.service.fault.TrackQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.ss.formula.functions.T;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -37,10 +53,28 @@ public class FaultQueryController {
     @Autowired
     private FaultQueryService faultQueryService;
 
+    @Autowired
+    private TrackQueryService trackQueryService;
+
     @ApiOperation(value = "列表")
     @PostMapping("/list")
     public PageResponse<FaultDetailResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
         return PageResponse.of(faultQueryService.list(reqDTO));
+    }
+
+    /**
+     * 根据故障工单号查询故障工单详情-开放接口
+     * @param faultWorkNo 故障工单号
+     * @return 故障工单详情
+     */
+    @ApiOperation(value = "根据故障工单号查询故障工单详情-开放接口")
+    @GetMapping("/detail/open")
+    public DataResponse<FaultDetailOpenResDTO> faultDetail(@RequestParam String faultWorkNo) {
+        FaultDetailReqDTO reqDTO = new FaultDetailReqDTO();
+        FaultDetailOpenResDTO res = new FaultDetailOpenResDTO();
+        reqDTO.setFaultWorkNo(faultWorkNo);
+        BeanUtils.copyProperties(trackQueryService.faultDetail(reqDTO), res);
+        return DataResponse.of(res);
     }
 
     @ApiOperation(value = "当前用户超过限时列表")

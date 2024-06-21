@@ -4,6 +4,12 @@ import cn.hutool.extra.qrcode.QrConfig;
 
 import java.awt.*;
 
+/**
+ * 二维码工具类
+ * @author  Ray
+ * @version 1.0
+ * @date 2024/06/12
+ */
 public class QrUtils {
 
     public static QrConfig initQrConfig() {

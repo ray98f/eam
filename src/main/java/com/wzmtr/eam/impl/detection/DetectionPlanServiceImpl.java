@@ -64,7 +64,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
     public Page<DetectionPlanResDTO> pageDetectionPlan(String instrmPlanNo, String planStatus, String editDeptCode,
                                                        String assetKindCode, String planPeriodMark, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        Page<DetectionPlanResDTO> page = detectionPlanMapper.pageDetectionPlan(pageReqDTO.of(), instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark);
+        Page<DetectionPlanResDTO> page = detectionPlanMapper.pageDetectionPlan(pageReqDTO.of(), instrmPlanNo,
+                planStatus, editDeptCode, assetKindCode, planPeriodMark);
         List<DetectionPlanResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
             for (DetectionPlanResDTO resDTO : list) {
@@ -98,7 +99,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         specialEquipReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         specialEquipReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String instrmPlanNo = detectionPlanMapper.getMaxCode();
-        if (StringUtils.isEmpty(instrmPlanNo) || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
+        if (StringUtils.isEmpty(instrmPlanNo)
+                || !(CommonConstants.TWENTY_STRING + instrmPlanNo.substring(CommonConstants.TWO, CommonConstants.EIGHT)).equals(DateUtils.getNoDate())) {
             instrmPlanNo = "TP" + DateUtils.getNoDate().substring(2) + "0001";
         } else {
             instrmPlanNo = CodeUtils.getNextCode(instrmPlanNo, 8);
@@ -164,7 +166,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         if (!CommonConstants.TEN_STRING.equals(res.getPlanStatus())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "非编辑状态无法提交");
         } else {
-            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), null, null, detectionPlanReqDTO.getExamineReqDTO().getUserIds(), null);
+            String processId = bpmnService.commit(res.getInstrmPlanNo(), BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(),
+                    null, null, detectionPlanReqDTO.getExamineReqDTO().getUserIds(), null);
             if (processId == null || CommonConstants.PROCESS_ERROR_CODE.equals(processId)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "提交失败");
             }
@@ -202,11 +205,14 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             String processId = res.getWorkFlowInstId();
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value()).contains(reqDTO.getWorkFlowInstStatus())) {
-                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(), String.join(",", detectionPlanReqDTO.getExamineReqDTO().getUserIds()), "{\"id\":\"" + res.getInstrmPlanNo() + "\"}", null);
+                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(),
+                        String.join(",", detectionPlanReqDTO.getExamineReqDTO().getUserIds()),
+                        "{\"id\":\"" + res.getInstrmPlanNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setPlanStatus("20");
             } else {
-                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(), null, "{\"id\":\"" + res.getInstrmPlanNo() + "\"}", null);
+                bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(), null,
+                        "{\"id\":\"" + res.getInstrmPlanNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus("已完成");
                 reqDTO.setPlanStatus("30");
             }
@@ -242,7 +248,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
     @Override
     public void exportDetectionPlan(String instrmPlanNo, String planStatus, String editDeptCode,
                                     String assetKindCode, String planPeriodMark, HttpServletResponse response) throws IOException {
-        List<DetectionPlanResDTO> detectionPlanResDTOList = detectionPlanMapper.listDetectionPlan(instrmPlanNo, planStatus, editDeptCode, assetKindCode, planPeriodMark);
+        List<DetectionPlanResDTO> detectionPlanResDTOList = detectionPlanMapper.listDetectionPlan(instrmPlanNo, planStatus,
+                editDeptCode, assetKindCode, planPeriodMark);
         if (detectionPlanResDTOList != null && !detectionPlanResDTOList.isEmpty()) {
             List<ExcelDetectionPlanResDTO> list = new ArrayList<>();
             for (DetectionPlanResDTO resDTO : detectionPlanResDTOList) {
@@ -270,7 +277,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Override
     public void addDetectionPlanDetail(DetectionPlanDetailReqDTO detectionPlanDetailReqDTO) {
-        List<DetectionPlanResDTO> list = detectionPlanMapper.listDetectionPlan(detectionPlanDetailReqDTO.getInstrmPlanNo(), null, null, null, null);
+        List<DetectionPlanResDTO> list = detectionPlanMapper.listDetectionPlan(detectionPlanDetailReqDTO.getInstrmPlanNo(),
+                null, null, null, null);
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -290,7 +298,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
 
     @Override
     public void modifyDetectionPlanDetail(DetectionPlanDetailReqDTO detectionPlanDetailReqDTO) {
-        List<DetectionPlanResDTO> list = detectionPlanMapper.listDetectionPlan(detectionPlanDetailReqDTO.getInstrmPlanNo(), null, null, null, null);
+        List<DetectionPlanResDTO> list = detectionPlanMapper.listDetectionPlan(detectionPlanDetailReqDTO.getInstrmPlanNo(),
+                null, null, null, null);
         if (Objects.isNull(list) || list.isEmpty()) {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
@@ -314,7 +323,8 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 if (Objects.isNull(detailResDTO)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                List<DetectionPlanResDTO> list = detectionPlanMapper.listDetectionPlan(detailResDTO.getInstrmPlanNo(), null, null, null, null);
+                List<DetectionPlanResDTO> list = detectionPlanMapper.listDetectionPlan(detailResDTO.getInstrmPlanNo(),
+                        null, null, null, null);
                 if (Objects.isNull(list) || list.isEmpty()) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
@@ -326,9 +336,11 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                     throw new CommonException(ErrorCode.CAN_NOT_MODIFY, "删除");
                 }
                 DetectionPlanDetailDO detectionPlanDetailDO = new DetectionPlanDetailDO();
-                detectionPlanDetailDO.setRecId(id).setDeleteFlag(CommonConstants.ONE_STRING).setRecDeletor(TokenUtils.getCurrentPersonId()).setRecDeleteTime(DateUtils.getCurrentTime());
+                detectionPlanDetailDO.setRecId(id)
+                        .setDeleteFlag(CommonConstants.ONE_STRING)
+                        .setRecDeletor(TokenUtils.getCurrentPersonId())
+                        .setRecDeleteTime(DateUtils.getCurrentTime());
                 detectionPlanDetailMapper.updateById(detectionPlanDetailDO);
-                // detectionPlanMapper.deleteDetectionPlanDetail(resDTO.getInstrmPlanNo(), TokenUtils.getCurrentPersonId(), DateUtils.getCurrentTime());
             }
         } else {
             throw new CommonException(ErrorCode.SELECT_NOTHING);

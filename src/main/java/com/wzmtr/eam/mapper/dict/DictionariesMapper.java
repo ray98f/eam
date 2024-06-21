@@ -31,5 +31,11 @@ public interface DictionariesMapper {
 
     void delete(List<String> ids, String userId, String time);
 
+    /**
+     * 获取字典值
+     * @param codesetCode 字典类型编号
+     * @param itemCode 编号
+     * @return 字典值
+     */
     Dictionaries queryOneByItemCodeAndCodesetCode(String codesetCode,String itemCode);
 }

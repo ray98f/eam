@@ -3,13 +3,24 @@ package com.wzmtr.eam.enums;
 import lombok.Getter;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/8 19:50
+ * 异常程度枚举类
+ * @author  Li.Wang
+ * @version 1.0
+ * @date 2023/08/26
  */
 @Getter
 public enum RiskRank {
+    /**
+     * 一般
+     */
     NORMAL("10", "一般"),
+    /**
+     * 较大
+     */
     LARGER("20", "较大"),
+    /**
+     * 重大
+     */
     GREAT("30", "重大");
     private final String code;
     private final String desc;
