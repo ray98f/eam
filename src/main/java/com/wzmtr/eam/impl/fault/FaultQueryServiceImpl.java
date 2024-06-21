@@ -17,6 +17,7 @@ import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
@@ -39,6 +40,7 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.OrganizationService;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
+import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +49,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,6 +88,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private RoleMapper roleMapper;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+    @Autowired
+    private TrackQueryService trackQueryService;
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
@@ -128,6 +135,24 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         page.setRecords(list);
         return page;
+    }
+
+    @Override
+    public FaultDetailOpenResDTO faultDetailOpen(String faultNo, String faultWorkNo) {
+        String authorization = httpServletRequest.getHeader("app-key");
+        if (!CommonConstants.FAULT_OPEN_APP_KEY.equals(authorization)) {
+            throw new CommonException(ErrorCode.FAULT_OPEN_TOKEN_ERROR);
+        }
+        FaultDetailReqDTO reqDTO = new FaultDetailReqDTO();
+        FaultDetailOpenResDTO res = new FaultDetailOpenResDTO();
+        reqDTO.setFaultNo(faultNo);
+        reqDTO.setFaultWorkNo(faultWorkNo);
+        FaultDetailResDTO fault = trackQueryService.faultDetail(reqDTO);
+        if (StringUtils.isNull(fault)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        org.springframework.beans.BeanUtils.copyProperties(fault, res);
+        return res;
     }
 
     @Override

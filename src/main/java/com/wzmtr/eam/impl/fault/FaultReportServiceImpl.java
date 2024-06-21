@@ -273,20 +273,20 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     @Override
-    public String addToFaultOpen(FaultReportOpenReqDTO reqDTO) {
+    public Map<String, String> addToFaultOpen(FaultReportOpenReqDTO reqDTO) {
         String authorization = httpServletRequest.getHeader("app-key");
         if (!CommonConstants.FAULT_OPEN_APP_KEY.equals(authorization)) {
             throw new CommonException(ErrorCode.FAULT_OPEN_TOKEN_ERROR);
         }
         // todo 使用redis生成FaultNo、FaultWorkNo
-        String nextFaultNo;
+        String nextFaultNo, nextFaultWorkNo;
         try {
 //            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
 //            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
 //            nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
 //            String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
             nextFaultNo = CodeUtils.generateFaultNo();
-            String nextFaultWorkNo = CodeUtils.generateFaultWorkNo();
+            nextFaultWorkNo = CodeUtils.generateFaultWorkNo();
             reqDTO.setFaultNo(nextFaultNo);
             reqDTO.setFaultWorkNo(nextFaultWorkNo);
         } catch (Exception e) {
@@ -296,7 +296,10 @@ public class FaultReportServiceImpl implements FaultReportService {
         try {
             // 推送消息至mq
             faultSender.sendFault(reqDTO);
-            return nextFaultNo;
+            Map<String, String> data = new HashMap<>(2);
+            data.put("faultNo", nextFaultNo);
+            data.put("faultWorkNo", nextFaultWorkNo);
+            return data;
         } catch (Exception e) {
             log.error("open exception message", e);
             throw new CommonException(ErrorCode.NORMAL_ERROR, "推送异常！");

@@ -23,7 +23,7 @@ public class FaultReportOpenReqDTO implements Serializable {
     /**
      * 报警时间
      */
-    private String alamTime;
+    private String alarmTime;
     /**
      * 线路
      */

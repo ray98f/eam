@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * 故障管理-故障提报
@@ -40,11 +41,11 @@ public class FaultReportController {
     /**
      * 故障提报（到设备）-开放接口
      * @param reqDTO 入参
-     * @return 故障编号
+     * @return 故障编号、故障工单号
      */
     @ApiOperation(value = "故障提报（到设备）-开放接口")
     @PostMapping("/insert/equip/open")
-    public DataResponse<String> addToEquipOpen(@RequestBody @Valid FaultReportOpenReqDTO reqDTO) {
+    public DataResponse<Map<String, String>> addToEquipOpen(@RequestBody @Valid FaultReportOpenReqDTO reqDTO) {
         return DataResponse.of(reportService.addToFaultOpen(reqDTO));
     }
 

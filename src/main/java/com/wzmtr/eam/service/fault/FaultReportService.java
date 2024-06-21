@@ -5,6 +5,8 @@ import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 
+import java.util.Map;
+
 /**
  * Author: Li.Wang
  * Date: 2023/8/9 14:47
@@ -27,9 +29,9 @@ public interface FaultReportService {
     /**
      * 故障提报（到设备）-开放接口
      * @param reqDTO 入参
-     * @return 故障编号
+     * @return 故障编号、故障工单号
      */
-    String addToFaultOpen(FaultReportOpenReqDTO reqDTO);
+    Map<String, String> addToFaultOpen(FaultReportOpenReqDTO reqDTO);
 
     /**
      * 已提报故障
