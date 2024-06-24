@@ -82,6 +82,12 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
         FaultInfoDO faultInfo = faultTrackMapper.faultDetail(reqDTO);
         FaultDetailResDTO faultOrder = faultTrackMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        if (StringUtils.isNull(faultInfo)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        if (StringUtils.isNull(faultOrder)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
         FaultDetailResDTO faultDetail = assemblyResDTO(faultInfo, faultOrder);
         List<FaultFlowResDTO> faultFlows = faultTrackMapper.faultFlowDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (StringUtils.isNotEmpty(faultFlows)) {
