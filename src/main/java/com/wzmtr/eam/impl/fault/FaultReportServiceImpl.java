@@ -1,18 +1,25 @@
 package com.wzmtr.eam.impl.fault;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
 import com.wzmtr.eam.dto.req.basic.query.RegionQuery;
-import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultFlowReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportOpenReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.res.basic.OrgMajorResDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultReportOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.entity.SysOffice;
 import com.wzmtr.eam.enums.BpmnFlowEnum;
@@ -34,17 +41,29 @@ import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.fault.FaultReportService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
 import com.wzmtr.eam.shiro.model.Person;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.Assert;
+import com.wzmtr.eam.utils.BeanUtils;
+import com.wzmtr.eam.utils.ChineseCharacterUtil;
+import com.wzmtr.eam.utils.CodeUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.StreamUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import com.wzmtr.eam.utils.mq.FaultSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -55,6 +74,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FaultReportServiceImpl implements FaultReportService {
 
+    @Value("${spring.redis.key-prefix}")
+    private String keyPrefix;
     @Resource
     private UserAccountService userAccountService;
     @Autowired
@@ -273,36 +294,52 @@ public class FaultReportServiceImpl implements FaultReportService {
     }
 
     @Override
-    public Map<String, String> addToFaultOpen(FaultReportOpenReqDTO reqDTO) {
+    public FaultReportOpenResDTO addToFaultOpen(FaultReportOpenReqDTO reqDTO) {
         String authorization = httpServletRequest.getHeader("app-key");
         if (!CommonConstants.FAULT_OPEN_APP_KEY.equals(authorization)) {
             throw new CommonException(ErrorCode.FAULT_OPEN_TOKEN_ERROR);
         }
-        // todo 使用redis生成FaultNo、FaultWorkNo
+        if (StringUtils.isEmpty(reqDTO.getSysFaultNo())
+                || StringUtils.isEmpty(reqDTO.getEquipCode())
+                || StringUtils.isEmpty(reqDTO.getFaultDetail())
+                || StringUtils.isEmpty(reqDTO.getSysName())
+                || StringUtils.isEmpty(reqDTO.getAlarmTime())
+                || StringUtils.isEmpty(reqDTO.getLineCode())
+                || StringUtils.isEmpty(reqDTO.getFaultStatus())) {
+            throw new CommonException(ErrorCode.PARAM_NULL);
+        }
         String nextFaultNo, nextFaultWorkNo;
-        try {
+        String key = keyPrefix
+                + ChineseCharacterUtil.getUpperCase(reqDTO.getSysName(), false)
+                + CommonConstants.SHORT_BAR + reqDTO.getSysFaultNo();
+        if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(key))) {
+            try {
 //            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
 //            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
 //            nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
 //            String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
-            nextFaultNo = CodeUtils.generateFaultNo();
-            nextFaultWorkNo = CodeUtils.generateFaultWorkNo();
-            reqDTO.setFaultNo(nextFaultNo);
-            reqDTO.setFaultWorkNo(nextFaultWorkNo);
-        } catch (Exception e) {
-            log.error("open exception message", e);
-            throw new CommonException(ErrorCode.FAULT_OPEN_ERROR);
-        }
-        try {
-            // 推送消息至mq
-            faultSender.sendFault(reqDTO);
-            Map<String, String> data = new HashMap<>(2);
-            data.put("faultNo", nextFaultNo);
-            data.put("faultWorkNo", nextFaultWorkNo);
-            return data;
-        } catch (Exception e) {
-            log.error("open exception message", e);
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "推送异常！");
+                nextFaultNo = CodeUtils.generateFaultNo();
+                nextFaultWorkNo = CodeUtils.generateFaultWorkNo();
+                reqDTO.setFaultNo(nextFaultNo);
+                reqDTO.setFaultWorkNo(nextFaultWorkNo);
+            } catch (Exception e) {
+                log.error("open exception message", e);
+                throw new CommonException(ErrorCode.FAULT_OPEN_ERROR);
+            }
+            try {
+                // 推送消息至mq
+                faultSender.sendFault(reqDTO);
+                FaultReportOpenResDTO res = new FaultReportOpenResDTO();
+                res.setFaultNo(nextFaultNo);
+                res.setFaultWorkNo(nextFaultWorkNo);
+                stringRedisTemplate.opsForValue().set(key, JSON.toJSONString(res));
+                return res;
+            } catch (Exception e) {
+                log.error("open exception message", e);
+                throw new CommonException(ErrorCode.NORMAL_ERROR, "推送异常！");
+            }
+        } else {
+            return JSON.parseObject(stringRedisTemplate.opsForValue().get(key), FaultReportOpenResDTO.class);
         }
     }
 

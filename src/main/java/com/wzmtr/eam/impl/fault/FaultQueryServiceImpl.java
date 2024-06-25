@@ -9,7 +9,16 @@ import com.wzmtr.eam.bizobject.export.FaultExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
-import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.req.fault.CompareRowsReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultEqCheckReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultFinishWorkReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultFlowReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultNosFaultWorkNosReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultSendWorkReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
@@ -24,13 +33,20 @@ import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.entity.SysOffice;
-import com.wzmtr.eam.enums.*;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.FaultAffect;
+import com.wzmtr.eam.enums.FaultLevel;
+import com.wzmtr.eam.enums.FaultType;
+import com.wzmtr.eam.enums.LineCode;
+import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.PartMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
+import com.wzmtr.eam.mapper.equipment.PartReplaceMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
 import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
@@ -41,7 +57,13 @@ import com.wzmtr.eam.service.common.OrganizationService;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
 import com.wzmtr.eam.service.fault.TrackQueryService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.Assert;
+import com.wzmtr.eam.utils.BeanUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StreamUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +73,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -92,6 +119,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private HttpServletRequest httpServletRequest;
     @Autowired
     private TrackQueryService trackQueryService;
+    @Autowired
+    private PartReplaceMapper partReplaceMapper;
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
@@ -152,6 +181,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         org.springframework.beans.BeanUtils.copyProperties(fault, res);
+        res.setPartReplaceList(partReplaceMapper.listOpenPartReplace(faultWorkNo));
         return res;
     }
 

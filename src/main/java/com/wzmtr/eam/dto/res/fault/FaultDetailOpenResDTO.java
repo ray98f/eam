@@ -3,6 +3,8 @@ package com.wzmtr.eam.dto.res.fault;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 故障工单详情开放结果类
  * @author  Ray
@@ -151,4 +153,9 @@ public class FaultDetailOpenResDTO {
      */
     @ApiModelProperty(value = "部件名称")
     private String partName;
+    /**
+     * 部件更换列表
+     */
+    @ApiModelProperty(value = "部件更换列表")
+    private List<FaultPartReplaceOpenResDTO> partReplaceList;
 }
