@@ -753,7 +753,8 @@
         (case when d.FILLIN_USER_NAME is null then u.NAME else d.FILLIN_USER_NAME end) as "fillinUserName",
         df.FAULT_WORK_NO	as "faultWorkNo",  <!-- 故障工单号 -->
         df.ORDER_STATUS	as "orderStatus" , <!-- 工单状态 -->
-        df.EXT1	as "levelfault"  <!-- 派工状态 -->
+        df.EXT1	as "levelfault",  <!-- 派工状态 -->
+        (CASE WHEN df.ORDER_STATUS='99' THEN '1' ELSE '0' END) sort
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
@@ -826,13 +827,13 @@
             )
         </if>
         and df.DELETE_FLAG='0'
-        ORDER BY d.FAULT_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc
     </select>
 
     <select id="queryByEngineer" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         <include refid="list-cols"/>
         AND df.DELETE_FLAG='0' and df.ORDER_STATUS IN ('50', '55', '60', '70')
-        ORDER BY d.FAULT_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc
     </select>
 
     <select id="openApiList" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -1046,7 +1047,8 @@
         df.FAULT_WORK_NO as "faultWorkNo",  <!-- 故障工单号 -->
         df.ORDER_STATUS as "orderStatus" , <!-- 工单状态 -->
         df.EXT1 as "levelfault",  <!-- 派工状态 -->
-        df.FAULT_AFFECT as "faultAffect"  <!-- 故障影响 -->
+        df.FAULT_AFFECT as "faultAffect",  <!-- 故障影响 -->
+        (CASE WHEN df.ORDER_STATUS='99' THEN '1' ELSE '0' END) sort
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
@@ -1115,13 +1117,13 @@
             )
         </if>
         and df.DELETE_FLAG='0'
-        ORDER BY d.FAULT_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc
     </select>
 
     <select id="carFaultByEngineer" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         <include refid="car-list-cols"/>
         AND df.DELETE_FLAG='0' and df.ORDER_STATUS IN ('50', '55', '60', '70')
-        ORDER BY d.FAULT_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc
     </select>
 
     <select id="listOrderByNoAndWorkNo" resultType="com.wzmtr.eam.dto.res.fault.FaultOrderResDTO">
