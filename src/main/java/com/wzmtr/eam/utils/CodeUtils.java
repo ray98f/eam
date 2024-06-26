@@ -4,6 +4,7 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,15 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class CodeUtils {
+
+    /**
+     * redis key前缀
+     */
+    private static String keyPrefix;
+    @Value("${spring.redis.key-prefix}")
+    public void setKeyPrefix(String keyPrefix) {
+        CodeUtils.keyPrefix = keyPrefix;
+    }
 
     private static StringRedisTemplate stringRedisTemplate;
 
@@ -77,7 +87,7 @@ public class CodeUtils {
      * @return 最新的故障编号
      */
     public static String generateFaultNo() {
-        String key = CommonConstants.S2 + CommonConstants.FAULT_NO;
+        String key = keyPrefix + CommonConstants.S1 + CommonConstants.FAULT_NO;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(CommonConstants.FAULT_NO_PREFIX);
         // 获取当前日期
@@ -115,7 +125,7 @@ public class CodeUtils {
      * @return 最新的故障工单编号
      */
     public static String generateFaultWorkNo() {
-        String key = CommonConstants.S2 + CommonConstants.FAULT_WORK_NO;
+        String key = keyPrefix + CommonConstants.S1 + CommonConstants.FAULT_WORK_NO;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(CommonConstants.FAULT_WORK_NO_PREFIX);
         // 获取当前日期

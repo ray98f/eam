@@ -81,7 +81,8 @@
         d.IF_PHM AS "ifPhm",
         d.IF_RELIABILITY AS "ifReliability",
         d.IF_OTHER AS "ifOther",
-        df.EXT1 AS "levelfault"
+        df.EXT1 AS "levelfault",
+        (CASE WHEN df.ORDER_STATUS='99' THEN '1' ELSE '0' END) sort
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
@@ -155,7 +156,7 @@
             </if>
             AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
-        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
     <select id="queryByEngineer" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -169,7 +170,7 @@
             )
         </if>
         AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
-        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
     <select id="queryByUser" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -256,7 +257,7 @@
             </if>
             AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
-        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
     <select id="queryLimit" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">

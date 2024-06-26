@@ -314,10 +314,6 @@ public class FaultReportServiceImpl implements FaultReportService {
                 + CommonConstants.SHORT_BAR + reqDTO.getSysFaultNo();
         if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(key))) {
             try {
-//            String maxFaultNo = faultReportMapper.getFaultInfoFaultNoMaxCode();
-//            String maxFaultWorkNo = faultReportMapper.getFaultOrderFaultWorkNoMaxCode();
-//            nextFaultNo = CodeUtils.getNextCode(maxFaultNo, "GZ");
-//            String nextFaultWorkNo = CodeUtils.getNextCode(maxFaultWorkNo, "GD");
                 nextFaultNo = CodeUtils.generateFaultNo();
                 nextFaultWorkNo = CodeUtils.generateFaultWorkNo();
                 reqDTO.setFaultNo(nextFaultNo);
