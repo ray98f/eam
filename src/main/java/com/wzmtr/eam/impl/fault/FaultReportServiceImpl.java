@@ -374,7 +374,6 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public Page<FaultReportResDTO> list(FaultReportPageReqDTO reqDTO) {
-        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
@@ -393,6 +392,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
             type = CommonConstants.TWO_STRING;
         }
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
@@ -439,8 +439,6 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     @Override
     public Page<FaultReportResDTO> carReportList(FaultReportPageReqDTO reqDTO) {
-        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId()) && StringUtils.isEmpty(reqDTO.getMajorCode())) {
@@ -458,6 +456,7 @@ public class FaultReportServiceImpl implements FaultReportService {
             type = CommonConstants.TWO_STRING;
         }
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
@@ -487,15 +486,15 @@ public class FaultReportServiceImpl implements FaultReportService {
         Map<String, RegionResDTO> regionMap = StreamUtils.toMap(regionRes, RegionResDTO::getNodeCode);
         records.forEach(a -> {
             LineCode line = LineCode.getByCode(a.getLineCode());
-            if (StringUtils.isNotEmpty(a.getDocId())) {
-                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
-            }
+//            if (StringUtils.isNotEmpty(a.getDocId())) {
+//                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
+//            }
             a.setLineName(line == null ? a.getLineCode() : line.getDesc());
-            if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
-                a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
-            }
             if (regionMap.containsKey(a.getPositionCode())) {
                 a.setPositionName(regionMap.get(a.getPositionCode()).getNodeName());
+            }
+            if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
+                a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
             }
             if (StringUtils.isNotEmpty(a.getFillinDeptCode())) {
                 a.setFillinDeptName(organizationMapper.getNamesById(a.getFillinDeptCode()));
@@ -505,7 +504,7 @@ public class FaultReportServiceImpl implements FaultReportService {
 
     private void buildFaultDetailRes(FaultDetailResDTO a) {
         if (StringUtils.isNotEmpty(a.getDocId())) {
-            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
+            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
         }
         if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
             a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
