@@ -124,7 +124,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
-        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
@@ -147,6 +146,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
             type = CommonConstants.TWO_STRING;
         }
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
@@ -214,9 +214,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     private void buildRes(FaultDetailResDTO a) {
-        if (StringUtils.isNotEmpty(a.getDocId())) {
-            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
-        }
+//        if (StringUtils.isNotEmpty(a.getDocId())) {
+//            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
+//        }
         if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
             a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
         }
