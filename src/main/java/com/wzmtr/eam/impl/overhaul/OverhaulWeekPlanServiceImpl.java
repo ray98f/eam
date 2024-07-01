@@ -45,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -649,7 +650,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
     }
 
     @Override
-    public void addOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) {
+    public void addOverhaulPlan(OverhaulPlanReqDTO overhaulPlanReqDTO) throws ParseException {
         if (overhaulPlanReqDTO.getWeekPlanCode() == null) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "新增检修计划必须双击检修周计划主表！");
         }
@@ -687,6 +688,12 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulPlanReqDTO.setWorkerGroupCode(weekPlanList.get(0).getWorkerGroupCode());
         overhaulPlanReqDTO.setWorkerCode(weekPlanList.get(0).getWorkerCode());
         overhaulPlanReqDTO.setWorkerName(weekPlanList.get(0).getWorkerName());
+        if (StringUtils.isNotEmpty(overhaulPlanReqDTO.getFirstBeginTime())
+                && !overhaulPlanReqDTO.getFirstBeginTime().contains(CommonConstants.SHORT_BAR)) {
+            SimpleDateFormat sdf1 = new SimpleDateFormat(DateUtils.YYYY_MM_DD);
+            SimpleDateFormat sdf2 = new SimpleDateFormat(DateUtils.YYYYMMDD);
+            overhaulPlanReqDTO.setFirstBeginTime(sdf1.format(sdf2.parse(overhaulPlanReqDTO.getFirstBeginTime())));
+        }
         overhaulPlanMapper.addOverhaulPlan(overhaulPlanReqDTO);
     }
 
