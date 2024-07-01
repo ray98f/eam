@@ -116,7 +116,7 @@ public class OrgMajorServiceImpl implements OrgMajorService {
                     orgMajorReqDTO.setOrgCode(office.getAreaId());
                     orgMajorReqDTO.setOrgName(office.getName());
                     Integer result = orgMajorMapper.selectOrgMajorIsExist(orgMajorReqDTO);
-                    if (result > CommonConstants.ONE) {
+                    if (result > CommonConstants.ZERO) {
                         continue;
                     }
                     orgMajorReqDTO.setRecId(TokenUtils.getUuId());
