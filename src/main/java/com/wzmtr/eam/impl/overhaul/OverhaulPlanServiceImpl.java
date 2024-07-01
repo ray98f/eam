@@ -474,8 +474,6 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     public void insertInspectPlan1(String planCode, String[] orderCodes) throws Exception {
         String orderCode = orderCodes[0];
-        OverhaulPlanListReqDTO selectMap = new OverhaulPlanListReqDTO();
-        selectMap.setPlanCode(planCode);
         OverhaulOrderReqDTO overhaulOrder = new OverhaulOrderReqDTO();
         overhaulOrder.setOrderCode(orderCode);
         overhaulOrder.setWorkStatus(CommonConstants.ONE_STRING);
@@ -503,7 +501,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulOrder.setRealEndTime(" ");
         overhaulOrder.setExt1(" ");
         buildOverhaulOrderPlanStartTime(planCode, orderCodes, overhaulOrder, trigerTime);
-        addOverhaulOrder(overhaulPlanListReq, overhaulOrder);
+        addOverhaulOrder(plans, overhaulOrder);
     }
 
     /**
@@ -525,6 +523,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         overhaulOrder.setWorkStatus(CommonConstants.ONE_STRING);
         overhaulOrder.setSubjectCode(plans.get(0).getSubjectCode());
         overhaulOrder.setLineNo(plans.get(0).getLineNo());
+        overhaulOrder.setPlanType(plans.get(0).getPlanType());
         return overhaulOrder;
     }
 
@@ -578,15 +577,14 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
 
     /**
      * 新增检修工单
-     * @param overhaulPlanList 检修计划信息
+     * @param plans 检修计划信息
      * @param overhaulOrder 检修工单信息
      */
-    public void addOverhaulOrder(OverhaulPlanListReqDTO overhaulPlanList, OverhaulOrderReqDTO overhaulOrder) {
+    public void addOverhaulOrder(List<OverhaulPlanResDTO> plans, OverhaulOrderReqDTO overhaulOrder) {
         try {
-            List<OverhaulPlanResDTO> planList = overhaulPlanMapper.listOverhaulPlan(overhaulPlanList);
-            if (StringUtils.isNotEmpty(planList)) {
+            if (StringUtils.isNotEmpty(plans)) {
                 int i = 0;
-                for (OverhaulPlanResDTO plan : planList) {
+                for (OverhaulPlanResDTO plan : plans) {
                     plan.setRecCreator(TokenUtils.getCurrentPersonId());
                     plan.setRecCreateTime(DateUtils.getCurrentTime());
                     plan.setRecRevisor("");

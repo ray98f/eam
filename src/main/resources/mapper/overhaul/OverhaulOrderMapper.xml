@@ -217,6 +217,9 @@
         ORDER_CODE,  <!-- 工单编号 -->
         PLAN_CODE,  <!-- 计划编号 -->
         PLAN_NAME,  <!-- 计划名称 -->
+        <if test="planType!=null and planType!=''">
+            PLAN_TYPE,
+        </if>
         LINE_NO,  <!-- 线路编码 -->
         LINE_NAME,  <!-- 线路名称 -->
         POSITION1_NAME,  <!-- 位置1  -->
@@ -275,6 +278,9 @@
         #{orderCode,jdbcType=VARCHAR},
         #{planCode,jdbcType=VARCHAR},
         #{planName,jdbcType=VARCHAR},
+        <if test="planType!=null and planType!=''">
+            #{planType,jdbcType=VARCHAR},
+        </if>
         #{lineNo,jdbcType=VARCHAR},
         #{lineName,jdbcType=VARCHAR},
         #{position1Name,jdbcType=VARCHAR},
@@ -340,6 +346,9 @@
         </if>
         <if test="planName!=null">
             PLAN_NAME=#{planName},
+        </if>
+        <if test="planType!=null">
+            PLAN_TYPE=#{planType},
         </if>
         <if test="lineNo!=null">
             LINE_NO=#{lineNo},
@@ -744,6 +753,7 @@
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->
         PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        PLAN_TYPE	as "planType",
         LINE_NO	as "lineNo",  <!-- 线路编码 -->
         LINE_NAME	as "lineName",  <!-- 线路名称 -->
         POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
@@ -915,6 +925,7 @@
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->
         PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        PLAN_TYPE	as "planType",
         LINE_NO	as "lineNo",  <!-- 线路编码 -->
         LINE_NAME	as "lineName",  <!-- 线路名称 -->
         POSITION1_NAME	as "position1Name",  <!-- 位置1  -->
@@ -1178,6 +1189,7 @@
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->
         PLAN_CODE	as "planCode",  <!-- 计划编号 -->
         PLAN_NAME	as "planName",  <!-- 计划名称 -->
+        PLAN_TYPE	as "planType",
         LINE_NO	as "lineNo",  <!-- 线路编码 -->
         LINE_NAME	as "lineName",  <!-- 线路名称 -->
         POSITION1_NAME	as "position1Name",  <!-- 位置1  -->

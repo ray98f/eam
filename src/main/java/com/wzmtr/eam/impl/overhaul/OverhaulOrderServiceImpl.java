@@ -470,11 +470,12 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        // if (!overhaulOrderReqDTO.getPlanName().contains(CommonConstants.SECOND_REPAIR_SHIFT)) {
-        //     checkOrderState(overhaulOrderReqDTO, "4", "完工");
-        // } else {
+        if (StringUtils.isNotEmpty(overhaulOrderReqDTO.getPlanType())
+                && overhaulOrderReqDTO.getPlanType().equals(CommonConstants.TWO_STRING)) {
             checkOrderState(overhaulOrderReqDTO, "6", "验收");
-        // }
+        } else {
+            checkOrderState(overhaulOrderReqDTO, "4", "完工");
+        }
         if (org.apache.commons.lang3.StringUtils.isBlank(overhaulOrderReqDTO.getRealEndTime())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该工单没有实际完成时间，无法完工确认！");
         }
