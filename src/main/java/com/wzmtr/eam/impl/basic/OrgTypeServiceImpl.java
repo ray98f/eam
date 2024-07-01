@@ -75,6 +75,7 @@ public class OrgTypeServiceImpl implements OrgTypeService {
                 orgTypeReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
                 orgTypeReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
                 for (SysOffice office : offices) {
+                    orgTypeReqDTO.setRecId(null);
                     orgTypeReqDTO.setOrgCode(office.getAreaId());
                     orgTypeReqDTO.setOrgName(office.getName());
                     Integer result = orgTypeMapper.selectOrgTypeIsExist(orgTypeReqDTO);
