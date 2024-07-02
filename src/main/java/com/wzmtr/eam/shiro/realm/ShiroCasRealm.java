@@ -1,6 +1,5 @@
 package com.wzmtr.eam.shiro.realm;
 
-import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
@@ -48,33 +47,21 @@ public class ShiroCasRealm extends CasRealm {
         SecurityUtils.getSubject().getSession().setAttribute("name", name);
 
         CurrentLoginUser person = new CurrentLoginUser();
-        if (CommonConstants.ADMIN.equals(name)) {
-            person.setPersonId(CommonConstants.ADMIN);
-            person.setPersonNo(CommonConstants.ADMIN);
-            person.setPersonName("系统管理员");
-            person.setCompanyId("A");
-            person.setCompanyName("集团本级");
-            person.setOfficeId("A02");
-            person.setOfficeName("办公室");
-            person.setNames("集团本级-办公室");
-            person.setMobile("13758496546");
+        Person p = personService.searchPersonByNo(name);
+        if (p != null) {
+            person.setPersonId(p.getLoginName());
+            person.setPersonNo(p.getNo());
+            person.setPersonName(p.getName());
+            person.setCompanyId(p.getCompanyId());
+            person.setCompanyName(p.getCompanyName());
+            person.setCompanyAreaId(p.getCompanyAreaId());
+            person.setOfficeId(p.getOfficeId());
+            person.setOfficeName(p.getOfficeName());
+            person.setOfficeAreaId(p.getOfficeAreaId());
+            person.setNames(p.getNames());
+            person.setMobile(p.getMobile());
         } else {
-            Person p = personService.searchPersonByNo(name);
-            if (p != null) {
-                person.setPersonId(p.getLoginName());
-                person.setPersonNo(p.getNo());
-                person.setPersonName(p.getName());
-                person.setCompanyId(p.getCompanyId());
-                person.setCompanyName(p.getCompanyName());
-                person.setCompanyAreaId(p.getCompanyAreaId());
-                person.setOfficeId(p.getOfficeId());
-                person.setOfficeName(p.getOfficeName());
-                person.setOfficeAreaId(p.getOfficeAreaId());
-                person.setNames(p.getNames());
-                person.setMobile(p.getMobile());
-            } else {
-                throw new CommonException(ErrorCode.USER_NOT_EXIST);
-            }
+            throw new CommonException(ErrorCode.USER_NOT_EXIST);
         }
         String jwtToken = TokenUtils.createSimpleToken(person);
         SecurityUtils.getSubject().getSession().setAttribute("jwtToken", jwtToken);
