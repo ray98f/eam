@@ -89,7 +89,7 @@
     </sql>
 
     <!--dmfm01.query -->
-    <select id="query" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <select id="query" resultType="com.wzmtr.eam.dto.res.fault.FaultListResDTO">
         <include refid="query-cols"/>
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultType!=null and req.faultType!=''">
@@ -173,7 +173,7 @@
         ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
-    <select id="queryByUser" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <select id="queryByUser" resultType="com.wzmtr.eam.dto.res.fault.FaultListResDTO">
         <include refid="query-cols"/>
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultType!=null and req.faultType!=''">
@@ -285,7 +285,7 @@
         ORDER BY df.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
 
-    <select id="statustucQuery" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <select id="statustucQuery" resultType="com.wzmtr.eam.dto.res.fault.FaultListResDTO">
         SELECT
         d.REC_ID AS "faultInfoRecId",
         df.REC_ID AS "faultOrderRecId",

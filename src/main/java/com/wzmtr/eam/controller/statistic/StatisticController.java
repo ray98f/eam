@@ -2,14 +2,35 @@ package com.wzmtr.eam.controller.statistic;
 
 import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
 import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
-import com.wzmtr.eam.dto.req.statistic.*;
+import com.wzmtr.eam.dto.req.statistic.CarFaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.DoorFaultReqDTO;
+import com.wzmtr.eam.dto.req.statistic.FailreRateQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.MaterialListReqDTO;
+import com.wzmtr.eam.dto.req.statistic.MaterialQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.OneCarOneGearQueryReqDTO;
+import com.wzmtr.eam.dto.req.statistic.OneCarOneGearReqDTO;
+import com.wzmtr.eam.dto.req.statistic.RamsTimeReqDTO;
 import com.wzmtr.eam.dto.res.equipment.GearboxChangeOilResDTO;
 import com.wzmtr.eam.dto.res.equipment.GeneralSurveyResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
 import com.wzmtr.eam.dto.res.equipment.WheelsetLathingResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultListResDTO;
 import com.wzmtr.eam.dto.res.fault.TrackQueryResDTO;
-import com.wzmtr.eam.dto.res.statistic.*;
+import com.wzmtr.eam.dto.res.statistic.CarFaultQueryResDTO;
+import com.wzmtr.eam.dto.res.statistic.FailureRateDetailResDTO;
+import com.wzmtr.eam.dto.res.statistic.FaultConditionResDTO;
+import com.wzmtr.eam.dto.res.statistic.FaultRamsResDTO;
+import com.wzmtr.eam.dto.res.statistic.InspectionJobListResDTO;
+import com.wzmtr.eam.dto.res.statistic.MaterialResDTO;
+import com.wzmtr.eam.dto.res.statistic.OneCarOneGearResDTO;
+import com.wzmtr.eam.dto.res.statistic.RamsCarResDTO;
+import com.wzmtr.eam.dto.res.statistic.RamsResult2ResDTO;
+import com.wzmtr.eam.dto.res.statistic.RamsSysPerformResDTO;
+import com.wzmtr.eam.dto.res.statistic.RamsTrainReliabilityResDTO;
+import com.wzmtr.eam.dto.res.statistic.ReliabilityListResDTO;
+import com.wzmtr.eam.dto.res.statistic.SubjectFaultResDTO;
+import com.wzmtr.eam.dto.res.statistic.SystemFaultsResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -22,7 +43,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -54,7 +80,7 @@ public class StatisticController {
 
     @ApiOperation(value = "故障统计报表")
     @PostMapping("/fault/list")
-    public PageResponse<FaultDetailResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
+    public PageResponse<FaultListResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
         return PageResponse.of(faultQueryService.statustucList(reqDTO));
     }
 

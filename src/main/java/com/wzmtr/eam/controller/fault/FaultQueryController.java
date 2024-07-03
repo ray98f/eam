@@ -13,6 +13,7 @@ import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultListResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -57,7 +58,7 @@ public class FaultQueryController {
 
     @ApiOperation(value = "列表")
     @PostMapping("/list")
-    public PageResponse<FaultDetailResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
+    public PageResponse<FaultListResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
         return PageResponse.of(faultQueryService.list(reqDTO));
     }
 

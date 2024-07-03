@@ -1,12 +1,20 @@
 package com.wzmtr.eam.service.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.req.fault.CompareRowsReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultEqCheckReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultFinishWorkReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultNosFaultWorkNosReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultSendWorkReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultListResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 
@@ -19,7 +27,7 @@ import java.util.Set;
  * Date: 2023/8/17 16:21
  */
 public interface FaultQueryService {
-    Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO);
+    Page<FaultListResDTO> list(FaultQueryReqDTO reqDTO);
 
     /**
      * 根据故障工单号查询故障工单详情-开放接口
@@ -31,7 +39,7 @@ public interface FaultQueryService {
 
     List<FaultDetailResDTO> queryLimit();
 
-    Page<FaultDetailResDTO> statustucList(FaultQueryReqDTO reqDTO);
+    Page<FaultListResDTO> statustucList(FaultQueryReqDTO reqDTO);
 
     String queryOrderStatus(SidEntity reqDTO);
 

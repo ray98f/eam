@@ -28,6 +28,7 @@ import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultListResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.OrganMajorLineType;
@@ -123,7 +124,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private HttpServletRequest httpServletRequest;
 
     @Override
-    public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
+    public Page<FaultListResDTO> list(FaultQueryReqDTO reqDTO) {
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
@@ -135,7 +136,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             reqDTO.setOrderStatusList(Arrays.asList(reqDTO.getOrderStatus().split(CommonConstants.COMMA)));
             reqDTO.setOrderStatus(null);
         }
-        Page<FaultDetailResDTO> page;
+        Page<FaultListResDTO> page;
         //获取用户当前角色
         List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
         // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
@@ -158,8 +159,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList,
                     TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId(), type);
         }
-        List<FaultDetailResDTO> list = page.getRecords();
-        for (FaultDetailResDTO res : list) {
+        List<FaultListResDTO> list = page.getRecords();
+        for (FaultListResDTO res : list) {
             buildRes(res);
         }
         page.setRecords(list);
@@ -201,12 +202,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public Page<FaultDetailResDTO> statustucList(FaultQueryReqDTO reqDTO) {
+    public Page<FaultListResDTO> statustucList(FaultQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<FaultDetailResDTO> page = faultQueryMapper.statustucQuery(reqDTO.of(), reqDTO);
-        List<FaultDetailResDTO> list = page.getRecords();
+        Page<FaultListResDTO> page = faultQueryMapper.statustucQuery(reqDTO.of(), reqDTO);
+        List<FaultListResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
-            for (FaultDetailResDTO res : list) {
+            for (FaultListResDTO res : list) {
                 buildRes(res);
             }
         }
@@ -214,7 +215,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         return page;
     }
 
-    private void buildRes(FaultDetailResDTO a) {
+    private void buildRes(FaultListResDTO a) {
 //        if (StringUtils.isNotEmpty(a.getDocId())) {
 //            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
 //        }
