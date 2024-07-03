@@ -4,7 +4,7 @@ target/
 !src/main/**/target/
 !src/test/**/target/
 /logs/*
-/sql/init.sql
+/sql/init.java
 
 ### STS ###
 .apt_generated
