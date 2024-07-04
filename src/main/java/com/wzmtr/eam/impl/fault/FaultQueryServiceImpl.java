@@ -415,6 +415,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) && IS_TIKAI_CODE.equals(reqDTO.getIsTiKai())) {
                     faultInfo.setExt3("08");
                 }
+                if (StringUtils.isNotEmpty(reqDTO.getFaultLevel())) {
+                    faultInfo.setFaultLevel(reqDTO.getFaultLevel());
+                }
                 faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
                 faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
                 faultInfo.setFaultNo(faultOrder.getFaultNo());
