@@ -211,4 +211,58 @@
         </if>
     </select>
 
+    <select id="listEquipmentCategoryPart" resultType="com.wzmtr.eam.dto.res.basic.EquipmentCategoryPartResDTO">
+        SELECT REC_ID, MAJOR_CODE, MAJOR_NAME, SYSTEM_CODE,
+        SYSTEM_NAME, EQUIP_TYPE_CODE, EQUIP_TYPE_NAME, PART_NAME, QUANTITY
+        FROM T_EQUIPMENT_CATEGORY_PART
+        WHERE DELETE_FLAG='0'
+        <if test="majorCode!=null and majorCode!=''">
+            AND MAJOR_CODE=#{majorCode}
+        </if>
+        <if test="systemCode!=null and systemCode!=''">
+            AND SYSTEM_CODE=#{systemCode}
+        </if>
+        <if test="equipTypeCode!=null and equipTypeCode!=''">
+            AND EQUIP_TYPE_CODE=#{equipTypeCode}
+        </if>
+        ORDER BY REC_CREATE_TIME ASC
+    </select>
+
+    <insert id="importEquipmentCategoryPart">
+        insert ALL
+        <foreach collection="list" index="index" item="part" separator=" ">
+            INTO T_EQUIPMENT_CATEGORY_PART (
+            REC_ID,
+            MAJOR_CODE,
+            MAJOR_NAME,
+            SYSTEM_CODE,
+            SYSTEM_NAME,
+            EQUIP_TYPE_CODE,
+            EQUIP_TYPE_NAME,
+            PART_NAME,
+            QUANTITY,
+            REC_CREATOR,
+            REC_CREATE_TIME)
+            VALUES (
+            #{part.recId,jdbcType=VARCHAR},
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{part.majorName} AND NODE_LEVEL=1),
+            #{part.majorName},
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{part.systemName} AND NODE_LEVEL=2
+            AND NODE_CODE LIKE
+            TO_CHAR((SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{part.majorName} AND NODE_LEVEL=1)) || '%'),
+            #{part.systemName},
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{part.equipTypeName} AND NODE_LEVEL=3
+            AND NODE_CODE LIKE
+            TO_CHAR((SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{part.systemName} AND NODE_LEVEL=2
+            AND NODE_CODE LIKE
+            TO_CHAR((SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{part.majorName} AND NODE_LEVEL=1)) || '%')) || '%'),
+            #{part.equipTypeName},
+            #{part.partName},
+            #{part.quantity},
+            #{part.recCreator},
+            #{part.recCreateTime})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
 </mapper>

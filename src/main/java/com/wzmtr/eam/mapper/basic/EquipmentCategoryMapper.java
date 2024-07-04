@@ -1,7 +1,9 @@
 package com.wzmtr.eam.mapper.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.basic.EquipmentCategoryPartReqDTO;
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategoryPartResDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -118,5 +120,22 @@ public interface EquipmentCategoryMapper {
      * @return
      */
     EquipmentCategoryResDTO getIndexByIndex(String nodeCode, String nodeName, Integer nodeLevel);
+
+    /**
+     * 获取设备分类绑定的部件列表
+     * @param majorCode 专业编码
+     * @param systemCode 系统编码
+     * @param equipTypeCode 设备分类编码
+     * @return 设备分类绑定的部件列表
+     */
+    List<EquipmentCategoryPartResDTO> listEquipmentCategoryPart(String majorCode,
+                                                                String systemCode,
+                                                                String equipTypeCode);
+
+    /**
+     * 导入设备分类绑定的部件列表
+     * @param list 设备分类绑定的部件列表
+     */
+    void importEquipmentCategoryPart(List<EquipmentCategoryPartReqDTO> list);
 
 }

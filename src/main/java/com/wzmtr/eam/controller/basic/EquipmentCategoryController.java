@@ -1,6 +1,7 @@
 package com.wzmtr.eam.controller.basic;
 
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategoryPartResDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
@@ -16,7 +17,13 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -102,5 +109,32 @@ public class EquipmentCategoryController {
     @ApiOperation(value = "获取设备分类子集")
     public DataResponse<List<EquipmentCategoryResDTO>> getChildEquipmentCategory(@RequestParam String code) {
         return DataResponse.of(equipmentCategoryService.getChildEquipmentCategory(code));
+    }
+
+    /**
+     * 获取设备分类绑定的部件列表
+     * @param majorCode 专业编码
+     * @param systemCode 系统编码
+     * @param equipTypeCode 设备分类编码
+     * @return 设备分类绑定的部件列表
+     */
+    @GetMapping("/part/list")
+    @ApiOperation(value = "获取设备分类绑定的部件列表")
+    public DataResponse<List<EquipmentCategoryPartResDTO>> listEquipmentCategoryPart(@RequestParam(required = false) String majorCode,
+                                                                                     @RequestParam(required = false) String systemCode,
+                                                                                     @RequestParam(required = false) String equipTypeCode) {
+        return DataResponse.of(equipmentCategoryService.listEquipmentCategoryPart(majorCode, systemCode, equipTypeCode));
+    }
+
+    /**
+     * 导入设备分类绑定的部件列表
+     * @param file 文件
+     * @return 成功
+     */
+    @PostMapping("/part/import")
+    @ApiOperation(value = "导入设备分类绑定的部件列表")
+    public DataResponse<T> importEquipmentCategoryPart(@RequestParam MultipartFile file) {
+        equipmentCategoryService.importEquipmentCategoryPart(file);
+        return DataResponse.success();
     }
 }
