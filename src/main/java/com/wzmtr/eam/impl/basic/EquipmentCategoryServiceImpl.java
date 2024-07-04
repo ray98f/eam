@@ -135,7 +135,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     public List<EquipmentCategoryPartResDTO> listEquipmentCategoryPart(String majorCode,
                                                                        String systemCode,
                                                                        String equipTypeCode) {
-        return equipmentCategoryMapper.listEquipmentCategoryPart(majorCode, systemCode, equipTypeCode);
+        return equipmentCategoryMapper.listEquipmentCategoryModule(majorCode, systemCode, equipTypeCode);
     }
 
     @Override

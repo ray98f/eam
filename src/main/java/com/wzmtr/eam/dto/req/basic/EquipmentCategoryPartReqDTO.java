@@ -49,6 +49,11 @@ public class EquipmentCategoryPartReqDTO {
     @ApiModelProperty(value = "设备类型名称")
     private String equipTypeName;
     /**
+     * 模块名称
+     */
+    @ApiModelProperty(value = "模块名称")
+    private String moduleName;
+    /**
      * 部件名称
      */
     @ApiModelProperty(value = "部件名称")

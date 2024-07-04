@@ -18,28 +18,33 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ExcelEquipmentCategoryPartReqDTO {
     /**
-     * 专业名称
+     * 专业
      */
-    @ExcelProperty(value = "专业名称")
+    @ExcelProperty(value = "专业")
     private String majorName;
     /**
-     * 系统名称
+     * 系统
      */
-    @ExcelProperty(value = "系统名称")
+    @ExcelProperty(value = "系统")
     private String systemName;
     /**
-     * 设备类型名称
+     * 设备类别
      */
-    @ExcelProperty(value = "设备类型名称")
+    @ExcelProperty(value = "设备类别")
     private String equipTypeName;
+    /**
+     * 模块名称
+     */
+    @ExcelProperty(value = "模块名称")
+    private String moduleName;
     /**
      * 部件名称
      */
     @ExcelProperty(value = "部件名称")
     private String partName;
     /**
-     * 数量
+     * 部件数量
      */
-    @ExcelProperty(value = "数量")
+    @ExcelProperty(value = "部件数量")
     private Long quantity;
 }

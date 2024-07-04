@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 设备分类部件结果类
  * @author  Ray
@@ -13,11 +15,6 @@ import lombok.Data;
 @Data
 @ApiModel
 public class EquipmentCategoryPartResDTO {
-    /**
-     * id
-     */
-    @ApiModelProperty(value = "id")
-    private String recId;
     /**
      * 专业编号
      */
@@ -49,13 +46,32 @@ public class EquipmentCategoryPartResDTO {
     @ApiModelProperty(value = "设备类型名称")
     private String equipTypeName;
     /**
-     * 部件名称
+     * 模块名称
      */
-    @ApiModelProperty(value = "部件名称")
-    private String partName;
+    @ApiModelProperty(value = "模块名称")
+    private String moduleName;
     /**
-     * 数量
+     * 部件列表
      */
-    @ApiModelProperty(value = "数量")
-    private Long quantity;
+    @ApiModelProperty(value = "部件列表")
+    private List<Part> partList;
+
+    @Data
+    public static class Part {
+        /**
+         * id
+         */
+        @ApiModelProperty(value = "id")
+        private String recId;
+        /**
+         * 部件名称
+         */
+        @ApiModelProperty(value = "部件名称")
+        private String partName;
+        /**
+         * 数量
+         */
+        @ApiModelProperty(value = "数量")
+        private Long quantity;
+    }
 }
