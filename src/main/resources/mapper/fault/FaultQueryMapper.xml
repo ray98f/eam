@@ -48,7 +48,7 @@
         d.REPAIR_DEPT_CODE AS "repairDeptCode",
         d.PUBLISH_USER_ID AS "publishUserId",
         d.PUBLISH_TIME AS "publishTime",
-        d.FAULT_LEVEL AS "faultLevel",
+        (CASE WHEN d.FAULT_LEVEL!=' ' THEN d.FAULT_LEVEL ELSE df.EXT1 END) AS "faultLevel",
         d.FAULT_STATUS AS "faultStatus",
         d.WORK_FLOW_INST_ID AS "workFlowInstId",
         d.WORK_FLOW_INST_STATUS AS "workFlowInstStatus",
@@ -82,6 +82,7 @@
         d.IF_RELIABILITY AS "ifReliability",
         d.IF_OTHER AS "ifOther",
         df.EXT1 AS "levelfault",
+        df.FAULT_AFFECT AS "faultAffect",
         (CASE WHEN df.ORDER_STATUS='99' THEN '1' ELSE '0' END) sort
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
