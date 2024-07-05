@@ -26,9 +26,19 @@ public interface FaultTrackMapper extends BaseMapper<FaultTrackDO> {
 
     TrackQueryResDTO detail(FaultBaseNoReqDTO reqDTO);
 
-
+    /**
+     * 获取故障详情
+     * @param reqDTO 传参
+     * @return 故障详情
+     */
     FaultInfoDO faultDetail(FaultDetailReqDTO reqDTO);
 
+    /**
+     * 获取故障工单详情
+     * @param faultNo 故障编号
+     * @param faultWorkNo 故障工单号
+     * @return 故障工单详情
+     */
     FaultDetailResDTO faultOrderDetail(String faultNo, String faultWorkNo);
 
     /**
