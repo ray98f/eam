@@ -520,7 +520,7 @@
         df.FINISH_OBJECT_NAME AS "finishObjectName",
         df.FINISH_POSITION_CODE AS "finishPositionCode",
         df.FINISH_POSITION2_CODE AS "finishPosition2Code",
-        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=df.POSITION_CODE) AS "finishPositionName",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=df.FINISH_POSITION_CODE) AS "finishPositionName",
         ep.MODULE_NAME AS "finishModuleName",
         df.FINISH_PART_ID AS "finishPartId",
         ep.PART_NAME AS "finishPartName"
