@@ -583,4 +583,64 @@ public class FaultDetailResDTO {
      */
     @ApiModelProperty(value = "是否是外部系统 0否 1是")
     private String ifOther;
+    /**
+     * 完工报告对象编码
+     */
+    private String finishObjectCode;
+    /**
+     * 完工报告对象名称
+     */
+    private String finishObjectName;
+    /**
+     * 完工报告专业编码
+     */
+    private String finishMajorCode;
+    /**
+     * 完工报告专业名称
+     */
+    private String finishMajorName;
+    /**
+     * 完工报告系统编码
+     */
+    private String finishSystemCode;
+    /**
+     * 完工报告系统名称
+     */
+    private String finishSystemName;
+    /**
+     * 完工报告设备分类编码
+     */
+    private String finishEquipTypeCode;
+    /**
+     * 完工报告设备分类名称
+     */
+    private String finishEquipTypeName;
+    /**
+     * 完工报告位置一编码
+     */
+    private String finishPositionCode;
+    /**
+     * 完工报告位置一名称
+     */
+    private String finishPositionName;
+    /**
+     * 完工报告位置二编码
+     */
+    private String finishPosition2Code;
+    /**
+     * 完工报告位置二名称
+     */
+    private String finishPosition2Name;
+    /**
+     * 完工报告模块名称
+     */
+    private String finishModuleName;
+    /**
+     * 完工报告部件id
+     */
+    private String finishPartId;
+    /**
+     * 完工报告部件名称
+     */
+    private String finishPartName;
 }

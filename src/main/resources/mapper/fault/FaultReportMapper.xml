@@ -495,7 +495,30 @@
         <if test="repairLimitTime!=null and repairLimitTime!=''">
             REPAIR_LIMIT_TIME=#{repairLimitTime},
         </if>
-
+        <if test="finishObjectCode!=null and finishObjectCode!=''">
+            FINISH_OBJECT_CODE=#{finishObjectCode},
+        </if>
+        <if test="finishObjectName!=null and finishObjectName!=''">
+            FINISH_OBJECT_NAME=#{finishObjectName},
+        </if>
+        <if test="finishMajorCode!=null and finishMajorCode!=''">
+            FINISH_MAJOR_CODE=#{finishMajorCode},
+        </if>
+        <if test="finishSystemCode!=null and finishSystemCode!=''">
+            FINISH_SYSTEM_CODE=#{finishSystemCode},
+        </if>
+        <if test="finishEquipTypeCode!=null and finishEquipTypeCode!=''">
+            FINISH_EQUIP_TYPE_CODE=#{finishEquipTypeCode},
+        </if>
+        <if test="finishPositionCode!=null and finishPositionCode!=''">
+            FINISH_POSITION_CODE=#{finishPositionCode},
+        </if>
+        <if test="finishPosition2Code!=null and finishPosition2Code!=''">
+            FINISH_POSITION2_CODE=#{finishPosition2Code},
+        </if>
+        <if test="finishPartId!=null and finishPartId!=''">
+            FINISH_PART_ID=#{finishPartId},
+        </if>
         REC_REVISOR=#{recRevisor},
         REC_REVISE_TIME=#{recReviseTime}
         <trim prefix="WHERE" prefixOverrides="AND">
