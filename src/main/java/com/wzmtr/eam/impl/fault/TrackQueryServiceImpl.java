@@ -93,6 +93,13 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         if (StringUtils.isNotEmpty(faultFlows)) {
             faultDetail.setFlows(faultFlows);
         }
+        if (StringUtils.isNotEmpty(faultDetail.getPosition2Code())) {
+            Dictionaries dict = dictService.queryOneByItemCodeAndCodesetCode(
+                    CommonConstants.AT_STATION_POS2, faultDetail.getPosition2Code());
+            if (StringUtils.isNotNull(dict)) {
+                faultDetail.setPosition2Name(dict.getItemCname());
+            }
+        }
         // 待阅（实际为代办）更新为已办
         overTodoService.overTodo(faultOrder.getFaultOrderRecId(), "已查看", CommonConstants.TWO_STRING);
         return faultDetail;
