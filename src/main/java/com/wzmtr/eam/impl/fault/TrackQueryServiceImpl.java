@@ -81,11 +81,24 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
         FaultInfoDO faultInfo = faultTrackMapper.faultDetail(reqDTO);
-        FaultDetailResDTO faultOrder = faultTrackMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        if (StringUtils.isNull(faultInfo)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        FaultDetailResDTO faultOrder = faultTrackMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), faultInfo.getMajorCode());
+        if (StringUtils.isNull(faultOrder)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
         FaultDetailResDTO faultDetail = assemblyResDTO(faultInfo, faultOrder);
         List<FaultFlowResDTO> faultFlows = faultTrackMapper.faultFlowDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (StringUtils.isNotEmpty(faultFlows)) {
             faultDetail.setFlows(faultFlows);
+        }
+        if (StringUtils.isNotEmpty(faultDetail.getFinishPosition2Code())) {
+            Dictionaries dict = dictService.queryOneByItemCodeAndCodesetCode(
+                    CommonConstants.AT_STATION_POS2, faultDetail.getFinishPosition2Code());
+            if (StringUtils.isNotNull(dict)) {
+                faultDetail.setFinishPosition2Name(dict.getItemCname());
+            }
         }
         // 待阅（实际为代办）更新为已办
         overTodoService.overTodo(faultOrder.getFaultOrderRecId(), "已查看", CommonConstants.TWO_STRING);

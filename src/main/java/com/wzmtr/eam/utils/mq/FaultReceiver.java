@@ -86,10 +86,10 @@ public class FaultReceiver {
                 } else {
                     req.setFaultDetail("故障等级：" + fault.getFaultLevel() + "，故障详情：" + fault.getFaultDetail());
                 }
-                if (StringUtils.isEmpty(fault.getAlamTime())) {
+                if (StringUtils.isEmpty(fault.getAlarmTime())) {
                     req.setDiscoveryTime(DateUtils.getCurrentTime());
                 } else {
-                    req.setDiscoveryTime(fault.getAlamTime());
+                    req.setDiscoveryTime(fault.getAlarmTime());
                 }
                 req.setFaultType(fault.getFaultType());
                 req.setFaultStatus(fault.getFaultStatus());

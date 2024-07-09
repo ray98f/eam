@@ -112,10 +112,11 @@ public class OrgMajorServiceImpl implements OrgMajorService {
                 orgMajorReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
                 orgMajorReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
                 for (SysOffice office : offices) {
+                    orgMajorReqDTO.setRecId(null);
                     orgMajorReqDTO.setOrgCode(office.getAreaId());
                     orgMajorReqDTO.setOrgName(office.getName());
                     Integer result = orgMajorMapper.selectOrgMajorIsExist(orgMajorReqDTO);
-                    if (result > CommonConstants.ONE) {
+                    if (result > CommonConstants.ZERO) {
                         continue;
                     }
                     orgMajorReqDTO.setRecId(TokenUtils.getUuId());

@@ -127,7 +127,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
                                                        PageReqDTO pageReqDTO) throws ParseException {
-        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         overhaulOrderListReqDTO.setObjectFlag("1");
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
@@ -159,6 +158,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             overhaulOrderListReqDTO.setStartTime(sdf2.format(sdf1.parse(overhaulOrderListReqDTO.getStartTime())));
             overhaulOrderListReqDTO.setEndTime(sdf2.format(sdf1.parse(overhaulOrderListReqDTO.getEndTime())));
         }
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         List<OverhaulOrderResDTO> list = page.getRecords();
         // 专业为车辆的检修工单填充字段

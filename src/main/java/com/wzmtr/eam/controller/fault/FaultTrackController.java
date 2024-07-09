@@ -40,7 +40,12 @@ public class FaultTrackController {
         return PageResponse.of(trackQueryService.list(reqDTO));
     }
 
-    @ApiOperation(value = "故障编号详情")
+    /**
+     * 获取故障详情
+     * @param reqDTO 传参
+     * @return 故障详情
+     */
+    @ApiOperation(value = "获取故障详情")
     @PostMapping("/fault/detail")
     public DataResponse<FaultDetailResDTO> faultDetail(@RequestBody FaultDetailReqDTO reqDTO) {
         return DataResponse.of(trackQueryService.faultDetail(reqDTO));

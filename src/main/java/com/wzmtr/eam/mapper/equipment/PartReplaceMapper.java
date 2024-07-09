@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.equipment.PartReplaceReqDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceBomResDTO;
 import com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultPartReplaceOpenResDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,13 @@ import java.util.List;
 public interface PartReplaceMapper {
 
     Page<PartReplaceResDTO> pagePartReplace(Page<PartReplaceResDTO> page, String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason,String workOrderType);
+
+    /**
+     * 开放接口获取故障中更换的部件列表
+     * @param faultWorkNo 故障工单号
+     * @return 部件列表
+     */
+    List<FaultPartReplaceOpenResDTO> listOpenPartReplace(String faultWorkNo);
 
     PartReplaceResDTO getPartReplaceDetail(String id);
 

@@ -3,7 +3,10 @@ package com.wzmtr.eam.impl.basic;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.basic.EquipmentCategoryPartReqDTO;
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
+import com.wzmtr.eam.dto.req.basic.Excel.ExcelEquipmentCategoryPartReqDTO;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategoryPartResDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelEquipmentCategoryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
@@ -18,8 +21,10 @@ import com.wzmtr.eam.utils.StringUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import com.wzmtr.eam.utils.tree.EquipmentCategoryTreeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -58,7 +63,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     @Override
     public void addEquipmentCategory(EquipmentCategoryReqDTO equipmentCategoryReqDTO) {
         Integer result = equipmentCategoryMapper.selectEquipmentCategoryIsExist(equipmentCategoryReqDTO);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         equipmentCategoryReqDTO.setRecId(TokenUtils.getUuId());
@@ -70,7 +75,7 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     @Override
     public void modifyEquipmentCategory(EquipmentCategoryReqDTO equipmentCategoryReqDTO) {
         Integer result = equipmentCategoryMapper.selectEquipmentCategoryIsExist(equipmentCategoryReqDTO);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         equipmentCategoryReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
@@ -126,4 +131,27 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
         return equipmentCategoryMapper.getChildEquipmentCategory(code);
     }
 
+    @Override
+    public List<EquipmentCategoryPartResDTO> listEquipmentCategoryPart(String majorCode,
+                                                                       String systemCode,
+                                                                       String equipTypeCode) {
+        return equipmentCategoryMapper.listEquipmentCategoryModule(majorCode, systemCode, equipTypeCode);
+    }
+
+    @Override
+    public void importEquipmentCategoryPart(MultipartFile file) {
+        List<ExcelEquipmentCategoryPartReqDTO> list = EasyExcelUtils.read(file, ExcelEquipmentCategoryPartReqDTO.class);
+        List<EquipmentCategoryPartReqDTO> temp = new ArrayList<>();
+        for (ExcelEquipmentCategoryPartReqDTO reqDTO : list) {
+            EquipmentCategoryPartReqDTO req = new EquipmentCategoryPartReqDTO();
+            BeanUtils.copyProperties(reqDTO, req);
+            req.setRecId(TokenUtils.getUuId());
+            req.setRecCreator(TokenUtils.getCurrentPersonId());
+            req.setRecCreateTime(DateUtils.getCurrentTime());
+            temp.add(req);
+        }
+        if (!temp.isEmpty()) {
+            equipmentCategoryMapper.importEquipmentCategoryPart(temp);
+        }
+    }
 }

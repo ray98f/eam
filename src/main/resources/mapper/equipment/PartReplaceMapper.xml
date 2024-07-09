@@ -60,6 +60,19 @@
         ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
     </select>
 
+    <select id="listOpenPartReplace" resultType="com.wzmtr.eam.dto.res.fault.FaultPartReplaceOpenResDTO">
+        SELECT
+        REPLACEMENT_NO	as "replacePartNo",
+        REPLACEMENT_NAME	as "replacePartName",
+        REPLACE_REASON	as "replaceReason",
+        REPLACE_DATE	as "replaceDate",
+        EXT1	as "replaceNum"
+        FROM T_PART_REPLACEMENT
+        WHERE 1=1 and DELETE_FLAG='0' and WORK_ORDER_TYPE='1'
+        and FAULT_WORK_NO like '%' || #{faultWorkNo} || '%'
+        ORDER BY REPLACE_DATE desc, REC_CREATE_TIME desc
+    </select>
+
     <!-- 车辆专业相关的部件更换 -->
     <select id="pagePartReplaceByCar" resultType="com.wzmtr.eam.dto.res.equipment.PartReplaceResDTO">
         SELECT

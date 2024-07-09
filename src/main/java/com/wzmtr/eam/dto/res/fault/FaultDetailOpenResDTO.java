@@ -3,6 +3,8 @@ package com.wzmtr.eam.dto.res.fault;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 故障工单详情开放结果类
  * @author  Ray
@@ -22,10 +24,10 @@ public class FaultDetailOpenResDTO {
     @ApiModelProperty(value = "故障工单号")
     private String faultWorkNo;
     /**
-     * 报告时间
+     * 故障发现时间
      */
-    @ApiModelProperty(value = "报告时间")
-    private String reportTime;
+    @ApiModelProperty(value = "故障发现时间")
+    private String discoveryTime;
     /**
      * 维修负责人工号
      */
@@ -57,20 +59,10 @@ public class FaultDetailOpenResDTO {
     @ApiModelProperty(value = "维修结束时间")
     private String repairEndTime;
     /**
-     * 故障原因码
-     */
-    @ApiModelProperty(value = "故障原因码")
-    private String faultReasonCode;
-    /**
      * 故障原因详情
      */
     @ApiModelProperty(value = "故障原因详情")
     private String faultReasonDetail;
-    /**
-     * 故障行动码
-     */
-    @ApiModelProperty(value = "故障行动码")
-    private String faultActionCode;
     /**
      * 故障处理详情
      */
@@ -151,4 +143,19 @@ public class FaultDetailOpenResDTO {
      */
     @ApiModelProperty(value = "故障分类（10-运营故障；20-自检故障；30-新线调试；40-正线故障；50-出库故障）")
     private String faultType;
+    /**
+     * 部件编码
+     */
+    @ApiModelProperty(value = "部件编码")
+    private String partCode;
+    /**
+     * 部件名称
+     */
+    @ApiModelProperty(value = "部件名称")
+    private String partName;
+    /**
+     * 部件更换列表
+     */
+    @ApiModelProperty(value = "部件更换列表")
+    private List<FaultPartReplaceOpenResDTO> partReplaceList;
 }

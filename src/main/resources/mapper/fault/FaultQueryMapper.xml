@@ -48,7 +48,7 @@
         d.REPAIR_DEPT_CODE AS "repairDeptCode",
         d.PUBLISH_USER_ID AS "publishUserId",
         d.PUBLISH_TIME AS "publishTime",
-        d.FAULT_LEVEL AS "faultLevel",
+        (CASE WHEN d.FAULT_LEVEL!=' ' THEN d.FAULT_LEVEL ELSE df.EXT1 END) AS "faultLevel",
         d.FAULT_STATUS AS "faultStatus",
         d.WORK_FLOW_INST_ID AS "workFlowInstId",
         d.WORK_FLOW_INST_STATUS AS "workFlowInstStatus",
@@ -81,7 +81,9 @@
         d.IF_PHM AS "ifPhm",
         d.IF_RELIABILITY AS "ifReliability",
         d.IF_OTHER AS "ifOther",
-        df.EXT1 AS "levelfault"
+        df.EXT1 AS "levelfault",
+        df.FAULT_AFFECT AS "faultAffect",
+        (CASE WHEN df.ORDER_STATUS='99' THEN '1' ELSE '0' END) sort
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
@@ -155,7 +157,7 @@
             </if>
             AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
-        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
     <select id="queryByEngineer" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -169,7 +171,7 @@
             )
         </if>
         AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
-        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
     <select id="queryByUser" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -256,7 +258,7 @@
             </if>
             AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
-        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
     <select id="queryLimit" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -1076,6 +1078,7 @@
         </trim>
     </select>
     <select id="queryOneFaultOrder" resultType="com.wzmtr.eam.dataobject.FaultOrderDO">
+        SELECT * FROM (
         SELECT
         REC_ID as "recId",
         COMPANY_CODE as "companyCode",
@@ -1085,7 +1088,6 @@
         DISPATCH_USER_ID as "dispatchUserId",
         DISPATCH_TIME as "dispatchTime",
         REPAIR_RESP_USER_ID as "repairRespUserId",
-        (SELECT NAME FROM SYS_USER WHERE LOGIN_NAME=REPAIR_RESP_USER_ID) as "repairRespUserName",
         WORK_AREA as "workArea",
         ORDER_STATUS as "orderStatus",
         REPAIR_DISPATCH_NO as "repairDispatchNo",
@@ -1117,12 +1119,10 @@
         WORK_FLOW_INST_STATUS as "workFlowInstStatus",
         PLAN_RECOVERY_TIME as "planRecoveryTime",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(DISPATCH_USER_ID)) as "dispatchUserName",
-        (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPAIR_RESP_USER_ID)) as
-        "repairRespUserName",
+        (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPAIR_RESP_USER_ID)) as "repairRespUserName",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(CHECK_USER_ID)) as "checkUserName",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(CLOSE_USER_ID)) as "closeUserName",
-        (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_FINISH_USER_ID)) as
-        "reportFinishUserName",
+        (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_FINISH_USER_ID)) as "reportFinishUserName",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(CONFIRM_USER_ID)) as "confirmUserName",
         (SELECT u.NAME FROM SYS_USER u WHERE u.LOGIN_NAME=TRIM(REPORT_USER_ID)) as "reportUserName",
         FAULT_AFFECT as "faultAffect",
@@ -1151,7 +1151,8 @@
         <if test="faultNo!=null and faultNo!=''">
             AND FAULT_NO=#{faultNo}
         </if>
-        order by FAULT_WORK_NO DESC
+        ORDER BY FAULT_WORK_NO DESC)
+        WHERE rownum=1
     </select>
     <select id="queryDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT

@@ -1,14 +1,16 @@
-package com.wzmtr.eam.dto.req.fault;
+package com.wzmtr.eam.dto.res.fault;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * Author: Li.Wang
- * Date: 2023/8/15 10:35
+ * 故障提报开放接口返回类
+ * @author  Ray
+ * @version 1.0
+ * @date 2024/06/25
  */
 @Data
-public class FaultDetailReqDTO {
+public class FaultReportOpenResDTO {
     /**
      * 故障编号
      */
