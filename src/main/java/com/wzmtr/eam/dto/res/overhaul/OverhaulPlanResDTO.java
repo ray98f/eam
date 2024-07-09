@@ -181,4 +181,9 @@ public class OverhaulPlanResDTO {
 
     @ApiModelProperty(value = "施工类型")
     private String constructionType;
+    /**
+     * 检修计划类型 0其他 1一级修 2二级修
+     */
+    @ApiModelProperty(value = "检修计划类型 0其他 1一级修 2二级修")
+    private String planType;
 }

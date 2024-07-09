@@ -188,4 +188,9 @@ public class OverhaulPlanReqDTO {
 
     @ApiModelProperty(value = "送审时传值")
     private String opinion;
+    /**
+     * 检修计划类型 0其他 1一级修 2二级修
+     */
+    @ApiModelProperty(value = "检修计划类型 0其他 1一级修 2二级修")
+    private String planType;
 }

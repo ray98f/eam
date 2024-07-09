@@ -104,7 +104,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
         }
         Integer result = overhaulTplMapper.selectOverhaulTplIsExist(overhaulTplReqDTO);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "已有模板名为：" + overhaulTplReqDTO.getTemplateName() + "的检修模板存在，无法新建重名检修模板");
         }
         overhaulTplReqDTO.setRecId(TokenUtils.getUuId());
@@ -132,7 +132,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
         }
         Integer result = overhaulTplMapper.selectOverhaulTplIsExist(overhaulTplReqDTO);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "已有模板名为：" + overhaulTplReqDTO.getTemplateName() + "的检修模板存在，无法新建重名检修模板");
         }
         OverhaulTplResDTO resDTO = overhaulTplMapper.getOverhaulTplDetail(overhaulTplReqDTO.getRecId());
@@ -318,7 +318,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 OverhaulTplReqDTO req = new OverhaulTplReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
                 Integer result = overhaulTplMapper.selectOverhaulTplIsExist(req);
-                if (result > CommonConstants.ONE) {
+                if (result > CommonConstants.ZERO) {
                     error.add("模板名称为：" + req.getTemplateName() + "的数据已存在，无法导入");
                     continue;
                 }

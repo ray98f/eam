@@ -13,6 +13,7 @@ import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultListResDTO;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -24,7 +25,6 @@ import com.wzmtr.eam.service.fault.TrackQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.ss.formula.functions.T;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,23 +58,21 @@ public class FaultQueryController {
 
     @ApiOperation(value = "列表")
     @PostMapping("/list")
-    public PageResponse<FaultDetailResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
+    public PageResponse<FaultListResDTO> list(@RequestBody FaultQueryReqDTO reqDTO) {
         return PageResponse.of(faultQueryService.list(reqDTO));
     }
 
     /**
      * 根据故障工单号查询故障工单详情-开放接口
+     * @param faultNo 故障编号
      * @param faultWorkNo 故障工单号
      * @return 故障工单详情
      */
     @ApiOperation(value = "根据故障工单号查询故障工单详情-开放接口")
     @GetMapping("/detail/open")
-    public DataResponse<FaultDetailOpenResDTO> faultDetail(@RequestParam String faultWorkNo) {
-        FaultDetailReqDTO reqDTO = new FaultDetailReqDTO();
-        FaultDetailOpenResDTO res = new FaultDetailOpenResDTO();
-        reqDTO.setFaultWorkNo(faultWorkNo);
-        BeanUtils.copyProperties(trackQueryService.faultDetail(reqDTO), res);
-        return DataResponse.of(res);
+    public DataResponse<FaultDetailOpenResDTO> faultDetail(@RequestParam String faultNo,
+                                                           @RequestParam String faultWorkNo) {
+        return DataResponse.of(faultQueryService.faultDetailOpen(faultNo, faultWorkNo));
     }
 
     @ApiOperation(value = "当前用户超过限时列表")

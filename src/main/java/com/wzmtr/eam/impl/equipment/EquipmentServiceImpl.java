@@ -182,6 +182,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     public void importEquipment(MultipartFile file) {
         List<ExcelEquipmentReqDTO> list = EasyExcelUtils.read(file, ExcelEquipmentReqDTO.class);
         List<EquipmentReqDTO> temp = new ArrayList<>();
+        String equipCode = getEquipCode();
         for (ExcelEquipmentReqDTO reqDTO : list) {
             EquipmentReqDTO req = new EquipmentReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
@@ -204,8 +205,10 @@ public class EquipmentServiceImpl implements EquipmentService {
             req.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : " ");
             req.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : " ");
             req.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
-            req.setEquipCode(getEquipCode());
+            req.setEquipCode(equipCode);
             temp.add(req);
+            // 获取下一个设备编号
+            equipCode = CodeUtils.getNextCode(equipCode, 2);
         }
         if (!temp.isEmpty()) {
             equipmentMapper.importEquipment(temp);

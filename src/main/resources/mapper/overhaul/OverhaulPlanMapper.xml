@@ -68,6 +68,7 @@
         EXT5 as "ext5", <!-- 扩展字段5 -->
         WEEK_PLAN_CODE	as "weekPlanCode",  <!-- 周计划编号 -->
         KILOMETER_SCALE	as "kilometerScale",  <!-- 公里标 -->
+        PLAN_TYPE as "planType",
         CONSTRUCTION_TYPE	as "constructionType" <!-- 施工类型 -->
         FROM T_OVERHAUL_PLAN WHERE 1=1 and DELETE_FLAG='0'
         <if test="req.weekPlanCode!=null and req.weekPlanCode!=''">
@@ -166,6 +167,7 @@
         EXT5 as "ext5", <!-- 扩展字段5 -->
         WEEK_PLAN_CODE	as "weekPlanCode",  <!-- 周计划编号 -->
         KILOMETER_SCALE	as "kilometerScale",  <!-- 公里标 -->
+        PLAN_TYPE as "planType",
         CONSTRUCTION_TYPE	as "constructionType" <!-- 施工类型 -->
         FROM T_OVERHAUL_PLAN WHERE REC_ID=#{id}
     </select>
@@ -258,6 +260,9 @@
         EXT5,  <!-- 扩展字段5 -->
         WEEK_PLAN_CODE,  <!-- 周计划编号 -->
         KILOMETER_SCALE,  <!-- 公里标 -->
+        <if test="planType!=null and planType!=''">
+            PLAN_TYPE,
+        </if>
         CONSTRUCTION_TYPE  <!-- 施工类型 -->)
         VALUES (
         #{recId,jdbcType=VARCHAR},
@@ -316,6 +321,9 @@
         #{ext5,jdbcType=VARCHAR},
         #{weekPlanCode,jdbcType=VARCHAR},
         #{kilometerScale,jdbcType=VARCHAR},
+        <if test="planType!=null and planType!=''">
+            #{planType,jdbcType=VARCHAR},
+        </if>
         #{constructionType,jdbcType=VARCHAR})
     </insert>
 
@@ -468,6 +476,9 @@
         <if test="constructionType!=null">
             CONSTRUCTION_TYPE=#{constructionType},
         </if>
+        <if test="planType!=null">
+            PLAN_TYPE=#{planType},
+        </if>
         REC_REVISOR=#{recRevisor},
         REC_REVISE_TIME=#{recReviseTime}
         WHERE REC_ID=#{recId}
@@ -556,6 +567,7 @@
         EXT5 as "ext5", <!-- 扩展字段5 -->
         WEEK_PLAN_CODE	as "weekPlanCode",  <!-- 周计划编号 -->
         KILOMETER_SCALE	as "kilometerScale",  <!-- 公里标 -->
+        PLAN_TYPE as "planType",
         CONSTRUCTION_TYPE	as "constructionType" <!-- 施工类型 -->
         FROM T_OVERHAUL_PLAN WHERE 1=1 and DELETE_FLAG='0'
         <if test="weekPlanCode!=null and weekPlanCode!=''">
@@ -917,7 +929,7 @@
             LEFT JOIN T_TRAIN_MILE tm1 ON tm1.EQUIP_CODE=oo.OBJECT_CODE AND tm1."DAY"=to_char(to_date(op.BEFORE_TRIGGER_TIME,'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD')
             LEFT JOIN T_TRAIN_MILE tm2 ON tm2.EQUIP_CODE=oo.OBJECT_CODE AND tm2."DAY"=to_char(SYSDATE,'YYYY-MM-DD')
             WHERE op.RULE_CODE IS NOT NULL AND #{nowDay}>=rd.START_DATE AND rd.END_DATE>=#{nowDay}
-            AND tm2.TOTAL_WORK_MILE-tm1.TOTAL_WORK_MILE>=TO_NUMBER(NVL(rd.EXT1,'0'))-TO_NUMBER(NVL(rd.EXT2,'0'))
+            AND tm2.TOTAL_WORK_MILE-tm1.TOTAL_WORK_MILE>=NVL(rd.EXT1, 0)-NVL(rd.EXT2, 0)
             AND op.DELETE_FLAG='0' AND op.SUBJECT_CODE='07'
         UNION ALL
             SELECT op.PLAN_CODE, op.SUBJECT_CODE, op.TRIAL_STATUS

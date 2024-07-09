@@ -63,6 +63,8 @@ import java.util.Objects;
 @Slf4j
 public class DocUtils {
 
+    public static final String WIDTH = "width";
+
     public static MultipartFile saveWord(String name, String type, Map<String,Object> dataMap) throws IOException {
         Configuration configuration = new Configuration();
         configuration.setDefaultEncoding("utf-8");
@@ -232,13 +234,13 @@ public class DocUtils {
         org.jsoup.nodes.Document doc = Jsoup.parse(html);
         // 去除过大的宽度
         String style = doc.attr("style");
-        if (StringUtils.isNotEmpty(style) && style.contains("width")) {
+        if (StringUtils.isNotEmpty(style) && style.contains(WIDTH)) {
             doc.attr("style", "");
         }
         Elements divs = doc.select("div");
         for (Element div : divs) {
             String divStyle = div.attr("style");
-            if (StringUtils.isNotEmpty(divStyle) && divStyle.contains("width")) {
+            if (StringUtils.isNotEmpty(divStyle) && divStyle.contains(WIDTH)) {
                 div.attr("style", "");
             }
         }

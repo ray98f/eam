@@ -1,5 +1,6 @@
 package com.wzmtr.eam.utils.task;
 
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.equipment.TrainMileDailyReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
@@ -44,7 +45,7 @@ public class DailyTrainMileTask {
     public void init() {
         List<TrainMileDailyReqDTO> list = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        List<RegionResDTO> trains = equipmentMapper.listTrainRegion("02");
+        List<RegionResDTO> trains = equipmentMapper.listTrainRegion(CommonConstants.LINE_CODE_ONE);
         if (StringUtils.isNotEmpty(trains)) {
             for (RegionResDTO region : trains) {
                 TrainMileDailyReqDTO req = new TrainMileDailyReqDTO();

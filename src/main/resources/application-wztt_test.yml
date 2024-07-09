@@ -40,16 +40,16 @@ excluded:
 
 sso:
   url: http://10.11.82.82:8083/cas
-  home: http://10.11.82.29:8003/eam/
+  home: http://10.11.82.29:18005/eam/
 
 cas:
   serverUrlPrefix: "${sso.url}"
-  serviceUrlPrefix: "http://10.11.82.29:8003/eam"
+  serviceUrlPrefix: "http://10.11.82.29:18005/eam"
   casFilterUrlPattern: "/cas"
   loginUrlPattern: "/login"
   logoutUrlPattern: "/logout"
   successUrlPattern: "/index"
-  serviceFront: "http://10.11.82.29:8005/index.html"
+  serviceFront: "http://10.11.82.29:18005/index.html"
 
 diboot:
   core:

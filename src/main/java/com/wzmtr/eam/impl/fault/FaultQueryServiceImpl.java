@@ -9,7 +9,16 @@ import com.wzmtr.eam.bizobject.export.FaultExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
-import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.req.fault.CompareRowsReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultEqCheckReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultFinishWorkReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultFlowReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultNosFaultWorkNosReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultSendWorkReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
@@ -17,19 +26,28 @@ import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultListResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.entity.SysOffice;
-import com.wzmtr.eam.enums.*;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.FaultAffect;
+import com.wzmtr.eam.enums.FaultLevel;
+import com.wzmtr.eam.enums.FaultType;
+import com.wzmtr.eam.enums.LineCode;
+import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.PartMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
+import com.wzmtr.eam.mapper.equipment.PartReplaceMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
 import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
@@ -39,7 +57,14 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.OrganizationService;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.service.fault.TrackQueryService;
+import com.wzmtr.eam.utils.Assert;
+import com.wzmtr.eam.utils.BeanUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StreamUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +72,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -85,10 +116,15 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private RoleMapper roleMapper;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private TrackQueryService trackQueryService;
+    @Autowired
+    private PartReplaceMapper partReplaceMapper;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
 
     @Override
-    public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
-        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
+    public Page<FaultListResDTO> list(FaultQueryReqDTO reqDTO) {
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
@@ -100,7 +136,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             reqDTO.setOrderStatusList(Arrays.asList(reqDTO.getOrderStatus().split(CommonConstants.COMMA)));
             reqDTO.setOrderStatus(null);
         }
-        Page<FaultDetailResDTO> page;
+        Page<FaultListResDTO> page;
         //获取用户当前角色
         List<UserRoleResDTO> userRoles = userAccountService.getUserRolesById(TokenUtils.getCurrentPersonId());
         // 如果用户的角色中包含中车、中铁通专业工程师，获取状态为完工验收之后的数据
@@ -111,6 +147,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
             type = CommonConstants.TWO_STRING;
         }
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
@@ -122,13 +159,33 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList,
                     TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId(), type);
         }
-        List<FaultDetailResDTO> list = page.getRecords();
-        for (FaultDetailResDTO res : list) {
+        List<FaultListResDTO> list = page.getRecords();
+        for (FaultListResDTO res : list) {
             buildRes(res);
         }
         page.setRecords(list);
         return page;
     }
+
+    @Override
+    public FaultDetailOpenResDTO faultDetailOpen(String faultNo, String faultWorkNo) {
+        String authorization = httpServletRequest.getHeader("app-key");
+        if (!CommonConstants.FAULT_OPEN_APP_KEY.equals(authorization)) {
+            throw new CommonException(ErrorCode.FAULT_OPEN_TOKEN_ERROR);
+        }
+        FaultDetailReqDTO reqDTO = new FaultDetailReqDTO();
+        FaultDetailOpenResDTO res = new FaultDetailOpenResDTO();
+        reqDTO.setFaultNo(faultNo);
+        reqDTO.setFaultWorkNo(faultWorkNo);
+        FaultDetailResDTO fault = trackQueryService.faultDetail(reqDTO);
+        if (StringUtils.isNull(fault)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        org.springframework.beans.BeanUtils.copyProperties(fault, res);
+        res.setPartReplaceList(partReplaceMapper.listOpenPartReplace(faultWorkNo));
+        return res;
+    }
+
 
     @Override
     public List<FaultDetailResDTO> queryLimit() {
@@ -145,12 +202,12 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     @Override
-    public Page<FaultDetailResDTO> statustucList(FaultQueryReqDTO reqDTO) {
+    public Page<FaultListResDTO> statustucList(FaultQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        Page<FaultDetailResDTO> page = faultQueryMapper.statustucQuery(reqDTO.of(), reqDTO);
-        List<FaultDetailResDTO> list = page.getRecords();
+        Page<FaultListResDTO> page = faultQueryMapper.statustucQuery(reqDTO.of(), reqDTO);
+        List<FaultListResDTO> list = page.getRecords();
         if (StringUtils.isNotEmpty(list)) {
-            for (FaultDetailResDTO res : list) {
+            for (FaultListResDTO res : list) {
                 buildRes(res);
             }
         }
@@ -158,10 +215,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         return page;
     }
 
-    private void buildRes(FaultDetailResDTO a) {
-        if (StringUtils.isNotEmpty(a.getDocId())) {
-            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
-        }
+    private void buildRes(FaultListResDTO a) {
+//        if (StringUtils.isNotEmpty(a.getDocId())) {
+//            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
+//        }
         if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
             a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
         }
@@ -358,6 +415,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) && IS_TIKAI_CODE.equals(reqDTO.getIsTiKai())) {
                     faultInfo.setExt3("08");
                 }
+                if (StringUtils.isNotEmpty(reqDTO.getFaultLevel())) {
+                    faultInfo.setFaultLevel(reqDTO.getFaultLevel());
+                }
                 faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
                 faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
                 faultInfo.setFaultNo(faultOrder.getFaultNo());
@@ -550,7 +610,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
                 CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
         String itemEname = dictionaries.getItemEname();
-        List<String> cos = Arrays.asList(itemEname.split(","));
+        List<String> cos = Arrays.asList(itemEname.split(CommonConstants.COMMA));
         String currentUser = TokenUtils.getCurrentPersonId();
         String current = DateUtils.getCurrentTime();
         switch (reqDTO.getType()) {
