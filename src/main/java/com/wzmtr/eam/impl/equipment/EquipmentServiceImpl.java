@@ -70,8 +70,8 @@ public class EquipmentServiceImpl implements EquipmentService {
             List<RegionResDTO> region = equipmentMapper.listRegion(lineCode, regionCode, recId);
             boolean bool = StringUtils.isEmpty(equipmentCategoryCode) && StringUtils.isNotEmpty(region);
             // 判断是否为车辆层级
-            boolean carBool = (CommonConstants.LINE_CODE_ONE.equals(parentNodeRecId) && REGION_CODE_ES1.equals(recId) && CommonConstants.LINE_CODE_ONE.equals(lineCode)) ||
-                            (CommonConstants.LINE_CODE_TWO.equals(parentNodeRecId) && REGION_CODE_ES2.equals(recId) && CommonConstants.LINE_CODE_TWO.equals(lineCode));
+            boolean carBool = (CommonConstants.LINE_CODE_ONE.equals(parentNodeRecId) && REGION_CODE_ES1.equals(recId) && CommonConstants.LINE_CODE_ONE.equals(lineCode))
+                    || (CommonConstants.LINE_CODE_TWO.equals(parentNodeRecId) && REGION_CODE_ES2.equals(recId) && CommonConstants.LINE_CODE_TWO.equals(lineCode));
             if (bool) {
                 if (StringUtils.isEmpty(regionCode)) {
                     RegionResDTO regionResDTO = new RegionResDTO();
@@ -88,7 +88,9 @@ public class EquipmentServiceImpl implements EquipmentService {
                 res.setRegion(region);
             } else if (carBool) {
                 res.setRegion(equipmentMapper.listCarRegion(lineCode, recId));
-            } else if (StringUtils.isNotEmpty(parentNodeRecId) && !REGION_CODE_ES1.equals(parentNodeRecId) && !REGION_CODE_ES2.equals(parentNodeRecId)) {
+            } else if (StringUtils.isNotEmpty(parentNodeRecId)
+                    && !REGION_CODE_ES1.equals(parentNodeRecId)
+                    && !REGION_CODE_ES2.equals(parentNodeRecId)) {
                 res.setEquipment(equipmentMapper.listEquipmentCategory(equipmentCategoryCode, lineCode, recId, regionCode));
             }
         }
@@ -96,8 +98,10 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    public Page<EquipmentResDTO> pageEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
-                                               String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, PageReqDTO pageReqDTO) {
+    public Page<EquipmentResDTO> pageEquipment(String equipCode, String equipName, String useLineNo,
+                                               String useSegNo, String position1Code, String majorCode,
+                                               String systemCode, String equipTypeCode, String brand,
+                                               String startTime, String endTime, String manufacture, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         //  专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
@@ -108,12 +112,15 @@ public class EquipmentServiceImpl implements EquipmentService {
             majorCode = "07";
             position1Code = null;
         }
-        return equipmentMapper.pageEquipment(pageReqDTO.of(), equipCode, equipName, useLineNo, useSegNo, position1Code, majorCode,
-                systemCode, equipTypeCode, brand, startTime, endTime, manufacture,userMajorList);
+        return equipmentMapper.pageEquipment(pageReqDTO.of(), equipCode, equipName, useLineNo, useSegNo, position1Code,
+                majorCode, systemCode, equipTypeCode, brand, startTime, endTime, manufacture, userMajorList);
     }
 
     @Override
-    public List<EquipmentResDTO> allList(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode, String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture) {
+    public List<EquipmentResDTO> allList(String equipCode, String equipName, String useLineNo,
+                                         String useSegNo, String position1Code, String majorCode,
+                                         String systemCode, String equipTypeCode, String brand,
+                                         String startTime, String endTime, String manufacture) {
         if (StringUtils.isNotEmpty(position1Code) && position1Code.contains(ES)) {
             majorCode = "07";
             position1Code = null;
@@ -142,6 +149,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentReqDTO.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
         equipmentReqDTO.setEquipCode(getEquipCode());
         equipmentReqDTO.setSpecialEquipFlag("10");
+        equipmentReqDTO.setOtherEquipFlag("10");
         equipmentMapper.addEquipment(equipmentReqDTO);
     }
 
@@ -157,6 +165,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentReqDTO.setDeptCode(user.getOfficeAreaId());
         equipmentReqDTO.setDeptName(user.getOfficeName());
         equipmentReqDTO.setSpecialEquipFlag("10");
+        equipmentReqDTO.setOtherEquipFlag("10");
         equipmentMapper.modifyEquipment(equipmentReqDTO);
     }
 
@@ -173,6 +182,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     public void importEquipment(MultipartFile file) {
         List<ExcelEquipmentReqDTO> list = EasyExcelUtils.read(file, ExcelEquipmentReqDTO.class);
         List<EquipmentReqDTO> temp = new ArrayList<>();
+        String equipCode = getEquipCode();
         for (ExcelEquipmentReqDTO reqDTO : list) {
             EquipmentReqDTO req = new EquipmentReqDTO();
             BeanUtils.copyProperties(reqDTO, req);
@@ -195,8 +205,10 @@ public class EquipmentServiceImpl implements EquipmentService {
             req.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : " ");
             req.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : " ");
             req.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
-            req.setEquipCode(getEquipCode());
+            req.setEquipCode(equipCode);
             temp.add(req);
+            // 获取下一个设备编号
+            equipCode = CodeUtils.getNextCode(equipCode, 2);
         }
         if (!temp.isEmpty()) {
             equipmentMapper.importEquipment(temp);

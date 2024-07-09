@@ -21,6 +21,11 @@ public interface TrackQueryService {
 
     TrackQueryResDTO trackDetail(FaultBaseNoReqDTO reqDTO);
 
+    /**
+     * 获取故障详情
+     * @param reqDTO 传参
+     * @return 故障详情
+     */
     FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO);
 
     void cancellGenZ(BaseIdsEntity reqDTO);

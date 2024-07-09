@@ -224,4 +224,8 @@
         WHERE u.LOGIN_NAME=#{userId}
     </select>
 
+    <select id="getUserNameById" resultType="java.lang.String">
+        SELECT NAME FROM SYS_USER WHERE LOGIN_NAME=#{userId} AND DEL_FLAG='0'
+    </select>
+
 </mapper>

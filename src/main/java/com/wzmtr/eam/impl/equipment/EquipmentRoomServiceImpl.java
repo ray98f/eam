@@ -55,7 +55,8 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
             userMajorList = userAccountService.listUserMajor();
         }
 
-        return equipmentRoomMapper.pageEquipmentRoom(pageReqDTO.of(), equipRoomCode, equipRoomName, lineCode, position1Code, position1Name, subjectCode, userMajorList);
+        return equipmentRoomMapper.pageEquipmentRoom(pageReqDTO.of(), equipRoomCode, equipRoomName, lineCode,
+                position1Code, position1Name, subjectCode, userMajorList);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
             equipmentRoomReqDTO.setEquipRoomCode(nextCode);
         }
         Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
 
@@ -92,7 +93,7 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
     @Override
     public void modifyEquipmentRoom(EquipmentRoomReqDTO equipmentRoomReqDTO) {
         Integer result = equipmentRoomMapper.selectEquipmentRoomIsExist(equipmentRoomReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         equipmentRoomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
@@ -146,7 +147,8 @@ public class EquipmentRoomServiceImpl implements EquipmentRoomService {
     }
 
     @Override
-    public Page<EquipmentResDTO> pageEquipment(String roomId, String equipCode, String equipName, String majorCode, String systemCode, PageReqDTO pageReqDTO) {
+    public Page<EquipmentResDTO> pageEquipment(String roomId, String equipCode, String equipName,
+                                               String majorCode, String systemCode, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         return equipmentMapper.pageEquipmentByRoom(pageReqDTO.of(), roomId, equipCode, equipName, majorCode, systemCode);
     }

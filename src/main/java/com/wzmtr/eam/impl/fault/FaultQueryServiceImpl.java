@@ -9,7 +9,16 @@ import com.wzmtr.eam.bizobject.export.FaultExportBO;
 import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.FaultInfoDO;
 import com.wzmtr.eam.dataobject.FaultOrderDO;
-import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.req.fault.CompareRowsReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultEqCheckReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultExportReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultFinishWorkReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultFlowReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultNosFaultWorkNosReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultSendWorkReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.bpmn.BpmnExaminePersonRes;
 import com.wzmtr.eam.dto.res.common.MemberResDTO;
@@ -17,19 +26,27 @@ import com.wzmtr.eam.dto.res.common.PersonResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultOrderResDTO;
 import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.OrganMajorLineType;
 import com.wzmtr.eam.entity.SidEntity;
 import com.wzmtr.eam.entity.SysOffice;
-import com.wzmtr.eam.enums.*;
+import com.wzmtr.eam.enums.BpmnFlowEnum;
+import com.wzmtr.eam.enums.ErrorCode;
+import com.wzmtr.eam.enums.FaultAffect;
+import com.wzmtr.eam.enums.FaultLevel;
+import com.wzmtr.eam.enums.FaultType;
+import com.wzmtr.eam.enums.LineCode;
+import com.wzmtr.eam.enums.OrderStatus;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.PartMapper;
 import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.common.RoleMapper;
 import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.mapper.dict.DictionariesMapper;
+import com.wzmtr.eam.mapper.equipment.PartReplaceMapper;
 import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
 import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
@@ -39,7 +56,14 @@ import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.OrganizationService;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.fault.FaultQueryService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.service.fault.TrackQueryService;
+import com.wzmtr.eam.utils.Assert;
+import com.wzmtr.eam.utils.BeanUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StreamUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +71,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -85,10 +115,15 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private RoleMapper roleMapper;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+    @Autowired
+    private TrackQueryService trackQueryService;
+    @Autowired
+    private PartReplaceMapper partReplaceMapper;
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
-        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         List<String> userMajorList = null;
@@ -111,6 +146,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
             type = CommonConstants.TWO_STRING;
         }
+        PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
@@ -128,6 +164,25 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         }
         page.setRecords(list);
         return page;
+    }
+
+    @Override
+    public FaultDetailOpenResDTO faultDetailOpen(String faultNo, String faultWorkNo) {
+        String authorization = httpServletRequest.getHeader("app-key");
+        if (!CommonConstants.FAULT_OPEN_APP_KEY.equals(authorization)) {
+            throw new CommonException(ErrorCode.FAULT_OPEN_TOKEN_ERROR);
+        }
+        FaultDetailReqDTO reqDTO = new FaultDetailReqDTO();
+        FaultDetailOpenResDTO res = new FaultDetailOpenResDTO();
+        reqDTO.setFaultNo(faultNo);
+        reqDTO.setFaultWorkNo(faultWorkNo);
+        FaultDetailResDTO fault = trackQueryService.faultDetail(reqDTO);
+        if (StringUtils.isNull(fault)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        org.springframework.beans.BeanUtils.copyProperties(fault, res);
+        res.setPartReplaceList(partReplaceMapper.listOpenPartReplace(faultWorkNo));
+        return res;
     }
 
     @Override
@@ -159,9 +214,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     }
 
     private void buildRes(FaultDetailResDTO a) {
-        if (StringUtils.isNotEmpty(a.getDocId())) {
-            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
-        }
+//        if (StringUtils.isNotEmpty(a.getDocId())) {
+//            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
+//        }
         if (StringUtils.isNotEmpty(a.getRepairDeptCode())) {
             a.setRepairDeptName(organizationMapper.getNamesById(a.getRepairDeptCode()));
         }
@@ -233,10 +288,10 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         OrderStatus orderStatus = OrderStatus.getByCode(resDTO.getOrderStatus());
         FaultAffect faultAffect = FaultAffect.getByCode(resDTO.getFaultAffect());
         FaultLevel faultLevel = FaultLevel.getByCode(resDTO.getOrderStatus());
-        DealerUnit dealerUnit = DealerUnit.getByCode(resDTO.getDealerUnit());
         LineCode lineCode = LineCode.getByCode(resDTO.getLineCode());
         FaultType faultType = FaultType.getByCode(resDTO.getFaultType());
-        Dictionaries position2 = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.station2", Objects.isNull(resDTO.getPosition2Code()) ? "" : resDTO.getPosition2Code());
+        Dictionaries position2 = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_STATION2,
+                Objects.isNull(resDTO.getPosition2Code()) ? "" : resDTO.getPosition2Code());
         String repairDept = null;
         String fillinDept = null;
         if (StringUtils.isNotEmpty(resDTO.getRepairDeptCode())) {
@@ -245,7 +300,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(resDTO.getFillinDeptCode())) {
             fillinDept = organizationMapper.getNamesById(resDTO.getFillinDeptCode());
         }
-//        export.setReplacementName(dealerUnit != null ? dealerUnit.getDesc() : resDTO.getDealerUnit());
         if (StringUtils.isNotEmpty(fillinDept)) {
             export.setFillinDept(Optional.ofNullable(fillinDept).orElse(CommonConstants.EMPTY));
             export.setRepairDept(Optional.ofNullable(repairDept).orElse(CommonConstants.EMPTY));
@@ -359,14 +413,17 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 if (StringUtils.isNotEmpty(reqDTO.getIsTiKai()) && IS_TIKAI_CODE.equals(reqDTO.getIsTiKai())) {
                     faultInfo.setExt3("08");
                 }
+                if (StringUtils.isNotEmpty(reqDTO.getFaultLevel())) {
+                    faultInfo.setFaultLevel(reqDTO.getFaultLevel());
+                }
                 faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
                 faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
                 faultInfo.setFaultNo(faultOrder.getFaultNo());
                 faultReportMapper.updateFaultInfo(faultInfo);
                 // 故障维修待办推送
                 sendRepairTodoMessage(faultOrder, workerGroupCode, null);
-
-                Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "01");
+                Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                        CommonConstants.DM_MATCH_CONTROL_CODE, CommonConstants.ZERO_ONE_STRING);
                 String zcStepOrg = dictionaries.getItemEname();
                 if (StringUtils.isNotEmpty(faultOrder.getWorkClass()) && !faultOrder.getWorkClass().contains(zcStepOrg)) {
                     // todo 调用施工调度接口
@@ -442,7 +499,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         FaultOrderDO faultOrderDO = faultQueryMapper.queryOneFaultOrder(null, faultWorkNo);
         String workClass = faultOrderDO.getWorkClass();
         overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN, CommonConstants.ONE_STRING);
-        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
         String itemEname = dictionaries.getItemEname();
         String[] cos01 = itemEname.split(",");
         List<String> cos = Arrays.asList(cos01);
@@ -547,7 +605,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             log.error("未查询到数据，丢弃修改!");
             return;
         }
-        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
         String itemEname = dictionaries.getItemEname();
         List<String> cos = Arrays.asList(itemEname.split(","));
         String currentUser = TokenUtils.getCurrentPersonId();
@@ -633,8 +692,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private void finishWorkSendMessage(FaultFinishWorkReqDTO reqDTO) {
         String faultNo = reqDTO.getFaultNo();
         String faultWorkNo = reqDTO.getFaultWorkNo();
-        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
-        List<String> cos = Arrays.asList(dictionaries.getItemEname().split(","));
+        Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
+        List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
         List<FaultOrderResDTO> listOrder = faultReportMapper.listOrderByNoAndWorkNo(faultNo, faultWorkNo);
         if (StringUtils.isNotEmpty(listOrder)) {
             FaultOrderResDTO order = listOrder.get(0);
@@ -861,7 +921,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             String stepOrg;
             switch (reqDTO.getMajorCode()) {
                 case "07":
-                    Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "01");
+                    Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                            CommonConstants.DM_MATCH_CONTROL_CODE, CommonConstants.ZERO_ONE_STRING);
                     stepOrg = dictionaries.getItemEname();
                     overTodoService.insertTodoWithUserGroupAndAllOrg("【" + reqDTO.getMajorName() + CommonConstants.FAULT_CONTENT_END, order.getRecId(),
                             faultWorkNo, CommonConstants.DM_007, stepOrg, CommonConstants.FAULT_FINISHED_CONFIRM_CN, "DMFM0001",
@@ -991,7 +1052,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 String content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + "已验收，请及时在EAM系统完工确认！";
                 // 中铁通的发给中铁通生产调度 DM_007
                 // 行车设备类 且不是车辆故障
-                if ("10".equals(faultInfo.getFaultType()) && !CommonConstants.ZC_LIST.contains(majorCode)) {
+                if (CommonConstants.TEN_STRING.equals(faultInfo.getFaultType()) && !CommonConstants.ZC_LIST.contains(majorCode)) {
                     List<String> users = getUsersByCompanyAndRole(majorCode, "DM_007", "ZCJD");
                     overTodoService.insertTodoWithUserList(users, content, recId, faultWorkNo,
                             CommonConstants.FAULT_FINISHED_CONFIRM_CN, "faultCheck",

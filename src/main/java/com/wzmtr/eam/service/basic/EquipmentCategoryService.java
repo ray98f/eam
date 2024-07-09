@@ -2,9 +2,11 @@ package com.wzmtr.eam.service.basic;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategoryPartResDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,4 +31,21 @@ public interface EquipmentCategoryService {
     List<EquipmentCategoryResDTO> getFirstEquipmentCategory();
 
     List<EquipmentCategoryResDTO> getChildEquipmentCategory(String code);
+
+    /**
+     * 获取设备分类绑定的部件列表
+     * @param majorCode 专业编码
+     * @param systemCode 系统编码
+     * @param equipTypeCode 设备分类编码
+     * @return 设备分类绑定的部件列表
+     */
+    List<EquipmentCategoryPartResDTO> listEquipmentCategoryPart(String majorCode,
+                                                                String systemCode,
+                                                                String equipTypeCode);
+
+    /**
+     * 导入设备分类绑定的部件列表
+     * @param file 文件
+     */
+    void importEquipmentCategoryPart(MultipartFile file);
 }

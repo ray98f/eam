@@ -41,9 +41,12 @@ public class PartReplaceServiceImpl implements PartReplaceService {
     private PartReplaceMapper partReplaceMapper;
 
     @Override
-    public Page<PartReplaceResDTO> pagePartReplace(String equipName, String replacementName, String faultWorkNo, String orgType, String replaceReason,String workOrderType, PageReqDTO pageReqDTO) {
+    public Page<PartReplaceResDTO> pagePartReplace(String equipName, String replacementName,
+                                                   String faultWorkNo, String orgType, String replaceReason,
+                                                   String workOrderType, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        return partReplaceMapper.pagePartReplace(pageReqDTO.of(), equipName, replacementName, faultWorkNo, orgType, replaceReason,workOrderType);
+        return partReplaceMapper.pagePartReplace(pageReqDTO.of(), equipName, replacementName,
+                faultWorkNo, orgType, replaceReason, workOrderType);
     }
 
     @Override

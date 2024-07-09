@@ -888,11 +888,17 @@
             #{equipment.deptName},
             #{equipment.equipCode},
             #{equipment.equipName},
-            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{equipment.majorName} and NODE_LEVEL=1),
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{equipment.majorName} AND NODE_LEVEL=1),
             #{equipment.majorName},
-            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{equipment.systemName} and NODE_LEVEL=2),
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{equipment.systemName} AND NODE_LEVEL=2
+            AND NODE_CODE LIKE
+            TO_CHAR((SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{equipment.majorName} AND NODE_LEVEL=1)) || '%'),
             #{equipment.systemName},
-            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY where NODE_NAME=#{equipment.equipTypeName} and NODE_LEVEL=3),
+            (SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{equipment.equipTypeName} AND NODE_LEVEL=3
+            AND NODE_CODE LIKE
+            TO_CHAR((SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{equipment.systemName} AND NODE_LEVEL=2
+            AND NODE_CODE LIKE
+            TO_CHAR((SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{equipment.majorName} AND NODE_LEVEL=1)) || '%')) || '%'),
             #{equipment.equipTypeName},
             #{equipment.specialEquipFlag},
             #{equipment.otherEquipFlag},

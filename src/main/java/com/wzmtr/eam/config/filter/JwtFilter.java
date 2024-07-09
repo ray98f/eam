@@ -1,6 +1,7 @@
 package com.wzmtr.eam.config.filter;
 
 import com.wzmtr.eam.config.RequestHeaderContext;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.entity.CurrentLoginUser;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.enums.TokenStatus;
@@ -18,13 +19,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Jwt过滤器
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/16
+ */
 @Slf4j
 @Component
 public class JwtFilter implements Filter {
-
-    private static final String JSESSIONID_FIX = ";jsessionid";
-    private static final String FILTER_ERROR= "filter.error";
-    private static final String ERROR_EXTHROW = "/error/exthrow";
 
     @Value("${excluded.swagger-pages}")
     private String[] swaggerPages;
@@ -37,9 +40,9 @@ public class JwtFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String uri = httpRequest.getRequestURI();
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        if(uri.contains(JSESSIONID_FIX)){
-            String newUri = uri.substring(0, uri.indexOf(";"));
-            String jsessionid = uri.replace(newUri+";jsessionid=","");
+        if (uri.contains(CommonConstants.JSESSIONID_FIX)) {
+            String newUri = uri.substring(0, uri.indexOf(CommonConstants.SEMICOLON));
+            String jsessionid = uri.replace(newUri + ";jsessionid=", "");
             httpRequest.getSession();
             Cookie cookie = new Cookie("JSESSIONID", jsessionid);
             cookie.setHttpOnly(true);
@@ -47,14 +50,17 @@ public class JwtFilter implements Filter {
             httpResponse.sendRedirect(newUri);
             return;
         }
-        if (Arrays.asList(pages).contains(uri) || Arrays.asList(swaggerPages).contains(uri)
-                || uri.contains("mdmSync") || uri.contains("swagger") || uri.contains("/open")) {
+        if (Arrays.asList(pages).contains(uri)
+                || Arrays.asList(swaggerPages).contains(uri)
+                || uri.contains(CommonConstants.MDM_SYNC_URL)
+                || uri.contains(CommonConstants.SWAGGER_URL)
+                || uri.endsWith(CommonConstants.OPEN_URL)) {
             chain.doFilter(httpRequest, httpResponse);
         } else {
-            String token = httpRequest.getHeader("Authorization");
+            String token = httpRequest.getHeader(CommonConstants.AUTHORIZATION);
             if (token == null || org.apache.commons.lang3.StringUtils.isBlank(token)) {
-                request.setAttribute(FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_EMPTY));
-                request.getRequestDispatcher(ERROR_EXTHROW).forward(request, response);
+                request.setAttribute(CommonConstants.FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_EMPTY));
+                request.getRequestDispatcher(CommonConstants.ERROR_EXTHROW).forward(request, response);
                 return;
             }
             TokenStatus tokenStatus = TokenUtils.verifySimpleToken(token);
@@ -63,8 +69,8 @@ public class JwtFilter implements Filter {
                 case VALID:
                     CurrentLoginUser simpleTokenInfo = TokenUtils.getSimpleTokenInfo(token);
                     if (simpleTokenInfo == null) {
-                        request.setAttribute(FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_CHECK_FAIL));
-                        request.getRequestDispatcher(ERROR_EXTHROW).forward(request, response);
+                        request.setAttribute(CommonConstants.FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_CHECK_FAIL));
+                        request.getRequestDispatcher(CommonConstants.ERROR_EXTHROW).forward(request, response);
                         break;
                     }
                     new RequestHeaderContext.RequestHeaderContextBuild().user(simpleTokenInfo).build();
@@ -73,13 +79,13 @@ public class JwtFilter implements Filter {
                     break;
                 //过期
                 case EXPIRED:
-                    request.setAttribute(FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_IS_OVERDUE));
-                    request.getRequestDispatcher(ERROR_EXTHROW).forward(request, response);
+                    request.setAttribute(CommonConstants.FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_IS_OVERDUE));
+                    request.getRequestDispatcher(CommonConstants.ERROR_EXTHROW).forward(request, response);
                     break;
                 //无效
                 default:
-                    request.setAttribute(FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_INVALID));
-                    request.getRequestDispatcher(ERROR_EXTHROW).forward(request, response);
+                    request.setAttribute(CommonConstants.FILTER_ERROR, new CommonException(ErrorCode.AUTHORIZATION_INVALID));
+                    request.getRequestDispatcher(CommonConstants.ERROR_EXTHROW).forward(request, response);
                     break;
             }
         }

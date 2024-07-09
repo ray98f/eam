@@ -1,13 +1,14 @@
 package com.wzmtr.eam.utils;
 
-
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 
 /**
- * @Author lize
- * @Date 2023/3/29
+ * 拼接工具类
+ * @author  lize
+ * @version 1.0
+ * @date 2023/06/12
  */
 public class JointUtils {
 

@@ -1,9 +1,10 @@
 package com.wzmtr.eam.enums;
 
 /**
- * token状态
- *
- * @author frp
+ * token状态枚举类
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/08/26
  */
 public enum TokenStatus {
     /**

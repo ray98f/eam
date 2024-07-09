@@ -85,7 +85,8 @@ public class OverTodoServiceImpl implements OverTodoService {
             throw new CommonException(ErrorCode.PARAM_NULL);
         }
         try {
-            Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.contextPath", "01");
+            Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                    CommonConstants.DM_CONTEXT_PATH, CommonConstants.ZERO_ONE_STRING);
             if (Objects.isNull(dictionaries)) {
                 throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
             }

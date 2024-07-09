@@ -3,7 +3,28 @@ package com.wzmtr.eam.constant;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 基础常量
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/11/31
+ */
 public class CommonConstants {
+
+    /**
+     * Jwt相关
+     */
+    public static final String OPEN_URL = "/open";
+    public static final String SWAGGER_URL = "swagger";
+    public static final String MDM_SYNC_URL = "mdmSync";
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String JSESSIONID_FIX = ";jsessionid";
+    public static final String FILTER_ERROR= "filter.error";
+    public static final String ERROR_EXTHROW = "/error/exthrow";
+
+    public static final String S1 = "S1";
+
+    public static final String S2 = "S2";
 
     /**
      * id
@@ -15,9 +36,15 @@ public class CommonConstants {
     public static final String EMPTY = "";
     public static final String BLANK = " ";
     public static final String COMMA = ",";
+    public static final String COLON = ":";
+    public static final String SEMICOLON = ";";
     public static final String UNDERLINE = "_";
+    public static final String SHORT_BAR = "-";
     public static final String SINGLE_QUOTATION_MARK = "'";
     public static final String DOUBLE_QUOTATION_MARKS = "\"";
+    public static final String LOCALHOST = "localhost";
+    public static final String HTTP = "http://";
+    public static final String HTTPS = "https://";
 
     public static final String DAY = "yyyy-MM-dd";
     public static final String TIME = "yyyy-MM-dd HH:mm:ss";
@@ -98,6 +125,14 @@ public class CommonConstants {
     public static final String FAULT_TRACK_REVIEW_NODE = "UserTask_1ftz952";
 
     /**
+     * 编号数字
+     */
+    public static final String ZERO_ONE_STRING = "01";
+    public static final String ZERO_TWO_STRING = "02";
+    public static final String ZERO_THREE_STRING = "03";
+    public static final String ZERO_FOUR_STRING = "04";
+
+    /**
      * 字符串数字
      */
     public static final String ZERO_STRING = "0";
@@ -126,7 +161,9 @@ public class CommonConstants {
     public static final int ZERO = 0;
     public static final long ZERO_LONG = 0L;
     public static final int ONE = 1;
+    public static final int NEGATIVE_ONE = -1;
     public static final int TWO = 2;
+    public static final int NEGATIVE_TWO = -2;
     public static final int THREE = 3;
     public static final int FOUR = 4;
     public static final int FIVE = 5;
@@ -173,6 +210,10 @@ public class CommonConstants {
     public static final String DM_VEHICLE_SPECIALTY_CODE = "dm.vehicleSpecialty";
     public static final String DM_MATCH_CONTROL_CODE = "dm.matchControl";
     public static final String DM_FAULT_FOLLOW_STATUS = "dm.faultFollowStatus";
+    public static final String DM_STATION2 = "dm.station2";
+    public static final String DM_CONTEXT_PATH = "dm.contextPath";
+    public static final String DM_IMPORT_TEMPLATE = "dm.import.template";
+    public static final String AT_STATION_POS2 = "at.station.pos2";
 
     /**
      * 工单推送内容相关
@@ -188,5 +229,25 @@ public class CommonConstants {
     public static final String PASSENGER_TRANSPORT_DEPT = "运营分公司-客运部";
     public static final List<String> ZC_LIST = Arrays.asList("06", "07");
     public static final String INIT_EQUIPMENT_CODE = "920000000001";
+
+    /**
+     * 系统分隔符
+     */
+    public static String SYSTEM_SEPARATOR = "/";
+
+    /**
+     * 获取项目根目录
+     */
+    public static String PROJECT_ROOT_DIRECTORY = System.getProperty("user.dir").replaceAll("\\\\", SYSTEM_SEPARATOR);
+
+    /**
+     * 临时文件相关
+     */
+    public final static String DEFAULT_FOLDER_TMP = PROJECT_ROOT_DIRECTORY + "/tmp";
+    public final static String DEFAULT_FOLDER_TMP_GENERATE = PROJECT_ROOT_DIRECTORY + "/tmp-generate";
+    public static final String FAULT_NO_PREFIX = "GZ";
+    public static final String FAULT_WORK_NO_PREFIX = "GD";
+    public static final String FAULT_NO = "fault_no";
+    public static final String FAULT_WORK_NO = "fault_work_no";
 
 }

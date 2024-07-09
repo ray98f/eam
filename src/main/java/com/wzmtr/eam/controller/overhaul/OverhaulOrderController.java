@@ -62,9 +62,17 @@ public class OverhaulOrderController {
     @Resource
     private OverhaulOrderService overhaulOrderService;
 
+    /**
+     * 获取检修工单列表
+     * @param pageReqDTO 分页参数
+     * @param overhaulOrderListReqDTO 传参
+     * @return 检修工单列表
+     * @throws ParseException 异常
+     */
     @GetMapping("/page")
     @ApiOperation(value = "获取检修工单列表")
-    public PageResponse<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, @Valid PageReqDTO pageReqDTO) {
+    public PageResponse<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+                                                               @Valid PageReqDTO pageReqDTO) throws ParseException {
         return PageResponse.of(overhaulOrderService.pageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO));
     }
 
@@ -73,10 +81,12 @@ public class OverhaulOrderController {
      * @param overhaulOrderListReqDTO 检修工单返回信息
      * @param pageReqDTO 分页参数
      * @return 检修工单列表
+     * @throws ParseException 异常
      */
     @GetMapping("/page/open")
     @ApiOperation(value = "获取检修工单列表-开放接口")
-    public PageResponse<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO, @Valid PageReqDTO pageReqDTO) {
+    public PageResponse<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+                                                                      @Valid PageReqDTO pageReqDTO) throws ParseException {
         return PageResponse.of(overhaulOrderService.openApiPageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO));
     }
 
@@ -155,6 +165,11 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单完工验收
+     * @param overhaulOrderReqDTO 传参
+     * @return 成功
+     */
     @PostMapping("/auditWorkers")
     @ApiOperation(value = "检修工单完工验收")
     public DataResponse<T> auditWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
@@ -162,6 +177,12 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单完工确认
+     * @param overhaulOrderReqDTO 传参
+     * @return 成功
+     * @throws ParseException 异常
+     */
     @PostMapping("/confirmWorkers")
     @ApiOperation(value = "检修工单完工确认")
     public DataResponse<T> confirmWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) throws ParseException {
@@ -169,10 +190,15 @@ public class OverhaulOrderController {
         return DataResponse.success();
     }
 
+    /**
+     * 检修工单作废
+     * @param overhaulOrderReqDTO 传参
+     * @return 成功
+     */
     @PostMapping("/cancellWorkers")
     @ApiOperation(value = "检修工单作废")
-    public DataResponse<T> cancellWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
-        overhaulOrderService.cancellWorkers(overhaulOrderReqDTO);
+    public DataResponse<T> cancelWorkers(@RequestBody OverhaulOrderReqDTO overhaulOrderReqDTO) {
+        overhaulOrderService.cancelWorkers(overhaulOrderReqDTO);
         return DataResponse.success();
     }
 

@@ -1,8 +1,13 @@
 package com.wzmtr.eam.service.fault;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wzmtr.eam.dto.req.fault.*;
+import com.wzmtr.eam.dto.req.fault.FaultCancelReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultDetailReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportOpenReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportPageReqDTO;
+import com.wzmtr.eam.dto.req.fault.FaultReportReqDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultReportOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 
 /**
@@ -27,9 +32,9 @@ public interface FaultReportService {
     /**
      * 故障提报（到设备）-开放接口
      * @param reqDTO 入参
-     * @return 故障编号
+     * @return 故障编号、故障工单号
      */
-    String addToFaultOpen(FaultReportOpenReqDTO reqDTO);
+    FaultReportOpenResDTO addToFaultOpen(FaultReportOpenReqDTO reqDTO);
 
     /**
      * 已提报故障

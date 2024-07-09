@@ -60,7 +60,7 @@ public class UserGroupMemberController {
 
     @PostMapping("/queryJXWorker")
     @ApiOperation(value = "获取检修工班/售后服务站")
-    public DataResponse<List<ZcjxResDTO>> queryJXWorker(@RequestParam String dicCode) {
-        return DataResponse.of(userGroupMemberService.queryJXWorker(dicCode));
+    public DataResponse<List<ZcjxResDTO>> queryJxWorker(@RequestParam String dicCode) {
+        return DataResponse.of(userGroupMemberService.queryJxWorker(dicCode));
     }
 }

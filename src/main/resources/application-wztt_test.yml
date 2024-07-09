@@ -20,23 +20,23 @@ spring:
     port: 5672
     username: admin
     password: 123456
-    virtual-host: /eam
+    virtual-host: /eam-s2
 
   redis:
     host: 10.11.82.46
     port: 6379
-    password: 
+    password: LM%$(eNx&tjk
     jedis:
       pool:
         max-active: 50
         min-idle: 0
         max-idle: 50
         max-wait: -1
-    key-prefix: dev-
+    key-prefix: eam-dev-s2-
 
 excluded:
   swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
-  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout,/eam/overhaul/order/page/open,/eam/fault/report/list/open,/eam/fault/report/insert/equip/open,/eam/overhaul/order/object/page/open,/eam/statistic/subject/fault/open
+  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout
 
 sso:
   url: http://10.11.82.82:8083/cas
@@ -111,6 +111,7 @@ minio:
 
 pro:
   name: eam
+  bucket-base: eam-s2
 
 eip:
   url: "http://esb.wzmtr.com:7003/iplwebservice/ps/CREATEtodoList?wsdl"

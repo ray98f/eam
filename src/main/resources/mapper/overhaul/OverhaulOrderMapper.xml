@@ -809,12 +809,11 @@
         EXT4	as "ext4",  <!-- 扩展字段4 -->
         EXT5	as "ext5", <!-- 扩展字段5 -->
         (select t.WORKPN from T_WORK_PLAN t where t.WORKNO= ORDER_CODE) as "workPn",
-        (case when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>  to_date(SYSDATE-30) and WORK_STATUS='1'  then 1
+        (case when
+        PLAN_NAME like '%二级修%' and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<]]>to_date(SYSDATE-30) and WORK_STATUS='1' then 1
         when PLAN_NAME like '%二级修%'and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')>=to_date(SYSDATE-30)
-        and  to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE +3)and WORK_STATUS='1' then 2
-        else 9
-        end
-        ) as sort,
+        and to_date(PLAN_START_TIME, 'yyyy-mm-dd hh24:mi:ss')<![CDATA[<=]]> to_date(SYSDATE+3) and WORK_STATUS='1' then 2 else 9
+        end) as sort,
         ACTUAL_END_TIME as REAL_DAY,
         END_MILE as REAL_MILE
         FROM T_OVERHAUL_ORDER
@@ -892,7 +891,7 @@
             </if>
             )
         </if>
-        ORDER BY SORT,WORK_STATUS ASC,REAL_START_TIME DESC,ORDER_CODE DESC
+        ORDER BY SORT ASC, WORK_STATUS ASC, REAL_START_TIME DESC, ORDER_CODE DESC
     </select>
 
     <select id="getCarOrderExt" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
@@ -1423,8 +1422,8 @@
         FROM T_OVERHAUL_ORDER_DETAIL WHERE REC_ID=#{id}
     </select>
 
-    <update id="modifyOverhaulObject">
-        update T_OVERHAUL_ORDER_DETAIL set
+    <update id="modifyOverhaulObjectByCode">
+        UPDATE T_OVERHAUL_ORDER_DETAIL SET
         <if test="repairStatus!=null">
             REPAIR_STATUS=#{repairStatus},
         </if>
@@ -1441,7 +1440,28 @@
             REMARK=#{remark},
         </if>
         REPAIR_PERSON=#{repairPerson}
-        where REC_ID=#{recId}
+        WHERE ORDER_CODE=#{orderCode}
+    </update>
+
+    <update id="modifyOverhaulObjectById">
+        UPDATE T_OVERHAUL_ORDER_DETAIL SET
+        <if test="repairStatus!=null">
+            REPAIR_STATUS=#{repairStatus},
+        </if>
+        <if test="repairDetail!=null">
+            REPAIR_DETAIL=#{repairDetail},
+        </if>
+        <if test="startTime!=null">
+            START_TIME=#{startTime},
+        </if>
+        <if test="compliteTime!=null">
+            COMPLITE_TIME=#{compliteTime},
+        </if>
+        <if test="remark!=null">
+            REMARK=#{remark},
+        </if>
+        REPAIR_PERSON=#{repairPerson}
+        WHERE REC_ID=#{recId}
     </update>
 
     <select id="listOverhaulObject" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO">

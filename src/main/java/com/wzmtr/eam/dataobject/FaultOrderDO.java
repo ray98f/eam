@@ -119,4 +119,36 @@ public class FaultOrderDO {
     @TableField(exist = false)
     private String confirmUserName;
     private String levelFault;
+    /**
+     * 完工报告对象编码
+     */
+    private String finishObjectCode;
+    /**
+     * 完工报告对象名称
+     */
+    private String finishObjectName;
+    /**
+     * 完工报告专业编码
+     */
+    private String finishMajorCode;
+    /**
+     * 完工报告系统编码
+     */
+    private String finishSystemCode;
+    /**
+     * 完工报告设备分类编码
+     */
+    private String finishEquipTypeCode;
+    /**
+     * 完工报告位置一编码
+     */
+    private String finishPositionCode;
+    /**
+     * 完工报告位置二编码
+     */
+    private String finishPosition2Code;
+    /**
+     * 完工报告部件id
+     */
+    private String finishPartId;
 }

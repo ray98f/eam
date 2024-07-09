@@ -4,7 +4,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.diboot.core.util.BeanUtils;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
-import com.wzmtr.eam.dto.req.equipment.*;
+import com.wzmtr.eam.dto.req.equipment.EquipmentPartReqDTO;
+import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
+import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
+import com.wzmtr.eam.dto.req.equipment.PartFaultReqDTO;
+import com.wzmtr.eam.dto.req.equipment.TransferExportReqDTO;
+import com.wzmtr.eam.dto.req.equipment.TransferSplitReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentResDTO;
 import com.wzmtr.eam.dto.res.equipment.TransferResDTO;
@@ -23,7 +28,12 @@ import com.wzmtr.eam.mapper.equipment.PartFaultMapper;
 import com.wzmtr.eam.mapper.equipment.TransferMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.equipment.TransferService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.CodeUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.RegularUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +44,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author frp
@@ -65,7 +78,8 @@ public class TransferServiceImpl implements TransferService {
     private OverTodoService overTodoService;
 
     @Override
-    public Page<TransferResDTO> pageTransfer(String transferNo, String itemCode, String itemName, String position1Code, String eamProcessStatus,
+    public Page<TransferResDTO> pageTransfer(String transferNo, String itemCode, String itemName,
+                                             String position1Code, String eamProcessStatus,
                                              String majorCode, String orderNo, String orderName, PageReqDTO pageReqDTO) {
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         String eamProcessStatus1 = null;
@@ -78,8 +92,8 @@ public class TransferServiceImpl implements TransferService {
                 eamProcessStatus2 = "30";
             }
         }
-        return transferMapper.pageTransfer(pageReqDTO.of(), transferNo, itemCode, itemName, position1Code, eamProcessStatus,
-                eamProcessStatus1, eamProcessStatus2, majorCode, orderNo, orderName);
+        return transferMapper.pageTransfer(pageReqDTO.of(), transferNo, itemCode, itemName, position1Code,
+                eamProcessStatus, eamProcessStatus1, eamProcessStatus2, majorCode, orderNo, orderName);
     }
 
     @Override
@@ -122,9 +136,7 @@ public class TransferServiceImpl implements TransferService {
                 if (Objects.isNull(transferResDTO)) {
                     throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
                 }
-                Pattern pattern = RegularUtils.getNumberPattern();
-                boolean matches = pattern.matcher(transferResDTO.getQuantity().toString()).matches();
-                if (!matches) {
+                if (!RegularUtils.isValidNumber(transferResDTO.getQuantity().toString())) {
                     throw new CommonException(ErrorCode.TRANSFER_QUANTITY_ERROR, transferResDTO.getTransferNo());
                 }
                 if (CommonConstants.TWENTY_STRING.equals(transferResDTO.getEamProcessStatus())) {
@@ -173,6 +185,11 @@ public class TransferServiceImpl implements TransferService {
         if (!CommonConstants.TEN_STRING.equals(equipmentResDTO.getApprovalStatus())) {
             throw new CommonException(ErrorCode.TRANSFER_SPLIT_ERROR);
         }
+        if (equipmentResDTO.getUseLineName().contains(CommonConstants.S1)) {
+            equipmentResDTO.setUseLineNo(CommonConstants.LINE_CODE_ONE);
+        } else {
+            equipmentResDTO.setUseLineNo(CommonConstants.LINE_CODE_TWO);
+        }
         updateTransfer(equipmentResDTO);
     }
 
@@ -181,7 +198,9 @@ public class TransferServiceImpl implements TransferService {
         // ServiceDMDM0103 submit
         if (transferSplitReqDTO.getEquipmentList() != null && !transferSplitReqDTO.getEquipmentList().isEmpty()) {
             for (EquipmentResDTO resDTO : transferSplitReqDTO.getEquipmentList()) {
-                if (org.apache.commons.lang3.StringUtils.isBlank(resDTO.getStartUseDate()) || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getSystemCode()) || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getEquipTypeCode())) {
+                if (org.apache.commons.lang3.StringUtils.isBlank(resDTO.getStartUseDate())
+                        || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getSystemCode())
+                        || org.apache.commons.lang3.StringUtils.isBlank(resDTO.getEquipTypeCode())) {
                     throw new CommonException(ErrorCode.REQUIRED_NULL, "设备" + resDTO.getEquipCode());
                 }
                 if (!CommonConstants.TEN_STRING.equals(resDTO.getApprovalStatus())) {
@@ -338,7 +357,9 @@ public class TransferServiceImpl implements TransferService {
     }
 
     public void updateTransfer(EquipmentResDTO resDTO) {
-        if (StringUtils.isEmpty(resDTO.getMajorCode()) || StringUtils.isEmpty(resDTO.getSystemCode()) || StringUtils.isEmpty(resDTO.getEquipTypeCode())) {
+        if (StringUtils.isEmpty(resDTO.getMajorCode())
+                || StringUtils.isEmpty(resDTO.getSystemCode())
+                || StringUtils.isEmpty(resDTO.getEquipTypeCode())) {
             throw new CommonException(ErrorCode.REQUIRED_NULL, "设备拆分" + resDTO.getEquipCode());
         }
         resDTO.setSpecialEquipFlag("10");

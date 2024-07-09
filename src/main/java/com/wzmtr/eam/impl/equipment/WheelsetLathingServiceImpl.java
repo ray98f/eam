@@ -81,7 +81,9 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
                 WheelsetLathingReqDTO req = new WheelsetLathingReqDTO();
                 BeanUtils.copyProperties(reqDTO, req);
                 if (StringUtils.isNotEmpty(reqDTO.getAxleNo())) {
-                    req.setAxleNo("一轴".equals(reqDTO.getAxleNo()) ? "01" : "二轴".equals(reqDTO.getAxleNo()) ? "02" : "三轴".equals(reqDTO.getAxleNo()) ? "03" : "04");
+                    req.setAxleNo("一轴".equals(reqDTO.getAxleNo()) ? "01"
+                            : "二轴".equals(reqDTO.getAxleNo()) ? "02"
+                            : "三轴".equals(reqDTO.getAxleNo()) ? "03" : "04");
                 } else {
                     req.setAxleNo(reqDTO.getAxleNo());
                 }
@@ -105,7 +107,9 @@ public class WheelsetLathingServiceImpl implements WheelsetLathingService {
             for (WheelsetLathingResDTO resDTO : wheelsetLathingResDTOList) {
                 ExcelWheelsetLathingResDTO res = new ExcelWheelsetLathingResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                res.setAxleNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getAxleNo()) ? "一轴" : CommonConstants.LINE_CODE_TWO.equals(resDTO.getAxleNo()) ? "二轴" : "03".equals(resDTO.getAxleNo()) ? "三轴" : "四轴");
+                res.setAxleNo(CommonConstants.LINE_CODE_ONE.equals(resDTO.getAxleNo()) ? "一轴"
+                        : CommonConstants.LINE_CODE_TWO.equals(resDTO.getAxleNo()) ? "二轴"
+                        : "03".equals(resDTO.getAxleNo()) ? "三轴" : "四轴");
                 list.add(res);
             }
             EasyExcelUtils.export(response, "轮对镟修台账信息", list);

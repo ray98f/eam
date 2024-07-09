@@ -33,10 +33,10 @@ import java.util.Objects;
  */
 public class EasyExcelUtils {
 
-    /**
-     * 这两条用来校验表头信息
-     */
-    private List<String> headList = new ArrayList();
+//    /**
+//     * 这两条用来校验表头信息
+//     */
+//    private final List<String> headList = new ArrayList<>();
 
     /**
      * 设置excel样式
@@ -84,7 +84,7 @@ public class EasyExcelUtils {
      * 导出设置响应信息
      * @param response 响应
      * @param fileName 文件名称
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException 异常
      */
     public static void setResponse(HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
         // 文件名
@@ -126,7 +126,7 @@ public class EasyExcelUtils {
      * @param response 响应
      * @param name     名称
      * @param list     数据集合
-     * @throws IOException
+     * @throws IOException 异常
      */
     public static void export(HttpServletResponse response, String name, List<?> list) throws IOException {
         if (!list.isEmpty()) {

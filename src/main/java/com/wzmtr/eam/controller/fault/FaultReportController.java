@@ -3,6 +3,7 @@ package com.wzmtr.eam.controller.fault;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultReportOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * 故障管理-故障提报
@@ -40,11 +42,11 @@ public class FaultReportController {
     /**
      * 故障提报（到设备）-开放接口
      * @param reqDTO 入参
-     * @return 故障编号
+     * @return 故障编号、故障工单号
      */
     @ApiOperation(value = "故障提报（到设备）-开放接口")
     @PostMapping("/insert/equip/open")
-    public DataResponse<String> addToEquipOpen(@RequestBody @Valid FaultReportOpenReqDTO reqDTO) {
+    public DataResponse<FaultReportOpenResDTO> addToEquipOpen(@RequestBody @Valid FaultReportOpenReqDTO reqDTO) {
         return DataResponse.of(reportService.addToFaultOpen(reqDTO));
     }
 

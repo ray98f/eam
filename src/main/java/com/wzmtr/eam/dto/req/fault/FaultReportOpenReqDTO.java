@@ -13,6 +13,10 @@ import java.io.Serializable;
 @Data
 public class FaultReportOpenReqDTO implements Serializable {
     /**
+     * 各系统自定义的故障唯一码
+     */
+    private String sysFaultNo;
+    /**
      * 设备编码
      */
     private String equipCode;
@@ -23,15 +27,15 @@ public class FaultReportOpenReqDTO implements Serializable {
     /**
      * 报警时间
      */
-    private String alamTime;
+    private String alarmTime;
     /**
      * 线路
      */
-    private String lineName;
+    private String lineCode;
     /**
      * 专业
      */
-    private String majorName;
+    private String majorCode;
     /**
      * 故障类别
      */

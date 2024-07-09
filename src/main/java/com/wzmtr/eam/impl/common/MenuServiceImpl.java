@@ -1,5 +1,6 @@
 package com.wzmtr.eam.impl.common;
 
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.common.MenuAddReqDTO;
 import com.wzmtr.eam.dto.req.common.MenuModifyReqDTO;
 import com.wzmtr.eam.dto.res.common.MenuDetailResDTO;
@@ -75,7 +76,7 @@ public class MenuServiceImpl implements MenuService {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
         Integer result = menuMapper.selectMenuHadChildren(id);
-        if (result > 0) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.RESOURCE_USE);
         }
         result = menuMapper.deleteMenu(TokenUtils.getCurrentPersonId(), id);

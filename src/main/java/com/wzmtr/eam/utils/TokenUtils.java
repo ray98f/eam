@@ -15,11 +15,10 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * description:
- *
- * @author frp
+ * Token工具类
+ * @author  Ray
  * @version 1.0
- * @date 2020/12/23 15:42
+ * @date 2023/06/12
  */
 @Slf4j
 public class TokenUtils {

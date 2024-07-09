@@ -20,7 +20,7 @@ spring:
     port: 5672
     username: admin
     password: 123456
-    virtual-host: /eam
+    virtual-host: /eam-s2
 
   redis:
     host: 192.168.30.130
@@ -32,14 +32,15 @@ spring:
         min-idle: 0
         max-idle: 50
         max-wait: -1
-    key-prefix: dev-
+    key-prefix: eam-dev-s2-
 
 excluded:
   swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
-  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout,/eam/overhaul/order/page/open,/eam/fault/report/list/open,/eam/fault/report/insert/equip/open,/eam/overhaul/order/object/page/open,/eam/statistic/subject/fault/open
+  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout
 
 sso:
-  url: http://zxgd.softether.net:4443/cas
+
+  url: http://192.168.30.140:8084/cas
   home: http://192.168.30.140:8002/eam/
 
 cas:
@@ -111,6 +112,7 @@ minio:
 
 pro:
   name: eam
+  bucket-base: eam-s2
 
 eip:
   url: "http://esb.wzmtr.com:7003/iplwebservice/ps/CREATEtodoList?wsdl"

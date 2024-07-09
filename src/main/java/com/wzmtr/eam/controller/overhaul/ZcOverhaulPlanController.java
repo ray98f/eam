@@ -85,6 +85,11 @@ public class ZcOverhaulPlanController {
         return DataResponse.success();
     }
 
+    /**
+     * 触发检修计划（中车）
+     * @param overhaulPlanReqDTO 传参
+     * @return 成功
+     */
     @PostMapping("/plan/trigger")
     @ApiOperation(value = "触发检修计划（中车）")
     public DataResponse<T> triggerOverhaulPlan(@RequestBody OverhaulPlanReqDTO overhaulPlanReqDTO) {

@@ -49,7 +49,7 @@ public class BomServiceImpl implements BomService {
     @Override
     public void addBom(BomReqDTO bomReqDTO) {
         Integer result = bomMapper.selectBomIsExist(bomReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         bomReqDTO.setRecId(TokenUtils.getUuId());
@@ -64,7 +64,7 @@ public class BomServiceImpl implements BomService {
     @Override
     public void modifyBom(BomReqDTO bomReqDTO) {
         Integer result = bomMapper.selectBomIsExist(bomReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         bomReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());

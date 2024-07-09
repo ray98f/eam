@@ -81,11 +81,24 @@ public class TrackQueryServiceImpl implements TrackQueryService {
     @Override
     public FaultDetailResDTO faultDetail(FaultDetailReqDTO reqDTO) {
         FaultInfoDO faultInfo = faultTrackMapper.faultDetail(reqDTO);
-        FaultDetailResDTO faultOrder = faultTrackMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
+        if (StringUtils.isNull(faultInfo)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
+        FaultDetailResDTO faultOrder = faultTrackMapper.faultOrderDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo(), faultInfo.getMajorCode());
+        if (StringUtils.isNull(faultOrder)) {
+            throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
+        }
         FaultDetailResDTO faultDetail = assemblyResDTO(faultInfo, faultOrder);
         List<FaultFlowResDTO> faultFlows = faultTrackMapper.faultFlowDetail(reqDTO.getFaultNo(), reqDTO.getFaultWorkNo());
         if (StringUtils.isNotEmpty(faultFlows)) {
             faultDetail.setFlows(faultFlows);
+        }
+        if (StringUtils.isNotEmpty(faultDetail.getFinishPosition2Code())) {
+            Dictionaries dict = dictService.queryOneByItemCodeAndCodesetCode(
+                    CommonConstants.AT_STATION_POS2, faultDetail.getFinishPosition2Code());
+            if (StringUtils.isNotNull(dict)) {
+                faultDetail.setFinishPosition2Name(dict.getItemCname());
+            }
         }
         // 待阅（实际为代办）更新为已办
         overTodoService.overTodo(faultOrder.getFaultOrderRecId(), "已查看", CommonConstants.TWO_STRING);
@@ -199,19 +212,29 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             faultTrackWorkMapper.insert(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
             // 待办逻辑处理
             TrackQueryResDTO trackRes = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
-            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
+            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode(
+                    CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
             List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
             if (cos.contains(trackRes.getMajorCode())) {
-                dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "04");
+                dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE,
+                        CommonConstants.ZERO_FOUR_STRING);
             } else {
-                dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
+                dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE,
+                        CommonConstants.ZERO_THREE_STRING);
             }
-            overTodoService.insertTodoWithUserRoleAndOrg("【" + trackRes.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultTrackWorkBO.getRecId(), faultWorkNo, CommonConstants.DM_007, dictionaries.getItemCname(), "故障跟踪派工", "DMFM0011", "EAM", "10", BpmnFlowEnum.FAULT_TRACK.value());
+            overTodoService.insertTodoWithUserRoleAndOrg("【" + trackRes.getMajorName() + CommonConstants.FAULT_CONTENT_END,
+                    faultTrackWorkBO.getRecId(), faultWorkNo, CommonConstants.DM_007, dictionaries.getItemCname(),
+                    "故障跟踪派工", "DMFM0011", "EAM", "10", BpmnFlowEnum.FAULT_TRACK.value());
             return;
         }
         // 更新两张表
-        faultTrackMapper.update(BeanUtils.convert(faultTrackBO, FaultTrackDO.class), new UpdateWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_NO, faultNo).eq(ColsConstants.FAULT_TRACK_NO, exist.getFaultTrackNo()));
-        faultTrackWorkMapper.update(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class), new UpdateWrapper<FaultTrackWorkDO>().eq(ColsConstants.FAULT_TRACK_NO, exist.getFaultTrackNo()));
+        faultTrackMapper.update(BeanUtils.convert(faultTrackBO, FaultTrackDO.class),
+                new UpdateWrapper<FaultTrackDO>()
+                        .eq(ColsConstants.FAULT_NO, faultNo)
+                        .eq(ColsConstants.FAULT_TRACK_NO, exist.getFaultTrackNo()));
+        faultTrackWorkMapper.update(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class),
+                new UpdateWrapper<FaultTrackWorkDO>()
+                        .eq(ColsConstants.FAULT_TRACK_NO, exist.getFaultTrackNo()));
     }
 
 
@@ -250,16 +273,19 @@ public class TrackQueryServiceImpl implements TrackQueryService {
             faultTrackWorkMapper.insert(BeanUtils.convert(faultTrackWorkBO, FaultTrackWorkDO.class));
             TrackQueryResDTO dmfm09 = faultTrackMapper.detail(FaultBaseNoReqDTO.builder().faultNo(faultNo).faultTrackNo(faultTrackNo).faultWorkNo(faultWorkNo).build());
             String majorCode = dmfm09.getMajorCode();
-            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_VEHICLE_SPECIALTY_CODE, "01");
+            Dictionaries dictionaries = dictService.queryOneByItemCodeAndCodesetCode(
+                    CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
             List<String> cos = Arrays.asList(dictionaries.getItemEname().split(CommonConstants.COMMA));
             String zcStepOrg;
+            Dictionaries matchControl;
             if (cos.contains(majorCode)) {
-                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "04");
-                zcStepOrg = matchControl.getItemCname();
+                matchControl = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE,
+                        CommonConstants.ZERO_FOUR_STRING);
             } else {
-                Dictionaries matchControl = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE, "03");
-                zcStepOrg = matchControl.getItemCname();
+                matchControl = dictService.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_MATCH_CONTROL_CODE,
+                        CommonConstants.ZERO_THREE_STRING);
             }
+            zcStepOrg = matchControl.getItemCname();
             overTodoService.insertTodoWithUserRoleAndOrg("【" + dmfm09.getMajorName() + CommonConstants.FAULT_CONTENT_END, faultTrackWorkBO.getRecId(), faultWorkNo, CommonConstants.DM_007, zcStepOrg, "故障跟踪派工", "DMFM0011", "EAM", "10",BpmnFlowEnum.FAULT_TRACK.value());
         } catch (Exception e) {
             log.error("save error", e);

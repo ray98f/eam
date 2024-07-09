@@ -74,7 +74,7 @@ public class OrgRegionServiceImpl implements OrgRegionService {
             for (String code : orgMajorReqDTO.getRegionCodes()) {
                 orgMajorReqDTO.setRegionCode(code);
                 Integer result = orgMajorMapper.selectOrgRegionIsExist(orgMajorReqDTO);
-                if (result > 0) {
+                if (result > CommonConstants.ZERO) {
                     continue;
                 }
 
@@ -89,7 +89,7 @@ public class OrgRegionServiceImpl implements OrgRegionService {
     @Override
     public void modifyOrgRegion(OrgRegionReqDTO orgMajorReqDTO) {
         Integer result = orgMajorMapper.selectOrgRegionIsExist(orgMajorReqDTO);
-        if (result > 0) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         orgMajorReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());

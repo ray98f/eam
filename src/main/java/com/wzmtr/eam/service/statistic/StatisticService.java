@@ -64,12 +64,12 @@ public interface StatisticService {
     void queryFMHistoryExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
     /**
-     * 故障跟踪
-     * @param reqDTO
-     * @return
+     * 分页查询一车一档故障跟踪列表
+     * @param reqDTO 传参
+     * @return 故障跟踪列表
      */
 
-    Page<TrackQueryResDTO> queryDMFM21(OneCarOneGearQueryReqDTO reqDTO);
+    Page<TrackQueryResDTO> queryFaultFollow(OneCarOneGearQueryReqDTO reqDTO);
 
     /**
      * 部件跟换
@@ -120,11 +120,19 @@ public interface StatisticService {
 
     List<FaultConditionResDTO> queryCountFaultType();
 
-    Page<FaultRamsResDTO> queryRAMSFaultList(RamsTimeReqDTO reqDTO);
+    Page<FaultRamsResDTO> queryRamsFaultList(RamsTimeReqDTO reqDTO);
 
     void materialExport(MaterialListReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
-    void queryDMFM21Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
+    /**
+     * 一车一档故障跟踪列表导出
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param equipName 设备名称
+     * @param response response
+     * @throws IOException 异常
+     */
+    void queryFaultFollowExport(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 
     void querydmer3Export(String startTime, String endTime, String equipName, HttpServletResponse response) throws IOException;
 

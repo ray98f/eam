@@ -579,4 +579,14 @@
         </foreach>
         SELECT * FROM dual
     </insert>
+
+    <select id="getSumDailyMileByDay" resultType="com.wzmtr.eam.dto.res.equipment.SumDailyMileResDTO">
+        SELECT CASE WHEN sum(DAILY_WORK_MILE) IS NULL THEN 0 ELSE sum(DAILY_WORK_MILE) END AS SUM_DAILY_WORK_MILE,
+        CASE WHEN sum(DAILY_MILE) IS NULL THEN 0 ELSE sum(DAILY_MILE) END AS SUM_DAILY_MILE
+        FROM T_TRAIN_MILE
+        WHERE DELETE_FLAG='0'
+        <if test="day!=null and day!=''">
+            AND "DAY"=#{day}
+        </if>
+    </select>
 </mapper>
