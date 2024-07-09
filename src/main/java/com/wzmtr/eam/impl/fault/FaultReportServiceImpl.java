@@ -130,7 +130,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         if (!CommonConstants.ZC_LIST.contains(majorCode) && CommonConstants.TEN_STRING.equals(reqDTO.getFaultType())) {
             // 中铁通且是A类故障，中铁通生产调度
             toZttTrainDispatch(reqDTO, faultOrder, nextFaultWorkNo);
-        } else if (CommonConstants.ZC_LIST.contains(majorCode) && !CommonConstants.THREE_STRING.equals(reqDTO.getFaultType())) {
+        } else if (CommonConstants.ZC_LIST.contains(majorCode) && !CommonConstants.THIRTY_STRING.equals(reqDTO.getFaultType())) {
             // 中车且不是C类故障，中车检调
             toZcProsecute(reqDTO, faultOrder, nextFaultWorkNo);
         } else {

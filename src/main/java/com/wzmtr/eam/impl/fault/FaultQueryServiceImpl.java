@@ -610,7 +610,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
                 CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
         String itemEname = dictionaries.getItemEname();
-        List<String> cos = Arrays.asList(itemEname.split(","));
+        List<String> cos = Arrays.asList(itemEname.split(CommonConstants.COMMA));
         String currentUser = TokenUtils.getCurrentPersonId();
         String current = DateUtils.getCurrentTime();
         switch (reqDTO.getType()) {

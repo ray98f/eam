@@ -404,7 +404,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        checkOrderState(overhaulOrderReqDTO, "4", "完工");
+        boolean bool = !CommonConstants.ZC_LIST.contains(overhaulOrderReqDTO.getSubjectCode())
+                || (StringUtils.isNotEmpty(overhaulOrderReqDTO.getPlanType())
+                && overhaulOrderReqDTO.getPlanType().equals(CommonConstants.ONE_STRING));
+        if (bool) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "此检修工单无需进行完工验收");
+        } else {
+            checkOrderState(overhaulOrderReqDTO, "4", "完工");
+        }
         if (CommonConstants.ZERO_STRING.equals(overhaulOrderReqDTO.getExamineStatus())) {
             overhaulOrderReqDTO.setWorkStatus(CommonConstants.SIX_STRING);
         } else {
@@ -470,7 +477,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        if (StringUtils.isNotEmpty(overhaulOrderReqDTO.getPlanType())
+        if (CommonConstants.ZC_LIST.contains(overhaulOrderReqDTO.getSubjectCode())
+                && StringUtils.isNotEmpty(overhaulOrderReqDTO.getPlanType())
                 && overhaulOrderReqDTO.getPlanType().equals(CommonConstants.TWO_STRING)) {
             checkOrderState(overhaulOrderReqDTO, "6", "验收");
         } else {

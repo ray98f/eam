@@ -63,7 +63,7 @@ public class FaultReportReqDTO {
     private String faultModule;
     @ApiModelProperty(value = "故障模块Id")
     private String faultModuleId;
-    @ApiModelProperty(value = "故障分类（10-运营故障；20-自检故障；30-新线调试；40-正线故障；50-出库故障）")
+    @ApiModelProperty(value = "故障分类（10-A正线运营故障；20-B非运营故障；30-C预防性维修故障）")
     private String faultType;
     @ApiModelProperty(value = "来源编号")
     private String sourceCode;
