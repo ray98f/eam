@@ -12,17 +12,19 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.EquipmentService;
-import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -31,7 +33,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 设备管理-设备台账
@@ -165,9 +166,9 @@ public class EquipmentController {
     @PostMapping("/export")
     @ApiOperation(value = "导出设备台账")
     public void exportEquipment(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
-        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
-        }
+//        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
+//            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
+//        }
         equipmentService.exportEquipment(baseIdsEntity.getIds(), response);
     }
 

@@ -149,7 +149,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                         }
                     }
                     // 默认为紧急
-                    faultInfo.setExt1("01");
+                    faultInfo.setExt1(CommonConstants.ZERO_ONE_STRING);
                     faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
                     faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
                     faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
@@ -208,7 +208,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultOrder.setRecRevisor(TokenUtils.getCurrentPersonId());
         faultOrder.setRecReviseTime(DateUtils.getCurrentTime());
         faultReportMapper.updateFaultOrder(faultOrder);
-        List<String> users = faultQueryServiceImpl.getUsersByCompanyAndRole(reqDTO.getMajorCode(), "DM_007", null);
+        List<String> users = faultQueryServiceImpl.getUsersByCompanyAndRole(reqDTO.getMajorCode(), CommonConstants.DM_007, null);
         if (CollectionUtil.isNotEmpty(users)) {
             overTodoService.insertTodoWithUserList(users, String.format(CommonConstants.TODO_GD_TPL, nextFaultWorkNo, "故障"),
                     faultOrder.getRecId(), nextFaultWorkNo, "故障已下发", "faultSendZtt",
