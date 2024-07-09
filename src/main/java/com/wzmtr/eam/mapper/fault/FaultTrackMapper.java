@@ -37,9 +37,10 @@ public interface FaultTrackMapper extends BaseMapper<FaultTrackDO> {
      * 获取故障工单详情
      * @param faultNo 故障编号
      * @param faultWorkNo 故障工单号
+     * @param majorCode 专业编号
      * @return 故障工单详情
      */
-    FaultDetailResDTO faultOrderDetail(String faultNo, String faultWorkNo);
+    FaultDetailResDTO faultOrderDetail(String faultNo, String faultWorkNo, String majorCode);
 
     /**
      * 根据故障编号、工单编号获取故障流程信息

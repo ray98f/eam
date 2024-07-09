@@ -521,11 +521,21 @@
         df.FINISH_POSITION_CODE AS "finishPositionCode",
         df.FINISH_POSITION2_CODE AS "finishPosition2Code",
         (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=df.FINISH_POSITION_CODE) AS "finishPositionName",
-        ep.MODULE_NAME AS "finishModuleName",
-        df.FINISH_PART_ID AS "finishPartId",
-        ep.PART_NAME AS "finishPartName"
+        <if test="majorCode!=null and (majorCode=='06'.toString() or majorCode=='07'.toString())">
+            ep.CNAME AS "finishPartName",
+        </if>
+        <if test="majorCode!=null and majorCode!='06'.toString() and majorCode!='07'.toString()">
+            ep.MODULE_NAME AS "finishModuleName",
+            ep.PART_NAME AS "finishPartName",
+        </if>
+        df.FINISH_PART_ID AS "finishPartId"
         FROM T_FAULT_ORDER df
-        LEFT JOIN T_EQUIPMENT_CATEGORY_PART ep ON ep.REC_ID=df.FINISH_PART_ID AND ep.DELETE_FLAG='0'
+        <if test="majorCode!=null and (majorCode=='06'.toString() or majorCode=='07'.toString())">
+            LEFT JOIN T_BOM ep ON ep.REC_ID=df.FINISH_PART_ID AND ep.DELETE_FLAG='0'
+        </if>
+        <if test="majorCode!=null and majorCode!='06'.toString() and majorCode!='07'.toString()">
+            LEFT JOIN T_EQUIPMENT_CATEGORY_PART ep ON ep.REC_ID=df.FINISH_PART_ID AND ep.DELETE_FLAG='0'
+        </if>
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="faultNo!=null and faultNo!=''">
                 and df.FAULT_NO=#{faultNo}
