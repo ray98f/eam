@@ -252,4 +252,9 @@ public class OverhaulOrderResDTO {
      */
     @ApiModelProperty(value = "检修工单流程数据")
     private List<OverhaulOrderFlowResDTO> flows;
+    /**
+     * 检修计划类型 0其他 1一级修 2二级修
+     */
+    @ApiModelProperty(value = "检修计划类型 0其他 1一级修 2二级修")
+    private String planType;
 }

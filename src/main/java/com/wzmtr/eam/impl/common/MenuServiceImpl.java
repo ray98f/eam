@@ -76,7 +76,7 @@ public class MenuServiceImpl implements MenuService {
             throw new CommonException(ErrorCode.PARAM_NULL_ERROR);
         }
         Integer result = menuMapper.selectMenuHadChildren(id);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.RESOURCE_USE);
         }
         result = menuMapper.deleteMenu(TokenUtils.getCurrentPersonId(), id);

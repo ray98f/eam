@@ -49,7 +49,7 @@ public class FaultServiceImpl implements FaultService {
     @Override
     public void addFault(FaultReqDTO faultReqDTO) {
         Integer result = faultMapper.selectFaultIsExist(faultReqDTO);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         faultReqDTO.setRecId(TokenUtils.getUuId());
@@ -61,7 +61,7 @@ public class FaultServiceImpl implements FaultService {
     @Override
     public void modifyFault(FaultReqDTO faultReqDTO) {
         Integer result = faultMapper.selectFaultIsExist(faultReqDTO);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         faultReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());

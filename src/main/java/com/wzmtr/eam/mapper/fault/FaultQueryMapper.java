@@ -9,6 +9,7 @@ import com.wzmtr.eam.dto.req.fault.FaultQueryReqDTO;
 import com.wzmtr.eam.dto.res.basic.FaultRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.ConstructionResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultListResDTO;
 import com.wzmtr.eam.entity.EquipmentCategory;
 import com.wzmtr.eam.entity.SidEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -25,16 +26,16 @@ import java.util.List;
 @Repository
 public interface FaultQueryMapper {
 
-    Page<FaultDetailResDTO> query(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors);
+    Page<FaultListResDTO> query(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors);
 
     List<FaultDetailResDTO> queryByEngineer(List<String> majors);
 
-    Page<FaultDetailResDTO> queryByUser(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors,
+    Page<FaultListResDTO> queryByUser(Page<FaultDetailResDTO> of, FaultQueryReqDTO req, List<String> majors,
                                         String userId, String officeAreaId, String type);
 
     List<FaultDetailResDTO> queryLimit(String userDept, List<String> majors);
 
-    Page<FaultDetailResDTO> statustucQuery(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
+    Page<FaultListResDTO> statustucQuery(Page<FaultQueryReqDTO> of, FaultQueryReqDTO req);
 
     /**
      * 根据ids获取故障详情列表

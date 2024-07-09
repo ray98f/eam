@@ -3,6 +3,7 @@ package com.wzmtr.eam.controller.fault;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.basic.FaultRespAndRepairDeptResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultReportOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
@@ -44,7 +45,7 @@ public class FaultReportController {
      */
     @ApiOperation(value = "故障提报（到设备）-开放接口")
     @PostMapping("/insert/equip/open")
-    public DataResponse<String> addToEquipOpen(@RequestBody FaultReportOpenReqDTO reqDTO) {
+    public DataResponse<FaultReportOpenResDTO> addToEquipOpen(@RequestBody FaultReportOpenReqDTO reqDTO) {
         return DataResponse.of(reportService.addToFaultOpen(reqDTO));
     }
 

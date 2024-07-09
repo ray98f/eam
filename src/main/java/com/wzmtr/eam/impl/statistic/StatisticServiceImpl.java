@@ -137,7 +137,7 @@ public class StatisticServiceImpl implements StatisticService {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "故障次数不能大于动作次数");
         }
         Integer result = failureRateMapper.selectDoorFaultIsExist(req);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         req.setRecId(TokenUtils.getUuId());

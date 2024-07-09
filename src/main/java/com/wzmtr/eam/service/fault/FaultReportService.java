@@ -3,6 +3,7 @@ package com.wzmtr.eam.service.fault;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wzmtr.eam.dto.req.fault.*;
 import com.wzmtr.eam.dto.res.fault.FaultDetailResDTO;
+import com.wzmtr.eam.dto.res.fault.FaultReportOpenResDTO;
 import com.wzmtr.eam.dto.res.fault.FaultReportResDTO;
 
 /**
@@ -29,7 +30,7 @@ public interface FaultReportService {
      * @param reqDTO 入参
      * @return 故障编号
      */
-    String addToFaultOpen(FaultReportOpenReqDTO reqDTO);
+    FaultReportOpenResDTO addToFaultOpen(FaultReportOpenReqDTO reqDTO);
 
     /**
      * 已提报故障

@@ -59,7 +59,7 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public void addRegion(RegionReqDTO regionReqDTO) {
         Integer result = regionMapper.selectRegionIsExist(regionReqDTO);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         regionReqDTO.setRecId(TokenUtils.getUuId());
@@ -71,7 +71,7 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public void modifyRegion(RegionReqDTO regionReqDTO) {
         Integer result = regionMapper.selectRegionIsExist(regionReqDTO);
-        if (result > CommonConstants.ONE) {
+        if (result > CommonConstants.ZERO) {
             throw new CommonException(ErrorCode.DATA_EXIST);
         }
         regionReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());

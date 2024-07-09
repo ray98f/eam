@@ -127,7 +127,6 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     @Override
     public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
                                                        PageReqDTO pageReqDTO) throws ParseException {
-        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         overhaulOrderListReqDTO.setObjectFlag("1");
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
@@ -159,6 +158,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             overhaulOrderListReqDTO.setStartTime(sdf2.format(sdf1.parse(overhaulOrderListReqDTO.getStartTime())));
             overhaulOrderListReqDTO.setEndTime(sdf2.format(sdf1.parse(overhaulOrderListReqDTO.getEndTime())));
         }
+        PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
         Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
         List<OverhaulOrderResDTO> list = page.getRecords();
         // 专业为车辆的检修工单填充字段
@@ -404,7 +404,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        checkOrderState(overhaulOrderReqDTO, "4", "完工");
+        boolean bool = !CommonConstants.ZC_LIST.contains(overhaulOrderReqDTO.getSubjectCode())
+                || (StringUtils.isNotEmpty(overhaulOrderReqDTO.getPlanType())
+                && overhaulOrderReqDTO.getPlanType().equals(CommonConstants.ONE_STRING));
+        if (bool) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "此检修工单无需进行完工验收");
+        } else {
+            checkOrderState(overhaulOrderReqDTO, "4", "完工");
+        }
         if (CommonConstants.ZERO_STRING.equals(overhaulOrderReqDTO.getExamineStatus())) {
             overhaulOrderReqDTO.setWorkStatus(CommonConstants.SIX_STRING);
         } else {
@@ -470,11 +477,13 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.ONLY_OWN_SUBJECT);
             }
         }
-        // if (!overhaulOrderReqDTO.getPlanName().contains(CommonConstants.SECOND_REPAIR_SHIFT)) {
-        //     checkOrderState(overhaulOrderReqDTO, "4", "完工");
-        // } else {
+        if (CommonConstants.ZC_LIST.contains(overhaulOrderReqDTO.getSubjectCode())
+                && StringUtils.isNotEmpty(overhaulOrderReqDTO.getPlanType())
+                && overhaulOrderReqDTO.getPlanType().equals(CommonConstants.TWO_STRING)) {
             checkOrderState(overhaulOrderReqDTO, "6", "验收");
-        // }
+        } else {
+            checkOrderState(overhaulOrderReqDTO, "4", "完工");
+        }
         if (org.apache.commons.lang3.StringUtils.isBlank(overhaulOrderReqDTO.getRealEndTime())) {
             throw new CommonException(ErrorCode.NORMAL_ERROR, "该工单没有实际完成时间，无法完工确认！");
         }

@@ -48,7 +48,7 @@
         d.REPAIR_DEPT_CODE AS "repairDeptCode",
         d.PUBLISH_USER_ID AS "publishUserId",
         d.PUBLISH_TIME AS "publishTime",
-        d.FAULT_LEVEL AS "faultLevel",
+        (CASE WHEN d.FAULT_LEVEL!=' ' THEN d.FAULT_LEVEL ELSE df.EXT1 END) AS "faultLevel",
         d.FAULT_STATUS AS "faultStatus",
         d.WORK_FLOW_INST_ID AS "workFlowInstId",
         d.WORK_FLOW_INST_STATUS AS "workFlowInstStatus",
@@ -81,14 +81,16 @@
         d.IF_PHM AS "ifPhm",
         d.IF_RELIABILITY AS "ifReliability",
         d.IF_OTHER AS "ifOther",
-        df.EXT1 AS "levelfault"
+        df.EXT1 AS "levelfault",
+        df.FAULT_AFFECT AS "faultAffect",
+        (CASE WHEN df.ORDER_STATUS='99' THEN '1' ELSE '0' END) sort
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO
     </sql>
 
     <!--dmfm01.query -->
-    <select id="query" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <select id="query" resultType="com.wzmtr.eam.dto.res.fault.FaultListResDTO">
         <include refid="query-cols"/>
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultType!=null and req.faultType!=''">
@@ -155,7 +157,7 @@
             </if>
             AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
-        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
     <select id="queryByEngineer" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -169,10 +171,10 @@
             )
         </if>
         AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
-        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
-    <select id="queryByUser" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <select id="queryByUser" resultType="com.wzmtr.eam.dto.res.fault.FaultListResDTO">
         <include refid="query-cols"/>
         <trim prefix="WHERE" prefixOverrides="AND">
             <if test="req.faultType!=null and req.faultType!=''">
@@ -256,7 +258,7 @@
             </if>
             AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
-        ORDER BY d.FAULT_NO desc,df.FAULT_WORK_NO desc
+        ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc
     </select>
 
     <select id="queryLimit" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
@@ -284,7 +286,7 @@
         ORDER BY df.FAULT_NO desc,df.FAULT_WORK_NO desc
     </select>
 
-    <select id="statustucQuery" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+    <select id="statustucQuery" resultType="com.wzmtr.eam.dto.res.fault.FaultListResDTO">
         SELECT
         d.REC_ID AS "faultInfoRecId",
         df.REC_ID AS "faultOrderRecId",

@@ -238,4 +238,9 @@ public class OverhaulOrderReqDTO {
      */
     @ApiModelProperty(value = "检修情况说明")
     private String repairDetail;
+    /**
+     * 检修计划类型 0其他 1一级修 2二级修
+     */
+    @ApiModelProperty(value = "检修计划类型 0其他 1一级修 2二级修")
+    private String planType;
 }
