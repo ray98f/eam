@@ -251,7 +251,10 @@
         SELECT REC_ID, PART_NAME, QUANTITY
         FROM T_EQUIPMENT_CATEGORY_PART
         WHERE DELETE_FLAG='0' AND MAJOR_CODE=#{majorCode} AND SYSTEM_CODE=#{systemCode}
-        AND EQUIP_TYPE_CODE=#{equipTypeCode} AND MODULE_NAME=#{moduleName}
+        AND EQUIP_TYPE_CODE=#{equipTypeCode}
+        <if test="moduleName!=null and moduleName!=''">
+            AND MODULE_NAME=#{moduleName}
+        </if>
         ORDER BY REC_CREATE_TIME ASC
     </select>
 
@@ -302,7 +305,11 @@
         (SELECT DISTINCT MODULE_NAME, REC_CREATE_TIME
         FROM T_EQUIPMENT_CATEGORY_PART
         WHERE DELETE_FLAG='0' AND MAJOR_CODE=#{majorCode} AND SYSTEM_CODE=#{systemCode}
-        AND EQUIP_TYPE_CODE=#{equipTypeCode} AND EQUIP_SUBCLASS_NAME=#{equipSubclassName}) t
+        AND EQUIP_TYPE_CODE=#{equipTypeCode}
+        <if test="equipSubclassName!=null and equipSubclassName!=''">
+            AND EQUIP_SUBCLASS_NAME=#{equipSubclassName}
+        </if>
+        ) t
         ORDER BY t.REC_CREATE_TIME ASC, t.MODULE_NAME ASC
     </select>
 
@@ -310,7 +317,13 @@
         SELECT REC_ID, PART_NAME, QUANTITY
         FROM T_EQUIPMENT_CATEGORY_PART
         WHERE DELETE_FLAG='0' AND MAJOR_CODE=#{majorCode} AND SYSTEM_CODE=#{systemCode}
-        AND EQUIP_TYPE_CODE=#{equipTypeCode} AND EQUIP_SUBCLASS_NAME=#{equipSubclassName} AND MODULE_NAME=#{moduleName}
+        AND EQUIP_TYPE_CODE=#{equipTypeCode}
+        <if test="equipSubclassName!=null and equipSubclassName!=''">
+            AND EQUIP_SUBCLASS_NAME=#{equipSubclassName}
+        </if>
+        <if test="moduleName!=null and moduleName!=''">
+            AND MODULE_NAME=#{moduleName}
+        </if>
         ORDER BY REC_CREATE_TIME ASC
     </select>
 
@@ -325,6 +338,7 @@
             SYSTEM_NAME,
             EQUIP_TYPE_CODE,
             EQUIP_TYPE_NAME,
+            EQUIP_SUBCLASS_NAME,
             MODULE_NAME,
             PART_NAME,
             QUANTITY,
@@ -344,9 +358,10 @@
             AND NODE_CODE LIKE
             TO_CHAR((SELECT NODE_CODE FROM T_EQUIPMENT_CATEGORY WHERE NODE_NAME=#{part.majorName} AND NODE_LEVEL=1)) || '%')) || '%'),
             #{part.equipTypeName},
+            #{part.equipSubclassName},
             #{part.moduleName},
-            #{part.partName},
-            #{part.quantity},
+            #{part.partName,jdbcType=VARCHAR},
+            #{part.quantity,jdbcType=NUMERIC},
             #{part.recCreator},
             #{part.recCreateTime})
         </foreach>
