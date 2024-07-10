@@ -298,12 +298,12 @@
     </select>
 
     <select id="listEquipmentCategoryModuleBySubclass" resultType="com.wzmtr.eam.dto.res.basic.EquipmentCategorySubclassResDTO$Module">
-        SELECT MODULE_NAME
+        SELECT t.* FROM
+        (SELECT DISTINCT MODULE_NAME, REC_CREATE_TIME
         FROM T_EQUIPMENT_CATEGORY_PART
         WHERE DELETE_FLAG='0' AND MAJOR_CODE=#{majorCode} AND SYSTEM_CODE=#{systemCode}
-        AND EQUIP_TYPE_CODE=#{equipTypeCode} AND EQUIP_SUBCLASS_NAME=#{equipSubclassName}
-        GROUP BY MODULE_NAME
-        ORDER BY REC_CREATE_TIME ASC, MODULE_NAME ASC
+        AND EQUIP_TYPE_CODE=#{equipTypeCode} AND EQUIP_SUBCLASS_NAME=#{equipSubclassName}) t
+        ORDER BY t.REC_CREATE_TIME ASC, t.MODULE_NAME ASC
     </select>
 
     <select id="listEquipmentCategoryPartBySubclass" resultType="com.wzmtr.eam.dto.res.basic.EquipmentCategoryModuleResDTO$Part">
