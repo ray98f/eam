@@ -632,6 +632,10 @@ public class FaultDetailResDTO {
      */
     private String finishPosition2Name;
     /**
+     * 完工报告设备小类名称
+     */
+    private String finishSubclassName;
+    /**
      * 完工报告模块名称
      */
     private String finishModuleName;

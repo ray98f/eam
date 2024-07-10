@@ -525,6 +525,7 @@
             ep.CNAME AS "finishPartName",
         </if>
         <if test="majorCode!=null and majorCode!='06'.toString() and majorCode!='07'.toString()">
+            ep.EQUIP_SUBCLASS_NAME AS "finishSubclassName",
             ep.MODULE_NAME AS "finishModuleName",
             ep.PART_NAME AS "finishPartName",
         </if>

@@ -214,6 +214,7 @@ public class CommonConstants {
     public static final String DM_CONTEXT_PATH = "dm.contextPath";
     public static final String DM_IMPORT_TEMPLATE = "dm.import.template";
     public static final String AT_STATION_POS2 = "at.station.pos2";
+    public static final String DM_EQUIP_CATEGORY_SUBCLASS = "dm.equip.category.subclass";
 
     /**
      * 工单推送内容相关
