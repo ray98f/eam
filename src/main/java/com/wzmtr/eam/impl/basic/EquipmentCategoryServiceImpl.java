@@ -161,7 +161,15 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     public List<EquipmentCategorySubclassResDTO> listEquipmentCategorySubclassPart(String majorCode,
                                                                                    String systemCode,
                                                                                    String equipTypeCode) {
-        return equipmentCategoryMapper.listEquipmentCategorySubclass(majorCode, systemCode, equipTypeCode);
+        List<EquipmentCategorySubclassResDTO> list = equipmentCategoryMapper.listEquipmentCategorySubclass(
+                majorCode, systemCode, equipTypeCode);
+        if (StringUtils.isNotEmpty(list)) {
+            for (EquipmentCategorySubclassResDTO res : list) {
+                res.setModuleList(equipmentCategoryMapper.listEquipmentCategoryModuleBySubclass(res.getMajorCode(),
+                        res.getSystemCode(), res.getEquipTypeCode(), res.getEquipSubclassName()));
+            }
+        }
+        return list;
     }
 
     @Override
