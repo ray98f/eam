@@ -59,6 +59,26 @@ public class EquipmentCategorySubclassResDTO {
     @Data
     public static class Module {
         /**
+         * 专业编号
+         */
+        @ApiModelProperty(value = "专业编号")
+        private String majorCode;
+        /**
+         * 系统编号
+         */
+        @ApiModelProperty(value = "系统编号")
+        private String systemCode;
+        /**
+         * 设备类型编号
+         */
+        @ApiModelProperty(value = "设备类型编号")
+        private String equipTypeCode;
+        /**
+         * 设备小类
+         */
+        @ApiModelProperty(value = "设备小类")
+        private String equipSubclassName;
+        /**
          * 模块名称
          */
         @ApiModelProperty(value = "模块名称")

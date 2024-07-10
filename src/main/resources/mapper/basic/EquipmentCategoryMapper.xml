@@ -271,6 +271,10 @@
                     select="listEquipmentCategoryModuleBySubclass"
                     column="{majorCode=MAJOR_CODE,systemCode=SYSTEM_CODE,equipTypeCode=EQUIP_TYPE_CODE,equipSubclassName=EQUIP_SUBCLASS_NAME}">
             <id property="moduleList.moduleName" column="MODULE_NAME"/>
+            <result property="moduleList.majorCode" column="MAJOR_CODE"/>
+            <result property="moduleList.systemCode" column="SYSTEM_CODE"/>
+            <result property="moduleList.equipTypeCode" column="EQUIP_TYPE_CODE"/>
+            <result property="moduleList.equipSubclassName" column="EQUIP_SUBCLASS_NAME"/>
             <collection property="moduleList.partList" javaType="java.util.ArrayList"
                         ofType="com.wzmtr.eam.dto.res.basic.EquipmentCategoryModuleResDTO$Part"
                         select="listEquipmentCategoryPartBySubclass"
@@ -302,7 +306,7 @@
 
     <select id="listEquipmentCategoryModuleBySubclass" resultType="com.wzmtr.eam.dto.res.basic.EquipmentCategorySubclassResDTO$Module">
         SELECT t.* FROM
-        (SELECT DISTINCT MODULE_NAME, REC_CREATE_TIME
+        (SELECT DISTINCT MODULE_NAME, EQUIP_SUBCLASS_NAME, MAJOR_CODE, SYSTEM_CODE, EQUIP_TYPE_CODE, REC_CREATE_TIME
         FROM T_EQUIPMENT_CATEGORY_PART
         WHERE DELETE_FLAG='0' AND MAJOR_CODE=#{majorCode} AND SYSTEM_CODE=#{systemCode}
         AND EQUIP_TYPE_CODE=#{equipTypeCode}
