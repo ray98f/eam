@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.export.SecureDangerSourceExportBO;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceDetailReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureDangerSourceListReqDTO;
@@ -15,7 +16,12 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.secure.SecureDangerSourceMapper;
 import com.wzmtr.eam.service.secure.SecureDangerSourceService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.BeanUtils;
+import com.wzmtr.eam.utils.CodeUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +67,7 @@ public class SecureDangerSourceServiceImpl implements SecureDangerSourceService 
             a.setRespDeptName(organizationMapper.getExtraOrgByAreaId(a.getRespDeptCode()));
         }
         if (StrUtil.isNotEmpty(a.getDangerRiskPic())) {
-            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDangerRiskPic().split(","))));
+            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDangerRiskPic().split(CommonConstants.COMMA))));
         }
     }
 

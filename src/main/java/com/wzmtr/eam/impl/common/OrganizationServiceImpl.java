@@ -73,7 +73,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (null != list && !list.isEmpty()) {
             for (MemberResDTO memberResDTO : list) {
                 StringBuilder names = new StringBuilder();
-                List<String> ids = Arrays.asList(memberResDTO.getParentIds().split(","));
+                List<String> ids = Arrays.asList(memberResDTO.getParentIds().split(CommonConstants.COMMA));
                 if (!ids.isEmpty()) {
                     for (String officeId : ids) {
                         if ("root".equals(officeId)) {

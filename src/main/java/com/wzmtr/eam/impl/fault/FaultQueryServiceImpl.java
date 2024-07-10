@@ -390,7 +390,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isEmpty(reqDTO.getWorkerGroupCode())) {
             throw new CommonException(ErrorCode.PARAM_ERROR);
         }
-        List<String> faultWorkNos = Arrays.asList(reqDTO.getFaultWorkNo().split(","));
+        List<String> faultWorkNos = Arrays.asList(reqDTO.getFaultWorkNo().split(CommonConstants.COMMA));
         faultWorkNos.forEach(a -> {
             String workerGroupCode = reqDTO.getWorkerGroupCode();
             FaultOrderDO faultOrder = faultQueryMapper.queryOneFaultOrder(null, a);
@@ -502,7 +502,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
                 CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
         String itemEname = dictionaries.getItemEname();
-        String[] cos01 = itemEname.split(",");
+        String[] cos01 = itemEname.split(CommonConstants.COMMA);
         List<String> cos = Arrays.asList(cos01);
         if (CommonConstants.DM_013.equals(ext2)) {
             overTodoService.overTodo(faultOrderDO.getRecId(), CommonConstants.FAULT_TUNING_CONFIRM_CN, CommonConstants.ONE_STRING);
@@ -608,7 +608,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
                 CommonConstants.DM_VEHICLE_SPECIALTY_CODE, CommonConstants.ZERO_ONE_STRING);
         String itemEname = dictionaries.getItemEname();
-        List<String> cos = Arrays.asList(itemEname.split(","));
+        List<String> cos = Arrays.asList(itemEname.split(CommonConstants.COMMA));
         String currentUser = TokenUtils.getCurrentPersonId();
         String current = DateUtils.getCurrentTime();
         switch (reqDTO.getType()) {

@@ -296,7 +296,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (StringUtils.isNotEmpty(list)) {
             for (DetectionDetailResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getVerifyReportAtt())) {
-                    res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(","))));
+                    res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(CommonConstants.COMMA))));
                 }
             }
         }
@@ -309,7 +309,7 @@ public class DetectionServiceImpl implements DetectionService {
         DetectionDetailResDTO res = detectionMapper.getDetectionDetailDetail(id);
         if (StringUtils.isNotNull(res)) {
             if (StringUtils.isNotEmpty(res.getVerifyReportAtt())) {
-                res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(","))));
+                res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(CommonConstants.COMMA))));
             }
         }
         return res;

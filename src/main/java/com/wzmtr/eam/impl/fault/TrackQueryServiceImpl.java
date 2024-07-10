@@ -72,7 +72,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
         }
         records.forEach(a -> {
             if (StringUtils.isNotEmpty(a.getDocId())) {
-                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(","))));
+                a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getDocId().split(CommonConstants.COMMA))));
             }
         });
         return list;

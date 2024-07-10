@@ -70,10 +70,10 @@ public class SecureCheckServiceImpl implements SecureCheckService {
             restoreDeptName = organizationMapper.getOrgById(a.getRestoreDeptCode());
         }
         if (StringUtils.isNotEmpty(a.getSecRiskPic())) {
-            a.setSecRiskPicFile(fileMapper.selectFileInfo(Arrays.asList(a.getSecRiskPic().split(","))));
+            a.setSecRiskPicFile(fileMapper.selectFileInfo(Arrays.asList(a.getSecRiskPic().split(CommonConstants.COMMA))));
         }
         if (StringUtils.isNotEmpty(a.getRestorePic())) {
-            a.setRestorePicFile(fileMapper.selectFileInfo(Arrays.asList(a.getRestorePic().split(","))));
+            a.setRestorePicFile(fileMapper.selectFileInfo(Arrays.asList(a.getRestorePic().split(CommonConstants.COMMA))));
         }
         //检查部门
         a.setInspectDeptName(inspectDeptName == null ? a.getInspectDeptCode() : inspectDeptName);

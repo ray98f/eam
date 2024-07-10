@@ -2,6 +2,7 @@ package com.wzmtr.eam.impl.detection;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.detection.OtherEquipTypeReqDTO;
 import com.wzmtr.eam.dto.req.detection.excel.ExcelOtherEquipTypeReqDTO;
 import com.wzmtr.eam.dto.res.detection.OtherEquipTypeResDTO;
@@ -99,7 +100,7 @@ public class OtherEquipTypeServiceImpl implements OtherEquipTypeService {
     public void exportOtherEquipType(String typeCode, String typeName, String ids, HttpServletResponse response) throws IOException {
         List<OtherEquipTypeResDTO> typeList;
         if (StringUtils.isNotEmpty(ids)) {
-            typeList = otherEquipTypeMapper.exportOtherEquipType(null, null, Arrays.asList(ids.split(",")));
+            typeList = otherEquipTypeMapper.exportOtherEquipType(null, null, Arrays.asList(ids.split(CommonConstants.COMMA)));
         } else {
             typeList = otherEquipTypeMapper.exportOtherEquipType(typeCode, typeName, null);
         }

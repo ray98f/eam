@@ -161,7 +161,7 @@ public class CarVideoCallServiceImpl implements CarVideoService {
             }
             Assert.isTrue(StringUtils.isNotEmpty(reqDTO.getWorkerId()) && StringUtils.isNotEmpty(reqDTO.getWorkClass()), ErrorCode.NORMAL_ERROR, "派工人信息不能为空");
             overTodoService.overTodo(reqDTO.getRecId(), "", CommonConstants.ONE_STRING);
-            String[] split = reqDTO.getWorkerId().split(",");
+            String[] split = reqDTO.getWorkerId().split(CommonConstants.COMMA);
             for (String s : split) {
                 overTodoService.insertTodo("视屏调阅流转", detail.getRecId(), detail.getApplyNo(), s, "视频调阅派工", "DMBR0022", TokenUtils.getCurrentPersonId(),null);
             }

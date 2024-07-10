@@ -41,7 +41,7 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
         String workCode = overhaulOrderReqDTO.getWorkerCode();
         overhaulWorkRecordMapper.deleteByOrderCode(overhaulOrderReqDTO);
         if (StringUtils.isNotEmpty(workCode)) {
-            String[] workerCodes = workCode.split(",");
+            String[] workerCodes = workCode.split(CommonConstants.COMMA);
             if (StringUtils.isNotEmpty(workerCodes)) {
                 for (String workerCode : workerCodes) {
                     // 新增工作记录

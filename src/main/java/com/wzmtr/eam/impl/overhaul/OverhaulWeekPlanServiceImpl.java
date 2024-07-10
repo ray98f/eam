@@ -621,7 +621,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         dmer24.setOrderCode(orderCode);
         dmer24.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
         if (workCode.length() > CommonConstants.TWO) {
-            String[] workerCodes = workCode.split(",");
+            String[] workerCodes = workCode.split(CommonConstants.COMMA);
             for (String workerCode : workerCodes) {
                 dmer24.setRecId(TokenUtils.getUuId());
                 dmer24.setWorkerCode(workerCode);

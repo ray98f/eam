@@ -386,7 +386,7 @@ public class BpmnServiceImpl implements BpmnService {
             }
         } else {
             StringBuilder chooseNodeUser = new StringBuilder();
-            String[] list = fromId.split(",");
+            String[] list = fromId.split(CommonConstants.COMMA);
             for (String s : list) {
                 chooseNodeUser.append("eam").append(s).append(",");
             }

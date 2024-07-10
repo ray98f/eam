@@ -650,7 +650,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                     if (StringUtils.isNotEmpty(overhaulItem)) {
                         Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).filter(Objects::nonNull).collect(Collectors.toSet());
                         String result = Joiner.on(",").join(nameSet);
-                        List<String> names = Arrays.stream(result.split(",")).distinct().filter(Objects::nonNull).collect(Collectors.toList());
+                        List<String> names = Arrays.stream(result.split(CommonConstants.COMMA)).distinct().filter(Objects::nonNull).collect(Collectors.toList());
                         result = Joiner.on(",").join(names);
                         res.setTaskPersonName(result);
                     }
@@ -679,7 +679,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 if (StringUtils.isNotEmpty(overhaulItem)) {
                     Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).filter(Objects::nonNull).collect(Collectors.toSet());
                     String result = Joiner.on(",").join(nameSet);
-                    List<String> names = Arrays.stream(result.split(",")).distinct().filter(Objects::nonNull).collect(Collectors.toList());
+                    List<String> names = Arrays.stream(result.split(CommonConstants.COMMA)).distinct().filter(Objects::nonNull).collect(Collectors.toList());
                     result = Joiner.on(",").join(names);
                     res.setTaskPersonName(result);
                 }
@@ -782,7 +782,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 if (StringUtils.isNotEmpty(list)) {
                     for (OverhaulItemResDTO itemRes : list) {
                         if (StringUtils.isNotEmpty(itemRes.getDocId())) {
-                            itemRes.setDocFile(fileMapper.selectFileInfo(Arrays.asList(itemRes.getDocId().split(","))));
+                            itemRes.setDocFile(fileMapper.selectFileInfo(Arrays.asList(itemRes.getDocId().split(CommonConstants.COMMA))));
                         }
                         // 提交结果为空时填充提交处理信息
                         if (StringUtils.isNull(res.getWorkResult())) {
