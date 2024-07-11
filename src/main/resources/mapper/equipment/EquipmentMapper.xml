@@ -1110,7 +1110,7 @@
         )
 <!--        MAJOR_CODE='11' and USE_LINE_NO='02'-->
         AND DELETE_FLAG='0'
-        ORDER BY EQUIP_NAME ASC
+        ORDER BY MAJOR_CODE ASC, SYSTEM_CODE ASC, EQUIP_TYPE_CODE ASC, EQUIP_NAME ASC
     </select>
 
     <select id="pageSiftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
