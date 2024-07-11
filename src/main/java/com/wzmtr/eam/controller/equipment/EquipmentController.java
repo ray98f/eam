@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.equipment;
 
+import com.wzmtr.eam.dto.req.equipment.EquipmentExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
@@ -191,17 +192,15 @@ public class EquipmentController {
 
     /**
      * 导出设备台账
-     * @param baseIdsEntity ids
+     * @param reqDTO 导出传参
      * @param response response
      * @throws IOException 异常
      */
     @PostMapping("/export")
     @ApiOperation(value = "导出设备台账")
-    public void exportEquipment(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
-//        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
-//            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
-//        }
-        equipmentService.exportEquipment(baseIdsEntity.getIds(), response);
+    public void exportEquipment(@RequestBody EquipmentExportReqDTO reqDTO,
+                                HttpServletResponse response) throws IOException {
+        equipmentService.exportEquipment(reqDTO, response);
     }
 
     /**

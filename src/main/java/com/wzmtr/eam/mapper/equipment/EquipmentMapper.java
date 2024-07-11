@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.equipment.EquipmentExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentSiftReqDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
@@ -106,10 +107,10 @@ public interface EquipmentMapper {
 
     /**
      * 根据id获取设备台账列表
-     * @param ids ids
+     * @param reqDTO 导出传参
      * @return 设备台账列表
      */
-    List<EquipmentResDTO> listEquipment(List<String> ids);
+    List<EquipmentResDTO> listEquipment(EquipmentExportReqDTO reqDTO);
 
     Page<EquipmentResDTO> pageSiftEquipment(Page<EquipmentResDTO> page, EquipmentSiftReqDTO req);
 

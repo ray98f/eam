@@ -4,6 +4,7 @@ import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.equipment.EquipmentExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelEquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
@@ -216,8 +217,8 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    public void exportEquipment(List<String> ids, HttpServletResponse response) throws IOException {
-        List<EquipmentResDTO> equipmentResDTOList = equipmentMapper.listEquipment(ids);
+    public void exportEquipment(EquipmentExportReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<EquipmentResDTO> equipmentResDTOList = equipmentMapper.listEquipment(reqDTO);
         if (equipmentResDTOList != null && !equipmentResDTOList.isEmpty()) {
             List<ExcelEquipmentResDTO> list = new ArrayList<>();
             for (EquipmentResDTO resDTO : equipmentResDTOList) {
