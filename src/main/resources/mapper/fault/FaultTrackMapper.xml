@@ -509,6 +509,8 @@
         df.EXT3	as "ext3",
         df.EXT4	as "ext4",
         df.EXT5	as "ext5",
+        df.IS_FAULT as "isFault",
+        df.IS_REPLACE_PART as "isReplacePart",
         df.REPAIR_LIMIT_TIME	as "repairLimitTime",
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=df.FINISH_MAJOR_CODE) AS "finishMajorName",
         (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=df.FINISH_SYSTEM_CODE) AS "finishSystemName",

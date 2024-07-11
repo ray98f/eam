@@ -212,7 +212,7 @@
     </select>
 
     <resultMap id="moduleList" type="com.wzmtr.eam.dto.res.basic.EquipmentCategoryModuleResDTO">
-        <id property="moduleName" column="MODULE_NAME"/>
+        <result property="moduleName" column="MODULE_NAME"/>
         <result property="majorCode" column="MAJOR_CODE"/>
         <result property="majorName" column="MAJOR_NAME"/>
         <result property="systemCode" column="SYSTEM_CODE"/>
@@ -223,9 +223,9 @@
                     ofType="com.wzmtr.eam.dto.res.basic.EquipmentCategoryModuleResDTO$Part"
                     select="listEquipmentCategoryPart"
                     column="{majorCode=MAJOR_CODE,systemCode=SYSTEM_CODE,equipTypeCode=EQUIP_TYPE_CODE,moduleName=MODULE_NAME}">
-            <id property="partList.recId" column="REC_ID"/>
-            <result property="partList.partName" column="PART_NAME"/>
-            <result property="partList.quantity" column="QUANTITY"/>
+            <result property="recId" column="REC_ID"/>
+            <result property="partName" column="PART_NAME"/>
+            <result property="quantity" column="QUANTITY"/>
         </collection>
     </resultMap>
 
@@ -257,20 +257,6 @@
         </if>
         ORDER BY REC_CREATE_TIME ASC
     </select>
-
-<!--    <resultMap id="subclassList" type="com.wzmtr.eam.dto.res.basic.EquipmentCategorySubclassResDTO">-->
-<!--        <result property="equipSubclassName" column="EQUIP_SUBCLASS_NAME"/>-->
-<!--        <result property="majorCode" column="MAJOR_CODE"/>-->
-<!--        <result property="majorName" column="MAJOR_NAME"/>-->
-<!--        <result property="systemCode" column="SYSTEM_CODE"/>-->
-<!--        <result property="systemName" column="SYSTEM_NAME"/>-->
-<!--        <result property="equipTypeCode" column="EQUIP_TYPE_CODE"/>-->
-<!--        <result property="equipTypeName" column="EQUIP_TYPE_NAME"/>-->
-<!--        <collection property="moduleList" javaType="java.util.ArrayList"-->
-<!--                    resultMap="subclassModuleList"-->
-<!--                    select="listEquipmentCategoryModuleBySubclass"-->
-<!--                    column="{majorCode=MAJOR_CODE,systemCode=SYSTEM_CODE,equipTypeCode=EQUIP_TYPE_CODE,equipSubclassName=EQUIP_SUBCLASS_NAME}"/>-->
-<!--    </resultMap>-->
 
     <resultMap id="subclassModuleList" type="com.wzmtr.eam.dto.res.basic.EquipmentCategorySubclassResDTO$Module">
         <result property="moduleName" column="MODULE_NAME"/>

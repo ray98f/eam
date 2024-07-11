@@ -260,6 +260,11 @@ public class FaultDetailResDTO {
     @ApiModelProperty(value = "是否故障")
     private String isFault;
     /**
+     * 是否更换部件 10 是 20 否
+     */
+    @ApiModelProperty(value = "是否更换部件")
+    private String isReplacePart;
+    /**
      * 处理人员
      */
     @ApiModelProperty(value = "处理人员")

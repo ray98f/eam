@@ -149,6 +149,10 @@ public class FaultFinishWorkReqDTO {
      */
     private String isFault;
     /**
+     * 是否更换部件 10 是 20 否
+     */
+    private String isReplacePart;
+    /**
      * 是否提交 0 否 1 是
      */
     private String isToSubmit;
