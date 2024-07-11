@@ -1103,13 +1103,13 @@
     <select id="listEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
         FROM T_EQUIPMENT WHERE
-        REC_ID IN (
-        <foreach collection="ids" index="index" item="id" separator=",">
-            #{id}
-        </foreach>
-        )
+<!--        REC_ID IN (-->
+<!--        <foreach collection="ids" index="index" item="id" separator=",">-->
+<!--            #{id}-->
+<!--        </foreach>-->
+<!--        )-->
 <!--        MAJOR_CODE='11' and USE_LINE_NO='02'-->
-        AND DELETE_FLAG='0'
+        DELETE_FLAG='0' AND USE_LINE_NO='02'
         ORDER BY MAJOR_CODE ASC, SYSTEM_CODE ASC, EQUIP_TYPE_CODE ASC, EQUIP_NAME ASC
     </select>
 
