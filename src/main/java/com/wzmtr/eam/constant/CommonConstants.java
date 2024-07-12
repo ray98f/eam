@@ -176,6 +176,8 @@ public class CommonConstants {
     public static final int TWENTY = 20;
     public static final int THIRTY = 30;
 
+    public static final int ONE_THOUSAND = 1000;
+
     public static final String MESSAGE = "message";
 
     /**
