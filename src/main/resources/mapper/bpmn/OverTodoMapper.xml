@@ -44,9 +44,8 @@
         <if test="todoDate!=null and todoDate!=''">
             TODO_DATE=#{todoDate},
         </if>
-
-                               TODO_STATUS=#{todoStatus}
-        WHERE RELATE_ID =#{relateId}
+        TODO_STATUS=#{todoStatus}
+        WHERE RELATE_ID=#{relateId}
     </update>
 
     <insert id="insert">
@@ -73,8 +72,7 @@
         EXT5,  <!-- 扩展字段5 -->
         EXT6,  <!-- 扩展字段6 -->
         FLOW_ID,
-        RELATE_ID
-        )
+        RELATE_ID)
         VALUES (
         #{todoId,jdbcType=VARCHAR},
         #{syscode,jdbcType=VARCHAR},
@@ -98,7 +96,6 @@
         #{ext5,jdbcType=VARCHAR},
         #{ext6,jdbcType=VARCHAR},
         #{flowId,jdbcType=VARCHAR},
-        #{relateId,jdbcType=VARCHAR}
-        )
+        #{relateId,jdbcType=VARCHAR})
     </insert>
 </mapper>

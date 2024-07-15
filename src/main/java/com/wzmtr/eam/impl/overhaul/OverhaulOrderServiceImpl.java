@@ -413,7 +413,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setRecDeleteTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        overhaulOrderReqDTO.setExt1(" ");
+        overhaulOrderReqDTO.setExt1(CommonConstants.BLANK);
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         // ServiceDMER0201  auditWorkers
         //完成该业务编号下的所有待办
@@ -488,7 +488,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setConfirTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        overhaulOrderReqDTO.setExt1(" ");
+        overhaulOrderReqDTO.setExt1(CommonConstants.BLANK);
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         modifyOverhaulPlanWhenConfirmWorkers(overhaulOrderReqDTO);
         // ServiceDMER0201  confirmWorkers
@@ -589,7 +589,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
         overhaulOrderReqDTO.setCancelTime(DateUtils.getCurrentTime());
         overhaulOrderReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         overhaulOrderReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        overhaulOrderReqDTO.setExt1(" ");
+        overhaulOrderReqDTO.setExt1(CommonConstants.BLANK);
         overhaulOrderMapper.modifyOverhaulOrder(overhaulOrderReqDTO);
         // 添加流程记录
         addOverhaulOrderFlow(overhaulOrderReqDTO.getOrderCode(), null);

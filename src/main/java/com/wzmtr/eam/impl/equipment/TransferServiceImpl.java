@@ -304,10 +304,10 @@ public class TransferServiceImpl implements TransferService {
     public void insertEquipment(TransferResDTO transferResDTO, String equipCode, CurrentLoginUser user) {
         EquipmentReqDTO equipmentReqDTO = new EquipmentReqDTO();
         BeanUtils.copyProperties(transferResDTO, equipmentReqDTO);
-        equipmentReqDTO.setSystemCode(" ");
-        equipmentReqDTO.setSystemName(" ");
-        equipmentReqDTO.setEquipTypeCode(" ");
-        equipmentReqDTO.setEquipTypeName(" ");
+        equipmentReqDTO.setSystemCode(CommonConstants.BLANK);
+        equipmentReqDTO.setSystemName(CommonConstants.BLANK);
+        equipmentReqDTO.setEquipTypeCode(CommonConstants.BLANK);
+        equipmentReqDTO.setEquipTypeName(CommonConstants.BLANK);
         equipmentReqDTO.setUseLineNo(transferResDTO.getLineNo());
         equipmentReqDTO.setUseLineName(transferResDTO.getLineName());
         equipmentReqDTO.setUseSegNo(transferResDTO.getLineSubNo());
@@ -342,12 +342,12 @@ public class TransferServiceImpl implements TransferService {
             equipmentReqDTO.setBomType(transferResDTO.getItemCode());
         }
         equipmentReqDTO.setExt5(transferResDTO.getVendorCode());
-        equipmentReqDTO.setEquipStatus(" ");
-        equipmentReqDTO.setSourceKind(" ");
-        equipmentReqDTO.setStartUseDate(" ");
-        equipmentReqDTO.setInAccountTime(" ");
-        equipmentReqDTO.setInstallDealer(" ");
-        equipmentReqDTO.setDocId(" ");
+        equipmentReqDTO.setEquipStatus(CommonConstants.BLANK);
+        equipmentReqDTO.setSourceKind(CommonConstants.BLANK);
+        equipmentReqDTO.setStartUseDate(CommonConstants.BLANK);
+        equipmentReqDTO.setInAccountTime(CommonConstants.BLANK);
+        equipmentReqDTO.setInstallDealer(CommonConstants.BLANK);
+        equipmentReqDTO.setDocId(CommonConstants.BLANK);
         equipmentReqDTO.setOriginLineNo(" ");
         equipmentReqDTO.setOriginLineName(" ");
         equipmentReqDTO.setOriginSegNo(" ");

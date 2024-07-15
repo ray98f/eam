@@ -235,8 +235,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, submissionRecordReqDTO.getExamineReqDTO().getOpinion());
-                reqDTO.setWorkFlowInstId("");
-                reqDTO.setWorkFlowInstStatus("");
+                reqDTO.setWorkFlowInstId(CommonConstants.EMPTY);
+                reqDTO.setWorkFlowInstStatus(CommonConstants.EMPTY);
                 reqDTO.setRecStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()

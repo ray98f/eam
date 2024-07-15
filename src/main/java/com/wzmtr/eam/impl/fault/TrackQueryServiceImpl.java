@@ -145,7 +145,7 @@ public class TrackQueryServiceImpl implements TrackQueryService {
                 bo.setRecStatus("99");
                 bo.setRecRevisor(TokenUtils.getCurrentPersonId());
                 bo.setRecReviseTime(DateUtils.getCurrentTime());
-                bo.setExt1("");
+                bo.setExt1(CommonConstants.EMPTY);
                 faultTrackMapper.cancellGenZ(bo);
             });
         }

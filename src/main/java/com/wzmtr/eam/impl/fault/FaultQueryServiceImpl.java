@@ -291,7 +291,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         LineCode lineCode = LineCode.getByCode(resDTO.getLineCode());
         FaultType faultType = FaultType.getByCode(resDTO.getFaultType());
         Dictionaries position2 = dictionariesMapper.queryOneByItemCodeAndCodesetCode(CommonConstants.DM_STATION2,
-                Objects.isNull(resDTO.getPosition2Code()) ? "" : resDTO.getPosition2Code());
+                Objects.isNull(resDTO.getPosition2Code()) ? CommonConstants.EMPTY : resDTO.getPosition2Code());
         String repairDept = null;
         String fillinDept = null;
         if (StringUtils.isNotEmpty(resDTO.getRepairDeptCode())) {
@@ -534,14 +534,14 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //     String faultProcessResult = dmfm02.getFaultProcessResult();
         //     content = CommonConstants.FAULT_CONTENT_BEGIN + faultWorkNo + "的故障，" + userCoInfo.getOrgName() + "的" + userCoInfo.getUserName() + "已完工确认，请及时在EAM系统关闭工单！";
         //     if (CommonConstants.LINE_CODE_ONE.equals(faultProcessResult) || CommonConstants.LINE_CODE_TWO.equals(faultProcessResult)) {
-        //         if (stationCode != null && !"".equals(stationCode.trim())) {
+        //         if (stationCode != null && !CommonConstants.EMPTY.equals(stationCode.trim())) {
         //             Map<Object, Object> map = new HashMap<>();
         //             map.put("stationCode", stationCode);
         //             faultNo5 = this.dao.query("DMBM13.queryStation", map);
         //             for (Map<String, String> map1 : faultNo5) {
         //                 EiInfo out = DMUtil.insertTODO("【" + majorName + CommonConstants.FAULT_CONTENT_END, dmfm02.getRecId(), faultWorkNo, map1.get("userId"), "故障关闭", "DMFM0001", currentUser);
         //                 status = out.getStatus();
-        //                 if (map1.get("mobile") != null && !"".equals(map1.get("mobile"))) {
+        //                 if (map1.get("mobile") != null && !CommonConstants.EMPTY.equals(map1.get("mobile"))) {
         //                     // ISendMessage.messageCons(map1.get("mobile"), content);
         //                 }
         //                 throw new CommonException(ErrorCode.NORMAL_ERROR,"该人员无电话号码");
@@ -572,7 +572,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //     // dmfm01.fromMap(listFm01.get(0));
         //     Message message = new Message();
         //     message.setWorkNo(dmfm02.getFaultWorkNo());
-        //     message.setWorkType("");
+        //     message.setWorkType(CommonConstants.EMPTY);
         //     message.setObjectName(dmfm01.getObjectName());
         //     message.setLineName(CodeFactory.getCodeService().getCodeCName("line", "01", "1"));
         //     message.setPosName(InterfaceHelper.getPositionHelpe().getPositionNameToCode(dmfm01.getPositionCode()));
@@ -587,7 +587,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         //     message.setDispatchUser(dmfm02.getDispatchUserName());
         //     message.setDispatchTime(dmfm02.getDispatchTime());
         //     message.setGroupCode(dmfm02.getWorkClass());
-        //     message.setWorkClass("");
+        //     message.setWorkClass(CommonConstants.EMPTY);
         // List<Map<String, String>> workerGroupList = InterfaceHelper.getUserHelpe().getWorkerGroupNameByWorkerGroupCode(dmfm02.getWorkClass());
         // if (workerGroupList != null && workerGroupList.size() > 0) {
         //     message.setWorkClass((String) ((Map) workerGroupList.get(0)).get("orgName"));
@@ -1081,7 +1081,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         if (StringUtils.isNotEmpty(list)) {
             return list.get(0).getRecId();
         }
-        return "";
+        return CommonConstants.EMPTY;
     }
 
     /**

@@ -103,7 +103,7 @@ public class DetectionServiceImpl implements DetectionService {
         detectionReqDTO.setRecId(TokenUtils.getUuId());
         detectionReqDTO.setArchiveFlag("0");
         detectionReqDTO.setRecStatus("10");
-        detectionReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtils.getCurrentPerson().getOfficeAreaId());
+        detectionReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? CommonConstants.BLANK : TokenUtils.getCurrentPerson().getOfficeAreaId());
         detectionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         detectionReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String checkNo = detectionMapper.getMaxCode();

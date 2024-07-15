@@ -91,7 +91,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isNotEmpty(list)) {
             for (OverhaulPlanResDTO res : list) {
                 if(StringUtils.isEmpty(res.getWorkFlowInstStatus())){
-                    res.setWorkFlowInstStatus(" ");
+                    res.setWorkFlowInstStatus(CommonConstants.BLANK);
                 }
                 if (StringUtils.isNotEmpty(res.getWorkerGroupCode())) {
                     res.setWorkGroupName(organizationMapper.getNamesById(res.getWorkerGroupCode()));
@@ -150,14 +150,14 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
         String planCode = CodeUtils.getNextCode(code, 2);
         overhaulPlanReqDTO.setPlanCode(planCode);
-        overhaulPlanReqDTO.setExt1(" ");
-        overhaulPlanReqDTO.setRelationCode(" ");
-        overhaulPlanReqDTO.setWorkFlowInstId(" ");
-        overhaulPlanReqDTO.setWorkFlowInstStatus(" ");
+        overhaulPlanReqDTO.setExt1(CommonConstants.BLANK);
+        overhaulPlanReqDTO.setRelationCode(CommonConstants.BLANK);
+        overhaulPlanReqDTO.setWorkFlowInstId(CommonConstants.BLANK);
+        overhaulPlanReqDTO.setWorkFlowInstStatus(CommonConstants.BLANK);
         overhaulPlanReqDTO.setTrigerTime("0");
         overhaulPlanReqDTO.setLastActionTime("0");
         overhaulPlanReqDTO.setNodeLevel(0);
-        overhaulPlanReqDTO.setParentNodeRecId(" ");
+        overhaulPlanReqDTO.setParentNodeRecId(CommonConstants.BLANK);
         overhaulPlanReqDTO.setCountFlag(0);
         overhaulPlanReqDTO.setCount(0);
         overhaulPlanMapper.addOverhaulPlan(overhaulPlanReqDTO);
@@ -185,7 +185,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
         overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        overhaulPlanReqDTO.setExt1(" ");
+        overhaulPlanReqDTO.setExt1(CommonConstants.BLANK);
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
     }
 
@@ -305,8 +305,8 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, opinion);
                 overTodoService.cancelTodo(recId);
-                overhaulPlanReqDTO.setWorkFlowInstId("");
-                overhaulPlanReqDTO.setWorkFlowInstStatus("");
+                overhaulPlanReqDTO.setWorkFlowInstId(CommonConstants.EMPTY);
+                overhaulPlanReqDTO.setWorkFlowInstStatus(CommonConstants.EMPTY);
                 overhaulPlanReqDTO.setTrialStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()
@@ -318,7 +318,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         }
         overhaulPlanReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         overhaulPlanReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
-        overhaulPlanReqDTO.setExt1(" ");
+        overhaulPlanReqDTO.setExt1(CommonConstants.BLANK);
         overhaulPlanMapper.modifyOverhaulPlan(overhaulPlanReqDTO);
     }
 
@@ -479,7 +479,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         OverhaulOrderReqDTO overhaulOrder = new OverhaulOrderReqDTO();
         overhaulOrder.setOrderCode(orderCode);
         overhaulOrder.setWorkStatus(CommonConstants.ONE_STRING);
-        String trigerTime = "";
+        String trigerTime = CommonConstants.EMPTY;
         OverhaulPlanListReqDTO overhaulPlanListReq = new OverhaulPlanListReqDTO();
         overhaulPlanListReq.setPlanCode(planCode);
         List<OverhaulPlanResDTO> plans = overhaulPlanMapper.listOverhaulPlan(overhaulPlanListReq);
@@ -499,9 +499,9 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                 log.error("exception message", e);
             }
         }
-        overhaulOrder.setRealStartTime(" ");
-        overhaulOrder.setRealEndTime(" ");
-        overhaulOrder.setExt1(" ");
+        overhaulOrder.setRealStartTime(CommonConstants.BLANK);
+        overhaulOrder.setRealEndTime(CommonConstants.BLANK);
+        overhaulOrder.setExt1(CommonConstants.BLANK);
         buildOverhaulOrderPlanStartTime(planCode, orderCodes, overhaulOrder, trigerTime);
         addOverhaulOrder(overhaulPlanListReq, overhaulOrder);
     }
@@ -625,7 +625,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                     BeanUtils.copyProperties(object, orderDetail);
                     orderDetail.setOrderCode(orderCode);
                     orderDetail.setRecId(dmer22uuid);
-                    orderDetail.setStartTime(" ");
+                    orderDetail.setStartTime(CommonConstants.BLANK);
                     orderDetail.setCompliteTime(" ");
                     overhaulOrderMapper.addOverhaulOrderDetail(orderDetail);
                 } catch (Exception e) {

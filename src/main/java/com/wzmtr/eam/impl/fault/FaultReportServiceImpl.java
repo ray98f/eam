@@ -567,8 +567,8 @@ public class FaultReportServiceImpl implements FaultReportService {
         orderUpdate.setRecReviseTime(DateUtils.getCurrentTime());
         if (StringUtils.isEmpty(reqDTO.getDocId())) {
             // 前端传的是个空值，特殊处理下
-            infoUpdate.setDocId(" ");
-            orderUpdate.setDocId(" ");
+            infoUpdate.setDocId(CommonConstants.BLANK);
+            orderUpdate.setDocId(CommonConstants.BLANK);
         }
         if (null != reqDTO.getMaintenance()) {
             infoUpdate.setExt4(reqDTO.getMaintenance().toString());

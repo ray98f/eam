@@ -93,14 +93,14 @@ public class BomServiceImpl implements BomService {
         BomReqDTO secondSysBom = new BomReqDTO();
         BomReqDTO secondComBom = new BomReqDTO();
         BomReqDTO thirdComBom;
-        String firstSysBomCode = "", firstComBomCode = "", secondSysBomCode = "", secondComBomCode = "", thirdComBomCode = "";
+        String firstSysBomCode = CommonConstants.EMPTY, firstComBomCode = CommonConstants.EMPTY, secondSysBomCode = CommonConstants.EMPTY, secondComBomCode = CommonConstants.EMPTY, thirdComBomCode = CommonConstants.EMPTY;
         for (ExcelBomReqDTO reqDTO : list) {
             if (StringUtils.isNotEmpty(reqDTO.getFirstSysName())) {
                 firstSysBom = new BomReqDTO();
-                firstComBomCode = "";
-                secondSysBomCode = "";
-                secondComBomCode = "";
-                thirdComBomCode = "";
+                firstComBomCode = CommonConstants.EMPTY;
+                secondSysBomCode = CommonConstants.EMPTY;
+                secondComBomCode = CommonConstants.EMPTY;
+                thirdComBomCode = CommonConstants.EMPTY;
                 firstSysBomCode = getTreeCode(firstSysBomCode, null, 1);
                 firstSysBom.setEname(firstSysBomCode);
                 firstSysBom.setCname(reqDTO.getFirstSysName());
@@ -109,9 +109,9 @@ public class BomServiceImpl implements BomService {
             }
             if (StringUtils.isNotEmpty(reqDTO.getFirstComName())) {
                 firstComBom = new BomReqDTO();
-                secondSysBomCode = "";
-                secondComBomCode = "";
-                thirdComBomCode = "";
+                secondSysBomCode = CommonConstants.EMPTY;
+                secondComBomCode = CommonConstants.EMPTY;
+                thirdComBomCode = CommonConstants.EMPTY;
                 firstComBomCode = getTreeCode(firstComBomCode, firstSysBomCode, 2);
                 firstComBom.setEname(firstComBomCode);
                 firstComBom.setCname(reqDTO.getFirstComName());
@@ -120,8 +120,8 @@ public class BomServiceImpl implements BomService {
             }
             if (StringUtils.isNotEmpty(reqDTO.getSecondSysName())) {
                 secondSysBom = new BomReqDTO();
-                secondComBomCode = "";
-                thirdComBomCode = "";
+                secondComBomCode = CommonConstants.EMPTY;
+                thirdComBomCode = CommonConstants.EMPTY;
                 secondSysBomCode = getTreeCode(secondSysBomCode, firstComBomCode, 3);
                 secondSysBom.setEname(secondSysBomCode);
                 secondSysBom.setCname(reqDTO.getSecondSysName());
@@ -130,7 +130,7 @@ public class BomServiceImpl implements BomService {
             }
             if (StringUtils.isNotEmpty(reqDTO.getSecondComName())) {
                 secondComBom = new BomReqDTO();
-                thirdComBomCode = "";
+                thirdComBomCode = CommonConstants.EMPTY;
                 secondComBomCode = getTreeCode(secondComBomCode, secondSysBomCode, 4);
                 secondComBom.setEname(secondComBomCode);
                 secondComBom.setCname(reqDTO.getSecondComName());

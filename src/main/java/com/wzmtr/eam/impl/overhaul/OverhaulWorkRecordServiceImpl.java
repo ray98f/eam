@@ -37,7 +37,7 @@ public class OverhaulWorkRecordServiceImpl implements OverhaulWorkRecordService 
     @Override
     public void insertRepair(OverhaulOrderReqDTO overhaulOrderReqDTO) {
         // ExamineRepairOrder insertRepair DMUtil.overTODO
-        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), "", CommonConstants.ONE_STRING);
+        overTodoService.overTodo(overhaulOrderReqDTO.getRecId(), CommonConstants.EMPTY, CommonConstants.ONE_STRING);
         String workCode = overhaulOrderReqDTO.getWorkerCode();
         overhaulWorkRecordMapper.deleteByOrderCode(overhaulOrderReqDTO);
         if (StringUtils.isNotEmpty(workCode)) {

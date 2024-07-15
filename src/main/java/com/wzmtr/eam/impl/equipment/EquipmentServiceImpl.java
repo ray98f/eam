@@ -149,10 +149,10 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentReqDTO.setInAccountTime(DateUtils.getCurrentTime());
         CurrentLoginUser user = TokenUtils.getCurrentPerson();
-        equipmentReqDTO.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : " ");
-        equipmentReqDTO.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : " ");
-        equipmentReqDTO.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : " ");
-        equipmentReqDTO.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
+        equipmentReqDTO.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : CommonConstants.BLANK);
+        equipmentReqDTO.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : CommonConstants.BLANK);
+        equipmentReqDTO.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : CommonConstants.BLANK);
+        equipmentReqDTO.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : CommonConstants.BLANK);
         equipmentReqDTO.setEquipCode(getEquipCode());
         equipmentReqDTO.setSpecialEquipFlag("10");
         equipmentReqDTO.setOtherEquipFlag("10");
@@ -197,7 +197,7 @@ public class EquipmentServiceImpl implements EquipmentService {
             req.setUseSegNo(Objects.isNull(reqDTO.getUseSegName()) ? "" :
                     "一期".equals(reqDTO.getUseSegName()) ? "01" :
                             "二期".equals(reqDTO.getUseSegName()) ? "02" : "03");
-            req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" :
+            req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? CommonConstants.EMPTY :
                     "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
             req.setOtherEquipFlag(Objects.isNull(reqDTO.getOtherEquipFlag()) ? "" :
                     "否".equals(reqDTO.getOtherEquipFlag()) ? "10" : "20");
@@ -207,10 +207,10 @@ public class EquipmentServiceImpl implements EquipmentService {
             req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(DateUtils.getCurrentTime());
             CurrentLoginUser user = TokenUtils.getCurrentPerson();
-            req.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : " ");
-            req.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : " ");
-            req.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : " ");
-            req.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
+            req.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : CommonConstants.BLANK);
+            req.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : CommonConstants.BLANK);
+            req.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : CommonConstants.BLANK);
+            req.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : CommonConstants.BLANK);
             req.setEquipCode(equipCode);
             temp.add(req);
             // 获取下一个设备编号
