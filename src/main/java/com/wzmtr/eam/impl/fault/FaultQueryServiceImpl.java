@@ -322,7 +322,9 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             export.setOperateCostTime(partBO.getOperateCostTime());
         }
         FaultDetailResDTO partInfo = faultTrackMapper.selectPartInfo(resDTO.getFaultOrderRecId(), resDTO.getMajorCode());
-        org.springframework.beans.BeanUtils.copyProperties(partInfo, export);
+        if (StringUtils.isNotNull(partInfo)) {
+            org.springframework.beans.BeanUtils.copyProperties(partInfo, export);
+        }
         return export;
     }
 
