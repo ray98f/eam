@@ -51,6 +51,7 @@ import com.wzmtr.eam.mapper.fault.FaultAnalyzeMapper;
 import com.wzmtr.eam.mapper.fault.FaultInfoMapper;
 import com.wzmtr.eam.mapper.fault.FaultQueryMapper;
 import com.wzmtr.eam.mapper.fault.FaultReportMapper;
+import com.wzmtr.eam.mapper.fault.FaultTrackMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.service.bpmn.OverTodoService;
 import com.wzmtr.eam.service.common.OrganizationService;
@@ -121,6 +122,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
     private TrackQueryService trackQueryService;
     @Autowired
     private PartReplaceMapper partReplaceMapper;
+    @Autowired
+    private FaultTrackMapper faultTrackMapper;
 
     @Override
     public Page<FaultDetailResDTO> list(FaultQueryReqDTO reqDTO) {
@@ -267,7 +270,6 @@ public class FaultQueryServiceImpl implements FaultQueryService {
 
     @Override
     public void export(FaultExportReqDTO reqDTO, HttpServletResponse response) {
-        // com.baosight.wzplat.dm.fm.service.ServiceDMFM0001#export
         List<FaultDetailResDTO> faultDetailRes = faultQueryMapper.export(reqDTO);
         if (StringUtils.isEmpty(faultDetailRes)) {
             return;
@@ -319,6 +321,8 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             export.setNewRepNo(partBO.getNewRepNo());
             export.setOperateCostTime(partBO.getOperateCostTime());
         }
+        FaultDetailResDTO partInfo = faultTrackMapper.selectPartInfo(resDTO.getFaultOrderRecId(), resDTO.getMajorCode());
+        org.springframework.beans.BeanUtils.copyProperties(partInfo, export);
         return export;
     }
 

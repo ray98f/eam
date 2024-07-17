@@ -849,8 +849,8 @@
     </select>
     <select id="export" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
         SELECT
-        d.REC_ID AS recId,
-        df.REC_ID AS workId,
+        d.REC_ID AS faultInfoRecId,
+        df.REC_ID AS faultOrderRecId,
         df.WORK_CLASS AS workClass,
         d.COMPANY_CODE AS companyCode,
         d.COMPANY_NAME AS companyName,
@@ -928,9 +928,7 @@
         d.IF_PHM AS "ifPhm",
         d.IF_RELIABILITY AS "ifReliability",
         d.IF_OTHER AS "ifOther",
-        (
-        CASE
-        WHEN TO_DATE(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') <![CDATA[<]]> TO_DATE(SYSDATE - 20) AND
+        (CASE WHEN TO_DATE(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') <![CDATA[<]]> TO_DATE(SYSDATE - 20) AND
         (df.ORDER_STATUS='10' OR df.ORDER_STATUS='20' OR df.ORDER_STATUS='30') AND
         df.ORDER_STATUS!='99' AND df.ORDER_STATUS!='60' AND df.ORDER_STATUS!='70' THEN 1
         WHEN TO_DATE(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') <![CDATA[>=]]> TO_DATE(SYSDATE - 20) AND
@@ -940,9 +938,19 @@
         WHEN TO_DATE(d.FILLIN_TIME, 'yyyy-mm-dd hh24:mi:ss') <![CDATA[>=]]> TO_DATE(SYSDATE - 10) AND
         (df.ORDER_STATUS='10' OR df.ORDER_STATUS='20' OR df.ORDER_STATUS='30') AND
         df.ORDER_STATUS!='99' AND df.ORDER_STATUS!='60' AND df.ORDER_STATUS!='70' THEN 3
-        ELSE 9
-        END
-       ) AS sort
+        ELSE 9 END) AS sort,
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=df.FINISH_MAJOR_CODE) AS "finishMajorName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=df.FINISH_SYSTEM_CODE) AS "finishSystemName",
+        (SELECT db.NODE_NAME FROM T_EQUIPMENT_CATEGORY db WHERE db.NODE_CODE=df.FINISH_EQUIP_TYPE_CODE) AS "finishEquipTypeName",
+        df.FINISH_MAJOR_CODE AS "finishMajorCode",
+        df.FINISH_SYSTEM_CODE AS "finishSystemCode",
+        df.FINISH_EQUIP_TYPE_CODE AS "finishEquipTypeCode",
+        df.FINISH_OBJECT_CODE AS "finishObjectCode",
+        df.FINISH_OBJECT_NAME AS "finishObjectName",
+        df.FINISH_POSITION_CODE AS "finishPositionCode",
+        df.FINISH_POSITION2_CODE AS "finishPosition2Code",
+        (SELECT db.NODE_NAME FROM SYS_REGION db WHERE db.NODE_CODE=df.FINISH_POSITION_CODE) AS "finishPositionName",
+        df.FINISH_PART_ID AS "finishPartId"
         FROM T_FAULT_INFO d
         LEFT JOIN SYS_USER u ON d.FILLIN_USER_ID=u.LOGIN_NAME
         LEFT JOIN T_FAULT_ORDER df ON d.FAULT_NO=df.FAULT_NO AND d.FAULT_FLAG!='2'

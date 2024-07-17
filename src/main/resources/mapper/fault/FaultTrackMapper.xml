@@ -548,6 +548,28 @@
             </if>
         </trim>
     </select>
+    <select id="selectPartInfo" resultType="com.wzmtr.eam.dto.res.fault.FaultDetailResDTO">
+        <trim prefix="SELECT" suffixOverrides=",">
+            <if test="majorCode!=null and (majorCode=='06'.toString() or majorCode=='07'.toString())">
+                ep.CNAME AS "finishPartName",
+            </if>
+            <if test="majorCode!=null and majorCode!='06'.toString() and majorCode!='07'.toString()">
+                ep.EQUIP_SUBCLASS_NAME AS "finishSubclassName",
+                ep.MODULE_NAME AS "finishModuleName",
+                ep.PART_NAME AS "finishPartName",
+            </if>
+        </trim>
+        FROM T_FAULT_ORDER df
+        <if test="majorCode!=null and (majorCode=='06'.toString() or majorCode=='07'.toString())">
+            LEFT JOIN T_BOM ep ON ep.REC_ID=df.FINISH_PART_ID AND ep.DELETE_FLAG='0'
+        </if>
+        <if test="majorCode!=null and majorCode!='06'.toString() and majorCode!='07'.toString()">
+            LEFT JOIN T_EQUIPMENT_CATEGORY_PART ep ON ep.REC_ID=df.FINISH_PART_ID AND ep.DELETE_FLAG='0'
+        </if>
+        <trim prefix="WHERE" prefixOverrides="AND">
+            AND df.REC_ID=#{recId}
+        </trim>
+    </select>
     <select id="faultFlowDetail" resultType="com.wzmtr.eam.dto.res.fault.FaultFlowResDTO">
         SELECT ff.REC_ID, ff.FAULT_NO, ff.FAULT_WORK_NO, ff.ORDER_STATUS, ff.OPERATE_USER_ID,
         ff.OPERATE_TIME, ff.OPERATE_USER_NAME, u.MOBILE as OPERATE_USER_MOBILE, ff.REMARK
