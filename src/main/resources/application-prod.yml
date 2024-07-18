@@ -40,16 +40,16 @@ excluded:
 
 sso:
   url: http://sso.wzmtr.com/cas
-  home: http://10.11.72.205:8002/eam/
+  home: http://10.11.72.205:8085/eam/
 
 cas:
   serverUrlPrefix: "${sso.url}"
-  serviceUrlPrefix: "http://10.11.72.205:8002/eam"
+  serviceUrlPrefix: "http://10.11.72.205:8085/eam"
   casFilterUrlPattern: "/cas"
   loginUrlPattern: "/login"
   logoutUrlPattern: "/logout"
   successUrlPattern: "/index"
-  serviceFront: "http://10.11.72.205:8005/index.html"
+  serviceFront: "http://10.11.72.205:8085/index.html"
 
 diboot:
   core:
@@ -100,7 +100,7 @@ mdm:
     address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
 
 local:
-  base-url: http://10.11.72.205:8002/eam
+  base-url: http://10.11.72.205:8085/eam
   data-sync: on
 
 minio:
