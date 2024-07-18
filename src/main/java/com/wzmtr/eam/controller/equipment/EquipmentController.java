@@ -1,5 +1,6 @@
 package com.wzmtr.eam.controller.equipment;
 
+import com.wzmtr.eam.dto.req.equipment.EquipmentExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
@@ -12,17 +13,19 @@ import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
 import com.wzmtr.eam.entity.response.PageResponse;
-import com.wzmtr.eam.enums.ErrorCode;
-import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.service.equipment.EquipmentService;
-import com.wzmtr.eam.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -31,7 +34,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 设备管理-设备台账
@@ -60,6 +62,15 @@ public class EquipmentController {
         return DataResponse.of(equipmentService.listTrainRegion(lineCode));
     }
 
+    /**
+     * 获取设备树
+     * @param lineCode 线路编号
+     * @param regionCode 位置编号
+     * @param recId 位置id
+     * @param parentNodeRecId 父位置id
+     * @param equipmentCategoryCode 设备分类编号
+     * @return 设备树
+     */
     @GetMapping("/listTree")
     @ApiOperation(value = "获取设备树")
     public DataResponse<EquipmentTreeResDTO> listEquipmentTree(@RequestParam(required = false) @ApiParam("线路编号") String lineCode,
@@ -70,6 +81,23 @@ public class EquipmentController {
         return DataResponse.of(equipmentService.listEquipmentTree(lineCode, regionCode, recId, parentNodeRecId, equipmentCategoryCode));
     }
 
+    /**
+     * 获取设备台账列表
+     * @param equipCode 设备编码
+     * @param equipName 设备名称
+     * @param useLineNo 线路编号
+     * @param useSegNo 线段编号
+     * @param position1Code 位置一
+     * @param majorCode 专业编号
+     * @param systemCode 系统编号
+     * @param equipTypeCode 设备分类编号
+     * @param brand 品牌
+     * @param startTime 出产开始时间
+     * @param endTime 出产结束时间
+     * @param manufacture 生产厂家
+     * @param pageReqDTO 分页参数
+     * @return 设备台账列表
+     */
     @GetMapping("/page")
     @ApiOperation(value = "获取设备台账列表")
     public PageResponse<EquipmentResDTO> listEquipment(@RequestParam(required = false) @ApiParam("设备编码") String equipCode,
@@ -162,15 +190,25 @@ public class EquipmentController {
         return DataResponse.success();
     }
 
+    /**
+     * 导出设备台账
+     * @param reqDTO 导出传参
+     * @param response response
+     * @throws IOException 异常
+     */
     @PostMapping("/export")
     @ApiOperation(value = "导出设备台账")
-    public void exportEquipment(@RequestBody BaseIdsEntity baseIdsEntity, HttpServletResponse response) throws IOException {
-        if (Objects.isNull(baseIdsEntity) || StringUtils.isEmpty(baseIdsEntity.getIds())) {
-            throw new CommonException(ErrorCode.NORMAL_ERROR, "请先勾选后导出");
-        }
-        equipmentService.exportEquipment(baseIdsEntity.getIds(), response);
+    public void exportEquipment(@RequestBody EquipmentExportReqDTO reqDTO,
+                                HttpServletResponse response) throws IOException {
+        equipmentService.exportEquipment(reqDTO, response);
     }
 
+    /**
+     * 生成二维码
+     * @param baseIdsEntity ids
+     * @return 二维码列表
+     * @throws ParseException 异常
+     */
     @PostMapping("/qr")
     @ApiOperation(value = "生成二维码")
     public DataResponse<List<EquipmentQrResDTO>> generateQr(@RequestBody BaseIdsEntity baseIdsEntity) throws ParseException {

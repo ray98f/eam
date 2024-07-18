@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel
-public class EquipmentCategoryPartResDTO {
+public class EquipmentCategorySubclassResDTO {
     /**
      * 专业编号
      */
@@ -46,32 +46,47 @@ public class EquipmentCategoryPartResDTO {
     @ApiModelProperty(value = "设备类型名称")
     private String equipTypeName;
     /**
-     * 模块名称
+     * 设备小类
      */
-    @ApiModelProperty(value = "模块名称")
-    private String moduleName;
+    @ApiModelProperty(value = "设备小类")
+    private String equipSubclassName;
     /**
-     * 部件列表
+     * 模块列表
      */
-    @ApiModelProperty(value = "部件列表")
-    private List<Part> partList;
+    @ApiModelProperty(value = "模块列表")
+    private List<Module> moduleList;
 
     @Data
-    public static class Part {
+    public static class Module {
         /**
-         * id
+         * 专业编号
          */
-        @ApiModelProperty(value = "id")
-        private String recId;
+        @ApiModelProperty(value = "专业编号")
+        private String majorCode;
         /**
-         * 部件名称
+         * 系统编号
          */
-        @ApiModelProperty(value = "部件名称")
-        private String partName;
+        @ApiModelProperty(value = "系统编号")
+        private String systemCode;
         /**
-         * 数量
+         * 设备类型编号
          */
-        @ApiModelProperty(value = "数量")
-        private Long quantity;
+        @ApiModelProperty(value = "设备类型编号")
+        private String equipTypeCode;
+        /**
+         * 设备小类
+         */
+        @ApiModelProperty(value = "设备小类")
+        private String equipSubclassName;
+        /**
+         * 模块名称
+         */
+        @ApiModelProperty(value = "模块名称")
+        private String moduleName;
+        /**
+         * 部件列表
+         */
+        @ApiModelProperty(value = "部件列表")
+        private List<EquipmentCategoryModuleResDTO.Part> partList;
     }
 }

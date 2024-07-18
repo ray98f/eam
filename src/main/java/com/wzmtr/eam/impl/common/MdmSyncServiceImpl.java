@@ -374,7 +374,7 @@ public class MdmSyncServiceImpl implements MdmSyncService {
                     user.setMobile(result2.getPhone());
                     user.setPhone(result2.getPhone());
                     user.setEmail(result2.getMail());
-                    user.setCompanyId(parentIds.split(",").length >= 2 ? parentIds.split(",")[1] : result2.getExtraOrg());
+                    user.setCompanyId(parentIds.split(CommonConstants.COMMA).length >= 2 ? parentIds.split(CommonConstants.COMMA)[1] : result2.getExtraOrg());
                     user.setOfficeId(result2.getExtraOrg());
                     user.setCreateBy(personDefaultConfig.getCreateBy());
                     user.setUpdateBy(personDefaultConfig.getUpdateBy());

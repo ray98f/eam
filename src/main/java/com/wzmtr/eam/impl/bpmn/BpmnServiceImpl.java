@@ -116,7 +116,7 @@ public class BpmnServiceImpl implements BpmnService {
                 res.setCreateTime(jsonObject1.getString("createTime"));
                 res.setCompleteTime(jsonObject1.getString("completeTime"));
                 res.setAuditor(jsonObject1.getString("auditor"));
-                res.setOpinion(jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity") == null ? "" : jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity").getString("opinion"));
+                res.setOpinion(jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity") == null ? CommonConstants.EMPTY : jsonObject1.getJSONObject("a1FlowTaskTrajectoryEntity").getString("opinion"));
                 res.setStatus(res.getAuditor() == null ? "待办" : "已办");
                 list.add(res);
             }
@@ -386,7 +386,7 @@ public class BpmnServiceImpl implements BpmnService {
             }
         } else {
             StringBuilder chooseNodeUser = new StringBuilder();
-            String[] list = fromId.split(",");
+            String[] list = fromId.split(CommonConstants.COMMA);
             for (String s : list) {
                 chooseNodeUser.append("eam").append(s).append(",");
             }
@@ -420,7 +420,7 @@ public class BpmnServiceImpl implements BpmnService {
         if(!StringUtils.isEmpty(processDefinitionId)){
             processDefinitionId = processDefinitionId.substring(0, processDefinitionId.indexOf(":"));
         }else{
-            processDefinitionId = "";
+            processDefinitionId = CommonConstants.EMPTY;
         }
         return processDefinitionId;
     }
@@ -546,7 +546,7 @@ public class BpmnServiceImpl implements BpmnService {
             FlowChartRes res = new FlowChartRes();
             String xml = jsonObject.getString("xml");
             if (StringUtils.isNotEmpty(xml)) {
-                xml = xml.replaceAll("\n", "");
+                xml = xml.replaceAll("\n", CommonConstants.EMPTY);
             }
             res.setXml(xml);
             res.setCompleted(jsonObject.getJSONArray("completed").toJavaList(String.class));

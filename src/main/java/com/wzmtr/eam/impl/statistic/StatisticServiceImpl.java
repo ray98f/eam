@@ -245,7 +245,7 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Page<MaterialResDTO> query(MaterialQueryReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        String[] cos = reqDTO.getPlanName().split(",");
+        String[] cos = reqDTO.getPlanName().split(CommonConstants.COMMA);
         List<String> planNameList = new ArrayList<>();
         for (String c : cos) {
             Dictionaries dictionaries = dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.OrderType", c);

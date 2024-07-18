@@ -16,13 +16,13 @@ public class NodeInfos {
 
     @Override
     public String toString() {
-        String str = "[";
+        StringBuilder str = new StringBuilder("[");
         for (NodeInfo info : list) {
-            str += info.toString() + ",";
+            str.append(info.toString()).append(",");
         }
-        str = str.substring(0, str.length() - 1);
-        str += "]";
-        return str;
+        str = new StringBuilder(str.substring(0, str.length() - 1));
+        str.append("]");
+        return str.toString();
     }
 
 }

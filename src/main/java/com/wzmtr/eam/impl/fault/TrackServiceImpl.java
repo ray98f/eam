@@ -288,8 +288,8 @@ public class TrackServiceImpl implements TrackService {
         // String taskId = bpmnService.queryTaskIdByProcId(processId);
         bpmnService.reject(processId, reqDTO.getExamineReqDTO().getOpinion());
         dmfm09.setRecStatus("10");
-        dmfm09.setWorkFlowInstId("");
-        dmfm09.setWorkFlowInstStatus("");
+        dmfm09.setWorkFlowInstId(CommonConstants.EMPTY);
+        dmfm09.setWorkFlowInstStatus(CommonConstants.EMPTY);
         faultTrackMapper.update(dmfm09, new UpdateWrapper<FaultTrackDO>().eq(ColsConstants.FAULT_TRACK_NO, reqDTO.getFaultTrackNo()));
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.REJECT.getDesc())

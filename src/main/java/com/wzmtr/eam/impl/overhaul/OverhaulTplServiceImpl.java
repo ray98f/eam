@@ -183,8 +183,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             }
         }
         overhaulTplReqDTO.setTrialStatus("10");
-        overhaulTplReqDTO.setWorkFlowInstId("");
-        overhaulTplReqDTO.setWorkFlowInstStatus("");
+        overhaulTplReqDTO.setWorkFlowInstId(CommonConstants.EMPTY);
+        overhaulTplReqDTO.setWorkFlowInstStatus(CommonConstants.EMPTY);
         overhaulTplReqDTO.setRecRevisor(TokenUtils.getCurrentPersonId());
         overhaulTplReqDTO.setRecReviseTime(DateUtils.getCurrentTime());
         overhaulTplMapper.changeOverhaulTpl(overhaulTplReqDTO);
@@ -272,8 +272,8 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
                 bpmnService.reject(taskId, opinion);
                 //删除待办
                 overTodoService.cancelTodo(recId);
-                overhaulTplReqDTO.setWorkFlowInstId("");
-                overhaulTplReqDTO.setWorkFlowInstStatus(" ");
+                overhaulTplReqDTO.setWorkFlowInstId(CommonConstants.EMPTY);
+                overhaulTplReqDTO.setWorkFlowInstStatus(CommonConstants.BLANK);
                 overhaulTplReqDTO.setTrialStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()
@@ -532,7 +532,7 @@ public class OverhaulTplServiceImpl implements OverhaulTplService {
             for (OverhaulTplDetailResDTO resDTO : overhaulTplDetailResDTOList) {
                 ExcelOverhaulTplDetailResDTO res = new ExcelOverhaulTplDetailResDTO();
                 BeanUtils.copyProperties(resDTO, res);
-                res.setTrainNumber(StringUtils.isNotEmpty(resDTO.getTrainNumber()) ? resDTO.getTrainNumber() + "车" : "");
+                res.setTrainNumber(StringUtils.isNotEmpty(resDTO.getTrainNumber()) ? resDTO.getTrainNumber() + "车" : CommonConstants.EMPTY);
                 res.setItemType(CommonConstants.TEN_STRING.equals(resDTO.getItemType()) ? "列表"
                         : CommonConstants.TWENTY_STRING.equals(resDTO.getItemType()) ? "数值" : "文本");
                 list.add(res);

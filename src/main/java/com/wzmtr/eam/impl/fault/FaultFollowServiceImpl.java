@@ -224,7 +224,7 @@ public class FaultFollowServiceImpl implements FaultFollowService {
                 if (StringUtils.isNotNull(dictionaries)) {
                     res.setFollowStatus(dictionaries.getItemCname());
                 } else {
-                    res.setFollowStatus("");
+                    res.setFollowStatus(CommonConstants.EMPTY);
                 }
                 list.add(res);
             }

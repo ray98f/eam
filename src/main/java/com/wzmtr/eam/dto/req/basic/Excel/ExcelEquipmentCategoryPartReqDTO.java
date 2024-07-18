@@ -28,10 +28,15 @@ public class ExcelEquipmentCategoryPartReqDTO {
     @ExcelProperty(value = "系统")
     private String systemName;
     /**
-     * 设备类别
+     * 设备大类
      */
-    @ExcelProperty(value = "设备类别")
+    @ExcelProperty(value = "设备大类")
     private String equipTypeName;
+    /**
+     * 设备小类
+     */
+    @ExcelProperty(value = "设备小类")
+    private String equipSubclassName;
     /**
      * 模块名称
      */

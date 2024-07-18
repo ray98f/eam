@@ -115,7 +115,7 @@ public class OrgRegionServiceImpl implements OrgRegionService {
                 RegionResDTO region = regionMapper.getRegionByRegionCode(resDTO.getRegionCode());
                 String regionName;
                 if (Objects.isNull(region)) {
-                    regionName = "";
+                    regionName = CommonConstants.EMPTY;
                 } else {
                     regionName = region.getNodeName();
                 }

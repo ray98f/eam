@@ -98,7 +98,7 @@ public class ObjectServiceImpl implements ObjectService {
         //         Map<String, String> map = lineList.get(i);
         //         map.put("parent", node);
         //         map.put("pId", node);
-        //         map.put("text", (new StringBuilder()).append(map.get("value")).append(" ").append(map.get("label")).toString());
+        //         map.put("text", (new StringBuilder()).append(map.get("value")).append(CommonConstants.BLANK).append(map.get("label")).toString());
         //         map.put("label", map.get("value"));
         //         map.put("leaf", "0");
         //         map.put("type", "xl");
@@ -120,7 +120,7 @@ public class ObjectServiceImpl implements ObjectService {
                 List<CarTreeListObjResDTO> filter = res.stream().filter(a -> a.getNodeCode().length() == 3).collect(Collectors.toList());
                 CarTreeListObjResDTO carTreeListObjResDTO = filter.get(0);
                 String nodeCode = carTreeListObjResDTO.getNodeCode().substring(1, 3);
-                carTreeListObjResDTO.setText("E" + nodeCode + " " + nodeCode + "车辆");
+                carTreeListObjResDTO.setText("E" + nodeCode + CommonConstants.BLANK + nodeCode + "车辆");
                 carTreeListObjResDTO.setNodeCode("E" + nodeCode);
                 carTreeListObjResDTO.setLabel(carTreeListObjResDTO.getLabel());
                 carTreeListObjResDTO.setParent(reqDTO.getText());
@@ -156,14 +156,14 @@ public class ObjectServiceImpl implements ObjectService {
             if (XL.equals(reqDTO.getType())) {
                 carObjResDTO.setUseLineName(reqDTO.getText());
                 carObjResDTO.setUseLineNo(reqDTO.getNodeCode());
-                carObjResDTO.setPosition1Name("");
-                carObjResDTO.setPosition1Code("");
-                carObjResDTO.setMajorName("");
-                carObjResDTO.setMajorCode("");
-                carObjResDTO.setSystemName("");
-                carObjResDTO.setSystemCode("");
-                carObjResDTO.setEquipTypeName("");
-                carObjResDTO.setEquipTypeCode("");
+                carObjResDTO.setPosition1Name(CommonConstants.EMPTY);
+                carObjResDTO.setPosition1Code(CommonConstants.EMPTY);
+                carObjResDTO.setMajorName(CommonConstants.EMPTY);
+                carObjResDTO.setMajorCode(CommonConstants.EMPTY);
+                carObjResDTO.setSystemName(CommonConstants.EMPTY);
+                carObjResDTO.setSystemCode(CommonConstants.EMPTY);
+                carObjResDTO.setEquipTypeName(CommonConstants.EMPTY);
+                carObjResDTO.setEquipTypeCode(CommonConstants.EMPTY);
             } else if (WZ.equals(reqDTO.getType()) && !CommonConstants.ZERO_STRING.equals(reqDTO.getLabel())) {
                 LineResDTO lineRes;
                 if (!reqDTO.getText().contains(ES)) {
@@ -175,12 +175,12 @@ public class ObjectServiceImpl implements ObjectService {
                 carObjResDTO.setUseLineNo(lineRes.getLineCode());
                 carObjResDTO.setPosition1Name(reqDTO.getText());
                 carObjResDTO.setPosition1Code(reqDTO.getNodeCode());
-                carObjResDTO.setMajorName("");
-                carObjResDTO.setMajorCode("");
-                carObjResDTO.setSystemName("");
-                carObjResDTO.setSystemCode("");
-                carObjResDTO.setEquipTypeName("");
-                carObjResDTO.setEquipTypeCode("");
+                carObjResDTO.setMajorName(CommonConstants.EMPTY);
+                carObjResDTO.setMajorCode(CommonConstants.EMPTY);
+                carObjResDTO.setSystemName(CommonConstants.EMPTY);
+                carObjResDTO.setSystemCode(CommonConstants.EMPTY);
+                carObjResDTO.setEquipTypeName(CommonConstants.EMPTY);
+                carObjResDTO.setEquipTypeCode(CommonConstants.EMPTY);
             }
         }
         return carObjResDTO;
@@ -189,8 +189,8 @@ public class ObjectServiceImpl implements ObjectService {
     @Override
     public Page<ObjectResDTO> queryForObject(ObjectReqDTO reqDTO) {
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
-        String positionCode = (reqDTO.getPosition1Code() == null) ? "" : reqDTO.getPosition1Code();
-        String car = reqDTO.getCar() == null ? "" : reqDTO.getCar();
+        String positionCode = (reqDTO.getPosition1Code() == null) ? CommonConstants.EMPTY : reqDTO.getPosition1Code();
+        String car = reqDTO.getCar() == null ? CommonConstants.EMPTY : reqDTO.getCar();
         if (positionCode.contains(ES) && car.trim().isEmpty()) {
             return bomMapper.queryCarEquip(reqDTO.of(), reqDTO);
         } else if (CAR.equals(car)) {

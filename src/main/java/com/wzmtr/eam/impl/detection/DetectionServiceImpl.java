@@ -103,7 +103,7 @@ public class DetectionServiceImpl implements DetectionService {
         detectionReqDTO.setRecId(TokenUtils.getUuId());
         detectionReqDTO.setArchiveFlag("0");
         detectionReqDTO.setRecStatus("10");
-        detectionReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtils.getCurrentPerson().getOfficeAreaId());
+        detectionReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? CommonConstants.BLANK : TokenUtils.getCurrentPerson().getOfficeAreaId());
         detectionReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         detectionReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String checkNo = detectionMapper.getMaxCode();
@@ -296,7 +296,7 @@ public class DetectionServiceImpl implements DetectionService {
         if (StringUtils.isNotEmpty(list)) {
             for (DetectionDetailResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getVerifyReportAtt())) {
-                    res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(","))));
+                    res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(CommonConstants.COMMA))));
                 }
             }
         }
@@ -309,7 +309,7 @@ public class DetectionServiceImpl implements DetectionService {
         DetectionDetailResDTO res = detectionMapper.getDetectionDetailDetail(id);
         if (StringUtils.isNotNull(res)) {
             if (StringUtils.isNotEmpty(res.getVerifyReportAtt())) {
-                res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(","))));
+                res.setVerifyReportAttFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportAtt().split(CommonConstants.COMMA))));
             }
         }
         return res;

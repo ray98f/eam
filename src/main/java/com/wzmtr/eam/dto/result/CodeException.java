@@ -1,5 +1,6 @@
 package com.wzmtr.eam.dto.result;
 
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.enums.HttpCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,7 +23,7 @@ public class CodeException extends RuntimeException {
     }
 
     public CodeException(HttpCode httpStatus, String message) {
-        super("".equals(message) ? httpStatus.getMsg() : message);
+        super(CommonConstants.EMPTY.equals(message) ? httpStatus.getMsg() : message);
         this.code = httpStatus.getCode();
     }
 

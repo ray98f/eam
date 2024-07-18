@@ -1,0 +1,122 @@
+# 铁投测试环境
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@10.11.76.40:1521/gisdb
+    username: ZX_S2EAM
+    password: Wzmtr413
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      read-only: false
+      connection-timeout: 60000
+      idle-timeout: 50000
+      validation-timeout: 3000
+      max-lifetime: 60000
+      login-timeout: 5
+      maximum-pool-size: 30
+      minimum-idle: 10
+
+  rabbitmq:
+    host: 10.11.72.206
+    port: 5672
+    username: admin
+    password: 14bMn3P69
+    virtual-host: /eam-s2
+
+  redis:
+    host: 10.11.72.205
+    port: 6379
+    password: LM%$(eNx&tjk
+    jedis:
+      pool:
+        max-active: 50
+        min-idle: 0
+        max-idle: 50
+        max-wait: -1
+    key-prefix: eam-prod-s2-
+
+excluded:
+  swagger-pages: /eam/csrf,/eam/,/eam/v2/api-docs
+  pages: /eam/iam/user/getToken, /eam/,/eam/cas,/eam/index,/eam/login,/eam/logout
+
+sso:
+  url: http://sso.wzmtr.com/cas
+  home: http://10.11.72.205:8085/eam/
+
+cas:
+  serverUrlPrefix: "${sso.url}"
+  serviceUrlPrefix: "http://10.11.72.205:8085/eam"
+  casFilterUrlPattern: "/cas"
+  loginUrlPattern: "/login"
+  logoutUrlPattern: "/logout"
+  successUrlPattern: "/index"
+  serviceFront: "http://10.11.72.205:8085/index.html"
+
+diboot:
+  core:
+    init-sql: false
+  iam:
+    init-sql: false
+  #    anon-urls:
+  #      - /swagger**/**
+  #      - /webjars/**
+  #      - /v3/**
+  #      - /doc.html
+  #    enable-permission-check: true
+  #    token-expires-minutes: 60
+  component:
+    file:
+      init-sql: false
+    scheduler:
+      init-sql: false
+    message:
+      init-sql: false
+#  devtools:
+#    codes-version: 1.0
+#    codes-copyright: wzmtr
+#    codes-author: eam
+#    output-path: eam-server/src/main/java/com/wzmtr/eam/
+#    output-path-base: eam-server/src/main/java/com/wzmtr/eam/common/
+#    output-path-entity: eam-server/src/main/java/com/wzmtr/eam/entity/
+#    output-path-vo: eam-server/src/main/java/com/wzmtr/eam/vo/
+#    output-path-dto: eam-server/src/main/java/com/wzmtr/eam/dto/
+#    output-path-service: eam-server/src/main/java/com/wzmtr/eam/service/
+#    output-path-mapper: eam-server/src/main/java/com/wzmtr/eam/mapper/
+#    output-path-sql: eam-server/src/main/resources/
+
+mdm:
+  person:
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonList?wsdl"
+  org:
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllOrgList?wsdl"
+  extra-org:
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllExtraOrgList?wsdl"
+  emp-job:
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllEmpJobInfoList?wsdl"
+  supp:
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllSuppList?wsdl"
+  supp-contact:
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllSuppContactsList?wsdl"
+  person-plus:
+    address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
+
+local:
+  base-url: http://10.11.72.205:8002/eam
+  data-sync: on
+
+minio:
+  url: http://10.11.72.206:9000
+  imgPath: http://10.11.72.206:9000
+  accessKey: miniominio
+  secretKey: Minio0263#c
+
+pro:
+  name: eam
+  bucket-base: eam-s2
+
+eip:
+  url: "http://esb.wzmtr.com:7003/iplwebservice/ps/CREATEtodoList?wsdl"
+
+bpmn:
+  account: "eamadmin"
+  password: "eamadmin"
+  url: "http://10.11.72.11:9998/fastflow-admin"

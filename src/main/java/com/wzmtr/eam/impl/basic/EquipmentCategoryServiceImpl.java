@@ -6,14 +6,17 @@ import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryPartReqDTO;
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
 import com.wzmtr.eam.dto.req.basic.Excel.ExcelEquipmentCategoryPartReqDTO;
-import com.wzmtr.eam.dto.res.basic.EquipmentCategoryPartResDTO;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategoryModuleResDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategorySubclassResDTO;
 import com.wzmtr.eam.dto.res.basic.excel.ExcelEquipmentCategoryResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
+import com.wzmtr.eam.entity.Dictionaries;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.enums.ErrorCode;
 import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.basic.EquipmentCategoryMapper;
+import com.wzmtr.eam.mapper.dict.DictionariesMapper;
 import com.wzmtr.eam.service.basic.EquipmentCategoryService;
 import com.wzmtr.eam.utils.DateUtils;
 import com.wzmtr.eam.utils.EasyExcelUtils;
@@ -29,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,6 +44,9 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
 
     @Autowired
     private EquipmentCategoryMapper equipmentCategoryMapper;
+
+    @Autowired
+    private DictionariesMapper dictionariesMapper;
 
     @Override
     public Page<EquipmentCategoryResDTO> listEquipmentCategory(String name, String code, String parentId, PageReqDTO pageReqDTO) {
@@ -132,10 +139,37 @@ public class EquipmentCategoryServiceImpl implements EquipmentCategoryService {
     }
 
     @Override
-    public List<EquipmentCategoryPartResDTO> listEquipmentCategoryPart(String majorCode,
-                                                                       String systemCode,
-                                                                       String equipTypeCode) {
+    public List<String> getSubclassMajor() {
+        Dictionaries dict = dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                CommonConstants.DM_EQUIP_CATEGORY_SUBCLASS,
+                CommonConstants.TEN_STRING);
+        if (StringUtils.isNotNull(dict)) {
+            return Arrays.asList(dict.getItemCname().split(CommonConstants.COMMA));
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<EquipmentCategoryModuleResDTO> listEquipmentCategoryModulePart(String majorCode,
+                                                                               String systemCode,
+                                                                               String equipTypeCode) {
         return equipmentCategoryMapper.listEquipmentCategoryModule(majorCode, systemCode, equipTypeCode);
+    }
+
+    @Override
+    public List<EquipmentCategorySubclassResDTO> listEquipmentCategorySubclassPart(String majorCode,
+                                                                                   String systemCode,
+                                                                                   String equipTypeCode) {
+        List<EquipmentCategorySubclassResDTO> list = equipmentCategoryMapper.listEquipmentCategorySubclass(
+                majorCode, systemCode, equipTypeCode);
+        if (StringUtils.isNotEmpty(list)) {
+            for (EquipmentCategorySubclassResDTO res : list) {
+                res.setModuleList(equipmentCategoryMapper.listEquipmentCategoryModuleBySubclass(res.getMajorCode(),
+                        res.getSystemCode(), res.getEquipTypeCode(), res.getEquipSubclassName()));
+            }
+        }
+        return list;
     }
 
     @Override

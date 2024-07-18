@@ -172,7 +172,7 @@ public class SchedulingServiceImpl implements SchedulingService {
             // 获取车辆上一次已触发的排期信息
             SchedulingResDTO scheduling = schedulingMapper.getTrainLastTriggerScheduling(equipCode, type);
             // 当上一次已触发的排期信息不为空时，取上次触发时间为起始时间
-            String startTimeStr = "", endTimeStr = "";
+            String startTimeStr = CommonConstants.EMPTY, endTimeStr = CommonConstants.EMPTY;
             // 记录上次触发排期名称为起始排期数字
             // firstType为二级修时间最短的检修包
             int lastNum = 0, firstType = 0;
@@ -354,7 +354,7 @@ public class SchedulingServiceImpl implements SchedulingService {
         res.setType("1");
         res.setDateType(ONE_LEVEL_REPAIR_FOUR);
         res.setIsDuration("1");
-        res.setPackageType("");
+        res.setPackageType(CommonConstants.EMPTY);
         return res;
     }
 

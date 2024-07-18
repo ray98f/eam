@@ -1,8 +1,9 @@
 package com.wzmtr.eam.controller.basic;
 
 import com.wzmtr.eam.dto.req.basic.EquipmentCategoryReqDTO;
-import com.wzmtr.eam.dto.res.basic.EquipmentCategoryPartResDTO;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategoryModuleResDTO;
 import com.wzmtr.eam.dto.res.basic.EquipmentCategoryResDTO;
+import com.wzmtr.eam.dto.res.basic.EquipmentCategorySubclassResDTO;
 import com.wzmtr.eam.entity.BaseIdsEntity;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.response.DataResponse;
@@ -112,18 +113,45 @@ public class EquipmentCategoryController {
     }
 
     /**
-     * 获取设备分类绑定的部件列表
+     * 获取需要使用设备小类的专业列表
+     * @return 专业列表
+     */
+    @GetMapping("/part/subclass/major/list")
+    @ApiOperation(value = "获取需要使用设备小类的专业列表")
+    public DataResponse<List<String>> getSubclassMajor() {
+        return DataResponse.of(equipmentCategoryService.getSubclassMajor());
+    }
+
+    /**
+     * 获取设备分类绑定的部件列表-模块
+     * 根节点为模块
      * @param majorCode 专业编码
      * @param systemCode 系统编码
      * @param equipTypeCode 设备分类编码
      * @return 设备分类绑定的部件列表
      */
-    @GetMapping("/part/list")
-    @ApiOperation(value = "获取设备分类绑定的部件列表")
-    public DataResponse<List<EquipmentCategoryPartResDTO>> listEquipmentCategoryPart(@RequestParam(required = false) String majorCode,
-                                                                                     @RequestParam(required = false) String systemCode,
-                                                                                     @RequestParam(required = false) String equipTypeCode) {
-        return DataResponse.of(equipmentCategoryService.listEquipmentCategoryPart(majorCode, systemCode, equipTypeCode));
+    @GetMapping("/part/module/list")
+    @ApiOperation(value = "获取设备分类绑定的部件列表-模块")
+    public DataResponse<List<EquipmentCategoryModuleResDTO>> listEquipmentCategoryModulePart(@RequestParam(required = false) String majorCode,
+                                                                                             @RequestParam(required = false) String systemCode,
+                                                                                             @RequestParam(required = false) String equipTypeCode) {
+        return DataResponse.of(equipmentCategoryService.listEquipmentCategoryModulePart(majorCode, systemCode, equipTypeCode));
+    }
+
+    /**
+     * 获取设备分类绑定的部件列表-设备小类
+     * 根节点为设备小类
+     * @param majorCode 专业编码
+     * @param systemCode 系统编码
+     * @param equipTypeCode 设备分类编码
+     * @return 设备分类绑定的部件列表
+     */
+    @GetMapping("/part/subclass/list")
+    @ApiOperation(value = "获取设备分类绑定的部件列表-设备小类")
+    public DataResponse<List<EquipmentCategorySubclassResDTO>> listEquipmentCategorySubclassPart(@RequestParam(required = false) String majorCode,
+                                                                                                 @RequestParam(required = false) String systemCode,
+                                                                                                 @RequestParam(required = false) String equipTypeCode) {
+        return DataResponse.of(equipmentCategoryService.listEquipmentCategorySubclassPart(majorCode, systemCode, equipTypeCode));
     }
 
     /**
