@@ -100,7 +100,7 @@ mdm:
     address: "http://esb.wzmtr.com:7003/mdmwebservice/ps/getAllPersonPlusList?wsdl"
 
 local:
-  base-url: http://10.11.72.205:8085/eam
+  base-url: http://10.11.72.205:8002/eam
   data-sync: on
 
 minio:
