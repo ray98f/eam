@@ -244,8 +244,8 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         workFlowLogService.ifReviewer(processId);
         bpmnService.reject(processId, backOpinion);
         dmfm03.setRecStatus("10");
-        dmfm03.setWorkFlowInstStatus(" ");
-        dmfm03.setWorkFlowInstId("");
+        dmfm03.setWorkFlowInstStatus(CommonConstants.BLANK);
+        dmfm03.setWorkFlowInstId(CommonConstants.EMPTY);
         faultAnalyzeMapper.update(dmfm03);
         workFlowLogService.add(WorkFlowLogBO.builder()
                 .status(BpmnStatus.REJECT.getDesc())

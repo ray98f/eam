@@ -70,7 +70,7 @@ public class WoRuleServiceImpl implements WoRuleService {
     @Override
     public void addWoRule(WoRuleReqDTO woRuleReqDTO) {
         String code = woRuleMapper.getMaxCodeByUseage(woRuleReqDTO.getRuleUseage());
-        String prefix = "";
+        String prefix = CommonConstants.EMPTY;
         switch (woRuleReqDTO.getRuleUseage()){
             case "10":
                 prefix = "G";
@@ -171,7 +171,7 @@ public class WoRuleServiceImpl implements WoRuleService {
                         .startDate(resDTO.getStartDate())
                         .endDate(resDTO.getEndDate())
                         .period(String.valueOf(resDTO.getPeriod()))
-                        .cycle(resDTO.getExt1() == null ? "" : String.valueOf(resDTO.getExt1()))
+                        .cycle(resDTO.getExt1() == null ? CommonConstants.EMPTY : resDTO.getExt1())
                         .beforeTime(String.valueOf(resDTO.getBeforeTime()))
                         .ruleSort(String.valueOf(resDTO.getRuleSort()))
                         .remark(resDTO.getRemark())

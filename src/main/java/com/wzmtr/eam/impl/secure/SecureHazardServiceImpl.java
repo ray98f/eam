@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.bizobject.export.SecureHazardExportBO;
+import com.wzmtr.eam.constant.CommonConstants;
 import com.wzmtr.eam.dataobject.SecureHazardDO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardAddReqDTO;
 import com.wzmtr.eam.dto.req.secure.SecureHazardDetailReqDTO;
@@ -20,7 +21,13 @@ import com.wzmtr.eam.mapper.common.OrganizationMapper;
 import com.wzmtr.eam.mapper.file.FileMapper;
 import com.wzmtr.eam.mapper.secure.SecureHazardMapper;
 import com.wzmtr.eam.service.secure.SecureHazardService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.Assert;
+import com.wzmtr.eam.utils.BeanUtils;
+import com.wzmtr.eam.utils.CodeUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,7 +81,7 @@ public class SecureHazardServiceImpl implements SecureHazardService {
             a.setInspectDeptName(organizationMapper.getNamesById(a.getInspectDeptCode()));
         }
         if (StringUtils.isNotEmpty(a.getRiskPic())) {
-            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getRiskPic().split(","))));
+            a.setDocFile(fileMapper.selectFileInfo(Arrays.asList(a.getRiskPic().split(CommonConstants.COMMA))));
         }
         if (StringUtils.isNotEmpty(a.getNotifyDeptCode())) {
             a.setNotifyDeptName(organizationMapper.getNamesById(a.getNotifyDeptCode()));

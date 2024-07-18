@@ -4,6 +4,7 @@ import cn.hutool.extra.qrcode.QrCodeUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.equipment.EquipmentExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.req.equipment.excel.ExcelEquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
@@ -22,7 +23,12 @@ import com.wzmtr.eam.exception.CommonException;
 import com.wzmtr.eam.mapper.equipment.EquipmentMapper;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.service.equipment.EquipmentService;
-import com.wzmtr.eam.utils.*;
+import com.wzmtr.eam.utils.CodeUtils;
+import com.wzmtr.eam.utils.DateUtils;
+import com.wzmtr.eam.utils.EasyExcelUtils;
+import com.wzmtr.eam.utils.QrUtils;
+import com.wzmtr.eam.utils.StringUtils;
+import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,10 +149,10 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         equipmentReqDTO.setInAccountTime(DateUtils.getCurrentTime());
         CurrentLoginUser user = TokenUtils.getCurrentPerson();
-        equipmentReqDTO.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : " ");
-        equipmentReqDTO.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : " ");
-        equipmentReqDTO.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : " ");
-        equipmentReqDTO.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
+        equipmentReqDTO.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : CommonConstants.BLANK);
+        equipmentReqDTO.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : CommonConstants.BLANK);
+        equipmentReqDTO.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : CommonConstants.BLANK);
+        equipmentReqDTO.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : CommonConstants.BLANK);
         equipmentReqDTO.setEquipCode(getEquipCode());
         equipmentReqDTO.setSpecialEquipFlag("10");
         equipmentReqDTO.setOtherEquipFlag("10");
@@ -190,8 +196,8 @@ public class EquipmentServiceImpl implements EquipmentService {
                     "S1线".equals(reqDTO.getUseLineName()) ? "01" : "02");
             req.setUseSegNo(Objects.isNull(reqDTO.getUseSegName()) ? "" :
                     "一期".equals(reqDTO.getUseSegName()) ? "01" :
-                            "二期".equals(reqDTO.getUseSegName()) ? "二期" : "三期");
-            req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? "" :
+                            "二期".equals(reqDTO.getUseSegName()) ? "02" : "03");
+            req.setSpecialEquipFlag(Objects.isNull(reqDTO.getSpecialEquipFlag()) ? CommonConstants.EMPTY :
                     "否".equals(reqDTO.getSpecialEquipFlag()) ? "10" : "20");
             req.setOtherEquipFlag(Objects.isNull(reqDTO.getOtherEquipFlag()) ? "" :
                     "否".equals(reqDTO.getOtherEquipFlag()) ? "10" : "20");
@@ -201,23 +207,30 @@ public class EquipmentServiceImpl implements EquipmentService {
             req.setRecCreator(TokenUtils.getCurrentPersonId());
             req.setRecCreateTime(DateUtils.getCurrentTime());
             CurrentLoginUser user = TokenUtils.getCurrentPerson();
-            req.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : " ");
-            req.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : " ");
-            req.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : " ");
-            req.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : " ");
+            req.setCompanyCode(StringUtils.isNotEmpty(user.getCompanyAreaId()) ? user.getCompanyAreaId() : CommonConstants.BLANK);
+            req.setCompanyName(StringUtils.isNotEmpty(user.getCompanyName()) ? user.getCompanyName() : CommonConstants.BLANK);
+            req.setDeptCode(StringUtils.isNotEmpty(user.getOfficeAreaId()) ? user.getOfficeAreaId() : CommonConstants.BLANK);
+            req.setDeptName(StringUtils.isNotEmpty(user.getOfficeName()) ? user.getOfficeName() : CommonConstants.BLANK);
             req.setEquipCode(equipCode);
             temp.add(req);
             // 获取下一个设备编号
             equipCode = CodeUtils.getNextCode(equipCode, 2);
         }
         if (!temp.isEmpty()) {
-            equipmentMapper.importEquipment(temp);
+            if (temp.size() <= CommonConstants.ONE_THOUSAND) {
+                equipmentMapper.importEquipment(temp);
+            } else {
+                int times = (int) Math.ceil(temp.size() / 1000.0);
+                for (int i = 0; i < times; i++) {
+                    equipmentMapper.importEquipment(temp.subList(i * 1000, Math.min((i + 1) * 1000, temp.size() - 1)));
+                }
+            }
         }
     }
 
     @Override
-    public void exportEquipment(List<String> ids, HttpServletResponse response) throws IOException {
-        List<EquipmentResDTO> equipmentResDTOList = equipmentMapper.listEquipment(ids);
+    public void exportEquipment(EquipmentExportReqDTO reqDTO, HttpServletResponse response) throws IOException {
+        List<EquipmentResDTO> equipmentResDTOList = equipmentMapper.listEquipment(reqDTO);
         if (equipmentResDTOList != null && !equipmentResDTOList.isEmpty()) {
             List<ExcelEquipmentResDTO> list = new ArrayList<>();
             for (EquipmentResDTO resDTO : equipmentResDTOList) {

@@ -23,8 +23,6 @@ import java.util.List;
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
-    public static final String REGEX = ",";
-
     @Autowired
     private JwtFilter jwtFilter;
 

@@ -43,6 +43,14 @@ public interface FaultTrackMapper extends BaseMapper<FaultTrackDO> {
     FaultDetailResDTO faultOrderDetail(String faultNo, String faultWorkNo, String majorCode);
 
     /**
+     * 获取检修部件信息
+     * @param recId id
+     * @param majorCode 专业编号
+     * @return 部件信息
+     */
+    FaultDetailResDTO selectPartInfo(String recId, String majorCode);
+
+    /**
      * 根据故障编号、工单编号获取故障流程信息
      * @param faultNo 故障编号
      * @param faultWorkNo 故障工单编号

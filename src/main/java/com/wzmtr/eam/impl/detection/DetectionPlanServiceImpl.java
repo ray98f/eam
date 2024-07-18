@@ -95,7 +95,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         specialEquipReqDTO.setRecId(TokenUtils.getUuId());
         specialEquipReqDTO.setArchiveFlag("0");
         specialEquipReqDTO.setPlanStatus("10");
-        specialEquipReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? " " : TokenUtils.getCurrentPerson().getOfficeAreaId());
+        specialEquipReqDTO.setEditDeptCode(TokenUtils.getCurrentPerson().getOfficeAreaId() == null ? CommonConstants.BLANK : TokenUtils.getCurrentPerson().getOfficeAreaId());
         specialEquipReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         specialEquipReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String instrmPlanNo = detectionPlanMapper.getMaxCode();
@@ -107,7 +107,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
         }
         specialEquipReqDTO.setInstrmPlanNo(instrmPlanNo);
         if (StringUtils.isEmpty(specialEquipReqDTO.getPlanPeriodMark())) {
-            specialEquipReqDTO.setPlanPeriodMark(" ");
+            specialEquipReqDTO.setPlanPeriodMark(CommonConstants.BLANK);
         }
         detectionPlanMapper.addDetectionPlan(specialEquipReqDTO);
     }
@@ -230,7 +230,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion());
                 reqDTO.setWorkFlowInstId("");
-                reqDTO.setWorkFlowInstStatus(" ");
+                reqDTO.setWorkFlowInstStatus(CommonConstants.BLANK);
                 reqDTO.setPlanStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()

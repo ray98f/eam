@@ -137,20 +137,20 @@ public class FaultReportReqDTO {
             convert.setWorkClass(req.getRepairDeptCode());
         }
         if (StringUtils.isEmpty(req.getRecStatus())) {
-            convert.setRecStatus(" ");
+            convert.setRecStatus(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getCompanyName())) {
-            convert.setCompanyName(" ");
+            convert.setCompanyName(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getDocId())) {
-            convert.setDocId(" ");
+            convert.setDocId(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getCompanyCode())) {
-            convert.setCompanyCode(" ");
+            convert.setCompanyCode(CommonConstants.BLANK);
         }
-        convert.setRecCreator(" ");
-        convert.setFaultNo(" ");
-        convert.setFaultWorkNo(" ");
+        convert.setRecCreator(CommonConstants.BLANK);
+        convert.setFaultNo(CommonConstants.BLANK);
+        convert.setFaultWorkNo(CommonConstants.BLANK);
         convert.setRecCreateTime(DateUtils.getCurrentTime());
         convert.setDeleteFlag("0");
         if (StringUtils.isEmpty(req.getOrderStatus())) {
@@ -185,48 +185,48 @@ public class FaultReportReqDTO {
         }
         convert.setTrainTag(req.getTraintag());
         if (StringUtils.isEmpty(req.getFillinDeptCode())) {
-            convert.setFillinDeptCode(" ");
+            convert.setFillinDeptCode(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getFillinUserName())) {
-            convert.setFillinUserName(" ");
+            convert.setFillinUserName(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getFaultDisplayDetail())) {
-            convert.setFaultDisplayDetail(" ");
+            convert.setFaultDisplayDetail(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getSourceCode())) {
-            convert.setSourceCode(" ");
+            convert.setSourceCode(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getLineCode())) {
-            convert.setLineCode(" ");
+            convert.setLineCode(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getObjectName())) {
-            convert.setObjectName(" ");
+            convert.setObjectName(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getObjectCode())) {
-            convert.setObjectCode(" ");
+            convert.setObjectCode(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getDocId())) {
-            convert.setDocId(" ");
+            convert.setDocId(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getFaultType())) {
-            convert.setFaultType(" ");
+            convert.setFaultType(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getPositionCode())){
-            convert.setPositionCode(" ");
+            convert.setPositionCode(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getCompanyCode())){
-            convert.setCompanyCode(" ");
+            convert.setCompanyCode(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getCompanyName())){
-            convert.setCompanyName(" ");
+            convert.setCompanyName(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(req.getFaultStatus())){
-            convert.setFaultStatus(" ");
+            convert.setFaultStatus(CommonConstants.BLANK);
         }
-        convert.setFaultFlag(" ");
-        convert.setFaultLevel(" ");
-        convert.setRecStatus(" ");
-        convert.setFaultDisplayCode(" ");
+        convert.setFaultFlag(CommonConstants.BLANK);
+        convert.setFaultLevel(CommonConstants.BLANK);
+        convert.setRecStatus(CommonConstants.BLANK);
+        convert.setFaultDisplayCode(CommonConstants.BLANK);
         convert.setDeleteFlag("0");
         return convert;
     }

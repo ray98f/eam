@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.equipment.EquipmentExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
@@ -27,8 +28,34 @@ public interface EquipmentService {
      */
     List<RegionResDTO> listTrainRegion(String lineCode);
 
+    /**
+     * 获取设备树
+     * @param lineCode 线路编号
+     * @param regionCode 位置编号
+     * @param recId 位置id
+     * @param parentNodeRecId 父位置id
+     * @param equipmentCategoryCode 设备分类编号
+     * @return 设备树
+     */
     EquipmentTreeResDTO listEquipmentTree(String lineCode, String regionCode, String recId, String parentNodeRecId, String equipmentCategoryCode);
 
+    /**
+     * 获取设备台账列表
+     * @param equipCode 设备编码
+     * @param equipName 设备名称
+     * @param useLineNo 线路编号
+     * @param useSegNo 线段编号
+     * @param position1Code 位置一
+     * @param majorCode 专业编号
+     * @param systemCode 系统编号
+     * @param equipTypeCode 设备分类编号
+     * @param brand 品牌
+     * @param startTime 出产开始时间
+     * @param endTime 出产结束时间
+     * @param manufacture 生产厂家
+     * @param pageReqDTO 分页参数
+     * @return 设备台账列表
+     */
     Page<EquipmentResDTO> pageEquipment(String equipCode, String equipName, String useLineNo, String useSegNo, String position1Code, String majorCode,
                                         String systemCode, String equipTypeCode, String brand, String startTime, String endTime, String manufacture, PageReqDTO pageReqDTO);
 
@@ -57,8 +84,20 @@ public interface EquipmentService {
 
     void importEquipment(MultipartFile file);
 
-    void exportEquipment(List<String> ids, HttpServletResponse response) throws IOException;
+    /**
+     * 导出设备台账
+     * @param reqDTO 导出传参
+     * @param response response
+     * @throws IOException 异常
+     */
+    void exportEquipment(EquipmentExportReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
+    /**
+     * 生成二维码
+     * @param baseIdsEntity ids
+     * @return 二维码列表
+     * @throws ParseException 异常
+     */
     List<EquipmentQrResDTO> generateQr(BaseIdsEntity baseIdsEntity) throws ParseException;
 
     Page<OverhaulOrderDetailResDTO> listOverhaul(String equipCode, PageReqDTO pageReqDTO);

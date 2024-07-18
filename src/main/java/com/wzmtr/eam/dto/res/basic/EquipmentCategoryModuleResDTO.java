@@ -1,23 +1,20 @@
-package com.wzmtr.eam.dto.req.basic;
+package com.wzmtr.eam.dto.res.basic;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
- * 设备分类部件请求类
+ * 设备分类部件结果类
  * @author  Ray
  * @version 1.0
  * @date 2024/07/04
  */
 @Data
 @ApiModel
-public class EquipmentCategoryPartReqDTO {
-    /**
-     * id
-     */
-    @ApiModelProperty(value = "id")
-    private String recId;
+public class EquipmentCategoryModuleResDTO {
     /**
      * 专业编号
      */
@@ -49,33 +46,32 @@ public class EquipmentCategoryPartReqDTO {
     @ApiModelProperty(value = "设备类型名称")
     private String equipTypeName;
     /**
-     * 设备小类
-     */
-    @ApiModelProperty(value = "设备小类")
-    private String equipSubclassName;
-    /**
      * 模块名称
      */
     @ApiModelProperty(value = "模块名称")
     private String moduleName;
     /**
-     * 部件名称
+     * 部件列表
      */
-    @ApiModelProperty(value = "部件名称")
-    private String partName;
-    /**
-     * 数量
-     */
-    @ApiModelProperty(value = "数量")
-    private Long quantity;
-    /**
-     * 新增人
-     */
-    @ApiModelProperty(value = "新增人")
-    private String recCreator;
-    /**
-     * 新增时间
-     */
-    @ApiModelProperty(value = "新增时间")
-    private String recCreateTime;
+    @ApiModelProperty(value = "部件列表")
+    private List<Part> partList;
+
+    @Data
+    public static class Part {
+        /**
+         * id
+         */
+        @ApiModelProperty(value = "id")
+        private String recId;
+        /**
+         * 部件名称
+         */
+        @ApiModelProperty(value = "部件名称")
+        private String partName;
+        /**
+         * 数量
+         */
+        @ApiModelProperty(value = "数量")
+        private Long quantity;
+    }
 }

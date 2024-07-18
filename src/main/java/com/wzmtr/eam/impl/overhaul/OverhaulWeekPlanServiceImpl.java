@@ -170,8 +170,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulWeekPlanReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         overhaulWeekPlanReqDTO.setRecCreatorName(TokenUtils.getCurrentPerson().getCompanyName());
         overhaulWeekPlanReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
-        overhaulWeekPlanReqDTO.setWorkFlowInstId(" ");
-        overhaulWeekPlanReqDTO.setWorkFlowInstStatus(" ");
+        overhaulWeekPlanReqDTO.setWorkFlowInstId(CommonConstants.BLANK);
+        overhaulWeekPlanReqDTO.setWorkFlowInstStatus(CommonConstants.BLANK);
         overhaulWeekPlanMapper.addOverhaulWeekPlan(overhaulWeekPlanReqDTO);
     }
 
@@ -472,9 +472,9 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 reqDTO.setWorkerGroupCode(orgCode);
                 reqDTO.setWorkerCode(userCode);
                 reqDTO.setWorkerName(userName);
-                reqDTO.setRealStartTime(" ");
-                reqDTO.setRealEndTime(" ");
-                reqDTO.setExt1(" ");
+                reqDTO.setRealStartTime(CommonConstants.BLANK);
+                reqDTO.setRealEndTime(CommonConstants.BLANK);
+                reqDTO.setExt1(CommonConstants.BLANK);
                 reqDTO.setPlanStartTime(firstBeginTime);
                 reqDTO.setRecId(TokenUtils.getUuId());
                 reqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
@@ -577,8 +577,8 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                             BeanUtils.copyProperties(resDTO, reqDTO);
                             reqDTO.setOrderCode(orderCode);
                             reqDTO.setRecId(dmer22uuid);
-                            reqDTO.setStartTime(" ");
-                            reqDTO.setCompliteTime(" ");
+                            reqDTO.setStartTime(CommonConstants.BLANK);
+                            reqDTO.setCompliteTime(CommonConstants.BLANK);
                             overhaulOrderMapper.addOverhaulOrderDetail(reqDTO);
                         }
                     }
@@ -621,7 +621,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         dmer24.setOrderCode(orderCode);
         dmer24.setWorkerGroupCode(list.get(0).getWorkerGroupCode());
         if (workCode.length() > CommonConstants.TWO) {
-            String[] workerCodes = workCode.split(",");
+            String[] workerCodes = workCode.split(CommonConstants.COMMA);
             for (String workerCode : workerCodes) {
                 dmer24.setRecId(TokenUtils.getUuId());
                 dmer24.setWorkerCode(workerCode);
@@ -659,7 +659,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
         overhaulWeekPlanListReqDTO.setTrialStatus("10");
         List<OverhaulWeekPlanResDTO> weekPlanList = checkTrialStatus(overhaulWeekPlanListReqDTO);
         overhaulPlanReqDTO.setRecId(TokenUtils.getUuId());
-        overhaulPlanReqDTO.setTrialStatus(" ");
+        overhaulPlanReqDTO.setTrialStatus(CommonConstants.BLANK);
         overhaulPlanReqDTO.setRecCreator(TokenUtils.getCurrentPersonId());
         overhaulPlanReqDTO.setRecCreateTime(DateUtils.getCurrentTime());
         String planCode = overhaulPlanMapper.getMaxCode();

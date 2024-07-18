@@ -80,7 +80,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         if (!Objects.isNull(list) && !list.isEmpty()) {
             for (SubmissionRecordResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getDocId())) {
-                    res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+                    res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(CommonConstants.COMMA))));
                 }
                 if (StringUtils.isNotEmpty(res.getVerifyDept())) {
                     res.setVerifyDeptName(organizationMapper.getNamesById(res.getVerifyDept()));
@@ -98,7 +98,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         if (StringUtils.isNotEmpty(res.getDocId())) {
-            res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+            res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(CommonConstants.COMMA))));
         }
         return res;
     }
@@ -235,8 +235,8 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, submissionRecordReqDTO.getExamineReqDTO().getOpinion());
-                reqDTO.setWorkFlowInstId("");
-                reqDTO.setWorkFlowInstStatus("");
+                reqDTO.setWorkFlowInstId(CommonConstants.EMPTY);
+                reqDTO.setWorkFlowInstStatus(CommonConstants.EMPTY);
                 reqDTO.setRecStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()
@@ -280,7 +280,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         SubmissionRecordDetailResDTO res = submissionRecordMapper.getSubmissionRecordDetailDetail(id);
         if (StringUtils.isNotNull(res)) {
             if (StringUtils.isNotEmpty(res.getVerifyReportFileid())) {
-                res.setVerifyReportFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportFileid().split(","))));
+                res.setVerifyReportFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportFileid().split(CommonConstants.COMMA))));
             }
         }
         return res;
@@ -294,7 +294,7 @@ public class SubmissionRecordServiceImpl implements SubmissionRecordService {
         if (StringUtils.isNotEmpty(list)) {
             for (SubmissionRecordDetailResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getVerifyReportFileid())) {
-                    res.setVerifyReportFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportFileid().split(","))));
+                    res.setVerifyReportFile(fileMapper.selectFileInfo(Arrays.asList(res.getVerifyReportFileid().split(CommonConstants.COMMA))));
                 }
             }
         }

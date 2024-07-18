@@ -58,10 +58,10 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
         if (StringUtils.isNotEmpty(list)) {
             for (GeneralSurveyResDTO res : list) {
                 if (StringUtils.isNotEmpty(res.getDocId())) {
-                    res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+                    res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(CommonConstants.COMMA))));
                 }
                 if (StringUtils.isNotEmpty(res.getRecordId())) {
-                    res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
+                    res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(CommonConstants.COMMA))));
                 }
             }
         }
@@ -76,10 +76,10 @@ public class GeneralSurveyServiceImpl implements GeneralSurveyService {
             throw new CommonException(ErrorCode.RESOURCE_NOT_EXIST);
         }
         if (StringUtils.isNotEmpty(res.getDocId())) {
-            res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(","))));
+            res.setDocFile(fileMapper.selectFileInfo(Arrays.asList(res.getDocId().split(CommonConstants.COMMA))));
         }
         if (StringUtils.isNotEmpty(res.getRecordId())) {
-            res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(","))));
+            res.setRecordFiles(fileMapper.selectFileInfo(Arrays.asList(res.getRecordId().split(CommonConstants.COMMA))));
         }
         // 待阅（实际为代办）更新为已办
         overTodoService.overTodo(id, "已查看", CommonConstants.TWO_STRING);

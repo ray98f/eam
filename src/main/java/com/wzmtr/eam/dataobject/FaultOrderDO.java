@@ -102,6 +102,10 @@ public class FaultOrderDO {
     private String ext5;
     private String isDetainingRepair;
     private String isFault;
+    /**
+     * 是否更换部件 10 是 20 否
+     */
+    private String isReplacePart;
     private String dealerUnit;
     private String dealerNum;
     private String repairLimitTime;

@@ -108,10 +108,10 @@ public class CheckPlanServiceImpl implements CheckPlanService {
         checkPlanReqDTO.setArchiveFlag(archiveFlag);
         checkPlanReqDTO.setEditDeptCode(editDeptCode);
         if (StringUtils.isEmpty(checkPlanReqDTO.getPlanPeriodMark())) {
-            checkPlanReqDTO.setPlanPeriodMark(" ");
+            checkPlanReqDTO.setPlanPeriodMark(CommonConstants.BLANK);
         }
         if (StringUtils.isEmpty(checkPlanReqDTO.getPlanCreateTime())) {
-            checkPlanReqDTO.setPlanCreateTime(" ");
+            checkPlanReqDTO.setPlanCreateTime(CommonConstants.BLANK);
         }
         checkPlanMapper.addCheckPlan(checkPlanReqDTO);
     }
@@ -237,8 +237,8 @@ public class CheckPlanServiceImpl implements CheckPlanService {
                 String processId = res.getWorkFlowInstId();
                 String taskId = bpmnService.queryTaskIdByProcId(processId);
                 bpmnService.reject(taskId, checkPlanReqDTO.getExamineReqDTO().getOpinion());
-                reqDTO.setWorkFlowInstId("");
-                reqDTO.setWorkFlowInstStatus("");
+                reqDTO.setWorkFlowInstId(CommonConstants.EMPTY);
+                reqDTO.setWorkFlowInstStatus(CommonConstants.EMPTY);
                 reqDTO.setPlanStatus("10");
                 // 记录日志
                 workFlowLogService.add(WorkFlowLogBO.builder()
