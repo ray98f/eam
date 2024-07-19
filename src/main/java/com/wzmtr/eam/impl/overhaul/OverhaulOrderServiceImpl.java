@@ -27,6 +27,7 @@ import com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulItemTreeResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderListResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulPlanResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulStateOrderResDTO;
@@ -125,9 +126,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     private FaultReportService faultReportService;
 
     @Override
-    public Page<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
-                                                       PageReqDTO pageReqDTO) throws ParseException {
-        overhaulOrderListReqDTO.setObjectFlag("1");
+    public Page<OverhaulOrderListResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+                                                           PageReqDTO pageReqDTO) throws ParseException {
+        overhaulOrderListReqDTO.setObjectFlag(CommonConstants.ONE_STRING);
         SysOffice office = userAccountMapper.getUserOrg(TokenUtils.getCurrentPersonId());
         // 专业未筛选时，按当前用户专业隔离数据  获取当前用户所属组织专业
         if (!CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
@@ -159,11 +160,11 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
             overhaulOrderListReqDTO.setEndTime(sdf2.format(sdf1.parse(overhaulOrderListReqDTO.getEndTime())));
         }
         PageMethod.startPage(pageReqDTO.getPageNo(), pageReqDTO.getPageSize());
-        Page<OverhaulOrderResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
-        List<OverhaulOrderResDTO> list = page.getRecords();
+        Page<OverhaulOrderListResDTO> page = overhaulOrderMapper.pageOrder(pageReqDTO.of(), overhaulOrderListReqDTO);
+        List<OverhaulOrderListResDTO> list = page.getRecords();
         // 专业为车辆的检修工单填充字段
         if (StringUtils.isNotEmpty(list)) {
-            for (OverhaulOrderResDTO res : list) {
+            for (OverhaulOrderListResDTO res : list) {
                 if (CommonConstants.CAR_SUBJECT_CODE.equals(overhaulOrderListReqDTO.getSubjectCode())) {
                     OverhaulOrderResDTO ext = overhaulOrderMapper.getCarOrderExt(res.getOrderCode(), res.getPlanCode());
                     OverhaulOrderResDTO rule = overhaulOrderMapper.getCarOrderRuleExt(res.getOrderCode(), res.getPlanCode());
@@ -192,14 +193,14 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
     }
 
     @Override
-    public Page<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+    public Page<OverhaulOrderListResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
                                                               PageReqDTO pageReqDTO) throws ParseException {
         return pageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO);
     }
 
     @Override
     public OverhaulOrderResDTO getOverhaulOrderDetail(String id) {
-        OverhaulOrderResDTO res = overhaulOrderMapper.getOrder(id, "1");
+        OverhaulOrderResDTO res = overhaulOrderMapper.getOrder(id, CommonConstants.ONE_STRING);
         if (StringUtils.isNotNull(res) && StringUtils.isNotEmpty(res.getOrderCode())) {
             res.setFlows(overhaulOrderMapper.orderFlowDetail(res.getOrderCode()));
         }
@@ -214,7 +215,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
 
     @Override
     public void exportOverhaulOrder(List<String> ids, HttpServletResponse response) throws IOException {
-        List<OverhaulOrderResDTO> overhaulOrderResDTOList = overhaulOrderMapper.getOrderByIds(ids, "1");
+        List<OverhaulOrderResDTO> overhaulOrderResDTOList = overhaulOrderMapper.getOrderByIds(ids, CommonConstants.ONE_STRING);
         if (overhaulOrderResDTOList != null && !overhaulOrderResDTOList.isEmpty()) {
             List<ExcelOverhaulOrderResDTO> resList = new ArrayList<>();
             for (OverhaulOrderResDTO resDTO : overhaulOrderResDTOList) {
@@ -224,7 +225,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                         .planCode(resDTO.getPlanCode())
                         .planName(resDTO.getPlanName())
                         .objectName(resDTO.getExt1())
-                        .workStatus(dictionariesMapper.queryOneByItemCodeAndCodesetCode("dm.er.recStatus", resDTO.getWorkStatus()).getItemCname())
+                        .workStatus(dictionariesMapper.queryOneByItemCodeAndCodesetCode(
+                                CommonConstants.DM_ER_REC_STATUS, resDTO.getWorkStatus()).getItemCname())
                         .workFinishStatus(resDTO.getWorkFinishStatus())
                         .abnormalNumber(resDTO.getAbnormalNumber())
                         .tools(resDTO.getRecDeletor())
@@ -275,7 +277,7 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "已下达、已分配状态必须由工班长派工！");
             }
         }
-        return faultQueryMapper.queryDeptCode(order.getLineNo(), order.getSubjectCode(), "10");
+        return faultQueryMapper.queryDeptCode(order.getLineNo(), order.getSubjectCode(), CommonConstants.TEN_STRING);
     }
 
     @Override

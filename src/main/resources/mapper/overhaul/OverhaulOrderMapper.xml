@@ -738,7 +738,7 @@
         #{ext5,jdbcType=VARCHAR})
     </insert>
 
-    <select id="pageOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO">
+    <select id="pageOrder" resultType="com.wzmtr.eam.dto.res.overhaul.OverhaulOrderListResDTO">
         SELECT
         REC_ID	as "recId",  <!-- 记录ID -->
         ORDER_CODE	as "orderCode",  <!-- 工单编号 -->

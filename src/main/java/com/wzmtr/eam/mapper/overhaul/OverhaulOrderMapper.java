@@ -38,7 +38,7 @@ public interface OverhaulOrderMapper {
      * @param req 传参
      * @return 检修工单列表
      */
-    Page<OverhaulOrderResDTO> pageOrder(Page<OverhaulOrderResDTO> page, OverhaulOrderListReqDTO req);
+    Page<OverhaulOrderListResDTO> pageOrder(Page<OverhaulOrderListResDTO> page, OverhaulOrderListReqDTO req);
 
     /**
      * 根据工单编号和计划编号获取工单详情

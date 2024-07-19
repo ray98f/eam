@@ -217,6 +217,7 @@ public class CommonConstants {
     public static final String DM_IMPORT_TEMPLATE = "dm.import.template";
     public static final String AT_STATION_POS2 = "at.station.pos2";
     public static final String DM_EQUIP_CATEGORY_SUBCLASS = "dm.equip.category.subclass";
+    public static final String DM_ER_REC_STATUS = "dm.er.recStatus";
 
     /**
      * 工单推送内容相关

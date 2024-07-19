@@ -13,6 +13,7 @@ import com.wzmtr.eam.dto.res.overhaul.OverhaulItemResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulItemTreeResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailOpenResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderDetailResDTO;
+import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderListResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulOrderResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulStateOrderResDTO;
 import com.wzmtr.eam.dto.res.overhaul.OverhaulStateResDTO;
@@ -71,8 +72,8 @@ public class OverhaulOrderController {
      */
     @GetMapping("/page")
     @ApiOperation(value = "获取检修工单列表")
-    public PageResponse<OverhaulOrderResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
-                                                               @Valid PageReqDTO pageReqDTO) throws ParseException {
+    public PageResponse<OverhaulOrderListResDTO> pageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+                                                                   @Valid PageReqDTO pageReqDTO) throws ParseException {
         return PageResponse.of(overhaulOrderService.pageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO));
     }
 
@@ -85,8 +86,8 @@ public class OverhaulOrderController {
      */
     @GetMapping("/page/open")
     @ApiOperation(value = "获取检修工单列表-开放接口")
-    public PageResponse<OverhaulOrderResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
-                                                                      @Valid PageReqDTO pageReqDTO) throws ParseException {
+    public PageResponse<OverhaulOrderListResDTO> openApiPageOverhaulOrder(OverhaulOrderListReqDTO overhaulOrderListReqDTO,
+                                                                          @Valid PageReqDTO pageReqDTO) throws ParseException {
         return PageResponse.of(overhaulOrderService.openApiPageOverhaulOrder(overhaulOrderListReqDTO, pageReqDTO));
     }
 
