@@ -1,6 +1,7 @@
 package com.wzmtr.eam.service.equipment;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.equipment.EquipmentExportReqDTO;
 import com.wzmtr.eam.dto.req.equipment.EquipmentReqDTO;
 import com.wzmtr.eam.dto.res.basic.RegionResDTO;
 import com.wzmtr.eam.dto.res.equipment.EquipmentQrResDTO;
@@ -57,7 +58,13 @@ public interface EquipmentService {
 
     void importEquipment(MultipartFile file);
 
-    void exportEquipment(List<String> ids, HttpServletResponse response) throws IOException;
+    /**
+     * 导出设备台账
+     * @param reqDTO 导出传参
+     * @param response response
+     * @throws IOException 异常
+     */
+    void exportEquipment(EquipmentExportReqDTO reqDTO, HttpServletResponse response) throws IOException;
 
     List<EquipmentQrResDTO> generateQr(BaseIdsEntity baseIdsEntity) throws ParseException;
 

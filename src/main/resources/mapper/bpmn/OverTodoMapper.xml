@@ -25,10 +25,10 @@
     <update id="updateStatus">
         UPDATE T_FLOW_TASK SET
         <if test="auditOpinion!=null and auditOpinion!=''">
-            AUDIT_OPINION=#{auditOpinion}
+            AUDIT_OPINION=#{auditOpinion},
         </if>
         TODO_DATE=#{todoDate},
-        PROCESS_USER_ID= #{processUserId},
+        PROCESS_USER_ID=#{processUserId},
         TODO_STATUS=#{todoStatus}
         WHERE USER_ID=#{userId}
         <if test="todoId!=null and todoId!=''">
