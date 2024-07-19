@@ -27,6 +27,18 @@ public class CommonConstants {
     public static final String S2 = "S2";
 
     /**
+     * 数据同步相关
+     */
+    public static final String SYNC_ORG = "syncOrg";
+    public static final String SYNC_SUPP_ORG = "syncSuppOrg";
+    public static final String SYNC_EXTRA_ORG = "syncExtraOrg";
+    public static final String SYNC_SYS_ORG_NAME = "syncSysOrgName";
+    public static final String SYNC_PERSON = "syncPerson";
+    public static final String SYNC_ALL_SUPP_CONTACT = "syncAllSuppContact";
+    public static final String SYNC_PERSON_PLUS = "syncPersonPlus";
+    public static final String SYNC_EMP_JOB_INFO = "syncEmpJobInfo";
+
+    /**
      * id
      */
     public static final String ID = "id";
