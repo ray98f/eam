@@ -1102,13 +1102,18 @@
 
     <select id="listEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
         <include refid="equip-cols"/>
-        FROM T_EQUIPMENT WHERE
-        REC_ID IN (
-        <foreach collection="ids" index="index" item="id" separator=",">
-            #{id}
-        </foreach>
-        ) AND DELETE_FLAG='0'
-        ORDER BY EQUIP_NAME ASC
+        FROM T_EQUIPMENT WHERE DELETE_FLAG='0' AND USE_LINE_NO='02'
+        <if test="ids!=null and ids.size()>0">
+            AND REC_ID IN (
+            <foreach collection="ids" index="index" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+        <if test="majorCode!=null and majorCode!=''">
+            AND MAJOR_CODE=#{majorCode}
+        </if>
+        ORDER BY MAJOR_CODE ASC, SYSTEM_CODE ASC, EQUIP_TYPE_CODE ASC, EQUIP_NAME ASC
     </select>
 
     <select id="pageSiftEquipment" resultType="com.wzmtr.eam.dto.res.equipment.EquipmentResDTO">
