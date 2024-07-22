@@ -373,11 +373,11 @@ public class BpmnServiceImpl implements BpmnService {
                         // 找出为自己部门的
                         if (currentUserDepartCode.equals(res.getOfficeId())) {
                             String s = "eam" + res.getUserId();
-                            chooseNodeUser.append(s).append(",");
+                            chooseNodeUser.append(s).append(CommonConstants.COMMA);
                         }
                     } else {
                         String s = "eam" + res.getUserId();
-                        chooseNodeUser.append(s).append(",");
+                        chooseNodeUser.append(s).append(CommonConstants.COMMA);
                     }
                     // 获取审核人是谁填入,这个是逗号隔开
                     bpmnExamineDTO.setChooseNodeUser(chooseNodeUser.substring(0, chooseNodeUser.length() - 1));
@@ -388,7 +388,7 @@ public class BpmnServiceImpl implements BpmnService {
             StringBuilder chooseNodeUser = new StringBuilder();
             String[] list = fromId.split(CommonConstants.COMMA);
             for (String s : list) {
-                chooseNodeUser.append("eam").append(s).append(",");
+                chooseNodeUser.append("eam").append(s).append(CommonConstants.COMMA);
             }
             bpmnExamineDTO.setChooseNodeUser(chooseNodeUser.substring(0, chooseNodeUser.length() - 1));
             bpmnExamineDTO.setChooseNode(nodeId);

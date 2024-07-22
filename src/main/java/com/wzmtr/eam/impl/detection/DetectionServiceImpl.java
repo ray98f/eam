@@ -219,7 +219,7 @@ public class DetectionServiceImpl implements DetectionService {
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.DETECTION_SUBMIT.value()).contains(reqDTO.getWorkFlowInstStatus())) {
                 bpmnService.agree(taskId, detectionReqDTO.getExamineReqDTO().getOpinion(),
-                        String.join(",", detectionReqDTO.getExamineReqDTO().getUserIds()),
+                        String.join(CommonConstants.COMMA, detectionReqDTO.getExamineReqDTO().getUserIds()),
                         "{\"id\":\"" + res.getCheckNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.DETECTION_SUBMIT.value(), reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setRecStatus("20");

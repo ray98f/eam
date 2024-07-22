@@ -67,7 +67,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (CommonConstants.ROOT.equals(id)) {
             page = organizationMapper.pageMember(pageReqDTO.of(), id, name);
         } else {
-            page = organizationMapper.pageMember(pageReqDTO.of(), "," + id, name);
+            page = organizationMapper.pageMember(pageReqDTO.of(), CommonConstants.COMMA + id, name);
         }
         List<MemberResDTO> list = page.getRecords();
         if (null != list && !list.isEmpty()) {
@@ -103,7 +103,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (CommonConstants.ROOT.equals(id)) {
             list = organizationMapper.listMember(id);
         } else {
-            list = organizationMapper.listMember("," + id);
+            list = organizationMapper.listMember(CommonConstants.COMMA + id);
         }
         if (null != list && !list.isEmpty()) {
             for (MemberResDTO memberResDTO : list) {

@@ -651,9 +651,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                     List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(req);
                     if (StringUtils.isNotEmpty(overhaulItem)) {
                         Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).filter(Objects::nonNull).collect(Collectors.toSet());
-                        String result = Joiner.on(",").join(nameSet);
+                        String result = Joiner.on(CommonConstants.COMMA).join(nameSet);
                         List<String> names = Arrays.stream(result.split(CommonConstants.COMMA)).distinct().filter(Objects::nonNull).collect(Collectors.toList());
-                        result = Joiner.on(",").join(names);
+                        result = Joiner.on(CommonConstants.COMMA).join(names);
                         res.setTaskPersonName(result);
                     }
                 }
@@ -680,9 +680,9 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 List<OverhaulItemResDTO> overhaulItem = overhaulItemMapper.listOverhaulItem(req);
                 if (StringUtils.isNotEmpty(overhaulItem)) {
                     Set<String> nameSet = overhaulItem.stream().map(OverhaulItemResDTO::getWorkUserName).filter(Objects::nonNull).collect(Collectors.toSet());
-                    String result = Joiner.on(",").join(nameSet);
+                    String result = Joiner.on(CommonConstants.COMMA).join(nameSet);
                     List<String> names = Arrays.stream(result.split(CommonConstants.COMMA)).distinct().filter(Objects::nonNull).collect(Collectors.toList());
-                    result = Joiner.on(",").join(names);
+                    result = Joiner.on(CommonConstants.COMMA).join(names);
                     res.setTaskPersonName(result);
                 }
             }

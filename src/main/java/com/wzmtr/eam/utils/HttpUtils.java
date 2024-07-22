@@ -182,7 +182,7 @@ public class HttpUtils {
             ip = request.getRemoteAddr();
         }
         if (null != ip && ip.contains(CommonConstants.COMMA)) {
-            ip = ip.substring(0, ip.indexOf(","));
+            ip = ip.substring(0, ip.indexOf(CommonConstants.COMMA));
         }
         return ip;
     }

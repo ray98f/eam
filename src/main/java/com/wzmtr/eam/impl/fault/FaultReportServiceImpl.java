@@ -177,17 +177,26 @@ public class FaultReportServiceImpl implements FaultReportService {
             toZcProsecute(reqDTO, faultOrder, nextFaultWorkNo);
         }
         // 知会OCC调度
+        sendOcc(reqDTO, nextFaultWorkNo);
+        return nextFaultNo;
+    }
+
+    /**
+     * 知会OCC调度
+     * @param reqDTO 故障传参
+     * @param faultWorkNo 故障工单编号
+     */
+    private void sendOcc(FaultReportReqDTO reqDTO, String faultWorkNo) {
         if (StringUtils.isNotNull(reqDTO.getMaintenance()) && reqDTO.getMaintenance()) {
             List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(null, CommonConstants.DM_052);
             for (BpmnExaminePersonRes map2 : userList) {
                 if (CollectionUtil.isNotEmpty(userList)) {
-                    overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_OCC, nextFaultWorkNo, "知会OCC调度的故障"),
-                            TokenUtils.getUuId(), faultOrder.getRecId(), map2.getUserId(), "知会OCC调度", "OCC",
+                    overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_OCC, faultWorkNo, "知会OCC调度的故障"),
+                            TokenUtils.getUuId(), faultWorkNo, map2.getUserId(), "知会OCC调度", "OCC",
                             TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_READ_QUERY.value());
                 }
             }
         }
-        return nextFaultNo;
     }
 
     private void toZcProsecute(FaultReportReqDTO reqDTO, FaultOrderDO faultOrder, String nextFaultWorkNo) {
@@ -281,16 +290,7 @@ public class FaultReportServiceImpl implements FaultReportService {
             toZcProsecute(reqDTO, faultOrder, reqDTO.getFaultWorkNo());
         }
         // 知会OCC调度
-        if (StringUtils.isNotNull(reqDTO.getMaintenance()) && reqDTO.getMaintenance()) {
-            List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(null, CommonConstants.DM_052);
-            for (BpmnExaminePersonRes map2 : userList) {
-                if (CollectionUtil.isNotEmpty(userList)) {
-                    overTodoService.insertTodo(String.format(CommonConstants.TODO_GD_OCC, reqDTO.getFaultWorkNo(), "知会OCC调度的故障"),
-                            TokenUtils.getUuId(), faultOrder.getRecId(), map2.getUserId(), "知会OCC调度", "OCC",
-                            TokenUtils.getCurrentPersonId(), BpmnFlowEnum.FAULT_READ_QUERY.value());
-                }
-            }
-        }
+        sendOcc(reqDTO, reqDTO.getFaultWorkNo());
     }
 
     @Override

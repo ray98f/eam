@@ -206,7 +206,7 @@ public class DetectionPlanServiceImpl implements DetectionPlanService {
             String taskId = bpmnService.queryTaskIdByProcId(processId);
             if (roleMapper.getNodeIdsByFlowId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value()).contains(reqDTO.getWorkFlowInstStatus())) {
                 bpmnService.agree(taskId, detectionPlanReqDTO.getExamineReqDTO().getOpinion(),
-                        String.join(",", detectionPlanReqDTO.getExamineReqDTO().getUserIds()),
+                        String.join(CommonConstants.COMMA, detectionPlanReqDTO.getExamineReqDTO().getUserIds()),
                         "{\"id\":\"" + res.getInstrmPlanNo() + "\"}", null);
                 reqDTO.setWorkFlowInstStatus(bpmnService.getNextNodeId(BpmnFlowEnum.DETECTION_PLAN_SUBMIT.value(), reqDTO.getWorkFlowInstStatus()));
                 reqDTO.setPlanStatus("20");

@@ -212,7 +212,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                     faultAnalyzeDO.setRecStatus("30");
                 }
                 bpmnService.agree(taskId, reqDTO.getExamineReqDTO().getOpinion(),
-                        String.join(",", reqDTO.getExamineReqDTO().getUserIds()),
+                        String.join(CommonConstants.COMMA, reqDTO.getExamineReqDTO().getUserIds()),
                         "{\"id\":\"" + faultAnalyzeDO.getFaultAnalysisNo() + "\",\"review\":\"" + flag + "\"}",
                         reviewOrNot);
                 faultAnalyzeDO.setWorkFlowInstStatus(nextNodeId);
