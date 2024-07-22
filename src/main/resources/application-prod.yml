@@ -1,4 +1,4 @@
-# 铁投测试环境
+# 生产环境
 spring:
   datasource:
     url: jdbc:oracle:thin:@10.11.76.40:1521/gisdb
@@ -20,7 +20,7 @@ spring:
     port: 5672
     username: admin
     password: 14bMn3P69
-    virtual-host: /eam-s2
+#    virtual-host: /eam-s2
 
   redis:
     host: 10.11.72.205
