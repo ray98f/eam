@@ -104,8 +104,8 @@ local:
   data-sync: on
 
 minio:
-  url: http://10.11.72.206:9000
-  imgPath: http://10.11.72.206:9000
+  url: http://sbwxwh.wzmtr.com:8085/cdn
+  imgPath: http://sbwxwh.wzmtr.com:8085/cdn
   accessKey: miniominio
   secretKey: Minio0263#c
 
