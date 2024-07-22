@@ -148,4 +148,42 @@ public class CodeUtils {
         return stringBuilder.toString();
     }
 
+    /**
+     * 故障编号生成
+     * @return 最新的故障编号
+     */
+    public static String generateOverhaulOrderCode() {
+        String key = CommonConstants.S2 + CommonConstants.OVERHAUL_ORDER_CODE;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(CommonConstants.OVERHAUL_ORDER_CODE_PREFIX);
+        // 获取当前日期
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.YYYYMMDD);
+        String currentDate = dateFormat.format(new Date());
+        // 截取日期格式为yyMMdd
+        stringBuilder.append(currentDate.substring(CommonConstants.TWO));
+
+        // 获取流水号
+        Long increment = stringRedisTemplate.opsForValue().increment(key, 1);
+
+        /*
+          返回过期时间，单位为秒。
+          如果返回-2，则表示该键不存在；
+          如果返回-1，则表示该键没有设置过期时间；
+         */
+        Long expire = stringRedisTemplate.getExpire(key, TimeUnit.SECONDS);
+        if (StringUtils.isNull(expire) || expire == CommonConstants.NEGATIVE_TWO) {
+            throw new CommonException(ErrorCode.NORMAL_ERROR, "redis overhaulOrderCode 流水号异常");
+        }
+        if (expire == CommonConstants.NEGATIVE_ONE) {
+            // 获取距离当天结束的秒数
+            LocalDateTime endOfDay = LocalDate.now().atTime(23, 59, 59);
+            long secondsToMidnight = LocalDateTime.now().until(endOfDay, ChronoUnit.SECONDS);
+            //初始设置过期时间
+            stringRedisTemplate.expire(key, secondsToMidnight, TimeUnit.SECONDS);
+        }
+        String format = String.format("%04d", increment);
+        stringBuilder.append(format);
+        return stringBuilder.toString();
+    }
+
 }

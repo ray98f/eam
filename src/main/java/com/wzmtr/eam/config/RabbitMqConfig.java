@@ -15,7 +15,7 @@ public class RabbitMqConfig {
     public static final String FAULT_QUEUE = "EAM_FAULT_QUEUE";
 
     @Bean
-    public Queue alarmQueue() {
+    public Queue faultQueue() {
         return QueueBuilder.durable(FAULT_QUEUE).build();
     }
 

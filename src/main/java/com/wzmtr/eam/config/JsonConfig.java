@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Json配置
+ * @author  Ray
+ * @version 1.0
+ * @date 2023/12/06
+ */
 @Configuration
 public class JsonConfig {
     @Bean

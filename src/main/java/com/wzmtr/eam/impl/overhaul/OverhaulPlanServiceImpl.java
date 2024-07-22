@@ -455,13 +455,14 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
         if (StringUtils.isEmpty(tplDetailList)) {
             return;
         }
-        String orderCode = overhaulOrderMapper.getMaxCode();
-        if (StringUtils.isEmpty(orderCode)
-                || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(DateUtils.getNoDate())) {
-            orderCode = "JX" + DateUtils.getNoDate() + "0001";
-        } else {
-            orderCode = CodeUtils.getNextCode(orderCode, 10);
-        }
+//        String orderCode = overhaulOrderMapper.getMaxCode();
+//        if (StringUtils.isEmpty(orderCode)
+//                || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(DateUtils.getNoDate())) {
+//            orderCode = "JX" + DateUtils.getNoDate() + "0001";
+//        } else {
+//            orderCode = CodeUtils.getNextCode(orderCode, 10);
+//        }
+        String orderCode = CodeUtils.generateOverhaulOrderCode();
         try {
             insertInspectPlan1(planCode, new String[]{orderCode, flag});
             insertInspectObject(planCode, orderCode);
@@ -594,7 +595,7 @@ public class OverhaulPlanServiceImpl implements OverhaulPlanService {
                     BeanUtils.copyProperties(plan, overhaulOrder);
                     overhaulOrder.setRecId(TokenUtils.getUuId());
                     if (i > 0) {
-                        overhaulOrder.setOrderCode(CodeUtils.getNextCodeByAddNum(overhaulOrder.getOrderCode(), 10, i));
+                        overhaulOrder.setOrderCode(CodeUtils.generateOverhaulOrderCode());
                     }
                     overhaulOrderMapper.addOverhaulOrder(overhaulOrder);
                     i++;

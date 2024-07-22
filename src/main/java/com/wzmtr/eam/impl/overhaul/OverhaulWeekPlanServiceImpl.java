@@ -401,12 +401,13 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
             if (StringUtils.isEmpty(orderIsValid)) {
                 throw new CommonException(ErrorCode.NORMAL_ERROR, "您选择触发的周计划中没有检修项！");
             }
-            String orderCode = overhaulOrderMapper.getMaxCode();
-            if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(DateUtils.getNoDate())) {
-                orderCode = "JX" + DateUtils.getNoDate() + "0001";
-            } else {
-                orderCode = CodeUtils.getNextCode(orderCode, 10);
-            }
+//            String orderCode = overhaulOrderMapper.getMaxCode();
+//            if (StringUtils.isEmpty(orderCode) || !orderCode.substring(CommonConstants.TWO, CommonConstants.TEN).equals(DateUtils.getNoDate())) {
+//                orderCode = "JX" + DateUtils.getNoDate() + "0001";
+//            } else {
+//                orderCode = CodeUtils.getNextCode(orderCode, 10);
+//            }
+            String orderCode = CodeUtils.generateOverhaulOrderCode();
             insertInspectPlan(plan.getPlanCode(), new String[]{orderCode, weekPlanCode, plan.getFirstBeginTime()});
             if (StringUtils.isNotEmpty(plan.getConstructionType())) {
                 plan.setExt1(orderCode);
@@ -482,7 +483,7 @@ public class OverhaulWeekPlanServiceImpl implements OverhaulWeekPlanService {
                 reqDTO.setRecRevisor("");
                 reqDTO.setRecReviseTime("");
                 if (i > 0) {
-                    reqDTO.setOrderCode(CodeUtils.getNextCodeByAddNum(orderCode, 10, i));
+                    reqDTO.setOrderCode(CodeUtils.generateOverhaulOrderCode());
                 }
                 overhaulOrderMapper.addOverhaulOrder(reqDTO);
                 i++;
