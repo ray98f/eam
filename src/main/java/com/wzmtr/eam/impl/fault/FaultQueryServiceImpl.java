@@ -149,7 +149,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
             type = CommonConstants.TWO_STRING;
         }
-        String userStation = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPersonId());
+        List<String> userStations = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPersonId());
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
@@ -161,7 +161,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
             page = faultQueryMapper.query(reqDTO.of(), reqDTO, userMajorList);
         } else {
             page = faultQueryMapper.queryByUser(reqDTO.of(), reqDTO, userMajorList,
-                    TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId(), type, userStation);
+                    TokenUtils.getCurrentPersonId(), TokenUtils.getCurrentPerson().getOfficeAreaId(), type, userStations);
         }
         List<FaultDetailResDTO> list = page.getRecords();
         for (FaultDetailResDTO res : list) {

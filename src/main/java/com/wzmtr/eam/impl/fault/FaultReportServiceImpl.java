@@ -352,9 +352,9 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultInfoDO.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
         faultInfoDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
         faultInfoDO.setRecCreateTime(DateUtils.getCurrentTime());
-        String stationNo = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPerson().getPersonId());
-        if (StringUtils.isNotNull(stationNo)) {
-            faultInfoDO.setRecStation(stationNo);
+        List<String> userStations = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPerson().getPersonId());
+        if (StringUtils.isNotEmpty(userStations)) {
+            faultInfoDO.setRecStation(String.join(CommonConstants.COMMA, userStations));
         }
         faultReportMapper.addToFaultInfo(faultInfoDO);
     }
@@ -400,7 +400,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
             type = CommonConstants.TWO_STRING;
         }
-        String userStation = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPersonId());
+        List<String> userStations = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPersonId());
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
@@ -420,7 +420,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                     reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
                     reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), userMajorList, TokenUtils.getCurrentPersonId(),
-                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type, userStation);
+                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type, userStations);
         }
         List<FaultReportResDTO> records = list.getRecords();
         buildRes(records);
@@ -465,7 +465,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
             type = CommonConstants.TWO_STRING;
         }
-        String userStation = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPersonId());
+        List<String> userStations = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPersonId());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
@@ -485,7 +485,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                     reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
                     reqDTO.getFaultAffect(), userMajorList, TokenUtils.getCurrentPersonId(),
-                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type, userStation);
+                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type, userStations);
         }
         List<FaultReportResDTO> records = list.getRecords();
         buildRes(records);

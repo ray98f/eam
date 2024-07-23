@@ -83,7 +83,7 @@ public interface UserAccountMapper {
      * @param userNo 用户工号
      * @return 车站
      */
-    String selectStationByUser(String userNo);
+    List<String> selectStationByUser(String userNo);
     List<String> getAllMajor();
 
     /**
