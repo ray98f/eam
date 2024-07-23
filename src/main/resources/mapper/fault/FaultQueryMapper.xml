@@ -215,7 +215,7 @@
                 AND d.MAJOR_CODE=#{req.majorCode}
             </if>
             <if test="majors!=null and majors.size()>0">
-                and d.MAJOR_CODE IN (
+                AND d.MAJOR_CODE IN (
                 <foreach collection="majors" index="index" item="major" separator=",">
                     #{major}
                 </foreach>
@@ -254,13 +254,13 @@
                 <if test="type!=null and type=='2'.toString()">
                     OR d.EXT4='true'
                 </if>
-                )
-            </if>
-            <if test="userStations!=null and userStations.size()>0">
-                AND (
-                <foreach collection="userStations" index="index" item="userStation" separator="OR">
-                    d.REC_STATION LIKE '%' || #{userStation} || '%'
-                </foreach>
+                <if test="userStations!=null and userStations.size()>0">
+                    OR (
+                    <foreach collection="userStations" index="index" item="userStation" separator="OR">
+                        d.REC_STATION LIKE '%' || #{userStation} || '%'
+                    </foreach>
+                    )
+                </if>
                 )
             </if>
             AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'

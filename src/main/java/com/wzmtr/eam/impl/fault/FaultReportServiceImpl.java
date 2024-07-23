@@ -352,7 +352,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultInfoDO.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
         faultInfoDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
         faultInfoDO.setRecCreateTime(DateUtils.getCurrentTime());
-        List<String> userStations = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPerson().getPersonId());
+        List<String> userStations = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPersonId());
         if (StringUtils.isNotEmpty(userStations)) {
             faultInfoDO.setRecStation(String.join(CommonConstants.COMMA, userStations));
         }

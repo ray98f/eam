@@ -797,50 +797,50 @@
     <select id="list" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         <include refid="list-cols"/>
         <if test="faultNo!=null and faultNo!=''">
-           and d.FAULT_NO=#{faultNo}
+            AND d.FAULT_NO=#{faultNo}
         </if>
         <if test="faultWorkNo!=null and faultWorkNo!=''">
-            and df.FAULT_WORK_NO=#{faultWorkNo}
+            AND df.FAULT_WORK_NO=#{faultWorkNo}
         </if>
         <if test="lineCode!=null and lineCode!=''">
-            and d.LINE_CODE=#{lineCode}
+            AND d.LINE_CODE=#{lineCode}
         </if>
         <if test="objectCode!=null and objectCode!=''">
-           and d.OBJECT_CODE=#{objectCode}
+            AND d.OBJECT_CODE=#{objectCode}
         </if>
         <if test="majorCode!=null and majorCode!=''">
-           and d.MAJOR_CODE=#{majorCode}
+            AND d.MAJOR_CODE=#{majorCode}
         </if>
         <if test="majors!=null and majors.size()>0">
-            and d.MAJOR_CODE IN (
+            AND d.MAJOR_CODE IN (
             <foreach collection="majors" index="index" item="major" separator=",">
                 #{major}
             </foreach>
             )
         </if>
         <if test="faultModuleId!=null and faultModuleId!=''">
-           and d.FAULT_MODULE_ID=#{faultModuleId}
+            AND d.FAULT_MODULE_ID=#{faultModuleId}
         </if>
         <if test="objectName!=null and objectName!=''">
-           and d.OBJECT_NAME=#{objectName}
+            AND d.OBJECT_NAME=#{objectName}
         </if>
         <if test="systemCode!=null and systemCode!=''">
-           and d.SYSTEM_CODE=#{systemCode}
+            AND d.SYSTEM_CODE=#{systemCode}
         </if>
         <if test="equipTypeCode!=null and equipTypeCode!=''">
-           and d.EQUIP_TYPE_CODE=#{equipTypeCode}
+            AND d.EQUIP_TYPE_CODE=#{equipTypeCode}
         </if>
         <if test="positionCode!=null and positionCode!=''">
-           and d.POSITION_CODE=#{positionCode}
+            AND d.POSITION_CODE=#{positionCode}
         </if>
         <if test="fillinTimeStart!=null">
-           and TO_DATE(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{fillinTimeStart}, 'YYYY-MM-DD')
+            AND TO_DATE(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{fillinTimeStart}, 'YYYY-MM-DD')
         </if>
         <if test="fillinTimeEnd!=null">
-           and TO_DATE(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= TO_DATE(#{fillinTimeEnd}, 'YYYY-MM-DD') + 1
+            AND TO_DATE(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= TO_DATE(#{fillinTimeEnd}, 'YYYY-MM-DD') + 1
         </if>
         <if test="orderStatus!=null and orderStatus!=''">
-           and df.ORDER_STATUS=#{orderStatus}
+            AND df.ORDER_STATUS=#{orderStatus}
         </if>
         <if test="userId!=null">
             AND (df.DISPATCH_USER_ID=#{userId} OR
@@ -857,16 +857,16 @@
             <if test="type!=null and type=='2'.toString()">
                 OR d.EXT4='true'
             </if>
+            <if test="userStations!=null and userStations.size()>0">
+                OR (
+                <foreach collection="userStations" index="index" item="userStation" separator="OR">
+                    d.REC_STATION LIKE '%' || #{userStation} || '%'
+                </foreach>
+                )
+            </if>
             )
         </if>
-        <if test="userStations!=null and userStations.size()>0">
-            AND (
-            <foreach collection="userStations" index="index" item="userStation" separator="OR">
-                d.REC_STATION LIKE '%' || #{userStation} || '%'
-            </foreach>
-            )
-        </if>
-        and df.DELETE_FLAG='0'
+        AND df.DELETE_FLAG='0'
         ORDER BY sort asc, d.FAULT_NO desc
     </select>
 
@@ -1097,47 +1097,47 @@
     <select id="carFaultReportList" resultType="com.wzmtr.eam.dto.res.fault.FaultReportResDTO">
         <include refid="car-list-cols"/>
         <if test="faultNo!=null and faultNo!=''">
-           and d.FAULT_NO=#{faultNo}
+            AND d.FAULT_NO=#{faultNo}
         </if>
         <if test="objectCode!=null and objectCode!=''">
-           and d.OBJECT_CODE=#{objectCode}
+            AND d.OBJECT_CODE=#{objectCode}
         </if>
         <if test="majorCode!=null and majorCode!=''">
-           and d.MAJOR_CODE=#{majorCode}
+            AND d.MAJOR_CODE=#{majorCode}
         </if>
         <if test="majors!=null and majors.size()>0">
-            and d.MAJOR_CODE IN (
+            AND d.MAJOR_CODE IN (
             <foreach collection="majors" index="index" item="major" separator=",">
                 #{major}
             </foreach>
             )
         </if>
         <if test="faultAffect!=null and faultAffect!=''">
-            and df.FAULT_AFFECT=#{faultAffect}
+            AND df.FAULT_AFFECT=#{faultAffect}
         </if>
         <if test="faultModuleId!=null and faultModuleId!=''">
-           and d.FAULT_MODULE_ID=#{faultModuleId}
+            AND d.FAULT_MODULE_ID=#{faultModuleId}
         </if>
         <if test="objectName!=null and objectName!=''">
-           and d.OBJECT_NAME=#{objectName}
+            AND d.OBJECT_NAME=#{objectName}
         </if>
         <if test="systemCode!=null and systemCode!=''">
-           and d.SYSTEM_CODE=#{systemCode}
+            AND d.SYSTEM_CODE=#{systemCode}
         </if>
         <if test="equipTypeCode!=null and equipTypeCode!=''">
-           and d.EQUIP_TYPE_CODE=#{equipTypeCode}
+            AND d.EQUIP_TYPE_CODE=#{equipTypeCode}
         </if>
         <if test="positionCode!=null and positionCode!=''">
-           and d.POSITION_CODE=#{positionCode}
+            AND d.POSITION_CODE=#{positionCode}
         </if>
         <if test="fillinTimeStart!=null">
-           and TO_DATE(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{fillinTimeStart}, 'YYYY-MM-DD')
+            AND TO_DATE(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &gt;= TO_DATE(#{fillinTimeStart}, 'YYYY-MM-DD')
         </if>
         <if test="fillinTimeEnd!=null">
-           and TO_DATE(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= TO_DATE(#{fillinTimeEnd}, 'YYYY-MM-DD') + 1
+            AND TO_DATE(d.FILLIN_TIME, 'YYYY-MM-DD HH24:MI:SS') &lt;= TO_DATE(#{fillinTimeEnd}, 'YYYY-MM-DD') + 1
         </if>
         <if test="orderStatus!=null and orderStatus!=''">
-            and df.ORDER_STATUS=#{orderStatus}
+            AND df.ORDER_STATUS=#{orderStatus}
         </if>
         <if test="userId!=null">
             AND (df.DISPATCH_USER_ID=#{userId} OR
@@ -1154,16 +1154,16 @@
             <if test="type!=null and type=='2'.toString()">
                 OR d.EXT4='true'
             </if>
+            <if test="userStations!=null and userStations.size()>0">
+                OR (
+                <foreach collection="userStations" index="index" item="userStation" separator="OR">
+                    d.REC_STATION LIKE '%' || #{userStation} || '%'
+                </foreach>
+                )
+            </if>
             )
         </if>
-        <if test="userStations!=null and userStations.size()>0">
-            AND (
-            <foreach collection="userStations" index="index" item="userStation" separator="OR">
-                d.REC_STATION LIKE '%' || #{userStation} || '%'
-            </foreach>
-            )
-        </if>
-        and df.DELETE_FLAG='0'
+        AND df.DELETE_FLAG='0'
         ORDER BY sort asc, d.FAULT_NO desc
     </select>
 
