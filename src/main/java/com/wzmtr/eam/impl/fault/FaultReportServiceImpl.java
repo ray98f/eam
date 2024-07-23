@@ -177,7 +177,7 @@ public class FaultReportServiceImpl implements FaultReportService {
             toZcProsecute(reqDTO, faultOrder, nextFaultWorkNo);
         }
         // 知会OCC调度
-        sendOcc(reqDTO, nextFaultWorkNo);
+        toOcc(reqDTO, nextFaultWorkNo);
         return nextFaultNo;
     }
 
@@ -186,7 +186,7 @@ public class FaultReportServiceImpl implements FaultReportService {
      * @param reqDTO 故障传参
      * @param faultWorkNo 故障工单编号
      */
-    private void sendOcc(FaultReportReqDTO reqDTO, String faultWorkNo) {
+    private void toOcc(FaultReportReqDTO reqDTO, String faultWorkNo) {
         if (StringUtils.isNotNull(reqDTO.getMaintenance()) && reqDTO.getMaintenance()) {
             List<BpmnExaminePersonRes> userList = roleMapper.getUserByOrgAndRole(null, CommonConstants.DM_052);
             for (BpmnExaminePersonRes map2 : userList) {
@@ -262,7 +262,7 @@ public class FaultReportServiceImpl implements FaultReportService {
                         }
                     }
                     // 默认为紧急
-                    faultInfo.setExt1("01");
+                    faultInfo.setExt1(CommonConstants.ZERO_ONE_STRING);
                     faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
                     faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
                     faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
@@ -290,7 +290,7 @@ public class FaultReportServiceImpl implements FaultReportService {
             toZcProsecute(reqDTO, faultOrder, reqDTO.getFaultWorkNo());
         }
         // 知会OCC调度
-        sendOcc(reqDTO, reqDTO.getFaultWorkNo());
+        toOcc(reqDTO, reqDTO.getFaultWorkNo());
     }
 
     @Override

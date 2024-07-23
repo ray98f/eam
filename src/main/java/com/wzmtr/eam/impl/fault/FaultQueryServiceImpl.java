@@ -625,7 +625,7 @@ public class FaultQueryServiceImpl implements FaultQueryService {
                 finishWorkConfirm(list, cos, currentUser, current, reqDTO.getExamineStatus(), reqDTO.getExamineOpinion());
                 break;
             case GUAN_BI:
-                close(list);
+                close(list, reqDTO.getExamineStatus(), reqDTO.getExamineOpinion());
                 break;
             case ZUO_FEI:
                 cancel(list, currentUser, current);
@@ -1009,21 +1009,41 @@ public class FaultQueryServiceImpl implements FaultQueryService {
         sendRepairTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());
     }
 
-    private void close(List<FaultDetailResDTO> list) {
+    private void close(List<FaultDetailResDTO> list, String examineStatus, String examineOpinion) {
         list.forEach(a -> {
             FaultOrderDO faultOrder = faultQueryMapper.queryOneFaultOrder(a.getFaultNo(), null);
-            faultOrder.setOrderStatus(OrderStatus.GUAN_BI.getCode());
             faultOrder.setCloseTime(DateUtils.getCurrentTime());
+            faultOrder.setCloseUserId(TokenUtils.getCurrentPerson().getLoginName());
+            faultOrder.setCloseUserName(TokenUtils.getCurrentPerson().getPersonName());
+            if (CommonConstants.ZERO_STRING.equals(examineStatus)) {
+                faultOrder.setOrderStatus(OrderStatus.GUAN_BI.getCode());
+            } else {
+                faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
+            }
             faultReportMapper.updateFaultOrder(faultOrder);
             FaultInfoDO faultInfo = faultQueryMapper.queryOneFaultInfo(a.getFaultNo(), a.getFaultWorkNo());
             faultInfo.setFaultNo(a.getFaultNo());
             faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
             faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
             faultReportMapper.updateFaultInfo(faultInfo);
-            overTodoService.overTodo(faultOrder.getFaultWorkNo());
+            // 故障关闭消息发送
+            if (CommonConstants.ZERO_STRING.equals(examineStatus)) {
+                overTodoService.overTodo(faultOrder.getFaultWorkNo());
+            } else {
+                closeRejectSendMessage(faultOrder);
+            }
             // 添加流程记录
-            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo(), null);
+            addFaultFlow(a.getFaultNo(), a.getFaultWorkNo(), examineOpinion);
         });
+    }
+
+    /**
+     * 故障关闭驳回消息发送
+     * @param faultOrder 工单信息
+     */
+    private void closeRejectSendMessage(FaultOrderDO faultOrder) {
+        overTodoService.overTodo(faultOrder.getFaultWorkNo());
+        sendRepairTodoMessage(faultOrder, null, faultOrder.getReportFinishUserId());
     }
 
     private void check(List<FaultDetailResDTO> list, String currentUser, String current, String examineStatus, String examineOpinion) {

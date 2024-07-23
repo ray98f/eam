@@ -139,7 +139,7 @@ public class FaultReceiver {
                     }
                 }
                 // 默认为紧急
-                faultInfo.setFaultLevel("01");
+                faultInfo.setFaultLevel(CommonConstants.ZERO_ONE_STRING);
                 faultOrder.setOrderStatus(OrderStatus.PAI_GONG.getCode());
                 faultInfo.setRecRevisor(TokenUtils.getCurrentPersonId());
                 faultInfo.setRecReviseTime(DateUtils.getCurrentTime());
