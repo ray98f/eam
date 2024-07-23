@@ -6,6 +6,7 @@ import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
 import com.wzmtr.eam.entity.PageReqDTO;
 import com.wzmtr.eam.entity.SysUserAccount;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,6 +24,12 @@ public interface UserAccountService {
     String getToken(String userId);
 
     UserCenterInfoResDTO getUserDetail();
+
+    /**
+     * 人员车站关联导入
+     * @param file 导入文件
+     */
+    void importUserStation(MultipartFile file);
 
     List<UserRoleResDTO> getUserRolesById(String userId);
 

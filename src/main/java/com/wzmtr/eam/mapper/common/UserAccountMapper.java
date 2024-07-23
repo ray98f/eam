@@ -1,6 +1,7 @@
 package com.wzmtr.eam.mapper.common;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wzmtr.eam.dto.req.common.UserStationReqDTO;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
@@ -70,6 +71,12 @@ public interface UserAccountMapper {
     List<UserRoleResDTO> getUserRoles(@Param("userId") String userId);
 
     List<String> getMajor(@Param("userId") String userId);
+
+    /**
+     * 人员车站关联导入
+     * @param list list
+     */
+    void importUserStation(List<UserStationReqDTO> list);
     List<String> getAllMajor();
 
     /**

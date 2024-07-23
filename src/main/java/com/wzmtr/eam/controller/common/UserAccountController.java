@@ -14,8 +14,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -67,6 +69,18 @@ public class UserAccountController {
     @ApiOperation(value = "用户详情")
     public DataResponse<UserCenterInfoResDTO> getUserDetail() {
         return DataResponse.of(userAccountService.getUserDetail());
+    }
+
+    /**
+     * 人员车站关联导入
+     * @param file 导入文件
+     * @return 成功
+     */
+    @PostMapping("/station/import")
+    @ApiOperation(value = "人员车站关联导入")
+    public DataResponse<T> importUserStation(@RequestParam MultipartFile file) {
+        userAccountService.importUserStation(file);
+        return DataResponse.success();
     }
 
 }

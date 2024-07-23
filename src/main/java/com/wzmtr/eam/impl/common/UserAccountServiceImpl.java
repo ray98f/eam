@@ -3,6 +3,8 @@ package com.wzmtr.eam.impl.common;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.page.PageMethod;
 import com.wzmtr.eam.constant.CommonConstants;
+import com.wzmtr.eam.dto.req.common.UserStationReqDTO;
+import com.wzmtr.eam.dto.req.common.excel.ExcelUserStationReqDTO;
 import com.wzmtr.eam.dto.res.common.UserAccountListResDTO;
 import com.wzmtr.eam.dto.res.common.UserCenterInfoResDTO;
 import com.wzmtr.eam.dto.res.common.UserRoleResDTO;
@@ -15,11 +17,15 @@ import com.wzmtr.eam.mapper.common.UserAccountMapper;
 import com.wzmtr.eam.service.common.UserAccountService;
 import com.wzmtr.eam.shiro.model.Person;
 import com.wzmtr.eam.shiro.service.IPersonService;
+import com.wzmtr.eam.utils.EasyExcelUtils;
 import com.wzmtr.eam.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,18 +88,38 @@ public class UserAccountServiceImpl implements UserAccountService {
         // 获取登录用户角色权限
         res.setUserRoles(userAccountMapper.getUserRoles(TokenUtils.getCurrentPersonId()));
         // 获取登录用户相关专业
-        if(res.getUserRoles() != null){
-
+        if (res.getUserRoles() != null) {
             //如果改用户的角色可以查看全专业
-            UserRoleResDTO r =res.getUserRoles().stream().filter(a-> CommonConstants.SYS_ALL_01.equals(a.getRoleCode())).findFirst().orElse(null);
-            if(r != null){
-                res.setUserMajors( userAccountMapper.getAllMajor());
-            }else{
-                res.setUserMajors( userAccountMapper.getMajor(TokenUtils.getCurrentPersonId()));
+            UserRoleResDTO r = res.getUserRoles().stream().filter(a -> CommonConstants.SYS_ALL_01.equals(a.getRoleCode())).findFirst().orElse(null);
+            if (r != null) {
+                res.setUserMajors(userAccountMapper.getAllMajor());
+            } else {
+                res.setUserMajors(userAccountMapper.getMajor(TokenUtils.getCurrentPersonId()));
             }
         }
-
         return res;
+    }
+
+    @Override
+    public void importUserStation(MultipartFile file) {
+        List<ExcelUserStationReqDTO> list = EasyExcelUtils.read(file, ExcelUserStationReqDTO.class);
+        List<UserStationReqDTO> temp = new ArrayList<>();
+        for (ExcelUserStationReqDTO reqDTO : list) {
+            UserStationReqDTO req = new UserStationReqDTO();
+            BeanUtils.copyProperties(reqDTO, req);
+            req.setRecId(TokenUtils.getUuId());
+            temp.add(req);
+        }
+        if (!temp.isEmpty()) {
+            if (temp.size() <= CommonConstants.ONE_THOUSAND) {
+                userAccountMapper.importUserStation(temp);
+            } else {
+                int times = (int) Math.ceil(temp.size() / 1000.0);
+                for (int i = 0; i < times; i++) {
+                    userAccountMapper.importUserStation(temp.subList(i * 1000, Math.min((i + 1) * 1000, temp.size() - 1)));
+                }
+            }
+        }
     }
 
     @Override

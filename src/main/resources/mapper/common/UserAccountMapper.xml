@@ -213,6 +213,26 @@
         where t3.LOGIN_NAME = #{userId}
     </select>
 
+    <insert id="importUserStation">
+        INSERT ALL
+        <foreach collection="list" index="index" item="userStation" separator=" ">
+            INTO T_USER_STATION
+            (REC_ID,
+            USER_NO,
+            USER_NAME,
+            STATION_CODE,
+            STATION_NAME)
+            VALUES
+            (SYS_GUID(),
+            #{userStation.recId},
+            #{userStation.userNo},
+            #{userStation.userName},
+            #{userStation.stationCode},
+            #{userStation.stationName})
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
     <select id="getAllMajor" resultType="java.lang.String">
         select DISTINCT t1.MAJOR_CODE
         from SYS_ORG_MAJOR t1 order by MAJOR_CODE ASC
