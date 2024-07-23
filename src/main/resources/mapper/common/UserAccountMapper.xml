@@ -226,7 +226,7 @@
             (#{userStation.recId},
             #{userStation.userNo},
             #{userStation.userName},
-            #{userStation.stationCode},
+            (SELECT NODE_CODE FROM SYS_REGION WHERE NODE_NAME=#{userStation.stationName} AND DELETE_FLAG='0'),
             #{userStation.stationName})
         </foreach>
         SELECT * FROM dual

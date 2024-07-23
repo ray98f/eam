@@ -148,7 +148,8 @@ public class OverhaulOrderServiceImpl implements OverhaulOrderService {
                 && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
                 && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
                 && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))
-                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
+                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))
+                && userRoles.stream().noneMatch(x -> x.getRoleCode().equals(CommonConstants.DM_056))) {
             overhaulOrderListReqDTO.setUserId(TokenUtils.getCurrentPersonId());
             overhaulOrderListReqDTO.setOfficeAreaId(TokenUtils.getCurrentPerson().getOfficeAreaId());
         }

@@ -22,8 +22,6 @@ public class ExcelUserStationReqDTO {
     private String userNo;
     @ExcelProperty(value = "姓名")
     private String userName;
-    @ExcelProperty(value = "车站编号")
-    private String stationCode;
     @ExcelProperty(value = "车站名称")
     private String stationName;
 }

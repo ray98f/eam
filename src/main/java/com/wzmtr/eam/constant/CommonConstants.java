@@ -107,6 +107,8 @@ public class CommonConstants {
     public static final String DM_051 = "DM_051";
     //OCC调度
     public static final String DM_052 = "DM_052";
+    //客运部工程师
+    public static final String DM_056 = "DM_056";
     //中车-检调
     public static final String ZCJD = "ZCJD";
     //中车-售后服务站

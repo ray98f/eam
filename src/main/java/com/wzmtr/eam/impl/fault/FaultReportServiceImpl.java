@@ -407,7 +407,8 @@ public class FaultReportServiceImpl implements FaultReportService {
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))
-                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_056))) {
             list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(),
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
@@ -471,7 +472,8 @@ public class FaultReportServiceImpl implements FaultReportService {
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_007))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_048))
                 || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_004))
-                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))) {
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_005))
+                || userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_056))) {
             list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(),
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
