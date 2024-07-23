@@ -183,6 +183,9 @@
         <if test="ifOther!=null and ifOther!=''">
             IF_OTHER,
         </if>
+        <if test="recStation!=null and recStation!=''">
+            REC_STATION,
+        </if>
         TRAIN_TAG)
         VALUES (
         #{recId,jdbcType=VARCHAR},
@@ -245,6 +248,9 @@
         #{ifReliability,jdbcType=VARCHAR},
         <if test="ifOther!=null and ifOther!=''">
             #{ifOther,jdbcType=VARCHAR},
+        </if>
+        <if test="recStation!=null and recStation!=''">
+            #{recStation,jdbcType=VARCHAR},
         </if>
         #{trainTag,jdbcType=VARCHAR})
     </insert>
@@ -853,6 +859,9 @@
             </if>
             )
         </if>
+        <if test="userStation!=null and userStation!=''">
+            AND d.REC_STATION=#{userStation}
+        </if>
         and df.DELETE_FLAG='0'
         ORDER BY sort asc, d.FAULT_NO desc
     </select>
@@ -1142,6 +1151,9 @@
                 OR d.EXT4='true'
             </if>
             )
+        </if>
+        <if test="userStation!=null and userStation!=''">
+            AND d.REC_STATION=#{userStation}
         </if>
         and df.DELETE_FLAG='0'
         ORDER BY sort asc, d.FAULT_NO desc

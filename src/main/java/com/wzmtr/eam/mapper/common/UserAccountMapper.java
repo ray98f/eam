@@ -77,6 +77,13 @@ public interface UserAccountMapper {
      * @param list list
      */
     void importUserStation(List<UserStationReqDTO> list);
+
+    /**
+     * 获取用户绑定的车站
+     * @param userNo 用户工号
+     * @return 车站
+     */
+    String selectStationByUser(String userNo);
     List<String> getAllMajor();
 
     /**

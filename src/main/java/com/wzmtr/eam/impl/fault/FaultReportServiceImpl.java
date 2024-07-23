@@ -352,6 +352,10 @@ public class FaultReportServiceImpl implements FaultReportService {
         faultInfoDO.setFillinDeptCode(TokenUtils.getCurrentPerson().getOfficeId());
         faultInfoDO.setRecCreator(TokenUtils.getCurrentPerson().getPersonId());
         faultInfoDO.setRecCreateTime(DateUtils.getCurrentTime());
+        String stationNo = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPerson().getPersonId());
+        if (StringUtils.isNotNull(stationNo)) {
+            faultInfoDO.setRecStation(stationNo);
+        }
         faultReportMapper.addToFaultInfo(faultInfoDO);
     }
 
@@ -396,6 +400,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
             type = CommonConstants.TWO_STRING;
         }
+        String userStation = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPersonId());
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
@@ -407,14 +412,14 @@ public class FaultReportServiceImpl implements FaultReportService {
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                     reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(), reqDTO.getFaultWorkNo(),
-                    reqDTO.getLineCode(), userMajorList, null, null, null);
+                    reqDTO.getLineCode(), userMajorList, null, null, null, null);
         } else {
             list = faultReportMapper.list(reqDTO.of(), reqDTO.getFaultNo(),
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                     reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
                     reqDTO.getFaultWorkNo(), reqDTO.getLineCode(), userMajorList, TokenUtils.getCurrentPersonId(),
-                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type);
+                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type, userStation);
         }
         List<FaultReportResDTO> records = list.getRecords();
         buildRes(records);
@@ -459,6 +464,7 @@ public class FaultReportServiceImpl implements FaultReportService {
         } else if (userRoles.stream().anyMatch(x -> x.getRoleCode().equals(CommonConstants.DM_052))) {
             type = CommonConstants.TWO_STRING;
         }
+        String userStation = userAccountMapper.selectStationByUser(TokenUtils.getCurrentPersonId());
         //admin 中铁通生产调度 中车生产调度可以查看本专业的所有数据外 ，其他的角色根据 提报、派工 、验收阶段人员查看
         PageMethod.startPage(reqDTO.getPageNo(), reqDTO.getPageSize());
         if (CommonConstants.ADMIN.equals(TokenUtils.getCurrentPersonId())
@@ -470,14 +476,14 @@ public class FaultReportServiceImpl implements FaultReportService {
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                     reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
-                    reqDTO.getFaultAffect(), userMajorList, null, null, null);
+                    reqDTO.getFaultAffect(), userMajorList, null, null, null, null);
         } else {
             list = faultReportMapper.carFaultReportList(reqDTO.of(), reqDTO.getFaultNo(),
                     reqDTO.getObjectCode(), reqDTO.getObjectName(), reqDTO.getFaultModule(), reqDTO.getMajorCode(),
                     reqDTO.getSystemCode(), reqDTO.getEquipTypeCode(), reqDTO.getFillinTimeStart(),
                     reqDTO.getFillinTimeEnd(), reqDTO.getPositionCode(), reqDTO.getOrderStatus(),
                     reqDTO.getFaultAffect(), userMajorList, TokenUtils.getCurrentPersonId(),
-                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type);
+                    TokenUtils.getCurrentPerson().getOfficeAreaId(), type, userStation);
         }
         List<FaultReportResDTO> records = list.getRecords();
         buildRes(records);

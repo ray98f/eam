@@ -256,6 +256,9 @@
                 </if>
                 )
             </if>
+            <if test="userStation!=null and userStation!=''">
+                AND d.REC_STATION=#{userStation}
+            </if>
             AND d.FAULT_FLAG!='2' AND d.DELETE_FLAG='0' AND df.ORDER_STATUS!='0'
         </trim>
         ORDER BY sort asc, d.FAULT_NO desc, df.FAULT_WORK_NO desc

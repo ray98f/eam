@@ -211,5 +211,7 @@ public class FaultInfoDO {
     private String ifReliability;
     @ApiModelProperty(value = "是否是外部系统 0是 1否")
     private String ifOther;
+    @ApiModelProperty(value = "提报车站")
+    private String recStation;
 
 }

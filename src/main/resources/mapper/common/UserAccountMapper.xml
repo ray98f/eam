@@ -223,8 +223,7 @@
             STATION_CODE,
             STATION_NAME)
             VALUES
-            (SYS_GUID(),
-            #{userStation.recId},
+            (#{userStation.recId},
             #{userStation.userNo},
             #{userStation.userName},
             #{userStation.stationCode},
@@ -232,6 +231,10 @@
         </foreach>
         SELECT * FROM dual
     </insert>
+
+    <select id="selectStationByUser" resultType="java.lang.String">
+        SELECT STATION_CODE FROM T_USER_STATION WHERE USER_NO=#{userNo}
+    </select>
 
     <select id="getAllMajor" resultType="java.lang.String">
         select DISTINCT t1.MAJOR_CODE
