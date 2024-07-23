@@ -29,7 +29,7 @@ public interface FaultReportMapper {
     Page<FaultReportResDTO> list(Page<Object> of, String faultNo, String objectCode, String objectName, String faultModuleId,
                                  String majorCode, String systemCode, String equipTypeCode, String fillinTimeStart,
                                  String fillinTimeEnd, String positionCode, String orderStatus, String faultWorkNo, String lineCode,
-                                 List<String> majors, String userId, String officeAreaId, String type, List<String> userStation);
+                                 List<String> majors, String userId, String officeAreaId, String type, List<String> userStations);
 
     /**
      * 获取专业工程师查看的已提报故障
